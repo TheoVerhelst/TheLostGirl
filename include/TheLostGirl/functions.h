@@ -22,34 +22,6 @@
 /// \return  A new right sized viewport to apply to the view.
 sf::FloatRect handleResize(sf::Event::SizeEvent size);
 
-//Resize and move the widget to fit with the game resolution
-//template <typename T>
-//void scaleRes(T widget, sf::Vector2f resolution)
-//{
-//	widget->scale(resolution.x / 1920.f, resolution.x / 1920.f);
-//	widget->setPosition(widget->getPosition() * (resolution.x / 1920.f));
-//}
-//template <>
-//void scaleRes <tgui::Label::Ptr>(tgui::Label::Ptr widget, sf::Vector2f resolution);
-//template <>
-//void scaleRes <tgui::Picture::Ptr>(tgui::Picture::Ptr widget, sf::Vector2f resolution);
-
-////Calculate the angle in degrees formed by the horizontal and |ab|.
-//float angle(sf::Vector2f a, sf::Vector2f b);
-//
-////Calculate the distance between A and B.
-//float euclidianDistance(sf::Vector2f A, sf::Vector2f B);
-//
-////Calculate the coordinates of the orthogonal projection of P on the line AB
-//sf::Vector2f orthogonalProjection(sf::Vector2f P, sf::Vector2f A, sf::Vector2f B);
-//
-////Calculate the distance between x and the interval ab (so return 0 if x is between a and b)
-////Ex: x = 4, a = 0, b = 2 => output = 2
-//float intervalDistance(float x, float a, float b);
-//
-////Calculate the minimal distance between P and the segment AB
-//float segmentDistance(sf::Vector2f P, sf::Vector2f A, sf::Vector2f B);
-
 ///Convert a couple of number \a a end \a b representing the game image resolution to a string \e path/axb.
 /// Exemple :
 ///> resolution.x = 1920, resolution.y = 1080 => output = "ressources/images/1920x1080/"

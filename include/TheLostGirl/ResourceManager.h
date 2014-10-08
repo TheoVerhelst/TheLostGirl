@@ -46,7 +46,7 @@ class ResourceManager
 
 	private:
 		void insertResource(Identifier id, std::unique_ptr<Resource> resource);
-		std::map<Identifier, std::unique_ptr<Resource> >	mResourceMap;
+		std::map<Identifier, std::unique_ptr<Resource> >	m_ressourceMap;
 };
 
 #include <TheLostGirl/ResourceManager.inl>

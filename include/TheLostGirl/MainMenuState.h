@@ -16,6 +16,7 @@ class MainMenuState : public State
 {
 	public:
 		MainMenuState(StateStack& stack, Context context);
+		~MainMenuState();
 		virtual void draw();
 		virtual bool update(sf::Time dt);
 		virtual bool handleEvent(const sf::Event& event);

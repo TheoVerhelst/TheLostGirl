@@ -49,6 +49,7 @@ class Player
 			HandToHand///< Give a knife hit.
 		};
 		Player();
+		~Player();
 		
         /// Handle the input.
         /// Then assign input to Player::Action ann then assign every Action to a specific Command.

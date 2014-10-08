@@ -35,7 +35,6 @@ void StateStack::handleEvent(const sf::Event& event)
 		if(!(*itr)->handleEvent(event))
 			break;
 	}
-
 	applyPendingChanges();
 }
 

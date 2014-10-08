@@ -35,6 +35,9 @@ Player::Player()
 //	}
 }
 
+Player::~Player()
+{}
+
 void Player::handleEvent(const sf::Event& event, CommandQueue& commands)
 {
 	if(event.type == sf::Event::KeyPressed)

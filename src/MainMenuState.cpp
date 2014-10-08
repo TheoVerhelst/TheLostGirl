@@ -49,6 +49,9 @@ MainMenuState::MainMenuState(StateStack& stack, Context context):
 	gui.add(m_exitButton);
 }
 
+MainMenuState::~MainMenuState()
+{}
+
 void MainMenuState::draw()
 {
 }

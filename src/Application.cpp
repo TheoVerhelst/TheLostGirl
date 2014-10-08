@@ -27,6 +27,7 @@ int Application::init()
 	{
 		LangManager::setLang(FR);
 		m_fontManager.load(Fonts::Menu, "ressources/fonts/euphorigenic.ttf");
+		m_textureManager.load(Textures::Archer, "ressources/images/1024x576/charac.png");
 		m_gui.setGlobalFont(std::make_shared<sf::Font>(m_fontManager.get(Fonts::Menu)));
 	}
 	catch(std::runtime_error& e)
@@ -88,7 +89,7 @@ void Application::update(sf::Time dt)
 
 void Application::render()
 {
-	m_window.clear(sf::Color::Black);
+	m_window.clear(sf::Color(120, 120, 120));
 	m_stateStack.draw();
 	m_gui.draw();
 	m_window.display();
