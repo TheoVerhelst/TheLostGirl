@@ -1,3 +1,19 @@
+#include <SFML/Graphics/RenderWindow.hpp>
+#include <TGUI/Gui.hpp>
+#include <entityx/entityx.h>
+
+#include <TheLostGirl/ResourceIdentifiers.h>
+#include <TheLostGirl/StateIdentifiers.h>
+#include <TheLostGirl/State.h>
+#include <TheLostGirl/MainMenuState.h>
+#include <TheLostGirl/IntroState.h>
+#include <TheLostGirl/LoadingState.h>
+#include <TheLostGirl/GameState.h>
+#include <TheLostGirl/components.h>
+#include <TheLostGirl/systems.h>
+#include <TheLostGirl/constants.h>
+#include <TheLostGirl/functions.h>
+
 #include <TheLostGirl/Application.h>
 
 Application::Application():
@@ -27,7 +43,7 @@ int Application::init()
 	{
 		LangManager::setLang(FR);
 		m_fontManager.load(Fonts::Menu, "ressources/fonts/euphorigenic.ttf");
-		m_textureManager.load(Textures::Archer, "ressources/images/1024x576/charac.png");
+		m_textureManager.load(Textures::Archer, toPath(windowSize) + "charac.png");
 		m_gui.setGlobalFont(std::make_shared<sf::Font>(m_fontManager.get(Fonts::Menu)));
 	}
 	catch(std::runtime_error& e)

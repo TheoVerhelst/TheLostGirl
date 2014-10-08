@@ -6,25 +6,28 @@
 #include <memory>
 #include <cstdlib>
 
-#include <SFML/Graphics/RenderWindow.hpp>
-#include <TGUI/Gui.hpp>
-#include <entityx/entityx.h>
+//Unable to forward-declare those types
 #include <Box2D/Dynamics/b2World.h>
 #include <Box2D/Common/b2Math.h>
-
-#include <TheLostGirl/components.h>
-#include <TheLostGirl/systems.h>
-#include <TheLostGirl/constants.h>
-#include <TheLostGirl/ResourceManager.h>
 #include <TheLostGirl/ResourceIdentifiers.h>
-#include <TheLostGirl/State.h>
-#include <TheLostGirl/StateIdentifiers.h>
+#include <TheLostGirl/ResourceManager.h>
 #include <TheLostGirl/StateStack.h>
-#include <TheLostGirl/MainMenuState.h>
-#include <TheLostGirl/IntroState.h>
-#include <TheLostGirl/LoadingState.h>
-#include <TheLostGirl/GameState.h>
-#include <TheLostGirl/functions.h>
+
+//Forward declarations
+namespace sf
+{
+	class RenderWindow;
+}
+namespace tgui
+{
+	class Gui;
+}
+namespace entityx
+{
+	class EventManager;
+	class EntityManager;
+	class SystemManager;
+}
 
 ///Main game class.
 ///That class holds all the components needed to execute the game (states stack, entity manager, physic engine, ...).

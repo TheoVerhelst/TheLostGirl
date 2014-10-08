@@ -10,14 +10,22 @@ GameState::GameState(StateStack& stack, Context context) :
 	sf::Texture& archerTexture = m_context.textures.get(Textures::Archer);
 	sf::Sprite archerSprite(archerTexture);
 	m_archer.assign<SpriteComponent>(archerSprite);
+	
+	//getContext().systemManager->add<Physics>(getContext().world);
+	getContext().systemManager.add<Actions>(m_commandQueue);
+	getContext().systemManager.add<Render>(getContext().window);
+	getContext().systemManager.configure();//Init the manager
 }
 
 void GameState::draw()
 {
+	getContext().systemManager.update<Render>(sf::Time::Zero.asSeconds());
 }
 
-bool GameState::update(sf::Time)
+bool GameState::update(sf::Time elapsedTime)
 {
+	//getContext().systemManager.update<Physics>(elapsedTime.asSeconds());
+	getContext().systemManager.update<Actions>(elapsedTime.asSeconds());
 	return true;
 }
 
@@ -42,5 +50,6 @@ bool GameState::handleEvent(const sf::Event& event)
 		default:
 			break;
 	}
-	return true;
+	m_player.handleEvent(event, m_commandQueue);
+	return false;
 }

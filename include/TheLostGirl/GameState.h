@@ -13,6 +13,7 @@
 #include <TheLostGirl/Player.h>
 #include <TheLostGirl/Command.h>
 #include <TheLostGirl/ResourceManager.h>
+#include <TheLostGirl/systems.h>
 
 class GameState : public State
 {
