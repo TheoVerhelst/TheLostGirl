@@ -1,0 +1,21 @@
+21 juillet 2014
+   released version 0.0.7 of The Lost Girl
+
+     Change log:
+        -Fixed: Sky bug
+        -Fixed: Fixed many time and calculations bugs
+        -New: New collision system, based on Oriented Bounding Boxes
+
+15 juillet 2014
+   released version 0.0.6 of The Lost Girl
+
+     Change log:
+        -Fixed: Fixed arrow position bug.
+
+12 juillet 2014
+   released version 0.0.5 of The Lost Girl
+
+     Change log:
+        -Added: Added vitality and stamina, and an ath to display them.
+        -Fixed: Fixed many bugs, and added a loading counter (%)
+

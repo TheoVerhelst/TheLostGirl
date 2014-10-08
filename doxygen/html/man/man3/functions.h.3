@@ -1,0 +1,160 @@
+.TH "/home/theo/C++/TheLostGirl-0.0.8/include/TheLostGirl/functions.h" 3 "Wed Oct 8 2014" "Version 0.0.8 prealpha" "The Lost Girl" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+/home/theo/C++/TheLostGirl-0.0.8/include/TheLostGirl/functions.h \- 
+.SH SYNOPSIS
+.br
+.PP
+\fC#include <cmath>\fP
+.br
+\fC#include <string>\fP
+.br
+\fC#include <algorithm>\fP
+.br
+\fC#include <iostream>\fP
+.br
+\fC#include <SFML/Graphics/Color\&.hpp>\fP
+.br
+\fC#include <SFML/System/Time\&.hpp>\fP
+.br
+\fC#include <SFML/Window/Event\&.hpp>\fP
+.br
+\fC#include <SFML/Graphics/Rect\&.hpp>\fP
+.br
+\fC#include <TheLostGirl/constants\&.h>\fP
+.br
+
+.SS "Functions"
+
+.in +1c
+.ti -1c
+.RI "sf::FloatRect \fBhandleResize\fP (sf::Event::SizeEvent size)"
+.br
+.RI "\fICalculate a new viewport at each resize of the window\&. \fP"
+.ti -1c
+.RI "std::string \fBtoPath\fP (sf::Vector2f resolution)"
+.br
+.RI "\fIConvert a couple of number \fIa\fP end \fIb\fP representing the game image resolution to a string \fIpath/axb\fP\&. \fP"
+.ti -1c
+.RI "sf::Vector2f \fBtoVector\fP (std::string resolution)"
+.br
+.RI "\fIConvert string of the type \fIpath/axb\fP to a Vector2f in wich x = and y = b\&. \fP"
+.ti -1c
+.RI "template<typename T , typename U > T \fBcap\fP (T value, U min, U \fBmax\fP)"
+.br
+.RI "\fIReturn \fIvalue\fP capped between \fImin\fP and \fImax\fP\&. \fP"
+.ti -1c
+.RI "sf::Color \fBfadingColor\fP (sf::Time elapsedTime=sf::seconds(0), sf::Time fadingLength=sf::seconds(1), bool in=true)"
+.br
+.RI "\fIReturn a color according to a certain transparent fading\&. \fP"
+.in -1c
+.SH "Function Documentation"
+.PP 
+.SS "template<typename T , typename U > T cap (Tvalue, Umin, Umax)"
+
+.PP
+Return \fIvalue\fP capped between \fImin\fP and \fImax\fP\&. That function is useful to keep a number between bounds, e\&.g\&. the life of a character between 0 and 100\&. 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIvalue\fP Value to cap\&. 
+.br
+\fImin\fP Minimum\&. 
+.br
+\fImax\fP Maximum\&. 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+A value of type T that is strictly in betweend [min, max]\&. 
+.RE
+.PP
+
+.PP
+Definition at line 75 of file functions\&.h\&.
+.SS "sf::Color fadingColor (sf::TimeelapsedTime = \fCsf::seconds(0)\fP, sf::TimefadingLength = \fCsf::seconds(1)\fP, boolin = \fCtrue\fP)"
+
+.PP
+Return a color according to a certain transparent fading\&. Return a white color with a alpha component proportionnal to the fading state\&. If \fIin\fP is false, the output is transparent at end of fading\&. The return color is destined to be multiplied with any other color or sprite\&. 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIelapsedTime\fP The elapsed time since the beginning of the fading\&. 
+.br
+\fIfadingLength\fP The total duration of the fading\&. 
+.br
+\fIin\fP Direction of the fading\&. 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+A color between white and transparent\&. 
+.RE
+.PP
+
+.SS "sf::FloatRect handleResize (sf::Event::SizeEventsize)"
+
+.PP
+Calculate a new viewport at each resize of the window\&. That allows the game to keep a 16:9 display ratio\&. 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIsize\fP Resizing event of the window\&. 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+A new right sized viewport to apply to the view\&. 
+.RE
+.PP
+
+.SS "std::string toPath (sf::Vector2fresolution)"
+
+.PP
+Convert a couple of number \fIa\fP end \fIb\fP representing the game image resolution to a string \fIpath/axb\fP\&. Exemple : 
+.PP
+.RS 4
+resolution\&.x = 1920, resolution\&.y = 1080 => output = 'ressources/images/1920x1080/'
+.PP
+.RE
+.PP
+\fBParameters:\fP
+.RS 4
+\fIresolution\fP Current resolution of the images of the game 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+A formatted string\&. 
+.RE
+.PP
+
+.PP
+Definition at line 90 of file functions\&.cpp\&.
+.SS "sf::Vector2f toVector (std::stringresolution)"
+
+.PP
+Convert string of the type \fIpath/axb\fP to a Vector2f in wich x = and y = b\&. Exemple : 
+.PP
+.RS 4
+input = 'ressources/images/1920x1080/' => output = Vector2f(1920, 1080)
+.PP
+.RE
+.PP
+\fBParameters:\fP
+.RS 4
+\fIresolution\fP Current path to the images directory 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+The Vector2f of the resolution\&. 
+.RE
+.PP
+
+.PP
+Definition at line 95 of file functions\&.cpp\&.
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for The Lost Girl from the source code\&.

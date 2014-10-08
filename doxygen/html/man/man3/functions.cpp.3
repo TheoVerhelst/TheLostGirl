@@ -1,0 +1,88 @@
+.TH "/home/theo/C++/TheLostGirl-0.0.8/src/functions.cpp" 3 "Wed Oct 8 2014" "Version 0.0.8 prealpha" "The Lost Girl" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+/home/theo/C++/TheLostGirl-0.0.8/src/functions.cpp \- 
+.SH SYNOPSIS
+.br
+.PP
+\fC#include <TheLostGirl/functions\&.h>\fP
+.br
+
+.SS "Functions"
+
+.in +1c
+.ti -1c
+.RI "FloatRect \fBhandleResize\fP (Event::SizeEvent size)"
+.br
+.ti -1c
+.RI "std::string \fBtoPath\fP (sf::Vector2f resolution)"
+.br
+.RI "\fIConvert a couple of number \fIa\fP end \fIb\fP representing the game image resolution to a string \fIpath/axb\fP\&. \fP"
+.ti -1c
+.RI "Vector2f \fBtoVector\fP (std::string resolution)"
+.br
+.RI "\fIConvert string of the type \fIpath/axb\fP to a Vector2f in wich x = and y = b\&. \fP"
+.ti -1c
+.RI "Color \fBfadingColor\fP (Time elapsedTime, Time fadingLength, bool in)"
+.br
+.in -1c
+.SH "Function Documentation"
+.PP 
+.SS "Color fadingColor (TimeelapsedTime, TimefadingLength, boolin)"
+
+.PP
+Definition at line 104 of file functions\&.cpp\&.
+.SS "FloatRect handleResize (Event::SizeEventsize)"
+
+.PP
+Definition at line 7 of file functions\&.cpp\&.
+.SS "std::string toPath (sf::Vector2fresolution)"
+
+.PP
+Convert a couple of number \fIa\fP end \fIb\fP representing the game image resolution to a string \fIpath/axb\fP\&. Exemple : 
+.PP
+.RS 4
+resolution\&.x = 1920, resolution\&.y = 1080 => output = 'ressources/images/1920x1080/'
+.PP
+.RE
+.PP
+\fBParameters:\fP
+.RS 4
+\fIresolution\fP Current resolution of the images of the game 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+A formatted string\&. 
+.RE
+.PP
+
+.PP
+Definition at line 90 of file functions\&.cpp\&.
+.SS "Vector2f toVector (std::stringresolution)"
+
+.PP
+Convert string of the type \fIpath/axb\fP to a Vector2f in wich x = and y = b\&. Exemple : 
+.PP
+.RS 4
+input = 'ressources/images/1920x1080/' => output = Vector2f(1920, 1080)
+.PP
+.RE
+.PP
+\fBParameters:\fP
+.RS 4
+\fIresolution\fP Current path to the images directory 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+The Vector2f of the resolution\&. 
+.RE
+.PP
+
+.PP
+Definition at line 95 of file functions\&.cpp\&.
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for The Lost Girl from the source code\&.

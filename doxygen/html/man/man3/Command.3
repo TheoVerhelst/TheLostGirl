@@ -1,0 +1,74 @@
+.TH "Command" 3 "Wed Oct 8 2014" "Version 0.0.8 prealpha" "The Lost Girl" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+Command \- 
+.PP
+Function applied to an entity\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fC#include <Command\&.h>\fP
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBCommand\fP ()"
+.br
+.in -1c
+.SS "Public Attributes"
+
+.in +1c
+.ti -1c
+.RI "std::function< void(entityx::Entity 
+.br
+&, double dt)> \fBaction\fP"
+.br
+.RI "\fIStored function\&. \fP"
+.ti -1c
+.RI "\fBCategory\fP \fBcategory\fP"
+.br
+.RI "\fICategory Category of entity concerned by \fIaction\fP\&. \fP"
+.in -1c
+.SH "Detailed Description"
+.PP 
+Function applied to an entity\&. 
+
+The \fBCommand\fP structure hold a function that will be applied to a specific entity\&. 
+.PP
+Definition at line 14 of file Command\&.h\&.
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "Command::Command ()"
+
+.PP
+Definition at line 3 of file Command\&.cpp\&.
+.SH "Member Data Documentation"
+.PP 
+.SS "std::function<void(entityx::Entity&, double dt)> Command::action"
+
+.PP
+Stored function\&. 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIentityx::Entity&\fP Entity to wich apply the function\&. 
+.br
+\fIdouble\fP Elapsed time between the current and the last frame\&. That function can be a lambda expression, a functor, a pointer to a function, a member function, \&.\&.\&. It just need to take these two arguments in parameters\&. 
+.RE
+.PP
+
+.PP
+Definition at line 23 of file Command\&.h\&.
+.SS "\fBCategory\fP Command::category"
+
+.PP
+Category Category of entity concerned by \fIaction\fP\&. The user must himself check category before call \fIaction\fP\&. 
+.PP
+Definition at line 27 of file Command\&.h\&.
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for The Lost Girl from the source code\&.

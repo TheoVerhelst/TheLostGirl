@@ -1,0 +1,7 @@
+<map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
+<area shape="rect" id="node2" href="$struct_body.html" title="Body component. " alt="" coords="179,5,231,32"/>
+<area shape="rect" id="node3" href="$struct_controller.html" title="The Controller component. " alt="" coords="166,56,245,83"/>
+<area shape="rect" id="node4" href="$struct_jump.html" title="Jump component. " alt="" coords="178,107,233,133"/>
+<area shape="rect" id="node5" href="$struct_sprite_component.html" title="Sprite component. " alt="" coords="144,157,267,184"/>
+<area shape="rect" id="node6" href="$struct_walk.html" title="Walk component. " alt="" coords="179,208,231,235"/>
+</map>

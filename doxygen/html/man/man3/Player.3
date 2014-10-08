@@ -1,0 +1,152 @@
+.TH "Player" 3 "Wed Oct 8 2014" "Version 0.0.8 prealpha" "The Lost Girl" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+Player \- 
+.PP
+\fBPlayer\fP class that interact with the real player\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fC#include <Player\&.h>\fP
+.SS "Public Types"
+
+.in +1c
+.ti -1c
+.RI "enum \fBAction\fP { \fBMoveUp\fP, \fBMoveDown\fP, \fBMoveLeft\fP, \fBMoveRight\fP, \fBJump\fP, \fBBend\fP, \fBSneak\fP, \fBHandToHand\fP }"
+.br
+.RI "\fIPlayers's action\&. \fP"
+.in -1c
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBPlayer\fP ()"
+.br
+.ti -1c
+.RI "void \fBhandleEvent\fP (const sf::Event &event, \fBCommandQueue\fP &commands)"
+.br
+.RI "\fIHandle the input\&. \fP"
+.ti -1c
+.RI "void \fBassignKey\fP (\fBAction\fP action, sf::Keyboard::Key key)"
+.br
+.RI "\fIAssign a key to an Action\&. \fP"
+.ti -1c
+.RI "sf::Keyboard::Key \fBgetAssignedKey\fP (\fBAction\fP action) const "
+.br
+.RI "\fIGive the key assigned to Action\&. \fP"
+.in -1c
+.SH "Detailed Description"
+.PP 
+\fBPlayer\fP class that interact with the real player\&. 
+
+The \fBPlayer\fP class receive all the keyboards and mouse events in the gameplay and assign every input to a specific action in the game\&. 
+.PP
+Definition at line 35 of file Player\&.h\&.
+.SH "Member Enumeration Documentation"
+.PP 
+.SS "enum \fBPlayer::Action\fP"
+
+.PP
+Players's action\&. That's all the player can do\&. 
+.PP
+\fBEnumerator\fP
+.in +1c
+.TP
+\fB\fIMoveUp \fP\fP
+Go in an exit on the top\&. 
+.TP
+\fB\fIMoveDown \fP\fP
+Go in an exit on the bottom\&. 
+.TP
+\fB\fIMoveLeft \fP\fP
+Run to left\&. 
+.TP
+\fB\fIMoveRight \fP\fP
+Run to right\&. 
+.TP
+\fB\fIJump \fP\fP
+\fBJump\fP\&. 
+.TP
+\fB\fIBend \fP\fP
+Bend the bow\&. 
+.TP
+\fB\fISneak \fP\fP
+Squat\&. 
+.TP
+\fB\fIHandToHand \fP\fP
+Give a knife hit\&. 
+.PP
+Definition at line 40 of file Player\&.h\&.
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "Player::Player ()"
+
+.PP
+Definition at line 3 of file Player\&.cpp\&.
+.SH "Member Function Documentation"
+.PP 
+.SS "void Player::assignKey (\fBAction\fPaction, sf::Keyboard::Keykey)"
+
+.PP
+Assign a key to an Action\&. 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIaction\fP Action to assign\&. 
+.br
+\fIkey\fP Key to assign\&. 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+void 
+.RE
+.PP
+
+.PP
+Definition at line 61 of file Player\&.cpp\&.
+.SS "sf::Keyboard::Key Player::getAssignedKey (\fBAction\fPaction) const"
+
+.PP
+Give the key assigned to Action\&. 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIaction\fP 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+Key mapped with \fIaction\fP\&. 
+.RE
+.PP
+
+.PP
+Definition at line 75 of file Player\&.cpp\&.
+.SS "void Player::handleEvent (const sf::Event &event, \fBCommandQueue\fP &commands)"
+
+.PP
+Handle the input\&. Then assign input to \fBPlayer::Action\fP ann then assign every Action to a specific \fBCommand\fP\&. 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIevent\fP Event to handle\&. 
+.br
+\fIcommands\fP \fBCommand\fP queue where to push commands\&. 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+void 
+.RE
+.PP
+
+.PP
+Definition at line 38 of file Player\&.cpp\&.
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for The Lost Girl from the source code\&.

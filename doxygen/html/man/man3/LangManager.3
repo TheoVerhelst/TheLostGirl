@@ -1,0 +1,91 @@
+.TH "LangManager" 3 "Wed Oct 8 2014" "Version 0.0.8 prealpha" "The Lost Girl" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+LangManager \- 
+.PP
+Language manager that translate strings\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fC#include <LangManager\&.h>\fP
+.SS "Static Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "static void \fBsetLang\fP (\fBLang\fP newLang)"
+.br
+.RI "\fISet the current lang\&. \fP"
+.ti -1c
+.RI "static \fBLang\fP \fBgetLang\fP ()"
+.br
+.RI "\fIReturn the current lang\&. \fP"
+.ti -1c
+.RI "static std::wstring \fBtr\fP (const std::string &entryName)"
+.br
+.RI "\fITranslate the given string\&. \fP"
+.in -1c
+.SH "Detailed Description"
+.PP 
+Language manager that translate strings\&. 
+
+It translate a std::string in english to a std::wtring in the langage defined by setLang\&. If no langage is set, it will return L'Entry not found\&.' at every call of \fBLangManager::tr\fP\&. 
+.PP
+Definition at line 22 of file LangManager\&.h\&.
+.SH "Member Function Documentation"
+.PP 
+.SS "\fBLang\fP LangManager::getLang ()\fC [static]\fP"
+
+.PP
+Return the current lang\&. 
+.PP
+\fBReturns:\fP
+.RS 4
+Lang 
+.RE
+.PP
+
+.PP
+Definition at line 35 of file LangManager\&.cpp\&.
+.SS "void LangManager::setLang (\fBLang\fPnewLang)\fC [static]\fP"
+
+.PP
+Set the current lang\&. This function is static, so it should be called by only one user\&. The lang file is automaticaly loaded by the manager\&. 
+.PP
+\fBParameters:\fP
+.RS 4
+\fInewLang\fP Lang to load 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+void 
+.RE
+.PP
+
+.PP
+Definition at line 8 of file LangManager\&.cpp\&.
+.SS "wstring LangManager::tr (const std::string &entryName)\fC [static]\fP"
+
+.PP
+Translate the given string\&. The \fIentryName\fP must be an entry in the lang file, and be in english\&. Write \fBLangManager::tr()\fP around every in-game text\&. 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIentryName\fP const std::string& 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+The translated wide string if the string can be translated, or a default error string in the current lang otherwise\&. 
+.RE
+.PP
+
+.PP
+Definition at line 14 of file LangManager\&.cpp\&.
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for The Lost Girl from the source code\&.

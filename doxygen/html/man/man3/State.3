@@ -1,0 +1,177 @@
+.TH "State" 3 "Wed Oct 8 2014" "Version 0.0.8 prealpha" "The Lost Girl" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+State \- 
+.PP
+Base class for the various game states\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fC#include <State\&.h>\fP
+.PP
+Inherited by \fBGameState\fP, \fBIntroState\fP, \fBLoadingState\fP, and \fBMainMenuState\fP\&.
+.SS "Classes"
+
+.in +1c
+.ti -1c
+.RI "struct \fBContext\fP"
+.br
+.RI "\fIVarious managers and globals instances\&. \fP"
+.in -1c
+.SS "Public Types"
+
+.in +1c
+.ti -1c
+.RI "typedef std::unique_ptr< \fBState\fP > \fBPtr\fP"
+.br
+.RI "\fIConvenient typedef\&. \fP"
+.in -1c
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBState\fP (\fBStateStack\fP &stack, \fBContext\fP context)"
+.br
+.RI "\fIDefault constructor\&. \fP"
+.ti -1c
+.RI "virtual \fB~State\fP ()"
+.br
+.ti -1c
+.RI "virtual void \fBdraw\fP ()=0"
+.br
+.RI "\fIThe drawing function\&. \fP"
+.ti -1c
+.RI "virtual bool \fBupdate\fP (sf::Time dt)=0"
+.br
+.RI "\fIThe logic update function\&. \fP"
+.ti -1c
+.RI "virtual bool \fBhandleEvent\fP (const sf::Event &event)=0"
+.br
+.RI "\fIThe event handling function\&. \fP"
+.in -1c
+.SS "Protected Member Functions"
+
+.in +1c
+.ti -1c
+.RI "void \fBrequestStackPush\fP (\fBStates\fP stateID)"
+.br
+.ti -1c
+.RI "void \fBrequestStackPop\fP ()"
+.br
+.ti -1c
+.RI "void \fBrequestStateClear\fP ()"
+.br
+.ti -1c
+.RI "\fBContext\fP \fBgetContext\fP () const "
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+Base class for the various game states\&. 
+
+Inherits from this class and implements the pure virtal functions\&. The New state must then be registered and pushed to the \fBStateStack\fP\&. 
+.PP
+Definition at line 28 of file State\&.h\&.
+.SH "Member Typedef Documentation"
+.PP 
+.SS "typedef std::unique_ptr<\fBState\fP> \fBState::Ptr\fP"
+
+.PP
+Convenient typedef\&. 
+.PP
+Definition at line 32 of file State\&.h\&.
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "State::State (\fBStateStack\fP &stack, \fBContext\fPcontext)"
+
+.PP
+Default constructor\&. 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIstack\fP \fBStateStack\fP in where the \fBState\fP is added\&. 
+.br
+\fIcontext\fP \fBContext\fP of the game\&. 
+.RE
+.PP
+
+.PP
+Definition at line 19 of file State\&.cpp\&.
+.SS "State::~State ()\fC [virtual]\fP"
+
+.PP
+Definition at line 25 of file State\&.cpp\&.
+.SH "Member Function Documentation"
+.PP 
+.SS "virtual void State::draw ()\fC [pure virtual]\fP"
+
+.PP
+The drawing function\&. 
+.PP
+\fBReturns:\fP
+.RS 4
+virtual void It must do all things related to drawing stuff on the screen\&. 
+.RE
+.PP
+
+.PP
+Implemented in \fBGameState\fP, \fBMainMenuState\fP, \fBIntroState\fP, and \fBLoadingState\fP\&.
+.SS "\fBState::Context\fP State::getContext () const\fC [protected]\fP"
+
+.PP
+Definition at line 44 of file State\&.cpp\&.
+.SS "virtual bool State::handleEvent (const sf::Event &event)\fC [pure virtual]\fP"
+
+.PP
+The event handling function\&. 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIevent\fP Event to handle\&. 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+Return true if the state under this state in the stack must be also updated\&. The state must decide what to do with the event\&. The closing window and resinzing window events are already handled by the \fBApplication\fP class\&. 
+.RE
+.PP
+
+.PP
+Implemented in \fBGameState\fP, \fBMainMenuState\fP, \fBIntroState\fP, and \fBLoadingState\fP\&.
+.SS "void State::requestStackPop ()\fC [protected]\fP"
+
+.PP
+Definition at line 34 of file State\&.cpp\&.
+.SS "void State::requestStackPush (\fBStates\fPstateID)\fC [protected]\fP"
+
+.PP
+Definition at line 29 of file State\&.cpp\&.
+.SS "void State::requestStateClear ()\fC [protected]\fP"
+
+.PP
+Definition at line 39 of file State\&.cpp\&.
+.SS "virtual bool State::update (sf::Timedt)\fC [pure virtual]\fP"
+
+.PP
+The logic update function\&. 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIdt\fP Elapsed time since the last game frame\&. 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+Return true if the state under this state in the stack must be also updated\&. This function call e\&.g\&. the physic update function, the AI function, etc\&.\&.\&. 
+.RE
+.PP
+
+.PP
+Implemented in \fBGameState\fP, \fBMainMenuState\fP, \fBIntroState\fP, and \fBLoadingState\fP\&.
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for The Lost Girl from the source code\&.

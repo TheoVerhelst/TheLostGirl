@@ -1,0 +1,80 @@
+.TH "Application" 3 "Wed Oct 8 2014" "Version 0.0.8 prealpha" "The Lost Girl" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+Application \- 
+.PP
+Main game class\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fC#include <Application\&.h>\fP
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBApplication\fP ()"
+.br
+.ti -1c
+.RI "\fB~Application\fP ()"
+.br
+.ti -1c
+.RI "int \fBinit\fP ()"
+.br
+.RI "\fIInitialize the game\&. \fP"
+.ti -1c
+.RI "int \fBrun\fP ()"
+.br
+.RI "\fIRun the game\&. \fP"
+.in -1c
+.SH "Detailed Description"
+.PP 
+Main game class\&. 
+
+That class holds all the components needed to execute the game (states stack, entity manager, physic engine, \&.\&.\&.)\&. 
+.PP
+Definition at line 31 of file Application\&.h\&.
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "Application::Application ()"
+
+.PP
+Definition at line 3 of file Application\&.cpp\&.
+.SS "Application::~Application ()"
+
+.PP
+Definition at line 17 of file Application\&.cpp\&.
+.SH "Member Function Documentation"
+.PP 
+.SS "int Application::init ()"
+
+.PP
+Initialize the game\&. 
+.PP
+\fBReturns:\fP
+.RS 4
+0 if succeful, -1 otherwise\&. Function that do all that need to be done at the beginning of the game\&. 
+.RE
+.PP
+
+.PP
+Definition at line 21 of file Application\&.cpp\&.
+.SS "int Application::run ()"
+
+.PP
+Run the game\&. 
+.PP
+\fBReturns:\fP
+.RS 4
+0 if succeful, -1 otherwise\&. The function contains the main game loop\&. 
+.RE
+.PP
+
+.PP
+Definition at line 42 of file Application\&.cpp\&.
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for The Lost Girl from the source code\&.

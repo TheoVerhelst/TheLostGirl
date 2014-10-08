@@ -1,0 +1,113 @@
+.TH "State::Context" 3 "Wed Oct 8 2014" "Version 0.0.8 prealpha" "The Lost Girl" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+State::Context \- 
+.PP
+Various managers and globals instances\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fC#include <State\&.h>\fP
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBContext\fP (sf::RenderWindow &_window, \fBTextureManager\fP &_textures, \fBFontManager\fP &_fonts, tgui::Gui &_gui, EventManager &_eventManager, EntityManager &_entityManager, SystemManager &_systemManage)"
+.br
+.in -1c
+.SS "Public Attributes"
+
+.in +1c
+.ti -1c
+.RI "sf::RenderWindow & \fBwindow\fP"
+.br
+.RI "\fIThe main window\&. \fP"
+.ti -1c
+.RI "\fBTextureManager\fP & \fBtextures\fP"
+.br
+.RI "\fIThe texture manager\&. \fP"
+.ti -1c
+.RI "\fBFontManager\fP & \fBfonts\fP"
+.br
+.RI "\fIThe font manager\&. \fP"
+.ti -1c
+.RI "tgui::Gui & \fBgui\fP"
+.br
+.RI "\fIThe main GUI manager\&. \fP"
+.ti -1c
+.RI "EventManager & \fBeventManager\fP"
+.br
+.RI "\fIThe event manager of the entity system\&. \fP"
+.ti -1c
+.RI "EntityManager & \fBentityManager\fP"
+.br
+.RI "\fIThe entity manager of the entity system\&. \fP"
+.ti -1c
+.RI "SystemManager & \fBsystemManager\fP"
+.br
+.RI "\fIThe system manager of the entity system\&. \fP"
+.in -1c
+.SH "Detailed Description"
+.PP 
+Various managers and globals instances\&. 
+
+It is useful to pass the context to the states, they can then use these various ressources managers\&. 
+.PP
+Definition at line 37 of file State\&.h\&.
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "State::Context::Context (sf::RenderWindow &_window, \fBTextureManager\fP &_textures, \fBFontManager\fP &_fonts, tgui::Gui &_gui, EventManager &_eventManager, EntityManager &_entityManager, SystemManager &_systemManage)"
+
+.PP
+Definition at line 8 of file State\&.cpp\&.
+.SH "Member Data Documentation"
+.PP 
+.SS "EntityManager& State::Context::entityManager"
+
+.PP
+The entity manager of the entity system\&. 
+.PP
+Definition at line 52 of file State\&.h\&.
+.SS "EventManager& State::Context::eventManager"
+
+.PP
+The event manager of the entity system\&. 
+.PP
+Definition at line 51 of file State\&.h\&.
+.SS "\fBFontManager\fP& State::Context::fonts"
+
+.PP
+The font manager\&. 
+.PP
+Definition at line 49 of file State\&.h\&.
+.SS "tgui::Gui& State::Context::gui"
+
+.PP
+The main GUI manager\&. 
+.PP
+Definition at line 50 of file State\&.h\&.
+.SS "SystemManager& State::Context::systemManager"
+
+.PP
+The system manager of the entity system\&. 
+.PP
+Definition at line 53 of file State\&.h\&.
+.SS "\fBTextureManager\fP& State::Context::textures"
+
+.PP
+The texture manager\&. 
+.PP
+Definition at line 48 of file State\&.h\&.
+.SS "sf::RenderWindow& State::Context::window"
+
+.PP
+The main window\&. 
+.PP
+Definition at line 47 of file State\&.h\&.
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for The Lost Girl from the source code\&.
