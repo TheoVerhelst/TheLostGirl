@@ -1,63 +1,63 @@
 warning: source ../include/TheLostGirl/ResourceHolder.inl is not a readable file or directory... skipping.
 warning: source ../include/TheLostGirl/ResourceHolder.h is not a readable file or directory... skipping.
-/home/theo/C++/TheLostGirl-0.0.8/include/TheLostGirl/systems.h:30: warning: Compound Render is not documented.
-/home/theo/C++/TheLostGirl-0.0.8/include/TheLostGirl/IntroState.h:13: warning: Compound IntroState is not documented.
-/home/theo/C++/TheLostGirl-0.0.8/include/TheLostGirl/systems.h:18: warning: Compound Actions is not documented.
-/home/theo/C++/TheLostGirl-0.0.8/include/TheLostGirl/StateStack.h:26: warning: Compound StateStack is not documented.
-/home/theo/C++/TheLostGirl-0.0.8/include/TheLostGirl/systems.h:42: warning: Compound Physics is not documented.
-/home/theo/C++/TheLostGirl-0.0.8/include/TheLostGirl/GameState.h:19: warning: Compound GameState is not documented.
-/home/theo/C++/TheLostGirl-0.0.8/include/TheLostGirl/MainMenuState.h:16: warning: Compound MainMenuState is not documented.
-/home/theo/C++/TheLostGirl-0.0.8/include/TheLostGirl/LoadingState.h:12: warning: Compound LoadingState is not documented.
+/home/theo/C++/TheLostGirl-0.0.8/include/TheLostGirl/systems.h:34: warning: Compound Render is not documented.
+/home/theo/C++/TheLostGirl-0.0.8/include/TheLostGirl/IntroState.h:15: warning: Compound IntroState is not documented.
+/home/theo/C++/TheLostGirl-0.0.8/include/TheLostGirl/systems.h:22: warning: Compound Actions is not documented.
+/home/theo/C++/TheLostGirl-0.0.8/include/TheLostGirl/StateStack.h:22: warning: Compound StateStack is not documented.
+/home/theo/C++/TheLostGirl-0.0.8/include/TheLostGirl/systems.h:46: warning: Compound Physics is not documented.
+/home/theo/C++/TheLostGirl-0.0.8/include/TheLostGirl/GameState.h:25: warning: Compound GameState is not documented.
+/home/theo/C++/TheLostGirl-0.0.8/include/TheLostGirl/MainMenuState.h:19: warning: Compound MainMenuState is not documented.
+/home/theo/C++/TheLostGirl-0.0.8/include/TheLostGirl/LoadingState.h:15: warning: Compound LoadingState is not documented.
 /home/theo/C++/TheLostGirl-0.0.8/include/TheLostGirl/Category.h:8: warning: Member Category (enumeration) of file Category.h is not documented.
 <Category>:1: warning: parameters of member Category are not (all) documented
-/home/theo/C++/TheLostGirl-0.0.8/include/TheLostGirl/systems.h:20: warning: Member Actions(CommandQueue &commandQueue) (function) of class Actions is not documented.
-/home/theo/C++/TheLostGirl-0.0.8/include/TheLostGirl/systems.h:23: warning: Member update(entityx::EntityManager &es, entityx::EventManager &events, double dt) override (function) of class Actions is not documented.
-/home/theo/C++/TheLostGirl-0.0.8/include/TheLostGirl/components.h:17: warning: Member Body(b2Body *_body) (function) of class Body is not documented.
-/home/theo/C++/TheLostGirl-0.0.8/include/TheLostGirl/components.h:15: warning: Member body (variable) of class Body is not documented.
-/home/theo/C++/TheLostGirl-0.0.8/include/TheLostGirl/components.h:60: warning: Member Controller(bool _isPlayer) (function) of class Controller is not documented.
-/home/theo/C++/TheLostGirl-0.0.8/include/TheLostGirl/components.h:59: warning: Member isPlayer (variable) of class Controller is not documented.
-/home/theo/C++/TheLostGirl-0.0.8/include/TheLostGirl/GameState.h:21: warning: Member GameState(StateStack &stack, Context context) (function) of class GameState is not documented.
-/home/theo/C++/TheLostGirl-0.0.8/include/TheLostGirl/State.h:84: warning: Member getContext() const  (function) of class State is not documented.
-/home/theo/C++/TheLostGirl-0.0.8/include/TheLostGirl/State.h:82: warning: Member requestStackPop() (function) of class State is not documented.
-/home/theo/C++/TheLostGirl-0.0.8/include/TheLostGirl/State.h:81: warning: Member requestStackPush(States stateID) (function) of class State is not documented.
-/home/theo/C++/TheLostGirl-0.0.8/include/TheLostGirl/State.h:83: warning: Member requestStateClear() (function) of class State is not documented.
-/home/theo/C++/TheLostGirl-0.0.8/include/TheLostGirl/IntroState.h:15: warning: Member IntroState(StateStack &stack, Context context) (function) of class IntroState is not documented.
-/home/theo/C++/TheLostGirl-0.0.8/include/TheLostGirl/State.h:84: warning: Member getContext() const  (function) of class State is not documented.
-/home/theo/C++/TheLostGirl-0.0.8/include/TheLostGirl/State.h:82: warning: Member requestStackPop() (function) of class State is not documented.
-/home/theo/C++/TheLostGirl-0.0.8/include/TheLostGirl/State.h:81: warning: Member requestStackPush(States stateID) (function) of class State is not documented.
-/home/theo/C++/TheLostGirl-0.0.8/include/TheLostGirl/State.h:83: warning: Member requestStateClear() (function) of class State is not documented.
-/home/theo/C++/TheLostGirl-0.0.8/include/TheLostGirl/components.h:50: warning: Member Jump(float _jumpStrength) (function) of class Jump is not documented.
-/home/theo/C++/TheLostGirl-0.0.8/include/TheLostGirl/components.h:49: warning: Member jumpStrength (variable) of class Jump is not documented.
-/home/theo/C++/TheLostGirl-0.0.8/include/TheLostGirl/LoadingState.h:14: warning: Member LoadingState(StateStack &stack, Context context) (function) of class LoadingState is not documented.
-/home/theo/C++/TheLostGirl-0.0.8/include/TheLostGirl/State.h:84: warning: Member getContext() const  (function) of class State is not documented.
-/home/theo/C++/TheLostGirl-0.0.8/include/TheLostGirl/State.h:82: warning: Member requestStackPop() (function) of class State is not documented.
-/home/theo/C++/TheLostGirl-0.0.8/include/TheLostGirl/State.h:81: warning: Member requestStackPush(States stateID) (function) of class State is not documented.
-/home/theo/C++/TheLostGirl-0.0.8/include/TheLostGirl/State.h:83: warning: Member requestStateClear() (function) of class State is not documented.
-/home/theo/C++/TheLostGirl-0.0.8/include/TheLostGirl/MainMenuState.h:18: warning: Member MainMenuState(StateStack &stack, Context context) (function) of class MainMenuState is not documented.
-/home/theo/C++/TheLostGirl-0.0.8/include/TheLostGirl/State.h:84: warning: Member getContext() const  (function) of class State is not documented.
-/home/theo/C++/TheLostGirl-0.0.8/include/TheLostGirl/State.h:82: warning: Member requestStackPop() (function) of class State is not documented.
-/home/theo/C++/TheLostGirl-0.0.8/include/TheLostGirl/State.h:81: warning: Member requestStackPush(States stateID) (function) of class State is not documented.
-/home/theo/C++/TheLostGirl-0.0.8/include/TheLostGirl/State.h:83: warning: Member requestStateClear() (function) of class State is not documented.
-/home/theo/C++/TheLostGirl-0.0.8/include/TheLostGirl/systems.h:44: warning: Member Physics(b2World &world) (function) of class Physics is not documented.
-/home/theo/C++/TheLostGirl-0.0.8/include/TheLostGirl/systems.h:47: warning: Member update(entityx::EntityManager &es, entityx::EventManager &events, double dt) override (function) of class Physics is not documented.
-/home/theo/C++/TheLostGirl-0.0.8/include/TheLostGirl/systems.h:32: warning: Member Render(sf::RenderWindow &window) (function) of class Render is not documented.
-/home/theo/C++/TheLostGirl-0.0.8/include/TheLostGirl/systems.h:35: warning: Member update(entityx::EntityManager &es, entityx::EventManager &events, double dt) override (function) of class Render is not documented.
-/home/theo/C++/TheLostGirl-0.0.8/include/TheLostGirl/components.h:28: warning: Member SpriteComponent(const sf::Sprite &_sprite) (function) of class SpriteComponent is not documented.
-/home/theo/C++/TheLostGirl-0.0.8/include/TheLostGirl/components.h:27: warning: Member sprite (variable) of class SpriteComponent is not documented.
-/home/theo/C++/TheLostGirl-0.0.8/include/TheLostGirl/State.h:84: warning: Member getContext() const  (function) of class State is not documented.
-/home/theo/C++/TheLostGirl-0.0.8/include/TheLostGirl/State.h:82: warning: Member requestStackPop() (function) of class State is not documented.
-/home/theo/C++/TheLostGirl-0.0.8/include/TheLostGirl/State.h:81: warning: Member requestStackPush(States stateID) (function) of class State is not documented.
-/home/theo/C++/TheLostGirl-0.0.8/include/TheLostGirl/State.h:83: warning: Member requestStateClear() (function) of class State is not documented.
-/home/theo/C++/TheLostGirl-0.0.8/include/TheLostGirl/State.h:39: warning: Member Context(sf::RenderWindow &_window, TextureManager &_textures, FontManager &_fonts, tgui::Gui &_gui, EventManager &_eventManager, EntityManager &_entityManager, SystemManager &_systemManage) (function) of class State::Context is not documented.
-/home/theo/C++/TheLostGirl-0.0.8/include/TheLostGirl/StateStack.h:29: warning: Member Action (enumeration) of class StateStack is not documented.
-/home/theo/C++/TheLostGirl-0.0.8/include/TheLostGirl/StateStack.h:42: warning: Member clearStates() (function) of class StateStack is not documented.
-/home/theo/C++/TheLostGirl-0.0.8/include/TheLostGirl/StateStack.h:38: warning: Member draw() (function) of class StateStack is not documented.
-/home/theo/C++/TheLostGirl-0.0.8/include/TheLostGirl/StateStack.h:39: warning: Member handleEvent(const sf::Event &event) (function) of class StateStack is not documented.
-/home/theo/C++/TheLostGirl-0.0.8/include/TheLostGirl/StateStack.h:43: warning: Member isEmpty() const  (function) of class StateStack is not documented.
-/home/theo/C++/TheLostGirl-0.0.8/include/TheLostGirl/StateStack.h:41: warning: Member popState() (function) of class StateStack is not documented.
-/home/theo/C++/TheLostGirl-0.0.8/include/TheLostGirl/StateStack.h:40: warning: Member pushState(States stateID) (function) of class StateStack is not documented.
-/home/theo/C++/TheLostGirl-0.0.8/include/TheLostGirl/StateStack.h:36: warning: Member registerState(States stateID) (function) of class StateStack is not documented.
-/home/theo/C++/TheLostGirl-0.0.8/include/TheLostGirl/StateStack.h:34: warning: Member StateStack(State::Context context) (function) of class StateStack is not documented.
-/home/theo/C++/TheLostGirl-0.0.8/include/TheLostGirl/StateStack.h:37: warning: Member update(sf::Time dt) (function) of class StateStack is not documented.
-/home/theo/C++/TheLostGirl-0.0.8/include/TheLostGirl/components.h:39: warning: Member Walk(float _walkSpeed) (function) of class Walk is not documented.
-/home/theo/C++/TheLostGirl-0.0.8/include/TheLostGirl/components.h:38: warning: Member walkSpeed (variable) of class Walk is not documented.
+/home/theo/C++/TheLostGirl-0.0.8/include/TheLostGirl/systems.h:24: warning: Member Actions(CommandQueue &commandQueue) (function) of class Actions is not documented.
+/home/theo/C++/TheLostGirl-0.0.8/include/TheLostGirl/systems.h:27: warning: Member update(entityx::EntityManager &es, entityx::EventManager &events, double dt) override (function) of class Actions is not documented.
+/home/theo/C++/TheLostGirl-0.0.8/include/TheLostGirl/components.h:20: warning: Member Body(b2Body *_body) (function) of class Body is not documented.
+/home/theo/C++/TheLostGirl-0.0.8/include/TheLostGirl/components.h:18: warning: Member body (variable) of class Body is not documented.
+/home/theo/C++/TheLostGirl-0.0.8/include/TheLostGirl/components.h:63: warning: Member Controller(bool _isPlayer) (function) of class Controller is not documented.
+/home/theo/C++/TheLostGirl-0.0.8/include/TheLostGirl/components.h:62: warning: Member isPlayer (variable) of class Controller is not documented.
+/home/theo/C++/TheLostGirl-0.0.8/include/TheLostGirl/GameState.h:27: warning: Member GameState(StateStack &stack, Context context) (function) of class GameState is not documented.
+/home/theo/C++/TheLostGirl-0.0.8/include/TheLostGirl/State.h:87: warning: Member getContext() const  (function) of class State is not documented.
+/home/theo/C++/TheLostGirl-0.0.8/include/TheLostGirl/State.h:85: warning: Member requestStackPop() (function) of class State is not documented.
+/home/theo/C++/TheLostGirl-0.0.8/include/TheLostGirl/State.h:84: warning: Member requestStackPush(States stateID) (function) of class State is not documented.
+/home/theo/C++/TheLostGirl-0.0.8/include/TheLostGirl/State.h:86: warning: Member requestStateClear() (function) of class State is not documented.
+/home/theo/C++/TheLostGirl-0.0.8/include/TheLostGirl/IntroState.h:17: warning: Member IntroState(StateStack &stack, Context context) (function) of class IntroState is not documented.
+/home/theo/C++/TheLostGirl-0.0.8/include/TheLostGirl/State.h:87: warning: Member getContext() const  (function) of class State is not documented.
+/home/theo/C++/TheLostGirl-0.0.8/include/TheLostGirl/State.h:85: warning: Member requestStackPop() (function) of class State is not documented.
+/home/theo/C++/TheLostGirl-0.0.8/include/TheLostGirl/State.h:84: warning: Member requestStackPush(States stateID) (function) of class State is not documented.
+/home/theo/C++/TheLostGirl-0.0.8/include/TheLostGirl/State.h:86: warning: Member requestStateClear() (function) of class State is not documented.
+/home/theo/C++/TheLostGirl-0.0.8/include/TheLostGirl/components.h:53: warning: Member Jump(float _jumpStrength) (function) of class Jump is not documented.
+/home/theo/C++/TheLostGirl-0.0.8/include/TheLostGirl/components.h:52: warning: Member jumpStrength (variable) of class Jump is not documented.
+/home/theo/C++/TheLostGirl-0.0.8/include/TheLostGirl/LoadingState.h:17: warning: Member LoadingState(StateStack &stack, Context context) (function) of class LoadingState is not documented.
+/home/theo/C++/TheLostGirl-0.0.8/include/TheLostGirl/State.h:87: warning: Member getContext() const  (function) of class State is not documented.
+/home/theo/C++/TheLostGirl-0.0.8/include/TheLostGirl/State.h:85: warning: Member requestStackPop() (function) of class State is not documented.
+/home/theo/C++/TheLostGirl-0.0.8/include/TheLostGirl/State.h:84: warning: Member requestStackPush(States stateID) (function) of class State is not documented.
+/home/theo/C++/TheLostGirl-0.0.8/include/TheLostGirl/State.h:86: warning: Member requestStateClear() (function) of class State is not documented.
+/home/theo/C++/TheLostGirl-0.0.8/include/TheLostGirl/MainMenuState.h:21: warning: Member MainMenuState(StateStack &stack, Context context) (function) of class MainMenuState is not documented.
+/home/theo/C++/TheLostGirl-0.0.8/include/TheLostGirl/State.h:87: warning: Member getContext() const  (function) of class State is not documented.
+/home/theo/C++/TheLostGirl-0.0.8/include/TheLostGirl/State.h:85: warning: Member requestStackPop() (function) of class State is not documented.
+/home/theo/C++/TheLostGirl-0.0.8/include/TheLostGirl/State.h:84: warning: Member requestStackPush(States stateID) (function) of class State is not documented.
+/home/theo/C++/TheLostGirl-0.0.8/include/TheLostGirl/State.h:86: warning: Member requestStateClear() (function) of class State is not documented.
+/home/theo/C++/TheLostGirl-0.0.8/include/TheLostGirl/systems.h:48: warning: Member Physics(b2World &world) (function) of class Physics is not documented.
+/home/theo/C++/TheLostGirl-0.0.8/include/TheLostGirl/systems.h:51: warning: Member update(entityx::EntityManager &es, entityx::EventManager &events, double dt) override (function) of class Physics is not documented.
+/home/theo/C++/TheLostGirl-0.0.8/include/TheLostGirl/systems.h:36: warning: Member Render(sf::RenderWindow &window) (function) of class Render is not documented.
+/home/theo/C++/TheLostGirl-0.0.8/include/TheLostGirl/systems.h:39: warning: Member update(entityx::EntityManager &es, entityx::EventManager &events, double dt) override (function) of class Render is not documented.
+/home/theo/C++/TheLostGirl-0.0.8/include/TheLostGirl/components.h:31: warning: Member SpriteComponent(const sf::Sprite &_sprite) (function) of class SpriteComponent is not documented.
+/home/theo/C++/TheLostGirl-0.0.8/include/TheLostGirl/components.h:30: warning: Member sprite (variable) of class SpriteComponent is not documented.
+/home/theo/C++/TheLostGirl-0.0.8/include/TheLostGirl/State.h:87: warning: Member getContext() const  (function) of class State is not documented.
+/home/theo/C++/TheLostGirl-0.0.8/include/TheLostGirl/State.h:85: warning: Member requestStackPop() (function) of class State is not documented.
+/home/theo/C++/TheLostGirl-0.0.8/include/TheLostGirl/State.h:84: warning: Member requestStackPush(States stateID) (function) of class State is not documented.
+/home/theo/C++/TheLostGirl-0.0.8/include/TheLostGirl/State.h:86: warning: Member requestStateClear() (function) of class State is not documented.
+/home/theo/C++/TheLostGirl-0.0.8/include/TheLostGirl/State.h:42: warning: Member Context(sf::RenderWindow &_window, TextureManager &_textures, FontManager &_fonts, tgui::Gui &_gui, entityx::EventManager &_eventManager, entityx::EntityManager &_entityManager, entityx::SystemManager &_systemManage) (function) of class State::Context is not documented.
+/home/theo/C++/TheLostGirl-0.0.8/include/TheLostGirl/StateStack.h:25: warning: Member Action (enumeration) of class StateStack is not documented.
+/home/theo/C++/TheLostGirl-0.0.8/include/TheLostGirl/StateStack.h:38: warning: Member clearStates() (function) of class StateStack is not documented.
+/home/theo/C++/TheLostGirl-0.0.8/include/TheLostGirl/StateStack.h:34: warning: Member draw() (function) of class StateStack is not documented.
+/home/theo/C++/TheLostGirl-0.0.8/include/TheLostGirl/StateStack.h:35: warning: Member handleEvent(const sf::Event &event) (function) of class StateStack is not documented.
+/home/theo/C++/TheLostGirl-0.0.8/include/TheLostGirl/StateStack.h:39: warning: Member isEmpty() const  (function) of class StateStack is not documented.
+/home/theo/C++/TheLostGirl-0.0.8/include/TheLostGirl/StateStack.h:37: warning: Member popState() (function) of class StateStack is not documented.
+/home/theo/C++/TheLostGirl-0.0.8/include/TheLostGirl/StateStack.h:36: warning: Member pushState(States stateID) (function) of class StateStack is not documented.
+/home/theo/C++/TheLostGirl-0.0.8/include/TheLostGirl/StateStack.h:32: warning: Member registerState(States stateID) (function) of class StateStack is not documented.
+/home/theo/C++/TheLostGirl-0.0.8/include/TheLostGirl/StateStack.h:30: warning: Member StateStack(State::Context context) (function) of class StateStack is not documented.
+/home/theo/C++/TheLostGirl-0.0.8/include/TheLostGirl/StateStack.h:33: warning: Member update(sf::Time dt) (function) of class StateStack is not documented.
+/home/theo/C++/TheLostGirl-0.0.8/include/TheLostGirl/components.h:42: warning: Member Walk(float _walkSpeed) (function) of class Walk is not documented.
+/home/theo/C++/TheLostGirl-0.0.8/include/TheLostGirl/components.h:41: warning: Member walkSpeed (variable) of class Walk is not documented.

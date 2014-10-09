@@ -92,38 +92,37 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="preprocessor">#ifndef INTROSTATE_H</span></div>
 <div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;<span class="preprocessor"></span><span class="preprocessor">#define INTROSTATE_H</span></div>
 <div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;<span class="preprocessor"></span></div>
-<div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;<span class="preprocessor">#include &lt;SFML/Graphics/Sprite.hpp&gt;</span></div>
-<div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;<span class="preprocessor">#include &lt;SFML/Graphics/Text.hpp&gt;</span></div>
-<div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;<span class="preprocessor">#include &lt;SFML/Graphics/RenderWindow.hpp&gt;</span></div>
-<div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;<span class="preprocessor">#include &lt;SFML/Graphics/View.hpp&gt;</span></div>
-<div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;</div>
-<div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;<span class="preprocessor">#include &lt;TheLostGirl/State.h&gt;</span></div>
-<div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;<span class="preprocessor">#include &lt;<a class="code" href="functions_8h.html">TheLostGirl/functions.h</a>&gt;</span></div>
-<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;</div>
-<div class="line"><a name="l00012"></a><span class="lineno"><a class="line" href="class_intro_state.html">   12</a></span>&#160;<span class="keyword">class </span><a class="code" href="class_intro_state.html">IntroState</a> : <span class="keyword">public</span> <a class="code" href="class_state.html">State</a></div>
-<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;{</div>
-<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;        <span class="keyword">public</span>:</div>
-<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;                <a class="code" href="class_intro_state.html">IntroState</a>(<a class="code" href="class_state_stack.html">StateStack</a>&amp; stack, <a class="code" href="struct_state_1_1_context.html">Context</a> context);</div>
-<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;                <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a class="code" href="class_intro_state.html#aa27ff221ef135b60896a89407c3a6df8">draw</a>();</div>
-<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;                <span class="keyword">virtual</span> <span class="keywordtype">bool</span> <a class="code" href="class_intro_state.html#a22e2cd8e5ccde9d8a20ac5fb735b1b7e">update</a>(sf::Time dt);</div>
-<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;                <span class="keyword">virtual</span> <span class="keywordtype">bool</span> <a class="code" href="class_intro_state.html#a3f77842319460800244822e2c31c936d">handleEvent</a>(<span class="keyword">const</span> sf::Event&amp; event);</div>
-<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;</div>
-<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;        <span class="keyword">private</span>:</div>
+<div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;<span class="comment">//Forward declarations</span></div>
+<div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;<span class="keyword">namespace </span>sf</div>
+<div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;{</div>
+<div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;        <span class="keyword">class </span>Event;</div>
+<div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;        <span class="keyword">class </span>Time;</div>
+<div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;}</div>
+<div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;<span class="keyword">class </span><a class="code" href="class_state.html">State</a>;</div>
+<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;<span class="keyword">class </span>Context;</div>
+<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;<span class="keyword">class </span><a class="code" href="class_state_stack.html">StateStack</a>;</div>
+<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;</div>
+<div class="line"><a name="l00014"></a><span class="lineno"><a class="line" href="class_intro_state.html">   14</a></span>&#160;<span class="keyword">class </span><a class="code" href="class_intro_state.html">IntroState</a> : <span class="keyword">public</span> <a class="code" href="class_state.html">State</a></div>
+<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;{</div>
+<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;        <span class="keyword">public</span>:</div>
+<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;                <a class="code" href="class_intro_state.html">IntroState</a>(<a class="code" href="class_state_stack.html">StateStack</a>&amp; stack, <a class="code" href="struct_state_1_1_context.html">Context</a> context);</div>
+<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;                <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a class="code" href="class_intro_state.html#aa27ff221ef135b60896a89407c3a6df8">draw</a>();</div>
+<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;                <span class="keyword">virtual</span> <span class="keywordtype">bool</span> <a class="code" href="class_intro_state.html#a22e2cd8e5ccde9d8a20ac5fb735b1b7e">update</a>(sf::Time dt);</div>
+<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;                <span class="keyword">virtual</span> <span class="keywordtype">bool</span> <a class="code" href="class_intro_state.html#a3f77842319460800244822e2c31c936d">handleEvent</a>(<span class="keyword">const</span> sf::Event&amp; event);</div>
 <div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;};</div>
 <div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;</div>
 <div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;<span class="preprocessor">#endif // INTROSTATE_H</span></div>
-<div class="ttc" id="class_state_html"><div class="ttname"><a href="class_state.html">State</a></div><div class="ttdoc">Base class for the various game states. </div><div class="ttdef"><b>Definition:</b> <a href="_state_8h_source.html#l00028">State.h:28</a></div></div>
-<div class="ttc" id="class_intro_state_html_a22e2cd8e5ccde9d8a20ac5fb735b1b7e"><div class="ttname"><a href="class_intro_state.html#a22e2cd8e5ccde9d8a20ac5fb735b1b7e">IntroState::update</a></div><div class="ttdeci">virtual bool update(sf::Time dt)</div><div class="ttdoc">The logic update function. </div><div class="ttdef"><b>Definition:</b> <a href="_intro_state_8cpp_source.html#l00012">IntroState.cpp:12</a></div></div>
-<div class="ttc" id="class_intro_state_html"><div class="ttname"><a href="class_intro_state.html">IntroState</a></div><div class="ttdef"><b>Definition:</b> <a href="_intro_state_8h_source.html#l00012">IntroState.h:12</a></div></div>
-<div class="ttc" id="class_state_stack_html"><div class="ttname"><a href="class_state_stack.html">StateStack</a></div><div class="ttdef"><b>Definition:</b> <a href="_state_stack_8h_source.html#l00025">StateStack.h:25</a></div></div>
-<div class="ttc" id="class_intro_state_html_aa27ff221ef135b60896a89407c3a6df8"><div class="ttname"><a href="class_intro_state.html#aa27ff221ef135b60896a89407c3a6df8">IntroState::draw</a></div><div class="ttdeci">virtual void draw()</div><div class="ttdoc">The drawing function. </div><div class="ttdef"><b>Definition:</b> <a href="_intro_state_8cpp_source.html#l00008">IntroState.cpp:8</a></div></div>
-<div class="ttc" id="struct_state_1_1_context_html"><div class="ttname"><a href="struct_state_1_1_context.html">State::Context</a></div><div class="ttdoc">Various managers and globals instances. </div><div class="ttdef"><b>Definition:</b> <a href="_state_8h_source.html#l00037">State.h:37</a></div></div>
-<div class="ttc" id="functions_8h_html"><div class="ttname"><a href="functions_8h.html">functions.h</a></div></div>
-<div class="ttc" id="class_intro_state_html_a3f77842319460800244822e2c31c936d"><div class="ttname"><a href="class_intro_state.html#a3f77842319460800244822e2c31c936d">IntroState::handleEvent</a></div><div class="ttdeci">virtual bool handleEvent(const sf::Event &amp;event)</div><div class="ttdoc">The event handling function. </div><div class="ttdef"><b>Definition:</b> <a href="_intro_state_8cpp_source.html#l00017">IntroState.cpp:17</a></div></div>
+<div class="ttc" id="class_state_html"><div class="ttname"><a href="class_state.html">State</a></div><div class="ttdoc">Base class for the various game states. </div><div class="ttdef"><b>Definition:</b> <a href="_state_8h_source.html#l00031">State.h:31</a></div></div>
+<div class="ttc" id="class_intro_state_html_a22e2cd8e5ccde9d8a20ac5fb735b1b7e"><div class="ttname"><a href="class_intro_state.html#a22e2cd8e5ccde9d8a20ac5fb735b1b7e">IntroState::update</a></div><div class="ttdeci">virtual bool update(sf::Time dt)</div><div class="ttdoc">The logic update function. </div><div class="ttdef"><b>Definition:</b> <a href="_intro_state_8cpp_source.html#l00018">IntroState.cpp:18</a></div></div>
+<div class="ttc" id="class_intro_state_html"><div class="ttname"><a href="class_intro_state.html">IntroState</a></div><div class="ttdef"><b>Definition:</b> <a href="_intro_state_8h_source.html#l00014">IntroState.h:14</a></div></div>
+<div class="ttc" id="class_state_stack_html"><div class="ttname"><a href="class_state_stack.html">StateStack</a></div><div class="ttdef"><b>Definition:</b> <a href="_state_stack_8h_source.html#l00021">StateStack.h:21</a></div></div>
+<div class="ttc" id="class_intro_state_html_aa27ff221ef135b60896a89407c3a6df8"><div class="ttname"><a href="class_intro_state.html#aa27ff221ef135b60896a89407c3a6df8">IntroState::draw</a></div><div class="ttdeci">virtual void draw()</div><div class="ttdoc">The drawing function. </div><div class="ttdef"><b>Definition:</b> <a href="_intro_state_8cpp_source.html#l00014">IntroState.cpp:14</a></div></div>
+<div class="ttc" id="struct_state_1_1_context_html"><div class="ttname"><a href="struct_state_1_1_context.html">State::Context</a></div><div class="ttdoc">Various managers and globals instances. </div><div class="ttdef"><b>Definition:</b> <a href="_state_8h_source.html#l00040">State.h:40</a></div></div>
+<div class="ttc" id="class_intro_state_html_a3f77842319460800244822e2c31c936d"><div class="ttname"><a href="class_intro_state.html#a3f77842319460800244822e2c31c936d">IntroState::handleEvent</a></div><div class="ttdeci">virtual bool handleEvent(const sf::Event &amp;event)</div><div class="ttdoc">The event handling function. </div><div class="ttdef"><b>Definition:</b> <a href="_intro_state_8cpp_source.html#l00023">IntroState.cpp:23</a></div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Thu Oct 9 2014 10:11:49 for The Lost Girl by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Fri Oct 10 2014 00:48:42 for The Lost Girl by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>

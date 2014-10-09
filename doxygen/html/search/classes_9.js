@@ -1,5 +1,6 @@
 var searchData=
 [
+  ['rect',['Rect',['../classsf_1_1_rect.html',1,'sf']]],
   ['render',['Render',['../class_render.html',1,'']]],
   ['resourcemanager',['ResourceManager',['../class_resource_manager.html',1,'']]],
   ['resourcemanager_3c_20sf_3a_3afont_2c_20fonts_20_3e',['ResourceManager&lt; sf::Font, Fonts &gt;',['../class_resource_manager.html',1,'']]],

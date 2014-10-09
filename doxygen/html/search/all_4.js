@@ -1,5 +1,5 @@
 var searchData=
 [
-  ['entitymanager',['entityManager',['../struct_state_1_1_context.html#a823fb0918bb94c4f42666ff7ed678096',1,'State::Context']]],
-  ['eventmanager',['eventManager',['../struct_state_1_1_context.html#a7ce08315f42a6138696fb40b71781575',1,'State::Context']]]
+  ['entitymanager',['entityManager',['../struct_state_1_1_context.html#a417040270d1f08cd9013a0805b5fc541',1,'State::Context']]],
+  ['eventmanager',['eventManager',['../struct_state_1_1_context.html#af5aa7f3a5ef67511654dfa6096ef0c33',1,'State::Context']]]
 ];

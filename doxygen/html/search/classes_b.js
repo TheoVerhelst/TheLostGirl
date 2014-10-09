@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['walk',['Walk',['../struct_walk.html',1,'']]]
+  ['vector2',['Vector2',['../classsf_1_1_vector2.html',1,'sf']]]
 ];

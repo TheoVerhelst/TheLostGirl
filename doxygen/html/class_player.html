@@ -121,15 +121,15 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a210ce6683e3b945cf8d169a699ed527a"><td class="memItemLeft" align="right" valign="top">sf::Keyboard::Key&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_player.html#a210ce6683e3b945cf8d169a699ed527a">getAssignedKey</a> (<a class="el" href="class_player.html#a2da5df212d083bbb1460237f34ab0d88">Action</a> action) const </td></tr>
 <tr class="memdesc:a210ce6683e3b945cf8d169a699ed527a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Give the key assigned to Action.  <a href="#a210ce6683e3b945cf8d169a699ed527a">More...</a><br/></td></tr>
 <tr class="separator:a210ce6683e3b945cf8d169a699ed527a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac84a4e0b787f92bf773ccd0d0483f5b1"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_player.html#ac84a4e0b787f92bf773ccd0d0483f5b1">handleEvent</a> (const sf::Event &amp;event, CommandQueue &amp;commands)</td></tr>
-<tr class="memdesc:ac84a4e0b787f92bf773ccd0d0483f5b1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Handle the input.  <a href="#ac84a4e0b787f92bf773ccd0d0483f5b1">More...</a><br/></td></tr>
-<tr class="separator:ac84a4e0b787f92bf773ccd0d0483f5b1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a199bc4f2cacc6637f074e5d618b84e49"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_player.html#a199bc4f2cacc6637f074e5d618b84e49">handleEvent</a> (const sf::Event &amp;event, std::queue&lt; <a class="el" href="struct_command.html">Command</a> &gt; &amp;commands)</td></tr>
+<tr class="memdesc:a199bc4f2cacc6637f074e5d618b84e49"><td class="mdescLeft">&#160;</td><td class="mdescRight">Handle the input.  <a href="#a199bc4f2cacc6637f074e5d618b84e49">More...</a><br/></td></tr>
+<tr class="separator:a199bc4f2cacc6637f074e5d618b84e49"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p><a class="el" href="class_player.html" title="Player class that interact with the real player. ">Player</a> class that interact with the real player. </p>
 <p>The <a class="el" href="class_player.html" title="Player class that interact with the real player. ">Player</a> class receive all the keyboards and mouse events in the gameplay and assign every input to a specific action in the game. </p>
 
-<p>Definition at line <a class="el" href="_player_8h_source.html#l00035">35</a> of file <a class="el" href="_player_8h_source.html">Player.h</a>.</p>
+<p>Definition at line <a class="el" href="_player_8h_source.html#l00036">36</a> of file <a class="el" href="_player_8h_source.html">Player.h</a>.</p>
 </div><h2 class="groupheader">Member Enumeration Documentation</h2>
 <a class="anchor" id="a2da5df212d083bbb1460237f34ab0d88"></a>
 <div class="memitem">
@@ -170,7 +170,7 @@ Public Member Functions</h2></td></tr>
 </td></tr>
 </table>
 
-<p>Definition at line <a class="el" href="_player_8h_source.html#l00040">40</a> of file <a class="el" href="_player_8h_source.html">Player.h</a>.</p>
+<p>Definition at line <a class="el" href="_player_8h_source.html#l00041">41</a> of file <a class="el" href="_player_8h_source.html">Player.h</a>.</p>
 
 </div>
 </div>
@@ -209,7 +209,7 @@ Public Member Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>void </dd></dl>
 
-<p>Definition at line <a class="el" href="_player_8cpp_source.html#l00064">64</a> of file <a class="el" href="_player_8cpp_source.html">Player.cpp</a>.</p>
+<p>Definition at line <a class="el" href="_player_8cpp_source.html#l00071">71</a> of file <a class="el" href="_player_8cpp_source.html">Player.cpp</a>.</p>
 
 </div>
 </div>
@@ -236,11 +236,11 @@ Public Member Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Key mapped with <em>action</em>. </dd></dl>
 
-<p>Definition at line <a class="el" href="_player_8cpp_source.html#l00078">78</a> of file <a class="el" href="_player_8cpp_source.html">Player.cpp</a>.</p>
+<p>Definition at line <a class="el" href="_player_8cpp_source.html#l00085">85</a> of file <a class="el" href="_player_8cpp_source.html">Player.cpp</a>.</p>
 
 </div>
 </div>
-<a class="anchor" id="ac84a4e0b787f92bf773ccd0d0483f5b1"></a>
+<a class="anchor" id="a199bc4f2cacc6637f074e5d618b84e49"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
@@ -253,7 +253,7 @@ Public Member Functions</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">CommandQueue &amp;&#160;</td>
+          <td class="paramtype">std::queue&lt; <a class="el" href="struct_command.html">Command</a> &gt; &amp;&#160;</td>
           <td class="paramname"><em>commands</em>&#160;</td>
         </tr>
         <tr>
@@ -275,7 +275,7 @@ Public Member Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>void </dd></dl>
 
-<p>Definition at line <a class="el" href="_player_8cpp_source.html#l00041">41</a> of file <a class="el" href="_player_8cpp_source.html">Player.cpp</a>.</p>
+<p>Definition at line <a class="el" href="_player_8cpp_source.html#l00048">48</a> of file <a class="el" href="_player_8cpp_source.html">Player.cpp</a>.</p>
 
 </div>
 </div>
@@ -286,7 +286,7 @@ Public Member Functions</h2></td></tr>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Thu Oct 9 2014 10:11:49 for The Lost Girl by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Fri Oct 10 2014 00:48:43 for The Lost Girl by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>
