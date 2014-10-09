@@ -44,7 +44,6 @@ int Application::init()
 	{
 		LangManager::setLang(FR);
 		m_fontManager.load(Fonts::Menu, "ressources/fonts/euphorigenic.ttf");
-		m_textureManager.load(Textures::Archer, toPath(windowSize) + "charac.png");
 		m_gui.setGlobalFont(std::make_shared<sf::Font>(m_fontManager.get(Fonts::Menu)));
 	}
 	catch(std::runtime_error& e)

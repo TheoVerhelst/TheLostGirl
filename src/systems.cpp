@@ -34,7 +34,7 @@ void Render::update(entityx::EntityManager& entityManager, entityx::EventManager
 {
 	SpriteComponent::Handle spriteComponent;
 	for(auto entity : entityManager.entities_with_components(spriteComponent))
-		m_window.draw(spriteComponent->sprite);
+		m_window.draw(*spriteComponent->sprite);
 }
 
 void Physics::update(entityx::EntityManager& entityManager, entityx::EventManager &eventManager, double dt)
@@ -47,6 +47,6 @@ void Physics::update(entityx::EntityManager& entityManager, entityx::EventManage
 	for(auto entity : entityManager.entities_with_components(bodyComponent, spriteComponent))
 	{
 		b2Vec2 pos = bodyComponent->body->GetPosition();
-		spriteComponent->sprite.setPosition(pos.x * pixelScale, windowSize.y - (pos.y * pixelScale));
+		spriteComponent->sprite->setPosition(pos.x * pixelScale, windowSize.y - (pos.y * pixelScale));
 	}
 }

@@ -24,8 +24,9 @@ GameState::GameState(StateStack& stack, Context context) :
 	m_commandQueue(),
 	m_archer(m_context.entityManager.create())
 {
+	m_context.textures.load(Textures::Archer, toPath(windowSize) + "charac.png");
 	sf::Texture& archerTexture = m_context.textures.get(Textures::Archer);
-	sf::Sprite archerSprite(archerTexture);
+	sf::Sprite* archerSprite = new sf::Sprite(archerTexture);
 	m_archer.assign<SpriteComponent>(archerSprite);
 	
 	//getContext().systemManager->add<Physics>(getContext().world);

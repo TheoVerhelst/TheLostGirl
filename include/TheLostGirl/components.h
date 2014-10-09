@@ -16,7 +16,6 @@ class b2Body;
 struct Body : public entityx::Component<Body>
 {
 	b2Body* body;
-
 	Body(b2Body* _body):
 		body(_body)
 	{}
@@ -27,8 +26,8 @@ struct Body : public entityx::Component<Body>
 ///For more information about sprites, see the SFML doc.
 struct SpriteComponent : public entityx::Component<SpriteComponent>
 {
-	sf::Sprite sprite;
-	SpriteComponent(const sf::Sprite& _sprite):
+	sf::Sprite* sprite;
+	SpriteComponent(sf::Sprite* _sprite):
 		sprite(_sprite)
 	{}
 };

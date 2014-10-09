@@ -47,7 +47,6 @@ MainMenuState::MainMenuState(StateStack& stack, Context context):
 	m_loadButton = tgui::Button::copy(m_newButton);
 	m_loadButton->setPosition(tgui::bindWidth(gui.getContainer())*0.25f, tgui::bindHeight(gui.getContainer())*0.55f);
 	m_loadButton->setText(LangManager::tr("Load game"));
-	m_loadButton->connect("pressed", &MainMenuState::playGame, this);
 	gui.add(m_loadButton);
 
 	// Left:   0% of window width
