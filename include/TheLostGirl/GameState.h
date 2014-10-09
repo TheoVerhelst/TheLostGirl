@@ -19,6 +19,7 @@ class State;
 class Context;
 class StateStack;
 class Command;
+typedef std::queue<Command> CommandQueue;
 
 class GameState : public State
 {
@@ -31,7 +32,7 @@ class GameState : public State
 	private:
 		Context& m_context;
 		Player m_player;
-		std::queue<Command> m_commandQueue;
+		CommandQueue m_commandQueue;
 		entityx::Entity m_archer;
 };
 

@@ -7,22 +7,17 @@
 #include <cstdlib>
 
 //Unable to forward-declare those types
+#include <SFML/Graphics/RenderWindow.hpp>
+#include <TGUI/Gui.hpp>
+#include <entityx/entityx.h>
 #include <Box2D/Dynamics/b2World.h>
 #include <Box2D/Common/b2Math.h>
+
 #include <TheLostGirl/ResourceIdentifiers.h>
 #include <TheLostGirl/ResourceManager.h>
 #include <TheLostGirl/StateStack.h>
-#include <entityx/entityx.h>
 
 //Forward declarations
-namespace sf
-{
-	class RenderWindow;
-}
-namespace tgui
-{
-	class Gui;
-}
 namespace entityx
 {
 	class EventManager;

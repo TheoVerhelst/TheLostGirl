@@ -1,4 +1,5 @@
 #include <SFML/Graphics.hpp>
+#include <TGUI/Gui.hpp>
 
 #include <TheLostGirl/State.h>
 #include <TheLostGirl/StateStack.h>

@@ -7,6 +7,7 @@
 #include <Box2D/Box2D.h>
 
 #include <TheLostGirl/State.h>
+#include <TheLostGirl/components.h>
 #include <TheLostGirl/StateStack.h>
 #include <TheLostGirl/functions.h>
 #include <TheLostGirl/Command.h>

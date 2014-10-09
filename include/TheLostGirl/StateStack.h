@@ -8,18 +8,14 @@
 #include <cassert>
 
 #include <SFML/System/NonCopyable.hpp>
-#include <SFML/System/Time.hpp>
-#include <TGUI/TGUI.hpp>
 
-#include <TheLostGirl/State.h>
 #include <TheLostGirl/StateIdentifiers.h>
-#include <TheLostGirl/ResourceIdentifiers.h>
-
+#include <TheLostGirl/State.h>
 
 namespace sf
 {
 	class Event;
-	class RenderWindow;
+	class Time;
 }
 
 class StateStack : private sf::NonCopyable

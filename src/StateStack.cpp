@@ -1,3 +1,6 @@
+#include <SFML/System/Time.hpp>
+#include <SFML/Window/Event.hpp>
+
 #include <TheLostGirl/StateStack.h>
 
 StateStack::StateStack(State::Context context) :

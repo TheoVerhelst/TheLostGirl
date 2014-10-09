@@ -1,3 +1,12 @@
+#include <SFML/Graphics/RenderWindow.hpp>
+#include <SFML/Graphics/Sprite.hpp>
+#include <entityx/entityx.h>
+#include <Box2D/Box2D.h>
+
+#include <TheLostGirl/components.h>
+#include <TheLostGirl/constants.h>
+#include <TheLostGirl/Command.h>
+
 #include <TheLostGirl/systems.h>
 
 using namespace sf;

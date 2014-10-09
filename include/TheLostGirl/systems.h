@@ -3,16 +3,20 @@
 
 #include <algorithm>
 
-#include <SFML/System.hpp>
-#include <SFML/Window.hpp>
-#include <SFML/Graphics.hpp>
-#include <entityx/entityx.h>
-#include <Box2D/Box2D.h>
-
-#include <TheLostGirl/components.h>
-#include <TheLostGirl/constants.h>
-#include <TheLostGirl/Command.h>
-#include <TheLostGirl/Player.h>
+//Forward declarations
+namespace sf
+{
+	class RenderWindow;
+}
+namespace entityx
+{
+	class EventManager;
+	class EntityManager;
+	class SystemManager;
+}
+class b2World;
+class Command;
+typedef std::queue<Command> CommandQueue;
 
 class Actions : public entityx::System<Actions>
 {
