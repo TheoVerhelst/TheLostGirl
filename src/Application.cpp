@@ -13,6 +13,7 @@
 #include <TheLostGirl/systems.h>
 #include <TheLostGirl/constants.h>
 #include <TheLostGirl/functions.h>
+#include <TheLostGirl/LangManager.h>
 
 #include <TheLostGirl/Application.h>
 

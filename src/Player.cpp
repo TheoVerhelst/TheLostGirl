@@ -1,3 +1,10 @@
+#include <SFML/Window/Event.hpp>
+#include <entityx/entityx.h>
+
+#include <TheLostGirl/Command.h>
+#include <TheLostGirl/constants.h>
+#include <TheLostGirl/components.h>
+
 #include <TheLostGirl/Player.h>
 
 Player::Player()

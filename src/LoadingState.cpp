@@ -1,8 +1,9 @@
-#include <SFML/Graphics/RenderWindow.hpp>
-#include <SFML/Graphics/View.hpp>
+#include <SFML/System/Time.hpp>
+#include <SFML/Window/Event.hpp>
+
+#include <TheLostGirl/State.h>
 
 #include <TheLostGirl/LoadingState.h>
-#include <TheLostGirl/ResourceManager.h>
 
 LoadingState::LoadingState(StateStack& stack, Context context) :
 	State(stack, context)

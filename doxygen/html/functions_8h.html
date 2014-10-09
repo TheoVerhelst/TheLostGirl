@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.6"/>
-<title>The Lost Girl: /home/theo/C++/TheLostGirl-0.0.8/include/TheLostGirl/functions.h File Reference</title>
+<title>The Lost Girl: functions.h File Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -23,9 +23,9 @@
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
    <div id="projectname">The Lost Girl
-   &#160;<span id="projectnumber">0.0.8-prealpha</span>
+   &#160;<span id="projectnumber">0.0.8</span>
    </div>
-   <div id="projectbrief">A 2D scrolling archery game</div>
+   <div id="projectbrief">A scrolling 2D archery game.</div>
   </td>
  </tr>
  </tbody>
@@ -70,7 +70,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
      onmouseover="return searchBox.OnSearchSelectShow()"
      onmouseout="return searchBox.OnSearchSelectHide()"
      onkeydown="return searchBox.OnSearchSelectKey(event)">
-<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Namespaces</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Files</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(6)"><span class="SelectionMark">&#160;</span>Typedefs</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(7)"><span class="SelectionMark">&#160;</span>Enumerations</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(8)"><span class="SelectionMark">&#160;</span>Enumerator</a></div>
+<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Files</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Typedefs</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(6)"><span class="SelectionMark">&#160;</span>Enumerations</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(7)"><span class="SelectionMark">&#160;</span>Enumerator</a></div>
 
 <!-- iframe showing the search results (closed by default) -->
 <div id="MSearchResultsWindow">
@@ -99,10 +99,19 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <code>#include &lt;SFML/System/Time.hpp&gt;</code><br/>
 <code>#include &lt;SFML/Window/Event.hpp&gt;</code><br/>
 <code>#include &lt;SFML/Graphics/Rect.hpp&gt;</code><br/>
-<code>#include &lt;<a class="el" href="constants_8h.html">TheLostGirl/constants.h</a>&gt;</code><br/>
-</div><table class="memberdecls">
+<code>#include &lt;<a class="el" href="constants_8h_source.html">TheLostGirl/constants.h</a>&gt;</code><br/>
+</div>
+<p><a href="functions_8h_source.html">Go to the source code of this file.</a></p>
+<table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
+<tr class="memitem:a087db63a4598ecb6d227ea2a2822cba7"><td class="memTemplParams" colspan="2">template&lt;typename T , typename U &gt; </td></tr>
+<tr class="memitem:a087db63a4598ecb6d227ea2a2822cba7"><td class="memTemplItemLeft" align="right" valign="top">T&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="functions_8h.html#a087db63a4598ecb6d227ea2a2822cba7">cap</a> (T value, U min, U max)</td></tr>
+<tr class="memdesc:a087db63a4598ecb6d227ea2a2822cba7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return <em>value</em> capped between <em>min</em> and <em>max</em>.  <a href="#a087db63a4598ecb6d227ea2a2822cba7">More...</a><br/></td></tr>
+<tr class="separator:a087db63a4598ecb6d227ea2a2822cba7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7b1f263988626c38bd8c31449282735e"><td class="memItemLeft" align="right" valign="top">sf::Color&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="functions_8h.html#a7b1f263988626c38bd8c31449282735e">fadingColor</a> (sf::Time elapsedTime=sf::seconds(0), sf::Time fadingLength=sf::seconds(1), bool in=true)</td></tr>
+<tr class="memdesc:a7b1f263988626c38bd8c31449282735e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return a color according to a certain transparent fading.  <a href="#a7b1f263988626c38bd8c31449282735e">More...</a><br/></td></tr>
+<tr class="separator:a7b1f263988626c38bd8c31449282735e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a450609e163d3dc516ee3720d90d0e2b1"><td class="memItemLeft" align="right" valign="top">sf::FloatRect&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="functions_8h.html#a450609e163d3dc516ee3720d90d0e2b1">handleResize</a> (sf::Event::SizeEvent size)</td></tr>
 <tr class="memdesc:a450609e163d3dc516ee3720d90d0e2b1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Calculate a new viewport at each resize of the window.  <a href="#a450609e163d3dc516ee3720d90d0e2b1">More...</a><br/></td></tr>
 <tr class="separator:a450609e163d3dc516ee3720d90d0e2b1"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -112,13 +121,6 @@ Functions</h2></td></tr>
 <tr class="memitem:ac0c016b7971b04951f8572f11fc4d56b"><td class="memItemLeft" align="right" valign="top">sf::Vector2f&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="functions_8h.html#ac0c016b7971b04951f8572f11fc4d56b">toVector</a> (std::string resolution)</td></tr>
 <tr class="memdesc:ac0c016b7971b04951f8572f11fc4d56b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Convert string of the type <em>path/axb</em> to a Vector2f in wich x = and y = b.  <a href="#ac0c016b7971b04951f8572f11fc4d56b">More...</a><br/></td></tr>
 <tr class="separator:ac0c016b7971b04951f8572f11fc4d56b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a087db63a4598ecb6d227ea2a2822cba7"><td class="memTemplParams" colspan="2">template&lt;typename T , typename U &gt; </td></tr>
-<tr class="memitem:a087db63a4598ecb6d227ea2a2822cba7"><td class="memTemplItemLeft" align="right" valign="top">T&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="functions_8h.html#a087db63a4598ecb6d227ea2a2822cba7">cap</a> (T value, U min, U max)</td></tr>
-<tr class="memdesc:a087db63a4598ecb6d227ea2a2822cba7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return <em>value</em> capped between <em>min</em> and <em>max</em>.  <a href="#a087db63a4598ecb6d227ea2a2822cba7">More...</a><br/></td></tr>
-<tr class="separator:a087db63a4598ecb6d227ea2a2822cba7"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7b1f263988626c38bd8c31449282735e"><td class="memItemLeft" align="right" valign="top">sf::Color&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="functions_8h.html#a7b1f263988626c38bd8c31449282735e">fadingColor</a> (sf::Time elapsedTime=sf::seconds(0), sf::Time fadingLength=sf::seconds(1), bool in=true)</td></tr>
-<tr class="memdesc:a7b1f263988626c38bd8c31449282735e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return a color according to a certain transparent fading.  <a href="#a7b1f263988626c38bd8c31449282735e">More...</a><br/></td></tr>
-<tr class="separator:a7b1f263988626c38bd8c31449282735e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Function Documentation</h2>
 <a class="anchor" id="a087db63a4598ecb6d227ea2a2822cba7"></a>
@@ -164,6 +166,8 @@ template&lt;typename T , typename U &gt; </div>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>A value of type T that is strictly in betweend [min, max]. </dd></dl>
+
+<p>Definition at line <a class="el" href="functions_8h_source.html#l00047">47</a> of file <a class="el" href="functions_8h_source.html">functions.h</a>.</p>
 
 </div>
 </div>
@@ -265,6 +269,8 @@ template&lt;typename T , typename U &gt; </div>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>A formatted string. </dd></dl>
 
+<p>Definition at line <a class="el" href="functions_8cpp_source.html#l00029">29</a> of file <a class="el" href="functions_8cpp_source.html">functions.cpp</a>.</p>
+
 </div>
 </div>
 <a class="anchor" id="ac0c016b7971b04951f8572f11fc4d56b"></a>
@@ -295,12 +301,14 @@ template&lt;typename T , typename U &gt; </div>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>The Vector2f of the resolution. </dd></dl>
 
+<p>Definition at line <a class="el" href="functions_8cpp_source.html#l00034">34</a> of file <a class="el" href="functions_8cpp_source.html">functions.cpp</a>.</p>
+
 </div>
 </div>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Wed Oct 8 2014 00:33:39 for The Lost Girl by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Thu Oct 9 2014 10:11:49 for The Lost Girl by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>

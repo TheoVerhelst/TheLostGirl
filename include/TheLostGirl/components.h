@@ -1,12 +1,15 @@
 #ifndef COMPONENTS_H
 #define COMPONENTS_H
 
-#include <SFML/System.hpp>
-#include <SFML/Graphics.hpp>
-#include <entityx/entityx.h>
-#include <Box2D/Dynamics/b2Body.h>
+#include <SFML/Graphics/Sprite.hpp>
 
-#include <TheLostGirl/Category.h>
+//Forward declarations
+namespace entityx
+{
+	template <typename Derived>
+	struct Component;
+}
+class b2Body;
 
 ///Body component.
 ///The Body component store a pointer to a b2Body and is used to simulate physics in the game world.

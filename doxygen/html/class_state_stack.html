@@ -23,9 +23,9 @@
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
    <div id="projectname">The Lost Girl
-   &#160;<span id="projectnumber">0.0.8-prealpha</span>
+   &#160;<span id="projectnumber">0.0.8</span>
    </div>
-   <div id="projectbrief">A 2D scrolling archery game</div>
+   <div id="projectbrief">A scrolling 2D archery game.</div>
   </td>
  </tr>
  </tbody>
@@ -71,7 +71,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
      onmouseover="return searchBox.OnSearchSelectShow()"
      onmouseout="return searchBox.OnSearchSelectHide()"
      onkeydown="return searchBox.OnSearchSelectKey(event)">
-<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Namespaces</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Files</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(6)"><span class="SelectionMark">&#160;</span>Typedefs</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(7)"><span class="SelectionMark">&#160;</span>Enumerations</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(8)"><span class="SelectionMark">&#160;</span>Enumerator</a></div>
+<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Files</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Typedefs</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(6)"><span class="SelectionMark">&#160;</span>Enumerations</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(7)"><span class="SelectionMark">&#160;</span>Enumerator</a></div>
 
 <!-- iframe showing the search results (closed by default) -->
 <div id="MSearchResultsWindow">
@@ -91,8 +91,6 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="title">StateStack Class Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
-
-<p><code>#include &lt;StateStack.h&gt;</code></p>
 <div class="dynheader">
 Inheritance diagram for StateStack:</div>
 <div class="dyncontent">
@@ -104,215 +102,54 @@ Inheritance diagram for StateStack:</div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-types"></a>
 Public Types</h2></td></tr>
-<tr class="memitem:af804142a55cd477767353e0abbcc218c"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_state_stack.html#af804142a55cd477767353e0abbcc218c">Action</a> { <a class="el" href="class_state_stack.html#af804142a55cd477767353e0abbcc218ca5145d891d6770f76760d0b17cdfec0ab">Push</a>, 
-<a class="el" href="class_state_stack.html#af804142a55cd477767353e0abbcc218cada9c92031672d7627190e17bf881889a">Pop</a>, 
-<a class="el" href="class_state_stack.html#af804142a55cd477767353e0abbcc218cad2ef458a00c740b8bf761d90da84bc89">Clear</a>
+<tr class="memitem:af804142a55cd477767353e0abbcc218c"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><b>Action</b> { <b>Push</b>, 
+<b>Pop</b>, 
+<b>Clear</b>
  }</td></tr>
 <tr class="separator:af804142a55cd477767353e0abbcc218c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a365f29afd04a9370f6638cbe3b4ff92a"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_state_stack.html#a365f29afd04a9370f6638cbe3b4ff92a">StateStack</a> (<a class="el" href="struct_state_1_1_context.html">State::Context</a> context)</td></tr>
-<tr class="separator:a365f29afd04a9370f6638cbe3b4ff92a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac6cb561788495caa4ff092bbace4feb8"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
-<tr class="memitem:ac6cb561788495caa4ff092bbace4feb8"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="class_state_stack.html#ac6cb561788495caa4ff092bbace4feb8">registerState</a> (<a class="el" href="_state_identifiers_8h.html#a808e5cd4979462d3bbe3070d7d147444">States</a> stateID)</td></tr>
-<tr class="separator:ac6cb561788495caa4ff092bbace4feb8"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae90af9f56ce7774d47d0407e2680c27d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_state_stack.html#ae90af9f56ce7774d47d0407e2680c27d">update</a> (sf::Time dt)</td></tr>
-<tr class="separator:ae90af9f56ce7774d47d0407e2680c27d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0990b973b2a0bdf8fad2f326e564931a"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_state_stack.html#a0990b973b2a0bdf8fad2f326e564931a">draw</a> ()</td></tr>
-<tr class="separator:a0990b973b2a0bdf8fad2f326e564931a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a70d3ffad9da499b8356789115f3e2acf"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_state_stack.html#a70d3ffad9da499b8356789115f3e2acf">handleEvent</a> (const sf::Event &amp;event)</td></tr>
-<tr class="separator:a70d3ffad9da499b8356789115f3e2acf"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a6d981e5d1c0cfd631bc99cb30ba95bd5"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_state_stack.html#a6d981e5d1c0cfd631bc99cb30ba95bd5">pushState</a> (<a class="el" href="_state_identifiers_8h.html#a808e5cd4979462d3bbe3070d7d147444">States</a> stateID)</td></tr>
-<tr class="separator:a6d981e5d1c0cfd631bc99cb30ba95bd5"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7e050a57b798295c2344f1318765b5ee"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_state_stack.html#a7e050a57b798295c2344f1318765b5ee">popState</a> ()</td></tr>
-<tr class="separator:a7e050a57b798295c2344f1318765b5ee"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a49f0703d4037c3bf63494e64cb09898d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_state_stack.html#a49f0703d4037c3bf63494e64cb09898d">clearStates</a> ()</td></tr>
+<tr class="memitem:a49f0703d4037c3bf63494e64cb09898d"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a49f0703d4037c3bf63494e64cb09898d"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>clearStates</b> ()</td></tr>
 <tr class="separator:a49f0703d4037c3bf63494e64cb09898d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a63a73898d24eb0a68cac0215a9fda4fc"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_state_stack.html#a63a73898d24eb0a68cac0215a9fda4fc">isEmpty</a> () const </td></tr>
+<tr class="memitem:a0990b973b2a0bdf8fad2f326e564931a"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a0990b973b2a0bdf8fad2f326e564931a"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>draw</b> ()</td></tr>
+<tr class="separator:a0990b973b2a0bdf8fad2f326e564931a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a70d3ffad9da499b8356789115f3e2acf"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a70d3ffad9da499b8356789115f3e2acf"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>handleEvent</b> (const sf::Event &amp;event)</td></tr>
+<tr class="separator:a70d3ffad9da499b8356789115f3e2acf"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a63a73898d24eb0a68cac0215a9fda4fc"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a63a73898d24eb0a68cac0215a9fda4fc"></a>
+bool&#160;</td><td class="memItemRight" valign="bottom"><b>isEmpty</b> () const </td></tr>
 <tr class="separator:a63a73898d24eb0a68cac0215a9fda4fc"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7e050a57b798295c2344f1318765b5ee"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a7e050a57b798295c2344f1318765b5ee"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>popState</b> ()</td></tr>
+<tr class="separator:a7e050a57b798295c2344f1318765b5ee"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6d981e5d1c0cfd631bc99cb30ba95bd5"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a6d981e5d1c0cfd631bc99cb30ba95bd5"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>pushState</b> (States stateID)</td></tr>
+<tr class="separator:a6d981e5d1c0cfd631bc99cb30ba95bd5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac6cb561788495caa4ff092bbace4feb8"><td class="memTemplParams" colspan="2"><a class="anchor" id="ac6cb561788495caa4ff092bbace4feb8"></a>
+template&lt;typename T &gt; </td></tr>
+<tr class="memitem:ac6cb561788495caa4ff092bbace4feb8"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><b>registerState</b> (States stateID)</td></tr>
+<tr class="separator:ac6cb561788495caa4ff092bbace4feb8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a365f29afd04a9370f6638cbe3b4ff92a"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a365f29afd04a9370f6638cbe3b4ff92a"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><b>StateStack</b> (<a class="el" href="struct_state_1_1_context.html">State::Context</a> context)</td></tr>
+<tr class="separator:a365f29afd04a9370f6638cbe3b4ff92a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae90af9f56ce7774d47d0407e2680c27d"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ae90af9f56ce7774d47d0407e2680c27d"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>update</b> (sf::Time dt)</td></tr>
+<tr class="separator:ae90af9f56ce7774d47d0407e2680c27d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Member Enumeration Documentation</h2>
-<a class="anchor" id="af804142a55cd477767353e0abbcc218c"></a>
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">enum <a class="el" href="class_state_stack.html#af804142a55cd477767353e0abbcc218c">StateStack::Action</a></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<table class="fieldtable">
-<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><em><a class="anchor" id="af804142a55cd477767353e0abbcc218ca5145d891d6770f76760d0b17cdfec0ab"></a>Push</em>&#160;</td><td class="fielddoc">
-</td></tr>
-<tr><td class="fieldname"><em><a class="anchor" id="af804142a55cd477767353e0abbcc218cada9c92031672d7627190e17bf881889a"></a>Pop</em>&#160;</td><td class="fielddoc">
-</td></tr>
-<tr><td class="fieldname"><em><a class="anchor" id="af804142a55cd477767353e0abbcc218cad2ef458a00c740b8bf761d90da84bc89"></a>Clear</em>&#160;</td><td class="fielddoc">
-</td></tr>
-</table>
-
-</div>
-</div>
-<h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
-<a class="anchor" id="a365f29afd04a9370f6638cbe3b4ff92a"></a>
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">StateStack::StateStack </td>
-          <td>(</td>
-          <td class="paramtype"><a class="el" href="struct_state_1_1_context.html">State::Context</a>&#160;</td>
-          <td class="paramname"><em>context</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">explicit</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<h2 class="groupheader">Member Function Documentation</h2>
-<a class="anchor" id="a49f0703d4037c3bf63494e64cb09898d"></a>
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void StateStack::clearStates </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a class="anchor" id="a0990b973b2a0bdf8fad2f326e564931a"></a>
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void StateStack::draw </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a class="anchor" id="a70d3ffad9da499b8356789115f3e2acf"></a>
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void StateStack::handleEvent </td>
-          <td>(</td>
-          <td class="paramtype">const sf::Event &amp;&#160;</td>
-          <td class="paramname"><em>event</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a class="anchor" id="a63a73898d24eb0a68cac0215a9fda4fc"></a>
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">bool StateStack::isEmpty </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td> const</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a class="anchor" id="a7e050a57b798295c2344f1318765b5ee"></a>
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void StateStack::popState </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a class="anchor" id="a6d981e5d1c0cfd631bc99cb30ba95bd5"></a>
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void StateStack::pushState </td>
-          <td>(</td>
-          <td class="paramtype"><a class="el" href="_state_identifiers_8h.html#a808e5cd4979462d3bbe3070d7d147444">States</a>&#160;</td>
-          <td class="paramname"><em>stateID</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a class="anchor" id="ac6cb561788495caa4ff092bbace4feb8"></a>
-<div class="memitem">
-<div class="memproto">
-<div class="memtemplate">
-template&lt;typename T &gt; </div>
-      <table class="memname">
-        <tr>
-          <td class="memname">void StateStack::registerState </td>
-          <td>(</td>
-          <td class="paramtype"><a class="el" href="_state_identifiers_8h.html#a808e5cd4979462d3bbe3070d7d147444">States</a>&#160;</td>
-          <td class="paramname"><em>stateID</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a class="anchor" id="ae90af9f56ce7774d47d0407e2680c27d"></a>
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void StateStack::update </td>
-          <td>(</td>
-          <td class="paramtype">sf::Time&#160;</td>
-          <td class="paramname"><em>dt</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<hr/>The documentation for this class was generated from the following files:<ul>
-<li>/home/theo/C++/TheLostGirl-0.0.8/include/TheLostGirl/<a class="el" href="_state_stack_8h.html">StateStack.h</a></li>
-<li>/home/theo/C++/TheLostGirl-0.0.8/src/<a class="el" href="_state_stack_8cpp.html">StateStack.cpp</a></li>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock">
+<p>Definition at line <a class="el" href="_state_stack_8h_source.html#l00025">25</a> of file <a class="el" href="_state_stack_8h_source.html">StateStack.h</a>.</p>
+</div><hr/>The documentation for this class was generated from the following files:<ul>
+<li><a class="el" href="_state_stack_8h_source.html">StateStack.h</a></li>
+<li><a class="el" href="_state_stack_8cpp_source.html">StateStack.cpp</a></li>
 </ul>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Wed Oct 8 2014 00:33:41 for The Lost Girl by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Thu Oct 9 2014 10:11:50 for The Lost Girl by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>

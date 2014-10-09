@@ -1,19 +1,24 @@
 #ifndef GAMESTATE_H
 #define GAMESTATE_H
 
-#include <SFML/Graphics/Sprite.hpp>
-#include <SFML/Graphics/Text.hpp>
-#include <SFML/Graphics/RenderWindow.hpp>
-#include <SFML/Graphics/View.hpp>
-#include <entityx/entityx.h>
-#include <Box2D/Box2D.h>
+#include <queue>
 
-#include <TheLostGirl/State.h>
-#include <TheLostGirl/functions.h>
 #include <TheLostGirl/Player.h>
-#include <TheLostGirl/Command.h>
-#include <TheLostGirl/ResourceManager.h>
-#include <TheLostGirl/systems.h>
+
+//Forward declarations
+namespace sf
+{
+	class Event;
+	class Time;
+}
+namespace entityx
+{
+	class Entity;
+}
+class State;
+class Context;
+class StateStack;
+class Command;
 
 class GameState : public State
 {
@@ -26,7 +31,7 @@ class GameState : public State
 	private:
 		Context& m_context;
 		Player m_player;
-		CommandQueue m_commandQueue;
+		std::queue<Command> m_commandQueue;
 		entityx::Entity m_archer;
 };
 

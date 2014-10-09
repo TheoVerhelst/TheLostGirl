@@ -1,3 +1,12 @@
+#include <SFML/Graphics.hpp>
+
+#include <TheLostGirl/State.h>
+#include <TheLostGirl/StateStack.h>
+#include <TheLostGirl/StateIdentifiers.h>
+#include <TheLostGirl/LangManager.h>
+#include <TheLostGirl/constants.h>
+#include <TheLostGirl/functions.h>
+
 #include <TheLostGirl/MainMenuState.h>
 
 MainMenuState::MainMenuState(StateStack& stack, Context context):

@@ -23,9 +23,9 @@
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
    <div id="projectname">The Lost Girl
-   &#160;<span id="projectnumber">0.0.8-prealpha</span>
+   &#160;<span id="projectnumber">0.0.8</span>
    </div>
-   <div id="projectbrief">A 2D scrolling archery game</div>
+   <div id="projectbrief">A scrolling 2D archery game.</div>
   </td>
  </tr>
  </tbody>
@@ -71,7 +71,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
      onmouseover="return searchBox.OnSearchSelectShow()"
      onmouseout="return searchBox.OnSearchSelectHide()"
      onkeydown="return searchBox.OnSearchSelectKey(event)">
-<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Namespaces</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Files</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(6)"><span class="SelectionMark">&#160;</span>Typedefs</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(7)"><span class="SelectionMark">&#160;</span>Enumerations</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(8)"><span class="SelectionMark">&#160;</span>Enumerator</a></div>
+<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Files</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Typedefs</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(6)"><span class="SelectionMark">&#160;</span>Enumerations</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(7)"><span class="SelectionMark">&#160;</span>Enumerator</a></div>
 
 <!-- iframe showing the search results (closed by default) -->
 <div id="MSearchResultsWindow">
@@ -90,20 +90,21 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <p>This is the complete list of members for <a class="el" href="class_main_menu_state.html">MainMenuState</a>, including all inherited members.</p>
 <table class="directory">
   <tr class="even"><td class="entry"><a class="el" href="class_main_menu_state.html#a38804fb6a79b34f4884c2b0da38c7fc3">draw</a>()</td><td class="entry"><a class="el" href="class_main_menu_state.html">MainMenuState</a></td><td class="entry"><span class="mlabel">virtual</span></td></tr>
-  <tr><td class="entry"><a class="el" href="class_state.html#aa54fc68acd982076e838c0eff60b51a3">getContext</a>() const </td><td class="entry"><a class="el" href="class_state.html">State</a></td><td class="entry"><span class="mlabel">protected</span></td></tr>
+  <tr bgcolor="#f0f0f0"><td class="entry"><b>getContext</b>() const  (defined in <a class="el" href="class_state.html">State</a>)</td><td class="entry"><a class="el" href="class_state.html">State</a></td><td class="entry"><span class="mlabel">protected</span></td></tr>
   <tr class="even"><td class="entry"><a class="el" href="class_main_menu_state.html#a29ffa75274bed1884a497690d6b12511">handleEvent</a>(const sf::Event &amp;event)</td><td class="entry"><a class="el" href="class_main_menu_state.html">MainMenuState</a></td><td class="entry"><span class="mlabel">virtual</span></td></tr>
-  <tr><td class="entry"><a class="el" href="class_main_menu_state.html#a03be1f9ac66aa51e30f12f19640bba83">MainMenuState</a>(StateStack &amp;stack, Context context)</td><td class="entry"><a class="el" href="class_main_menu_state.html">MainMenuState</a></td><td class="entry"></td></tr>
+  <tr bgcolor="#f0f0f0"><td class="entry"><b>MainMenuState</b>(StateStack &amp;stack, Context context) (defined in <a class="el" href="class_main_menu_state.html">MainMenuState</a>)</td><td class="entry"><a class="el" href="class_main_menu_state.html">MainMenuState</a></td><td class="entry"></td></tr>
   <tr class="even"><td class="entry"><a class="el" href="class_state.html#a71d9930be1a58be7f711e245b7965d48">Ptr</a> typedef</td><td class="entry"><a class="el" href="class_state.html">State</a></td><td class="entry"></td></tr>
-  <tr><td class="entry"><a class="el" href="class_state.html#aa418660892d6161772c907bd8d70f910">requestStackPop</a>()</td><td class="entry"><a class="el" href="class_state.html">State</a></td><td class="entry"><span class="mlabel">protected</span></td></tr>
-  <tr class="even"><td class="entry"><a class="el" href="class_state.html#a29c8d0c131f9ac95c6c01a8c2f4e4fd0">requestStackPush</a>(States stateID)</td><td class="entry"><a class="el" href="class_state.html">State</a></td><td class="entry"><span class="mlabel">protected</span></td></tr>
-  <tr><td class="entry"><a class="el" href="class_state.html#a4b602bed9bf0179ee5f6748fce340ae6">requestStateClear</a>()</td><td class="entry"><a class="el" href="class_state.html">State</a></td><td class="entry"><span class="mlabel">protected</span></td></tr>
+  <tr bgcolor="#f0f0f0"><td class="entry"><b>requestStackPop</b>() (defined in <a class="el" href="class_state.html">State</a>)</td><td class="entry"><a class="el" href="class_state.html">State</a></td><td class="entry"><span class="mlabel">protected</span></td></tr>
+  <tr bgcolor="#f0f0f0" class="even"><td class="entry"><b>requestStackPush</b>(States stateID) (defined in <a class="el" href="class_state.html">State</a>)</td><td class="entry"><a class="el" href="class_state.html">State</a></td><td class="entry"><span class="mlabel">protected</span></td></tr>
+  <tr bgcolor="#f0f0f0"><td class="entry"><b>requestStateClear</b>() (defined in <a class="el" href="class_state.html">State</a>)</td><td class="entry"><a class="el" href="class_state.html">State</a></td><td class="entry"><span class="mlabel">protected</span></td></tr>
   <tr class="even"><td class="entry"><a class="el" href="class_state.html#afede488ff3c1b264bbd07f8aeead84a7">State</a>(StateStack &amp;stack, Context context)</td><td class="entry"><a class="el" href="class_state.html">State</a></td><td class="entry"></td></tr>
   <tr><td class="entry"><a class="el" href="class_main_menu_state.html#a67972ce329755e98a926344824a492dd">update</a>(sf::Time dt)</td><td class="entry"><a class="el" href="class_main_menu_state.html">MainMenuState</a></td><td class="entry"><span class="mlabel">virtual</span></td></tr>
-  <tr class="even"><td class="entry"><a class="el" href="class_state.html#afab438d92b90dc18d194dbd9c9c8bab3">~State</a>()</td><td class="entry"><a class="el" href="class_state.html">State</a></td><td class="entry"><span class="mlabel">virtual</span></td></tr>
+  <tr bgcolor="#f0f0f0" class="even"><td class="entry"><b>~MainMenuState</b>() (defined in <a class="el" href="class_main_menu_state.html">MainMenuState</a>)</td><td class="entry"><a class="el" href="class_main_menu_state.html">MainMenuState</a></td><td class="entry"></td></tr>
+  <tr bgcolor="#f0f0f0"><td class="entry"><b>~State</b>() (defined in <a class="el" href="class_state.html">State</a>)</td><td class="entry"><a class="el" href="class_state.html">State</a></td><td class="entry"><span class="mlabel">virtual</span></td></tr>
 </table></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Wed Oct 8 2014 00:33:41 for The Lost Girl by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Thu Oct 9 2014 10:11:49 for The Lost Girl by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>

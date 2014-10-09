@@ -6,13 +6,19 @@
 #include <algorithm>
 #include <iostream>
 
-
-#include <SFML/Graphics/Color.hpp>
-#include <SFML/System/Time.hpp>
-#include <SFML/Window/Event.hpp>
-#include <SFML/Graphics/Rect.hpp>
-
 #include <TheLostGirl/constants.h>
+
+//Forwar declarations
+namespace sf
+{
+	template <typename T>
+	class Rect;
+	template <typename T>
+	class Vector2;
+	class Color;
+	class Time;
+	class Event;
+}
 
 ///\file functions.h
 

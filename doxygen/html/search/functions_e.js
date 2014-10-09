@@ -1,11 +1,6 @@
 var searchData=
 [
-  ['searchbox',['SearchBox',['../search_8js.html#a52066106482f8136aa9e0ec859e8188f',1,'search.js']]],
-  ['searchresults',['SearchResults',['../search_8js.html#a9189b9f7a32b6bc78240f40348f7fe03',1,'search.js']]],
-  ['setclassattr',['setClassAttr',['../search_8js.html#a499422fc054a5278ae32801ec0082c56',1,'search.js']]],
-  ['setkeyactions',['setKeyActions',['../search_8js.html#a98192fa2929bb8e4b0a890a4909ab9b2',1,'search.js']]],
-  ['setlang',['setLang',['../class_lang_manager.html#afcbbdecec1e5082056199348b4419a8f',1,'LangManager']]],
-  ['spritecomponent',['SpriteComponent',['../struct_sprite_component.html#a80feb843c0634da98657ca77a9651407',1,'SpriteComponent']]],
-  ['state',['State',['../class_state.html#afede488ff3c1b264bbd07f8aeead84a7',1,'State']]],
-  ['statestack',['StateStack',['../class_state_stack.html#a365f29afd04a9370f6638cbe3b4ff92a',1,'StateStack']]]
+  ['topath',['toPath',['../functions_8h.html#af2de9bd4b8e80c3506f782ceca965e95',1,'toPath(sf::Vector2f resolution):&#160;functions.cpp'],['../functions_8cpp.html#af2de9bd4b8e80c3506f782ceca965e95',1,'toPath(sf::Vector2f resolution):&#160;functions.cpp']]],
+  ['tovector',['toVector',['../functions_8h.html#ac0c016b7971b04951f8572f11fc4d56b',1,'toVector(std::string resolution):&#160;functions.cpp'],['../functions_8cpp.html#a873d96b4ce2d1ca902e3eaf21034e40c',1,'toVector(std::string resolution):&#160;functions.cpp']]],
+  ['tr',['tr',['../class_lang_manager.html#ab94bd696b2f1e90cd6b38a3ca0f08c53',1,'LangManager']]]
 ];

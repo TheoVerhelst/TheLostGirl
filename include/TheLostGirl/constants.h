@@ -3,7 +3,12 @@
 
 #include <string>
 
-#include <SFML/System/Vector2.hpp>
+//Forward declaration
+namespace sf
+{
+	template <typename T>
+	class Vector2;
+}
 
 ///\file constants.h
 

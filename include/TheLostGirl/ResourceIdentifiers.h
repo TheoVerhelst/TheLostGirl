@@ -1,7 +1,16 @@
 #ifndef RESOURCEIDENTIFIERS_H
 #define RESOURCEIDENTIFIERS_H
 
-#include <SFML/Graphics.hpp>
+//Forward declarations
+namespace sf
+{
+	class Texture;
+	class Font;
+}
+template <typename Resource, typename Identifier>
+class ResourceManager;
+
+///\File ResourceIdentifiers.h
 
 ///List all the texutres.
 ///This enum is used with a TextureManager.
@@ -16,9 +25,6 @@ enum class Fonts
 {
 	Menu///< The GUI font.
 };
-
-template <typename Resource, typename Identifier>
-class ResourceManager;
 
 ///Typedef of RessourceManager.
 typedef ResourceManager<sf::Texture, Textures> TextureManager;

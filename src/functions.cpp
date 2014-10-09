@@ -1,3 +1,8 @@
+#include <SFML/Graphics/Color.hpp>
+#include <SFML/Graphics/Rect.hpp>
+#include <SFML/System/Time.hpp>
+#include <SFML/Window/Event.hpp>
+
 #include <TheLostGirl/functions.h>
 
 using namespace sf;

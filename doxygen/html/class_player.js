@@ -11,6 +11,7 @@ var class_player =
       [ "HandToHand", "class_player.html#a2da5df212d083bbb1460237f34ab0d88aba257a4a1d61d31d41d114640bbeee63", null ]
     ] ],
     [ "Player", "class_player.html#affe0cc3cb714f6deb4e62f0c0d3f1fd8", null ],
+    [ "~Player", "class_player.html#a749d2c00e1fe0f5c2746f7505a58c062", null ],
     [ "assignKey", "class_player.html#ae7a6e190b35182eef75bb2aff219f90c", null ],
     [ "getAssignedKey", "class_player.html#a210ce6683e3b945cf8d169a699ed527a", null ],
     [ "handleEvent", "class_player.html#ac84a4e0b787f92bf773ccd0d0483f5b1", null ]

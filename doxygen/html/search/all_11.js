@@ -1,13 +1,4 @@
 var searchData=
 [
-  ['textfont',['textFont',['../constants_8h.html#a60bbb26383e9e449b495a7906094879f',1,'constants.h']]],
-  ['texturemanager',['TextureManager',['../_resource_identifiers_8h.html#a08ad1bc0d04bdf7ff7b9b6077d3aaa84',1,'ResourceIdentifiers.h']]],
-  ['textures',['textures',['../struct_state_1_1_context.html#a2fb70b35110163fb5144d6a21673a5b2',1,'State::Context::textures()'],['../_resource_identifiers_8h.html#a3edd0807c4f20aee4550841f93aafa28',1,'Textures():&#160;ResourceIdentifiers.h']]],
-  ['togglefolder',['toggleFolder',['../dynsections_8js.html#af244da4527af2d845dca04f5656376cd',1,'dynsections.js']]],
-  ['toggleinherit',['toggleInherit',['../dynsections_8js.html#ac057b640b17ff32af11ced151c9305b4',1,'dynsections.js']]],
-  ['togglelevel',['toggleLevel',['../dynsections_8js.html#a19f577cc1ba571396a85bb1f48bf4df2',1,'dynsections.js']]],
-  ['togglevisibility',['toggleVisibility',['../dynsections_8js.html#a1922c462474df7dfd18741c961d59a25',1,'dynsections.js']]],
-  ['topath',['toPath',['../functions_8h.html#af2de9bd4b8e80c3506f782ceca965e95',1,'toPath(sf::Vector2f resolution):&#160;functions.cpp'],['../functions_8cpp.html#af2de9bd4b8e80c3506f782ceca965e95',1,'toPath(sf::Vector2f resolution):&#160;functions.cpp']]],
-  ['tovector',['toVector',['../functions_8h.html#ac0c016b7971b04951f8572f11fc4d56b',1,'toVector(std::string resolution):&#160;functions.cpp'],['../functions_8cpp.html#a873d96b4ce2d1ca902e3eaf21034e40c',1,'toVector(std::string resolution):&#160;functions.cpp']]],
-  ['tr',['tr',['../class_lang_manager.html#ab94bd696b2f1e90cd6b38a3ca0f08c53',1,'LangManager']]]
+  ['update',['update',['../class_game_state.html#a4ac988f0da5c33b43ff356890fcf9c1c',1,'GameState::update()'],['../class_intro_state.html#a22e2cd8e5ccde9d8a20ac5fb735b1b7e',1,'IntroState::update()'],['../class_loading_state.html#a8f2f50523c1f35e011ddd0839aa66ee4',1,'LoadingState::update()'],['../class_main_menu_state.html#a67972ce329755e98a926344824a492dd',1,'MainMenuState::update()'],['../class_state.html#acd5926bc7a373edff9e57f3ffe94ca13',1,'State::update()']]]
 ];

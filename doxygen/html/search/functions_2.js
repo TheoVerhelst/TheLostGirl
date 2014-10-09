@@ -1,10 +1,4 @@
 var searchData=
 [
-  ['cap',['cap',['../functions_8h.html#a087db63a4598ecb6d227ea2a2822cba7',1,'functions.h']]],
-  ['clearstates',['clearStates',['../class_state_stack.html#a49f0703d4037c3bf63494e64cb09898d',1,'StateStack']]],
-  ['command',['Command',['../struct_command.html#a18df2d81039392daeb0b78c346a70537',1,'Command']]],
-  ['context',['Context',['../struct_state_1_1_context.html#a89baf544acd38c6ae59014de62d60332',1,'State::Context']]],
-  ['controller',['Controller',['../struct_controller.html#a865447d116f208f376b62c5e1f773c23',1,'Controller']]],
-  ['converttoid',['convertToId',['../search_8js.html#a196a29bd5a5ee7cd5b485e0753a49e57',1,'search.js']]],
-  ['createresults',['createResults',['../search_8js.html#a6b2c651120de3ed1dcf0d85341d51895',1,'search.js']]]
+  ['draw',['draw',['../class_game_state.html#a3c511417d8934943ae65c04681f321a3',1,'GameState::draw()'],['../class_intro_state.html#aa27ff221ef135b60896a89407c3a6df8',1,'IntroState::draw()'],['../class_loading_state.html#adfe2c002c52cc2c49967ba3ace4aa73b',1,'LoadingState::draw()'],['../class_main_menu_state.html#a38804fb6a79b34f4884c2b0da38c7fc3',1,'MainMenuState::draw()'],['../class_state.html#ae261605bc40b7e3959ce5df5457e4942',1,'State::draw()']]]
 ];

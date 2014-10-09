@@ -6,12 +6,13 @@
 #include <algorithm>
 #include <iostream>
 
-#include <SFML/Window/Event.hpp>
-#include <entityx/entityx.h>
-
-#include <TheLostGirl/Command.h>
-#include <TheLostGirl/constants.h>
-#include <TheLostGirl/components.h>
+//Forward declarations
+namespace sf
+{
+	class Event;
+	class Keyboard;
+}
+struct Command;
 
 //struct PaddleMover
 //{
@@ -56,7 +57,7 @@ class Player
         /// \param event Event to handle.
         /// \param commands Command queue where to push commands.
         /// \return void                  
-		void handleEvent(const sf::Event& event, CommandQueue& commands);
+		void handleEvent(const sf::Event& event, std::queue<Command>& commands);
 		
         /// Assign a key to an Action.
         /// \param action Action to assign.

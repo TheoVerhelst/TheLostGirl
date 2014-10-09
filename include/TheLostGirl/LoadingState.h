@@ -1,12 +1,15 @@
 #ifndef LOADINGSTATE_H
 #define LOADINGSTATE_H
 
-#include <SFML/Graphics/Sprite.hpp>
-#include <SFML/Graphics/Text.hpp>
-
-#include <TheLostGirl/State.h>
-#include <TheLostGirl/functions.h>
-#include <TheLostGirl/ResourceManager.h>
+//Forward declarations
+namespace sf
+{
+	class Event;
+	class Time;
+}
+class State;
+class Context;
+class StateStack;
 
 class LoadingState : public State
 {

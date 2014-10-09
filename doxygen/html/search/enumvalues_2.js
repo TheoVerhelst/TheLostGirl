@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['clear',['Clear',['../class_state_stack.html#af804142a55cd477767353e0abbcc218cad2ef458a00c740b8bf761d90da84bc89',1,'StateStack']]]
+  ['jump',['Jump',['../class_player.html#a2da5df212d083bbb1460237f34ab0d88a9eedd3a1b2989c1c09acdacde9be9c87',1,'Player']]]
 ];

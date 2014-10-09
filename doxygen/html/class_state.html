@@ -23,9 +23,9 @@
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
    <div id="projectname">The Lost Girl
-   &#160;<span id="projectnumber">0.0.8-prealpha</span>
+   &#160;<span id="projectnumber">0.0.8</span>
    </div>
-   <div id="projectbrief">A 2D scrolling archery game</div>
+   <div id="projectbrief">A scrolling 2D archery game.</div>
   </td>
  </tr>
  </tbody>
@@ -71,7 +71,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
      onmouseover="return searchBox.OnSearchSelectShow()"
      onmouseout="return searchBox.OnSearchSelectHide()"
      onkeydown="return searchBox.OnSearchSelectKey(event)">
-<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Namespaces</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Files</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(6)"><span class="SelectionMark">&#160;</span>Typedefs</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(7)"><span class="SelectionMark">&#160;</span>Enumerations</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(8)"><span class="SelectionMark">&#160;</span>Enumerator</a></div>
+<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Files</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Typedefs</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(6)"><span class="SelectionMark">&#160;</span>Enumerations</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(7)"><span class="SelectionMark">&#160;</span>Enumerator</a></div>
 
 <!-- iframe showing the search results (closed by default) -->
 <div id="MSearchResultsWindow">
@@ -96,7 +96,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <p>Base class for the various game states.  
  <a href="class_state.html#details">More...</a></p>
 
-<p><code>#include &lt;State.h&gt;</code></p>
+<p><code>#include &lt;<a class="el" href="_state_8h_source.html">State.h</a>&gt;</code></p>
 <div class="dynheader">
 Inheritance diagram for State:</div>
 <div class="dyncontent">
@@ -124,35 +124,39 @@ Public Types</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:afede488ff3c1b264bbd07f8aeead84a7"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_state.html#afede488ff3c1b264bbd07f8aeead84a7">State</a> (<a class="el" href="class_state_stack.html">StateStack</a> &amp;stack, <a class="el" href="struct_state_1_1_context.html">Context</a> context)</td></tr>
-<tr class="memdesc:afede488ff3c1b264bbd07f8aeead84a7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Default constructor.  <a href="#afede488ff3c1b264bbd07f8aeead84a7">More...</a><br/></td></tr>
-<tr class="separator:afede488ff3c1b264bbd07f8aeead84a7"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:afab438d92b90dc18d194dbd9c9c8bab3"><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_state.html#afab438d92b90dc18d194dbd9c9c8bab3">~State</a> ()</td></tr>
-<tr class="separator:afab438d92b90dc18d194dbd9c9c8bab3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae261605bc40b7e3959ce5df5457e4942"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_state.html#ae261605bc40b7e3959ce5df5457e4942">draw</a> ()=0</td></tr>
 <tr class="memdesc:ae261605bc40b7e3959ce5df5457e4942"><td class="mdescLeft">&#160;</td><td class="mdescRight">The drawing function.  <a href="#ae261605bc40b7e3959ce5df5457e4942">More...</a><br/></td></tr>
 <tr class="separator:ae261605bc40b7e3959ce5df5457e4942"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:acd5926bc7a373edff9e57f3ffe94ca13"><td class="memItemLeft" align="right" valign="top">virtual bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_state.html#acd5926bc7a373edff9e57f3ffe94ca13">update</a> (sf::Time dt)=0</td></tr>
-<tr class="memdesc:acd5926bc7a373edff9e57f3ffe94ca13"><td class="mdescLeft">&#160;</td><td class="mdescRight">The logic update function.  <a href="#acd5926bc7a373edff9e57f3ffe94ca13">More...</a><br/></td></tr>
-<tr class="separator:acd5926bc7a373edff9e57f3ffe94ca13"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a19965f83460b248c42952aac8d001206"><td class="memItemLeft" align="right" valign="top">virtual bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_state.html#a19965f83460b248c42952aac8d001206">handleEvent</a> (const sf::Event &amp;event)=0</td></tr>
 <tr class="memdesc:a19965f83460b248c42952aac8d001206"><td class="mdescLeft">&#160;</td><td class="mdescRight">The event handling function.  <a href="#a19965f83460b248c42952aac8d001206">More...</a><br/></td></tr>
 <tr class="separator:a19965f83460b248c42952aac8d001206"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afede488ff3c1b264bbd07f8aeead84a7"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_state.html#afede488ff3c1b264bbd07f8aeead84a7">State</a> (<a class="el" href="class_state_stack.html">StateStack</a> &amp;stack, <a class="el" href="struct_state_1_1_context.html">Context</a> context)</td></tr>
+<tr class="memdesc:afede488ff3c1b264bbd07f8aeead84a7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Default constructor.  <a href="#afede488ff3c1b264bbd07f8aeead84a7">More...</a><br/></td></tr>
+<tr class="separator:afede488ff3c1b264bbd07f8aeead84a7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:acd5926bc7a373edff9e57f3ffe94ca13"><td class="memItemLeft" align="right" valign="top">virtual bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_state.html#acd5926bc7a373edff9e57f3ffe94ca13">update</a> (sf::Time dt)=0</td></tr>
+<tr class="memdesc:acd5926bc7a373edff9e57f3ffe94ca13"><td class="mdescLeft">&#160;</td><td class="mdescRight">The logic update function.  <a href="#acd5926bc7a373edff9e57f3ffe94ca13">More...</a><br/></td></tr>
+<tr class="separator:acd5926bc7a373edff9e57f3ffe94ca13"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-methods"></a>
 Protected Member Functions</h2></td></tr>
-<tr class="memitem:a29c8d0c131f9ac95c6c01a8c2f4e4fd0"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_state.html#a29c8d0c131f9ac95c6c01a8c2f4e4fd0">requestStackPush</a> (<a class="el" href="_state_identifiers_8h.html#a808e5cd4979462d3bbe3070d7d147444">States</a> stateID)</td></tr>
-<tr class="separator:a29c8d0c131f9ac95c6c01a8c2f4e4fd0"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa418660892d6161772c907bd8d70f910"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_state.html#aa418660892d6161772c907bd8d70f910">requestStackPop</a> ()</td></tr>
-<tr class="separator:aa418660892d6161772c907bd8d70f910"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a4b602bed9bf0179ee5f6748fce340ae6"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_state.html#a4b602bed9bf0179ee5f6748fce340ae6">requestStateClear</a> ()</td></tr>
-<tr class="separator:a4b602bed9bf0179ee5f6748fce340ae6"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa54fc68acd982076e838c0eff60b51a3"><td class="memItemLeft" align="right" valign="top"><a class="el" href="struct_state_1_1_context.html">Context</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_state.html#aa54fc68acd982076e838c0eff60b51a3">getContext</a> () const </td></tr>
+<tr class="memitem:aa54fc68acd982076e838c0eff60b51a3"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="aa54fc68acd982076e838c0eff60b51a3"></a>
+<a class="el" href="struct_state_1_1_context.html">Context</a>&#160;</td><td class="memItemRight" valign="bottom"><b>getContext</b> () const </td></tr>
 <tr class="separator:aa54fc68acd982076e838c0eff60b51a3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa418660892d6161772c907bd8d70f910"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="aa418660892d6161772c907bd8d70f910"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>requestStackPop</b> ()</td></tr>
+<tr class="separator:aa418660892d6161772c907bd8d70f910"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a29c8d0c131f9ac95c6c01a8c2f4e4fd0"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a29c8d0c131f9ac95c6c01a8c2f4e4fd0"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>requestStackPush</b> (States stateID)</td></tr>
+<tr class="separator:a29c8d0c131f9ac95c6c01a8c2f4e4fd0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4b602bed9bf0179ee5f6748fce340ae6"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a4b602bed9bf0179ee5f6748fce340ae6"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>requestStateClear</b> ()</td></tr>
+<tr class="separator:a4b602bed9bf0179ee5f6748fce340ae6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Base class for the various game states. </p>
 <p>Inherits from this class and implements the pure virtal functions. The New state must then be registered and pushed to the <a class="el" href="class_state_stack.html">StateStack</a>. </p>
+
+<p>Definition at line <a class="el" href="_state_8h_source.html#l00028">28</a> of file <a class="el" href="_state_8h_source.html">State.h</a>.</p>
 </div><h2 class="groupheader">Member Typedef Documentation</h2>
 <a class="anchor" id="a71d9930be1a58be7f711e245b7965d48"></a>
 <div class="memitem">
@@ -165,6 +169,8 @@ Protected Member Functions</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Convenient typedef. </p>
+
+<p>Definition at line <a class="el" href="_state_8h_source.html#l00032">32</a> of file <a class="el" href="_state_8h_source.html">State.h</a>.</p>
 
 </div>
 </div>
@@ -202,28 +208,7 @@ Protected Member Functions</h2></td></tr>
   </dd>
 </dl>
 
-</div>
-</div>
-<a class="anchor" id="afab438d92b90dc18d194dbd9c9c8bab3"></a>
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">State::~State </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">virtual</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
+<p>Definition at line <a class="el" href="_state_8cpp_source.html#l00019">19</a> of file <a class="el" href="_state_8cpp_source.html">State.cpp</a>.</p>
 
 </div>
 </div>
@@ -253,29 +238,6 @@ Protected Member Functions</h2></td></tr>
 <dl class="section return"><dt>Returns</dt><dd>virtual void It must do all things related to drawing stuff on the screen. </dd></dl>
 
 <p>Implemented in <a class="el" href="class_game_state.html#a3c511417d8934943ae65c04681f321a3">GameState</a>, <a class="el" href="class_main_menu_state.html#a38804fb6a79b34f4884c2b0da38c7fc3">MainMenuState</a>, <a class="el" href="class_intro_state.html#aa27ff221ef135b60896a89407c3a6df8">IntroState</a>, and <a class="el" href="class_loading_state.html#adfe2c002c52cc2c49967ba3ace4aa73b">LoadingState</a>.</p>
-
-</div>
-</div>
-<a class="anchor" id="aa54fc68acd982076e838c0eff60b51a3"></a>
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="struct_state_1_1_context.html">State::Context</a> State::getContext </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td> const</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
 
 </div>
 </div>
@@ -311,76 +273,6 @@ Protected Member Functions</h2></td></tr>
 <dl class="section return"><dt>Returns</dt><dd>Return true if the state under this state in the stack must be also updated. The state must decide what to do with the event. The closing window and resinzing window events are already handled by the <a class="el" href="class_application.html" title="Main game class. ">Application</a> class. </dd></dl>
 
 <p>Implemented in <a class="el" href="class_game_state.html#a000dd3306b1cb9faab5a86774a22aa6d">GameState</a>, <a class="el" href="class_main_menu_state.html#a29ffa75274bed1884a497690d6b12511">MainMenuState</a>, <a class="el" href="class_intro_state.html#a3f77842319460800244822e2c31c936d">IntroState</a>, and <a class="el" href="class_loading_state.html#a37da243eeeca36460bac2f32cef3e368">LoadingState</a>.</p>
-
-</div>
-</div>
-<a class="anchor" id="aa418660892d6161772c907bd8d70f910"></a>
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">void State::requestStackPop </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a class="anchor" id="a29c8d0c131f9ac95c6c01a8c2f4e4fd0"></a>
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">void State::requestStackPush </td>
-          <td>(</td>
-          <td class="paramtype"><a class="el" href="_state_identifiers_8h.html#a808e5cd4979462d3bbe3070d7d147444">States</a>&#160;</td>
-          <td class="paramname"><em>stateID</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a class="anchor" id="a4b602bed9bf0179ee5f6748fce340ae6"></a>
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">void State::requestStateClear </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
 
 </div>
 </div>
@@ -420,13 +312,13 @@ Protected Member Functions</h2></td></tr>
 </div>
 </div>
 <hr/>The documentation for this class was generated from the following files:<ul>
-<li>/home/theo/C++/TheLostGirl-0.0.8/include/TheLostGirl/<a class="el" href="_state_8h.html">State.h</a></li>
-<li>/home/theo/C++/TheLostGirl-0.0.8/src/<a class="el" href="_state_8cpp.html">State.cpp</a></li>
+<li><a class="el" href="_state_8h_source.html">State.h</a></li>
+<li><a class="el" href="_state_8cpp_source.html">State.cpp</a></li>
 </ul>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Wed Oct 8 2014 00:33:41 for The Lost Girl by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Thu Oct 9 2014 10:11:50 for The Lost Girl by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>

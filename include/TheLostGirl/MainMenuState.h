@@ -3,14 +3,17 @@
 
 #include <memory>
 
-#include <SFML/Graphics.hpp>
-#include <TGUI/TGUI.hpp>
+#include <TGUI/Button.hpp>
+#include <TGUI/Picture.hpp>
 
-#include <TheLostGirl/State.h>
-#include <TheLostGirl/LangManager.h>
-#include <TheLostGirl/constants.h>
-#include <TheLostGirl/functions.h>
-
+//Forward declarations
+namespace sf
+{
+	class Event;
+	class Time;
+}
+class Context;
+class StateStack;
 
 class MainMenuState : public State
 {

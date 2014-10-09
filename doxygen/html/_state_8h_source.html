@@ -8,13 +8,6 @@
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
-<link href="navtree.css" rel="stylesheet" type="text/css"/>
-<script type="text/javascript" src="resize.js"></script>
-<script type="text/javascript" src="navtree.js"></script>
-<script type="text/javascript">
-  $(document).ready(initResizable);
-  $(window).load(resizeHeight);
-</script>
 <link href="search/search.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="search/search.js"></script>
 <script type="text/javascript">
@@ -72,21 +65,6 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
       <li><a href="globals.html"><span>File&#160;Members</span></a></li>
     </ul>
   </div>
-</div><!-- top -->
-<div id="side-nav" class="ui-resizable side-nav-resizable">
-  <div id="nav-tree">
-    <div id="nav-tree-contents">
-      <div id="nav-sync" class="sync"></div>
-    </div>
-  </div>
-  <div id="splitbar" style="-moz-user-select:none;" 
-       class="ui-resizable-handle">
-  </div>
-</div>
-<script type="text/javascript">
-$(document).ready(function(){initNavTree('_state_8h_source.html','');});
-</script>
-<div id="doc-content">
 <!-- window showing the filter options -->
 <div id="MSearchSelectWindow"
      onmouseover="return searchBox.OnSearchSelectShow()"
@@ -101,6 +79,11 @@ $(document).ready(function(){initNavTree('_state_8h_source.html','');});
 </iframe>
 </div>
 
+<div id="nav-path" class="navpath">
+  <ul>
+<li class="navelem"><a class="el" href="dir_d44c64559bbebec7f509842c48db8b23.html">include</a></li><li class="navelem"><a class="el" href="dir_a8481fac6d3496a1aeda0670ef6858e4.html">TheLostGirl</a></li>  </ul>
+</div>
+</div><!-- top -->
 <div class="header">
   <div class="headertitle">
 <div class="title">State.h</div>  </div>
@@ -175,32 +158,28 @@ $(document).ready(function(){initNavTree('_state_8h_source.html','');});
 <div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;};</div>
 <div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;</div>
 <div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160;<span class="preprocessor">#endif // STATE_H</span></div>
-<div class="ttc" id="struct_state_1_1_context_html_a823fb0918bb94c4f42666ff7ed678096"><div class="ttname"><a href="struct_state_1_1_context.html#a823fb0918bb94c4f42666ff7ed678096">State::Context::entityManager</a></div><div class="ttdeci">EntityManager &amp; entityManager</div><div class="ttdoc">The entity manager of the entity system. </div><div class="ttdef"><b>Definition:</b> State.h:52</div></div>
-<div class="ttc" id="class_state_html"><div class="ttname"><a href="class_state.html">State</a></div><div class="ttdoc">Base class for the various game states. </div><div class="ttdef"><b>Definition:</b> State.h:28</div></div>
+<div class="ttc" id="struct_state_1_1_context_html_a823fb0918bb94c4f42666ff7ed678096"><div class="ttname"><a href="struct_state_1_1_context.html#a823fb0918bb94c4f42666ff7ed678096">State::Context::entityManager</a></div><div class="ttdeci">EntityManager &amp; entityManager</div><div class="ttdoc">The entity manager of the entity system. </div><div class="ttdef"><b>Definition:</b> <a href="_state_8h_source.html#l00052">State.h:52</a></div></div>
+<div class="ttc" id="class_state_html"><div class="ttname"><a href="class_state.html">State</a></div><div class="ttdoc">Base class for the various game states. </div><div class="ttdef"><b>Definition:</b> <a href="_state_8h_source.html#l00028">State.h:28</a></div></div>
 <div class="ttc" id="class_state_html_acd5926bc7a373edff9e57f3ffe94ca13"><div class="ttname"><a href="class_state.html#acd5926bc7a373edff9e57f3ffe94ca13">State::update</a></div><div class="ttdeci">virtual bool update(sf::Time dt)=0</div><div class="ttdoc">The logic update function. </div></div>
-<div class="ttc" id="struct_state_1_1_context_html_a5c20b4091a59c0c41491f7fcf4fdbf92"><div class="ttname"><a href="struct_state_1_1_context.html#a5c20b4091a59c0c41491f7fcf4fdbf92">State::Context::systemManager</a></div><div class="ttdeci">SystemManager &amp; systemManager</div><div class="ttdoc">The system manager of the entity system. </div><div class="ttdef"><b>Definition:</b> State.h:53</div></div>
-<div class="ttc" id="struct_state_1_1_context_html_a2fb70b35110163fb5144d6a21673a5b2"><div class="ttname"><a href="struct_state_1_1_context.html#a2fb70b35110163fb5144d6a21673a5b2">State::Context::textures</a></div><div class="ttdeci">TextureManager &amp; textures</div><div class="ttdoc">The texture manager. </div><div class="ttdef"><b>Definition:</b> State.h:48</div></div>
-<div class="ttc" id="class_state_stack_html"><div class="ttname"><a href="class_state_stack.html">StateStack</a></div><div class="ttdef"><b>Definition:</b> StateStack.h:25</div></div>
-<div class="ttc" id="class_state_html_afede488ff3c1b264bbd07f8aeead84a7"><div class="ttname"><a href="class_state.html#afede488ff3c1b264bbd07f8aeead84a7">State::State</a></div><div class="ttdeci">State(StateStack &amp;stack, Context context)</div><div class="ttdoc">Default constructor. </div><div class="ttdef"><b>Definition:</b> State.cpp:19</div></div>
-<div class="ttc" id="struct_state_1_1_context_html"><div class="ttname"><a href="struct_state_1_1_context.html">State::Context</a></div><div class="ttdoc">Various managers and globals instances. </div><div class="ttdef"><b>Definition:</b> State.h:37</div></div>
-<div class="ttc" id="struct_state_1_1_context_html_a1cab84f1b9c88ca9bb71b3978c4c885f"><div class="ttname"><a href="struct_state_1_1_context.html#a1cab84f1b9c88ca9bb71b3978c4c885f">State::Context::fonts</a></div><div class="ttdeci">FontManager &amp; fonts</div><div class="ttdoc">The font manager. </div><div class="ttdef"><b>Definition:</b> State.h:49</div></div>
+<div class="ttc" id="struct_state_1_1_context_html_a5c20b4091a59c0c41491f7fcf4fdbf92"><div class="ttname"><a href="struct_state_1_1_context.html#a5c20b4091a59c0c41491f7fcf4fdbf92">State::Context::systemManager</a></div><div class="ttdeci">SystemManager &amp; systemManager</div><div class="ttdoc">The system manager of the entity system. </div><div class="ttdef"><b>Definition:</b> <a href="_state_8h_source.html#l00053">State.h:53</a></div></div>
+<div class="ttc" id="struct_state_1_1_context_html_a2fb70b35110163fb5144d6a21673a5b2"><div class="ttname"><a href="struct_state_1_1_context.html#a2fb70b35110163fb5144d6a21673a5b2">State::Context::textures</a></div><div class="ttdeci">TextureManager &amp; textures</div><div class="ttdoc">The texture manager. </div><div class="ttdef"><b>Definition:</b> <a href="_state_8h_source.html#l00048">State.h:48</a></div></div>
+<div class="ttc" id="class_state_stack_html"><div class="ttname"><a href="class_state_stack.html">StateStack</a></div><div class="ttdef"><b>Definition:</b> <a href="_state_stack_8h_source.html#l00025">StateStack.h:25</a></div></div>
+<div class="ttc" id="class_state_html_afede488ff3c1b264bbd07f8aeead84a7"><div class="ttname"><a href="class_state.html#afede488ff3c1b264bbd07f8aeead84a7">State::State</a></div><div class="ttdeci">State(StateStack &amp;stack, Context context)</div><div class="ttdoc">Default constructor. </div><div class="ttdef"><b>Definition:</b> <a href="_state_8cpp_source.html#l00019">State.cpp:19</a></div></div>
+<div class="ttc" id="struct_state_1_1_context_html"><div class="ttname"><a href="struct_state_1_1_context.html">State::Context</a></div><div class="ttdoc">Various managers and globals instances. </div><div class="ttdef"><b>Definition:</b> <a href="_state_8h_source.html#l00037">State.h:37</a></div></div>
+<div class="ttc" id="struct_state_1_1_context_html_a1cab84f1b9c88ca9bb71b3978c4c885f"><div class="ttname"><a href="struct_state_1_1_context.html#a1cab84f1b9c88ca9bb71b3978c4c885f">State::Context::fonts</a></div><div class="ttdeci">FontManager &amp; fonts</div><div class="ttdoc">The font manager. </div><div class="ttdef"><b>Definition:</b> <a href="_state_8h_source.html#l00049">State.h:49</a></div></div>
 <div class="ttc" id="class_state_html_ae261605bc40b7e3959ce5df5457e4942"><div class="ttname"><a href="class_state.html#ae261605bc40b7e3959ce5df5457e4942">State::draw</a></div><div class="ttdeci">virtual void draw()=0</div><div class="ttdoc">The drawing function. </div></div>
-<div class="ttc" id="struct_state_1_1_context_html_a7ce08315f42a6138696fb40b71781575"><div class="ttname"><a href="struct_state_1_1_context.html#a7ce08315f42a6138696fb40b71781575">State::Context::eventManager</a></div><div class="ttdeci">EventManager &amp; eventManager</div><div class="ttdoc">The event manager of the entity system. </div><div class="ttdef"><b>Definition:</b> State.h:51</div></div>
-<div class="ttc" id="struct_state_1_1_context_html_aadf1772585e1cc859f66507e86e7eec7"><div class="ttname"><a href="struct_state_1_1_context.html#aadf1772585e1cc859f66507e86e7eec7">State::Context::window</a></div><div class="ttdeci">sf::RenderWindow &amp; window</div><div class="ttdoc">The main window. </div><div class="ttdef"><b>Definition:</b> State.h:47</div></div>
-<div class="ttc" id="struct_state_1_1_context_html_ab75619f90e2c69b7c1ef801d3ac874c6"><div class="ttname"><a href="struct_state_1_1_context.html#ab75619f90e2c69b7c1ef801d3ac874c6">State::Context::gui</a></div><div class="ttdeci">tgui::Gui &amp; gui</div><div class="ttdoc">The main GUI manager. </div><div class="ttdef"><b>Definition:</b> State.h:50</div></div>
+<div class="ttc" id="struct_state_1_1_context_html_a7ce08315f42a6138696fb40b71781575"><div class="ttname"><a href="struct_state_1_1_context.html#a7ce08315f42a6138696fb40b71781575">State::Context::eventManager</a></div><div class="ttdeci">EventManager &amp; eventManager</div><div class="ttdoc">The event manager of the entity system. </div><div class="ttdef"><b>Definition:</b> <a href="_state_8h_source.html#l00051">State.h:51</a></div></div>
+<div class="ttc" id="struct_state_1_1_context_html_aadf1772585e1cc859f66507e86e7eec7"><div class="ttname"><a href="struct_state_1_1_context.html#aadf1772585e1cc859f66507e86e7eec7">State::Context::window</a></div><div class="ttdeci">sf::RenderWindow &amp; window</div><div class="ttdoc">The main window. </div><div class="ttdef"><b>Definition:</b> <a href="_state_8h_source.html#l00047">State.h:47</a></div></div>
+<div class="ttc" id="struct_state_1_1_context_html_ab75619f90e2c69b7c1ef801d3ac874c6"><div class="ttname"><a href="struct_state_1_1_context.html#ab75619f90e2c69b7c1ef801d3ac874c6">State::Context::gui</a></div><div class="ttdeci">tgui::Gui &amp; gui</div><div class="ttdoc">The main GUI manager. </div><div class="ttdef"><b>Definition:</b> <a href="_state_8h_source.html#l00050">State.h:50</a></div></div>
 <div class="ttc" id="class_state_html_a19965f83460b248c42952aac8d001206"><div class="ttname"><a href="class_state.html#a19965f83460b248c42952aac8d001206">State::handleEvent</a></div><div class="ttdeci">virtual bool handleEvent(const sf::Event &amp;event)=0</div><div class="ttdoc">The event handling function. </div></div>
 <div class="ttc" id="class_resource_manager_html"><div class="ttname"><a href="class_resource_manager.html">ResourceManager&lt; sf::Texture, Textures &gt;</a></div></div>
-<div class="ttc" id="class_state_html_a71d9930be1a58be7f711e245b7965d48"><div class="ttname"><a href="class_state.html#a71d9930be1a58be7f711e245b7965d48">State::Ptr</a></div><div class="ttdeci">std::unique_ptr&lt; State &gt; Ptr</div><div class="ttdoc">Convenient typedef. </div><div class="ttdef"><b>Definition:</b> State.h:32</div></div>
+<div class="ttc" id="class_state_html_a71d9930be1a58be7f711e245b7965d48"><div class="ttname"><a href="class_state.html#a71d9930be1a58be7f711e245b7965d48">State::Ptr</a></div><div class="ttdeci">std::unique_ptr&lt; State &gt; Ptr</div><div class="ttdoc">Convenient typedef. </div><div class="ttdef"><b>Definition:</b> <a href="_state_8h_source.html#l00032">State.h:32</a></div></div>
 </div><!-- fragment --></div><!-- contents -->
-</div><!-- doc-content -->
 <!-- start footer part -->
-<div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
-  <ul>
-    <li class="navelem"><a class="el" href="dir_d44c64559bbebec7f509842c48db8b23.html">include</a></li><li class="navelem"><a class="el" href="dir_a8481fac6d3496a1aeda0670ef6858e4.html">TheLostGirl</a></li><li class="navelem"><b>State.h</b></li>
-    <li class="footer">Generated on Wed Oct 8 2014 00:02:19 for The Lost Girl by
-    <a href="http://www.doxygen.org/index.html">
-    <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.6 </li>
-  </ul>
-</div>
+<hr class="footer"/><address class="footer"><small>
+Generated on Thu Oct 9 2014 10:11:49 for The Lost Girl by &#160;<a href="http://www.doxygen.org/index.html">
+<img class="footer" src="doxygen.png" alt="doxygen"/>
+</a> 1.8.6
+</small></address>
 </body>
 </html>

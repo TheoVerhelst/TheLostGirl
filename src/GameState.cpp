@@ -1,3 +1,19 @@
+#include <SFML/Graphics/Sprite.hpp>
+#include <SFML/Graphics/Texture.hpp>
+#include <SFML/Graphics/View.hpp>
+#include <SFML/System/Time.hpp>
+#include <SFML/Window/Event.hpp>
+#include <entityx/entityx.h>
+#include <Box2D/Box2D.h>
+
+#include <TheLostGirl/State.h>
+#include <TheLostGirl/StateStack.h>
+#include <TheLostGirl/functions.h>
+#include <TheLostGirl/Command.h>
+#include <TheLostGirl/systems.h>
+#include <TheLostGirl/ResourceManager.h>
+#include <TheLostGirl/ResourceIdentifiers.h>
+
 #include <TheLostGirl/GameState.h>
 
 GameState::GameState(StateStack& stack, Context context) :

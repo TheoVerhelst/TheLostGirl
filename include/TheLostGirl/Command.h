@@ -4,10 +4,12 @@
 #include <functional>
 #include <queue>
 
-#include <SFML/System/Time.hpp>
-#include <entityx/entityx.h>
-
-#include <TheLostGirl/Category.h>
+//Forward declarations
+namespace entityx
+{
+	class Entity;
+}
+enum class Category;
 
 ///Function applied to an entity.
 ///The Command structure hold a function that will be applied to a specific entity.
@@ -27,6 +29,7 @@ struct Command
 	Category category;
 };
 
+///Convenient typedef of Command.
 typedef std::queue<Command> CommandQueue;
 
 #endif // COMMAND_H

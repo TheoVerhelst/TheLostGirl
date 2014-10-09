@@ -12,6 +12,7 @@
 #include <TheLostGirl/ResourceIdentifiers.h>
 #include <TheLostGirl/ResourceManager.h>
 #include <TheLostGirl/StateStack.h>
+#include <entityx/entityx.h>
 
 //Forward declarations
 namespace sf

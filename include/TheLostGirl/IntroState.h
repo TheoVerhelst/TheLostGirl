@@ -1,13 +1,15 @@
 #ifndef INTROSTATE_H
 #define INTROSTATE_H
 
-#include <SFML/Graphics/Sprite.hpp>
-#include <SFML/Graphics/Text.hpp>
-#include <SFML/Graphics/RenderWindow.hpp>
-#include <SFML/Graphics/View.hpp>
-
-#include <TheLostGirl/State.h>
-#include <TheLostGirl/functions.h>
+//Forward declarations
+namespace sf
+{
+	class Event;
+	class Time;
+}
+class State;
+class Context;
+class StateStack;
 
 class IntroState : public State
 {
@@ -16,8 +18,6 @@ class IntroState : public State
 		virtual void draw();
 		virtual bool update(sf::Time dt);
 		virtual bool handleEvent(const sf::Event& event);
-
-	private:
 };
 
 #endif // INTROSTATE_H

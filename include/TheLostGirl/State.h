@@ -3,24 +3,27 @@
 
 #include <memory>
 
-#include <SFML/System/Time.hpp>
-#include <SFML/Window/Event.hpp>
-#include <TGUI/TGUI.hpp>
-#include <entityx/entityx.h>
-
-#include <TheLostGirl/StateIdentifiers.h>
 #include <TheLostGirl/ResourceIdentifiers.h>
+#include <TheLostGirl/StateIdentifiers.h>
 
 namespace sf
 {
-class RenderWindow;
+	class Event;
+	class Time;
+	class RenderWindow;
 }
-
+namespace tgui
+{
+	class Gui;
+}
+namespace entityx
+{
+	class EventManager;
+	class EntityManager;
+	class SystemManager;
+}
+class State;
 class StateStack;
-
-using entityx::EventManager;
-using entityx::EntityManager;
-using entityx::SystemManager;
 
 ///Base class for the various game states.
 ///Inherits from this class and implements the pure virtal functions.
@@ -40,17 +43,17 @@ class State
 					TextureManager& _textures,
 					FontManager& _fonts,
 					tgui::Gui& _gui,
-					EventManager& _eventManager,
-					EntityManager& _entityManager,
-					SystemManager& _systemManage
+					entityx::EventManager& _eventManager,
+					entityx::EntityManager& _entityManager,
+					entityx::SystemManager& _systemManage
 				);
 			sf::RenderWindow& window;///< The main window
 			TextureManager& textures;///< The texture manager
 			FontManager& fonts;///< The font manager
 			tgui::Gui& gui;///< The main GUI manager
-			EventManager& eventManager;///< The event manager of the entity system.
-			EntityManager& entityManager;///< The entity manager of the entity system
-			SystemManager& systemManager;///< The system manager of the entity system
+			entityx::EventManager& eventManager;///< The event manager of the entity system.
+			entityx::EntityManager& entityManager;///< The entity manager of the entity system
+			entityx::SystemManager& systemManager;///< The system manager of the entity system
 		};
 
         /// Default constructor.
