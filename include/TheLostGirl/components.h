@@ -3,6 +3,7 @@
 
 #include <map>
 #include <functional>
+#include <string>
 
 #include <SFML/Graphics/Sprite.hpp>
 
@@ -49,8 +50,8 @@ struct SpriteComponent : public entityx::Component<SpriteComponent>
 ///
 /// Usage exemple:
 /// \code
-/// //Add the component :
-/// Animations::Handle animationsComponent = entity->assign<Animations<sf::Sprite, Archer::Animations> >();
+/// //Add the component to the entity :
+/// Animations::Handle animationsComponent = entity->assign<Animations>();
 /// 
 /// //Make a TimeAnimation structure :
 /// SpriteSheetAnimation anim;
@@ -63,11 +64,17 @@ struct SpriteComponent : public entityx::Component<SpriteComponent>
 /// animationsComponent->playAnimation = true;
 /// animationsComponent->currentAnimation = Archer::Animations::Run;
 /// \endcode
-template<typename Animated, typename Identifier>
-struct Animations : public entityx::Component<Animations<Animated, Identifier> >
+/// \see AnimationSystem
+/// 
+/// This animation system is inspired by the Animator system in the Jan Haller's Thor C++ library.
+struct Animations : public entityx::Component<Animations>
 {
-	
-	typedef std::function<void(Animated&, float)> Animation;
+	/// Typedef for the Animation functor.
+	/// The functor must have exactly this signature:
+	/// void (entityx::Entity&, float);
+	/// \arg \a entityx::Entity& reference to the entity to animate.
+	/// \arg \a Current state of the animation.
+	typedef std::function<void(entityx::Entity&, float)> Animation;
 	
 	/// Animation associated with a certain duration.
 	struct TimeAnimation
@@ -83,19 +90,19 @@ struct Animations : public entityx::Component<Animations<Animated, Identifier> >
 			duration(_duration)
 		{}
 	};
-	std::map<Identifier, TimeAnimation> animations;///< List of all animation registred.
-	bool playAnimation;///< Indicates if an animation ned to be played.
-	Identifier currentAnimation;///<Identifier of the animation to play.
-	float currentProgress;///< Progress of the current animation, in the range [0,1]
-	bool currentAnimationDoesLoop;///< Indicates if the current animation must loop or not.
+	std::map<std::string, TimeAnimation> animations;///< List of all animation registred.
+	bool isPlaying;///< Indicates if an animation ned to be played.
+	std::string currentAnimation;///< Identifier of the animation to play.
+	float progress;///< Progress of the current animation, in the range [0,1]
+	bool loops;///< Indicates if the current animation must loop or not.
 	
 	/// Default constructor.
 	Animations():
 		animations(),
-		playAnimation{false},
-		currentAnimation(),
-		currentProgress{0.f},
-		currentAnimationDoesLoop{false}
+		isPlaying{false},
+		currentAnimation(""),
+		progress{0.f},
+		loops{false}
 	{}
 };
 

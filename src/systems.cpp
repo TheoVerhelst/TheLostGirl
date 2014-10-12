@@ -1,3 +1,5 @@
+#include <algorithm>
+
 #include <SFML/Graphics/RenderWindow.hpp>
 #include <SFML/Graphics/Sprite.hpp>
 #include <entityx/entityx.h>
@@ -48,5 +50,27 @@ void Physics::update(entityx::EntityManager& entityManager, entityx::EventManage
 	{
 		b2Vec2 pos = bodyComponent->body->GetPosition();
 		spriteComponent->sprite->setPosition(pos.x * pixelScale, windowSize.y - (pos.y * pixelScale));
+	}
+}
+
+void AnimationSystem::update(entityx::EntityManager& entityManager, entityx::EventManager &eventManager, double dt)
+{
+	Animations::Handle anims;
+	for(auto entity : entityManager.entities_with_components(anims))
+	{
+		std::string id = anims->currentAnimation;
+		//If we must play an animation and if the current animation is in the map
+		if(anims->isPlaying and anims->animations.find(id) != anims->animations.end())
+		{
+			Animations::TimeAnimation& timeAnim = anims->animations.at(id);//Access this element is safe
+			anims->progress += dt/timeAnim.duration.asSeconds();
+			if(anims->loops and anims->progress > 1.f)
+				anims->progress -= std::floor(anims->progress);//Keep the progress in the range [0, 1]
+			
+			if(anims->progress > 1.f)
+				anims->isPlaying = false;
+			else
+				timeAnim.animation(entity, anims->progress);
+		}
 	}
 }

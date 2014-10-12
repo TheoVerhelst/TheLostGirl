@@ -1,8 +1,6 @@
 #ifndef SYSTEMS_H
 #define SYSTEMS_H
 
-#include <algorithm>
-
 //Forward declarations
 namespace sf
 {
@@ -79,4 +77,18 @@ class Physics : public entityx::System<Physics>
 		b2World& m_world;///< b2World where the physics entities should be in.
 };
 
+/// System that plays animations on entities.
+/// \see Animations
+class AnimationSystem : public entityx::System<AnimationSystem>
+{
+	public:
+		/// Default constructor.
+		AnimationSystem();
+		
+		/// System's update function.
+		/// \param es Entity manager.
+		/// \param events Event manager.
+		/// \param dt Current frame elapsed time.
+		void update(entityx::EntityManager &es, entityx::EventManager &events, double dt) override;
+};
 #endif // SYSTEMS_H
