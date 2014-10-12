@@ -20,10 +20,10 @@ namespace sf
 	class Event;
 }
 
-///\file functions.h
+/// \file functions.h
 
 /// Calculate a new viewport at each resize of the window.
-///That allows the game to keep a 16:9 display ratio.
+/// That allows the game to keep a 16:9 display ratio.
 /// \param size Resizing event of the window.
 /// \return  A new right sized viewport to apply to the view.
 sf::FloatRect handleResize(sf::Event::SizeEvent size);
@@ -35,7 +35,7 @@ sf::FloatRect handleResize(sf::Event::SizeEvent size);
 /// \return A formatted string.
 std::string toPath(sf::Vector2f resolution);
 
-///Convert string of the type \e path/axb to a Vector2f in wich x =  and y = b.
+/// Convert string of the type \e path/axb to a Vector2f in wich x =  and y = b.
 /// Exemple :
 ///> input = "ressources/images/1920x1080/" => output = Vector2f(1920, 1080)
 /// \param resolution Current path to the images directory

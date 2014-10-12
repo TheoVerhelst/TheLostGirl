@@ -109,51 +109,60 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;<span class="keyword">class </span><a class="code" href="struct_command.html">Command</a>;</div>
 <div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;<span class="keyword">typedef</span> std::queue&lt;Command&gt; CommandQueue;</div>
 <div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;</div>
-<div class="line"><a name="l00021"></a><span class="lineno"><a class="line" href="class_actions.html">   21</a></span>&#160;<span class="keyword">class </span><a class="code" href="class_actions.html">Actions</a> : <span class="keyword">public</span> entityx::System&lt;Actions&gt;</div>
-<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;{</div>
-<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;        <span class="keyword">public</span>:</div>
-<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;                <a class="code" href="class_actions.html">Actions</a>(CommandQueue&amp; commandQueue):</div>
-<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;                        m_commandQueue(commandQueue)</div>
-<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;                {}</div>
-<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;                <span class="keywordtype">void</span> update(entityx::EntityManager &amp;es, entityx::EventManager &amp;events, <span class="keywordtype">double</span> dt) <span class="keyword">override</span>;</div>
-<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160; </div>
-<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;        <span class="keyword">private</span>:</div>
-<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;                CommandQueue&amp; m_commandQueue;</div>
-<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;};</div>
-<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;</div>
-<div class="line"><a name="l00033"></a><span class="lineno"><a class="line" href="class_render.html">   33</a></span>&#160;<span class="keyword">class </span><a class="code" href="class_render.html">Render</a> : <span class="keyword">public</span> entityx::System&lt;Render&gt;</div>
-<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;{</div>
-<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;        <span class="keyword">public</span>:</div>
-<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;                <a class="code" href="class_render.html">Render</a>(sf::RenderWindow&amp; window):</div>
-<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;                        m_window(window)</div>
-<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;                {}</div>
-<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;                <span class="keywordtype">void</span> update(entityx::EntityManager &amp;es, entityx::EventManager &amp;events, <span class="keywordtype">double</span> dt) <span class="keyword">override</span>;</div>
-<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;</div>
-<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;        <span class="keyword">private</span>:</div>
-<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;                sf::RenderWindow&amp; m_window;</div>
-<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;};</div>
-<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;</div>
-<div class="line"><a name="l00045"></a><span class="lineno"><a class="line" href="class_physics.html">   45</a></span>&#160;<span class="keyword">class </span><a class="code" href="class_physics.html">Physics</a> : <span class="keyword">public</span> entityx::System&lt;Physics&gt;</div>
-<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;{</div>
-<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;        <span class="keyword">public</span>:</div>
-<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;                <a class="code" href="class_physics.html">Physics</a>(b2World&amp; world):</div>
-<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;                        m_world(world)</div>
+<div class="line"><a name="l00022"></a><span class="lineno"><a class="line" href="class_actions.html">   22</a></span>&#160;<span class="keyword">class </span><a class="code" href="class_actions.html">Actions</a> : <span class="keyword">public</span> entityx::System&lt;Actions&gt;</div>
+<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;{</div>
+<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;        <span class="keyword">public</span>:</div>
+<div class="line"><a name="l00027"></a><span class="lineno"><a class="line" href="class_actions.html#a650c34d9f8890bdd45c94b745cc78c6d">   27</a></span>&#160;                <a class="code" href="class_actions.html#a650c34d9f8890bdd45c94b745cc78c6d">Actions</a>(CommandQueue&amp; commandQueue):</div>
+<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;                        m_commandQueue(commandQueue)</div>
+<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;                {}</div>
+<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;                </div>
+<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;                <span class="keywordtype">void</span> <a class="code" href="class_actions.html#a28e5c9bdb7e429a52286fcc549f496b7">update</a>(entityx::EntityManager &amp;es, entityx::EventManager &amp;events, <span class="keywordtype">double</span> dt) <span class="keyword">override</span>;</div>
+<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160; </div>
+<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;        <span class="keyword">private</span>:</div>
+<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;                CommandQueue&amp; m_commandQueue;</div>
+<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;};</div>
+<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;</div>
+<div class="line"><a name="l00043"></a><span class="lineno"><a class="line" href="class_render.html">   43</a></span>&#160;<span class="keyword">class </span><a class="code" href="class_render.html">Render</a> : <span class="keyword">public</span> entityx::System&lt;Render&gt;</div>
+<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;{</div>
+<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;        <span class="keyword">public</span>:</div>
+<div class="line"><a name="l00048"></a><span class="lineno"><a class="line" href="class_render.html#a04b360acbe178ba4a633522f5dea5ba7">   48</a></span>&#160;                <a class="code" href="class_render.html#a04b360acbe178ba4a633522f5dea5ba7">Render</a>(sf::RenderWindow&amp; window):</div>
+<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;                        m_window(window)</div>
 <div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;                {}</div>
-<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;                <span class="keywordtype">void</span> update(entityx::EntityManager &amp;es, entityx::EventManager &amp;events, <span class="keywordtype">double</span> dt) <span class="keyword">override</span>;</div>
-<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;</div>
-<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;        <span class="keyword">private</span>:</div>
-<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;                b2World&amp; m_world;</div>
-<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;};</div>
-<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;</div>
-<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;<span class="preprocessor">#endif // SYSTEMS_H</span></div>
-<div class="ttc" id="class_render_html"><div class="ttname"><a href="class_render.html">Render</a></div><div class="ttdef"><b>Definition:</b> <a href="systems_8h_source.html#l00033">systems.h:33</a></div></div>
-<div class="ttc" id="class_physics_html"><div class="ttname"><a href="class_physics.html">Physics</a></div><div class="ttdef"><b>Definition:</b> <a href="systems_8h_source.html#l00045">systems.h:45</a></div></div>
+<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;                </div>
+<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;                <span class="keywordtype">void</span> <a class="code" href="class_render.html#a9b119f3c11007848cf6e38970eb8a946">update</a>(entityx::EntityManager &amp;es, entityx::EventManager &amp;events, <span class="keywordtype">double</span> dt) <span class="keyword">override</span>;</div>
+<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;</div>
+<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;        <span class="keyword">private</span>:</div>
+<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;                sf::RenderWindow&amp; m_window;</div>
+<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;};</div>
+<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;</div>
+<div class="line"><a name="l00063"></a><span class="lineno"><a class="line" href="class_physics.html">   63</a></span>&#160;<span class="keyword">class </span><a class="code" href="class_physics.html">Physics</a> : <span class="keyword">public</span> entityx::System&lt;Physics&gt;</div>
+<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;{</div>
+<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;        <span class="keyword">public</span>:</div>
+<div class="line"><a name="l00068"></a><span class="lineno"><a class="line" href="class_physics.html#ae12d4db57ede28ce1a3120c207429026">   68</a></span>&#160;                <a class="code" href="class_physics.html#ae12d4db57ede28ce1a3120c207429026">Physics</a>(b2World&amp; world):</div>
+<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;                        m_world(world)</div>
+<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;                {}</div>
+<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;                </div>
+<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;                <span class="keywordtype">void</span> <a class="code" href="class_physics.html#acd3279680efbc3de4131859fedca868c">update</a>(entityx::EntityManager &amp;es, entityx::EventManager &amp;events, <span class="keywordtype">double</span> dt) <span class="keyword">override</span>;</div>
+<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;</div>
+<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;        <span class="keyword">private</span>:</div>
+<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;                b2World&amp; m_world;</div>
+<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;};</div>
+<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;</div>
+<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;<span class="preprocessor">#endif // SYSTEMS_H</span></div>
+<div class="ttc" id="class_render_html_a04b360acbe178ba4a633522f5dea5ba7"><div class="ttname"><a href="class_render.html#a04b360acbe178ba4a633522f5dea5ba7">Render::Render</a></div><div class="ttdeci">Render(sf::RenderWindow &amp;window)</div><div class="ttdoc">Default constructor. </div><div class="ttdef"><b>Definition:</b> <a href="systems_8h_source.html#l00048">systems.h:48</a></div></div>
+<div class="ttc" id="class_render_html"><div class="ttname"><a href="class_render.html">Render</a></div><div class="ttdoc">System that draws all drawables entities on the screen. </div><div class="ttdef"><b>Definition:</b> <a href="systems_8h_source.html#l00043">systems.h:43</a></div></div>
+<div class="ttc" id="class_physics_html_acd3279680efbc3de4131859fedca868c"><div class="ttname"><a href="class_physics.html#acd3279680efbc3de4131859fedca868c">Physics::update</a></div><div class="ttdeci">void update(entityx::EntityManager &amp;es, entityx::EventManager &amp;events, double dt) override</div><div class="ttdoc">System&#39;s update function. </div><div class="ttdef"><b>Definition:</b> <a href="systems_8cpp_source.html#l00040">systems.cpp:40</a></div></div>
+<div class="ttc" id="class_actions_html_a650c34d9f8890bdd45c94b745cc78c6d"><div class="ttname"><a href="class_actions.html#a650c34d9f8890bdd45c94b745cc78c6d">Actions::Actions</a></div><div class="ttdeci">Actions(CommandQueue &amp;commandQueue)</div><div class="ttdoc">Default constructor. </div><div class="ttdef"><b>Definition:</b> <a href="systems_8h_source.html#l00027">systems.h:27</a></div></div>
+<div class="ttc" id="class_physics_html_ae12d4db57ede28ce1a3120c207429026"><div class="ttname"><a href="class_physics.html#ae12d4db57ede28ce1a3120c207429026">Physics::Physics</a></div><div class="ttdeci">Physics(b2World &amp;world)</div><div class="ttdoc">Default constructor. </div><div class="ttdef"><b>Definition:</b> <a href="systems_8h_source.html#l00068">systems.h:68</a></div></div>
+<div class="ttc" id="class_actions_html_a28e5c9bdb7e429a52286fcc549f496b7"><div class="ttname"><a href="class_actions.html#a28e5c9bdb7e429a52286fcc549f496b7">Actions::update</a></div><div class="ttdeci">void update(entityx::EntityManager &amp;es, entityx::EventManager &amp;events, double dt) override</div><div class="ttdoc">System&#39;s update function. </div><div class="ttdef"><b>Definition:</b> <a href="systems_8cpp_source.html#l00014">systems.cpp:14</a></div></div>
+<div class="ttc" id="class_render_html_a9b119f3c11007848cf6e38970eb8a946"><div class="ttname"><a href="class_render.html#a9b119f3c11007848cf6e38970eb8a946">Render::update</a></div><div class="ttdeci">void update(entityx::EntityManager &amp;es, entityx::EventManager &amp;events, double dt) override</div><div class="ttdoc">System&#39;s update function. </div><div class="ttdef"><b>Definition:</b> <a href="systems_8cpp_source.html#l00033">systems.cpp:33</a></div></div>
+<div class="ttc" id="class_physics_html"><div class="ttname"><a href="class_physics.html">Physics</a></div><div class="ttdoc">System that updates the b2Box&#39;s world and the drawables entities. </div><div class="ttdef"><b>Definition:</b> <a href="systems_8h_source.html#l00063">systems.h:63</a></div></div>
 <div class="ttc" id="struct_command_html"><div class="ttname"><a href="struct_command.html">Command</a></div><div class="ttdoc">Function applied to an entity. </div><div class="ttdef"><b>Definition:</b> <a href="_command_8h_source.html#l00016">Command.h:16</a></div></div>
-<div class="ttc" id="class_actions_html"><div class="ttname"><a href="class_actions.html">Actions</a></div><div class="ttdef"><b>Definition:</b> <a href="systems_8h_source.html#l00021">systems.h:21</a></div></div>
+<div class="ttc" id="class_actions_html"><div class="ttname"><a href="class_actions.html">Actions</a></div><div class="ttdoc">System that applies actions on the players&#39;s entity. </div><div class="ttdef"><b>Definition:</b> <a href="systems_8h_source.html#l00022">systems.h:22</a></div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Fri Oct 10 2014 00:48:43 for The Lost Girl by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Sun Oct 12 2014 23:32:45 for The Lost Girl by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>

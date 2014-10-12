@@ -25,22 +25,22 @@ namespace entityx
 	class SystemManager;
 }
 
-///Main game class.
-///That class holds all the components needed to execute the game (states stack, entity manager, physic engine, ...).
+/// Main game class.
+/// That class holds all the components needed to execute the game (states stack, entity manager, physic engine, ...).
 class Application
 {
 	public:
 		Application();
 		~Application();
 		
-        ///Initialize the game.
+        /// Initialize the game.
         /// \return 0 if succeful, -1 otherwise.
-        ///Function that do all that need to be done at the beginning of the game.                                
+        /// Function that do all that need to be done at the beginning of the game.                                
 		int init();
 		
-        ///Run the game.
+        /// Run the game.
         /// \return 0 if succeful, -1 otherwise.
-        ///The function contains the main game loop.
+        /// The function contains the main game loop.
 		int run();
 
 	private:

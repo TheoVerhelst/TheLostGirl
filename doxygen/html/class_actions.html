@@ -89,6 +89,11 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="title">Actions Class Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
+
+<p>System that applies actions on the players's entity.  
+ <a href="class_actions.html#details">More...</a></p>
+
+<p><code>#include &lt;<a class="el" href="systems_8h_source.html">systems.h</a>&gt;</code></p>
 <div class="dynheader">
 Inheritance diagram for Actions:</div>
 <div class="dyncontent">
@@ -100,24 +105,114 @@ Inheritance diagram for Actions:</div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a650c34d9f8890bdd45c94b745cc78c6d"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a650c34d9f8890bdd45c94b745cc78c6d"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>Actions</b> (CommandQueue &amp;commandQueue)</td></tr>
+<tr class="memitem:a650c34d9f8890bdd45c94b745cc78c6d"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_actions.html#a650c34d9f8890bdd45c94b745cc78c6d">Actions</a> (CommandQueue &amp;commandQueue)</td></tr>
+<tr class="memdesc:a650c34d9f8890bdd45c94b745cc78c6d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Default constructor.  <a href="#a650c34d9f8890bdd45c94b745cc78c6d">More...</a><br/></td></tr>
 <tr class="separator:a650c34d9f8890bdd45c94b745cc78c6d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a28e5c9bdb7e429a52286fcc549f496b7"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a28e5c9bdb7e429a52286fcc549f496b7"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>update</b> (entityx::EntityManager &amp;es, entityx::EventManager &amp;events, double dt) override</td></tr>
+<tr class="memitem:a28e5c9bdb7e429a52286fcc549f496b7"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_actions.html#a28e5c9bdb7e429a52286fcc549f496b7">update</a> (entityx::EntityManager &amp;es, entityx::EventManager &amp;events, double dt) override</td></tr>
+<tr class="memdesc:a28e5c9bdb7e429a52286fcc549f496b7"><td class="mdescLeft">&#160;</td><td class="mdescRight">System's update function.  <a href="#a28e5c9bdb7e429a52286fcc549f496b7">More...</a><br/></td></tr>
 <tr class="separator:a28e5c9bdb7e429a52286fcc549f496b7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock">
-<p>Definition at line <a class="el" href="systems_8h_source.html#l00021">21</a> of file <a class="el" href="systems_8h_source.html">systems.h</a>.</p>
-</div><hr/>The documentation for this class was generated from the following files:<ul>
+<div class="textblock"><p>System that applies actions on the players's entity. </p>
+
+<p>Definition at line <a class="el" href="systems_8h_source.html#l00022">22</a> of file <a class="el" href="systems_8h_source.html">systems.h</a>.</p>
+</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a class="anchor" id="a650c34d9f8890bdd45c94b745cc78c6d"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">Actions::Actions </td>
+          <td>(</td>
+          <td class="paramtype">CommandQueue &amp;&#160;</td>
+          <td class="paramname"><em>commandQueue</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Default constructor. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">commandQueue</td><td>Queue of command where the actions should be in. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p>Definition at line <a class="el" href="systems_8h_source.html#l00027">27</a> of file <a class="el" href="systems_8h_source.html">systems.h</a>.</p>
+
+</div>
+</div>
+<h2 class="groupheader">Member Function Documentation</h2>
+<a class="anchor" id="a28e5c9bdb7e429a52286fcc549f496b7"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void Actions::update </td>
+          <td>(</td>
+          <td class="paramtype">entityx::EntityManager &amp;&#160;</td>
+          <td class="paramname"><em>es</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">entityx::EventManager &amp;&#160;</td>
+          <td class="paramname"><em>events</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double&#160;</td>
+          <td class="paramname"><em>dt</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">override</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>System's update function. </p>
+<dl class="section warning"><dt>Warning</dt><dd>Every call to this function empties the CommandQueue passed as paramter in the constructor. </dd></dl>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">es</td><td>Entity manager. </td></tr>
+    <tr><td class="paramname">events</td><td>Event manager. </td></tr>
+    <tr><td class="paramname">dt</td><td>Current frame elapsed time. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p>Definition at line <a class="el" href="systems_8cpp_source.html#l00014">14</a> of file <a class="el" href="systems_8cpp_source.html">systems.cpp</a>.</p>
+
+</div>
+</div>
+<hr/>The documentation for this class was generated from the following files:<ul>
 <li><a class="el" href="systems_8h_source.html">systems.h</a></li>
 <li><a class="el" href="systems_8cpp_source.html">systems.cpp</a></li>
 </ul>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Fri Oct 10 2014 00:48:43 for The Lost Girl by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Sun Oct 12 2014 23:32:45 for The Lost Girl by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>

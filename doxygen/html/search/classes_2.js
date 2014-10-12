@@ -2,6 +2,7 @@ var searchData=
 [
   ['command',['Command',['../struct_command.html',1,'']]],
   ['component',['Component',['../structentityx_1_1_component.html',1,'entityx']]],
+  ['component_3c_20animations_20_3e',['Component&lt; Animations &gt;',['../structentityx_1_1_component.html',1,'entityx']]],
   ['component_3c_20body_20_3e',['Component&lt; Body &gt;',['../structentityx_1_1_component.html',1,'entityx']]],
   ['component_3c_20controller_20_3e',['Component&lt; Controller &gt;',['../structentityx_1_1_component.html',1,'entityx']]],
   ['component_3c_20jump_20_3e',['Component&lt; Jump &gt;',['../structentityx_1_1_component.html',1,'entityx']]],

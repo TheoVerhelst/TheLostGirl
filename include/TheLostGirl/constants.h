@@ -10,7 +10,7 @@ namespace sf
 	class Vector2;
 }
 
-///\file constants.h
+/// \file constants.h
 
 const sf::Vector2f windowSize{1024, 576};///<The size of the window.
 const float pixelScale{60};///<Pixel/meter scale. Scales : 37.5, 60, 75, 93.75, 112.5.

@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['fonts',['fonts',['../struct_state_1_1_context.html#a1cab84f1b9c88ca9bb71b3978c4c885f',1,'State::Context']]]
+  ['duration',['duration',['../struct_animations_1_1_time_animation.html#a8598e9a3e19f17d70c9bddcec834f54f',1,'Animations::TimeAnimation']]]
 ];

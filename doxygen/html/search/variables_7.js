@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['systemmanager',['systemManager',['../struct_state_1_1_context.html#a32dd89d9d32b4b045d2a983c4467ba18',1,'State::Context']]]
+  ['isplayer',['isPlayer',['../struct_controller.html#a63ef3bfeb160883be0dbd7e70a8e340d',1,'Controller']]]
 ];

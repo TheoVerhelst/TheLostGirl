@@ -102,7 +102,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;</div>
 <div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;<span class="keyword">using namespace </span>sf;</div>
 <div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;</div>
-<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;<span class="keywordtype">void</span> Actions::update(entityx::EntityManager&amp; entityManager, entityx::EventManager&amp; eventManager, <span class="keywordtype">double</span> dt)</div>
+<div class="line"><a name="l00014"></a><span class="lineno"><a class="line" href="class_actions.html#a28e5c9bdb7e429a52286fcc549f496b7">   14</a></span>&#160;<span class="keywordtype">void</span> <a class="code" href="class_actions.html#a28e5c9bdb7e429a52286fcc549f496b7">Actions::update</a>(entityx::EntityManager&amp; entityManager, entityx::EventManager&amp; eventManager, <span class="keywordtype">double</span> dt)</div>
 <div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;{</div>
 <div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;        <span class="keywordflow">while</span>(not m_commandQueue.empty())</div>
 <div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;        {</div>
@@ -121,14 +121,14 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;        }</div>
 <div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;}</div>
 <div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;</div>
-<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;<span class="keywordtype">void</span> Render::update(entityx::EntityManager&amp; entityManager, entityx::EventManager &amp;eventManager, <span class="keywordtype">double</span>)</div>
+<div class="line"><a name="l00033"></a><span class="lineno"><a class="line" href="class_render.html#a9b119f3c11007848cf6e38970eb8a946">   33</a></span>&#160;<span class="keywordtype">void</span> <a class="code" href="class_render.html#a9b119f3c11007848cf6e38970eb8a946">Render::update</a>(entityx::EntityManager&amp; entityManager, entityx::EventManager &amp;eventManager, <span class="keywordtype">double</span>)</div>
 <div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;{</div>
 <div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;        SpriteComponent::Handle spriteComponent;</div>
 <div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;        <span class="keywordflow">for</span>(<span class="keyword">auto</span> entity : entityManager.entities_with_components(spriteComponent))</div>
-<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;                m_window.draw(spriteComponent-&gt;sprite);</div>
+<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;                m_window.draw(*spriteComponent-&gt;sprite);</div>
 <div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;}</div>
 <div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;</div>
-<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;<span class="keywordtype">void</span> Physics::update(entityx::EntityManager&amp; entityManager, entityx::EventManager &amp;eventManager, <span class="keywordtype">double</span> dt)</div>
+<div class="line"><a name="l00040"></a><span class="lineno"><a class="line" href="class_physics.html#acd3279680efbc3de4131859fedca868c">   40</a></span>&#160;<span class="keywordtype">void</span> <a class="code" href="class_physics.html#acd3279680efbc3de4131859fedca868c">Physics::update</a>(entityx::EntityManager&amp; entityManager, entityx::EventManager &amp;eventManager, <span class="keywordtype">double</span> dt)</div>
 <div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;{</div>
 <div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;        int32 velocityIterations = 8;</div>
 <div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;        int32 positionIterations = 3;</div>
@@ -138,18 +138,21 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;        <span class="keywordflow">for</span>(<span class="keyword">auto</span> entity : entityManager.entities_with_components(bodyComponent, spriteComponent))</div>
 <div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;        {</div>
 <div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;                b2Vec2 pos = bodyComponent-&gt;body-&gt;GetPosition();</div>
-<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;                spriteComponent-&gt;sprite.setPosition(pos.x * <a class="code" href="constants_8h.html#a209e96bfcaccf20ee3dc68539c4edd0a">pixelScale</a>, <a class="code" href="constants_8h.html#acc6885d86f72ede12978a9140bc735da">windowSize</a>.y - (pos.y * <a class="code" href="constants_8h.html#a209e96bfcaccf20ee3dc68539c4edd0a">pixelScale</a>));</div>
+<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;                spriteComponent-&gt;sprite-&gt;setPosition(pos.x * <a class="code" href="constants_8h.html#a209e96bfcaccf20ee3dc68539c4edd0a">pixelScale</a>, <a class="code" href="constants_8h.html#acc6885d86f72ede12978a9140bc735da">windowSize</a>.y - (pos.y * <a class="code" href="constants_8h.html#a209e96bfcaccf20ee3dc68539c4edd0a">pixelScale</a>));</div>
 <div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;        }</div>
 <div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;}</div>
+<div class="ttc" id="class_physics_html_acd3279680efbc3de4131859fedca868c"><div class="ttname"><a href="class_physics.html#acd3279680efbc3de4131859fedca868c">Physics::update</a></div><div class="ttdeci">void update(entityx::EntityManager &amp;es, entityx::EventManager &amp;events, double dt) override</div><div class="ttdoc">System&#39;s update function. </div><div class="ttdef"><b>Definition:</b> <a href="systems_8cpp_source.html#l00040">systems.cpp:40</a></div></div>
 <div class="ttc" id="struct_command_html_acb06b999778d64cc3c7242066b3d4998"><div class="ttname"><a href="struct_command.html#acb06b999778d64cc3c7242066b3d4998">Command::action</a></div><div class="ttdeci">std::function&lt; void(entityx::Entity &amp;, double dt)&gt; action</div><div class="ttdoc">Stored function. </div><div class="ttdef"><b>Definition:</b> <a href="_command_8h_source.html#l00025">Command.h:25</a></div></div>
 <div class="ttc" id="constants_8h_html"><div class="ttname"><a href="constants_8h.html">constants.h</a></div></div>
+<div class="ttc" id="class_actions_html_a28e5c9bdb7e429a52286fcc549f496b7"><div class="ttname"><a href="class_actions.html#a28e5c9bdb7e429a52286fcc549f496b7">Actions::update</a></div><div class="ttdeci">void update(entityx::EntityManager &amp;es, entityx::EventManager &amp;events, double dt) override</div><div class="ttdoc">System&#39;s update function. </div><div class="ttdef"><b>Definition:</b> <a href="systems_8cpp_source.html#l00014">systems.cpp:14</a></div></div>
+<div class="ttc" id="class_render_html_a9b119f3c11007848cf6e38970eb8a946"><div class="ttname"><a href="class_render.html#a9b119f3c11007848cf6e38970eb8a946">Render::update</a></div><div class="ttdeci">void update(entityx::EntityManager &amp;es, entityx::EventManager &amp;events, double dt) override</div><div class="ttdoc">System&#39;s update function. </div><div class="ttdef"><b>Definition:</b> <a href="systems_8cpp_source.html#l00033">systems.cpp:33</a></div></div>
 <div class="ttc" id="struct_command_html"><div class="ttname"><a href="struct_command.html">Command</a></div><div class="ttdoc">Function applied to an entity. </div><div class="ttdef"><b>Definition:</b> <a href="_command_8h_source.html#l00016">Command.h:16</a></div></div>
 <div class="ttc" id="constants_8h_html_a209e96bfcaccf20ee3dc68539c4edd0a"><div class="ttname"><a href="constants_8h.html#a209e96bfcaccf20ee3dc68539c4edd0a">pixelScale</a></div><div class="ttdeci">const float pixelScale</div><div class="ttdoc">Pixel/meter scale. Scales : 37.5, 60, 75, 93.75, 112.5. </div><div class="ttdef"><b>Definition:</b> <a href="constants_8h_source.html#l00016">constants.h:16</a></div></div>
 <div class="ttc" id="constants_8h_html_acc6885d86f72ede12978a9140bc735da"><div class="ttname"><a href="constants_8h.html#acc6885d86f72ede12978a9140bc735da">windowSize</a></div><div class="ttdeci">const sf::Vector2f windowSize</div><div class="ttdoc">The size of the window. </div><div class="ttdef"><b>Definition:</b> <a href="constants_8h_source.html#l00015">constants.h:15</a></div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Fri Oct 10 2014 00:48:43 for The Lost Girl by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Sun Oct 12 2014 23:32:45 for The Lost Girl by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>

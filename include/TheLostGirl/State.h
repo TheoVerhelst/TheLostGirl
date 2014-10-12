@@ -25,18 +25,18 @@ namespace entityx
 class State;
 class StateStack;
 
-///Base class for the various game states.
-///Inherits from this class and implements the pure virtal functions.
-///The New state must then be registered and pushed to the StateStack.
+/// Base class for the various game states.
+/// Inherits from this class and implements the pure virtal functions.
+/// The New state must then be registered and pushed to the StateStack.
 class State
 {
 	public:
-        ///Convenient typedef.
+        /// Convenient typedef.
 		typedef std::unique_ptr<State> Ptr;
 
-        ///Various managers and globals instances.
-        ///It is useful to pass the context to the states,
-        ///they can then use these various ressources managers.
+        /// Various managers and globals instances.
+        /// It is useful to pass the context to the states,
+        /// they can then use these various ressources managers.
 		struct Context
 		{
 			Context(sf::RenderWindow& _window,

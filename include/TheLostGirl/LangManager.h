@@ -7,7 +7,7 @@
 #include <map>
 #include <exception>
 
-///Available langages.
+/// Available langages.
 enum Lang
 {
 	EN,///< The English
@@ -16,9 +16,9 @@ enum Lang
 	IT///< The Italian
 };
 
-///Language manager that translate strings.
-///It translate a std::string in english to a std::wtring in the langage defined by setLang.
-///If no langage is set, it will return L"Entry not found." at every call of LangManager::tr.
+/// Language manager that translate strings.
+/// It translate a std::string in english to a std::wtring in the langage defined by setLang.
+/// If no langage is set, it will return L"Entry not found." at every call of LangManager::tr.
 class LangManager
 {
 	public:

@@ -16,9 +16,9 @@ namespace sf
 enum class Textures;
 enum class Fonts;
 
-///Simple ressource manager.
-///It loads and holds many type of SFML's ressources and restitues them
-///To do not have to load them many times.
+/// Simple ressource manager.
+/// It loads and holds many type of SFML's ressources and restitues them
+/// To do not have to load them many times.
 template <typename Resource, typename Identifier>
 class ResourceManager
 {

@@ -1,5 +1,4 @@
 var searchData=
 [
-  ['setlang',['setLang',['../class_lang_manager.html#afcbbdecec1e5082056199348b4419a8f',1,'LangManager']]],
-  ['state',['State',['../class_state.html#afede488ff3c1b264bbd07f8aeead84a7',1,'State']]]
+  ['load',['load',['../class_resource_manager.html#a927225908f9b837dd81acf273f72fc76',1,'ResourceManager::load(Identifier id, const std::string &amp;filename)'],['../class_resource_manager.html#a39f3912204187de33a8c7227305b967e',1,'ResourceManager::load(Identifier id, const std::string &amp;filename, const Parameter &amp;secondParam)']]]
 ];

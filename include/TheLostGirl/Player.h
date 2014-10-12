@@ -31,13 +31,13 @@ struct Command;
 //	sf::Vector2f velocity;
 //};
 
-///Player class that interact with the real player.
-///The Player class receive all the keyboards and mouse events in the gameplay and assign every input to a specific action in the game.
+/// Player class that interact with the real player.
+/// The Player class receive all the keyboards and mouse events in the gameplay and assign every input to a specific action in the game.
 class Player
 {
 	public:
-        ///Players's action.
-        ///That's all the player can do.
+        /// Players's action.
+        /// That's all the player can do.
 		enum Action
 		{
 			MoveUp,///< Go in an exit on the top.

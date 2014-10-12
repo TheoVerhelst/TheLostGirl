@@ -1,5 +1,7 @@
 var searchData=
 [
-  ['entitymanager',['entityManager',['../struct_state_1_1_context.html#a417040270d1f08cd9013a0805b5fc541',1,'State::Context']]],
-  ['eventmanager',['eventManager',['../struct_state_1_1_context.html#af5aa7f3a5ef67511654dfa6096ef0c33',1,'State::Context']]]
+  ['category',['category',['../struct_command.html#a6bb68c6a339ef69c7ad10ab45f5a245a',1,'Command']]],
+  ['currentanimation',['currentAnimation',['../struct_animations.html#a5bcef578c2abf3877c93e55567204a49',1,'Animations']]],
+  ['currentanimationdoesloop',['currentAnimationDoesLoop',['../struct_animations.html#aec41fa334fe7969fbd1a11eae9fbdabe',1,'Animations']]],
+  ['currentprogress',['currentProgress',['../struct_animations.html#a5bb1dec5cffd752260a84fbcac24e9d6',1,'Animations']]]
 ];
