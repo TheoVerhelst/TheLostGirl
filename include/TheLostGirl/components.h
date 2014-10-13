@@ -41,6 +41,12 @@ struct SpriteComponent : public entityx::Component<SpriteComponent>
 	SpriteComponent(sf::Sprite* _sprite = nullptr):
 		sprite(_sprite)
 	{}
+	
+	/// Destructor
+	~SpriteComponent()
+	{
+		delete sprite;
+	}
 };
 
 /// Animations component.

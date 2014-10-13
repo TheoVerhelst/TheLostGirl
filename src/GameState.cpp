@@ -25,8 +25,8 @@ GameState::GameState(StateStack& stack, Context context) :
 {
 	//Sprite
 	sf::Texture& archerTexture = getContext().textureManager.get(Textures::Archer);
-	m_archer.assign<SpriteComponent>(new sf::Sprite(archerTexture));
-	
+	SpriteComponent::Handle sprite = m_archer.assign<SpriteComponent>(new sf::Sprite(archerTexture));
+	sprite->sprite->setTextureRect(sf::IntRect(53*0, 107, 53, 107));
 	//Animation
 	Animations::Handle animationsComponent = m_archer.assign<Animations>();
 	SpriteSheetAnimation spritesheet;
@@ -76,6 +76,8 @@ bool GameState::handleEvent(const sf::Event& event)
 	switch(event.type)
 	{
 		case sf::Event::Closed:
+			getContext().world.DestroyBody(m_archer.component<Body>()->body);
+			getContext().world.ClearForces();
 			m_archer.destroy();
 			requestStackPop();
 			break;
@@ -83,6 +85,8 @@ bool GameState::handleEvent(const sf::Event& event)
 		case sf::Event::KeyPressed:
 			if(event.key.code == sf::Keyboard::Escape)
 			{
+				getContext().world.DestroyBody(m_archer.component<Body>()->body);
+				getContext().world.ClearForces();
 				m_archer.destroy();
 				requestStackPop();
 				requestStackPush(States::MainMenu);
