@@ -5,16 +5,18 @@
 #include <functional>
 #include <string>
 
-#include <SFML/System/Time.hpp>
-#include <SFML/Graphics/Sprite.hpp>
-
 //Forward declarations
+namespace sf
+{
+	class Sprite;
+}
 namespace entityx
 {
 	template <typename Derived>
 	struct Component;
 }
 class b2Body;
+class Animations;
 
 /// Body component.
 /// The Body component store a pointer to a b2Body and is used to simulate physics in the game world.
@@ -49,68 +51,21 @@ struct SpriteComponent : public entityx::Component<SpriteComponent>
 	}
 };
 
-/// Animations component.
-/// To use this component, you must add some animations in the animations map,
-/// set playAnimation to true and set the currentAnimation identifier
-/// according to the animation to play.
-/// Then a simple update in the animations system do all that need to be done.
-///
-/// Usage exemple:
-/// \code
-/// //Add the component to the entity :
-/// Animations::Handle animationsComponent = entity->assign<Animations>();
-/// 
-/// //Make a TimeAnimation structure :
-/// SpriteSheetAnimation anim;
-/// anim.addFrame(rect1, 0.1f);
-/// anim.addFrame(rect2, 0.9f);
-/// Animations::TimeAnimation timeAnim(anim, sf::Time::seconds(3.f));
-/// 
-/// //Add the animation to the entity
-/// animationsComponent->animations.insert(std::make_pair("run", timeAnim));
-/// animationsComponent->playAnimation = true;
-/// animationsComponent->currentAnimation = Archer::Animations::Run;
-/// \endcode
-/// \see AnimationSystem
-/// 
-/// This animation system is inspired by the Animator system in the Jan Haller's Thor C++ library.
-struct Animations : public entityx::Component<Animations>
+struct AnimationsComponent : public entityx::Component<AnimationsComponent>
 {
-	/// Typedef for the Animation functor.
-	/// The functor must have exactly this signature:
-	/// void (entityx::Entity&, float);
-	/// \arg \a entityx::Entity& reference to the entity to animate.
-	/// \arg \a Current state of the animation.
-	typedef std::function<void(entityx::Entity&, float)> Animation;
-	
-	/// Animation associated with a certain duration.
-	struct TimeAnimation
-	{
-		Animation animation;///< Functor of the animation.
-		sf::Time duration;///< Duration of the animation.
-		
-		/// Default constructor.
-		/// \param _animation Functor of the animation.
-		/// \param _duration Duration of the animation.
-		TimeAnimation(Animation _animation, sf::Time _duration):
-			animation(_animation),
-			duration(_duration)
-		{}
-	};
-	std::map<std::string, TimeAnimation> animations;///< List of all animation registred.
-	bool isPlaying;///< Indicates if an animation ned to be played.
-	std::string currentAnimation;///< Identifier of the animation to play.
-	float progress;///< Progress of the current animation, in the range [0,1]
-	bool loops;///< Indicates if the current animation must loop or not.
+	Animations* animations;///< Pointer to the animations manager.
 	
 	/// Default constructor.
-	Animations():
-		animations(),
-		isPlaying{false},
-		currentAnimation(""),
-		progress{0.f},
-		loops{false}
+	/// \param _animations Pointer to the animations manager.
+	AnimationsComponent(Animations* _animations):
+		animations(_animations)
 	{}
+	
+	/// Destructor
+	~AnimationsComponent()
+	{
+		delete animations;
+	}
 };
 
 /// Walk component.
