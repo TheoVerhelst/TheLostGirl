@@ -17,7 +17,7 @@ void Actions::update(entityx::EntityManager& entityManager, entityx::EventManage
 {
 	while(not m_commandQueue.empty())
 	{
-		Command command = m_commandQueue.front();
+		Command& command = m_commandQueue.front();
 		Controller::Handle controller;
 		for(auto entity : entityManager.entities_with_components(controller))
 		{

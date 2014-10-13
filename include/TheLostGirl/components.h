@@ -5,6 +5,7 @@
 #include <functional>
 #include <string>
 
+#include <SFML/System/Time.hpp>
 #include <SFML/Graphics/Sprite.hpp>
 
 //Forward declarations

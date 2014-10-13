@@ -6,6 +6,8 @@
 
 #include <TheLostGirl/ResourceManager.h>
 #include <TheLostGirl/StateStack.h>
+#include <TheLostGirl/Player.h>
+#include <TheLostGirl/Command.h>
 
 #include <TheLostGirl/State.h>
 
@@ -20,7 +22,9 @@ State::Context::Context(sf::RenderWindow& _window,
 						EventManager& _eventManager,
 						EntityManager& _entityManager,
 						SystemManager& _systemManager,
-						b2World& _world
+						b2World& _world,
+						Player& _player,
+						CommandQueue& _commandQueue
 						):
 	window(_window),
 	textureManager(_textureManager),
@@ -29,7 +33,9 @@ State::Context::Context(sf::RenderWindow& _window,
 	eventManager(_eventManager),
 	entityManager(_entityManager),
 	systemManager(_systemManager),
-	world(_world)
+	world(_world),
+	player(_player),
+	commandQueue(_commandQueue)
 {
 }
 

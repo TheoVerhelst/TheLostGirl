@@ -1,10 +1,6 @@
 #ifndef GAMESTATE_H
 #define GAMESTATE_H
 
-#include <queue>
-
-#include <TheLostGirl/Player.h>
-
 //Forward declarations
 namespace sf
 {
@@ -18,8 +14,6 @@ namespace entityx
 class State;
 class Context;
 class StateStack;
-class Command;
-typedef std::queue<Command> CommandQueue;
 
 class GameState : public State
 {
@@ -31,8 +25,6 @@ class GameState : public State
 
 	private:
 		Context& m_context;
-		Player m_player;
-		CommandQueue m_commandQueue;
 		entityx::Entity m_archer;
 };
 

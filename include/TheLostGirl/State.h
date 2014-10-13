@@ -2,6 +2,7 @@
 #define STATE_H
 
 #include <memory>
+#include <queue>
 
 #include <TheLostGirl/ResourceIdentifiers.h>
 #include <TheLostGirl/StateIdentifiers.h>
@@ -25,6 +26,9 @@ namespace entityx
 class b2World;
 class State;
 class StateStack;
+class Player;
+class Command;
+typedef std::queue<Command> CommandQueue;
 
 /// Base class for the various game states.
 /// Inherits from this class and implements the pure virtal functions.
@@ -32,7 +36,7 @@ class StateStack;
 class State
 {
 	public:
-        /// Convenient typedef.
+        /// Pointer typedef.
 		typedef std::unique_ptr<State> Ptr;
 
         /// Various managers and globals instances.
@@ -47,16 +51,20 @@ class State
 					entityx::EventManager& _eventManager,
 					entityx::EntityManager& _entityManager,
 					entityx::SystemManager& _systemManager,
-					b2World& _world
+					b2World& _world,
+					Player& _player,
+					CommandQueue& _commandQueue
 				);
-			sf::RenderWindow& window;///< The main window
-			TextureManager& textureManager;///< The texture manager
-			FontManager& fontManager;///< The font manager
-			tgui::Gui& gui;///< The main GUI manager
-			entityx::EventManager& eventManager;///< The event manager of the entity system.
+			sf::RenderWindow& window;             ///< The main window
+			TextureManager& textureManager;       ///< The texture manager
+			FontManager& fontManager;             ///< The font manager
+			tgui::Gui& gui;                       ///< The main GUI manager
+			entityx::EventManager& eventManager;  ///< The event manager of the entity system.
 			entityx::EntityManager& entityManager;///< The entity manager of the entity system
 			entityx::SystemManager& systemManager;///< The system manager of the entity system
-			b2World& world;///< The Box2D physic world.
+			b2World& world;                       ///< The Box2D physic world.
+			Player& player;                       ///< The input manager.
+			CommandQueue& commandQueue;           ///< The queue of commands.
 		};
 
         /// Default constructor.

@@ -14,25 +14,18 @@
 #include <TheLostGirl/systems.h>
 #include <TheLostGirl/ResourceManager.h>
 #include <TheLostGirl/ResourceIdentifiers.h>
+#include <TheLostGirl/Player.h>
 
 #include <TheLostGirl/GameState.h>
 
 GameState::GameState(StateStack& stack, Context context) :
 	State(stack, context),
 	m_context(context),
-	m_player(),
-	m_commandQueue(),
 	m_archer(m_context.entityManager.create())
 {
 	sf::Texture& archerTexture = m_context.textureManager.get(Textures::Archer);
 	sf::Sprite* archerSprite = new sf::Sprite(archerTexture);
 	m_archer.assign<SpriteComponent>(archerSprite);
-	
-	getContext().systemManager.add<Physics>(getContext().world);
-	getContext().systemManager.add<Actions>(m_commandQueue);
-	getContext().systemManager.add<AnimationSystem>();
-	getContext().systemManager.add<Render>(getContext().window);
-	getContext().systemManager.configure();//Init the manager
 }
 
 void GameState::draw()
@@ -54,8 +47,6 @@ bool GameState::handleEvent(const sf::Event& event)
 	{
 		case sf::Event::Closed:
 			m_archer.destroy();
-			while(not m_commandQueue.empty())
-				m_commandQueue.pop();
 			requestStackPop();
 			break;
 
@@ -63,8 +54,6 @@ bool GameState::handleEvent(const sf::Event& event)
 			if(event.key.code == sf::Keyboard::Escape)
 			{
 				m_archer.destroy();
-				while(not m_commandQueue.empty())
-					m_commandQueue.pop();
 				requestStackPop();
 				requestStackPush(States::MainMenu);
 			}
@@ -73,6 +62,6 @@ bool GameState::handleEvent(const sf::Event& event)
 		default:
 			break;
 	}
-	m_player.handleEvent(event, m_commandQueue);
+	getContext().player.handleEvent(event, getContext().commandQueue);
 	return false;
 }

@@ -13,6 +13,7 @@
 #include <TheLostGirl/systems.h>
 #include <TheLostGirl/constants.h>
 #include <TheLostGirl/functions.h>
+#include <TheLostGirl/Command.h>
 #include <TheLostGirl/LangManager.h>
 
 #include <TheLostGirl/Application.h>
@@ -25,9 +26,20 @@ Application::Application():
 	m_eventManager(),
 	m_entityManager(m_eventManager),
 	m_systemManager(m_entityManager, m_eventManager),
+	m_commandQueue(),
 	m_gravity(0.0f, -1.0f),
 	m_world(m_gravity),
-	m_stateStack(State::Context(m_window, m_textureManager, m_fontManager, m_gui, m_eventManager, m_entityManager, m_systemManager, m_world))
+	m_stateStack(State::Context(m_window,
+								m_textureManager,
+								m_fontManager,
+								m_gui,
+								m_eventManager,
+								m_entityManager,
+								m_systemManager,
+								m_world,
+								m_player,
+								m_commandQueue
+								))
 {
 }
 
@@ -46,14 +58,16 @@ int Application::init()
 		m_fontManager.load(Fonts::Menu, "ressources/fonts/euphorigenic.ttf");
 		m_textureManager.load(Textures::Archer, toPath(windowSize) + "charac.png");
 		m_gui.setGlobalFont(std::make_shared<sf::Font>(m_fontManager.get(Fonts::Menu)));
+		registerStates();
+		registerSystems();
+		m_systemManager.configure();//Init the manager
+		m_stateStack.pushState(States::MainMenu);
 	}
 	catch(std::runtime_error& e)
 	{
 		std::cerr << "Exception : " << e.what() << std::endl;
 		return 1;
 	}
-	registerStates();
-	m_stateStack.pushState(States::MainMenu);
 	return 0;
 }
 
@@ -118,4 +132,12 @@ void Application::registerStates()
 	m_stateStack.registerState<LoadingState>(States::Loading);
 	m_stateStack.registerState<IntroState>(States::Intro);
 	m_stateStack.registerState<GameState>(States::Game);
+}
+
+void Application::registerSystems()
+{
+	m_systemManager.add<Physics>(m_world);
+	m_systemManager.add<Actions>(m_commandQueue);
+	m_systemManager.add<AnimationSystem>();
+	m_systemManager.add<Render>(m_window);
 }
