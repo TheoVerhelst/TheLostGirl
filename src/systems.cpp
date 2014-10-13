@@ -1,4 +1,5 @@
 #include <algorithm>
+#include <iostream>
 
 #include <SFML/Graphics/RenderWindow.hpp>
 #include <SFML/Graphics/Sprite.hpp>

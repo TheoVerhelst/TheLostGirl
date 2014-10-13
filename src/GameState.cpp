@@ -23,20 +23,39 @@ GameState::GameState(StateStack& stack, Context context) :
 	State(stack, context),
 	m_archer(getContext().entityManager.create())
 {
+	//Sprite
 	sf::Texture& archerTexture = getContext().textureManager.get(Textures::Archer);
 	m_archer.assign<SpriteComponent>(new sf::Sprite(archerTexture));
+	
+	//Animation
 	Animations::Handle animationsComponent = m_archer.assign<Animations>();
 	SpriteSheetAnimation spritesheet;
-	spritesheet.addFrame(sf::IntRect(0, 107, 53, 107), 0.125f);
+	spritesheet.addFrame(sf::IntRect(53*0, 107, 53, 107), 0.125f);
 	spritesheet.addFrame(sf::IntRect(53*1, 107, 53, 107), 0.125f);
 	spritesheet.addFrame(sf::IntRect(53*2, 107, 53, 107), 0.125f);
 	spritesheet.addFrame(sf::IntRect(53*3, 107, 53, 107), 0.125f);
-	spritesheet.addFrame(sf::IntRect(53*4, 0, 53, 107), 0.1f);
+	spritesheet.addFrame(sf::IntRect(53*4, 000, 53, 107), 0.100f);
 	Animations::TimeAnimation timeAnime(spritesheet, sf::seconds(.8f));
 	animationsComponent->animations.emplace("run", timeAnime);
 	animationsComponent->isPlaying = true;
 	animationsComponent->loops = true;
 	animationsComponent->currentAnimation = "run";
+	
+	b2BodyDef bodyDef;
+	bodyDef.type = b2_dynamicBody;
+	bodyDef.position = {0, 4};
+	b2Body* body = getContext().world.CreateBody(&bodyDef);
+	m_archer.assign<Body>(body);
+
+	b2PolygonShape archerBox;
+	archerBox.SetAsBox(53.f/pixelScale*2, 107.f/pixelScale*2);
+
+	b2FixtureDef fixtureDef;
+	fixtureDef.shape = &archerBox;
+	fixtureDef.density = 1.0f;
+	fixtureDef.friction = 0.001f;
+	fixtureDef.restitution = 0.98f;
+	body->CreateFixture(&fixtureDef);
 }
 
 void GameState::draw()

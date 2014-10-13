@@ -53,6 +53,7 @@ class Application
 		void render();           ///< Render all that need to be displayed on the screen.
 		void registerStates();   ///< Registers all the game states.
 		void registerSystems();  ///< Registers all the logic systems.
+		void initWorld();        ///< Initialize the physic world.
 
 		sf::RenderWindow m_window;             ///< The main window.
 		tgui::Gui m_gui;                       ///< All the gui.

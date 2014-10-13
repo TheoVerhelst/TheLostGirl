@@ -1,6 +1,7 @@
 #include <SFML/Graphics/RenderWindow.hpp>
 #include <TGUI/Gui.hpp>
 #include <entityx/entityx.h>
+#include <Box2D/Box2D.h>
 
 #include <TheLostGirl/ResourceIdentifiers.h>
 #include <TheLostGirl/StateIdentifiers.h>
@@ -61,6 +62,7 @@ int Application::init()
 		registerStates();
 		registerSystems();
 		m_systemManager.configure();//Init the manager
+		initWorld();
 		m_stateStack.pushState(States::MainMenu);
 	}
 	catch(std::runtime_error& e)
@@ -140,4 +142,14 @@ void Application::registerSystems()
 	m_systemManager.add<Actions>(m_commandQueue);
 	m_systemManager.add<AnimationSystem>();
 	m_systemManager.add<Render>(m_window);
+}
+
+void Application::initWorld()
+{
+	b2BodyDef bd;
+	b2Body* ground = m_world.CreateBody(&bd);
+
+	b2EdgeShape shape;
+	shape.Set(b2Vec2(-40.0f, 0.0f), b2Vec2(40.0f, 0.0f));
+	ground->CreateFixture(&shape, 0.0f);
 }
