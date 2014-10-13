@@ -15,17 +15,28 @@
 #include <TheLostGirl/ResourceManager.h>
 #include <TheLostGirl/ResourceIdentifiers.h>
 #include <TheLostGirl/Player.h>
+#include <TheLostGirl/SpriteSheetAnimation.h>
 
 #include <TheLostGirl/GameState.h>
 
 GameState::GameState(StateStack& stack, Context context) :
 	State(stack, context),
-	m_context(context),
-	m_archer(m_context.entityManager.create())
+	m_archer(getContext().entityManager.create())
 {
-	sf::Texture& archerTexture = m_context.textureManager.get(Textures::Archer);
-	sf::Sprite* archerSprite = new sf::Sprite(archerTexture);
-	m_archer.assign<SpriteComponent>(archerSprite);
+	sf::Texture& archerTexture = getContext().textureManager.get(Textures::Archer);
+	m_archer.assign<SpriteComponent>(new sf::Sprite(archerTexture));
+	Animations::Handle animationsComponent = m_archer.assign<Animations>();
+	SpriteSheetAnimation spritesheet;
+	spritesheet.addFrame(sf::IntRect(0, 107, 53, 107), 0.125f);
+	spritesheet.addFrame(sf::IntRect(53*1, 107, 53, 107), 0.125f);
+	spritesheet.addFrame(sf::IntRect(53*2, 107, 53, 107), 0.125f);
+	spritesheet.addFrame(sf::IntRect(53*3, 107, 53, 107), 0.125f);
+	spritesheet.addFrame(sf::IntRect(53*4, 0, 53, 107), 0.1f);
+	Animations::TimeAnimation timeAnime(spritesheet, sf::seconds(.8f));
+	animationsComponent->animations.emplace("run", timeAnime);
+	animationsComponent->isPlaying = true;
+	animationsComponent->loops = true;
+	animationsComponent->currentAnimation = "run";
 }
 
 void GameState::draw()

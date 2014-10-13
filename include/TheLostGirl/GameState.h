@@ -24,7 +24,6 @@ class GameState : public State
 		virtual bool handleEvent(const sf::Event& event);
 
 	private:
-		Context& m_context;
 		entityx::Entity m_archer;
 };
 
