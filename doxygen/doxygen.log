@@ -7,33 +7,31 @@ warning: source ../include/TheLostGirl/ResourceHolder.h is not a readable file o
 /home/theo/C++/TheLostGirl-0.0.8/include/TheLostGirl/LoadingState.h:15: warning: Compound LoadingState is not documented.
 /home/theo/C++/TheLostGirl-0.0.8/include/TheLostGirl/Category.h:8: warning: Member Category (enumeration) of file Category.h is not documented.
 <Category>:1: warning: parameters of member Category are not (all) documented
-/home/theo/C++/TheLostGirl-0.0.8/include/TheLostGirl/components.h:70: warning: Member Animation (typedef) of class Animations is not documented.
-/home/theo/C++/TheLostGirl-0.0.8/include/TheLostGirl/components.h:86: warning: Member Identifier (variable) of class Animations is not documented.
 /home/theo/C++/TheLostGirl-0.0.8/include/TheLostGirl/GameState.h:27: warning: Member GameState(StateStack &stack, Context context) (function) of class GameState is not documented.
-/home/theo/C++/TheLostGirl-0.0.8/include/TheLostGirl/State.h:87: warning: Member getContext() const  (function) of class State is not documented.
-/home/theo/C++/TheLostGirl-0.0.8/include/TheLostGirl/State.h:85: warning: Member requestStackPop() (function) of class State is not documented.
-/home/theo/C++/TheLostGirl-0.0.8/include/TheLostGirl/State.h:84: warning: Member requestStackPush(States stateID) (function) of class State is not documented.
-/home/theo/C++/TheLostGirl-0.0.8/include/TheLostGirl/State.h:86: warning: Member requestStateClear() (function) of class State is not documented.
+/home/theo/C++/TheLostGirl-0.0.8/include/TheLostGirl/State.h:90: warning: Member getContext() const  (function) of class State is not documented.
+/home/theo/C++/TheLostGirl-0.0.8/include/TheLostGirl/State.h:88: warning: Member requestStackPop() (function) of class State is not documented.
+/home/theo/C++/TheLostGirl-0.0.8/include/TheLostGirl/State.h:87: warning: Member requestStackPush(States stateID) (function) of class State is not documented.
+/home/theo/C++/TheLostGirl-0.0.8/include/TheLostGirl/State.h:89: warning: Member requestStateClear() (function) of class State is not documented.
 /home/theo/C++/TheLostGirl-0.0.8/include/TheLostGirl/IntroState.h:17: warning: Member IntroState(StateStack &stack, Context context) (function) of class IntroState is not documented.
-/home/theo/C++/TheLostGirl-0.0.8/include/TheLostGirl/State.h:87: warning: Member getContext() const  (function) of class State is not documented.
-/home/theo/C++/TheLostGirl-0.0.8/include/TheLostGirl/State.h:85: warning: Member requestStackPop() (function) of class State is not documented.
-/home/theo/C++/TheLostGirl-0.0.8/include/TheLostGirl/State.h:84: warning: Member requestStackPush(States stateID) (function) of class State is not documented.
-/home/theo/C++/TheLostGirl-0.0.8/include/TheLostGirl/State.h:86: warning: Member requestStateClear() (function) of class State is not documented.
+/home/theo/C++/TheLostGirl-0.0.8/include/TheLostGirl/State.h:90: warning: Member getContext() const  (function) of class State is not documented.
+/home/theo/C++/TheLostGirl-0.0.8/include/TheLostGirl/State.h:88: warning: Member requestStackPop() (function) of class State is not documented.
+/home/theo/C++/TheLostGirl-0.0.8/include/TheLostGirl/State.h:87: warning: Member requestStackPush(States stateID) (function) of class State is not documented.
+/home/theo/C++/TheLostGirl-0.0.8/include/TheLostGirl/State.h:89: warning: Member requestStateClear() (function) of class State is not documented.
 /home/theo/C++/TheLostGirl-0.0.8/include/TheLostGirl/LoadingState.h:17: warning: Member LoadingState(StateStack &stack, Context context) (function) of class LoadingState is not documented.
-/home/theo/C++/TheLostGirl-0.0.8/include/TheLostGirl/State.h:87: warning: Member getContext() const  (function) of class State is not documented.
-/home/theo/C++/TheLostGirl-0.0.8/include/TheLostGirl/State.h:85: warning: Member requestStackPop() (function) of class State is not documented.
-/home/theo/C++/TheLostGirl-0.0.8/include/TheLostGirl/State.h:84: warning: Member requestStackPush(States stateID) (function) of class State is not documented.
-/home/theo/C++/TheLostGirl-0.0.8/include/TheLostGirl/State.h:86: warning: Member requestStateClear() (function) of class State is not documented.
+/home/theo/C++/TheLostGirl-0.0.8/include/TheLostGirl/State.h:90: warning: Member getContext() const  (function) of class State is not documented.
+/home/theo/C++/TheLostGirl-0.0.8/include/TheLostGirl/State.h:88: warning: Member requestStackPop() (function) of class State is not documented.
+/home/theo/C++/TheLostGirl-0.0.8/include/TheLostGirl/State.h:87: warning: Member requestStackPush(States stateID) (function) of class State is not documented.
+/home/theo/C++/TheLostGirl-0.0.8/include/TheLostGirl/State.h:89: warning: Member requestStateClear() (function) of class State is not documented.
 /home/theo/C++/TheLostGirl-0.0.8/include/TheLostGirl/MainMenuState.h:21: warning: Member MainMenuState(StateStack &stack, Context context) (function) of class MainMenuState is not documented.
-/home/theo/C++/TheLostGirl-0.0.8/include/TheLostGirl/State.h:87: warning: Member getContext() const  (function) of class State is not documented.
-/home/theo/C++/TheLostGirl-0.0.8/include/TheLostGirl/State.h:85: warning: Member requestStackPop() (function) of class State is not documented.
-/home/theo/C++/TheLostGirl-0.0.8/include/TheLostGirl/State.h:84: warning: Member requestStackPush(States stateID) (function) of class State is not documented.
-/home/theo/C++/TheLostGirl-0.0.8/include/TheLostGirl/State.h:86: warning: Member requestStateClear() (function) of class State is not documented.
-/home/theo/C++/TheLostGirl-0.0.8/include/TheLostGirl/State.h:87: warning: Member getContext() const  (function) of class State is not documented.
-/home/theo/C++/TheLostGirl-0.0.8/include/TheLostGirl/State.h:85: warning: Member requestStackPop() (function) of class State is not documented.
-/home/theo/C++/TheLostGirl-0.0.8/include/TheLostGirl/State.h:84: warning: Member requestStackPush(States stateID) (function) of class State is not documented.
-/home/theo/C++/TheLostGirl-0.0.8/include/TheLostGirl/State.h:86: warning: Member requestStateClear() (function) of class State is not documented.
-/home/theo/C++/TheLostGirl-0.0.8/include/TheLostGirl/State.h:42: warning: Member Context(sf::RenderWindow &_window, TextureManager &_textures, FontManager &_fonts, tgui::Gui &_gui, entityx::EventManager &_eventManager, entityx::EntityManager &_entityManager, entityx::SystemManager &_systemManage) (function) of class State::Context is not documented.
+/home/theo/C++/TheLostGirl-0.0.8/include/TheLostGirl/State.h:90: warning: Member getContext() const  (function) of class State is not documented.
+/home/theo/C++/TheLostGirl-0.0.8/include/TheLostGirl/State.h:88: warning: Member requestStackPop() (function) of class State is not documented.
+/home/theo/C++/TheLostGirl-0.0.8/include/TheLostGirl/State.h:87: warning: Member requestStackPush(States stateID) (function) of class State is not documented.
+/home/theo/C++/TheLostGirl-0.0.8/include/TheLostGirl/State.h:89: warning: Member requestStateClear() (function) of class State is not documented.
+/home/theo/C++/TheLostGirl-0.0.8/include/TheLostGirl/State.h:90: warning: Member getContext() const  (function) of class State is not documented.
+/home/theo/C++/TheLostGirl-0.0.8/include/TheLostGirl/State.h:88: warning: Member requestStackPop() (function) of class State is not documented.
+/home/theo/C++/TheLostGirl-0.0.8/include/TheLostGirl/State.h:87: warning: Member requestStackPush(States stateID) (function) of class State is not documented.
+/home/theo/C++/TheLostGirl-0.0.8/include/TheLostGirl/State.h:89: warning: Member requestStateClear() (function) of class State is not documented.
+/home/theo/C++/TheLostGirl-0.0.8/include/TheLostGirl/State.h:43: warning: Member Context(sf::RenderWindow &_window, TextureManager &_textureManager, FontManager &_fontManager, tgui::Gui &_gui, entityx::EventManager &_eventManager, entityx::EntityManager &_entityManager, entityx::SystemManager &_systemManager, b2World &_world) (function) of class State::Context is not documented.
 /home/theo/C++/TheLostGirl-0.0.8/include/TheLostGirl/StateStack.h:25: warning: Member Action (enumeration) of class StateStack is not documented.
 /home/theo/C++/TheLostGirl-0.0.8/include/TheLostGirl/StateStack.h:38: warning: Member clearStates() (function) of class StateStack is not documented.
 /home/theo/C++/TheLostGirl-0.0.8/include/TheLostGirl/StateStack.h:34: warning: Member draw() (function) of class StateStack is not documented.

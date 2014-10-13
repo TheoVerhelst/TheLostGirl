@@ -24,13 +24,13 @@ GameState::GameState(StateStack& stack, Context context) :
 	m_commandQueue(),
 	m_archer(m_context.entityManager.create())
 {
-	m_context.textures.load(Textures::Archer, toPath(windowSize) + "charac.png");
-	sf::Texture& archerTexture = m_context.textures.get(Textures::Archer);
+	sf::Texture& archerTexture = m_context.textureManager.get(Textures::Archer);
 	sf::Sprite* archerSprite = new sf::Sprite(archerTexture);
 	m_archer.assign<SpriteComponent>(archerSprite);
 	
-	//getContext().systemManager->add<Physics>(getContext().world);
+	getContext().systemManager.add<Physics>(getContext().world);
 	getContext().systemManager.add<Actions>(m_commandQueue);
+	getContext().systemManager.add<AnimationSystem>();
 	getContext().systemManager.add<Render>(getContext().window);
 	getContext().systemManager.configure();//Init the manager
 }
@@ -42,8 +42,9 @@ void GameState::draw()
 
 bool GameState::update(sf::Time elapsedTime)
 {
-	//getContext().systemManager.update<Physics>(elapsedTime.asSeconds());
+	getContext().systemManager.update<Physics>(elapsedTime.asSeconds());
 	getContext().systemManager.update<Actions>(elapsedTime.asSeconds());
+	getContext().systemManager.update<AnimationSystem>(elapsedTime.asSeconds());
 	return true;
 }
 
@@ -53,6 +54,8 @@ bool GameState::handleEvent(const sf::Event& event)
 	{
 		case sf::Event::Closed:
 			m_archer.destroy();
+			while(not m_commandQueue.empty())
+				m_commandQueue.pop();
 			requestStackPop();
 			break;
 
@@ -60,6 +63,8 @@ bool GameState::handleEvent(const sf::Event& event)
 			if(event.key.code == sf::Keyboard::Escape)
 			{
 				m_archer.destroy();
+				while(not m_commandQueue.empty())
+					m_commandQueue.pop();
 				requestStackPop();
 				requestStackPush(States::MainMenu);
 			}

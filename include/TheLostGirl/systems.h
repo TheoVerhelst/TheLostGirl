@@ -57,7 +57,7 @@ class Render : public entityx::System<Render>
 		sf::RenderWindow& m_window;///< SFML's window on wich render the entities.
 };
 
-/// System that updates the b2Box's world and the drawables entities.
+/// System that updates the Box2D's world and the drawables entities.
 class Physics : public entityx::System<Physics>
 {
 	public:
@@ -83,7 +83,8 @@ class AnimationSystem : public entityx::System<AnimationSystem>
 {
 	public:
 		/// Default constructor.
-		AnimationSystem();
+		AnimationSystem()
+		{}
 		
 		/// System's update function.
 		/// \param es Entity manager.

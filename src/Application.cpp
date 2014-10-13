@@ -27,7 +27,7 @@ Application::Application():
 	m_systemManager(m_entityManager, m_eventManager),
 	m_gravity(0.0f, -1.0f),
 	m_world(m_gravity),
-	m_stateStack(State::Context(m_window, m_textureManager, m_fontManager, m_gui, m_eventManager, m_entityManager, m_systemManager))
+	m_stateStack(State::Context(m_window, m_textureManager, m_fontManager, m_gui, m_eventManager, m_entityManager, m_systemManager, m_world))
 {
 }
 
@@ -44,11 +44,12 @@ int Application::init()
 	{
 		LangManager::setLang(FR);
 		m_fontManager.load(Fonts::Menu, "ressources/fonts/euphorigenic.ttf");
+		m_textureManager.load(Textures::Archer, toPath(windowSize) + "charac.png");
 		m_gui.setGlobalFont(std::make_shared<sf::Font>(m_fontManager.get(Fonts::Menu)));
 	}
 	catch(std::runtime_error& e)
 	{
-		std::cerr << "Exception: " << e.what() << std::endl;
+		std::cerr << "Exception : " << e.what() << std::endl;
 		return 1;
 	}
 	registerStates();

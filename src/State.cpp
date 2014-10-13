@@ -2,6 +2,7 @@
 #include <SFML/Window/Event.hpp>
 #include <TGUI/TGUI.hpp>
 #include <entityx/entityx.h>
+#include <Box2D/Dynamics/b2World.h>
 
 #include <TheLostGirl/ResourceManager.h>
 #include <TheLostGirl/StateStack.h>
@@ -13,20 +14,22 @@ using entityx::EntityManager;
 using entityx::SystemManager;
 
 State::Context::Context(sf::RenderWindow& _window,
-						TextureManager& _textures,
-						FontManager& _fonts,
+						TextureManager& _textureManager,
+						FontManager& _fontManager,
 						tgui::Gui& _gui,
 						EventManager& _eventManager,
 						EntityManager& _entityManager,
-						SystemManager& _systemManager
+						SystemManager& _systemManager,
+						b2World& _world
 						):
 	window(_window),
-	textures(_textures),
-	fonts(_fonts),
+	textureManager(_textureManager),
+	fontManager(_fontManager),
 	gui(_gui),
 	eventManager(_eventManager),
 	entityManager(_entityManager),
-	systemManager(_systemManager)
+	systemManager(_systemManager),
+	world(_world)
 {
 }
 

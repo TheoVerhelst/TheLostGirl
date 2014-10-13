@@ -60,7 +60,7 @@ struct SpriteComponent : public entityx::Component<SpriteComponent>
 /// Animations::TimeAnimation timeAnim(anim, sf::Time::seconds(3.f));
 /// 
 /// //Add the animation to the entity
-/// animationsComponent->animations.insert(Archer::Animations::Run, timeAnim);
+/// animationsComponent->animations.insert(std::make_pair("run", timeAnim));
 /// animationsComponent->playAnimation = true;
 /// animationsComponent->currentAnimation = Archer::Animations::Run;
 /// \endcode

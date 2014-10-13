@@ -22,6 +22,7 @@ namespace entityx
 	class EntityManager;
 	class SystemManager;
 }
+class b2World;
 class State;
 class StateStack;
 
@@ -40,20 +41,22 @@ class State
 		struct Context
 		{
 			Context(sf::RenderWindow& _window,
-					TextureManager& _textures,
-					FontManager& _fonts,
+					TextureManager& _textureManager,
+					FontManager& _fontManager,
 					tgui::Gui& _gui,
 					entityx::EventManager& _eventManager,
 					entityx::EntityManager& _entityManager,
-					entityx::SystemManager& _systemManage
+					entityx::SystemManager& _systemManager,
+					b2World& _world
 				);
 			sf::RenderWindow& window;///< The main window
-			TextureManager& textures;///< The texture manager
-			FontManager& fonts;///< The font manager
+			TextureManager& textureManager;///< The texture manager
+			FontManager& fontManager;///< The font manager
 			tgui::Gui& gui;///< The main GUI manager
 			entityx::EventManager& eventManager;///< The event manager of the entity system.
 			entityx::EntityManager& entityManager;///< The entity manager of the entity system
 			entityx::SystemManager& systemManager;///< The system manager of the entity system
+			b2World& world;///< The Box2D physic world.
 		};
 
         /// Default constructor.
