@@ -764,7 +764,7 @@ INPUT                  = ../include/TheLostGirl \
                          "../src/IntroState.cpp" \
                          "../src/LangManager.cpp" \
                          "../include/TheLostGirl/functions.h" \
-                         "../include/TheLostGirl/ResourceHolder.inl" \
+                         "../include/TheLostGirl/ResourceManager.inl" \
                          "../include/TheLostGirl/MainMenuState.h" \
                          "../src/functions.cpp" \
                          "../src/GameState.cpp" \
@@ -773,7 +773,7 @@ INPUT                  = ../include/TheLostGirl \
                          "../include/TheLostGirl/LangManager.h" \
                          "../src/Player.cpp" \
                          "../src/StateStack.cpp" \
-                         "../include/TheLostGirl/ResourceHolder.h" \
+                         "../include/TheLostGirl/ResourceManager.h" \
                          "../src/Command.cpp" \
                          "../include/TheLostGirl/receivers.h" \
                          "../src/MainMenuState.cpp" \

@@ -43,14 +43,10 @@ struct SpriteComponent : public entityx::Component<SpriteComponent>
 	SpriteComponent(sf::Sprite* _sprite = nullptr):
 		sprite(_sprite)
 	{}
-	
-	/// Destructor
-	~SpriteComponent()
-	{
-		delete sprite;
-	}
 };
 
+/// Component that hold a pointer to an Animation instances.
+/// Essential for every dynamic entity in the game.
 struct AnimationsComponent : public entityx::Component<AnimationsComponent>
 {
 	Animations* animations;///< Pointer to the animations manager.
@@ -60,12 +56,6 @@ struct AnimationsComponent : public entityx::Component<AnimationsComponent>
 	AnimationsComponent(Animations* _animations):
 		animations(_animations)
 	{}
-	
-	/// Destructor
-	~AnimationsComponent()
-	{
-		delete animations;
-	}
 };
 
 /// Walk component.

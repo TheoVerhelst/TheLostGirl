@@ -31,8 +31,8 @@ class Command;
 typedef std::queue<Command> CommandQueue;
 
 /// Base class for the various game states.
-/// Inherits from this class and implements the pure virtal functions.
-/// The New state must then be registered and pushed to the StateStack.
+/// In order to make a game state, you must inherit from this class and implement the pure virtal functions.
+/// The new state must then be registered and pushed in a StateStack.
 class State
 {
 	public:
@@ -44,6 +44,17 @@ class State
         /// they can then use these various ressources managers.
 		struct Context
 		{
+			/// Default constructor
+			/// \param _window The main window
+			/// \param _textureManager The texture manager
+			/// \param _fontManager The font manager
+			/// \param _gui The main GUI manager
+			/// \param _eventManager The event manager of the entity system.
+			/// \param _entityManager The entity manager of the entity system.
+			/// \param _systemManager The system manager of the entity system.
+			/// \param _world The Box2D physic world.
+			/// \param _player The input manager.
+			/// \param _commandQueue The queue of commands.
 			Context(sf::RenderWindow& _window,
 					TextureManager& _textureManager,
 					FontManager& _fontManager,
@@ -80,7 +91,7 @@ class State
 
         /// The logic update function.
         /// \param dt Elapsed time since the last game frame.
-        /// \return Return true if the state under this state in the stack must be also updated.
+        /// \return Return true if the state under this one in the stack must be also updated.
         /// This function call e.g. the physic update function, the AI function, etc...
 		virtual bool update(sf::Time dt) = 0;
 
@@ -92,14 +103,24 @@ class State
 		virtual bool handleEvent(const sf::Event& event) = 0;
 
 	protected:
+		/// Add the given game state to the pending queue,
+		/// and construct it as soon as possible.
+		/// \param stateID Identifier of the state to push.
 		void requestStackPush(States stateID);
+		
+		/// Delete the top state as soon as possible.
 		void requestStackPop();
+		
+		/// Delete all the states as soon as possible.
 		void requestStateClear();
+		
+		/// Give the context of the application.
+		/// \return Context structure of the current game.
 		Context getContext() const;
 
 	private:
-		StateStack* m_stateStack;
-		Context m_context;
+		StateStack* m_stateStack;///< Pointer to the state stack that holds this state.
+		Context m_context;///< Current context of the game.
 };
 
 #endif // STATE_H
