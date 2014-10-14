@@ -28,7 +28,6 @@ class ResourceManager
         /// so the ressource is loaded only one time.
         /// \param id Identifier of the ressource, defined in RessourceIdentifiers.h
         /// \param filename String of the path to the ressource.
-        /// \return void
 		void load(Identifier id, const std::string& filename);
 
         /// Overloaded function that pass a custom argument to the SFML's loading function.
@@ -36,7 +35,6 @@ class ResourceManager
         /// \param id Identifier of the ressource, defined in RessourceIdentifiers.h
         /// \param filename String of the path to the ressource.
         /// \param secondParam Additional parameter, it can be every type you want, and is passed to the SFML's loading function.
-        /// \return void
 		template <typename Parameter>
 		void load(Identifier id, const std::string& filename, const Parameter& secondParam);
 
