@@ -1,4 +1,5 @@
 #include <cmath>
+#include <cassert>
 
 #include <Animations.h>
 
@@ -7,23 +8,10 @@ Animations::Animations():
 	m_isPlaying{false},
 	m_progress{0.f},
 	m_currentAnimation("")
-{
-}
+{}
 
 Animations::~Animations()
 {}
-
-Animations::Animations(const Animations& other)
-{
-	//copy ctor
-}
-
-Animations& Animations::operator=(const Animations& rhs)
-{
-	if (this == &rhs) return *this; // handle self assignment
-	//assignment operator
-	return *this;
-}
 
 void Animations::addAnimation(const std::string& identifier,
 							  Animation animation,
@@ -84,10 +72,12 @@ void Animations::setCurrentAnimation(std::string animation)
 
 void Animations::update(entityx::Entity& entity, sf::Time dt)
 {
-	//If we must play an animation and if the current animation is in the map
-	if(isPlaying() and m_animationsMap.find(m_currentAnimation) != m_animationsMap.end())
+	//If we must play an animation
+	if(isPlaying())
 	{
-		TimeAnimation& timeAnim = m_animationsMap.at(m_currentAnimation);//Access this element is safe
+		auto found = m_animationsMap.find(m_currentAnimation);
+		assert(found != m_animationsMap.end());//Assert that the animation exists
+		TimeAnimation& timeAnim = m_animationsMap.at(m_currentAnimation);//Now access this element is safe
 		m_progress += dt.asSeconds()/timeAnim.duration.asSeconds();
 		if(timeAnim.loops and m_progress > 1.f)
 			m_progress -= std::floor(m_progress);//Keep the progress in the range [0, 1]

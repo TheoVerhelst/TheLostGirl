@@ -56,20 +56,12 @@ class Animations
 			/// \param _loops Indicates if the animation must loop or not.
 			TimeAnimation(Animation _animation, sf::Time _duration = sf::seconds(1.f), bool _loops = true);
 		};
+		
 		/// Default constructor
 		Animations();
 		
 		/// Default destructor
 		~Animations();
-		
-		/// Copy constructor
-		///  \param other Object to copy from
-		Animations(const Animations& other);
-		
-		/// Assignment operator
-		///  \param other Object to assign from
-		///  \return A reference to this
-		Animations& operator=(const Animations& other);
 
 		/// Add a new animation to the manager.
 		/// \param identifier Unique identifier of the animation to add.
@@ -130,7 +122,7 @@ class Animations
 		
 		/// Update the current animation.
 		/// \param entity Entity on wich apply the animation.
-		/// \param dt Elapsed time in the current frame.
+		/// \param dt Elapsed time in the last game frame.
 		void update(entityx::Entity& entity, sf::Time dt = sf::Time::Zero);
 		
 	private:

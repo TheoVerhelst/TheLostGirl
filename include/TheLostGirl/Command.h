@@ -4,12 +4,13 @@
 #include <functional>
 #include <queue>
 
+#include <TheLostGirl/Category.h>
+
 //Forward declarations
 namespace entityx
 {
 	class Entity;
 }
-enum class Category;
 
 /// Function applied to an entity.
 /// The Command structure hold a function that will be applied to a specific entity.
@@ -26,7 +27,7 @@ struct Command
 	
     /// Category.
     /// Category of entity concerned by \a action. The user must himself check category before call \a action.                
-	Category category;
+	unsigned int category;
 };
 
 /// Convenient typedef of Command.

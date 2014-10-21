@@ -3,6 +3,8 @@
 
 #include <SFML/Graphics/Sprite.hpp>
 #include <TheLostGirl/Animations.h>
+#include <TheLostGirl/TimeSystem.h>
+
 //Forward declarations
 namespace sf
 {
@@ -33,7 +35,7 @@ class GameState : public State
 		virtual void draw();
 
         /// The logic update function.
-        /// \param dt Elapsed time since the last game frame.
+        /// \param dt Elapsed time in the last game frame.
         /// \return Return true if the state under this one in the stack must be also updated.
         /// This function call e.g. the physic update function, the AI function, etc...
 		virtual bool update(sf::Time dt);
@@ -48,6 +50,7 @@ class GameState : public State
 		entityx::Entity m_archer;      ///< Main character.
 		sf::Sprite m_archerSprite;     ///< The sprite of the archer.
 		Animations m_archerAnimations; ///< The animations of the archer.
+		TimeSystem m_timeSystem;       ///< The time manager.
 };
 
 #endif // GAMESTATE_H

@@ -115,9 +115,9 @@ wstring TimeSystem::getFormatedTime() const
 	return to_wstring(hours()) + L":" + to_wstring(minutes());
 }
 
-void TimeSystem::update(sf::Time tick)
+void TimeSystem::update(sf::Time dt)
 {
-	m_totalTime += tick.asSeconds();
+	m_totalTime += dt.asSeconds();
 	float seasonFactor = sin((m_totalTime / 24000.f) * 360.f); //Vary between -1  and 1, maximum in the spring and the automn
 	seasonFactor = (seasonFactor + 1.f) / 2.f; //Now between 0 and 1
 

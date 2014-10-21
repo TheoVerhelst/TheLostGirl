@@ -1,45 +1,39 @@
+#include <iostream>
+
 #include <SFML/Window/Event.hpp>
 #include <entityx/entityx.h>
 
 #include <TheLostGirl/Command.h>
 #include <TheLostGirl/constants.h>
 #include <TheLostGirl/components.h>
+#include <TheLostGirl/actions.h>
 
 #include <TheLostGirl/Player.h>
 
 Player::Player()
 {
-		// Set initial key bindings
-//		m_keyBinding[sf::Keyboard::Q] = Action::MoveLeft;
-//		m_keyBinding[sf::Keyboard::D] = Action::MoveRight;
-//		m_keyBinding[sf::Keyboard::Z] = Action::MoveUp;
-//		m_keyBinding[sf::Keyboard::S] = Action::MoveDown;
+	// Set initial key bindings
+	m_keyBinding[sf::Keyboard::Q] = Action::MoveLeft;
+	m_keyBinding[sf::Keyboard::D] = Action::MoveRight;
+	m_keyBinding[sf::Keyboard::Z] = Action::MoveUp;
+	m_keyBinding[sf::Keyboard::S] = Action::MoveDown;
+	m_keyBinding[sf::Keyboard::Space] = Action::Jump;
+	m_keyBinding[sf::Keyboard::B] = Action::Bend;
+	m_keyBinding[sf::Keyboard::M] = Action::Sneak;
+	m_keyBinding[sf::Keyboard::H] = Action::HandToHand;
 	
 	// Set initial action bindings, fill the maps
 	initializeActions();
 
-	// Assign all categories to player's paddle
-//	for(auto& pair : m_startActionBinding)
-//	{
-//		if(m_isLeft)
-//			pair.second.category = Category::LeftPlayerPaddle;
-//		else
-//			pair.second.category = Category::RightPlayerPaddle;
-//	}
-//	for(auto& pair : m_stopActionBinding)
-//	{
-//		if(m_isLeft)
-//			pair.second.category = Category::LeftPlayerPaddle;
-//		else
-//			pair.second.category = Category::RightPlayerPaddle;
-//	}
-//	for(auto& pair : m_realtimeActionBinding)
-//	{
-//		if(m_isLeft)
-//			pair.second.category = Category::LeftPlayerPaddle;
-//		else
-//			pair.second.category = Category::RightPlayerPaddle;
-//	}
+	// Assign all categories
+	for(auto& pair : m_startActionBinding)
+		pair.second.category = Category::Player;
+	
+	for(auto& pair : m_stopActionBinding)
+		pair.second.category = Category::Player;
+	
+	for(auto& pair : m_immediateActionBinding)
+		pair.second.category = Category::Player;
 }
 
 Player::~Player()
@@ -94,15 +88,17 @@ sf::Keyboard::Key Player::getAssignedKey(Action action) const
 
 void Player::initializeActions()
 {
-//	m_startActionBinding[MoveLeft].action = PaddleMover(-paddleMaxSpeed, 0.f);
-//	m_startActionBinding[MoveRight].action = PaddleMover(+paddleMaxSpeed, 0.f);
-//	m_startActionBinding[MoveUp].action = PaddleMover(0.f, -paddleMaxSpeed);
-//	m_startActionBinding[MoveDown].action = PaddleMover(0.f, +paddleMaxSpeed);
-//	
-//	m_stopActionBinding[MoveLeft].action = PaddleMover(+paddleMaxSpeed, 0.f);
-//	m_stopActionBinding[MoveRight].action = PaddleMover(-paddleMaxSpeed, 0.f);
-//	m_stopActionBinding[MoveUp].action = PaddleMover(0.f, +paddleMaxSpeed);
-//	m_stopActionBinding[MoveDown].action = PaddleMover(0.f, -paddleMaxSpeed);
+	m_startActionBinding[MoveLeft].action = LeftMover(true);
+	m_startActionBinding[MoveRight].action =  RightMover(true);
+	m_startActionBinding[MoveUp].action =  UpMover(true);
+	m_startActionBinding[MoveDown].action =  DownMover(true);
+	
+	m_stopActionBinding[MoveLeft].action =  LeftMover(false);
+	m_stopActionBinding[MoveRight].action = RightMover(false);
+	m_stopActionBinding[MoveUp].action = UpMover(false);
+	m_stopActionBinding[MoveDown].action = DownMover(false);
+	
+	m_immediateActionBinding[Jump].action = Jumper();
 }
 
 bool Player::isImmediateAction(Action action)

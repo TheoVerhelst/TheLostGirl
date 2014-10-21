@@ -1,4 +1,5 @@
 #include <algorithm>
+#include <iostream>
 
 #include <SFML/Graphics/RenderWindow.hpp>
 #include <SFML/Graphics/Sprite.hpp>
@@ -30,6 +31,52 @@ void Actions::update(entityx::EntityManager& entityManager, entityx::EventManage
 			}
 		}
 		m_commandQueue.pop();
+	}
+}
+
+void JumpSystem::update(entityx::EntityManager& entityManager, entityx::EventManager &eventManager, double)
+{
+	AnimationsComponent::Handle animationsComponent;
+	Jump::Handle jumpComponent;
+	Body::Handle bodyComponent;
+	Direction::Handle direction;
+	for(auto entity : entityManager.entities_with_components(animationsComponent, jumpComponent, bodyComponent, direction))
+	{
+		Animations* animations = animationsComponent->animations;
+		b2Body* body = bodyComponent->body;
+		if(jumpComponent->isJumping)
+		{
+			float32 vy = body->GetLinearVelocity().y;
+				std::cout << vy<< std::endl;
+			if(vy == 0.f)//On touch the ground
+			{
+				std::cout << "GND"<< std::endl;
+				jumpComponent->isJumping = false;
+				if(direction->toLeft)
+					animations->play("stayLeft");
+				else
+					animations->play("stayRight");
+			}
+			else if(vy < 0.f)//Falling
+			{
+				if(direction->toLeft)
+					animations->play("fallLeft");
+				else
+					animations->play("fallRight");
+			}
+			else if(vy > 0.f and direction->toLeft and  animations->getCurrentAnimation() == "jumpRight")//If diriged to left, set the right animation
+			{
+				float progress = animations->getProgress();
+				animations->play("jumpLeft");
+				animations->setProgress(progress);
+			}
+			else if(vy > 0.f and not direction->toLeft and  animations->getCurrentAnimation() == "jumpLeft")//If diriged to right, set the right animation
+			{
+				float progress = animations->getProgress();
+				animations->play("jumpRight");
+				animations->setProgress(progress);
+			}
+		}
 	}
 }
 

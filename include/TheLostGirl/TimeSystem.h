@@ -18,8 +18,8 @@ class TimeSystem
 		
 		/// Update the TimeSystem.
 		/// Call this member every game tick.
-		/// \param tick Elapsed time in the previous frame.
-		void update(sf::Time tick);
+		/// \param dt Elapsed time in the last game frame.
+		void update(sf::Time dt);
 		
 		/// Return the name of the current season.
 		/// \return a wide string with the name of the current season.

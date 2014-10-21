@@ -44,7 +44,7 @@ class StateStack : private sf::NonCopyable
 		void registerState(States stateID);
 		
 		/// Call the update() function of all the states in the stack.
-		/// \param dt Duration of the last frame.
+		/// \param dt Elapsed time in the last game frame.
 		void update(sf::Time dt);
 		
 		/// Call the draw() function of all the states in the stack.

@@ -68,6 +68,6 @@ T cap(T value, U min, U max)
 /// \param fadingLength The total duration of the fading.
 /// \param in Direction of the fading.
 /// \return A color between white and transparent.
-sf::Color fadingColor(sf::Time elapsedTime = sf::seconds(0), sf::Time fadingLength = sf::seconds(1), bool in = true);
+sf::Color fadingColor(sf::Time dt = sf::seconds(0), sf::Time fadingLength = sf::seconds(1), bool in = true);
 
 #endif // FUNCTIONS_H

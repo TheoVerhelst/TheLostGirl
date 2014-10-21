@@ -4,7 +4,6 @@
 #include <map>
 #include <queue>
 #include <algorithm>
-#include <iostream>
 
 //Forward declarations
 namespace sf
@@ -13,23 +12,10 @@ namespace sf
 	class Keyboard;
 }
 struct Command;
-
-//struct PaddleMover
-//{
-//	//Struct fonction that accelerate the given entity of vx and vy
-//	PaddleMover(float vx, float vy)
-//		: velocity(vx, vy)
-//	{
-//	}
-//	void operator()(entityx::Entity& entity, double dt) const
-//	{
-//		Speed::Handle speed = entity.component<Speed>();
-//		speed->x += velocity.x;
-//		speed->y += velocity.y;
-//	}
-//
-//	sf::Vector2f velocity;
-//};
+struct LeftMover;
+struct RightMover;
+struct UpMover;
+struct DownMover;
 
 /// Player class that interact with the real player.
 /// The Player class receive all the keyboards and mouse events in the gameplay and assign every input to a specific action in the game.

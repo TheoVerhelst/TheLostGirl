@@ -31,7 +31,7 @@ class MainMenuState : public State
 		virtual void draw();
 
         /// The logic update function.
-        /// \param dt Elapsed time since the last game frame.
+        /// \param dt Elapsed time in the last game frame.
         /// \return Return true if the state under this one in the stack must be also updated.
         /// This function call e.g. the physic update function, the AI function, etc...
 		virtual bool update(sf::Time dt);

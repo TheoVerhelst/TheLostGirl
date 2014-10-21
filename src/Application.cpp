@@ -28,7 +28,7 @@ Application::Application():
 	m_entityManager(m_eventManager),
 	m_systemManager(m_entityManager, m_eventManager),
 	m_commandQueue(),
-	m_gravity(0.0f, -1.0f),
+	m_gravity(0.0f, g),
 	m_world(m_gravity),
 	m_stateStack(State::Context(m_window,
 								m_textureManager,
@@ -141,6 +141,7 @@ void Application::registerSystems()
 	m_systemManager.add<Physics>(m_world);
 	m_systemManager.add<Actions>(m_commandQueue);
 	m_systemManager.add<AnimationSystem>();
+	m_systemManager.add<JumpSystem>();
 	m_systemManager.add<Render>(m_window);
 }
 

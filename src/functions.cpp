@@ -45,9 +45,9 @@ Vector2f toVector(std::string resolution)
 	return Vector2f(std::stof(x), std::stof(y));
 }
 
-Color fadingColor(Time elapsedTime, Time fadingLength, bool in)
+Color fadingColor(Time dt, Time fadingLength, bool in)
 {
-	float alpha = cap((elapsedTime / fadingLength) * 255, 0, 255);
+	float alpha = cap((dt / fadingLength) * 255, 0, 255);
 	alpha = in ? alpha : 255 - alpha;//Invert the fading if in is false, so if it is a fade out
 	return Color(255, 255, 255, alpha);
 }

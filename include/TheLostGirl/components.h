@@ -5,6 +5,8 @@
 #include <functional>
 #include <string>
 
+#include <TheLostGirl/Category.h>
+
 //Forward declarations
 namespace sf
 {
@@ -27,7 +29,7 @@ struct Body : public entityx::Component<Body>
 	/// Default constructor
 	/// \param _body Pointer to the physic body.
 	Body(b2Body* _body = nullptr):
-		body(_body)
+		body{_body}
 	{}
 };
 
@@ -41,7 +43,7 @@ struct SpriteComponent : public entityx::Component<SpriteComponent>
 	/// Default constructor
 	/// \param _sprite Pointer to the sprite to draw.
 	SpriteComponent(sf::Sprite* _sprite = nullptr):
-		sprite(_sprite)
+		sprite{_sprite}
 	{}
 };
 
@@ -54,7 +56,7 @@ struct AnimationsComponent : public entityx::Component<AnimationsComponent>
 	/// Default constructor.
 	/// \param _animations Pointer to the animations manager.
 	AnimationsComponent(Animations* _animations):
-		animations(_animations)
+		animations{_animations}
 	{}
 };
 
@@ -63,12 +65,16 @@ struct AnimationsComponent : public entityx::Component<AnimationsComponent>
 /// The walkSpeed member is the maximum speed that the entity can reach when walking.
 struct Walk : public entityx::Component<Walk>
 {
-	float walkSpeed;///< The current speed of the entity.
+	float walkSpeed;   ///< The current speed of the entity.
+	bool moveToLeft;   ///< Indicate if the entity want to move to left.
+	bool moveToRight;  ///< Indicate if the entity want to move to right.
 	
 	/// Default constructor
 	/// \param _walkSpeed The current speed of the entity.
-	Walk(float _walkSpeed = 0):
-		walkSpeed(_walkSpeed)
+	Walk(float _walkSpeed = 1.f):
+		walkSpeed{_walkSpeed},
+		moveToLeft{false},
+		moveToRight{false}
 	{}
 };
 
@@ -78,11 +84,13 @@ struct Walk : public entityx::Component<Walk>
 struct Jump : public entityx::Component<Jump>
 {
 	float jumpStrength;///< The power of the entity's jump.
+	bool isJumping;///< True when the entity jumps, false otherwise.
 	
 	/// Default constructor
 	/// \param _jumpStrength The power of the entity's jump.
 	Jump(float _jumpStrength = 0):
-		jumpStrength(_jumpStrength)
+		jumpStrength{_jumpStrength},
+		isJumping{false}
 	{}
 };
 
@@ -95,7 +103,32 @@ struct Controller : public entityx::Component<Controller>
 	/// Default constructor
 	/// \param _isPlayer that cannot be more explicit.
 	Controller(bool _isPlayer = false):
-		isPlayer(_isPlayer)
+		isPlayer{_isPlayer}
+	{}
+};
+
+/// The Direction component.
+/// It indicates where the entity is diriged to.
+struct Direction : public entityx::Component<Direction>
+{
+	bool toLeft;///< That cannot be more explicit.
+	
+	/// Default constructor
+	/// \param _isPlayer that cannot be more explicit.
+	Direction(bool _toLeft = true):
+		toLeft{_toLeft}
+	{}
+};
+
+/// The category component.
+struct CategoryComponent : public entityx::Component<Controller>
+{
+	unsigned int category;///< Category of the entity.
+	
+	/// Default constructor.
+	/// \param _category Category of the entity.
+	CategoryComponent(unsigned int _category = Category::None):
+		category{_category}
 	{}
 };
 

@@ -546,7 +546,7 @@ SORT_BRIEF_DOCS        = YES
 # detailed member documentation.
 # The default value is: NO.
 
-SORT_MEMBERS_CTORS_1ST = NO
+SORT_MEMBERS_CTORS_1ST = YES
 
 # If the SORT_GROUP_NAMES tag is set to YES then doxygen will sort the hierarchy
 # of group names into alphabetical order. If set to NO the group names will
@@ -777,7 +777,9 @@ INPUT                  = ../include/TheLostGirl \
                          "../src/Command.cpp" \
                          "../include/TheLostGirl/receivers.h" \
                          "../src/MainMenuState.cpp" \
-                         "../include/TheLostGirl/Category.h"
+                         "../include/TheLostGirl/Category.h" \
+						 "../include/TheLostGirl/TimeSystem.h" \
+						 "../src/TimeSystem.cpp"
 
 # This tag can be used to specify the character encoding of the source files
 # that doxygen parses. Internally doxygen uses the UTF-8 encoding. Doxygen uses
