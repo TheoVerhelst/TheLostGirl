@@ -89,7 +89,7 @@ GameState::GameState(StateStack& stack, Context context) :
 	//Body
 	b2BodyDef bodyDef;
 	bodyDef.type = b2_dynamicBody;
-	bodyDef.position = {0, worldFrameSize.y/2};
+	bodyDef.position = {0, 200*scale/pixelScale*2-0.1f};
 	b2Body* body = getContext().world.CreateBody(&bodyDef);
 	body->SetUserData(&m_archer);
 	m_archer.assign<Body>(body);

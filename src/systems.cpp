@@ -40,19 +40,17 @@ void Actions::update(entityx::EntityManager& entityManager, entityx::EventManage
 void FallingSystem::update(entityx::EntityManager& entityManager, entityx::EventManager &eventManager, double)
 {
 	AnimationsComponent::Handle animationsComponent;
-	Jump::Handle jumpComponent;
 	FallComponent::Handle fallComponent;
 	Body::Handle bodyComponent;
 	DirectionComponent::Handle directionComponent;
 	for(auto entity : entityManager.entities_with_components(animationsComponent,
-															jumpComponent,
 															bodyComponent,
 															directionComponent,
 															fallComponent))
-	{//For every entity that can jump, set the right animation if it goes up
+	{//For every entity that can fall, set the right animation
 		Animations* animations = animationsComponent->animations;
 		b2Body* body = bodyComponent->body;
-		if(fallComponent->inAir and body->GetLinearVelocity().y < 0.f)
+		if(fallComponent->inAir and body->GetLinearVelocity().y < -2.f)
 		{
 			if(directionComponent->direction == Direction::Left)
 				animations->play("fallLeft");
