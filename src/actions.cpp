@@ -18,44 +18,70 @@ void LeftMover::operator()(entityx::Entity& entity, double dt) const
 	if(entity.has_component<AnimationsComponent>()
 		and entity.has_component<Body>()
 		and entity.has_component<Walk>()
-		and entity.has_component<Direction>())
+		and entity.has_component<DirectionComponent>())
 	{
 		AnimationsComponent::Handle animationsComponent = entity.component<AnimationsComponent>();
 		b2Body* body = entity.component<Body>()->body;
 		Walk::Handle walkComponent = entity.component<Walk>();
-		Direction::Handle direction = entity.component<Direction>();
+		DirectionComponent::Handle directionComponent = entity.component<DirectionComponent>();
 		float speed = walkComponent->walkSpeed;
 		if(start)
 		{
-			walkComponent->moveToLeft = true;
-			if(walkComponent->moveToRight)
+			directionComponent->moveToLeft = true;
+			animationsComponent->animations->stop("stayRight");
+			animationsComponent->animations->play("stayLeft");
+			animationsComponent->animations->stop("moveRight");
+			animationsComponent->animations->play("moveLeft");
+			if(directionComponent->moveToRight)
 			{
-				animationsComponent->animations->play("stayLeft");
+				animationsComponent->animations->stop("moveLeft");
 				body->SetLinearVelocity({0, body->GetLinearVelocity().y});
-				direction->toLeft = true;
+				directionComponent->direction = Direction::Left;
 			}
 			else
 			{
-				animationsComponent->animations->play("moveLeft");
 				body->SetLinearVelocity({-speed, body->GetLinearVelocity().y});
-				direction->toLeft = true;
+				directionComponent->direction = Direction::Left;
 			}
 		}
 		else
 		{
-			walkComponent->moveToLeft = false;
-			if(walkComponent->moveToRight)
+			directionComponent->moveToLeft = false;
+			animationsComponent->animations->stop("moveLeft");
+			if(directionComponent->moveToRight)
 			{
 				animationsComponent->animations->play("moveRight");
+				animationsComponent->animations->stop("stayLeft");
+				animationsComponent->animations->play("stayRight");
 				body->SetLinearVelocity({speed, body->GetLinearVelocity().y});
-				direction->toLeft = false;
+				directionComponent->direction = Direction::Right;
 			}
 			else
 			{
-				animationsComponent->animations->play("stayLeft");
 				body->SetLinearVelocity({0, body->GetLinearVelocity().y});
-				direction->toLeft = true;
+				directionComponent->direction = Direction::Left;
 			}
+		}
+	}
+	if(entity.has_component<AnimationsComponent>()
+		and entity.has_component<Jump>()
+		and entity.has_component<FallComponent>()
+		and entity.has_component<DirectionComponent>())
+	{//For every entity that can jump, set the right animation if it goes up
+		Animations* animations = entity.component<AnimationsComponent>()->animations;
+		if(animations->isActive("fallRight"))
+		{//If falling and diriged to left
+			float progress = animations->getProgress("fallRight");
+			animations->stop("fallRight");
+			animations->play("fallLeft");
+			animations->setProgress("fallLeft", progress);
+		}
+		if(animations->isActive("jumpRight"))
+		{//If jumping and diriged to left
+			float progress = animations->getProgress("jumpRight");
+			animations->stop("jumpRight");
+			animations->play("jumpLeft");
+			animations->setProgress("jumpLeft", progress);
 		}
 	}
 }
@@ -72,44 +98,70 @@ void RightMover::operator()(entityx::Entity& entity, double dt) const
 	if(entity.has_component<AnimationsComponent>()
 		and entity.has_component<Body>()
 		and entity.has_component<Walk>()
-		and entity.has_component<Direction>())
+		and entity.has_component<DirectionComponent>())
 	{
 		AnimationsComponent::Handle animationsComponent = entity.component<AnimationsComponent>();
 		b2Body* body = entity.component<Body>()->body;
 		Walk::Handle walkComponent = entity.component<Walk>();
-		Direction::Handle direction = entity.component<Direction>();
+		DirectionComponent::Handle directionComponent = entity.component<DirectionComponent>();
 		float speed = walkComponent->walkSpeed;
 		if(start)
 		{
-			walkComponent->moveToRight = true;
-			if(walkComponent->moveToLeft)
+			directionComponent->moveToRight = true;
+			animationsComponent->animations->stop("stayLeft");
+			animationsComponent->animations->play("stayRight");
+			animationsComponent->animations->stop("moveLeft");
+			animationsComponent->animations->play("moveRight");
+			if(directionComponent->moveToLeft)
 			{
-				animationsComponent->animations->play("stayRight");
+				animationsComponent->animations->stop("moveRight");
 				body->SetLinearVelocity({0, body->GetLinearVelocity().y});
-				direction->toLeft = false;
+				directionComponent->direction = Direction::Right;
 			}
 			else
 			{
-				animationsComponent->animations->play("moveRight");
 				body->SetLinearVelocity({speed, body->GetLinearVelocity().y});
-				direction->toLeft = false;
+				directionComponent->direction = Direction::Right;
 			}
 		}
 		else
 		{
-			walkComponent->moveToRight = false;
-			if(walkComponent->moveToLeft)
+			directionComponent->moveToRight = false;
+			animationsComponent->animations->stop("moveRight");
+			if(directionComponent->moveToLeft)
 			{
 				animationsComponent->animations->play("moveLeft");
+				animationsComponent->animations->stop("stayRight");
+				animationsComponent->animations->play("stayLeft");
 				body->SetLinearVelocity({-speed, body->GetLinearVelocity().y});
-				direction->toLeft = true;
+				directionComponent->direction = Direction::Left;
 			}
 			else
 			{
-				animationsComponent->animations->play("stayRight");
 				body->SetLinearVelocity({0, body->GetLinearVelocity().y});
-				direction->toLeft = false;
+				directionComponent->direction = Direction::Right;
 			}
+		}
+	}
+	if(entity.has_component<AnimationsComponent>()
+		and entity.has_component<Jump>()
+		and entity.has_component<FallComponent>()
+		and entity.has_component<DirectionComponent>())
+	{//For every entity that can jump, set the right animation if it goes up
+		Animations* animations = entity.component<AnimationsComponent>()->animations;
+		if(animations->isActive("fallLeft"))
+		{//If jumping and diriged to left
+			float progress = animations->getProgress("fallLeft");
+			animations->stop("fallLeft");
+			animations->play("fallRight");
+			animations->setProgress("fallRight", progress);
+		}
+		if(animations->isActive("jumpLeft"))
+		{//If jumping and diriged to left
+			float progress = animations->getProgress("jumpLeft");
+			animations->stop("jumpLeft");
+			animations->play("jumpRight");
+			animations->setProgress("jumpRight", progress);
 		}
 	}
 }
@@ -165,20 +217,21 @@ void Jumper::operator()(entityx::Entity& entity, double dt) const
 	if(entity.has_component<AnimationsComponent>()
 		and entity.has_component<Body>()
 		and entity.has_component<Jump>()
-		and entity.has_component<Direction>())
+		and entity.has_component<FallComponent>()
+		and entity.has_component<DirectionComponent>())
 	{
 		Animations* animations = entity.component<AnimationsComponent>()->animations;
 		b2Body* body = entity.component<Body>()->body;
 		Jump::Handle jumpComponent = entity.component<Jump>();
-		Direction::Handle direction = entity.component<Direction>();
-		if(not jumpComponent->isJumping)
+		FallComponent::Handle fallComponent = entity.component<FallComponent>();
+		DirectionComponent::Handle directionComponent = entity.component<DirectionComponent>();
+		if(not fallComponent->inAir)
 		{
 			body->SetLinearVelocity({body->GetLinearVelocity().x, jumpComponent->jumpStrength});
-			if(direction->toLeft)
+			if(directionComponent->direction == Direction::Left)
 				animations->play("jumpLeft");
-			else
+			else if(directionComponent->direction == Direction::Right)
 				animations->play("jumpRight");
-			jumpComponent->isJumping = true;
 		}
 	}
 }

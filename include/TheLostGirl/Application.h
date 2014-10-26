@@ -18,6 +18,7 @@
 #include <TheLostGirl/ResourceManager.h>
 #include <TheLostGirl/StateStack.h>
 #include <TheLostGirl/Player.h>
+#include <TheLostGirl/receivers.h>
 
 //Forward declarations
 namespace entityx
@@ -66,6 +67,8 @@ class Application
 		CommandQueue m_commandQueue;           ///< The queue of commands.
 		b2Vec2 m_gravity;                      ///< The gravity vector.
 		b2World m_world;                       ///< The Box2D world.
+		entityx::Entity m_groundEntity;        ///< The entity of the ground.
+		FallingListener m_fallingListener;     ///< The falling listener.
 		StateStack m_stateStack;               ///< The game state manager.
 };
 

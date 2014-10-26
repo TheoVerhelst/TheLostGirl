@@ -110,7 +110,7 @@ REPEAT_BRIEF           = YES
 # the entity):The $name class, The $name widget, The $name file, is, provides,
 # specifies, contains, represents, a, an and the.
 
-ABBREVIATE_BRIEF       = 
+ABBREVIATE_BRIEF       = NO
 
 # If the ALWAYS_DETAILED_SEC and REPEAT_BRIEF tags are both set to YES then
 # doxygen will generate a detailed section even if there is only a brief
@@ -208,7 +208,7 @@ SEPARATE_MEMBER_PAGES  = NO
 # uses this value to replace tabs by spaces in code fragments.
 # Minimum value: 1, maximum value: 16, default value: 4.
 
-TAB_SIZE               = 8
+TAB_SIZE               = 4
 
 # This tag can be used to specify a number of aliases that act as commands in
 # the documentation. An alias has the form:
@@ -371,7 +371,7 @@ INLINE_SIMPLE_STRUCTS  = NO
 # types are typedef'ed and only the typedef is referenced, never the tag name.
 # The default value is: NO.
 
-TYPEDEF_HIDES_STRUCT   = NO
+TYPEDEF_HIDES_STRUCT   = YES
 
 # The size of the symbol lookup cache can be set using LOOKUP_CACHE_SIZE. This
 # cache is used to resolve symbols given their name and scope. Since this can be
@@ -410,7 +410,7 @@ EXTRACT_PRIVATE        = NO
 # scope will be included in the documentation.
 # The default value is: NO.
 
-EXTRACT_PACKAGE        = NO
+EXTRACT_PACKAGE        = YES
 
 # If the EXTRACT_STATIC tag is set to YES all static members of a file will be
 # included in the documentation.
@@ -441,7 +441,7 @@ EXTRACT_LOCAL_METHODS  = NO
 # are hidden.
 # The default value is: NO.
 
-EXTRACT_ANON_NSPACES   = NO
+EXTRACT_ANON_NSPACES   = YES
 
 # If the HIDE_UNDOC_MEMBERS tag is set to YES, doxygen will hide all
 # undocumented members inside documented classes or files. If set to NO these
@@ -487,7 +487,7 @@ INTERNAL_DOCS          = NO
 # and Mac users are advised to set this option to NO.
 # The default value is: system dependent.
 
-CASE_SENSE_NAMES       = NO
+CASE_SENSE_NAMES       = YES
 
 # If the HIDE_SCOPE_NAMES tag is set to NO then doxygen will show members with
 # their full class and namespace scopes in the documentation. If set to YES the
@@ -500,14 +500,14 @@ HIDE_SCOPE_NAMES       = NO
 # the files that are included by a file in the documentation of that file.
 # The default value is: YES.
 
-SHOW_INCLUDE_FILES     = YES
+SHOW_INCLUDE_FILES     = NO
 
 # If the SHOW_GROUPED_MEMB_INC tag is set to YES then Doxygen will add for each
 # grouped member an include statement to the documentation, telling the reader
 # which file to include in order to use the member.
 # The default value is: NO.
 
-SHOW_GROUPED_MEMB_INC  = NO
+SHOW_GROUPED_MEMB_INC  = YES
 
 # If the FORCE_LOCAL_INCLUDES tag is set to YES then doxygen will list include
 # files with double quotes in the documentation rather than with sharp brackets.
@@ -553,7 +553,7 @@ SORT_MEMBERS_CTORS_1ST = YES
 # appear in their defined order.
 # The default value is: NO.
 
-SORT_GROUP_NAMES       = NO
+SORT_GROUP_NAMES       = YES
 
 # If the SORT_BY_SCOPE_NAME tag is set to YES, the class list will be sorted by
 # fully-qualified names, including namespaces. If set to NO, the class list will
@@ -624,7 +624,7 @@ MAX_INITIALIZER_LINES  = 30
 # will mention the files that were used to generate the documentation.
 # The default value is: YES.
 
-SHOW_USED_FILES        = YES
+SHOW_USED_FILES        = NO
 
 # Set the SHOW_FILES tag to NO to disable the generation of the Files page. This
 # will remove the Files entry from the Quick Index and from the Folder Tree View
@@ -638,7 +638,7 @@ SHOW_FILES             = YES
 # Folder Tree View (if specified).
 # The default value is: YES.
 
-SHOW_NAMESPACES        = YES
+SHOW_NAMESPACES        = NO
 
 # The FILE_VERSION_FILTER tag can be used to specify a program or script that
 # doxygen should invoke to get the current version for each file (typically from
@@ -743,43 +743,8 @@ WARN_LOGFILE           = /home/theo/C++/TheLostGirl-0.0.8/doxygen/doxygen.log
 # spaces.
 # Note: If this tag is empty the current directory is searched.
 
-INPUT                  = ../include/TheLostGirl \
-                         "../include/TheLostGirl/State.h" \
-                         "../src/main.cpp" \
-                         "../src/LoadingState.cpp" \
-                         "../include/TheLostGirl/LoadingState.h" \
-                         "../src/systems.cpp" \
-                         "../version.h" \
-                         "../include/TheLostGirl/StateStack.h" \
-                         "../include/TheLostGirl/components.h" \
-                         "../include/TheLostGirl/systems.h" \
-                         "../src/Application.cpp" \
-                         "../src/State.cpp" \
-                         "../include/TheLostGirl/Command.h" \
-                         "../include/TheLostGirl/Application.h" \
-                         "../include/TheLostGirl/GameState.h" \
-                         "../include/TheLostGirl/ResourceIdentifiers.h" \
-                         "../include/TheLostGirl/events.h" \
-                         "../include/TheLostGirl/constants.h" \
-                         "../src/IntroState.cpp" \
-                         "../src/LangManager.cpp" \
-                         "../include/TheLostGirl/functions.h" \
-                         "../include/TheLostGirl/ResourceManager.inl" \
-                         "../include/TheLostGirl/MainMenuState.h" \
-                         "../src/functions.cpp" \
-                         "../src/GameState.cpp" \
-                         "../include/TheLostGirl/IntroState.h" \
-                         "../include/TheLostGirl/StateIdentifiers.h" \
-                         "../include/TheLostGirl/LangManager.h" \
-                         "../src/Player.cpp" \
-                         "../src/StateStack.cpp" \
-                         "../include/TheLostGirl/ResourceManager.h" \
-                         "../src/Command.cpp" \
-                         "../include/TheLostGirl/receivers.h" \
-                         "../src/MainMenuState.cpp" \
-                         "../include/TheLostGirl/Category.h" \
-						 "../include/TheLostGirl/TimeSystem.h" \
-						 "../src/TimeSystem.cpp"
+INPUT                  = "../include/TheLostGirl" \
+						 "../src"
 
 # This tag can be used to specify the character encoding of the source files
 # that doxygen parses. Internally doxygen uses the UTF-8 encoding. Doxygen uses

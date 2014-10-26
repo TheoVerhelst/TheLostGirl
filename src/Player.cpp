@@ -12,28 +12,56 @@
 
 Player::Player()
 {
-	// Set initial key bindings
-	m_keyBinding[sf::Keyboard::Q] = Action::MoveLeft;
-	m_keyBinding[sf::Keyboard::D] = Action::MoveRight;
-	m_keyBinding[sf::Keyboard::Z] = Action::MoveUp;
-	m_keyBinding[sf::Keyboard::S] = Action::MoveDown;
-	m_keyBinding[sf::Keyboard::Space] = Action::Jump;
-	m_keyBinding[sf::Keyboard::B] = Action::Bend;
-	m_keyBinding[sf::Keyboard::M] = Action::Sneak;
-	m_keyBinding[sf::Keyboard::H] = Action::HandToHand;
+	// Set initial inputs bindings
+	m_keyBinding[sf::Keyboard::Q]         = Action::MoveLeft;
+	m_keyBinding[sf::Keyboard::Left]      = Action::MoveLeft;
+	m_keyBinding[sf::Keyboard::D]         = Action::MoveRight;
+	m_keyBinding[sf::Keyboard::Right]     = Action::MoveRight;
+	m_keyBinding[sf::Keyboard::Z]         = Action::MoveUp;
+	m_keyBinding[sf::Keyboard::Up]        = Action::MoveUp;
+	m_keyBinding[sf::Keyboard::S]         = Action::MoveDown;
+	m_keyBinding[sf::Keyboard::Down]      = Action::MoveDown;
+	m_keyBinding[sf::Keyboard::R]         = Action::PickUp;
+	m_keyBinding[sf::Keyboard::SemiColon] = Action::PickUp;
+	m_keyBinding[sf::Keyboard::LAlt]      = Action::Roulade;
+	m_keyBinding[sf::Keyboard::RAlt]      = Action::Roulade;
+	m_keyBinding[sf::Keyboard::E]         = Action::GenericAction;
+	m_keyBinding[sf::Keyboard::Period]    = Action::GenericAction;
+	m_keyBinding[sf::Keyboard::LControl]  = Action::FurtherView;
+	m_keyBinding[sf::Keyboard::RControl]  = Action::FurtherView;
+	m_keyBinding[sf::Keyboard::Space]     = Action::Jump;
+	m_keyBinding[sf::Keyboard::LShift]    = Action::Sneak;
+	m_keyBinding[sf::Keyboard::RShift]    = Action::Sneak;
+	m_keyBinding[sf::Keyboard::A]         = Action::HandToHand;
+	m_keyBinding[sf::Keyboard::Comma]     = Action::HandToHand;
+	m_keyBinding[sf::Keyboard::Tab]       = Action::Inventory;
+	m_keyBinding[sf::Keyboard::L]         = Action::Inventory;
+	m_keyBinding[sf::Keyboard::Escape]    = Action::Pause;
+	
+	m_mouseButtonBinding[sf::Mouse::Button::Left]  = Action::Bend;
+	m_mouseButtonBinding[sf::Mouse::Button::Right] = Action::Concentrate;
+	
+	m_mouseWheelBinding = Action::ChangeArrow;
 	
 	// Set initial action bindings, fill the maps
 	initializeActions();
 
 	// Assign all categories
 	for(auto& pair : m_startActionBinding)
+	{
 		pair.second.category = Category::Player;
-	
+		pair.second.targetIsSpecific = false;
+	}
 	for(auto& pair : m_stopActionBinding)
+	{
 		pair.second.category = Category::Player;
-	
+		pair.second.targetIsSpecific = false;
+	}
 	for(auto& pair : m_immediateActionBinding)
+	{
 		pair.second.category = Category::Player;
+		pair.second.targetIsSpecific = false;
+	}
 }
 
 Player::~Player()
@@ -65,25 +93,107 @@ void Player::handleEvent(const sf::Event& event, CommandQueue& commands)
 void Player::assignKey(Action action, sf::Keyboard::Key key)
 {
 	// Remove all keys that already map to action
-	for(auto itr = m_keyBinding.begin(); itr != m_keyBinding.end();)
+	for(auto it = m_keyBinding.begin(); it != m_keyBinding.end();)
 	{
-		if(itr->second == action)
-			m_keyBinding.erase(itr++);
+		if(it->second == action)
+			m_keyBinding.erase(it++);
 		else
-			++itr;
+			++it;
 	}
 	// Insert new binding
 	m_keyBinding[key] = action;
 }
 
-sf::Keyboard::Key Player::getAssignedKey(Action action) const
+void Player::assignMouseButton(Action action, sf::Mouse::Button button)
+{
+	// Remove all keys that already map to action
+	for(auto it = m_mouseButtonBinding.begin(); it != m_mouseButtonBinding.end();)
+	{
+		if(it->second == action)
+			m_mouseButtonBinding.erase(it++);
+		else
+			++it;
+	}
+	// Insert new binding
+	m_mouseButtonBinding[button] = action;
+}
+
+void Player::assignMouseWheel(Action action)
+{
+	m_mouseWheelBinding = action;
+}
+
+void Player::assignJoystickButton(Action action, unsigned int buttonIndex)
+{
+	// Remove all keys that already map to action
+	for(auto it = m_joystickButtonBinding.begin(); it != m_joystickButtonBinding.end();)
+	{
+		if(it->second == action)
+			m_joystickButtonBinding.erase(it++);
+		else
+			++it;
+	}
+	// Insert new binding
+	m_joystickButtonBinding[buttonIndex] = action;
+}
+
+void Player::assignJoystickAxis(Action action, sf::Joystick::Axis axis)
+{
+	// Remove all keys that already map to action
+	for(auto it = m_joystickAxisBinding.begin(); it != m_joystickAxisBinding.end();)
+	{
+		if(it->second == action)
+			m_joystickAxisBinding.erase(it++);
+		else
+			++it;
+	}
+	// Insert new binding
+	m_joystickAxisBinding[axis] = action;
+}
+
+std::pair<bool, sf::Keyboard::Key> Player::getAssignedKey(Action action) const
 {
 	for(auto pair : m_keyBinding)
 	{
 		if(pair.second == action)
-			return pair.first;
+			return std::pair<bool, sf::Keyboard::Key>(true, pair.first);
 	}
-	return sf::Keyboard::Unknown;
+	return std::pair<bool, sf::Keyboard::Key>(false, sf::Keyboard::Unknown);
+}
+
+std::pair<bool, sf::Mouse::Button> Player::getAssignedMouseButton(Action action) const
+{
+	for(auto pair : m_mouseButtonBinding)
+	{
+		if(pair.second == action)
+			return std::pair<bool, sf::Mouse::Button>(true, pair.first);
+	}
+	return std::pair<bool, sf::Mouse::Button>(false, sf::Mouse::Button::Left);
+}
+
+bool Player::isAssignedToMouseWheel(Action action) const
+{
+	return m_mouseWheelBinding == action;
+}
+
+std::pair<bool, unsigned int> Player::getAssignedJoystickButton(Action action) const
+{
+	for(auto pair : m_joystickButtonBinding)
+	{
+		if(pair.second == action)
+			return std::pair<bool, unsigned int>(true, pair.first);
+	}
+	return std::pair<bool, unsigned int>(false, 0);
+}
+
+std::pair<bool, sf::Joystick::Axis> Player::getAssignedJoystickAxis(Action action) const
+{
+	for(auto pair : m_joystickAxisBinding)
+	{
+		if(pair.second == action)
+			return std::pair<bool, sf::Joystick::Axis>(true, pair.first);
+	}
+	return std::pair<bool, sf::Joystick::Axis>(false, sf::Joystick::Axis::X);
 }
 
 void Player::initializeActions()

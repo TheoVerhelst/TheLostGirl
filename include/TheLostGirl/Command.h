@@ -25,9 +25,19 @@ struct Command
     /// It just need to take these two arguments in parameters.
 	std::function<void(entityx::Entity&, double)> action;
 	
-    /// Category.
-    /// Category of entity concerned by \a action. The user must himself check category before call \a action.                
-	unsigned int category;
+	/// Indicates if the command must be applied on a specific entity
+	/// or on a global group en entities. If true, the action must be
+	/// applied on the entity pointer, and if false on every entity with the category.
+	bool targetIsSpecific;
+	
+	union
+	{
+		/// Category of entity concerned by \a action.
+		unsigned int category;
+		
+		/// Specific entity concerned by \a action.
+		entityx::Entity* entity;
+	};
 };
 
 /// Convenient typedef of Command.

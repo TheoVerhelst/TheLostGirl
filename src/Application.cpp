@@ -30,6 +30,7 @@ Application::Application():
 	m_commandQueue(),
 	m_gravity(0.0f, g),
 	m_world(m_gravity),
+	m_groundEntity(m_entityManager.create()),
 	m_stateStack(State::Context(m_window,
 								m_textureManager,
 								m_fontManager,
@@ -153,4 +154,10 @@ void Application::initWorld()
 	b2EdgeShape shape;
 	shape.Set(b2Vec2(-40.0f, 0.0f), b2Vec2(40.0f, 0.0f));
 	ground->CreateFixture(&shape, 0.0f);
+	ground->SetUserData(&m_groundEntity);
+	
+	m_groundEntity.assign<Body>(ground);
+	m_groundEntity.assign<CategoryComponent>(Category::Ground);
+	
+	m_world.SetContactListener(&m_fallingListener);
 }

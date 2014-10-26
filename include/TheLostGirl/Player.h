@@ -26,15 +26,24 @@ class Player
         /// That's all the player can do.
 		enum Action
 		{
-			MoveUp,///< Go in an exit on the top.
-			MoveDown,///< Go in an exit on the bottom.
-			MoveLeft,///< Run to left.
-			MoveRight,///< Run to right.
-			Jump,///< Jump.
-			Bend,///< Bend the bow.
-			Sneak,///< Squat.
-			HandToHand///< Give a knife hit.
+			MoveUp,       ///< Go in an exit on the top.
+			MoveDown,     ///< Go in an exit on the bottom.
+			MoveLeft,     ///< Run to left.
+			MoveRight,    ///< Run to right.
+			Bend,         ///< Bend the bow.
+			PickUp,       ///< Pick up an arrow on the ground.
+			Jump,         ///< Jump.
+			Roulade,      ///< Roulade.
+			GenericAction,///< Action with the environement (bush, climb a tree...).
+			FurtherView,  ///< Look further.
+			Sneak,        ///< Squat.
+			HandToHand,   ///< Give a knife hit.
+			Concentrate,  ///< The archer concetrate and have more precisison.
+			ChangeArrow,  ///< Choose another arrow.
+			Inventory,    ///< Open the inventory.
+			Pause,        ///< Pause the game.
 		};
+		
 		Player();
 		~Player();
 		
@@ -48,23 +57,73 @@ class Player
         /// Assign a key to an Action.
         /// \param action Action to assign.
         /// \param key Key to assign.
-        /// \return void
 		void assignKey(Action action, sf::Keyboard::Key key);
 		
-        /// Give the key assigned to Action.
-        /// \param action
-        /// \return Key mapped with \a action.                          
-		sf::Keyboard::Key getAssignedKey(Action action) const;
+        /// Assign a mouse button to an Action.
+        /// \param action Action to assign.
+        /// \param button Button to assign.
+		void assignMouseButton(Action action, sf::Mouse::Button button);
+		
+        /// Assign the mouse wheel to an Action.
+        /// \param action Action to assign.
+		void assignMouseWheel(Action action);
+		
+        /// Assign a joystic button to an Action.
+        /// \param action Action to assign.
+        /// \param buttonIndex Index of the button to assign.
+		void assignJoystickButton(Action action, unsigned int buttonIndex);
+		
+        /// Assign a joystick axis to an Action.
+        /// \param action Action to assign.
+        /// \param axis Axis to assign.
+		void assignJoystickAxis(Action action, sf::Joystick::Axis axis);
+		
+        /// Give the key assigned to \a action.
+        /// \param action Assigned action.
+        /// \return A pair where the first element indicates if a mapping was found,
+        /// and the second element contains the key mapped with \a action
+        /// if found, or the first element in the keyboard's keys enumeration otherwise. 
+		std::pair<bool, sf::Keyboard::Key> getAssignedKey(Action action) const;
+		
+        /// Give the mouse button assigned to \a action.
+        /// \param action Assigned action.
+        /// \return A pair where the first element indicates if a mapping was found,
+        /// and the second element contains the mouse button mapped with \a action
+        /// if found, or the first element in the mouse's button enumeration otherwise.
+		std::pair<bool, sf::Mouse::Button> getAssignedMouseButton(Action action) const;
+		
+        /// Check if \a action is assigned to the mouse wheel.
+        /// \param action Assigned action.
+        /// \return True if \a action is assigned to the mouse wheel, false otherwise.                          
+		bool isAssignedToMouseWheel(Action action) const;
+		
+        /// Give the joystick button assigned to \a action.
+        /// \param action Assigned action.
+        /// \return A pair where the first element indicates if a mapping was found,
+        /// and the second element contains the index of the joystick button mapped with \a action
+        /// if found, or 0 otherwise.                           
+		std::pair<bool, unsigned int> getAssignedJoystickButton(Action action) const;
+		
+        /// Give the joystick axis assigned to \a action.
+        /// \param action Assigned action.
+        /// \return A pair where the first element indicates if a mapping was found,
+        /// and the second element contains the joystick axis mapped with \a action
+        /// if found, or the first element in the joystick's axis enumeration otherwise.
+		std::pair<bool, sf::Joystick::Axis> getAssignedJoystickAxis(Action action) const;
 
 	private:
 		void initializeActions();
 		bool isImmediateAction(Action action);
 		bool isRealtimeAction(Action action);
 
-		std::map<sf::Keyboard::Key, Action> m_keyBinding;//Binding between keyboard keys and theoric actions
-		std::map<Action, Command> m_startActionBinding;//Binding between start of a theoric actions and concrete functions
-		std::map<Action, Command> m_stopActionBinding;//Binding between end of a theoric actions and concrete functions
-		std::map<Action, Command> m_immediateActionBinding;//Binding between theoric immediate actions and concrete functions
+		std::map<sf::Keyboard::Key, Action> m_keyBinding;          ///< Binding between keyboard keys and theoric actions
+		std::map<sf::Mouse::Button, Action> m_mouseButtonBinding;  ///< Binding between mouse buttons and theoric actions
+		Action m_mouseWheelBinding;                                ///< Binding between mouse wheel and an unique theoric action.
+		std::map<unsigned int, Action> m_joystickButtonBinding;    ///< Binding between joystick buttons and theoric actions
+		std::map<sf::Joystick::Axis, Action> m_joystickAxisBinding;///< Binding between joystick axis and theoric actions
+		std::map<Action, Command> m_startActionBinding;            ///< Binding between start of theoric actions and concrete functions
+		std::map<Action, Command> m_stopActionBinding;             ///< Binding between end of theoric actions and concrete functions
+		std::map<Action, Command> m_immediateActionBinding;        ///< Binding between theoric immediate actions and concrete functions
 };
 
 #endif // PLAYER_H

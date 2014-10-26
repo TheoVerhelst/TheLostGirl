@@ -9,6 +9,7 @@
 #include <TheLostGirl/components.h>
 #include <TheLostGirl/constants.h>
 #include <TheLostGirl/Command.h>
+#include <TheLostGirl/Category.h>
 #include <TheLostGirl/Animations.h>
 
 #include <TheLostGirl/systems.h>
@@ -20,14 +21,16 @@ void Actions::update(entityx::EntityManager& entityManager, entityx::EventManage
 	while(not m_commandQueue.empty())
 	{
 		Command& command = m_commandQueue.front();
-		Controller::Handle controller;
-		for(auto entity : entityManager.entities_with_components(controller))
+		CategoryComponent::Handle categoryComponent;
+		if(command.targetIsSpecific)
+			command.action(*(command.entity), dt);
+		else
 		{
-			//On vérifie si l'entité correspond à la commande, si oui on fait l'action
-			if(controller->isPlayer)
+			for(auto entity : entityManager.entities_with_components(categoryComponent))
 			{
-				command.action(entity, dt);
-				break;
+				//On vérifie si l'entité correspond à la commande, si oui on fait l'action
+				if(categoryComponent->category & command.category)
+					command.action(entity, dt);
 			}
 		}
 		m_commandQueue.pop();
@@ -38,46 +41,25 @@ void JumpSystem::update(entityx::EntityManager& entityManager, entityx::EventMan
 {
 	AnimationsComponent::Handle animationsComponent;
 	Jump::Handle jumpComponent;
+	FallComponent::Handle fallComponent;
 	Body::Handle bodyComponent;
-	Direction::Handle direction;
-	for(auto entity : entityManager.entities_with_components(animationsComponent, jumpComponent, bodyComponent, direction))
-	{
+	DirectionComponent::Handle directionComponent;
+	for(auto entity : entityManager.entities_with_components(animationsComponent,
+															jumpComponent,
+															bodyComponent,
+															directionComponent,
+															fallComponent))
+	{//For every entity that can jump, set the right animation if it goes up
 		Animations* animations = animationsComponent->animations;
 		b2Body* body = bodyComponent->body;
-		if(jumpComponent->isJumping)
+		if(fallComponent->inAir and body->GetLinearVelocity().y < 0.f)
 		{
-			float32 vy = body->GetLinearVelocity().y;
-				std::cout << vy<< std::endl;
-			if(vy == 0.f)//On touch the ground
-			{
-				std::cout << "GND"<< std::endl;
-				jumpComponent->isJumping = false;
-				if(direction->toLeft)
-					animations->play("stayLeft");
-				else
-					animations->play("stayRight");
-			}
-			else if(vy < 0.f)//Falling
-			{
-				if(direction->toLeft)
-					animations->play("fallLeft");
-				else
-					animations->play("fallRight");
-			}
-			else if(vy > 0.f and direction->toLeft and  animations->getCurrentAnimation() == "jumpRight")//If diriged to left, set the right animation
-			{
-				float progress = animations->getProgress();
-				animations->play("jumpLeft");
-				animations->setProgress(progress);
-			}
-			else if(vy > 0.f and not direction->toLeft and  animations->getCurrentAnimation() == "jumpLeft")//If diriged to right, set the right animation
-			{
-				float progress = animations->getProgress();
-				animations->play("jumpRight");
-				animations->setProgress(progress);
-			}
+			if(directionComponent->direction == Direction::Left)
+				animations->play("fallLeft");
+			else if(directionComponent->direction == Direction::Right)
+				animations->play("fallRight");
 		}
-	}
+	}	
 }
 
 void Render::update(entityx::EntityManager& entityManager, entityx::EventManager &eventManager, double)

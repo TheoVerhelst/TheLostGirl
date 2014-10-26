@@ -66,15 +66,11 @@ struct AnimationsComponent : public entityx::Component<AnimationsComponent>
 struct Walk : public entityx::Component<Walk>
 {
 	float walkSpeed;   ///< The current speed of the entity.
-	bool moveToLeft;   ///< Indicate if the entity want to move to left.
-	bool moveToRight;  ///< Indicate if the entity want to move to right.
 	
 	/// Default constructor
 	/// \param _walkSpeed The current speed of the entity.
 	Walk(float _walkSpeed = 1.f):
-		walkSpeed{_walkSpeed},
-		moveToLeft{false},
-		moveToRight{false}
+		walkSpeed{_walkSpeed}
 	{}
 };
 
@@ -84,13 +80,23 @@ struct Walk : public entityx::Component<Walk>
 struct Jump : public entityx::Component<Jump>
 {
 	float jumpStrength;///< The power of the entity's jump.
-	bool isJumping;///< True when the entity jumps, false otherwise.
 	
 	/// Default constructor
 	/// \param _jumpStrength The power of the entity's jump.
 	Jump(float _jumpStrength = 0):
-		jumpStrength{_jumpStrength},
-		isJumping{false}
+		jumpStrength{_jumpStrength}
+	{}
+};
+
+/// Falling component.
+/// The fall component must be added to every entity that can fall.
+struct FallComponent : public entityx::Component<FallComponent>
+{
+	bool inAir;///< True when the entity falls, false otherwise.
+	
+	/// Default constructor
+	FallComponent():
+		inAir{false}
 	{}
 };
 
@@ -107,21 +113,35 @@ struct Controller : public entityx::Component<Controller>
 	{}
 };
 
+/// Enumeration of every possible direction.
+enum class Direction
+{
+	None,  ///< Unhandled direction.
+	Left,  ///< Diriged to the left.
+	Right, ///< Diriged to the right.
+	Top,   ///< Diriged to the top.
+	Bottom ///< Diriged to the bottom.
+};
+
 /// The Direction component.
 /// It indicates where the entity is diriged to.
-struct Direction : public entityx::Component<Direction>
+struct DirectionComponent : public entityx::Component<DirectionComponent>
 {
-	bool toLeft;///< That cannot be more explicit.
+	Direction direction;///< Indicate the effective direction of the entity.
+	bool moveToLeft;    ///< Indicate if the entity want to move to left (e.g. left arrow key pressed).
+	bool moveToRight;   ///< Indicate if the entity want to move to right (e.g. right arrow key pressed).
 	
 	/// Default constructor
-	/// \param _isPlayer that cannot be more explicit.
-	Direction(bool _toLeft = true):
-		toLeft{_toLeft}
+	/// \param _direction Indicate the effective direction of the entity.
+	DirectionComponent(Direction _direction = Direction::Left):
+		direction{_direction},
+		moveToLeft{false},
+		moveToRight{false}
 	{}
 };
 
 /// The category component.
-struct CategoryComponent : public entityx::Component<Controller>
+struct CategoryComponent : public entityx::Component<CategoryComponent>
 {
 	unsigned int category;///< Category of the entity.
 	

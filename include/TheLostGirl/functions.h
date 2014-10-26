@@ -64,7 +64,7 @@ T cap(T value, U min, U max)
 /// Return a white color with a alpha component proportionnal to the fading state.
 /// If \a in is false, the output is transparent at end of fading.
 /// The return color is destined to be multiplied with any other color or sprite.
-/// \param elapsedTime The elapsed time since the beginning of the fading.
+/// \param dt The elapsed time since the beginning of the fading.
 /// \param fadingLength The total duration of the fading.
 /// \param in Direction of the fading.
 /// \return A color between white and transparent.
