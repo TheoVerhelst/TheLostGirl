@@ -4,6 +4,7 @@
 #include <SFML/Graphics/Sprite.hpp>
 #include <TheLostGirl/Animations.h>
 #include <TheLostGirl/TimeSystem.h>
+#include <TheLostGirl/receivers.h>
 
 //Forward declarations
 namespace sf
@@ -47,10 +48,14 @@ class GameState : public State
 		virtual bool handleEvent(const sf::Event& event);
 
 	private:
-		entityx::Entity m_archer;      ///< Main character.
-		sf::Sprite m_archerSprite;     ///< The sprite of the archer.
-		Animations m_archerAnimations; ///< The animations of the archer.
-		TimeSystem m_timeSystem;       ///< The time manager.
+		void initWorld();///< Initialize the physic world.
+		
+		entityx::Entity m_groundEntity;   ///< The entity of the ground.
+		FallingListener m_fallingListener;///< The falling listener.
+		entityx::Entity m_archer;         ///< Main character.
+		sf::Sprite m_archerSprite;        ///< The sprite of the archer.
+		Animations m_archerAnimations;    ///< The animations of the archer.
+		TimeSystem m_timeSystem;          ///< The time manager.
 };
 
 #endif // GAMESTATE_H

@@ -96,7 +96,7 @@ struct FallComponent : public entityx::Component<FallComponent>
 	
 	/// Default constructor
 	FallComponent():
-		inAir{false}
+		inAir{true}
 	{}
 };
 

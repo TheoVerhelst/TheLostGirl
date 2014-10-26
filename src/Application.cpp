@@ -30,7 +30,6 @@ Application::Application():
 	m_commandQueue(),
 	m_gravity(0.0f, g),
 	m_world(m_gravity),
-	m_groundEntity(m_entityManager.create()),
 	m_stateStack(State::Context(m_window,
 								m_textureManager,
 								m_fontManager,
@@ -63,7 +62,6 @@ int Application::init()
 		registerStates();
 		registerSystems();
 		m_systemManager.configure();//Init the manager
-		initWorld();
 		m_stateStack.pushState(States::MainMenu);
 	}
 	catch(std::runtime_error& e)
@@ -142,22 +140,6 @@ void Application::registerSystems()
 	m_systemManager.add<Physics>(m_world);
 	m_systemManager.add<Actions>(m_commandQueue);
 	m_systemManager.add<AnimationSystem>();
-	m_systemManager.add<JumpSystem>();
+	m_systemManager.add<FallingSystem>();
 	m_systemManager.add<Render>(m_window);
-}
-
-void Application::initWorld()
-{
-	b2BodyDef bd;
-	b2Body* ground = m_world.CreateBody(&bd);
-
-	b2EdgeShape shape;
-	shape.Set(b2Vec2(-40.0f, 0.0f), b2Vec2(40.0f, 0.0f));
-	ground->CreateFixture(&shape, 0.0f);
-	ground->SetUserData(&m_groundEntity);
-	
-	m_groundEntity.assign<Body>(ground);
-	m_groundEntity.assign<CategoryComponent>(Category::Ground);
-	
-	m_world.SetContactListener(&m_fallingListener);
 }

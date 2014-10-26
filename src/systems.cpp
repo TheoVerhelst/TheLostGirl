@@ -37,7 +37,7 @@ void Actions::update(entityx::EntityManager& entityManager, entityx::EventManage
 	}
 }
 
-void JumpSystem::update(entityx::EntityManager& entityManager, entityx::EventManager &eventManager, double)
+void FallingSystem::update(entityx::EntityManager& entityManager, entityx::EventManager &eventManager, double)
 {
 	AnimationsComponent::Handle animationsComponent;
 	Jump::Handle jumpComponent;

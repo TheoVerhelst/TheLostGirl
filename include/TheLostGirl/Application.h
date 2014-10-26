@@ -18,7 +18,6 @@
 #include <TheLostGirl/ResourceManager.h>
 #include <TheLostGirl/StateStack.h>
 #include <TheLostGirl/Player.h>
-#include <TheLostGirl/receivers.h>
 
 //Forward declarations
 namespace entityx
@@ -54,7 +53,6 @@ class Application
 		void render();           ///< Render all that need to be displayed on the screen.
 		void registerStates();   ///< Registers all the game states.
 		void registerSystems();  ///< Registers all the logic systems.
-		void initWorld();        ///< Initialize the physic world.
 
 		sf::RenderWindow m_window;             ///< The main window.
 		tgui::Gui m_gui;                       ///< All the gui.
@@ -67,8 +65,6 @@ class Application
 		CommandQueue m_commandQueue;           ///< The queue of commands.
 		b2Vec2 m_gravity;                      ///< The gravity vector.
 		b2World m_world;                       ///< The Box2D world.
-		entityx::Entity m_groundEntity;        ///< The entity of the ground.
-		FallingListener m_fallingListener;     ///< The falling listener.
 		StateStack m_stateStack;               ///< The game state manager.
 };
 

@@ -38,11 +38,11 @@ class Actions : public entityx::System<Actions>
 };
 
 /// System that handle the jump animation.
-class JumpSystem : public entityx::System<JumpSystem>
+class FallingSystem : public entityx::System<FallingSystem>
 {
 	public:
 		/// Default constructor.
-		JumpSystem()
+		FallingSystem()
 		{}
 		
 		/// System's update function.

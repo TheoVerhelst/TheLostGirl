@@ -21,11 +21,15 @@
 
 GameState::GameState(StateStack& stack, Context context) :
 	State(stack, context),
+	m_groundEntity(getContext().entityManager.create()),
+	m_fallingListener(),
 	m_archer(getContext().entityManager.create()),
 	m_archerSprite(getContext().textureManager.get(Textures::Archer)),
 	m_archerAnimations(),
 	m_timeSystem()
 {
+	initWorld();
+	
 	m_archer.assign<Controller>(true);
 	m_archer.assign<Walk>(5.f);
 	m_archer.assign<Jump>(5.f);
@@ -44,6 +48,7 @@ GameState::GameState(StateStack& stack, Context context) :
 	SpriteSheetAnimation stayRight;
 	stayRight.addFrame(sf::IntRect(0, 400*scale, 100*scale, 200*scale), 1.f);
 	m_archerAnimations.addAnimation("stayRight", stayRight, 0, sf::seconds(1.f), false);
+	m_archerAnimations.play("stayRight");//The character is diriged to right
 	
 	SpriteSheetAnimation leftAnimation;
 	leftAnimation.addFrame(sf::IntRect(100*1*scale, 0, 100*scale, 200*scale), 0.125f);
@@ -110,7 +115,7 @@ bool GameState::update(sf::Time elapsedTime)
 	getContext().systemManager.update<Physics>(elapsedTime.asSeconds());
 	getContext().systemManager.update<Actions>(elapsedTime.asSeconds());
 	getContext().systemManager.update<AnimationSystem>(elapsedTime.asSeconds());
-	getContext().systemManager.update<JumpSystem>(elapsedTime.asSeconds());
+	getContext().systemManager.update<FallingSystem>(elapsedTime.asSeconds());
 	m_timeSystem.update(elapsedTime);
 	return true;
 }
@@ -121,8 +126,10 @@ bool GameState::handleEvent(const sf::Event& event)
 	{
 		case sf::Event::Closed:
 			getContext().world.DestroyBody(m_archer.component<Body>()->body);
+			getContext().world.DestroyBody(m_groundEntity.component<Body>()->body);
 			getContext().world.ClearForces();
 			m_archer.destroy();
+			m_groundEntity.destroy();
 			requestStackPop();
 			break;
 
@@ -130,8 +137,10 @@ bool GameState::handleEvent(const sf::Event& event)
 			if(event.key.code == sf::Keyboard::Escape)
 			{
 				getContext().world.DestroyBody(m_archer.component<Body>()->body);
+				getContext().world.DestroyBody(m_groundEntity.component<Body>()->body);
 				getContext().world.ClearForces();
 				m_archer.destroy();
+				m_groundEntity.destroy();
 				requestStackPop();
 				requestStackPush(States::MainMenu);
 			}
@@ -142,4 +151,20 @@ bool GameState::handleEvent(const sf::Event& event)
 	}
 	getContext().player.handleEvent(event, getContext().commandQueue);
 	return false;
+}
+
+void GameState::initWorld()
+{
+	b2BodyDef bd;
+	b2Body* ground = getContext().world.CreateBody(&bd);
+
+	b2EdgeShape shape;
+	shape.Set(b2Vec2(-40.0f, 0.0f), b2Vec2(40.0f, 0.0f));
+	ground->CreateFixture(&shape, 0.0f);
+	ground->SetUserData(&m_groundEntity);
+	
+	m_groundEntity.assign<Body>(ground);
+	m_groundEntity.assign<CategoryComponent>(Category::Ground);
+	
+	getContext().world.SetContactListener(&m_fallingListener);
 }
