@@ -100,19 +100,6 @@ struct FallComponent : public entityx::Component<FallComponent>
 	{}
 };
 
-/// The Controller component.
-/// It indicates if the entity is controlled by the player or not.
-struct Controller : public entityx::Component<Controller>
-{
-	bool isPlayer;///< That cannot be more explicit.
-	
-	/// Default constructor
-	/// \param _isPlayer that cannot be more explicit.
-	Controller(bool _isPlayer = false):
-		isPlayer{_isPlayer}
-	{}
-};
-
 /// Enumeration of every possible direction.
 enum class Direction
 {

@@ -56,8 +56,8 @@ int Application::init()
 	try
 	{
 		LangManager::setLang(FR);
+		loadTextures();
 		m_fontManager.load(Fonts::Menu, "ressources/fonts/euphorigenic.ttf");
-		m_textureManager.load(Textures::Archer, toPath(windowSize) + "charac.png");
 		m_gui.setGlobalFont(std::make_shared<sf::Font>(m_fontManager.get(Fonts::Menu)));
 		registerStates();
 		registerSystems();
@@ -142,4 +142,10 @@ void Application::registerSystems()
 	m_systemManager.add<AnimationSystem>();
 	m_systemManager.add<FallingSystem>();
 	m_systemManager.add<Render>(m_window);
+}
+
+void Application::loadTextures()
+{
+	m_textureManager.load(Textures::Archer, toPath(windowSize) + "charac.png");
+	m_textureManager.load(Textures::Arms, toPath(windowSize) + "arm1.png");
 }

@@ -16,7 +16,8 @@ class ResourceManager;
 /// This enum is used with a TextureManager.
 enum class Textures
 {
-	Archer///< The texture of the main archer.
+	Archer,///< The texture of the main archer.
+	Arms,   ///< The texture of the archer's arms.
 };
 
 /// List of all fonts.

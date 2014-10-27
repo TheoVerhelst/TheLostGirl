@@ -26,11 +26,14 @@ GameState::GameState(StateStack& stack, Context context) :
 	m_archer(getContext().entityManager.create()),
 	m_archerSprite(getContext().textureManager.get(Textures::Archer)),
 	m_archerAnimations(),
+	m_arms(getContext().entityManager.create()),
+	m_armsSprite(getContext().textureManager.get(Textures::Arms)),
+	m_armsAnimations(),
 	m_timeSystem()
 {
 	initWorld();
 	
-	m_archer.assign<Controller>(true);
+	//Archer initialization
 	m_archer.assign<Walk>(5.f);
 	m_archer.assign<Jump>(5.f);
 	m_archer.assign<DirectionComponent>(Direction::Right);
@@ -86,7 +89,6 @@ GameState::GameState(StateStack& stack, Context context) :
 	fallRight.addFrame(sf::IntRect(300*scale, 200*scale, 100*scale, 200*scale), 1.f);
 	m_archerAnimations.addAnimation("fallRight", fallRight, 3, sf::seconds(1.f), false);
 	
-	//Body
 	b2BodyDef bodyDef;
 	bodyDef.type = b2_dynamicBody;
 	bodyDef.position = {0, 200*scale/pixelScale*2-0.1f};
