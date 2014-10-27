@@ -98,4 +98,22 @@ struct Jumper : public Action
 	virtual void operator()(entityx::Entity& entity, double dt) const;
 };
 
+/// Structure that bend the given bow.
+struct BowBender : public Action
+{
+	/// Default constructor.
+	/// \param _start True if the bending starts, false if it stops.
+	BowBender(bool _start);
+	
+	/// Default destructor
+	virtual ~BowBender();
+	
+	/// Overload of the () operator.
+	/// \param entity Entity to move.
+	/// \param dt Elapsed time in the last game frame.
+	virtual void operator()(entityx::Entity& entity, double dt) const;
+	
+	bool start;///< True if the bending starts, false if it stops.
+};
+
 #endif // ACTIONS_H

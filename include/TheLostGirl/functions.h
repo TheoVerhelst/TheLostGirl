@@ -35,7 +35,7 @@ sf::FloatRect handleResize(sf::Event::SizeEvent size);
 /// \return A formatted string.
 std::string toPath(sf::Vector2f resolution);
 
-/// Convert string of the type \e path/axb to a Vector2f in wich x =  and y = b.
+/// Convert string of the type \e path/axb to a Vector2f wherein x =  and y = b.
 /// Exemple :
 ///> input = "ressources/images/1920x1080/" => output = Vector2f(1920, 1080)
 /// \param resolution Current path to the images directory

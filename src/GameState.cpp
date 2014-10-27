@@ -115,6 +115,7 @@ GameState::GameState(StateStack& stack, Context context) :
 void GameState::draw()
 {
 	getContext().systemManager.update<Render>(sf::Time::Zero.asSeconds());
+	getContext().systemManager.update<DragAndDropSystem>(sf::Time::Zero.asSeconds());
 }
 
 bool GameState::update(sf::Time elapsedTime)
@@ -123,6 +124,10 @@ bool GameState::update(sf::Time elapsedTime)
 	getContext().systemManager.update<Actions>(elapsedTime.asSeconds());
 	getContext().systemManager.update<AnimationSystem>(elapsedTime.asSeconds());
 	getContext().systemManager.update<FallingSystem>(elapsedTime.asSeconds());
+	
+	std::shared_ptr<DragAndDropSystem> dad = getContext().systemManager.system<DragAndDropSystem>();
+	dad->setDragAndDropActivation(getContext().player.isDragAndDropActive());
+	
 	m_timeSystem.update(elapsedTime);
 	return true;
 }

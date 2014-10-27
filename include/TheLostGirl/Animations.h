@@ -125,13 +125,13 @@ class Animations
 		/// It is useful when the animation must pause on a certain frame,
 		/// or if the animation is not time-related.
 		/// But you will have then to call the update() member, without parameters.
-		/// \param identifier Identifier of the animation of wich set the progress.
+		/// \param identifier Identifier of the animation of wich to set the progress.
 		/// \param newProgress New value to set
 		/// \see getPeogress
 		void setProgress(const std::string& identifier, float newProgress);
 		
 		/// Update the animation system.
-		/// \param entity Entity on wich apply the animation.
+		/// \param entity Entity on wich to apply the animation.
 		/// \param dt Elapsed time in the last game frame.
 		void update(entityx::Entity& entity, sf::Time dt = sf::Time::Zero);
 		

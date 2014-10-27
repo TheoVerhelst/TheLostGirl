@@ -1,6 +1,5 @@
 #include <iostream>
 
-#include <SFML/Window/Event.hpp>
 #include <entityx/entityx.h>
 
 #include <TheLostGirl/Command.h>
@@ -94,11 +93,7 @@ void Player::handleEvent(const sf::Event& event, CommandQueue& commands)
 		if(found != m_mouseButtonBinding.end())
 		{
 			if(isRealtimeAction(found->second))
-			{
 				commands.push(m_startActionBinding[found->second]);
-				if(found->second == Action::Bend)//Begin the drag and drop to bend the bow
-					m_dragAndDropOrigin = sf::Mouse::getPosition();
-			}
 			if(isImmediateAction(found->second))
 				commands.push(m_immediateActionBinding[found->second]);
 		}
@@ -109,14 +104,11 @@ void Player::handleEvent(const sf::Event& event, CommandQueue& commands)
 		if(found != m_mouseButtonBinding.end() and isRealtimeAction(found->second))
 		{
 			commands.push(m_stopActionBinding[found->second]);
-			if(found->second == Action::Bend)
-				m_currentDragAndDrop = sf::Mouse::getPosition();
 		}
 	}
 	else if(event.type == sf::Event::MouseMoved)
 	{
-		if(isDragAndDropActive())
-			m_currentDragAndDrop = sf::Mouse::getPosition();
+		
 	}
 	else if(event.type == sf::Event::MouseWheelMoved)
 	{
@@ -257,11 +249,6 @@ bool Player::isDragAndDropActive() const
 	return result.first and sf::Mouse::isButtonPressed(result.second);//If there is a binding and if that button is pressed
 }
 
-std::pair<sf::Vector2i, sf::Vector2i> Player::getDragAndDropState() const
-{
-	return std::pair<sf::Vector2i, sf::Vector2i>(m_dragAndDropOrigin, m_currentDragAndDrop);
-}
-
 
 void Player::initializeActions()
 {
@@ -269,11 +256,13 @@ void Player::initializeActions()
 	m_startActionBinding[MoveRight].action =  RightMover(true);
 	m_startActionBinding[MoveUp].action =  UpMover(true);
 	m_startActionBinding[MoveDown].action =  DownMover(true);
+	m_startActionBinding[Bend].action = BowBender(true);
 	
 	m_stopActionBinding[MoveLeft].action =  LeftMover(false);
 	m_stopActionBinding[MoveRight].action = RightMover(false);
 	m_stopActionBinding[MoveUp].action = UpMover(false);
 	m_stopActionBinding[MoveDown].action = DownMover(false);
+	m_stopActionBinding[Bend].action = BowBender(false);
 	
 	m_immediateActionBinding[Jump].action = Jumper();
 }

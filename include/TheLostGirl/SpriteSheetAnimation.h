@@ -72,7 +72,7 @@ class SpriteSheetAnimation
 		/// Overload of the () operator.
 		/// Call this operator apply the animation to the given entity.
 		/// In fact, it just search wich rect to apply the the texture of the entity.
-		/// \param entity Entity on wich apply the animation.
+		/// \param entity Entity on wich to apply the animation.
 		/// \param progress Progress of the animation to apply.
 		void operator()(entityx::Entity& entity, float progress);
 		

@@ -10,7 +10,7 @@ class TimeSystem
 {
 	public:
 		/// Default constructor.
-		/// \param beginTime Time with wich begin the TimeSystem.
+		/// \param beginTime Time with wich to begin the TimeSystem.
 		TimeSystem(sf::Time beginTime = sf::seconds(0));
 		
 		/// Destructor.

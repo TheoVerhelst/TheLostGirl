@@ -3,6 +3,7 @@
 
 #include <SFML/Graphics/RenderWindow.hpp>
 #include <SFML/Graphics/Sprite.hpp>
+#include <SFML/Window/Event.hpp>
 #include <entityx/entityx.h>
 #include <Box2D/Box2D.h>
 
@@ -58,6 +59,22 @@ void FallingSystem::update(entityx::EntityManager& entityManager, entityx::Event
 				animations->play("fallRight");
 		}
 	}	
+}
+
+void DragAndDropSystem::update(entityx::EntityManager& entityManager, entityx::EventManager &eventManager, double)
+{
+	if(m_isActive)
+	{
+		m_line[1].position = static_cast<sf::Vector2f>(sf::Mouse::getPosition(m_window));
+		m_window.draw(m_line, 2, sf::Lines);
+	}
+}
+
+void DragAndDropSystem::setDragAndDropActivation(bool isActive)
+{
+	if(not m_isActive and isActive)
+		m_line[0].position = static_cast<sf::Vector2f>(sf::Mouse::getPosition(m_window));
+	m_isActive = isActive;
 }
 
 void Render::update(entityx::EntityManager& entityManager, entityx::EventManager &eventManager, double)

@@ -235,3 +235,13 @@ void Jumper::operator()(entityx::Entity& entity, double dt) const
 		}
 	}
 }
+
+BowBender::BowBender(bool _start):
+	start(_start)
+{}
+
+BowBender::~BowBender()
+{}
+
+void BowBender::operator()(entityx::Entity&, double) const
+{}

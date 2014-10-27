@@ -1,6 +1,8 @@
 #ifndef SYSTEMS_H
 #define SYSTEMS_H
 
+#include <SFML/Graphics/Vertex.hpp>
+
 //Forward declarations
 namespace sf
 {
@@ -52,12 +54,44 @@ class FallingSystem : public entityx::System<FallingSystem>
 		void update(entityx::EntityManager &es, entityx::EventManager &events, double dt) override;
 };
 
+/// System that handle the drag and drop.
+/// It draw a line on the screen, and set the bending angle of the playr's archer.
+class DragAndDropSystem : public entityx::System<DragAndDropSystem>
+{
+	public:
+		/// Default constructor.
+		/// \param window SFML's window on wich to render the drag and drop line.
+		DragAndDropSystem(sf::RenderWindow& window):
+			m_window(window),
+			m_line{sf::Vertex({0, 0}, sf::Color::Black),
+				   sf::Vertex({0, 0}, sf::Color::Black)},//Initialize the line and set his color
+			m_isActive{false}
+		{}
+		
+		/// System's update function.
+		/// This function must be called if the drag and drop is not active.
+		/// \param es Entity manager.
+		/// \param events Event manager.
+		/// \param dt Elapsed time in the last game frame.
+		void update(entityx::EntityManager &es, entityx::EventManager &events, double dt) override;
+		
+		/// Set the activation of the drag and drop.
+		/// The line will be drawn only if the drag and drop is active.
+		/// \param isActive True if the drag and drop is active, false otherwhise.
+		void setDragAndDropActivation(bool isActive);
+
+	private:
+		sf::RenderWindow& m_window;      ///< SFML's window on wich to render the entities.
+		sf::Vertex m_line[2];            ///< The drag and drop line.
+		bool m_isActive;                 ///< True when the drag and drop is actived.
+};
+
 /// System that draws all drawables entities on the screen.
 class Render : public entityx::System<Render>
 {
 	public:
 		/// Default constructor.
-		/// \param window SFML's window on wich render the entities.
+		/// \param window SFML's window on wich to render the entities.
 		Render(sf::RenderWindow& window):
 			m_window(window)
 		{}
@@ -69,7 +103,7 @@ class Render : public entityx::System<Render>
 		void update(entityx::EntityManager &es, entityx::EventManager &events, double dt) override;
 
 	private:
-		sf::RenderWindow& m_window;///< SFML's window on wich render the entities.
+		sf::RenderWindow& m_window;///< SFML's window on wich to render the entities.
 };
 
 /// System that updates the Box2D's world and the drawables entities.

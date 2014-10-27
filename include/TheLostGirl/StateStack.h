@@ -80,11 +80,11 @@ class StateStack : private sf::NonCopyable
 		struct PendingChange
 		{
 			Action action;  ///< Action to do.
-			States stateID; ///< Identifier of the state on wich do the action.
+			States stateID; ///< Identifier of the state on wich to do the action.
 			
 			/// Default constructor.
 			/// \param _action Action to do.
-			/// \param _statID Identifier of the state on wich do the action.
+			/// \param _statID Identifier of the state on wich to do the action.
 			explicit PendingChange(Action _action, States _stateID = States::None);
 		};
 		

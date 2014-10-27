@@ -142,6 +142,7 @@ void Application::registerSystems()
 	m_systemManager.add<AnimationSystem>();
 	m_systemManager.add<FallingSystem>();
 	m_systemManager.add<Render>(m_window);
+	m_systemManager.add<DragAndDropSystem>(m_window);
 }
 
 void Application::loadTextures()
