@@ -39,10 +39,8 @@ GameState::GameState(StateStack& stack, Context context) :
 	m_archer.assign<DirectionComponent>(Direction::Right);
 	m_archer.assign<CategoryComponent>(Category::Player|Category::CanFall);
 	m_archer.assign<FallComponent>();
-	//Sprite
 	m_archer.assign<SpriteComponent>(&m_archerSprite);
 	m_archerSprite.setTextureRect(sf::IntRect(0, 0, 100*scale, 200*scale));
-	//Animations
 	m_archer.assign<AnimationsComponent>(&m_archerAnimations);
 	SpriteSheetAnimation stayLeft;
 	stayLeft.addFrame(sf::IntRect(0, 0, 100*scale, 200*scale), 1.f);
@@ -105,6 +103,13 @@ GameState::GameState(StateStack& stack, Context context) :
 	fixtureDef.friction = 0.f;
 	fixtureDef.restitution = 0.f;
 	body->CreateFixture(&fixtureDef);
+	
+	//Arms initiailization
+	m_arms.assign<DirectionComponent>(Direction::Right);
+	m_arms.assign<CategoryComponent>(Category::Player);
+	m_arms.assign<SpriteComponent>(&m_armsSprite);
+	m_armsSprite.setTextureRect(sf::IntRect(0, 0, 100*scale, 200*scale));
+	m_arms.assign<AnimationsComponent>(&m_archerAnimations);
 }
 
 void GameState::draw()
@@ -124,32 +129,18 @@ bool GameState::update(sf::Time elapsedTime)
 
 bool GameState::handleEvent(const sf::Event& event)
 {
-	switch(event.type)
+	if(event.type == sf::Event::Closed or
+		(event.type == sf::Event::KeyPressed and event.key.code == sf::Keyboard::Escape))
 	{
-		case sf::Event::Closed:
 			getContext().world.DestroyBody(m_archer.component<Body>()->body);
 			getContext().world.DestroyBody(m_groundEntity.component<Body>()->body);
 			getContext().world.ClearForces();
 			m_archer.destroy();
+			m_arms.destroy();
 			m_groundEntity.destroy();
 			requestStackPop();
-			break;
-
-		case sf::Event::KeyPressed:
-			if(event.key.code == sf::Keyboard::Escape)
-			{
-				getContext().world.DestroyBody(m_archer.component<Body>()->body);
-				getContext().world.DestroyBody(m_groundEntity.component<Body>()->body);
-				getContext().world.ClearForces();
-				m_archer.destroy();
-				m_groundEntity.destroy();
-				requestStackPop();
+			if(event.type == sf::Event::KeyPressed)
 				requestStackPush(States::MainMenu);
-			}
-			break;
-
-		default:
-			break;
 	}
 	getContext().player.handleEvent(event, getContext().commandQueue);
 	return false;

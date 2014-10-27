@@ -410,7 +410,7 @@ EXTRACT_PRIVATE        = NO
 # scope will be included in the documentation.
 # The default value is: NO.
 
-EXTRACT_PACKAGE        = YES
+EXTRACT_PACKAGE        = NO
 
 # If the EXTRACT_STATIC tag is set to YES all static members of a file will be
 # included in the documentation.
@@ -731,7 +731,7 @@ WARN_FORMAT            = "$file:$line: $text"
 # messages should be written. If left blank the output is written to standard
 # error (stderr).
 
-WARN_LOGFILE           = /home/theo/C++/TheLostGirl-0.0.8/doxygen/doxygen.log
+WARN_LOGFILE           = 
 
 #---------------------------------------------------------------------------
 # Configuration options related to the input files

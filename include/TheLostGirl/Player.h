@@ -44,7 +44,10 @@ class Player
 			Pause,        ///< Pause the game.
 		};
 		
+		/// Default constructor.
 		Player();
+		
+		/// Default destructor.
 		~Player();
 		
         /// Handle the input.
@@ -110,20 +113,44 @@ class Player
         /// and the second element contains the joystick axis mapped with \a action
         /// if found, or the first element in the joystick's axis enumeration otherwise.
 		std::pair<bool, sf::Joystick::Axis> getAssignedJoystickAxis(Action action) const;
+		
+		/// Check if the drag and drop is currently active.
+		/// The drag and drop is active only when the button binded with
+		/// the bow bending is pressed.
+		/// \return True if the drag and drop is currently active, false otherwise.
+		/// \see getDragAndDropState
+		bool isDragAndDropActive() const;
+		
+		/// Give the current state of the drag and drop.
+		/// The user should check the drag and drop state with isDragAndDropActive() before drawing
+		/// or computing things with this function.
+		/// \return A pair in wich the first element is the origin of the drag and drop, 
+		/// and the second is the current position of the mouse.
+		std::pair<sf::Vector2i, sf::Vector2i> getDragAndDropState() const;
 
 	private:
+		/// Initialize all the player's actions.
 		void initializeActions();
+		
+		/// Check if the given action is immediate (e.g. knife hit).
+		/// \param action Action to check.
 		bool isImmediateAction(Action action);
+		
+		/// Check if the given action is real time (e.g. sneaking).
+		/// \param action Action to check.
 		bool isRealtimeAction(Action action);
 
-		std::map<sf::Keyboard::Key, Action> m_keyBinding;          ///< Binding between keyboard keys and theoric actions
-		std::map<sf::Mouse::Button, Action> m_mouseButtonBinding;  ///< Binding between mouse buttons and theoric actions
+		std::map<sf::Keyboard::Key, Action> m_keyBinding;          ///< Binding between keyboard keys and theoric actions.
+		std::map<sf::Mouse::Button, Action> m_mouseButtonBinding;  ///< Binding between mouse buttons and theoric actions.
 		Action m_mouseWheelBinding;                                ///< Binding between mouse wheel and an unique theoric action.
-		std::map<unsigned int, Action> m_joystickButtonBinding;    ///< Binding between joystick buttons and theoric actions
-		std::map<sf::Joystick::Axis, Action> m_joystickAxisBinding;///< Binding between joystick axis and theoric actions
-		std::map<Action, Command> m_startActionBinding;            ///< Binding between start of theoric actions and concrete functions
-		std::map<Action, Command> m_stopActionBinding;             ///< Binding between end of theoric actions and concrete functions
-		std::map<Action, Command> m_immediateActionBinding;        ///< Binding between theoric immediate actions and concrete functions
+		std::map<unsigned int, Action> m_joystickButtonBinding;    ///< Binding between joystick buttons and theoric actions.
+		std::map<sf::Joystick::Axis, Action> m_joystickAxisBinding;///< Binding between joystick axis and theoric actions.
+		std::map<Action, Command> m_startActionBinding;            ///< Binding between start of theoric actions and concrete functions.
+		std::map<Action, Command> m_stopActionBinding;             ///< Binding between end of theoric actions and concrete functions.
+		std::map<Action, Command> m_immediateActionBinding;        ///< Binding between theoric immediate actions and concrete functions.
+		
+		sf::Vector2i m_dragAndDropOrigin;                          ///< Position of the mouse at the begin of the drag and drop.
+		sf::Vector2i m_currentDragAndDrop;                         ///< Position of the mouse now.
 };
 
 #endif // PLAYER_H

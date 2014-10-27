@@ -88,6 +88,61 @@ void Player::handleEvent(const sf::Event& event, CommandQueue& commands)
 		if(found != m_keyBinding.end() and isRealtimeAction(found->second))
 			commands.push(m_stopActionBinding[found->second]);
 	}
+	else if(event.type == sf::Event::MouseButtonPressed)
+	{
+		auto found = m_mouseButtonBinding.find(event.mouseButton.button);
+		if(found != m_mouseButtonBinding.end())
+		{
+			if(isRealtimeAction(found->second))
+			{
+				commands.push(m_startActionBinding[found->second]);
+				if(found->second == Action::Bend)//Begin the drag and drop to bend the bow
+					m_dragAndDropOrigin = sf::Mouse::getPosition();
+			}
+			if(isImmediateAction(found->second))
+				commands.push(m_immediateActionBinding[found->second]);
+		}
+	}
+	else if(event.type == sf::Event::MouseButtonReleased)
+	{
+		auto found = m_mouseButtonBinding.find(event.mouseButton.button);
+		if(found != m_mouseButtonBinding.end() and isRealtimeAction(found->second))
+		{
+			commands.push(m_stopActionBinding[found->second]);
+			if(found->second == Action::Bend)
+				m_currentDragAndDrop = sf::Mouse::getPosition();
+		}
+	}
+	else if(event.type == sf::Event::MouseMoved)
+	{
+		if(isDragAndDropActive())
+			m_currentDragAndDrop = sf::Mouse::getPosition();
+	}
+	else if(event.type == sf::Event::MouseWheelMoved)
+	{
+		
+	}
+	else if(event.type == sf::Event::JoystickButtonPressed)
+	{
+		auto found = m_joystickButtonBinding.find(event.joystickButton.button);
+		if(found != m_joystickButtonBinding.end())
+		{
+			if(isRealtimeAction(found->second))
+				commands.push(m_startActionBinding[found->second]);
+			if(isImmediateAction(found->second))
+				commands.push(m_immediateActionBinding[found->second]);
+		}
+	}
+	else if(event.type == sf::Event::JoystickButtonReleased)
+	{
+		auto found = m_joystickButtonBinding.find(event.joystickButton.button);
+		if(found != m_joystickButtonBinding.end() and isRealtimeAction(found->second))
+			commands.push(m_stopActionBinding[found->second]);
+	}
+	else if(event.type == sf::Event::JoystickMoved)
+	{
+		
+	}
 }
 
 void Player::assignKey(Action action, sf::Keyboard::Key key)
@@ -106,7 +161,7 @@ void Player::assignKey(Action action, sf::Keyboard::Key key)
 
 void Player::assignMouseButton(Action action, sf::Mouse::Button button)
 {
-	// Remove all keys that already map to action
+	// Remove all mouse buttons that already map to action
 	for(auto it = m_mouseButtonBinding.begin(); it != m_mouseButtonBinding.end();)
 	{
 		if(it->second == action)
@@ -125,7 +180,7 @@ void Player::assignMouseWheel(Action action)
 
 void Player::assignJoystickButton(Action action, unsigned int buttonIndex)
 {
-	// Remove all keys that already map to action
+	// Remove all joysticks button that already map to action
 	for(auto it = m_joystickButtonBinding.begin(); it != m_joystickButtonBinding.end();)
 	{
 		if(it->second == action)
@@ -139,7 +194,7 @@ void Player::assignJoystickButton(Action action, unsigned int buttonIndex)
 
 void Player::assignJoystickAxis(Action action, sf::Joystick::Axis axis)
 {
-	// Remove all keys that already map to action
+	// Remove all joysticks axis that already map to action
 	for(auto it = m_joystickAxisBinding.begin(); it != m_joystickAxisBinding.end();)
 	{
 		if(it->second == action)
@@ -195,6 +250,18 @@ std::pair<bool, sf::Joystick::Axis> Player::getAssignedJoystickAxis(Action actio
 	}
 	return std::pair<bool, sf::Joystick::Axis>(false, sf::Joystick::Axis::X);
 }
+
+bool Player::isDragAndDropActive() const
+{
+	std::pair<bool, sf::Mouse::Button> result = getAssignedMouseButton(Action::Bend);//Get the button binded with the bending
+	return result.first and sf::Mouse::isButtonPressed(result.second);//If there is a binding and if that button is pressed
+}
+
+std::pair<sf::Vector2i, sf::Vector2i> Player::getDragAndDropState() const
+{
+	return std::pair<sf::Vector2i, sf::Vector2i>(m_dragAndDropOrigin, m_currentDragAndDrop);
+}
+
 
 void Player::initializeActions()
 {
