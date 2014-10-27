@@ -125,8 +125,8 @@ bool GameState::update(sf::Time elapsedTime)
 	getContext().systemManager.update<AnimationSystem>(elapsedTime.asSeconds());
 	getContext().systemManager.update<FallingSystem>(elapsedTime.asSeconds());
 	
-	std::shared_ptr<DragAndDropSystem> dad = getContext().systemManager.system<DragAndDropSystem>();
-	dad->setDragAndDropActivation(getContext().player.isDragAndDropActive());
+	//Update the drag and drop state
+	getContext().systemManager.system<DragAndDropSystem>()->setDragAndDropActivation(getContext().player.isDragAndDropActive());
 	
 	m_timeSystem.update(elapsedTime);
 	return true;
