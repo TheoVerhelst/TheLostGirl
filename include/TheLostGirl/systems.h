@@ -27,26 +27,41 @@ class Actions : public entityx::System<Actions>
 		Actions(CommandQueue& commandQueue):
 			m_commandQueue(commandQueue)
 		{}
-		
+
 		/// System's update function.
 		/// \warning Every call to this function empties the CommandQueue passed as paramter in the constructor.
 		/// \param es Entity manager.
 		/// \param events Event manager.
 		/// \param dt Elapsed time in the last game frame.
 		void update(entityx::EntityManager &es, entityx::EventManager &events, double dt) override;
- 
+
 	private:
 		CommandQueue& m_commandQueue;///< Queue of command where the actions should be in.
 };
 
 /// System that handle the jump animation.
-class FallingSystem : public entityx::System<FallingSystem>
+class FallSystem : public entityx::System<FallSystem>
 {
 	public:
 		/// Default constructor.
-		FallingSystem()
+		FallSystem()
 		{}
-		
+
+		/// System's update function.
+		/// \param es Entity manager.
+		/// \param events Event manager.
+		/// \param dt Elapsed time in the last game frame.
+		void update(entityx::EntityManager &es, entityx::EventManager &events, double dt) override;
+};
+
+/// System that handle the bow bending animation.
+class BendSystem : public entityx::System<BendSystem>
+{
+	public:
+		/// Default constructor.
+		BendSystem()
+		{}
+
 		/// System's update function.
 		/// \param es Entity manager.
 		/// \param events Event manager.
@@ -67,14 +82,14 @@ class DragAndDropSystem : public entityx::System<DragAndDropSystem>
 				   sf::Vertex({0, 0}, sf::Color::Black)},//Initialize the line and set his color
 			m_isActive{false}
 		{}
-		
+
 		/// System's update function.
 		/// This function must be called if the drag and drop is not active.
 		/// \param es Entity manager.
 		/// \param events Event manager.
 		/// \param dt Elapsed time in the last game frame.
 		void update(entityx::EntityManager &es, entityx::EventManager &events, double dt) override;
-		
+
 		/// Set the activation of the drag and drop.
 		/// The line will be drawn only if the drag and drop is active.
 		/// \param isActive True if the drag and drop is active, false otherwhise.
@@ -95,7 +110,7 @@ class Render : public entityx::System<Render>
 		Render(sf::RenderWindow& window):
 			m_window(window)
 		{}
-		
+
 		/// System's update function.
 		/// \param es Entity manager.
 		/// \param events Event manager.
@@ -115,7 +130,7 @@ class Physics : public entityx::System<Physics>
 		Physics(b2World& world):
 			m_world(world)
 		{}
-		
+
 		/// System's update function.
 		/// \param es Entity manager.
 		/// \param events Event manager.
@@ -134,7 +149,7 @@ class AnimationSystem : public entityx::System<AnimationSystem>
 		/// Default constructor.
 		AnimationSystem()
 		{}
-		
+
 		/// System's update function.
 		/// \param es Entity manager.
 		/// \param events Event manager.

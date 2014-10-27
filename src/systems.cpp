@@ -38,7 +38,7 @@ void Actions::update(entityx::EntityManager& entityManager, entityx::EventManage
 	}
 }
 
-void FallingSystem::update(entityx::EntityManager& entityManager, entityx::EventManager &eventManager, double)
+void FallSystem::update(entityx::EntityManager& entityManager, entityx::EventManager &eventManager, double)
 {
 	AnimationsComponent::Handle animationsComponent;
 	FallComponent::Handle fallComponent;
@@ -58,7 +58,25 @@ void FallingSystem::update(entityx::EntityManager& entityManager, entityx::Event
 			else if(directionComponent->direction == Direction::Right)
 				animations->play("fallRight");
 		}
-	}	
+	}
+}
+
+void BendSystem::update(entityx::EntityManager& entityManager, entityx::EventManager &eventManager, double)
+{
+	AnimationsComponent::Handle animationsComponent;
+	BendComponent::Handle bendComponent;
+	DirectionComponent::Handle directionComponent;
+	for(auto entity : entityManager.entities_with_components(animationsComponent,
+															bendComponent,
+															directionComponent))
+	{//For every entity that can bend a bow, set the right animation
+		Animations* animations = animationsComponent->animations;
+		float newProgress = bendComponent->power / bendComponent->maxPower;
+		if(directionComponent->direction == Direction::Left)
+			animations->setProgress("bendLeft", newProgress);
+		else if(directionComponent->direction == Direction::Right)
+			animations->setProgress("bendRight", newProgress);
+	}
 }
 
 void DragAndDropSystem::update(entityx::EntityManager& entityManager, entityx::EventManager &eventManager, double)

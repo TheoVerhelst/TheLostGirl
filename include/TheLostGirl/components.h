@@ -25,7 +25,7 @@ class Animations;
 struct Body : public entityx::Component<Body>
 {
 	b2Body* body;///< Pointer to the physic body.
-	
+
 	/// Default constructor
 	/// \param _body Pointer to the physic body.
 	Body(b2Body* _body = nullptr):
@@ -39,7 +39,7 @@ struct Body : public entityx::Component<Body>
 struct SpriteComponent : public entityx::Component<SpriteComponent>
 {
 	sf::Sprite* sprite;///< Pointer to the sprite to draw.
-	
+
 	/// Default constructor
 	/// \param _sprite Pointer to the sprite to draw.
 	SpriteComponent(sf::Sprite* _sprite = nullptr):
@@ -52,7 +52,7 @@ struct SpriteComponent : public entityx::Component<SpriteComponent>
 struct AnimationsComponent : public entityx::Component<AnimationsComponent>
 {
 	Animations* animations;///< Pointer to the animations manager.
-	
+
 	/// Default constructor.
 	/// \param _animations Pointer to the animations manager.
 	AnimationsComponent(Animations* _animations):
@@ -66,7 +66,7 @@ struct AnimationsComponent : public entityx::Component<AnimationsComponent>
 struct Walk : public entityx::Component<Walk>
 {
 	float walkSpeed;   ///< The current speed of the entity.
-	
+
 	/// Default constructor
 	/// \param _walkSpeed The current speed of the entity.
 	Walk(float _walkSpeed = 1.f):
@@ -80,11 +80,28 @@ struct Walk : public entityx::Component<Walk>
 struct Jump : public entityx::Component<Jump>
 {
 	float jumpStrength;///< The power of the entity's jump.
-	
+
 	/// Default constructor
 	/// \param _jumpStrength The power of the entity's jump.
 	Jump(float _jumpStrength = 0):
 		jumpStrength{_jumpStrength}
+	{}
+};
+
+/// Bending component.
+/// The BendComponent must be added to every entity that want to bend a bow.
+struct BendComponent : public entityx::Component<BendComponent>
+{
+	float angle;///< The current angle of the bow.
+	float power;///< The current power of the bending of the bow.
+	float maxPower;///< The maximum power of the bending of the bow.
+
+	/// Default constructor
+	/// \param _maxPower The maximum power of the bending of the bow.
+	BendComponent(float _maxPower = 0.f):
+		angle{0.f},
+		power{0.f},
+		maxPower{_maxPower}
 	{}
 };
 
@@ -93,7 +110,7 @@ struct Jump : public entityx::Component<Jump>
 struct FallComponent : public entityx::Component<FallComponent>
 {
 	bool inAir;///< True when the entity falls, false otherwise.
-	
+
 	/// Default constructor
 	FallComponent():
 		inAir{true}
@@ -117,7 +134,7 @@ struct DirectionComponent : public entityx::Component<DirectionComponent>
 	Direction direction;///< Indicate the effective direction of the entity.
 	bool moveToLeft;    ///< Indicate if the entity want to move to left (e.g. left arrow key pressed).
 	bool moveToRight;   ///< Indicate if the entity want to move to right (e.g. right arrow key pressed).
-	
+
 	/// Default constructor
 	/// \param _direction Indicate the effective direction of the entity.
 	DirectionComponent(Direction _direction = Direction::Left):
@@ -131,7 +148,7 @@ struct DirectionComponent : public entityx::Component<DirectionComponent>
 struct CategoryComponent : public entityx::Component<CategoryComponent>
 {
 	unsigned int category;///< Category of the entity.
-	
+
 	/// Default constructor.
 	/// \param _category Category of the entity.
 	CategoryComponent(unsigned int _category = Category::None):

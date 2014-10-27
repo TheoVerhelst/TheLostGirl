@@ -23,7 +23,7 @@ namespace entityx
 /// SpriteSheetAnimation anim;
 /// anim.addFrame(rect1, 0.1f);
 /// anim.addFrame(rect2, 0.9f);
-/// 
+///
 /// //Add the component to the entity :
 /// AnimationsComponent::Handle animationsComponent = entity->assign<AnimationsComponent>(new Animations());
 /// //Add the animation to the animations manager
@@ -31,7 +31,7 @@ namespace entityx
 /// animationsComponent->animations->play("run");
 /// \endcode
 /// \see AnimationSystem
-/// 
+///
 /// This animation system is inspired by the Animator system in the Jan Haller's Thor C++ library.
 class Animations
 {
@@ -42,7 +42,7 @@ class Animations
 		/// \arg \a entityx::Entity& reference to the entity to animate.
 		/// \arg \a float Current state of the animation.
 		typedef std::function<void(entityx::Entity&, float)> Animation;
-		
+
 		/// Animation associated with a certain duration.
 		struct TimeAnimation
 		{
@@ -53,18 +53,18 @@ class Animations
 			float progress;                ///< Current progress of the animation, in the range [0,1].
 			bool isPaused;                 ///< Indicates if the animations is paused.
 			bool isActive;                 ///< Indicates if the animations is active.
-			
+
 			/// Default constructor.
 			/// \param _animation Functor of the animation.
 			/// \param _importance Indicates the importance of the animation, relatively to the others.
 			/// \param _duration Duration of the animation.
 			/// \param _loops Indicates if the animation must loop or not.
-			TimeAnimation(Animation _animation, unsigned short int _importance, sf::Time _duration = sf::seconds(1.f), bool _loops = true);
+			TimeAnimation(Animation _animation, unsigned short int _importance = 0, sf::Time _duration = sf::seconds(1.f), bool _loops = false);
 		};
-		
+
 		/// Default constructor
 		Animations();
-		
+
 		/// Default destructor
 		~Animations();
 
@@ -75,52 +75,52 @@ class Animations
 		/// \param duration Duration fo the animation.
 		/// \param loop Indicate if the animation must loop or not.
 		/// \see removeAnimation
-		void addAnimation(const std::string& identifier, Animation animation, unsigned short int importance, sf::Time duration = sf::seconds(1.f), bool loop = true);
-		
+		void addAnimation(const std::string& identifier, Animation animation, unsigned short int importance = 0, sf::Time duration = sf::seconds(1.f), bool loop = false);
+
 		/// Remove an animation from the animation manager.
 		/// \param identifier Identifier of the animation to delete.
 		/// \see addAnimation
 		void removeAnimation(const std::string& identifier);
-		
+
 		/// Check if the current animation is paused.
 		/// \param identifier Identifier of the animation to check.
 		/// \return True if the animation is paused, false otherwise.
 		/// \see isActive
 		bool isPaused(const std::string& identifier) const;
-		
+
 		/// Check if the current animation is active.
 		/// \param identifier Identifier of the animation to check.
 		/// \return True if the animation is active, false otherwise.
 		/// \see isPaused
 		bool isActive(const std::string& identifier) const;
-		
+
 		/// Active and play the \a animation.
 		/// \note The animation will be effectively played only
 		/// if this is the most important animation in the active animations list.
 		/// \param identifier Identifier of the animation to play.
 		/// \see stop, pause,
 		void play(const std::string& identifier);
-		
+
 		/// Pause the given animation.
 		/// On the other side, the stop function remove the animation
 		/// from the active animations list.
 		/// \param identifier Identifier of the animation to pause.
 		/// \see play, stop
 		void pause(const std::string& identifier);
-		
+
 		/// Stop and desactive the given animation and remove it from the played animations list.
 		/// If another less important animation is currently playing,
 		/// then this one will effectively be played.
 		/// \param identifier Identifier of the animation to stop.
 		/// \see play, pause
 		void stop(const std::string& identifier);
-		
+
 		/// Return the progress of the given animation, in the range [0, 1].
 		/// \return The progress of the given animation if the animation is active, 0.f otherwise.
 		/// \param identifier Identifier of the animation to get the progress.
 		/// \see setPeogress
 		float getProgress(const std::string& identifier) const;
-		
+
 		/// Directly set the progress of the animation.
 		/// It is useful when the animation must pause on a certain frame,
 		/// or if the animation is not time-related.
@@ -129,12 +129,12 @@ class Animations
 		/// \param newProgress New value to set
 		/// \see getPeogress
 		void setProgress(const std::string& identifier, float newProgress);
-		
+
 		/// Update the animation system.
 		/// \param entity Entity on wich to apply the animation.
 		/// \param dt Elapsed time in the last game frame.
 		void update(entityx::Entity& entity, sf::Time dt = sf::Time::Zero);
-		
+
 	private:
 		std::map<std::string, TimeAnimation> m_animationsMap;///< List of all registred animations.
 };
