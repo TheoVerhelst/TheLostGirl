@@ -51,6 +51,13 @@ void Animations::play(const std::string& identifier)
 	found->second.isActive = true;
 }
 
+void Animations::activate(const std::string& identifier)
+{
+	auto found = m_animationsMap.find(identifier);
+	assert(found != m_animationsMap.end());//Assert that the animation exists
+	found->second.isActive = true;
+}
+
 void Animations::pause(const std::string& identifier)
 {
 	auto found = m_animationsMap.find(identifier);

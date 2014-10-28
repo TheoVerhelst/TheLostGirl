@@ -98,21 +98,32 @@ class Animations
 		/// \note The animation will be effectively played only
 		/// if this is the most important animation in the active animations list.
 		/// \param identifier Identifier of the animation to play.
-		/// \see stop, pause,
+		/// \see activate
 		void play(const std::string& identifier);
+
+		/// Activate and but do not play the \a animation.
+		/// If the animation is stoped, it is equivalent to do:
+		/// \code
+		/// animations.play("anim");
+		/// animations.pause("anim");
+		/// \endcode
+		/// \note If the anim is already active, this function does nothing.
+		/// \param identifier Identifier of the animation to play.
+		/// \see play
+		void activate(const std::string& identifier);
 
 		/// Pause the given animation.
 		/// On the other side, the stop function remove the animation
 		/// from the active animations list.
 		/// \param identifier Identifier of the animation to pause.
-		/// \see play, stop
+		/// \see stop
 		void pause(const std::string& identifier);
 
 		/// Stop and desactive the given animation and remove it from the played animations list.
 		/// If another less important animation is currently playing,
 		/// then this one will effectively be played.
 		/// \param identifier Identifier of the animation to stop.
-		/// \see play, pause
+		/// \see pause
 		void stop(const std::string& identifier);
 
 		/// Return the progress of the given animation, in the range [0, 1].
