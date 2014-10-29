@@ -198,24 +198,26 @@ void Player::assignJoystickAxis(Action action, sf::Joystick::Axis axis)
 	m_joystickAxisBinding[axis] = action;
 }
 
-std::pair<bool, sf::Keyboard::Key> Player::getAssignedKey(Action action) const
+std::vector<sf::Keyboard::Key> Player::getAssignedKey(Action action) const
 {
+	std::vector<sf::Keyboard::Key> ret;
 	for(auto pair : m_keyBinding)
 	{
 		if(pair.second == action)
-			return std::pair<bool, sf::Keyboard::Key>(true, pair.first);
+			ret.append(pair.first);
 	}
-	return std::pair<bool, sf::Keyboard::Key>(false, sf::Keyboard::Unknown);
+	return ret;
 }
 
-std::pair<bool, sf::Mouse::Button> Player::getAssignedMouseButton(Action action) const
+std::vector<sf::Mouse::Button> Player::getAssignedMouseButton(Action action) const
 {
+	std::vector<sf::Mouse::Button> ret;
 	for(auto pair : m_mouseButtonBinding)
 	{
 		if(pair.second == action)
-			return std::pair<bool, sf::Mouse::Button>(true, pair.first);
+			ret.append(pair.first);
 	}
-	return std::pair<bool, sf::Mouse::Button>(false, sf::Mouse::Button::Left);
+	return ret;
 }
 
 bool Player::isAssignedToMouseWheel(Action action) const
@@ -223,32 +225,43 @@ bool Player::isAssignedToMouseWheel(Action action) const
 	return m_mouseWheelBinding == action;
 }
 
-std::pair<bool, unsigned int> Player::getAssignedJoystickButton(Action action) const
+std::vector<unsigned int> Player::getAssignedJoystickButton(Action action) const
 {
+	std::vector<unsigned int> ret;
 	for(auto pair : m_joystickButtonBinding)
 	{
 		if(pair.second == action)
-			return std::pair<bool, unsigned int>(true, pair.first);
+			ret.append(pair.first);
 	}
-	return std::pair<bool, unsigned int>(false, 0);
+	return ret;
 }
 
-std::pair<bool, sf::Joystick::Axis> Player::getAssignedJoystickAxis(Action action) const
+std::vector<sf::Joystick::Axis> Player::getAssignedJoystickAxis(Action action) const
 {
+	std::vector<sf::Joystick::Axis> ret;
 	for(auto pair : m_joystickAxisBinding)
 	{
 		if(pair.second == action)
-			return std::pair<bool, sf::Joystick::Axis>(true, pair.first);
+			ret.append(pair.first);
 	}
-	return std::pair<bool, sf::Joystick::Axis>(false, sf::Joystick::Axis::X);
+	return ret;
 }
 
 bool Player::isDragAndDropActive() const
 {
-	std::pair<bool, sf::Mouse::Button> result = getAssignedMouseButton(Action::Bend);//Get the button binded with the bending
-	return result.first and sf::Mouse::isButtonPressed(result.second);//If there is a binding and if that button is pressed
+	std::vector<sf::Mouse::Button> result = getAssignedMouseButton(Action::Bend);//Get the buttons binded with the bending
+	for(button : result)
+	{
+		//If at least one of the binded buttons is pressed
+		if(sf::Mouse::isButtonPressed(button))
+			return true;
+	}
+	return false;
 }
 
+void Player::handleInitialInputState(entityx::Entity& playerEntity)
+{
+}
 
 void Player::initializeActions()
 {

@@ -73,42 +73,40 @@ class Player
 		
         /// Give the key assigned to \a action.
         /// \param action Assigned action.
-        /// \return A pair where the first element indicates if a mapping was found,
-        /// and the second element contains the key mapped with \a action
-        /// if found, or the first element in the keyboard's keys enumeration otherwise. 
-		std::pair<bool, sf::Keyboard::Key> getAssignedKey(Action action) const;
+        /// \return An array of every key mapped with \a action.
+		std::vector<sf::Keyboard::Key> getAssignedKey(Action action) const;
 		
         /// Give the mouse button assigned to \a action.
         /// \param action Assigned action.
-        /// \return A pair where the first element indicates if a mapping was found,
-        /// and the second element contains the mouse button mapped with \a action
-        /// if found, or the first element in the mouse's button enumeration otherwise.
-		std::pair<bool, sf::Mouse::Button> getAssignedMouseButton(Action action) const;
+        /// \return An array of every mouse button mapped with \a action.
+		std::vector<sf::Mouse::Button> getAssignedMouseButton(Action action) const;
 		
         /// Check if \a action is assigned to the mouse wheel.
         /// \param action Assigned action.
-        /// \return True if \a action is assigned to the mouse wheel, false otherwise.                          
+        /// \return True if \a action is assigned to the mouse wheel, false otherwise.                       
 		bool isAssignedToMouseWheel(Action action) const;
 		
         /// Give the joystick button assigned to \a action.
         /// \param action Assigned action.
-        /// \return A pair where the first element indicates if a mapping was found,
-        /// and the second element contains the index of the joystick button mapped with \a action
-        /// if found, or 0 otherwise.                           
-		std::pair<bool, unsigned int> getAssignedJoystickButton(Action action) const;
+        /// \return An array of every index of the joystick button mapped with \a action.
+		std::vector<unsigned int> getAssignedJoystickButton(Action action) const;
 		
         /// Give the joystick axis assigned to \a action.
         /// \param action Assigned action.
-        /// \return A pair where the first element indicates if a mapping was found,
-        /// and the second element contains the joystick axis mapped with \a action
-        /// if found, or the first element in the joystick's axis enumeration otherwise.
-		std::pair<bool, sf::Joystick::Axis> getAssignedJoystickAxis(Action action) const;
+        /// \return An array of every joystick axis mapped with \a action.
+		std::vector<sf::Joystick::Axis> getAssignedJoystickAxis(Action action) const;
 		
 		/// Check if the drag and drop is currently active.
 		/// The drag and drop is active only when the button binded with the bow bending is pressed.
 		/// \return True if the drag and drop is currently active, false otherwise.
 		/// \see getDragAndDropState
 		bool isDragAndDropActive() const;
+		
+		/// Set the components data of the given entity according to
+		/// the current state of the various imputs.
+		/// That allow to check the real state of e.g. the keyboard at the beginnning
+		/// of the game and move the player if the move key is pressed before the construction of the game state.
+		void handleInitialInputState(entityx::Entity& playerEntity);
 
 	private:
 		/// Initialize all the player's actions.

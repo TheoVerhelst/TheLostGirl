@@ -17,16 +17,18 @@ MainMenuState::MainMenuState(StateStack& stack, Context context):
 	m_loadButton{nullptr},
 	m_exitButton{nullptr}
 {
+	using tgui::bindWidth;
+	using tgui::bindHeight;
 	tgui::Gui& gui = getContext().gui;
 	
 	m_background = tgui::Panel::create();
-	m_background->setPosition(tgui::bindWidth(gui, 0.25f), tgui::bindHeight(gui, 0.f));
-	m_background->setSize(tgui::bindWidth(gui, 0.5f), tgui::bindHeight(gui));
+	m_background->setPosition(bindWidth(gui, 0.25f), bindHeight(gui, 0.f));
+	m_background->setSize(bindWidth(gui, 0.5f), bindHeight(gui));
 	m_background->setBackgroundColor(sf::Color(255, 255, 255, 100));
 	gui.add(m_background);
 	
 	m_logo = tgui::Picture::create(toPath(windowSize) + "title.png");
-	m_logo->setPosition(tgui::bindWidth(gui, 0.25f), tgui::bindHeight(gui, 0.f));
+	m_logo->setPosition((bindWidth(gui) - bindWidth(m_logo))/2, bindHeight(gui, 0.f));
 	gui.add(m_logo);
 	
 	// Left:   25% of window width
@@ -34,8 +36,8 @@ MainMenuState::MainMenuState(StateStack& stack, Context context):
 	// Width:  50% of window width
 	// Height: 15% of window height
 	m_newButton = tgui::Button::create();
-	m_newButton->setPosition(tgui::bindWidth(gui, 0.25f), tgui::bindHeight(gui, 0.4f));
-	m_newButton->setSize(tgui::bindWidth(gui, 0.5f), tgui::bindHeight(gui, 0.15f));
+	m_newButton->setPosition(bindWidth(gui, 0.25f), bindHeight(gui, 0.4f));
+	m_newButton->setSize(bindWidth(gui, 0.5f), bindHeight(gui, 0.15f));
 	m_newButton->setText(LangManager::tr("New game"));
 	m_newButton->getRenderer()->setBorders(0.f, 0.f);
 	m_newButton->getRenderer()->setProperty("backgroundcolor", "(255, 255, 255, 0)");
@@ -48,14 +50,14 @@ MainMenuState::MainMenuState(StateStack& stack, Context context):
 	// Left:   0% of window width
 	// Top:    55% of window height
 	m_loadButton = tgui::Button::copy(m_newButton);
-	m_loadButton->setPosition(tgui::bindWidth(gui, 0.25f), tgui::bindHeight(gui, 0.55f));
+	m_loadButton->setPosition(bindWidth(gui, 0.25f), bindHeight(gui, 0.55f));
 	m_loadButton->setText(LangManager::tr("Load game"));
 	gui.add(m_loadButton);
 
 	// Left:   0% of window width
 	// Top:    70% of window height
 	m_exitButton = tgui::Button::copy(m_newButton);
-	m_exitButton->setPosition(tgui::bindWidth(gui, 0.25f), tgui::bindHeight(gui, 0.7f));
+	m_exitButton->setPosition(bindWidth(gui, 0.25f), bindHeight(gui, 0.7f));
 	m_exitButton->setText(LangManager::tr("Exit"));
 	m_exitButton->connect("pressed", &MainMenuState::requestStackPop, this);
 	m_exitButton->disconnect(playGameSignal);

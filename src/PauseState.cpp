@@ -14,11 +14,13 @@ PauseState::PauseState(StateStack& stack, Context context) :
 	m_goToOptionsButton{nullptr},
 	m_backToMainMenuButton{nullptr}
 {
+	using tgui::bindWidth;
+	using tgui::bindHeight;
 	tgui::Gui& gui = getContext().gui;
 	
 	m_background = tgui::Panel::create();
-	m_background->setPosition(tgui::bindWidth(gui, 0.25f), tgui::bindHeight(gui, 0.f));
-	m_background->setSize(tgui::bindWidth(gui, 0.5f), tgui::bindHeight(gui));
+	m_background->setPosition(bindWidth(gui, 0.25f), bindHeight(gui, 0.f));
+	m_background->setSize(bindWidth(gui, 0.5f), bindHeight(gui));
 	m_background->setBackgroundColor(sf::Color(255, 255, 255, 100));
 	gui.add(m_background);
 	
@@ -26,8 +28,9 @@ PauseState::PauseState(StateStack& stack, Context context) :
 	// Top:    10% of window height
 	m_pauseLabel = tgui::Label::create();
 	m_pauseLabel->setText(LangManager::tr("Pause"));
-	m_pauseLabel->setPosition(tgui::bindWidth(gui, 0.25f), tgui::bindHeight(gui, 0.1f));
-	m_pauseLabel->setTextSize(30);
+	m_pauseLabel->setPosition((bindWidth(gui) - bindWidth(m_pauseLabel))/2, bindHeight(gui, 0.1f));
+	m_pauseLabel->setTextSize(80);
+	m_pauseLabel->setTextColor(sf::Color::Black);
 	gui.add(m_pauseLabel);
 	
 	// Left:   25% of window width
@@ -35,9 +38,10 @@ PauseState::PauseState(StateStack& stack, Context context) :
 	// Width:  50% of window width
 	// Height: 15% of window height
 	m_backToGameButton = tgui::Button::create();
-	m_backToGameButton->setPosition(tgui::bindWidth(gui, 0.25f), tgui::bindHeight(gui, 0.4f));
-	m_backToGameButton->setSize(tgui::bindWidth(gui, 0.5f), tgui::bindHeight(gui, 0.15f));
+	m_backToGameButton->setPosition(bindWidth(gui, 0.25f), bindHeight(gui, 0.4f));
+	m_backToGameButton->setSize(bindWidth(gui, 0.5f), bindHeight(gui, 0.15f));
 	m_backToGameButton->setText(LangManager::tr("Back to game"));
+	m_backToGameButton->setTextSize(50);
 	m_backToGameButton->getRenderer()->setBorders(0.f, 0.f);
 	m_backToGameButton->getRenderer()->setProperty("backgroundcolor", "(255, 255, 255, 0)");
 	m_backToGameButton->getRenderer()->setProperty("backgroundcolorhover", "(255, 255, 255, 55)");
@@ -49,7 +53,7 @@ PauseState::PauseState(StateStack& stack, Context context) :
 	// Left:   25% of window width
 	// Top:    55% of window height
 	m_goToOptionsButton = tgui::Button::copy(m_backToGameButton);
-	m_goToOptionsButton->setPosition(tgui::bindWidth(gui, 0.25f), tgui::bindHeight(gui, 0.55f));
+	m_goToOptionsButton->setPosition(bindWidth(gui, 0.25f), bindHeight(gui, 0.55f));
 	m_goToOptionsButton->setText(LangManager::tr("Parameters"));
 	m_goToOptionsButton->connect("pressed", &PauseState::goToOptions, this);
 	m_goToOptionsButton->disconnect(backToGameSignal);
@@ -58,7 +62,7 @@ PauseState::PauseState(StateStack& stack, Context context) :
 	// Left:   25% of window width
 	// Top:    70% of window height
 	m_backToMainMenuButton = tgui::Button::copy(m_backToGameButton);
-	m_backToMainMenuButton->setPosition(tgui::bindWidth(gui, 0.25f), tgui::bindHeight(gui, 0.7f));
+	m_backToMainMenuButton->setPosition(bindWidth(gui, 0.25f), bindHeight(gui, 0.7f));
 	m_backToMainMenuButton->setText(LangManager::tr("Back to main menu"));
 	m_backToMainMenuButton->connect("pressed", &PauseState::backToMainMenu, this);
 	m_backToMainMenuButton->disconnect(backToGameSignal);
@@ -83,8 +87,10 @@ bool PauseState::update(sf::Time)
 	return false;
 }
 
-bool PauseState::handleEvent(const sf::Event&)
+bool PauseState::handleEvent(const sf::Event& event)
 {
+	if(event.type == sf::Event::KeyPressed and event.key.code == sf::Keyboard::Escape)
+		requestStackPop();
 	return false;
 }
 

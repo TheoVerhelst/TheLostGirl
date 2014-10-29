@@ -34,6 +34,58 @@ GameState::GameState(StateStack& stack, Context context) :
 	m_timeSystem()
 {
 	initWorld();
+}
+
+GameState::~GameState()
+{
+	getContext().world.DestroyBody(m_archer.component<Body>()->body);
+	getContext().world.DestroyBody(m_groundEntity.component<Body>()->body);
+	getContext().world.ClearForces();
+	m_archer.destroy();
+	m_arms.destroy();
+	m_groundEntity.destroy();
+}
+
+void GameState::draw()
+{
+	getContext().systemManager.update<Render>(sf::Time::Zero.asSeconds());
+	getContext().systemManager.update<DragAndDropSystem>(sf::Time::Zero.asSeconds());
+}
+
+bool GameState::update(sf::Time elapsedTime)
+{
+	getContext().systemManager.update<Physics>(elapsedTime.asSeconds());
+	getContext().systemManager.update<Actions>(elapsedTime.asSeconds());
+	getContext().systemManager.update<AnimationSystem>(elapsedTime.asSeconds());
+	getContext().systemManager.update<FallSystem>(elapsedTime.asSeconds());
+	m_timeSystem.update(elapsedTime);
+	return false;
+}
+
+bool GameState::handleEvent(const sf::Event& event)
+{
+	if(event.type == sf::Event::KeyPressed and event.key.code == sf::Keyboard::Escape)
+		requestStackPush(States::Pause);
+	
+	getContext().player.handleEvent(event, getContext().commandQueue);
+	//Update the drag and drop state
+	getContext().systemManager.system<DragAndDropSystem>()->setDragAndDropActivation(getContext().player.isDragAndDropActive());
+
+	return false;
+}
+
+void GameState::initWorld()
+{
+	b2BodyDef bd;
+	b2Body* ground = getContext().world.CreateBody(&bd);
+	b2EdgeShape shape;
+	shape.Set(b2Vec2(-40.0f, 0.0f), b2Vec2(40.0f, 0.0f));
+	ground->CreateFixture(&shape, 0.0f);
+	ground->SetUserData(&m_groundEntity);
+	m_groundEntity.assign<Body>(ground);
+	m_groundEntity.assign<CategoryComponent>(Category::Ground);
+
+	getContext().world.SetContactListener(&m_fallingListener);
 
 	//Archer initialization
 	m_archer.assign<Walk>(5.f);
@@ -128,61 +180,4 @@ GameState::GameState(StateStack& stack, Context context) :
 	bendRightAnimation.addFrame(sf::IntRect(100*3.f*scale, 0, 100.f*scale, 200.f*scale), 0.25f);
 	m_armsAnimations.addAnimation("bendRight", bendRightAnimation);
 	m_armsAnimations.activate("bendRight");
-}
-
-GameState::~GameState()
-{
-	getContext().world.DestroyBody(m_archer.component<Body>()->body);
-	getContext().world.DestroyBody(m_groundEntity.component<Body>()->body);
-	getContext().world.ClearForces();
-	m_archer.destroy();
-	m_arms.destroy();
-	m_groundEntity.destroy();
-}
-
-void GameState::draw()
-{
-	getContext().systemManager.update<Render>(sf::Time::Zero.asSeconds());
-	getContext().systemManager.update<DragAndDropSystem>(sf::Time::Zero.asSeconds());
-}
-
-bool GameState::update(sf::Time elapsedTime)
-{
-	getContext().systemManager.update<Physics>(elapsedTime.asSeconds());
-	getContext().systemManager.update<Actions>(elapsedTime.asSeconds());
-	getContext().systemManager.update<AnimationSystem>(elapsedTime.asSeconds());
-	getContext().systemManager.update<FallSystem>(elapsedTime.asSeconds());
-
-	//Update the drag and drop state
-	getContext().systemManager.system<DragAndDropSystem>()->setDragAndDropActivation(getContext().player.isDragAndDropActive());
-
-	m_timeSystem.update(elapsedTime);
-	return false;
-}
-
-bool GameState::handleEvent(const sf::Event& event)
-{
-	if(event.type == sf::Event::Closed)
-		requestStackPop();
-	else if(event.type == sf::Event::KeyPressed and event.key.code == sf::Keyboard::Escape)
-		requestStackPush(States::Pause);
-	
-	getContext().player.handleEvent(event, getContext().commandQueue);
-	return false;
-}
-
-void GameState::initWorld()
-{
-	b2BodyDef bd;
-	b2Body* ground = getContext().world.CreateBody(&bd);
-
-	b2EdgeShape shape;
-	shape.Set(b2Vec2(-40.0f, 0.0f), b2Vec2(40.0f, 0.0f));
-	ground->CreateFixture(&shape, 0.0f);
-	ground->SetUserData(&m_groundEntity);
-
-	m_groundEntity.assign<Body>(ground);
-	m_groundEntity.assign<CategoryComponent>(Category::Ground);
-
-	getContext().world.SetContactListener(&m_fallingListener);
 }

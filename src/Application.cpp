@@ -56,7 +56,7 @@ int Application::init()
 	m_window.setFramerateLimit(60);
 	try
 	{
-		LangManager::setLang(FR);
+		LangManager::setLang(EN);
 		loadTextures();
 		m_fontManager.load(Fonts::Menu, "ressources/fonts/euphorigenic.ttf");
 		m_gui.setGlobalFont(std::make_shared<sf::Font>(m_fontManager.get(Fonts::Menu)));
