@@ -198,24 +198,24 @@ void Player::assignJoystickAxis(Action action, sf::Joystick::Axis axis)
 	m_joystickAxisBinding[axis] = action;
 }
 
-std::vector<sf::Keyboard::Key> Player::getAssignedKey(Action action) const
+std::vector<sf::Keyboard::Key> Player::getAssignedKeys(Action action) const
 {
 	std::vector<sf::Keyboard::Key> ret;
 	for(auto pair : m_keyBinding)
 	{
 		if(pair.second == action)
-			ret.append(pair.first);
+			ret.push_back(pair.first);
 	}
 	return ret;
 }
 
-std::vector<sf::Mouse::Button> Player::getAssignedMouseButton(Action action) const
+std::vector<sf::Mouse::Button> Player::getAssignedMouseButtons(Action action) const
 {
 	std::vector<sf::Mouse::Button> ret;
 	for(auto pair : m_mouseButtonBinding)
 	{
 		if(pair.second == action)
-			ret.append(pair.first);
+			ret.push_back(pair.first);
 	}
 	return ret;
 }
@@ -225,13 +225,13 @@ bool Player::isAssignedToMouseWheel(Action action) const
 	return m_mouseWheelBinding == action;
 }
 
-std::vector<unsigned int> Player::getAssignedJoystickButton(Action action) const
+std::vector<unsigned int> Player::getAssignedJoystickButtons(Action action) const
 {
 	std::vector<unsigned int> ret;
 	for(auto pair : m_joystickButtonBinding)
 	{
 		if(pair.second == action)
-			ret.append(pair.first);
+			ret.push_back(pair.first);
 	}
 	return ret;
 }
@@ -242,25 +242,57 @@ std::vector<sf::Joystick::Axis> Player::getAssignedJoystickAxis(Action action) c
 	for(auto pair : m_joystickAxisBinding)
 	{
 		if(pair.second == action)
-			ret.append(pair.first);
+			ret.push_back(pair.first);
 	}
 	return ret;
 }
 
 bool Player::isDragAndDropActive() const
 {
-	std::vector<sf::Mouse::Button> result = getAssignedMouseButton(Action::Bend);//Get the buttons binded with the bending
-	for(button : result)
+	return isActived(Action::Bend);
+}
+
+bool Player::isActived(Action action) const
+{
+	if(not isRealtimeAction(action))
+		return false;
+	
+	std::vector<sf::Keyboard::Key> keyBindings = getAssignedKeys(action);
+	std::vector<sf::Mouse::Button> mouseButtonsBindings = getAssignedMouseButtons(action);
+	std::vector<unsigned int> joystickButtonsBindings = getAssignedJoystickButtons(action);
+	std::vector<sf::Joystick::Axis> joystickAxisBindings = getAssignedJoystickAxis(action);
+	for(auto& key : keyBindings)
 	{
-		//If at least one of the binded buttons is pressed
+		if(sf::Keyboard::isKeyPressed(key))
+			return true;
+	}
+	for(auto& button : mouseButtonsBindings)
+	{
 		if(sf::Mouse::isButtonPressed(button))
 			return true;
 	}
+	for(auto& button : joystickButtonsBindings)
+	{
+		for(int i{0}; i < sf::Joystick::Count; ++i)
+		{
+			if(sf::Joystick::isButtonPressed(i, button))
+				return true;
+		}
+	}
+	for(auto& axis : joystickAxisBindings)
+	{
+		for(int i{0}; i < sf::Joystick::Count; ++i)
+		{
+			if(std::fabs(sf::Joystick::getAxisPosition(i, axis)) < 1.f)
+				return true;
+		}
+	}
 	return false;
 }
-
+	
 void Player::handleInitialInputState(entityx::Entity& playerEntity)
 {
+	
 }
 
 void Player::initializeActions()
@@ -280,13 +312,13 @@ void Player::initializeActions()
 	m_immediateActionBinding[Jump].action = Jumper();
 }
 
-bool Player::isImmediateAction(Action action)
+bool Player::isImmediateAction(Action action) const
 {
 	auto found = m_immediateActionBinding.find(action);
 	return found != m_immediateActionBinding.end();//If the action is in the table, it's a immediate action
 }
 
-bool Player::isRealtimeAction(Action action)
+bool Player::isRealtimeAction(Action action) const
 {
 	auto foundStart = m_startActionBinding.find(action);
 	auto foundStop = m_stopActionBinding.find(action);

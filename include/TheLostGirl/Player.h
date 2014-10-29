@@ -74,12 +74,12 @@ class Player
         /// Give the key assigned to \a action.
         /// \param action Assigned action.
         /// \return An array of every key mapped with \a action.
-		std::vector<sf::Keyboard::Key> getAssignedKey(Action action) const;
+		std::vector<sf::Keyboard::Key> getAssignedKeys(Action action) const;
 		
         /// Give the mouse button assigned to \a action.
         /// \param action Assigned action.
         /// \return An array of every mouse button mapped with \a action.
-		std::vector<sf::Mouse::Button> getAssignedMouseButton(Action action) const;
+		std::vector<sf::Mouse::Button> getAssignedMouseButtons(Action action) const;
 		
         /// Check if \a action is assigned to the mouse wheel.
         /// \param action Assigned action.
@@ -89,7 +89,7 @@ class Player
         /// Give the joystick button assigned to \a action.
         /// \param action Assigned action.
         /// \return An array of every index of the joystick button mapped with \a action.
-		std::vector<unsigned int> getAssignedJoystickButton(Action action) const;
+		std::vector<unsigned int> getAssignedJoystickButtons(Action action) const;
 		
         /// Give the joystick axis assigned to \a action.
         /// \param action Assigned action.
@@ -101,6 +101,11 @@ class Player
 		/// \return True if the drag and drop is currently active, false otherwise.
 		/// \see getDragAndDropState
 		bool isDragAndDropActive() const;
+		
+		/// Check if any of the inputs binded with action is currently actived.
+		/// \return True if any of the keys binded with action is currently pressed
+		/// and if the given action is a realtime action, false otherwise.
+		bool isActived(Action action) const;
 		
 		/// Set the components data of the given entity according to
 		/// the current state of the various imputs.
@@ -114,11 +119,11 @@ class Player
 		
 		/// Check if the given action is immediate (e.g. knife hit).
 		/// \param action Action to check.
-		bool isImmediateAction(Action action);
+		bool isImmediateAction(Action action) const;
 		
 		/// Check if the given action is real time (e.g. sneaking).
 		/// \param action Action to check.
-		bool isRealtimeAction(Action action);
+		bool isRealtimeAction(Action action) const;
 
 		std::map<sf::Keyboard::Key, Action> m_keyBinding;          ///< Binding between keyboard keys and theoric actions.
 		std::map<sf::Mouse::Button, Action> m_mouseButtonBinding;  ///< Binding between mouse buttons and theoric actions.
