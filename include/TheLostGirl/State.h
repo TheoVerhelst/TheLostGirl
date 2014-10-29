@@ -28,6 +28,7 @@ class State;
 class StateStack;
 class Player;
 class Command;
+struct Parameters;
 typedef std::queue<Command> CommandQueue;
 
 /// Base class for the various game states.
@@ -45,17 +46,19 @@ class State
 		struct Context
 		{
 			/// Default constructor
-			/// \param _window The main window
-			/// \param _textureManager The texture manager
-			/// \param _fontManager The font manager
-			/// \param _gui The main GUI manager
+			/// \param _parameters Structure containing all the game parameters.
+			/// \param _window The main window.
+			/// \param _textureManager The texture manager.
+			/// \param _fontManager The font manager.
+			/// \param _gui The main GUI manager.
 			/// \param _eventManager The event manager of the entity system.
 			/// \param _entityManager The entity manager of the entity system.
 			/// \param _systemManager The system manager of the entity system.
 			/// \param _world The Box2D physic world.
 			/// \param _player The input manager.
 			/// \param _commandQueue The queue of commands.
-			Context(sf::RenderWindow& _window,
+			Context(Parameters& _parameters,
+					sf::RenderWindow& _window,
 					TextureManager& _textureManager,
 					FontManager& _fontManager,
 					tgui::Gui& _gui,
@@ -66,10 +69,11 @@ class State
 					Player& _player,
 					CommandQueue& _commandQueue
 				);
-			sf::RenderWindow& window;             ///< The main window
-			TextureManager& textureManager;       ///< The texture manager
-			FontManager& fontManager;             ///< The font manager
-			tgui::Gui& gui;                       ///< The main GUI manager
+			Parameters& parameters;               ///< Structure containing all the game parameters.
+			sf::RenderWindow& window;             ///< The main window.
+			TextureManager& textureManager;       ///< The texture manager.
+			FontManager& fontManager;             ///< The font manager.
+			tgui::Gui& gui;                       ///< The main GUI manager.
 			entityx::EventManager& eventManager;  ///< The event manager of the entity system.
 			entityx::EntityManager& entityManager;///< The entity manager of the entity system
 			entityx::SystemManager& systemManager;///< The system manager of the entity system

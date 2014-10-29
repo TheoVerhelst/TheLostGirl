@@ -17,6 +17,7 @@ namespace entityx
 class b2World;
 class Command;
 typedef std::queue<Command> CommandQueue;
+struct Parameters;
 
 /// System that applies actions on the players's entity.
 class Actions : public entityx::System<Actions>
@@ -127,8 +128,9 @@ class Physics : public entityx::System<Physics>
 	public:
 		/// Default constructor.
 		/// \param world b2World where the physics entities should be in.
-		Physics(b2World& world):
-			m_world(world)
+		Physics(b2World& world, Parameters& parameters):
+			m_world(world),
+			m_parameters(parameters)
 		{}
 
 		/// System's update function.
@@ -138,7 +140,8 @@ class Physics : public entityx::System<Physics>
 		void update(entityx::EntityManager &es, entityx::EventManager &events, double dt) override;
 
 	private:
-		b2World& m_world;///< b2World where the physics entities should be in.
+		b2World& m_world;        ///< b2World where the physics entities should be in.
+		Parameters& m_parameters;///< Structure containing all the game parameters.
 };
 
 /// System that plays animations on entities.

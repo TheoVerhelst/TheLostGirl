@@ -15,7 +15,8 @@ using entityx::EventManager;
 using entityx::EntityManager;
 using entityx::SystemManager;
 
-State::Context::Context(sf::RenderWindow& _window,
+State::Context::Context(Parameters& _parameters,
+						sf::RenderWindow& _window,
 						TextureManager& _textureManager,
 						FontManager& _fontManager,
 						tgui::Gui& _gui,
@@ -26,6 +27,7 @@ State::Context::Context(sf::RenderWindow& _window,
 						Player& _player,
 						CommandQueue& _commandQueue
 						):
+	parameters(_parameters),
 	window(_window),
 	textureManager(_textureManager),
 	fontManager(_fontManager),

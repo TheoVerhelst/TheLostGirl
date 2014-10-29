@@ -18,6 +18,7 @@
 #include <TheLostGirl/ResourceIdentifiers.h>
 #include <TheLostGirl/Player.h>
 #include <TheLostGirl/SpriteSheetAnimation.h>
+#include <TheLostGirl/Parameters.h>
 
 #include <TheLostGirl/GameState.h>
 
@@ -78,6 +79,7 @@ bool GameState::handleEvent(const sf::Event& event)
 
 void GameState::initWorld()
 {
+	float scale = getContext().parameters.scale;
 	b2BodyDef bd;
 	b2Body* ground = getContext().world.CreateBody(&bd);
 	b2EdgeShape shape;
@@ -146,13 +148,13 @@ void GameState::initWorld()
 
 	b2BodyDef bodyDef;
 	bodyDef.type = b2_dynamicBody;
-	bodyDef.position = {0, 200.f*scale/pixelScale*2-0.1f};
+	bodyDef.position = {0, 200.f*scale/getContext().parameters.pixelScale*2-0.1f};
 	b2Body* body = getContext().world.CreateBody(&bodyDef);
 	body->SetUserData(&m_archer);
 	m_archer.assign<Body>(body);
 
 	b2PolygonShape archerBox;
-	archerBox.SetAsBox(100.f*scale/pixelScale*2, 200.f*scale/pixelScale*2);
+	archerBox.SetAsBox(100.f*scale/getContext().parameters.pixelScale*2, 200.f*scale/getContext().parameters.pixelScale*2);
 
 	b2FixtureDef fixtureDef;
 	fixtureDef.shape = &archerBox;

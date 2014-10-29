@@ -18,6 +18,7 @@
 #include <TheLostGirl/ResourceManager.h>
 #include <TheLostGirl/StateStack.h>
 #include <TheLostGirl/Player.h>
+#include <TheLostGirl/Parameters.h>
 
 //Forward declarations
 namespace entityx
@@ -54,7 +55,8 @@ class Application
 		void registerStates();   ///< Registers all the game states.
 		void registerSystems();  ///< Registers all the logic systems.
 		void loadTextures();     ///< Load the textures.
-
+		
+		Parameters m_parameters;               ///< Structure containing all the game parameters.
 		sf::RenderWindow m_window;             ///< The main window.
 		tgui::Gui m_gui;                       ///< All the gui.
 		TextureManager m_textureManager;       ///< The texture manager.
@@ -64,7 +66,7 @@ class Application
 		entityx::SystemManager m_systemManager;///< The entity systems manager.
 		Player m_player;                       ///< The input manager.
 		CommandQueue m_commandQueue;           ///< The queue of commands.
-		b2Vec2 m_gravity;                      ///< The gravity vector.
+		b2Vec2 m_gravity;                      
 		b2World m_world;                       ///< The Box2D world.
 		StateStack m_stateStack;               ///< The game state manager.
 };

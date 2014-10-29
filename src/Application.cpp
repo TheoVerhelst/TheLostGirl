@@ -21,7 +21,15 @@
 #include <TheLostGirl/Application.h>
 
 Application::Application():
-	m_window{sf::VideoMode{windowSize.x, windowSize.y}, "The Lost Girl"},
+	m_parameters{FR,
+				scales[1],
+				windowSizes[1],
+				120.f*m_parameters.scale,
+				sf::Vector2f{m_parameters.windowSize}/m_parameters.pixelScale,
+				{0.0f, -9.81f},
+				4,
+				"ressources/fonts/euphorigenic.ttf"},
+	m_window{sf::VideoMode{m_parameters.windowSize.x, m_parameters.windowSize.y}, "The Lost Girl"},
 	m_gui{m_window},
 	m_textureManager{},
 	m_fontManager{},
@@ -29,9 +37,9 @@ Application::Application():
 	m_entityManager{m_eventManager},
 	m_systemManager{m_entityManager, m_eventManager},
 	m_commandQueue{},
-	m_gravity{0.0f, g},
-	m_world{m_gravity},
-	m_stateStack{State::Context{m_window,
+	m_world{m_parameters.gravity},
+	m_stateStack{State::Context{m_parameters,
+								m_window,
 								m_textureManager,
 								m_fontManager,
 								m_gui,
@@ -40,8 +48,7 @@ Application::Application():
 								m_systemManager,
 								m_world,
 								m_player,
-								m_commandQueue
-				}				}
+								m_commandQueue}}
 {
 }
 
@@ -56,9 +63,9 @@ int Application::init()
 	m_window.setFramerateLimit(60);
 	try
 	{
-		LangManager::setLang(EN);
+		LangManager::setLang(m_parameters.lang);
 		loadTextures();
-		m_fontManager.load(Fonts::Menu, "ressources/fonts/euphorigenic.ttf");
+		m_fontManager.load(Fonts::Menu, m_parameters.textFont);
 		m_gui.setGlobalFont(std::make_shared<sf::Font>(m_fontManager.get(Fonts::Menu)));
 		registerStates();
 		registerSystems();
@@ -139,7 +146,7 @@ void Application::registerStates()
 
 void Application::registerSystems()
 {
-	m_systemManager.add<Physics>(m_world);
+	m_systemManager.add<Physics>(m_world, m_parameters);
 	m_systemManager.add<Actions>(m_commandQueue);
 	m_systemManager.add<AnimationSystem>();
 	m_systemManager.add<FallSystem>();
@@ -149,6 +156,6 @@ void Application::registerSystems()
 
 void Application::loadTextures()
 {
-	m_textureManager.load(Textures::Archer, toPath(windowSize) + "charac.png");
-	m_textureManager.load(Textures::Arms, toPath(windowSize) + "arm1.png");
+	m_textureManager.load(Textures::Archer, toPath(m_parameters.windowSize) + "charac.png");
+	m_textureManager.load(Textures::Arms, toPath(m_parameters.windowSize) + "arm1.png");
 }

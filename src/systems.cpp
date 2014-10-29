@@ -12,6 +12,7 @@
 #include <TheLostGirl/Command.h>
 #include <TheLostGirl/Category.h>
 #include <TheLostGirl/Animations.h>
+#include <TheLostGirl/Parameters.h>
 
 #include <TheLostGirl/systems.h>
 
@@ -112,7 +113,7 @@ void Physics::update(entityx::EntityManager& entityManager, entityx::EventManage
 	for(auto entity : entityManager.entities_with_components(bodyComponent, spriteComponent))
 	{
 		b2Vec2 pos = bodyComponent->body->GetPosition();
-		spriteComponent->sprite->setPosition(pos.x * pixelScale, windowSize.y - (pos.y * pixelScale));
+		spriteComponent->sprite->setPosition(pos.x * m_parameters.pixelScale, m_parameters.windowSize.y - (pos.y * m_parameters.pixelScale));
 	}
 }
 
