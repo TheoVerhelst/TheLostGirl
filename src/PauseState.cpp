@@ -3,6 +3,7 @@
 #include <TheLostGirl/State.h>
 #include <TheLostGirl/StateStack.h>
 #include <TheLostGirl/LangManager.h>
+#include <TheLostGirl/Player.h>
 
 #include <TheLostGirl/PauseState.h>
 
@@ -97,6 +98,7 @@ bool PauseState::handleEvent(const sf::Event& event)
 void PauseState::backToGame()
 {
 	requestStackPop();
+	getContext().player.handleInitialInputState(getContext().commandQueue);
 }
 
 void PauseState::goToOptions()
