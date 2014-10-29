@@ -20,17 +20,17 @@
 #include <TheLostGirl/Application.h>
 
 Application::Application():
-	m_window(sf::VideoMode(windowSize.x, windowSize.y), "The Lost Girl"),
-	m_gui(m_window),
-	m_textureManager(),
-	m_fontManager(),
-	m_eventManager(),
-	m_entityManager(m_eventManager),
-	m_systemManager(m_entityManager, m_eventManager),
-	m_commandQueue(),
-	m_gravity(0.0f, g),
-	m_world(m_gravity),
-	m_stateStack(State::Context(m_window,
+	m_window{sf::VideoMode{windowSize.x, windowSize.y}, "The Lost Girl"},
+	m_gui{m_window},
+	m_textureManager{},
+	m_fontManager{},
+	m_eventManager{},
+	m_entityManager{m_eventManager},
+	m_systemManager{m_entityManager, m_eventManager},
+	m_commandQueue{},
+	m_gravity{0.0f, g},
+	m_world{m_gravity},
+	m_stateStack{State::Context{m_window,
 								m_textureManager,
 								m_fontManager,
 								m_gui,
@@ -40,7 +40,7 @@ Application::Application():
 								m_world,
 								m_player,
 								m_commandQueue
-								))
+				}				}
 {
 }
 

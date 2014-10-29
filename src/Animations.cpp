@@ -3,7 +3,7 @@
 #include <algorithm>
 #include <iostream>
 
-#include <Animations.h>
+#include <TheLostGirl/Animations.h>
 
 Animations::Animations():
 	m_animationsMap()
@@ -18,7 +18,7 @@ void Animations::addAnimation(const std::string& identifier,
 							sf::Time duration,
 							bool loop)
 {
-	TimeAnimation timeAnime(animation, importance, duration, loop);
+	TimeAnimation timeAnime{animation, importance, duration, loop};
 	m_animationsMap.emplace(identifier, timeAnime);
 }
 
@@ -85,7 +85,7 @@ void Animations::setProgress(const std::string& identifier, float newProgress)
 {
 	auto found = m_animationsMap.find(identifier);
 	assert(found != m_animationsMap.end());//Assert that the animation exists
-	found->second.progress = newProgress - std::floor(newProgress);
+	found->second.progress = newProgress;
 }
 void Animations::update(entityx::Entity& entity, sf::Time dt)
 {
@@ -122,11 +122,11 @@ void Animations::update(entityx::Entity& entity, sf::Time dt)
 	}
 }
 Animations::TimeAnimation::TimeAnimation(Animation _animation, unsigned short int _importance, sf::Time _duration, bool _loops):
-	animation(_animation),
-	importance(_importance),
-	duration(_duration),
-	loops(_loops),
-	progress(0.f),
-	isPaused(true),
-	isActive(false)
+	animation{_animation},
+	importance{_importance},
+	duration{_duration},
+	loops{_loops},
+	progress{0.f},
+	isPaused{true},
+	isActive{false}
 {}

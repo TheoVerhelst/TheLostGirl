@@ -31,18 +31,18 @@ FloatRect handleResize(Event::SizeEvent size)
 	return FloatRect((1 - scalex) / 2.0f, (1 - scaley) / 2.0f, scalex, scaley);
 }
 
-std::string toPath(sf::Vector2f resolution)
+std::string toPath(sf::Vector2u resolution)
 {
-	return std::string("ressources/images/" + std::to_string(int(resolution.x)) + "x" + std::to_string(int(resolution.y)) + "/");
+	return std::string("ressources/images/" + std::to_string(resolution.x) + "x" + std::to_string(resolution.y) + "/");
 }
 
-Vector2f toVector(std::string resolution)
+Vector2u toVector(std::string resolution)
 {
 	size_t xPos = resolution.find("x");
 	size_t slashPos = resolution.substr(0, xPos).find_last_of("/");//Find the last slash before the x
 	std::string x = resolution.substr(slashPos+1, xPos);//All before the x and after the slash
 	std::string y = resolution.substr(xPos + 1); //All after the x
-	return Vector2f(std::stof(x), std::stof(y));
+	return Vector2u(std::stoul(x), std::stoul(y));
 }
 
 Color fadingColor(Time dt, Time fadingLength, bool in)

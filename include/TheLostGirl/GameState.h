@@ -26,7 +26,7 @@ class GameState : public State
 {
 	public:
         /// Default constructor.
-        /// \param stack StateStack in where the State is added.
+        /// \param stack StateStack wherein the State is added.
         /// \param context Context of the game.
 		GameState(StateStack& stack, Context context);
 		

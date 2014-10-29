@@ -125,6 +125,7 @@ GameState::GameState(StateStack& stack, Context context) :
 	bendRightAnimation.addFrame(sf::IntRect(100*2.f*scale, 0, 100.f*scale, 200.f*scale), 0.25f);
 	bendRightAnimation.addFrame(sf::IntRect(100*3.f*scale, 0, 100.f*scale, 200.f*scale), 0.25f);
 	m_armsAnimations.addAnimation("bendRight", bendRightAnimation);
+	m_armsAnimations.activate("bendRight");
 }
 
 void GameState::draw()

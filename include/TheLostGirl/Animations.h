@@ -101,7 +101,7 @@ class Animations
 		/// \see activate
 		void play(const std::string& identifier);
 
-		/// Activate and but do not play the \a animation.
+		/// Activate but do not play the \a animation.
 		/// If the animation is stoped, it is equivalent to do:
 		/// \code
 		/// animations.play("anim");

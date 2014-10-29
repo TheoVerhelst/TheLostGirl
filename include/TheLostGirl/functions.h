@@ -33,14 +33,14 @@ sf::FloatRect handleResize(sf::Event::SizeEvent size);
 ///> resolution.x = 1920, resolution.y = 1080 => output = "ressources/images/1920x1080/"
 /// \param resolution Current resolution of the images of the game
 /// \return A formatted string.
-std::string toPath(sf::Vector2f resolution);
+std::string toPath(sf::Vector2u resolution);
 
-/// Convert string of the type \e path/axb to a Vector2f wherein x =  and y = b.
+/// Convert string of the type \e path/axb to a Vector2u wherein x =  and y = b.
 /// Exemple :
 ///> input = "ressources/images/1920x1080/" => output = Vector2f(1920, 1080)
 /// \param resolution Current path to the images directory
 /// \return The Vector2f of the resolution.
-sf::Vector2f toVector(std::string resolution);
+sf::Vector2u toVector(std::string resolution);
 
 //Return value capped between min and max
 /// Return \a value capped between \a min and \a max.

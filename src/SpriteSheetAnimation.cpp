@@ -4,7 +4,7 @@
 
 #include <TheLostGirl/components.h>
 
-#include <SpriteSheetAnimation.h>
+#include <TheLostGirl/SpriteSheetAnimation.h>
 
 SpriteSheetAnimation::SpriteSheetAnimation()
 {}

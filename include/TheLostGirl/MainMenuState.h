@@ -5,6 +5,7 @@
 
 #include <TGUI/Button.hpp>
 #include <TGUI/Picture.hpp>
+#include <TGUI/Panel.hpp>
 
 //Forward declarations
 namespace sf
@@ -20,7 +21,7 @@ class MainMenuState : public State
 {
 	public:
         /// Default constructor.
-        /// \param stack StateStack in where the State is added.
+        /// \param stack StateStack wherein the State is added.
         /// \param context Context of the game.
 		MainMenuState(StateStack& stack, Context context);
 		
@@ -44,7 +45,7 @@ class MainMenuState : public State
 		
 	private:
 		void playGame();
-		tgui::Picture::Ptr m_background;
+		tgui::Panel::Ptr m_background;
 		tgui::Picture::Ptr m_logo;
 		tgui::Button::Ptr m_newButton;
 		tgui::Button::Ptr m_loadButton;

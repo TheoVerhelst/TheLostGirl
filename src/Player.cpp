@@ -252,16 +252,16 @@ bool Player::isDragAndDropActive() const
 
 void Player::initializeActions()
 {
-	m_startActionBinding[MoveLeft].action = LeftMover(true);
-	m_startActionBinding[MoveRight].action =  RightMover(true);
-	m_startActionBinding[MoveUp].action =  UpMover(true);
-	m_startActionBinding[MoveDown].action =  DownMover(true);
+	m_startActionBinding[MoveLeft].action = Mover(Direction::Left);
+	m_startActionBinding[MoveRight].action =  Mover(Direction::Right);
+	m_startActionBinding[MoveUp].action =  Mover(Direction::Top);
+	m_startActionBinding[MoveDown].action =  Mover(Direction::Bottom);
 	m_startActionBinding[Bend].action = BowBender(true);
 	
-	m_stopActionBinding[MoveLeft].action =  LeftMover(false);
-	m_stopActionBinding[MoveRight].action = RightMover(false);
-	m_stopActionBinding[MoveUp].action = UpMover(false);
-	m_stopActionBinding[MoveDown].action = DownMover(false);
+	m_stopActionBinding[MoveLeft].action =  Mover(Direction::Left, false);
+	m_stopActionBinding[MoveRight].action = Mover(Direction::Right, false);
+	m_stopActionBinding[MoveUp].action = Mover(Direction::Top, false);
+	m_stopActionBinding[MoveDown].action = Mover(Direction::Bottom, false);
 	m_stopActionBinding[Bend].action = BowBender(false);
 	
 	m_immediateActionBinding[Jump].action = Jumper();
