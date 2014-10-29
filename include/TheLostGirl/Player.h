@@ -96,22 +96,16 @@ class Player
         /// \return An array of every joystick axis mapped with \a action.
 		std::vector<sf::Joystick::Axis> getAssignedJoystickAxis(Action action) const;
 		
-		/// Check if the drag and drop is currently active.
-		/// The drag and drop is active only when the button binded with the bow bending is pressed.
-		/// \return True if the drag and drop is currently active, false otherwise.
-		/// \see getDragAndDropState
-		bool isDragAndDropActive() const;
-		
 		/// Check if any of the inputs binded with action is currently actived.
 		/// \return True if any of the keys binded with action is currently pressed
 		/// and if the given action is a realtime action, false otherwise.
 		bool isActived(Action action) const;
 		
-		/// Set the components data of the given entity according to
+		/// Add commands to the given command queue according to
 		/// the current state of the various imputs.
 		/// That allow to check the real state of e.g. the keyboard at the beginnning
-		/// of the game and move the player if the move key is pressed before the construction of the game state.
-		void handleInitialInputState(entityx::Entity& playerEntity);
+		/// of the game and move the player if the move key is pressed while the construction of the game state.
+		void handleInitialInputState(CommandQueue& commands);
 
 	private:
 		/// Initialize all the player's actions.

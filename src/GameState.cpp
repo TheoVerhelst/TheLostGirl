@@ -34,6 +34,7 @@ GameState::GameState(StateStack& stack, Context context) :
 	m_timeSystem()
 {
 	initWorld();
+	getContext().player.handleInitialInputState(getContext().commandQueue);
 }
 
 GameState::~GameState()
@@ -69,7 +70,8 @@ bool GameState::handleEvent(const sf::Event& event)
 	
 	getContext().player.handleEvent(event, getContext().commandQueue);
 	//Update the drag and drop state
-	getContext().systemManager.system<DragAndDropSystem>()->setDragAndDropActivation(getContext().player.isDragAndDropActive());
+	bool isDragAndDropActive{getContext().player.isActived(Player::Action::Bend)};
+	getContext().systemManager.system<DragAndDropSystem>()->setDragAndDropActivation(isDragAndDropActive);
 
 	return false;
 }

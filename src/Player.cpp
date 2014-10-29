@@ -247,11 +247,6 @@ std::vector<sf::Joystick::Axis> Player::getAssignedJoystickAxis(Action action) c
 	return ret;
 }
 
-bool Player::isDragAndDropActive() const
-{
-	return isActived(Action::Bend);
-}
-
 bool Player::isActived(Action action) const
 {
 	if(not isRealtimeAction(action))
@@ -290,9 +285,20 @@ bool Player::isActived(Action action) const
 	return false;
 }
 	
-void Player::handleInitialInputState(entityx::Entity& playerEntity)
+void Player::handleInitialInputState(CommandQueue& commands)
 {
-	
+	for(auto& pair : m_startActionBinding)
+	{
+		if(isActived(pair.first))
+			commands.push(pair.second);
+	}
+	//We must do 2 differents loops because an action can have to differents
+	//bindings for the beginning and the ending of the action.
+	for(auto& pair : m_stopActionBinding)
+	{
+		if(not isActived(pair.first))
+			commands.push(pair.second);
+	}
 }
 
 void Player::initializeActions()
