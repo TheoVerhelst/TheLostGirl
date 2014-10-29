@@ -145,24 +145,19 @@ bool GameState::update(sf::Time elapsedTime)
 	getContext().systemManager.system<DragAndDropSystem>()->setDragAndDropActivation(getContext().player.isDragAndDropActive());
 
 	m_timeSystem.update(elapsedTime);
-	return true;
+	return false;
 }
 
 bool GameState::handleEvent(const sf::Event& event)
 {
-	if(event.type == sf::Event::Closed or
-		(event.type == sf::Event::KeyPressed and event.key.code == sf::Keyboard::Escape))
+	if(event.type == sf::Event::Closed)
 	{
-			getContext().world.DestroyBody(m_archer.component<Body>()->body);
-			getContext().world.DestroyBody(m_groundEntity.component<Body>()->body);
-			getContext().world.ClearForces();
-			m_archer.destroy();
-			m_arms.destroy();
-			m_groundEntity.destroy();
-			requestStackPop();
-			if(event.type == sf::Event::KeyPressed)
-				requestStackPush(States::MainMenu);
+		clearWorld();
+		requestStackPop();
 	}
+	else if(event.type == sf::Event::KeyPressed and event.key.code == sf::Keyboard::Escape)
+		requestStackPush(States::Pause);
+	
 	getContext().player.handleEvent(event, getContext().commandQueue);
 	return false;
 }
@@ -181,4 +176,14 @@ void GameState::initWorld()
 	m_groundEntity.assign<CategoryComponent>(Category::Ground);
 
 	getContext().world.SetContactListener(&m_fallingListener);
+}
+
+void GameState::clearWorld()
+{
+	getContext().world.DestroyBody(m_archer.component<Body>()->body);
+	getContext().world.DestroyBody(m_groundEntity.component<Body>()->body);
+	getContext().world.ClearForces();
+	m_archer.destroy();
+	m_arms.destroy();
+	m_groundEntity.destroy();
 }

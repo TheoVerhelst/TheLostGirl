@@ -44,11 +44,12 @@ class GameState : public State
         /// The event handling function.
         /// \param event Event to handle.
         /// \return Return true if the state under this state in the stack must be also updated.
-        /// The closing window and resinzing window events are already handled by the Application class.
+        /// \note The closing window and resinzing window events are already handled by the Application class.
 		virtual bool handleEvent(const sf::Event& event);
 
 	private:
-		void initWorld();///< Initialize the physic world.
+		void initWorld(); ///< Initialize the physic world.
+		void clearWorld();///< Remove all bodies, sprite and others from the memory.
 		
 		entityx::Entity m_groundEntity;   ///< The entity of the ground.
 		FallingListener m_fallingListener;///< The falling listener.

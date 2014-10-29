@@ -34,7 +34,7 @@ class IntroState : public State
         /// The event handling function.
         /// \param event Event to handle.
         /// \return Return true if the state under this state in the stack must be also updated.
-        /// The closing window and resinzing window events are already handled by the Application class.
+        /// \note The closing window and resinzing window events are already handled by the Application class.
 		virtual bool handleEvent(const sf::Event& event);
 };
 

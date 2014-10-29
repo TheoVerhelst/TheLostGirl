@@ -10,6 +10,7 @@
 #include <TheLostGirl/IntroState.h>
 #include <TheLostGirl/LoadingState.h>
 #include <TheLostGirl/GameState.h>
+#include <TheLostGirl/PauseState.h>
 #include <TheLostGirl/components.h>
 #include <TheLostGirl/systems.h>
 #include <TheLostGirl/constants.h>
@@ -133,6 +134,7 @@ void Application::registerStates()
 	m_stateStack.registerState<LoadingState>(States::Loading);
 	m_stateStack.registerState<IntroState>(States::Intro);
 	m_stateStack.registerState<GameState>(States::Game);
+	m_stateStack.registerState<PauseState>(States::Pause);
 }
 
 void Application::registerSystems()

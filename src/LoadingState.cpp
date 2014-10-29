@@ -19,7 +19,7 @@ bool LoadingState::update(sf::Time)
 	return true;
 }
 
-bool LoadingState::handleEvent(const sf::Event& event)
+bool LoadingState::handleEvent(const sf::Event&)
 {
 	return false;
 }

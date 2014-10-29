@@ -20,7 +20,7 @@ bool IntroState::update(sf::Time)
 	return true;
 }
 
-bool IntroState::handleEvent(const sf::Event& event)
+bool IntroState::handleEvent(const sf::Event&)
 {
 	return true;
 }
