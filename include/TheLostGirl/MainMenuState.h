@@ -25,7 +25,10 @@ class MainMenuState : public State
         /// \param context Context of the game.
 		MainMenuState(StateStack& stack, Context context);
 		
+		/// Default destructor.
+		/// It clear the GUI.
 		~MainMenuState();
+		
         /// The drawing function.
         /// \return virtual void
         /// It must do all things related to drawing stuff on the screen.

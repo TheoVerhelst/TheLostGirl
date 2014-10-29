@@ -1,3 +1,5 @@
+#include <iostream>
+
 #include <SFML/Graphics/Texture.hpp>
 #include <SFML/Graphics/View.hpp>
 #include <SFML/System/Time.hpp>
@@ -128,6 +130,16 @@ GameState::GameState(StateStack& stack, Context context) :
 	m_armsAnimations.activate("bendRight");
 }
 
+GameState::~GameState()
+{
+	getContext().world.DestroyBody(m_archer.component<Body>()->body);
+	getContext().world.DestroyBody(m_groundEntity.component<Body>()->body);
+	getContext().world.ClearForces();
+	m_archer.destroy();
+	m_arms.destroy();
+	m_groundEntity.destroy();
+}
+
 void GameState::draw()
 {
 	getContext().systemManager.update<Render>(sf::Time::Zero.asSeconds());
@@ -151,10 +163,7 @@ bool GameState::update(sf::Time elapsedTime)
 bool GameState::handleEvent(const sf::Event& event)
 {
 	if(event.type == sf::Event::Closed)
-	{
-		clearWorld();
 		requestStackPop();
-	}
 	else if(event.type == sf::Event::KeyPressed and event.key.code == sf::Keyboard::Escape)
 		requestStackPush(States::Pause);
 	
@@ -176,14 +185,4 @@ void GameState::initWorld()
 	m_groundEntity.assign<CategoryComponent>(Category::Ground);
 
 	getContext().world.SetContactListener(&m_fallingListener);
-}
-
-void GameState::clearWorld()
-{
-	getContext().world.DestroyBody(m_archer.component<Body>()->body);
-	getContext().world.DestroyBody(m_groundEntity.component<Body>()->body);
-	getContext().world.ClearForces();
-	m_archer.destroy();
-	m_arms.destroy();
-	m_groundEntity.destroy();
 }

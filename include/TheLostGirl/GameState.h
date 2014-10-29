@@ -30,6 +30,10 @@ class GameState : public State
         /// \param context Context of the game.
 		GameState(StateStack& stack, Context context);
 		
+		/// Default destructor.
+		/// Remove all bodies, sprites and others from the memory.
+		~GameState();
+		
         /// The drawing function.
         /// \return virtual void
         /// It must do all things related to drawing stuff on the screen.
@@ -49,7 +53,6 @@ class GameState : public State
 
 	private:
 		void initWorld(); ///< Initialize the physic world.
-		void clearWorld();///< Remove all bodies, sprite and others from the memory.
 		
 		entityx::Entity m_groundEntity;   ///< The entity of the ground.
 		FallingListener m_fallingListener;///< The falling listener.

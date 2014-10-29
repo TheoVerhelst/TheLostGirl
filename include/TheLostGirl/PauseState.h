@@ -24,6 +24,10 @@ class PauseState : public State
         /// \param context Context of the game.
 		PauseState(StateStack& stack, Context context);
 		
+		/// Default destructor.
+		/// It clear the GUI.
+		~PauseState();
+		
         /// The drawing function.
         /// \return virtual void
         /// It must do all things related to drawing stuff on the screen.

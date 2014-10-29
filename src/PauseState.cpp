@@ -22,10 +22,12 @@ PauseState::PauseState(StateStack& stack, Context context) :
 	m_background->setBackgroundColor(sf::Color(255, 255, 255, 100));
 	gui.add(m_background);
 	
+	// Left:   25% of window width
+	// Top:    10% of window height
 	m_pauseLabel = tgui::Label::create();
 	m_pauseLabel->setText(LangManager::tr("Pause"));
 	m_pauseLabel->setPosition(tgui::bindWidth(gui, 0.25f), tgui::bindHeight(gui, 0.1f));
-	m_pauseLabel->setSize(tgui::bindWidth(gui, 0.5f), tgui::bindHeight(gui, 0.15f));
+	m_pauseLabel->setTextSize(30);
 	gui.add(m_pauseLabel);
 	
 	// Left:   25% of window width
@@ -44,7 +46,7 @@ PauseState::PauseState(StateStack& stack, Context context) :
 	unsigned int backToGameSignal = m_backToGameButton->connect("pressed", &PauseState::backToGame, this);
 	gui.add(m_backToGameButton);
 
-	// Left:   0% of window width
+	// Left:   25% of window width
 	// Top:    55% of window height
 	m_goToOptionsButton = tgui::Button::copy(m_backToGameButton);
 	m_goToOptionsButton->setPosition(tgui::bindWidth(gui, 0.25f), tgui::bindHeight(gui, 0.55f));
@@ -53,7 +55,7 @@ PauseState::PauseState(StateStack& stack, Context context) :
 	m_goToOptionsButton->disconnect(backToGameSignal);
 	gui.add(m_goToOptionsButton);
 
-	// Left:   0% of window width
+	// Left:   25% of window width
 	// Top:    70% of window height
 	m_backToMainMenuButton = tgui::Button::copy(m_backToGameButton);
 	m_backToMainMenuButton->setPosition(tgui::bindWidth(gui, 0.25f), tgui::bindHeight(gui, 0.7f));
@@ -63,9 +65,18 @@ PauseState::PauseState(StateStack& stack, Context context) :
 	gui.add(m_backToMainMenuButton);
 }
 
-void PauseState::draw()
+PauseState::~PauseState()
 {
+	tgui::Gui& gui = getContext().gui;
+	gui.remove(m_background);
+	gui.remove(m_pauseLabel);
+	gui.remove(m_backToGameButton);
+	gui.remove(m_goToOptionsButton);
+	gui.remove(m_backToMainMenuButton);
 }
+
+void PauseState::draw()
+{}
 
 bool PauseState::update(sf::Time)
 {
@@ -80,18 +91,14 @@ bool PauseState::handleEvent(const sf::Event&)
 void PauseState::backToGame()
 {
 	requestStackPop();
-	tgui::Gui& gui = getContext().gui;
-	gui.remove(m_background);
-	gui.remove(m_pauseLabel);
-	gui.remove(m_backToGameButton);
-	gui.remove(m_goToOptionsButton);
-	gui.remove(m_backToMainMenuButton);
 }
 
 void PauseState::goToOptions()
-{
-}
+{}
 
 void PauseState::backToMainMenu()
 {
+	requestStackPop();
+	requestStackPop();
+	requestStackPush(States::MainMenu);
 }

@@ -63,7 +63,14 @@ MainMenuState::MainMenuState(StateStack& stack, Context context):
 }
 
 MainMenuState::~MainMenuState()
-{}
+{
+	tgui::Gui& gui = getContext().gui;
+	gui.remove(m_background);
+	gui.remove(m_logo);
+	gui.remove(m_newButton);
+	gui.remove(m_loadButton);
+	gui.remove(m_exitButton);
+}
 
 void MainMenuState::draw()
 {
@@ -83,10 +90,4 @@ void MainMenuState::playGame()
 {
 	requestStackPop();
 	requestStackPush(States::Game);	
-	tgui::Gui& gui = getContext().gui;
-	gui.remove(m_background);
-	gui.remove(m_logo);
-	gui.remove(m_newButton);
-	gui.remove(m_loadButton);
-	gui.remove(m_exitButton);
 }
