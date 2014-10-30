@@ -52,7 +52,9 @@ struct BowBender : public Action
 {
 	/// Default constructor.
 	/// \param _start True if the bending starts, false if it stops.
-	BowBender(bool _start);
+	/// \param _angle The angle of the bending.
+	/// \param _power The power of the bending.
+	BowBender(bool _start, float _angle = 0.f, float _power = 0.f);
 	
 	/// Default destructor
 	virtual ~BowBender();
@@ -62,7 +64,9 @@ struct BowBender : public Action
 	/// \param dt Elapsed time in the last game frame.
 	virtual void operator()(entityx::Entity& entity, double dt) const;
 	
-	bool start;///< True if the bending starts, false if it stops.
+	bool start; ///< True if the bending starts, false if it stops.
+	float angle;///< The angle of the bending.
+	float power;///< The power of the bending.
 };
 
 #endif // ACTIONS_H

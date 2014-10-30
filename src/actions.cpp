@@ -3,6 +3,7 @@
 
 #include <TheLostGirl/components.h>
 #include <TheLostGirl/Animations.h>
+#include <TheLostGirl/functions.h>
 
 #include <TheLostGirl/actions.h>
 
@@ -167,12 +168,37 @@ void Jumper::operator()(entityx::Entity& entity, double) const
 	}
 }
 
-BowBender::BowBender(bool _start):
-	start{_start}
+BowBender::BowBender(bool _start, float _angle, float _power):
+	start{_start},
+	angle{_angle},
+	power{_power}
 {}
 
 BowBender::~BowBender()
 {}
 
-void BowBender::operator()(entityx::Entity&, double) const
-{}
+void BowBender::operator()(entityx::Entity& entity, double) const
+{
+	std::cout << "Bend action:" << std::endl;
+	std::cout << "start:" << start << std::endl;
+	std::cout << "angle:" << angle << std::endl;
+	std::cout << "power:" << power << std::endl;
+	if(entity.has_component<BendComponent>()
+		and entity.has_component<AnimationsComponent>()
+		and entity.has_component<DirectionComponent>())
+	{
+		BendComponent::Handle bendComponent = entity.component<BendComponent>();
+		Animations* animations = entity.component<AnimationsComponent>()->animations;
+		DirectionComponent::Handle directionComponent = entity.component<DirectionComponent>();
+		
+		std::string directionStr;//Find the right animation string
+		if(directionComponent->direction == Direction::Left)
+			directionStr = "Left";
+		else if(directionComponent->direction == Direction::Right)
+			directionStr = "Right";
+		bendComponent->power = cap(power, 0.f, bendComponent->maxPower);//Cap the power
+		float animationPower = bendComponent->power / bendComponent->maxPower;//The progress of the bending, in the range [0, 1]
+		animations->setProgress("bend"+directionStr, animationPower);
+		bendComponent->angle = angle;
+	}
+}

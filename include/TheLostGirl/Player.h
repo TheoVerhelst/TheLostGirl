@@ -97,8 +97,7 @@ class Player
 		std::vector<sf::Joystick::Axis> getAssignedJoystickAxis(Action action) const;
 		
 		/// Check if any of the inputs binded with action is currently actived.
-		/// \return True if any of the keys binded with action is currently pressed
-		/// and if the given action is a realtime action, false otherwise.
+		/// \return True if any of the keys binded with action is currently pressed, false otherwise.
 		bool isActived(Action action) const;
 		
 		/// Add commands to the given command queue according to

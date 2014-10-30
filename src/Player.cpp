@@ -91,6 +91,7 @@ void Player::handleEvent(const sf::Event& event, CommandQueue& commands)
 		auto found = m_mouseButtonBinding.find(event.mouseButton.button);
 		if(found != m_mouseButtonBinding.end())
 		{
+			std::cout << "MouseButtonPressed" << std::endl;
 			if(isRealtimeAction(found->second))
 				commands.push(m_startActionBinding[found->second]);
 			if(isImmediateAction(found->second))
@@ -111,7 +112,7 @@ void Player::handleEvent(const sf::Event& event, CommandQueue& commands)
 	}
 	else if(event.type == sf::Event::MouseWheelMoved)
 	{
-		
+		commands.push(m_immediateActionBinding[m_mouseWheelBinding]);
 	}
 	else if(event.type == sf::Event::JoystickButtonPressed)
 	{
@@ -132,7 +133,12 @@ void Player::handleEvent(const sf::Event& event, CommandQueue& commands)
 	}
 	else if(event.type == sf::Event::JoystickMoved)
 	{
-		
+//		auto found = m_joystickAxisBinding.find(event.joystickMove.axis);
+//		if(found != m_joystickAxisBinding.end())
+//		{
+//			if(isRealtimeAction(found->second))
+//					commands.push(m_stopActionBinding[found->second]);
+//		}
 	}
 }
 
@@ -248,9 +254,6 @@ std::vector<sf::Joystick::Axis> Player::getAssignedJoystickAxis(Action action) c
 
 bool Player::isActived(Action action) const
 {
-	if(not isRealtimeAction(action))
-		return false;
-	
 	std::vector<sf::Keyboard::Key> keyBindings = getAssignedKeys(action);
 	std::vector<sf::Mouse::Button> mouseButtonsBindings = getAssignedMouseButtons(action);
 	std::vector<unsigned int> joystickButtonsBindings = getAssignedJoystickButtons(action);
@@ -306,21 +309,21 @@ void Player::initializeActions()
 	m_startActionBinding[MoveRight].action =  Mover(Direction::Right);
 	m_startActionBinding[MoveUp].action =  Mover(Direction::Top);
 	m_startActionBinding[MoveDown].action =  Mover(Direction::Bottom);
-	m_startActionBinding[Bend].action = BowBender(true);
 	
 	m_stopActionBinding[MoveLeft].action =  Mover(Direction::Left, false);
 	m_stopActionBinding[MoveRight].action = Mover(Direction::Right, false);
 	m_stopActionBinding[MoveUp].action = Mover(Direction::Top, false);
 	m_stopActionBinding[MoveDown].action = Mover(Direction::Bottom, false);
-	m_stopActionBinding[Bend].action = BowBender(false);
 	
 	m_immediateActionBinding[Jump].action = Jumper();
+	
+	//Do not assign a command to the bending action, the DragAndDrop system already does
 }
 
 bool Player::isImmediateAction(Action action) const
 {
 	auto found = m_immediateActionBinding.find(action);
-	return found != m_immediateActionBinding.end();//If the action is in the table, it's a immediate action
+	return found != m_immediateActionBinding.end();//If the action is in the table, it's an immediate action
 }
 
 bool Player::isRealtimeAction(Action action) const

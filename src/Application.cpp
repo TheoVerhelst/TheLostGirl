@@ -113,6 +113,8 @@ void Application::processInput()
 	{
 		if(event.type == sf::Event::Closed)
 			m_window.close();
+		else if(event.type == sf::Event::KeyPressed and event.key.code == sf::Keyboard::F2)
+			m_parameters.debugMode = not m_parameters.debugMode;//Switch the debug mode
 		else if(event.type == sf::Event::Resized)
 		{
 			sf::View view = m_window.getView();//Resized view, maybe not in a 16:9 ratio
@@ -156,7 +158,7 @@ void Application::registerSystems()
 	m_systemManager.add<AnimationSystem>();
 	m_systemManager.add<FallSystem>();
 	m_systemManager.add<Render>(m_window);
-	m_systemManager.add<DragAndDropSystem>(m_window);
+	m_systemManager.add<DragAndDropSystem>(m_window, m_commandQueue);
 }
 
 void Application::loadTextures()

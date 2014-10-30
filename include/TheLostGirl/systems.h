@@ -77,8 +77,10 @@ class DragAndDropSystem : public entityx::System<DragAndDropSystem>
 	public:
 		/// Default constructor.
 		/// \param window SFML's window on wich to render the drag and drop line.
-		DragAndDropSystem(sf::RenderWindow& window):
+		/// \param commandQueue Queue of command where the actions should be in.
+		DragAndDropSystem(sf::RenderWindow& window, CommandQueue& commandQueue):
 			m_window(window),
+			m_commandQueue(commandQueue),
 			m_line{sf::Vertex({0, 0}, sf::Color::Black),
 				   sf::Vertex({0, 0}, sf::Color::Black)},//Initialize the line and set his color
 			m_isActive{false}
@@ -98,6 +100,7 @@ class DragAndDropSystem : public entityx::System<DragAndDropSystem>
 
 	private:
 		sf::RenderWindow& m_window;      ///< SFML's window on wich to render the entities.
+		CommandQueue& m_commandQueue;    ///< Queue of command where the actions should be in.
 		sf::Vertex m_line[2];            ///< The drag and drop line.
 		bool m_isActive;                 ///< True when the drag and drop is actived.
 };

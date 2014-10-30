@@ -9,5 +9,5 @@ int main()
 	#endif
 	Application application(debugMode);
 	int returnValue = application.init();
-	return (returnValue == 0 ? application.run() : returnValue);
+	return returnValue == 0 ? application.run() : returnValue;
 }

@@ -6,16 +6,17 @@
 #include <algorithm>
 #include <iostream>
 
+#include <SFML/Graphics/Rect.hpp>
+#include <SFML/Window/Event.hpp>
+
 //Forward declarations
 namespace sf
 {
 	template <typename T>
-	class Rect;
-	template <typename T>
 	class Vector2;
+	typedef Vector2<unsigned int> Vector2u;
 	class Color;
 	class Time;
-	class Event;
 }
 
 /// \file functions.h

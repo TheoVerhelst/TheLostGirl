@@ -1,4 +1,5 @@
 #include <algorithm>
+#include <cmath>
 #include <iostream>
 
 #include <SFML/Graphics/RenderWindow.hpp>
@@ -9,6 +10,7 @@
 
 #include <TheLostGirl/components.h>
 #include <TheLostGirl/Command.h>
+#include <TheLostGirl/actions.h>
 #include <TheLostGirl/Category.h>
 #include <TheLostGirl/Animations.h>
 #include <TheLostGirl/Parameters.h>
@@ -17,7 +19,7 @@
 
 using namespace sf;
 
-void Actions::update(entityx::EntityManager& entityManager, entityx::EventManager& eventManager, double dt)
+void Actions::update(entityx::EntityManager& entityManager, entityx::EventManager&, double dt)
 {
 	while(not m_commandQueue.empty())
 	{
@@ -38,7 +40,7 @@ void Actions::update(entityx::EntityManager& entityManager, entityx::EventManage
 	}
 }
 
-void FallSystem::update(entityx::EntityManager& entityManager, entityx::EventManager &eventManager, double)
+void FallSystem::update(entityx::EntityManager& entityManager, entityx::EventManager&, double)
 {
 	AnimationsComponent::Handle animationsComponent;
 	FallComponent::Handle fallComponent;
@@ -51,7 +53,7 @@ void FallSystem::update(entityx::EntityManager& entityManager, entityx::EventMan
 	{//For every entity that can fall, set the right animation
 		Animations* animations = animationsComponent->animations;
 		b2Body* body = bodyComponent->body;
-		if(fallComponent->inAir and body->GetLinearVelocity().y < -2.f)
+		if(fallComponent->inAir and body->GetLinearVelocity().y > 2.f)
 		{
 			if(directionComponent->direction == Direction::Left)
 				animations->play("fallLeft");
@@ -61,7 +63,7 @@ void FallSystem::update(entityx::EntityManager& entityManager, entityx::EventMan
 	}
 }
 
-void BendSystem::update(entityx::EntityManager& entityManager, entityx::EventManager &eventManager, double)
+void BendSystem::update(entityx::EntityManager& entityManager, entityx::EventManager&, double)
 {
 	AnimationsComponent::Handle animationsComponent;
 	BendComponent::Handle bendComponent;
@@ -79,30 +81,54 @@ void BendSystem::update(entityx::EntityManager& entityManager, entityx::EventMan
 	}
 }
 
-void DragAndDropSystem::update(entityx::EntityManager& entityManager, entityx::EventManager &eventManager, double)
+void DragAndDropSystem::update(entityx::EntityManager&, entityx::EventManager&, double)
 {
 	if(m_isActive)
 	{
 		m_line[1].position = static_cast<sf::Vector2f>(sf::Mouse::getPosition(m_window));
+		m_window.draw(m_line, 2, sf::Lines);
+		//Compute the drag and drop data
+		float delta_x = m_line[1].position.x- m_line[0].position.x;
+		float delta_y = m_line[1].position.y- m_line[0].position.y;
+		float power = hypot(delta_x, delta_y);//Distance between the two points
+		float angle = atan2(delta_x, delta_y);//Angle of the line with the horizontal axis
+		//Send a command to player's entities to bend them bows according to the drag and drop data
+		Command bendCommand;
+		bendCommand.targetIsSpecific = false;
+		bendCommand.category = Category::Player;
+		bendCommand.action = BowBender(true, angle, power);
+		m_commandQueue.push(bendCommand);
 		m_window.draw(m_line, 2, sf::Lines);
 	}
 }
 
 void DragAndDropSystem::setDragAndDropActivation(bool isActive)
 {
-	if(not m_isActive and isActive)
+	if(not m_isActive and isActive)//Activation
 		m_line[0].position = static_cast<sf::Vector2f>(sf::Mouse::getPosition(m_window));
+	if(not isActive and m_isActive)//Desactivation
+	{
+		float delta_x = m_line[1].position.x- m_line[0].position.x;
+		float delta_y = m_line[1].position.y- m_line[0].position.y;
+		float power = hypot(delta_x, delta_y);//Distance between the two points
+		float angle = atan2(delta_x, delta_y);//Angle of the line with the horizontal axis
+		Command bendCommand;
+		bendCommand.targetIsSpecific = false;
+		bendCommand.category = Category::Player;
+		bendCommand.action = BowBender(false, angle, power);
+		m_commandQueue.push(bendCommand);
+	}
 	m_isActive = isActive;
 }
 
-void Render::update(entityx::EntityManager& entityManager, entityx::EventManager &eventManager, double)
+void Render::update(entityx::EntityManager& entityManager, entityx::EventManager&, double)
 {
 	SpriteComponent::Handle spriteComponent;
 	for(auto entity : entityManager.entities_with_components(spriteComponent))
 		m_window.draw(*spriteComponent->sprite);
 }
 
-void Physics::update(entityx::EntityManager& entityManager, entityx::EventManager &eventManager, double dt)
+void Physics::update(entityx::EntityManager& entityManager, entityx::EventManager&, double dt)
 {
 	int32 velocityIterations = 8;
 	int32 positionIterations = 3;
@@ -110,13 +136,8 @@ void Physics::update(entityx::EntityManager& entityManager, entityx::EventManage
 	Body::Handle bodyComponent;
 	SpriteComponent::Handle spriteComponent;
 	Walk::Handle walkComponent;
-	for(auto entity : entityManager.entities_with_components(bodyComponent, spriteComponent))
-	{
-		b2Vec2 pos = bodyComponent->body->GetPosition();
-		float32 angle = bodyComponent->body->GetAngle();
-		spriteComponent->sprite->setPosition(pos.x * m_parameters.pixelScale, pos.y * m_parameters.pixelScale);
-		spriteComponent->sprite->setRotation(angle*180/3.141592653589793);
-	}
+	BendComponent::Handle bendComponent;
+	//Update the walkers
 	for(auto entity : entityManager.entities_with_components(bodyComponent, walkComponent))
 	{
 		b2Body* body = bodyComponent->body;
@@ -127,9 +148,27 @@ void Physics::update(entityx::EntityManager& entityManager, entityx::EventManage
 			velocity = walkComponent->walkSpeed;
 		body->SetLinearVelocity({velocity, body->GetLinearVelocity().y});
 	}
+	//Update the archers
+	for(auto entity : entityManager.entities_with_components(bodyComponent, bendComponent))
+	{
+		b2Body* body = bodyComponent->body;
+		b2RevoluteJoint* joint = static_cast<b2RevoluteJoint*>(body->GetJointList()->joint);
+		float angleTarget{bendComponent->angle};
+		float32 angleError = joint->GetJointAngle() - angleTarget;
+		float32 gain = 0.1f;
+		joint->SetMotorSpeed(-gain * angleError);
+	}
+	//Update the sprite transformation according to the one of the b2Body.
+	for(auto entity : entityManager.entities_with_components(bodyComponent, spriteComponent))
+	{
+		b2Vec2 pos = bodyComponent->body->GetPosition();
+		float32 angle = bodyComponent->body->GetAngle();
+		spriteComponent->sprite->setPosition(pos.x * m_parameters.pixelScale, pos.y * m_parameters.pixelScale);
+		spriteComponent->sprite->setRotation(angle*180/b2_pi);
+	}
 }
 
-void AnimationSystem::update(entityx::EntityManager& entityManager, entityx::EventManager &eventManager, double dt)
+void AnimationSystem::update(entityx::EntityManager& entityManager, entityx::EventManager&, double dt)
 {
 	AnimationsComponent::Handle anims;
 	for(auto entity : entityManager.entities_with_components(anims))

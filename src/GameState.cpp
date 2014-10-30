@@ -11,7 +11,6 @@
 #include <TheLostGirl/components.h>
 #include <TheLostGirl/Category.h>
 #include <TheLostGirl/StateStack.h>
-#include <TheLostGirl/functions.h>
 #include <TheLostGirl/Command.h>
 #include <TheLostGirl/systems.h>
 #include <TheLostGirl/ResourceManager.h>
@@ -52,6 +51,7 @@ GameState::~GameState()
 void GameState::draw()
 {
 	getContext().systemManager.update<Render>(sf::Time::Zero.asSeconds());
+	//The drag and drop system draw a line on the screen, so we must put it here
 	getContext().systemManager.update<DragAndDropSystem>(sf::Time::Zero.asSeconds());
 }
 
@@ -82,10 +82,11 @@ void GameState::initWorld()
 {
 	float scale = getContext().parameters.scale;
 	float pixelScale = getContext().parameters.pixelScale;
+	sf::Vector2f screenSize = getContext().parameters.worldFrameSize;
 	b2BodyDef bd;
 	b2Body* ground = getContext().world.CreateBody(&bd);
 	b2EdgeShape shape;
-	shape.Set(b2Vec2(-40.0f, 5.0f), b2Vec2(40.0f, 5.0f));
+	shape.Set(b2Vec2(-40.0f, screenSize.y), b2Vec2(40.0f, screenSize.y));
 	ground->CreateFixture(&shape, 0.0f);
 	ground->SetUserData(&m_groundEntity);
 	m_groundEntity.assign<Body>(ground);
@@ -95,7 +96,7 @@ void GameState::initWorld()
 
 	//Archer initialization
 	m_archer.assign<Walk>(5.f);
-	m_archer.assign<Jump>(5.f);
+	m_archer.assign<Jump>(8.f);
 	m_archer.assign<DirectionComponent>(Direction::Right);
 	m_archer.assign<CategoryComponent>(Category::Player|Category::CanFall);
 	m_archer.assign<FallComponent>();
@@ -151,9 +152,9 @@ void GameState::initWorld()
 	b2BodyDef archerBodyDef;
 	archerBodyDef.type = b2_dynamicBody;
 	archerBodyDef.position = {0, 1.f};
+	archerBodyDef.fixedRotation = true;
+	archerBodyDef.userData = &m_archer;
 	b2Body* archerBody = getContext().world.CreateBody(&archerBodyDef);
-	archerBody->SetUserData(&m_archer);
-	archerBody->SetFixedRotation(true);
 	m_archer.assign<Body>(archerBody);
 
 	b2PolygonShape archerBox;
@@ -169,6 +170,7 @@ void GameState::initWorld()
 	//Arms initiailization
 	m_arms.assign<DirectionComponent>(Direction::Right);
 	m_arms.assign<CategoryComponent>(Category::Player);
+	m_arms.assign<BendComponent>(400.f);
 	m_arms.assign<SpriteComponent>(&m_armsSprite);
 	m_armsSprite.setTextureRect(sf::IntRect(0, 0, 100.f*scale, 200.f*scale));
 	m_arms.assign<AnimationsComponent>(&m_armsAnimations);
@@ -190,9 +192,9 @@ void GameState::initWorld()
 
 	b2BodyDef armBodyDef;
 	armBodyDef.type = b2_dynamicBody;
-	armBodyDef.position = {3, 1.f};
+	armBodyDef.position = {0, 1.f};
+	armBodyDef.userData = &m_arms;
 	b2Body* armBody = getContext().world.CreateBody(&armBodyDef);
-	armBody->SetUserData(&m_arms);
 	m_arms.assign<Body>(armBody);
 
 	b2PolygonShape armBox;
@@ -200,8 +202,19 @@ void GameState::initWorld()
 
 	b2FixtureDef armFixtureDef;
 	armFixtureDef.shape = &armBox;
-	armFixtureDef.density = 1.0f;
+	armFixtureDef.density = 0.f;//No mass
 	armFixtureDef.friction = 1.f;
 	armFixtureDef.restitution = 0.f;
 	armBody->CreateFixture(&armFixtureDef);
+	
+	//Joint between archer and his arms
+	b2RevoluteJointDef jointDef;
+	jointDef.Initialize(archerBody, armBody, archerBody->GetWorldCenter());
+	jointDef.lowerAngle = -0.5f * b2_pi; // -90 degrees
+	jointDef.upperAngle = 0.25f * b2_pi; // 45 degrees
+	jointDef.enableLimit = true;
+	jointDef.maxMotorTorque = 10.0f;
+	jointDef.motorSpeed = 0.0f;
+	jointDef.enableMotor = true;
+	getContext().world.CreateJoint(&jointDef);
 }

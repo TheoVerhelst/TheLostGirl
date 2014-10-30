@@ -78,7 +78,7 @@ struct Jump : public entityx::Component<Jump>
 /// The BendComponent must be added to every entity that want to bend a bow.
 struct BendComponent : public entityx::Component<BendComponent>
 {
-	float angle;///< The current angle of the bow.
+	float angle;///< The current angle of the bow, in radians
 	float power;///< The current power of the bending of the bow.
 	float maxPower;///< The maximum power of the bending of the bow.
 
