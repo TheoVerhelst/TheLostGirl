@@ -159,4 +159,5 @@ class AnimationSystem : public entityx::System<AnimationSystem>
 		/// \param dt Elapsed time in the last game frame.
 		void update(entityx::EntityManager &es, entityx::EventManager &events, double dt) override;
 };
+
 #endif // SYSTEMS_H

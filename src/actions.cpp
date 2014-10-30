@@ -58,19 +58,15 @@ void Mover::operator()(entityx::Entity& entity, double) const
 	{
 		//If the entity can walk, set the right animation.
 		if(entity.has_component<AnimationsComponent>()
-			and entity.has_component<Body>()
 			and entity.has_component<Walk>()
 			and entity.has_component<DirectionComponent>())
 		{
 			Animations* animations = entity.component<AnimationsComponent>()->animations;
-			b2Body* body = entity.component<Body>()->body;
-			float walkSpeed = entity.component<Walk>()->walkSpeed;
 			DirectionComponent::Handle directionComponent = entity.component<DirectionComponent>();
+			Walk::Handle walkComponent = entity.component<Walk>();
 			//References to the moveToLeft and moveToRight data in directionComponent
 			bool& moveToDirection = (direction == Direction::Left ? directionComponent->moveToLeft : directionComponent->moveToRight);
 			bool& moveToOppDirection = (direction == Direction::Right ? directionComponent->moveToLeft : directionComponent->moveToRight);
-			float xVelocity = walkSpeed * (direction == Direction::Left ? -1 : 1);
-			float yVelocity = body->GetLinearVelocity().y;
 			if(start)
 			{
 				moveToDirection = true;
@@ -85,10 +81,10 @@ void Mover::operator()(entityx::Entity& entity, double) const
 				{
 					//Stop the player
 					animations->stop("move" + directionStr);
-					body->SetLinearVelocity({0, yVelocity});
+					walkComponent->effectiveMovement = Direction::None;
 				}
 				else
-					body->SetLinearVelocity({xVelocity, yVelocity});
+					walkComponent->effectiveMovement = direction;
 			}
 			else
 			{
@@ -100,11 +96,11 @@ void Mover::operator()(entityx::Entity& entity, double) const
 					animations->play("move" + oppDirectionStr);
 					animations->stop("stay" + directionStr);
 					animations->play("stay" + oppDirectionStr);
-					body->SetLinearVelocity({-xVelocity, yVelocity});
+					walkComponent->effectiveMovement = oppDirection;
 					directionComponent->direction = oppDirection;
 				}
 				else
-					body->SetLinearVelocity({0, yVelocity});//Stop the player
+					walkComponent->effectiveMovement = Direction::None;//Stop the player
 			}
 		}
 		//If the entity can jump, set the right animation if it jumps
@@ -162,7 +158,7 @@ void Jumper::operator()(entityx::Entity& entity, double) const
 		DirectionComponent::Handle directionComponent = entity.component<DirectionComponent>();
 		if(not fallComponent->inAir)
 		{
-			body->SetLinearVelocity({body->GetLinearVelocity().x, jumpComponent->jumpStrength});
+			body->SetLinearVelocity({body->GetLinearVelocity().x, -jumpComponent->jumpStrength});
 			if(directionComponent->direction == Direction::Left)
 				animations->play("jumpLeft");
 			else if(directionComponent->direction == Direction::Right)

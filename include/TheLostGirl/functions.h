@@ -6,9 +6,7 @@
 #include <algorithm>
 #include <iostream>
 
-#include <TheLostGirl/constants.h>
-
-//Forwar declarations
+//Forward declarations
 namespace sf
 {
 	template <typename T>

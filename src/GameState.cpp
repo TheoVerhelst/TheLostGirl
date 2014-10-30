@@ -42,6 +42,7 @@ GameState::~GameState()
 {
 	getContext().world.DestroyBody(m_archer.component<Body>()->body);
 	getContext().world.DestroyBody(m_groundEntity.component<Body>()->body);
+	getContext().world.DestroyBody(m_arms.component<Body>()->body);
 	getContext().world.ClearForces();
 	m_archer.destroy();
 	m_arms.destroy();
@@ -80,10 +81,11 @@ bool GameState::handleEvent(const sf::Event& event)
 void GameState::initWorld()
 {
 	float scale = getContext().parameters.scale;
+	float pixelScale = getContext().parameters.pixelScale;
 	b2BodyDef bd;
 	b2Body* ground = getContext().world.CreateBody(&bd);
 	b2EdgeShape shape;
-	shape.Set(b2Vec2(-40.0f, 0.0f), b2Vec2(40.0f, 0.0f));
+	shape.Set(b2Vec2(-40.0f, 5.0f), b2Vec2(40.0f, 5.0f));
 	ground->CreateFixture(&shape, 0.0f);
 	ground->SetUserData(&m_groundEntity);
 	m_groundEntity.assign<Body>(ground);
@@ -146,22 +148,23 @@ void GameState::initWorld()
 	fallRight.addFrame(sf::IntRect(300.f*scale, 200.f*scale, 100.f*scale, 200.f*scale), 1.f);
 	m_archerAnimations.addAnimation("fallRight", fallRight, 3, sf::seconds(1.f), false);
 
-	b2BodyDef bodyDef;
-	bodyDef.type = b2_dynamicBody;
-	bodyDef.position = {0, 200.f*scale/getContext().parameters.pixelScale*2-0.1f};
-	b2Body* body = getContext().world.CreateBody(&bodyDef);
-	body->SetUserData(&m_archer);
-	m_archer.assign<Body>(body);
+	b2BodyDef archerBodyDef;
+	archerBodyDef.type = b2_dynamicBody;
+	archerBodyDef.position = {0, 1.f};
+	b2Body* archerBody = getContext().world.CreateBody(&archerBodyDef);
+	archerBody->SetUserData(&m_archer);
+	archerBody->SetFixedRotation(true);
+	m_archer.assign<Body>(archerBody);
 
 	b2PolygonShape archerBox;
-	archerBox.SetAsBox(100.f*scale/getContext().parameters.pixelScale*2, 200.f*scale/getContext().parameters.pixelScale*2);
+	archerBox.SetAsBox((100.f*scale/pixelScale)/2, (200.f*scale/pixelScale)/2, {(100.f*scale/pixelScale)/2, (200.f*scale/pixelScale)/2}, 0);
 
-	b2FixtureDef fixtureDef;
-	fixtureDef.shape = &archerBox;
-	fixtureDef.density = 1.0f;
-	fixtureDef.friction = 0.f;
-	fixtureDef.restitution = 0.f;
-	body->CreateFixture(&fixtureDef);
+	b2FixtureDef archerFixtureDef;
+	archerFixtureDef.shape = &archerBox;
+	archerFixtureDef.density = 1.0f;
+	archerFixtureDef.friction = 1.f;
+	archerFixtureDef.restitution = 0.f;
+	archerBody->CreateFixture(&archerFixtureDef);
 
 	//Arms initiailization
 	m_arms.assign<DirectionComponent>(Direction::Right);
@@ -184,4 +187,21 @@ void GameState::initWorld()
 	bendRightAnimation.addFrame(sf::IntRect(100*3.f*scale, 0, 100.f*scale, 200.f*scale), 0.25f);
 	m_armsAnimations.addAnimation("bendRight", bendRightAnimation);
 	m_armsAnimations.activate("bendRight");
+
+	b2BodyDef armBodyDef;
+	armBodyDef.type = b2_dynamicBody;
+	armBodyDef.position = {3, 1.f};
+	b2Body* armBody = getContext().world.CreateBody(&armBodyDef);
+	armBody->SetUserData(&m_arms);
+	m_arms.assign<Body>(armBody);
+
+	b2PolygonShape armBox;
+	armBox.SetAsBox((100.f*scale/pixelScale)/2, (200.f*scale/pixelScale)/2, {(100.f*scale/pixelScale)/2, (200.f*scale/pixelScale)/2}, 0);
+
+	b2FixtureDef armFixtureDef;
+	armFixtureDef.shape = &armBox;
+	armFixtureDef.density = 1.0f;
+	armFixtureDef.friction = 1.f;
+	armFixtureDef.restitution = 0.f;
+	armBody->CreateFixture(&armFixtureDef);
 }

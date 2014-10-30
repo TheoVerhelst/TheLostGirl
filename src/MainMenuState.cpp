@@ -4,7 +4,6 @@
 #include <TheLostGirl/StateStack.h>
 #include <TheLostGirl/StateIdentifiers.h>
 #include <TheLostGirl/LangManager.h>
-#include <TheLostGirl/constants.h>
 #include <TheLostGirl/functions.h>
 #include <TheLostGirl/Parameters.h>
 

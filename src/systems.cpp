@@ -8,7 +8,6 @@
 #include <Box2D/Box2D.h>
 
 #include <TheLostGirl/components.h>
-#include <TheLostGirl/constants.h>
 #include <TheLostGirl/Command.h>
 #include <TheLostGirl/Category.h>
 #include <TheLostGirl/Animations.h>
@@ -110,10 +109,23 @@ void Physics::update(entityx::EntityManager& entityManager, entityx::EventManage
 	m_world.Step(dt, velocityIterations, positionIterations);
 	Body::Handle bodyComponent;
 	SpriteComponent::Handle spriteComponent;
+	Walk::Handle walkComponent;
 	for(auto entity : entityManager.entities_with_components(bodyComponent, spriteComponent))
 	{
 		b2Vec2 pos = bodyComponent->body->GetPosition();
-		spriteComponent->sprite->setPosition(pos.x * m_parameters.pixelScale, m_parameters.windowSize.y - (pos.y * m_parameters.pixelScale));
+		float32 angle = bodyComponent->body->GetAngle();
+		spriteComponent->sprite->setPosition(pos.x * m_parameters.pixelScale, pos.y * m_parameters.pixelScale);
+		spriteComponent->sprite->setRotation(angle*180/3.141592653589793);
+	}
+	for(auto entity : entityManager.entities_with_components(bodyComponent, walkComponent))
+	{
+		b2Body* body = bodyComponent->body;
+		float velocity = 0;
+		if(walkComponent->effectiveMovement ==  Direction::Left)
+			velocity = -walkComponent->walkSpeed;
+		else if(walkComponent->effectiveMovement ==  Direction::Right)
+			velocity = walkComponent->walkSpeed;
+		body->SetLinearVelocity({velocity, body->GetLinearVelocity().y});
 	}
 }
 

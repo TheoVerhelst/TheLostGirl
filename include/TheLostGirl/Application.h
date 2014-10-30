@@ -19,6 +19,7 @@
 #include <TheLostGirl/StateStack.h>
 #include <TheLostGirl/Player.h>
 #include <TheLostGirl/Parameters.h>
+#include <TheLostGirl/DebugDraw.h>
 
 //Forward declarations
 namespace entityx
@@ -35,7 +36,7 @@ typedef std::queue<Command> CommandQueue;
 class Application
 {
 	public:
-		Application();
+		Application(bool debugMode = false);
 		~Application();
 		
         /// Initialize the game.
@@ -68,6 +69,7 @@ class Application
 		CommandQueue m_commandQueue;           ///< The queue of commands.
 		b2Vec2 m_gravity;                      
 		b2World m_world;                       ///< The Box2D world.
+		DebugDraw m_debugDraw;                 ///< The debugging drawer.
 		StateStack m_stateStack;               ///< The game state manager.
 };
 

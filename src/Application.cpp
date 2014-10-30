@@ -13,20 +13,20 @@
 #include <TheLostGirl/PauseState.h>
 #include <TheLostGirl/components.h>
 #include <TheLostGirl/systems.h>
-#include <TheLostGirl/constants.h>
 #include <TheLostGirl/functions.h>
 #include <TheLostGirl/Command.h>
 #include <TheLostGirl/LangManager.h>
 
 #include <TheLostGirl/Application.h>
 
-Application::Application():
+Application::Application(bool debugMode):
 	m_parameters{FR,
+				debugMode,
 				scales[1],
 				windowSizes[1],
 				120.f*m_parameters.scale,
 				sf::Vector2f{m_parameters.windowSize}/m_parameters.pixelScale,
-				{0.0f, -9.81f},
+				{0.0f, 9.80665f},
 				4,
 				"ressources/fonts/euphorigenic.ttf"},
 	m_window{sf::VideoMode{m_parameters.windowSize.x, m_parameters.windowSize.y}, "The Lost Girl"},
@@ -38,6 +38,7 @@ Application::Application():
 	m_systemManager{m_entityManager, m_eventManager},
 	m_commandQueue{},
 	m_world{m_parameters.gravity},
+	m_debugDraw(m_window, m_parameters),
 	m_stateStack{State::Context{m_parameters,
 								m_window,
 								m_textureManager,
@@ -67,6 +68,8 @@ int Application::init()
 		loadTextures();
 		m_fontManager.load(Fonts::Menu, m_parameters.textFont);
 		m_gui.setGlobalFont(std::make_shared<sf::Font>(m_fontManager.get(Fonts::Menu)));
+		m_world.SetDebugDraw(&m_debugDraw);
+		m_debugDraw.SetFlags(b2Draw::e_shapeBit);
 		registerStates();
 		registerSystems();
 		m_systemManager.configure();//Init the manager
@@ -129,8 +132,10 @@ void Application::update(sf::Time dt)
 
 void Application::render()
 {
-	m_window.clear(sf::Color(120, 120, 120));
+	m_window.clear({127, 127, 127});
 	m_stateStack.draw();
+	if(m_parameters.debugMode)
+		m_world.DrawDebugData();
 	m_gui.draw();
 	m_window.display();
 }

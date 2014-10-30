@@ -60,20 +60,6 @@ struct AnimationsComponent : public entityx::Component<AnimationsComponent>
 	{}
 };
 
-/// Walk component.
-/// The walk component must be added to every entity that want to move itself in the world.
-/// The walkSpeed member is the maximum speed that the entity can reach when walking.
-struct Walk : public entityx::Component<Walk>
-{
-	float walkSpeed;   ///< The current speed of the entity.
-
-	/// Default constructor
-	/// \param _walkSpeed The current speed of the entity.
-	Walk(float _walkSpeed = 1.f):
-		walkSpeed{_walkSpeed}
-	{}
-};
-
 /// Jump component.
 /// The Jump component must be added to every entity that want to jump.
 /// The jumpStrength member influences directly the height of the jump of the entity.
@@ -141,6 +127,22 @@ struct DirectionComponent : public entityx::Component<DirectionComponent>
 		direction{_direction},
 		moveToLeft{false},
 		moveToRight{false}
+	{}
+};
+
+/// Walk component.
+/// The walk component must be added to every entity that want to move itself in the world.
+/// The walkSpeed member is the maximum speed that the entity can reach when walking.
+struct Walk : public entityx::Component<Walk>
+{
+	float walkSpeed;            ///< The current speed of the entity.
+	Direction effectiveMovement;///< Indicate the real movement of the entity.
+	
+	/// Default constructor
+	/// \param _walkSpeed The current speed of the entity.
+	Walk(float _walkSpeed = 1.f):
+		walkSpeed{_walkSpeed},
+		effectiveMovement{Direction::None}
 	{}
 };
 
