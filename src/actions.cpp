@@ -168,8 +168,7 @@ void Jumper::operator()(entityx::Entity& entity, double) const
 	}
 }
 
-BowBender::BowBender(bool _start, float _angle, float _power):
-	start{_start},
+BowBender::BowBender(float _angle, float _power):
 	angle{_angle},
 	power{_power}
 {}
@@ -179,14 +178,12 @@ BowBender::~BowBender()
 
 void BowBender::operator()(entityx::Entity& entity, double) const
 {
-	std::cout << "Bend action:" << std::endl;
-	std::cout << "start:" << start << std::endl;
-	std::cout << "angle:" << angle << std::endl;
-	std::cout << "power:" << power << std::endl;
 	if(entity.has_component<BendComponent>()
 		and entity.has_component<AnimationsComponent>()
 		and entity.has_component<DirectionComponent>())
 	{
+//		std::cout << "Bend action:" << std::endl;
+//		std::cout << "angle:" << angle << std::endl;
 		BendComponent::Handle bendComponent = entity.component<BendComponent>();
 		Animations* animations = entity.component<AnimationsComponent>()->animations;
 		DirectionComponent::Handle directionComponent = entity.component<DirectionComponent>();

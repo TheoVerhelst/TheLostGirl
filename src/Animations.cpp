@@ -116,8 +116,8 @@ void Animations::update(entityx::Entity& entity, sf::Time dt)
 				}
 				else if(timeAnim.progress < 1.f)//If the animation doesn't loops, incerement progress only if less than 1
 					timeAnim.progress += dt.asSeconds()/timeAnim.duration.asSeconds();
-				timeAnim.animation(entity, timeAnim.progress);
 			}
+			timeAnim.animation(entity, timeAnim.progress);
 		}
 	}
 }
