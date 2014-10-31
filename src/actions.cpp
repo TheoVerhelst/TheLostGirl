@@ -182,8 +182,6 @@ void BowBender::operator()(entityx::Entity& entity, double) const
 		and entity.has_component<AnimationsComponent>()
 		and entity.has_component<DirectionComponent>())
 	{
-//		std::cout << "Bend action:" << std::endl;
-//		std::cout << "angle:" << angle << std::endl;
 		BendComponent::Handle bendComponent = entity.component<BendComponent>();
 		Animations* animations = entity.component<AnimationsComponent>()->animations;
 		DirectionComponent::Handle directionComponent = entity.component<DirectionComponent>();
@@ -193,6 +191,7 @@ void BowBender::operator()(entityx::Entity& entity, double) const
 			directionStr = "Left";
 		else if(directionComponent->direction == Direction::Right)
 			directionStr = "Right";
+		
 		bendComponent->power = cap(power, 0.f, bendComponent->maxPower);//Cap the power
 		float animationPower = bendComponent->power / bendComponent->maxPower;//The progress of the bending, in the range [0, 1]
 		animations->setProgress("bend"+directionStr, animationPower);

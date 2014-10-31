@@ -92,6 +92,9 @@ void DragAndDropSystem::update(entityx::EntityManager&, entityx::EventManager&, 
 		float delta_y = m_line[1].position.y- m_line[0].position.y;
 		float power = hypot(delta_x, delta_y);//Distance between the two points
 		float angle = atan2(delta_x, delta_y);//Angle of the line with the horizontal axis
+		angle += b2_pi/2.f;//Turn the angle of 90 degrees to fit with the gameplay requirements
+		if(angle > b2_pi + b2_pi/4.f)//Keep the angle in the range [-3*pi/4, 5*pi/4]
+			angle = angle - 2*b2_pi;
 		//Send a command to player's entities to bend them bows according to the drag and drop data
 		Command bendCommand;
 		bendCommand.targetIsSpecific = false;
@@ -110,7 +113,7 @@ void DragAndDropSystem::setDragAndDropActivation(bool isActive)
 	{
 		float delta_x = m_line[1].position.x- m_line[0].position.x;
 		float delta_y = m_line[1].position.y- m_line[0].position.y;
-		float angle = atan2(delta_x, delta_y);//Angle of the line with the horizontal axis
+		float angle = atan2(delta_x, delta_y) + b2_pi/2.f;//Angle of the line with the horizontal axis
 		Command bendCommand;
 		bendCommand.targetIsSpecific = false;
 		bendCommand.category = Category::Player;
@@ -153,10 +156,8 @@ void Physics::update(entityx::EntityManager& entityManager, entityx::EventManage
 		b2Body* body = bodyComponent->body;
 		b2RevoluteJoint* joint = static_cast<b2RevoluteJoint*>(body->GetJointList()->joint);
 		float angleTarget{bendComponent->angle};
-		std::cout << "target angle = " << angleTarget <<std::endl;
 		float32 angleError = joint->GetJointAngle() - angleTarget;
-		std::cout << "angleError = " << angleError <<std::endl;
-		float32 gain = 0.1f;
+		float32 gain = 10.f;
 		joint->SetMotorSpeed(-gain * angleError);
 	}
 	//Update the sprite transformation according to the one of the b2Body.

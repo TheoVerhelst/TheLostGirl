@@ -151,7 +151,7 @@ void GameState::initWorld()
 
 	b2BodyDef archerBodyDef;
 	archerBodyDef.type = b2_dynamicBody;
-	archerBodyDef.position = {0, 1.f};
+	archerBodyDef.position = {0, 0};
 	archerBodyDef.fixedRotation = true;
 	archerBodyDef.userData = &m_archer;
 	b2Body* archerBody = getContext().world.CreateBody(&archerBodyDef);
@@ -172,49 +172,48 @@ void GameState::initWorld()
 	m_arms.assign<CategoryComponent>(Category::Player);
 	m_arms.assign<BendComponent>(400.f);
 	m_arms.assign<SpriteComponent>(&m_armsSprite);
-	m_armsSprite.setTextureRect(sf::IntRect(0, 0, 100.f*scale, 200.f*scale));
+	m_armsSprite.setTextureRect(sf::IntRect(0, 50.f, 100.f*scale, 70.f*scale));
 	m_arms.assign<AnimationsComponent>(&m_armsAnimations);
 
 	SpriteSheetAnimation bendLeftAnimation;
-	bendLeftAnimation.addFrame(sf::IntRect(100*0.f*scale, 200.f*scale, 100.f*scale, 200.f*scale), 0.25f);
-	bendLeftAnimation.addFrame(sf::IntRect(100*1.f*scale, 200.f*scale, 100.f*scale, 200.f*scale), 0.25f);
-	bendLeftAnimation.addFrame(sf::IntRect(100*2.f*scale, 200.f*scale, 100.f*scale, 200.f*scale), 0.25f);
-	bendLeftAnimation.addFrame(sf::IntRect(100*3.f*scale, 200.f*scale, 100.f*scale, 200.f*scale), 0.25f);
+	bendLeftAnimation.addFrame(sf::IntRect(100*0.f*scale, 250.f*scale, 100.f*scale, 70.f*scale), 0.25f);
+	bendLeftAnimation.addFrame(sf::IntRect(100*1.f*scale, 250.f*scale, 100.f*scale, 70.f*scale), 0.25f);
+	bendLeftAnimation.addFrame(sf::IntRect(100*2.f*scale, 250.f*scale, 100.f*scale, 70.f*scale), 0.25f);
+	bendLeftAnimation.addFrame(sf::IntRect(100*3.f*scale, 250.f*scale, 100.f*scale, 70.f*scale), 0.25f);
 	m_armsAnimations.addAnimation("bendLeft", bendLeftAnimation);
 
 	SpriteSheetAnimation bendRightAnimation;
-	bendRightAnimation.addFrame(sf::IntRect(100*0.f*scale, 0, 100.f*scale, 200.f*scale), 0.25f);
-	bendRightAnimation.addFrame(sf::IntRect(100*1.f*scale, 0, 100.f*scale, 200.f*scale), 0.25f);
-	bendRightAnimation.addFrame(sf::IntRect(100*2.f*scale, 0, 100.f*scale, 200.f*scale), 0.25f);
-	bendRightAnimation.addFrame(sf::IntRect(100*3.f*scale, 0, 100.f*scale, 200.f*scale), 0.25f);
+	bendRightAnimation.addFrame(sf::IntRect(100*0.f*scale, 50.f*scale, 100.f*scale, 70.f*scale), 0.25f);
+	bendRightAnimation.addFrame(sf::IntRect(100*1.f*scale, 50.f*scale, 100.f*scale, 70.f*scale), 0.25f);
+	bendRightAnimation.addFrame(sf::IntRect(100*2.f*scale, 50.f*scale, 100.f*scale, 70.f*scale), 0.25f);
+	bendRightAnimation.addFrame(sf::IntRect(100*3.f*scale, 50.f*scale, 100.f*scale, 70.f*scale), 0.25f);
 	m_armsAnimations.addAnimation("bendRight", bendRightAnimation);
 	m_armsAnimations.activate("bendRight");
 
 	b2BodyDef armBodyDef;
 	armBodyDef.type = b2_dynamicBody;
-	armBodyDef.position = {0, 1.f};
+	armBodyDef.position = {0, 50.f*scale/pixelScale};
 	armBodyDef.userData = &m_arms;
 	b2Body* armBody = getContext().world.CreateBody(&armBodyDef);
 	m_arms.assign<Body>(armBody);
 
 	b2PolygonShape armBox;
-	armBox.SetAsBox((100.f*scale/pixelScale)/2, (200.f*scale/pixelScale)/2, {(100.f*scale/pixelScale)/2, (200.f*scale/pixelScale)/2}, 0);
+	armBox.SetAsBox((100.f*scale/pixelScale)/2, (70.f*scale/pixelScale)/2, {(100.f*scale/pixelScale)/2, (70.f*scale/pixelScale)/2}, 0);
 
 	b2FixtureDef armFixtureDef;
 	armFixtureDef.shape = &armBox;
-	armFixtureDef.density = 0.f;//No mass
+	armFixtureDef.density = 1.f;
 	armFixtureDef.friction = 1.f;
 	armFixtureDef.restitution = 0.f;
 	armBody->CreateFixture(&armFixtureDef);
 	
 	//Joint between archer and his arms
 	b2RevoluteJointDef jointDef;
-	jointDef.Initialize(archerBody, armBody, archerBody->GetWorldCenter());
-	jointDef.lowerAngle = -0.5f * b2_pi; // -90 degrees
-	jointDef.upperAngle = 0.25f * b2_pi; // 45 degrees
+	jointDef.Initialize(armBody, archerBody, archerBody->GetPosition() + b2Vec2(50.f*scale/pixelScale, 68.f*scale/pixelScale));
+	jointDef.lowerAngle = -b2_pi/2.f;// -90 degrees, to the foots of the archer
+	jointDef.upperAngle = b2_pi;// 180 degrees, the horizontal axis in the back of the archer
 	jointDef.enableLimit = true;
-	jointDef.maxMotorTorque = 100.0f;
-	jointDef.motorSpeed = 0.0f;
+	jointDef.maxMotorTorque = 10.0f;
 	jointDef.enableMotor = true;
 	getContext().world.CreateJoint(&jointDef);
 }
