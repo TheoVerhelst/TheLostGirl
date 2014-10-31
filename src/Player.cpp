@@ -91,7 +91,6 @@ void Player::handleEvent(const sf::Event& event, CommandQueue& commands)
 		auto found = m_mouseButtonBinding.find(event.mouseButton.button);
 		if(found != m_mouseButtonBinding.end())
 		{
-			std::cout << "MouseButtonPressed" << std::endl;
 			if(isRealtimeAction(found->second))
 				commands.push(m_startActionBinding[found->second]);
 			if(isImmediateAction(found->second))

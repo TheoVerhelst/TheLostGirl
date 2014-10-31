@@ -210,8 +210,8 @@ void GameState::initWorld()
 	//Joint between archer and his arms
 	b2RevoluteJointDef jointDef;
 	jointDef.Initialize(armBody, archerBody, archerBody->GetPosition() + b2Vec2(50.f*scale/pixelScale, 68.f*scale/pixelScale));
-	jointDef.lowerAngle = -b2_pi/2.f;// -90 degrees, to the foots of the archer
-	jointDef.upperAngle = b2_pi;// 180 degrees, the horizontal axis in the back of the archer
+	jointDef.lowerAngle = -b2_pi/2.f;//-90 degrees, to the foots of the archer
+	jointDef.upperAngle = b2_pi;//180 degrees, the horizontal axis in the back of the archer
 	jointDef.enableLimit = true;
 	jointDef.maxMotorTorque = 10.0f;
 	jointDef.enableMotor = true;

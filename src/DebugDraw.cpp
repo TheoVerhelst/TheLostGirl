@@ -74,7 +74,28 @@ void DebugDraw::DrawSegment(const b2Vec2& p1, const b2Vec2& p2, const b2Color& c
 	m_window.draw(line, 2, sf::Lines);
 }
 
-void DebugDraw::DrawTransform(const b2Transform&)
+void DebugDraw::DrawTransform(const b2Transform& xf)
 {
-	std::cout << "tranform" << std::endl;
+	const float axisScale = 0.4f;
+	sf::Vector2f xAxis{xf.q.GetXAxis().x, xf.q.GetXAxis().y};
+	xAxis *= m_parameters.pixelScale;
+	sf::Vector2f yAxis{xf.q.GetYAxis().x, xf.q.GetYAxis().y};
+	yAxis *= m_parameters.pixelScale;
+	sf::Vector2f p1{xf.p.x, xf.p.y};
+	p1 *= m_parameters.pixelScale;
+	sf::Vector2f p2;
+
+	sf::Vertex line1[2];
+	line1[0].position = p1;
+	line1[0].color = sf::Color::Red;
+	line1[1].position = p1 + axisScale * xAxis;
+	line1[1].color = sf::Color::Red;
+	m_window.draw(line1, 2, sf::Lines);
+	
+	sf::Vertex line2[2];
+	line2[0].position = p1;
+	line2[0].color = sf::Color::Green;
+	line2[1].position = p1 + axisScale * yAxis;
+	line2[1].color = sf::Color::Green;
+	m_window.draw(line2, 2, sf::Lines);
 }

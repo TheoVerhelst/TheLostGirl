@@ -69,7 +69,7 @@ int Application::init()
 		m_fontManager.load(Fonts::Menu, m_parameters.textFont);
 		m_gui.setGlobalFont(std::make_shared<sf::Font>(m_fontManager.get(Fonts::Menu)));
 		m_world.SetDebugDraw(&m_debugDraw);
-		m_debugDraw.SetFlags(b2Draw::e_shapeBit);
+		m_debugDraw.SetFlags(0x001f);//All flags in one time
 		registerStates();
 		registerSystems();
 		m_systemManager.configure();//Init the manager
