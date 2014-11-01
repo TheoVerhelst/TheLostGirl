@@ -15,4 +15,5 @@ namespace Category
 		CanFall = 1 << 2  ///< Category for every entity that can fall in the void.
 	};
 }
+
 #endif // CATEGORY_H

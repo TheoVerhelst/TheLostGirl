@@ -69,7 +69,7 @@ int Application::init()
 		m_fontManager.load(Fonts::Menu, m_parameters.textFont);
 		m_gui.setGlobalFont(std::make_shared<sf::Font>(m_fontManager.get(Fonts::Menu)));
 		m_world.SetDebugDraw(&m_debugDraw);
-		m_debugDraw.SetFlags(0x001f);//All flags in one time
+		m_debugDraw.SetFlags(b2Draw::e_shapeBit|b2Draw::e_jointBit|b2Draw::e_aabbBit|b2Draw::e_pairBit);//All flags in one time
 		registerStates();
 		registerSystems();
 		m_systemManager.configure();//Init the manager
@@ -165,4 +165,5 @@ void Application::loadTextures()
 {
 	m_textureManager.load(Textures::Archer, toPath(m_parameters.windowSize) + "charac.png");
 	m_textureManager.load(Textures::Arms, toPath(m_parameters.windowSize) + "arm1.png");
+	m_textureManager.load(Textures::Bow, toPath(m_parameters.windowSize) + "bow1.png");
 }

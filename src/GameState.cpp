@@ -31,6 +31,9 @@ GameState::GameState(StateStack& stack, Context context) :
 	m_arms(getContext().entityManager.create()),
 	m_armsSprite(getContext().textureManager.get(Textures::Arms)),
 	m_armsAnimations(),
+	m_bow(getContext().entityManager.create()),
+	m_bowSprite(getContext().textureManager.get(Textures::Bow)),
+	m_bowAnimations(),
 	m_timeSystem()
 {
 	initWorld();
@@ -165,6 +168,7 @@ void GameState::initWorld()
 	archerFixtureDef.density = 1.0f;
 	archerFixtureDef.friction = 1.f;
 	archerFixtureDef.restitution = 0.f;
+	archerFixtureDef.filter.groupIndex = -1;
 	archerBody->CreateFixture(&archerFixtureDef);
 
 	//Arms initiailization
@@ -172,7 +176,6 @@ void GameState::initWorld()
 	m_arms.assign<CategoryComponent>(Category::Player);
 	m_arms.assign<BendComponent>(400.f);
 	m_arms.assign<SpriteComponent>(&m_armsSprite);
-	m_armsSprite.setTextureRect(sf::IntRect(0, 50.f, 100.f*scale, 70.f*scale));
 	m_arms.assign<AnimationsComponent>(&m_armsAnimations);
 
 	SpriteSheetAnimation bendLeftAnimation;
@@ -205,6 +208,7 @@ void GameState::initWorld()
 	armFixtureDef.density = 1.f;
 	armFixtureDef.friction = 1.f;
 	armFixtureDef.restitution = 0.f;
+	armFixtureDef.filter.groupIndex = -1;
 	armBody->CreateFixture(&armFixtureDef);
 	
 	//Joint between archer and his arms
@@ -216,4 +220,54 @@ void GameState::initWorld()
 	jointDef.maxMotorTorque = 10.0f;
 	jointDef.enableMotor = true;
 	getContext().world.CreateJoint(&jointDef);
+
+	//Arms initiailization
+	m_bow.assign<DirectionComponent>(Direction::Right);
+	m_bow.assign<CategoryComponent>(Category::Player);
+	m_bow.assign<SpriteComponent>(&m_bowSprite);
+	m_bow.assign<BendComponent>(400.f);
+	m_bow.assign<AnimationsComponent>(&m_bowAnimations);
+
+	SpriteSheetAnimation bowBendLeftAnimation;
+	bowBendLeftAnimation.addFrame(sf::IntRect(100*0.f*scale, 245.f*scale, 100.f*scale, 100.f*scale), 0.25f);
+	bowBendLeftAnimation.addFrame(sf::IntRect(100*1.f*scale, 245.f*scale, 100.f*scale, 100.f*scale), 0.25f);
+	bowBendLeftAnimation.addFrame(sf::IntRect(100*2.f*scale, 245.f*scale, 100.f*scale, 100.f*scale), 0.25f);
+	bowBendLeftAnimation.addFrame(sf::IntRect(100*3.f*scale, 245.f*scale, 100.f*scale, 100.f*scale), 0.25f);
+	m_bowAnimations.addAnimation("bendLeft", bowBendLeftAnimation);
+
+	SpriteSheetAnimation bowBendRightAnimation;
+	bowBendRightAnimation.addFrame(sf::IntRect(100*0.f*scale, 45.f*scale, 100.f*scale, 100.f*scale), 0.25f);
+	bowBendRightAnimation.addFrame(sf::IntRect(100*1.f*scale, 45.f*scale, 100.f*scale, 100.f*scale), 0.25f);
+	bowBendRightAnimation.addFrame(sf::IntRect(100*2.f*scale, 45.f*scale, 100.f*scale, 100.f*scale), 0.25f);
+	bowBendRightAnimation.addFrame(sf::IntRect(100*3.f*scale, 45.f*scale, 100.f*scale, 100.f*scale), 0.25f);
+	m_bowAnimations.addAnimation("bendRight", bowBendRightAnimation);
+	m_bowAnimations.activate("bendRight");
+
+	b2BodyDef bowBodyDef;
+	bowBodyDef.type = b2_dynamicBody;
+	bowBodyDef.position = {0, 50.f*scale/pixelScale};
+	bowBodyDef.userData = &m_bow;
+	b2Body* bowBody = getContext().world.CreateBody(&bowBodyDef);
+	m_bow.assign<Body>(bowBody);
+
+	b2PolygonShape bowBox;
+	bowBox.SetAsBox((100.f*scale/pixelScale)/2, (100.f*scale/pixelScale)/2, {(100.f*scale/pixelScale)/2, (100.f*scale/pixelScale)/2}, 0);
+
+	b2FixtureDef bowFixtureDef;
+	bowFixtureDef.shape = &bowBox;
+	bowFixtureDef.density = 1.f;
+	bowFixtureDef.friction = 1.f;
+	bowFixtureDef.restitution = 0.f;
+	bowFixtureDef.filter.groupIndex = -1;
+	bowBody->CreateFixture(&bowFixtureDef);
+	
+	//Joint between archer and his bow
+	b2RevoluteJointDef secondJointDef;
+	secondJointDef.Initialize(bowBody, archerBody, archerBody->GetPosition() + b2Vec2(50.f*scale/pixelScale, 68.f*scale/pixelScale));
+	secondJointDef.lowerAngle = -b2_pi/2.f;//-90 degrees, to the foots of the archer
+	secondJointDef.upperAngle = b2_pi;//180 degrees, the horizontal axis in the back of the archer
+	secondJointDef.enableLimit = true;
+	secondJointDef.maxMotorTorque = 10.0f;
+	secondJointDef.enableMotor = true;
+	getContext().world.CreateJoint(&secondJointDef);
 }

@@ -62,6 +62,9 @@ class GameState : public State
 		entityx::Entity m_arms;           ///< Main character's arms.
 		sf::Sprite m_armsSprite;          ///< The sprite of the archer's arms.
 		Animations m_armsAnimations;      ///< The animations of the archer's arms.
+		entityx::Entity m_bow;            ///< Main character's bow.
+		sf::Sprite m_bowSprite;           ///< The sprite of the archer's bow.
+		Animations m_bowAnimations;       ///< The animations of the archer's bow.
 		TimeSystem m_timeSystem;          ///< The time manager.
 };
 

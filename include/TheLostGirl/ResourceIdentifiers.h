@@ -17,7 +17,8 @@ class ResourceManager;
 enum class Textures
 {
 	Archer,///< The texture of the main archer.
-	Arms,   ///< The texture of the archer's arms.
+	Arms,  ///< The texture of the archer's arms.
+	Bow    ///< The texture of the archer's bow.
 };
 
 /// List of all fonts.
