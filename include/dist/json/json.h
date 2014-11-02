@@ -1679,7 +1679,7 @@ private:
                                    Location& current,
                                    Location end,
                                    unsigned int& unicode);
-  bool addError(const std::string& message, Token& token, Location extra = 0);
+  bool addError(const std::string& message, Token& token, Location extra = nullptr);
   bool recoverFromError(TokenType skipUntilToken);
   bool addErrorAndRecover(const std::string& message,
                           Token& token,

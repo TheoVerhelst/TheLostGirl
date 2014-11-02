@@ -59,11 +59,11 @@ Application::~Application()
 
 int Application::init()
 {
-    srand(static_cast<unsigned int>(time(nullptr)));//Init random numbers
-	m_window.setKeyRepeatEnabled(false);
-	m_window.setFramerateLimit(60);
 	try
 	{
+		srand(static_cast<unsigned int>(time(nullptr)));//Init random numbers
+		m_window.setKeyRepeatEnabled(false);
+		m_window.setFramerateLimit(60);
 		LangManager::setLang(m_parameters.lang);
 		loadTextures();
 		m_fontManager.load(Fonts::Menu, m_parameters.textFont);

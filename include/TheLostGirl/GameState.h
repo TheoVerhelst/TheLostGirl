@@ -3,6 +3,8 @@
 
 #include <forward_list>
 
+#include <dist/json/json-forwards.h>
+
 #include <SFML/Graphics/Sprite.hpp>
 #include <TheLostGirl/Animations.h>
 #include <TheLostGirl/TimeSystem.h>
@@ -54,7 +56,9 @@ class GameState : public State
 		virtual bool handleEvent(const sf::Event& event);
 
 	private:
-		void initWorld(); ///< Initialize the physic world.
+		/// Initialize the physic world.
+		/// \param levelData A Jsoncpp value containing data of every element to add in the level.
+		void initWorld(const Json::Value& levelData);
 		
 		std::forward_list<entityx::Entity> m_entities;///< A list allow to references to elements of the list safely, and use those references outside the scope of the GameState class.
 		std::forward_list<sf::Sprite> m_sprites;      ///< Same as above.
