@@ -62,18 +62,18 @@ int Application::init()
 	try
 	{
 		srand(static_cast<unsigned int>(time(nullptr)));//Init random numbers
-		m_window.setKeyRepeatEnabled(false);
-		m_window.setFramerateLimit(60);
-		LangManager::setLang(m_parameters.lang);
 		loadTextures();
-		m_fontManager.load(Fonts::Menu, m_parameters.textFont);
-		m_gui.setGlobalFont(std::make_shared<sf::Font>(m_fontManager.get(Fonts::Menu)));
-		m_world.SetDebugDraw(&m_debugDraw);
-		m_debugDraw.SetFlags(b2Draw::e_shapeBit|b2Draw::e_jointBit|b2Draw::e_aabbBit|b2Draw::e_pairBit);//All flags in one time
 		registerStates();
 		registerSystems();
+		m_window.setKeyRepeatEnabled(false);//Desactive the key repeating
+		m_window.setFramerateLimit(60);//Limit the FPS
+		LangManager::setLang(m_parameters.lang);//Set and load the lang
+		m_fontManager.load(Fonts::Menu, m_parameters.textFont);//Load the GUI font
+		m_gui.setGlobalFont(std::make_shared<sf::Font>(m_fontManager.get(Fonts::Menu)));//Set the GUI font
+		m_world.SetDebugDraw(&m_debugDraw);//Set the debug drawer
+		m_debugDraw.SetFlags(b2Draw::e_shapeBit|b2Draw::e_jointBit|b2Draw::e_aabbBit|b2Draw::e_pairBit);//Debug drawing flags
 		m_systemManager.configure();//Init the manager
-		m_stateStack.pushState(States::MainMenu);
+		m_stateStack.pushState(States::MainMenu);//Start with the main menu
 	}
 	catch(std::runtime_error& e)
 	{

@@ -1,5 +1,7 @@
 #include <TheLostGirl/Application.h>
 
+/// \mainpage The Lost Girl code Documentation
+
 int main()
 {
 	#ifdef DEBUG_MODE
