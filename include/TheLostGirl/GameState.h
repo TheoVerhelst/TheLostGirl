@@ -54,6 +54,10 @@ class GameState : public State
 	private:
 		void initWorld(); ///< Initialize the physic world.
 		
+		std::vector<entityx::Entity> m_entities;
+		std::vector<sf::Sprite> m_sprites;
+		std::vector<Animations> m_animations;
+		
 		entityx::Entity m_groundEntity;   ///< The entity of the ground.
 		FallingListener m_fallingListener;///< The falling listener.
 		entityx::Entity m_archer;         ///< Main character.

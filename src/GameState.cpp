@@ -6,6 +6,7 @@
 #include <SFML/Window/Event.hpp>
 #include <entityx/entityx.h>
 #include <Box2D/Box2D.h>
+#include <dist/json/json.h>
 
 #include <TheLostGirl/State.h>
 #include <TheLostGirl/components.h>
@@ -23,6 +24,9 @@
 
 GameState::GameState(StateStack& stack, Context context) :
 	State(stack, context),
+	m_entities(),
+	m_sprites(),
+	m_animations(),
 	m_groundEntity(getContext().entityManager.create()),
 	m_fallingListener(),
 	m_archer(getContext().entityManager.create()),
@@ -45,9 +49,11 @@ GameState::~GameState()
 	getContext().world.DestroyBody(m_archer.component<Body>()->body);
 	getContext().world.DestroyBody(m_groundEntity.component<Body>()->body);
 	getContext().world.DestroyBody(m_arms.component<Body>()->body);
+	getContext().world.DestroyBody(m_bow.component<Body>()->body);
 	getContext().world.ClearForces();
 	m_archer.destroy();
 	m_arms.destroy();
+	m_bow.destroy();
 	m_groundEntity.destroy();
 }
 
@@ -83,38 +89,54 @@ bool GameState::handleEvent(const sf::Event& event)
 
 void GameState::initWorld()
 {
+	
 	float scale = getContext().parameters.scale;
 	float pixelScale = getContext().parameters.pixelScale;
 	sf::Vector2f screenSize = getContext().parameters.worldFrameSize;
+	
 	b2BodyDef bd;
 	b2Body* ground = getContext().world.CreateBody(&bd);
 	b2EdgeShape shape;
 	shape.Set(b2Vec2(-40.0f, screenSize.y), b2Vec2(40.0f, screenSize.y));
 	ground->CreateFixture(&shape, 0.0f);
 	ground->SetUserData(&m_groundEntity);
-	m_groundEntity.assign<Body>(ground);
-	m_groundEntity.assign<CategoryComponent>(Category::Ground);
-
+	m_entities.push_back(getContext().entityManager.create());
+	m_entities[0].assign<Body>(ground);
+	m_entities[0].assign<CategoryComponent>(Category::Ground);
+//	m_groundEntity.assign<Body>(ground);
+//	m_groundEntity.assign<CategoryComponent>(Category::Ground);
+	
 	getContext().world.SetContactListener(&m_fallingListener);
-
+	
 	//Archer initialization
-	m_archer.assign<Walk>(5.f);
-	m_archer.assign<Jump>(8.f);
-	m_archer.assign<DirectionComponent>(Direction::Right);
-	m_archer.assign<CategoryComponent>(Category::Player|Category::CanFall);
-	m_archer.assign<FallComponent>();
-	m_archer.assign<SpriteComponent>(&m_archerSprite);
-	m_archerSprite.setTextureRect(sf::IntRect(0, 0, 100.f*scale, 200.f*scale));
-	m_archer.assign<AnimationsComponent>(&m_archerAnimations);
+	m_entities.push_back(getContext().entityManager.create());
+//	m_archer.assign<Walk>(5.f);
+//	m_archer.assign<Jump>(8.f);
+//	m_archer.assign<DirectionComponent>(Direction::Right);
+//	m_archer.assign<CategoryComponent>(Category::Player|Category::CanFall);
+//	m_archer.assign<FallComponent>();
+//	m_archer.assign<SpriteComponent>(&m_archerSprite);
+//	m_archerSprite.setTextureRect(sf::IntRect(0, 0, 100.f*scale, 200.f*scale));
+//	m_archer.assign<AnimationsComponent>(&m_archerAnimations);
+	m_entities[1].assign<Walk>(5.f);
+	m_entities[1].assign<Jump>(8.f);
+	m_entities[1].assign<DirectionComponent>(Direction::Right);
+	m_entities[1].assign<CategoryComponent>(Category::Player|Category::CanFall);
+	m_entities[1].assign<FallComponent>();
+	m_sprites.push_back(sf::Sprite(getContext().textureManager.get(Textures::Archer)));
+	m_entities[1].assign<SpriteComponent>(&m_sprites[0]);
+	m_sprites[0].setTextureRect(sf::IntRect(0, 0, 100.f*scale, 200.f*scale));
+	m_animations.push_back(Animations());
+	m_entities[1].assign<AnimationsComponent>(&m_animations[0]);
 
 	SpriteSheetAnimation stayLeft;
 	stayLeft.addFrame(sf::IntRect(0, 0, 100.f*scale, 200.f*scale), 1.f);
-	m_archerAnimations.addAnimation("stayLeft", stayLeft, 0, sf::seconds(1.f), false);
+	m_animations[0].addAnimation("stayLeft", stayLeft, 0, sf::seconds(1.f), false);
 
 	SpriteSheetAnimation stayRight;
 	stayRight.addFrame(sf::IntRect(0, 400.f*scale, 100.f*scale, 200.f*scale), 1.f);
-	m_archerAnimations.addAnimation("stayRight", stayRight, 0, sf::seconds(1.f), false);
-	m_archerAnimations.play("stayRight");//The character is diriged to right
+	m_animations[0].addAnimation("stayRight", stayRight, 0, sf::seconds(1.f), false);
+	m_animations[0].play("stayRight");//The character is diriged to right
 
 	SpriteSheetAnimation leftAnimation;
 	leftAnimation.addFrame(sf::IntRect(100*1.f*scale, 0, 100.f*scale, 200.f*scale), 0.125f);
@@ -122,7 +144,7 @@ void GameState::initWorld()
 	leftAnimation.addFrame(sf::IntRect(100*3.f*scale, 0, 100.f*scale, 200.f*scale), 0.25f);
 	leftAnimation.addFrame(sf::IntRect(100*4.f*scale, 0, 100.f*scale, 200.f*scale), 0.25f);
 	leftAnimation.addFrame(sf::IntRect(100*5.f*scale, 0, 100.f*scale, 200.f*scale), 0.125f);
-	m_archerAnimations.addAnimation("moveLeft", leftAnimation, 1, sf::seconds(.3f), true);
+	m_animations[0].addAnimation("moveLeft", leftAnimation, 1, sf::seconds(.3f), true);
 
 	SpriteSheetAnimation rightAnimation;
 	rightAnimation.addFrame(sf::IntRect(100*1.f*scale, 400.f*scale, 100.f*scale, 200.f*scale), 0.125f);
@@ -130,35 +152,35 @@ void GameState::initWorld()
 	rightAnimation.addFrame(sf::IntRect(100*3.f*scale, 400.f*scale, 100.f*scale, 200.f*scale), 0.25f);
 	rightAnimation.addFrame(sf::IntRect(100*4.f*scale, 400.f*scale, 100.f*scale, 200.f*scale), 0.25f);
 	rightAnimation.addFrame(sf::IntRect(100*5.f*scale, 400.f*scale, 100.f*scale, 200.f*scale), 0.125f);
-	m_archerAnimations.addAnimation("moveRight", rightAnimation, 1, sf::seconds(.3f), true);
+	m_animations[0].addAnimation("moveRight", rightAnimation, 1, sf::seconds(.3f), true);
 
 	SpriteSheetAnimation jumpLeftAnimation;
 	jumpLeftAnimation.addFrame(sf::IntRect(100*0.f*scale, 600.f*scale, 100.f*scale, 200.f*scale), 0.33f);
 	jumpLeftAnimation.addFrame(sf::IntRect(100*1.f*scale, 600.f*scale, 100.f*scale, 200.f*scale), 0.33f);
 	jumpLeftAnimation.addFrame(sf::IntRect(100*2.f*scale, 600.f*scale, 100.f*scale, 200.f*scale), 0.33f);
-	m_archerAnimations.addAnimation("jumpLeft", jumpLeftAnimation, 2, sf::seconds(.3f), false);
+	m_animations[0].addAnimation("jumpLeft", jumpLeftAnimation, 2, sf::seconds(.3f), false);
 
 	SpriteSheetAnimation jumpRightAnimation;
 	jumpRightAnimation.addFrame(sf::IntRect(100*0.f*scale, 200.f*scale, 100.f*scale, 200.f*scale), 0.33f);
 	jumpRightAnimation.addFrame(sf::IntRect(100*1.f*scale, 200.f*scale, 100.f*scale, 200.f*scale), 0.33f);
 	jumpRightAnimation.addFrame(sf::IntRect(100*2.f*scale, 200.f*scale, 100.f*scale, 200.f*scale), 0.33f);
-	m_archerAnimations.addAnimation("jumpRight", jumpRightAnimation, 2, sf::seconds(.3f), false);
+	m_animations[0].addAnimation("jumpRight", jumpRightAnimation, 2, sf::seconds(.3f), false);
 
 	SpriteSheetAnimation fallLeft;
 	fallLeft.addFrame(sf::IntRect(300.f*scale, 600.f*scale, 100.f*scale, 200.f*scale), 1.f);
-	m_archerAnimations.addAnimation("fallLeft", fallLeft, 3, sf::seconds(1.f), false);
+	m_animations[0].addAnimation("fallLeft", fallLeft, 3, sf::seconds(1.f), false);
 
 	SpriteSheetAnimation fallRight;
 	fallRight.addFrame(sf::IntRect(300.f*scale, 200.f*scale, 100.f*scale, 200.f*scale), 1.f);
-	m_archerAnimations.addAnimation("fallRight", fallRight, 3, sf::seconds(1.f), false);
+	m_animations[0].addAnimation("fallRight", fallRight, 3, sf::seconds(1.f), false);
 
 	b2BodyDef archerBodyDef;
 	archerBodyDef.type = b2_dynamicBody;
 	archerBodyDef.position = {0, 0};
 	archerBodyDef.fixedRotation = true;
-	archerBodyDef.userData = &m_archer;
+	archerBodyDef.userData = &m_entities[1];
 	b2Body* archerBody = getContext().world.CreateBody(&archerBodyDef);
-	m_archer.assign<Body>(archerBody);
+	m_entities[1].assign<Body>(archerBody);
 
 	b2PolygonShape archerBox;
 	archerBox.SetAsBox((100.f*scale/pixelScale)/2, (200.f*scale/pixelScale)/2, {(100.f*scale/pixelScale)/2, (200.f*scale/pixelScale)/2}, 0);
