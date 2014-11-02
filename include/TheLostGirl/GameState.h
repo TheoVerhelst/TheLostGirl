@@ -1,6 +1,8 @@
 #ifndef GAMESTATE_H
 #define GAMESTATE_H
 
+#include <forward_list>
+
 #include <SFML/Graphics/Sprite.hpp>
 #include <TheLostGirl/Animations.h>
 #include <TheLostGirl/TimeSystem.h>
@@ -54,22 +56,11 @@ class GameState : public State
 	private:
 		void initWorld(); ///< Initialize the physic world.
 		
-		std::vector<entityx::Entity> m_entities;
-		std::vector<sf::Sprite> m_sprites;
-		std::vector<Animations> m_animations;
-		
-		entityx::Entity m_groundEntity;   ///< The entity of the ground.
-		FallingListener m_fallingListener;///< The falling listener.
-		entityx::Entity m_archer;         ///< Main character.
-		sf::Sprite m_archerSprite;        ///< The sprite of the archer.
-		Animations m_archerAnimations;    ///< The animations of the archer.
-		entityx::Entity m_arms;           ///< Main character's arms.
-		sf::Sprite m_armsSprite;          ///< The sprite of the archer's arms.
-		Animations m_armsAnimations;      ///< The animations of the archer's arms.
-		entityx::Entity m_bow;            ///< Main character's bow.
-		sf::Sprite m_bowSprite;           ///< The sprite of the archer's bow.
-		Animations m_bowAnimations;       ///< The animations of the archer's bow.
-		TimeSystem m_timeSystem;          ///< The time manager.
+		std::forward_list<entityx::Entity> m_entities;///< A list allow to references to elements of the list safely, and use those references outside the scope of the GameState class.
+		std::forward_list<sf::Sprite> m_sprites;      ///< Same as above.
+		std::forward_list<Animations> m_animations;   ///< Same as above.
+		FallingListener m_fallingListener;            ///< The falling listener.
+		TimeSystem m_timeSystem;                      ///< The time manager.
 };
 
 #endif // GAMESTATE_H
