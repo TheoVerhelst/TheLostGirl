@@ -19,6 +19,7 @@
 #include <TheLostGirl/Player.h>
 #include <TheLostGirl/SpriteSheetAnimation.h>
 #include <TheLostGirl/Parameters.h>
+#include <TheLostGirl/functions.h>
 
 #include <TheLostGirl/GameState.h>
 
@@ -86,119 +87,193 @@ bool GameState::handleEvent(const sf::Event& event)
 
 void GameState::initWorld(const Json::Value& levelData)
 {
-//	float scale = getContext().parameters.scale;
-//	float pixelScale = getContext().parameters.pixelScale;
+	float scale = getContext().parameters.scale;
+	float pixelScale = getContext().parameters.pixelScale;
 //	sf::Vector2f screenSize = getContext().parameters.worldFrameSize;
 	
 	//Parse the level data
-	if(not levelData.type() == Json::objectValue)
-		throw std::runtime_error("Failed to parse save file : not object value as root value.");
-	else
+	try
 	{
-		if(levelData.isMember("entities"))
+		//entities
+		if(valueExists(levelData, "root", "entities", Json::objectValue))
 		{
 			Json::Value entities = levelData["entities"];
-			if(not entities.type() == Json::objectValue)
-				throw std::runtime_error("Failed to parse save file : entities value not an object value.");
-			else
+			Json::Value::Members entitiesNames = entities.getMemberNames();
+			for(std::string& entityName : entitiesNames)
 			{
-				Json::Value::Members entitiesNames = entities.getMemberNames();
-				for(std::string& entityName : entitiesNames)
+				Json::Value entity = entities[entityName];
+				std::cout <<entityName << std::endl;
+				m_entities.emplace(entityName, getContext().entityManager.create());
+				
+				//sprite
+				if(valueExists(entity, "entities." + entityName, "sprite", Json::stringValue))
 				{
-					Json::Value entity = entities[entityName];
-					m_entities.emplace(entityName, getContext().entityManager.create());		
-					std::cout << entityName << std::endl;
-					if(entity.isMember("sprite"))
+					Json::Value sprite = entity["sprite"];
+					if(sprite.asString() == "archer")
+						m_sprites.emplace(entityName, sf::Sprite(getContext().textureManager.get(Textures::Archer)));
+					else if(sprite.asString() == "arms")
+						m_sprites.emplace(entityName, sf::Sprite(getContext().textureManager.get(Textures::Arms)));
+					else if(sprite.asString() == "bow")
+						m_sprites.emplace(entityName, sf::Sprite(getContext().textureManager.get(Textures::Bow)));
+					else
+						throw std::runtime_error("Failed to parse save file : sprite name does not exists.");
+					m_entities[entityName].assign<SpriteComponent>(&m_sprites[entityName]);
+				}
+				
+				//categories
+				if(valueExists(entity, "entities." + entityName, "categories", Json::arrayValue))
+				{
+					Json::Value categories = entity["categories"];
+					unsigned int categoriesInt{0};
+					for(Json::ArrayIndex i{0}; i < categories.size(); ++i)
 					{
-						Json::Value sprite = entity["sprite"];
-						if(not sprite.type() == Json::stringValue)
-							throw std::runtime_error("Failed to parse save file : sprite value not an string value.");
+						//For each cateory in the list, add it to the entity's category.
+						if(categories[i] == "player")
+							categoriesInt |= Category::Player;
+						else if(categories[i] == "can fall")
+							categoriesInt |= Category::CanFall;
+						else if(categories[i] == "ground")
+							categoriesInt |= Category::Ground;
 						else
-						{
-							if(sprite.asString() == "archer")
-								m_sprites.emplace(entityName, sf::Sprite(getContext().textureManager.get(Textures::Archer)));
-							else if(sprite.asString() == "arms")
-								m_sprites.emplace(entityName, sf::Sprite(getContext().textureManager.get(Textures::Arms)));
-							else if(sprite.asString() == "bow")
-								m_sprites.emplace(entityName, sf::Sprite(getContext().textureManager.get(Textures::Bow)));
-							else
-								throw std::runtime_error("Failed to parse save file : sprite name does not exists.");
-							m_entities[entityName].assign<SpriteComponent>(&m_sprites[entityName]);
-						}
+							throw std::runtime_error("Failed to parse save file : category name does not exists.");
 					}
-					if(entity.isMember("category"))
+					m_entities[entityName].assign<CategoryComponent>(categoriesInt);
+				}
+				
+				//walk
+				if(valueExists(entity, "entities." + entityName, "walk", Json::realValue))
+					m_entities[entityName].assign<Walk>(entity["walk"].asFloat());
+				
+				//jump
+				if(valueExists(entity, "entities." + entityName, "jump", Json::realValue))
+					m_entities[entityName].assign<Jump>(entity["jump"].asFloat());
+				
+				//direction
+				if(valueExists(entity, "entities." + entityName, "direction", Json::stringValue))
+				{
+					Json::Value direction = entity["direction"];
+					if(direction.asString() == "left")
+						m_entities[entityName].assign<DirectionComponent>(Direction::Left);
+					else if(direction.asString() == "right")
+						m_entities[entityName].assign<DirectionComponent>(Direction::Right);
+					else if(direction.asString() == "top")
+						m_entities[entityName].assign<DirectionComponent>(Direction::Top);
+					else if(direction.asString() == "bottom")
+						m_entities[entityName].assign<DirectionComponent>(Direction::Bottom);
+					else if(direction.asString() == "none")
+						m_entities[entityName].assign<DirectionComponent>(Direction::None);
+					else
+						throw std::runtime_error("Failed to parse save file : direction name does not exists.");
+				}
+				
+				//fall
+				if(valueExists(entity, "entities." + entityName, "fall", Json::nullValue))
+					m_entities[entityName].assign<FallComponent>();
+				
+				//body
+				if(valueExists(entity, "entities." + entityName, "body", Json::objectValue))
+				{
+					Json::Value body = entity["body"];
+					b2BodyDef entityBodyDef;
+					
+					//type
+					if(valueExists(body, "entities." + entityName + ".body", "type", Json::stringValue))
 					{
-						Json::Value category = entity["category"];
-						if(not category.type() == Json::arrayValue)
-							throw std::runtime_error("Failed to parse save file : category value not an array value.");
-						else
+						Json::Value type = body["type"];
+						entityBodyDef.type = b2_dynamicBody;
+					}
+					
+					//position
+					if(valueExists(body, "entities." + entityName + ".body", "position", Json::objectValue))
+					{
+						Json::Value position = body["position"];
+						float x{0}, y{0};
+						if(valueExists(position, "entities." + entityName + ".body.position", "x", Json::realValue))
+							x = position["x"].asFloat();
+						if(valueExists(position, "entities." + entityName + ".body.position", "y", Json::realValue))
+							y = position["y"].asFloat();
+						entityBodyDef.position = {x*scale/pixelScale, y*scale/pixelScale};
+					}
+					
+					//fixed rotation
+					if(valueExists(body, "entities." + entityName + ".body", "fixed rotation", Json::booleanValue))
+						entityBodyDef.fixedRotation = body["fixed rotation"].asBool();
+					
+					b2Body* entityBody = getContext().world.CreateBody(&entityBodyDef);
+					m_entities[entityName].assign<Body>(entityBody);
+					
+					//fixtures
+					if(valueExists(body, "entities." + entityName + ".body", "fixtures", Json::arrayValue))
+					{
+						Json::Value fixtures = body["fixtures"];
+						for(Json::ArrayIndex i{0}; i < fixtures.size(); ++i)
 						{
-							unsigned int categories{0};
-							for(Json::ArrayIndex i{0}; i < category.size(); ++i)
+							b2FixtureDef entityFixtureDef;
+							
+							//box
+							if(valueExists(fixtures[i], "entities." + entityName + ".body.fixture[" + std::to_string(i) + "]", "box", Json::objectValue))
 							{
-								//For each cateory in the list, add it to the entity's category.
-								if(category[i] == "player")
-									categories |= Category::Player;
-								else if(category[i] == "can fall")
-									categories |= Category::CanFall;
-								else if(category[i] == "ground")
-									categories |= Category::Ground;
-								else
-									throw std::runtime_error("Failed to parse save file : category name does not exists.");
+								Json::Value box = fixtures[i]["box"];
+								float w{0}, h{0};
+								b2PolygonShape entityBox;
+								
+								//width
+								if(valueExists(box, "entities." + entityName + ".body.fixture[" + std::to_string(i) + "].box", "w", Json::realValue))
+									w = box["w"].asFloat();
+								
+								//height
+								if(valueExists(box, "entities." + entityName + ".body.fixture[" + std::to_string(i) + "].box", "h", Json::realValue))
+									w = box["h"].asFloat();
+								entityBox.SetAsBox((w*scale/pixelScale)/2, (h*scale/pixelScale)/2, {(w*scale/pixelScale)/2, (h*scale/pixelScale)/2}, 0);
+								entityFixtureDef.shape = &entityBox;
 							}
-							m_entities[entityName].assign<CategoryComponent>(categories);
+							
+							//density
+							if(valueExists(fixtures[i], "entities." + entityName + ".body.fixture[" + std::to_string(i) + "]", "density", Json::realValue))
+								entityFixtureDef.density = fixtures[i]["density"].asFloat();
+							
+							//friction
+							if(valueExists(fixtures[i], "entities." + entityName + ".body.fixture[" + std::to_string(i) + "]", "friction", Json::realValue))
+								entityFixtureDef.friction = fixtures[i]["friction"].asFloat();
+							
+							//restitution
+							if(valueExists(fixtures[i], "entities." + entityName + ".body.fixture[" + std::to_string(i) + "]", "restitution", Json::realValue))
+								entityFixtureDef.restitution = fixtures[i]["restitution"].asFloat();
+							entityBody->CreateFixture(&entityFixtureDef);
 						}
 					}
-					if(entity.isMember("walk"))
-					{
-						Json::Value walk = entity["walk"];
-						if(not walk.type() == Json::realValue)
-							throw std::runtime_error("Failed to parse save file : walk value not a real value.");
-						else
-							m_entities[entityName].assign<Walk>(walk.asFloat());
-					}
-					if(entity.isMember("jump"))
-					{
-						Json::Value jump = entity["jump"];
-						if(not jump.type() == Json::realValue)
-							throw std::runtime_error("Failed to parse save file : jump value not a real value.");
-						else
-							m_entities[entityName].assign<Jump>(jump.asFloat());
-					}
-					if(entity.isMember("direction"))
-					{
-						Json::Value direction = entity["direction"];
-						if(not direction.type() == Json::stringValue)
-							throw std::runtime_error("Failed to parse save file : direction value not an string value.");
-						else
-						{
-							if(direction.asString() == "left")
-								m_entities[entityName].assign<DirectionComponent>(Direction::Left);
-							else if(direction.asString() == "right")
-								m_entities[entityName].assign<DirectionComponent>(Direction::Right);
-							else if(direction.asString() == "top")
-								m_entities[entityName].assign<DirectionComponent>(Direction::Top);
-							else if(direction.asString() == "bottom")
-								m_entities[entityName].assign<DirectionComponent>(Direction::Bottom);
-							else if(direction.asString() == "none")
-								m_entities[entityName].assign<DirectionComponent>(Direction::None);
-							else
-								throw std::runtime_error("Failed to parse save file : direction name does not exists.");
-						}
-					}
-					if(entity.isMember("fall"))
-						m_entities[entityName].assign<FallComponent>();
+							
+							
+	//				entityBox.SetAsBox((100.f*scale/pixelScale)/2, (200.f*scale/pixelScale)/2, {(100.f*scale/pixelScale)/2, (200.f*scale/pixelScale)/2}, 0);
+	//
+	//				entityFixtureDef.shape = &entityBox;
+	//				entityFixtureDef.density = 1.0f;
+	//				entityFixtureDef.friction = 1.f;
+	//				entityFixtureDef.restitution = 0.f;
+	//				entityFixtureDef.filter.groupIndex = -1;
+	//				entityBodyDef.userData = &m_entities[entityName];
+	//				b2Body* entityBody = getContext().world.CreateBody(&entityBodyDef);
+	//				m_entities[entityName].assign<Body>(entityBody);
 				}
 			}
 		}
-		if(levelData.isMember("joints"))
+		if(valueExists(levelData, "root", "joints", Json::arrayValue))
 		{
 			Json::Value joints = levelData["joints"];
-			if(not joints.type() == Json::arrayValue)
-				throw std::runtime_error("Failed to parse save file : entities value not an object value.");
-			else
-			{
-			}
 		}
+	}
+	catch(std::runtime_error& e)
+	{
+		std::cerr << "Failed to parse save file : " << e.what() << std::endl;
+		//Clear game content in order to prevent segmentation faults.
+		for(auto& pair : m_entities)
+		{
+			getContext().world.DestroyBody(pair.second.component<Body>()->body);
+			pair.second.destroy();
+		}
+		m_entities.clear();
+		m_sprites.clear();
+		m_animations.clear();
+		getContext().world.ClearForces();
 	}
 }

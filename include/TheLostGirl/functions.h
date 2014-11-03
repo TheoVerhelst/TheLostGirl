@@ -8,6 +8,7 @@
 
 #include <SFML/Graphics/Rect.hpp>
 #include <SFML/Window/Event.hpp>
+#include <dist/json/json.h>
 
 //Forward declarations
 namespace sf
@@ -68,5 +69,14 @@ T cap(T value, U min, U max)
 /// \param in Direction of the fading.
 /// \return A color between white and transparent.
 sf::Color fadingColor(sf::Time dt = sf::seconds(0), sf::Time fadingLength = sf::seconds(1), bool in = true);
+
+/// Check if the value \a valueName exists in the object \a root (which is named \a rootName) as a value of type \a type.
+/// The given names are used in the throwned exceptions if the child value does not exists or if the root value is not an object.
+/// \param rootValue A Json value containing the data.
+/// \param rootName The name of the rootValue.
+/// \param childName The name of the child value.
+/// \param childType the type of the expected child.
+/// \return True if the child value exists in the root value, throw a runtime_error and return false otherwise.
+bool valueExists(const Json::Value& rootValue, const std::string rootName, const std::string& childName, Json::ValueType childType);
 
 #endif // FUNCTIONS_H

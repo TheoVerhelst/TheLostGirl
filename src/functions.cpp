@@ -2,6 +2,7 @@
 #include <SFML/Graphics/Rect.hpp>
 #include <SFML/System/Time.hpp>
 #include <SFML/Window/Event.hpp>
+#include <dist/json/json.h>
 
 #include <TheLostGirl/functions.h>
 
@@ -50,4 +51,58 @@ Color fadingColor(Time dt, Time fadingLength, bool in)
 	float alpha = cap((dt / fadingLength) * 255, 0, 255);
 	alpha = in ? alpha : 255 - alpha;//Invert the fading if in is false, so if it is a fade out
 	return Color(255, 255, 255, alpha);
+}
+
+bool valueExists(const Json::Value& rootValue, const std::string rootName, const std::string& childName,  Json::ValueType childType)
+{
+	if(rootValue.type() == Json::objectValue)
+	{
+		if(rootValue.isMember(childName))
+		{
+			Json::Value childValue = rootValue[childName];
+			if(childValue.type() == childType)
+				return true;
+			else
+			{
+				std::string childTypeStr;
+				switch(childType)
+				{
+					case Json::nullValue:
+						childTypeStr = " null";
+						break;
+					case Json::intValue:
+						childTypeStr = "n integer";
+						break;
+					case Json::uintValue:
+						childTypeStr = "n unsigned integer";
+						break;
+					case Json::realValue:
+						childTypeStr = " floating point";
+						break;
+					case Json::stringValue:
+						childTypeStr = " string";
+						break;
+					case Json::booleanValue:
+						childTypeStr = " boolean";
+						break;
+					case Json::arrayValue:
+						childTypeStr = "n array";
+						break;
+					case Json::objectValue:
+						childTypeStr = "n object";
+						break;
+				}
+				//The "n " or " " liaise the words
+				throw std::runtime_error(childName + " value in " + rootName + " value not a" + childTypeStr + " value.");
+				return false;
+			}
+		}
+		else
+			return false;
+	}
+	else
+	{
+		throw std::runtime_error(rootName + " value not an object value.");
+		return false;
+	}
 }
