@@ -1,6 +1,6 @@
 #include <TheLostGirl/Application.h>
 
-/// \mainpage The Lost Girl code Documentation
+/// \mainpage The Lost Girl programmer's Documentation
 
 int main()
 {
