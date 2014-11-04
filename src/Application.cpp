@@ -25,7 +25,6 @@ Application::Application(bool debugMode):
 				scales[1],
 				windowSizes[1],
 				120.f*m_parameters.scale,
-				sf::Vector2f{m_parameters.windowSize}/m_parameters.pixelScale,
 				{0.0f, 9.80665f},
 				4,
 				"ressources/fonts/euphorigenic.ttf"},

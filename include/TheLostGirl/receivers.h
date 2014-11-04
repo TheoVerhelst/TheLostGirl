@@ -20,11 +20,17 @@
 //};
 
 /// Ground collision listener.
-/// Handle collisions between actors and the ground
+/// - Handle collisions between actors and the ground
 /// to set the right animation and update the FallComponent.
-class FallingListener : public b2ContactListener
+/// - Disable collision between multiples body of the same actor.
+class ContactListener : public b2ContactListener
 {
 	public:
+		/// This is called after a contact is updated.
+		/// This allows to inspect a contact before it goes to the solver.
+		/// It prevent the collision between entities with the same actor ID.
+		void PreSolve(b2Contact *contact, const b2Manifold* oldManifold);
+		
 		/// Handle the hitting of an actor with the ground.
 		/// Function called on every begin of contact between two fixtures.
 		/// \param contact Contact object of the collision.

@@ -63,7 +63,7 @@ class GameState : public State
 		std::unordered_map<std::string, entityx::Entity> m_entities;///< A unordered map allow to reference to elements of the list safely, and use those references outside the scope of the GameState class.
 		std::unordered_map<std::string, sf::Sprite> m_sprites;      ///< Same as above.
 		std::unordered_map<std::string, Animations> m_animations;   ///< Same as above.
-		FallingListener m_fallingListener;                          ///< The falling listener.
+		ContactListener m_ContactListener;                          ///< The falling listener.
 		TimeSystem m_timeSystem;                                    ///< The time manager.
 };
 

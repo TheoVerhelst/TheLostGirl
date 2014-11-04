@@ -130,7 +130,7 @@ struct DirectionComponent : public entityx::Component<DirectionComponent>
 	{}
 };
 
-/// Walk component.
+/// The Walk component.
 /// The walk component must be added to every entity that want to move itself in the world.
 /// The walkSpeed member is the maximum speed that the entity can reach when walking.
 struct Walk : public entityx::Component<Walk>
@@ -155,6 +155,19 @@ struct CategoryComponent : public entityx::Component<CategoryComponent>
 	/// \param _category Category of the entity.
 	CategoryComponent(unsigned int _category = Category::None):
 		category{_category}
+	{}
+};
+
+/// The ActorID component.
+/// Every entities with the same ActorID won't collide.
+struct ActorIDComponent : public entityx::Component<ActorIDComponent>
+{
+	unsigned int ID;///< Identifier of the actor.
+
+	/// Default constructor.
+	/// \param _ID Identifier of the actor.
+	ActorIDComponent(unsigned int _ID):
+		ID{_ID}
 	{}
 };
 

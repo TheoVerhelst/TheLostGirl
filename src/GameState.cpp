@@ -28,7 +28,7 @@ GameState::GameState(StateStack& stack, Context context) :
 	m_entities(),
 	m_sprites(),
 	m_animations(),
-	m_fallingListener(),
+	m_ContactListener(),
 	m_timeSystem()
 {
 	Json::Value root; // will contains the root value after parsing.
@@ -41,7 +41,8 @@ GameState::GameState(StateStack& stack, Context context) :
 		std::cerr << "Failed to parse save file " << "ressources/levels/save.json" << ":" << std::endl
 		<< reader.getFormattedErrorMessages() << std::endl;
 	}
-	initWorld(root);
+	else
+		initWorld(root);
 	getContext().player.handleInitialInputState(getContext().commandQueue);
 }
 
@@ -89,7 +90,7 @@ void GameState::initWorld(const Json::Value& levelData)
 {
 	float scale = getContext().parameters.scale;
 	float pixelScale = getContext().parameters.pixelScale;
-//	sf::Vector2f screenSize = getContext().parameters.worldFrameSize;
+	getContext().world.SetContactListener(&m_ContactListener);
 	
 	//Parse the level data
 	try
@@ -102,7 +103,6 @@ void GameState::initWorld(const Json::Value& levelData)
 			for(std::string& entityName : entitiesNames)
 			{
 				Json::Value entity = entities[entityName];
-				std::cout <<entityName << std::endl;
 				m_entities.emplace(entityName, getContext().entityManager.create());
 				
 				//sprite
@@ -129,7 +129,7 @@ void GameState::initWorld(const Json::Value& levelData)
 					{
 						//For each cateory in the list, add it to the entity's category.
 						if(categories[i].type() != Json::stringValue)
-							throw std::runtime_error("entities." + entityName + ".categories[" + std::to_string(i) + "] value is not a string value.");
+							throw std::runtime_error("entities." + entityName + ".categories." + std::to_string(i) + " value is not a string value.");
 						else if(categories[i] == "player")
 							categoriesInt |= Category::Player;
 						else if(categories[i] == "can fall")
@@ -137,10 +137,14 @@ void GameState::initWorld(const Json::Value& levelData)
 						else if(categories[i] == "ground")
 							categoriesInt |= Category::Ground;
 						else
-							throw std::runtime_error("entities." + entityName + ".categories[" + std::to_string(i) + "] name does not exists.");
+							throw std::runtime_error("entities." + entityName + ".categories." + std::to_string(i) + " name does not exists.");
 					}
 					m_entities[entityName].assign<CategoryComponent>(categoriesInt);
 				}
+				
+				//actor ID
+				if(valueExists(entity, "entities." + entityName, "actor ID", Json::intValue))
+					m_entities[entityName].assign<ActorIDComponent>(entity["actor ID"].asUInt());
 				
 				//walk
 				if(valueExists(entity, "entities." + entityName, "walk", Json::realValue))
@@ -177,6 +181,7 @@ void GameState::initWorld(const Json::Value& levelData)
 				{
 					Json::Value body = entity["body"];
 					b2BodyDef entityBodyDef;
+					entityBodyDef.userData = &m_entities[entityName];
 					
 					//type
 					if(valueExists(body, "entities." + entityName + ".body", "type", Json::stringValue))
@@ -218,37 +223,122 @@ void GameState::initWorld(const Json::Value& levelData)
 						for(Json::ArrayIndex i{0}; i < fixtures.size(); ++i)
 						{
 							b2FixtureDef entityFixtureDef;
-							b2PolygonShape entityBox;
+							//Initialize shapes here in order to keep pointers alive when assigning entityFixtureDef.shape
+							b2EdgeShape edgeShape;
+							b2PolygonShape polygonShape;
 							
-							//box
-							if(valueExists(fixtures[i], "entities." + entityName + ".body.fixture[" + std::to_string(i) + "]", "box", Json::objectValue))
+							//type
+							if(valueExists(fixtures[i], "entities." + entityName + ".body.fixture." + std::to_string(i), "type", Json::stringValue))
 							{
-								Json::Value box = fixtures[i]["box"];
-								float w{100}, h{100};
-								
-								//width
-								if(valueExists(box, "entities." + entityName + ".body.fixture[" + std::to_string(i) + "].box", "w", Json::realValue))
-									w = box["w"].asFloat();
-								
-								//height
-								if(valueExists(box, "entities." + entityName + ".body.fixture[" + std::to_string(i) + "].box", "h", Json::realValue))
-									h = box["h"].asFloat();
-								entityBox.SetAsBox((w*scale/pixelScale)/2, (h*scale/pixelScale)/2, {(w*scale/pixelScale)/2, (h*scale/pixelScale)/2}, 0);
-								entityFixtureDef.shape = &entityBox;
+								Json::Value type = fixtures[i]["type"];
+								if(type == "polygon")
+								{
+									//box
+									if(valueExists(fixtures[i], "entities." + entityName + ".body.fixture." + std::to_string(i), "box", Json::objectValue))
+									{
+										Json::Value box = fixtures[i]["box"];
+										float w{100}, h{100};
+										
+										//width
+										if(valueExists(box, "entities." + entityName + ".body.fixture." + std::to_string(i) + ".box", "w", Json::realValue))
+											w = box["w"].asFloat();
+										
+										//height
+										if(valueExists(box, "entities." + entityName + ".body.fixture." + std::to_string(i) + ".box", "h", Json::realValue))
+											h = box["h"].asFloat();
+										polygonShape.SetAsBox((w*scale/pixelScale)/2, (h*scale/pixelScale)/2, {(w*scale/pixelScale)/2, (h*scale/pixelScale)/2}, 0);
+									}
+									
+									//vertices
+									else if(valueExists(fixtures[i], "entities." + entityName + ".body.fixture." + std::to_string(i), "vertices", Json::arrayValue))
+									{
+										Json::Value vertices = fixtures[i]["vertices"];
+										for(Json::ArrayIndex j{0}; j < vertices.size(); ++j)
+										{
+											if(vertices[j].type() != Json::objectValue)
+												throw std::runtime_error("entities." + entityName + ".body.fixture." + std::to_string(i) + ".vertices." + std::to_string(j) + " value is not an object value.");
+											else
+											{
+												float x{0}, y{0};
+												
+												//x
+												if(valueExists(fixtures[i], "entities." + entityName + ".body.fixture." + std::to_string(i) + ".vertices." + std::to_string(j), "x", Json::realValue))
+													x = fixtures[i]["x"].asFloat();
+												
+												//y
+												if(valueExists(fixtures[i], "entities." + entityName + ".body.fixture." + std::to_string(i) + ".vertices." + std::to_string(j), "y", Json::realValue))
+													y = fixtures[i]["y"].asFloat();
+												polygonShape.m_vertices[j] = {(x*scale/pixelScale), (y*scale/pixelScale)};
+											}
+										}
+									}
+									else
+										throw std::runtime_error("entities." + entityName + ".body.fixture." + std::to_string(i) + " has no geometry.");
+									entityFixtureDef.shape = &polygonShape;
+								}
+								else if(type == "edge")
+								{
+									float x1{0}, y1{0}, x2{0}, y2{0};
+									std::cout << entityName << " is an edge." << std::endl;
+									//1
+									if(valueExists(fixtures[i], "entities." + entityName + ".body.fixture." + std::to_string(i), "1", Json::objectValue))
+									{
+										//x
+										if(valueExists(fixtures[i]["1"], "entities." + entityName + ".body.fixture." + std::to_string(i) + ".1", "x", Json::realValue))
+											x1 = fixtures[i]["1"]["x"].asFloat();
+										
+										//y
+										if(valueExists(fixtures[i]["1"], "entities." + entityName + ".body.fixture." + std::to_string(i) + ".1", "y", Json::realValue))
+											y1 = fixtures[i]["1"]["y"].asFloat();
+									}
+									else
+										throw std::runtime_error("entities." + entityName + ".body.fixture." + std::to_string(i) + " has no point 1.");
+									
+									//2
+									if(valueExists(fixtures[i], "entities." + entityName + ".body.fixture." + std::to_string(i), "2", Json::objectValue))
+									{
+										//x
+										if(valueExists(fixtures[i]["2"], "entities." + entityName + ".body.fixture." + std::to_string(i) + ".2", "x", Json::realValue))
+											x2 = fixtures[i]["2"]["x"].asFloat();
+										
+										//y
+										if(valueExists(fixtures[i]["2"], "entities." + entityName + ".body.fixture." + std::to_string(i) + ".2", "y", Json::realValue))
+											y2 = fixtures[i]["2"]["y"].asFloat();
+									}
+									else
+										throw std::runtime_error("entities." + entityName + ".body.fixture." + std::to_string(i) + " has no point 2.");
+									
+									std::cout << "raw x1 = " << x1 << std::endl;
+									std::cout << "raw y1 = " << y1 << std::endl;
+									std::cout << "raw x2 = " << x2 << std::endl;
+									std::cout << "raw y2 = " << y2 << std::endl;
+									std::cout << "cal x1 = " << (x1*scale/pixelScale) << std::endl;
+									std::cout << "cal y1 = " << (y1*scale/pixelScale) << std::endl;
+									std::cout << "cal x2 = " << (x2*scale/pixelScale) << std::endl;
+									std::cout << "cal y2 = " << (y2*scale/pixelScale) << std::endl;
+									edgeShape.Set({(x1*scale/pixelScale), (y1*scale/pixelScale)}, {(x2*scale/pixelScale), (y2*scale/pixelScale)});
+									entityFixtureDef.shape = &edgeShape;
+								}
+								else if(type == "chain")
+								{
+								}
+								else if(type == "circle")
+								{
+								}
+								else
+									throw std::runtime_error("entities." + entityName + ".body.fixture." + std::to_string(i) + ".type name does not exists.");
 							}
-							else
-								std::cout << "nobox" << std::endl;
 							
 							//density
-							if(valueExists(fixtures[i], "entities." + entityName + ".body.fixture[" + std::to_string(i) + "]", "density", Json::realValue))
+							if(valueExists(fixtures[i], "entities." + entityName + ".body.fixture." + std::to_string(i), "density", Json::realValue))
 								entityFixtureDef.density = fixtures[i]["density"].asFloat();
 							
 							//friction
-							if(valueExists(fixtures[i], "entities." + entityName + ".body.fixture[" + std::to_string(i) + "]", "friction", Json::realValue))
+							if(valueExists(fixtures[i], "entities." + entityName + ".body.fixture." + std::to_string(i), "friction", Json::realValue))
 								entityFixtureDef.friction = fixtures[i]["friction"].asFloat();
 							
 							//restitution
-							if(valueExists(fixtures[i], "entities." + entityName + ".body.fixture[" + std::to_string(i) + "]", "restitution", Json::realValue))
+							if(valueExists(fixtures[i], "entities." + entityName + ".body.fixture." + std::to_string(i), "restitution", Json::realValue))
 								entityFixtureDef.restitution = fixtures[i]["restitution"].asFloat();
 							entityBody->CreateFixture(&entityFixtureDef);
 						}
@@ -271,7 +361,7 @@ void GameState::initWorld(const Json::Value& levelData)
 						bool loop{false};
 						
 						//importance
-						if(valueExists(animation, "entities." + entityName + ".spritesheet animations." + animationName, "importance", Json::uintValue))
+						if(valueExists(animation, "entities." + entityName + ".spritesheet animations." + animationName, "importance", Json::intValue))
 							importance = animation["importance"].asUInt();
 						
 						//duration
@@ -289,20 +379,30 @@ void GameState::initWorld(const Json::Value& levelData)
 							for(Json::ArrayIndex i{0}; i < frames.size(); ++i)
 							{
 								if(frames[i].type() != Json::objectValue)
-									throw std::runtime_error("entities." + entityName + ".spritesheet animations." + animationName +  ".frames[" + std::to_string(i) + "] value is not an object value.");
+									throw std::runtime_error("entities." + entityName + ".spritesheet animations." + animationName +  ".frames." + std::to_string(i) + " value is not an object value.");
 								else
 								{
 									int x{0}, y{0}, w{0}, h{0};
 									float relativeDuration{0.f};
-									if(valueExists(frames[i], "entities." + entityName + ".spritesheet animations." + animationName + ".frames[" + std::to_string(i) + "]", "x", Json::intValue))
+									
+									//x
+									if(valueExists(frames[i], "entities." + entityName + ".spritesheet animations." + animationName + ".frames." + std::to_string(i), "x", Json::intValue))
 										x = frames[i]["x"].asInt();
-									if(valueExists(frames[i], "entities." + entityName + ".spritesheet animations." + animationName + ".frames[" + std::to_string(i) + "]", "y", Json::intValue))
+									
+									//y
+									if(valueExists(frames[i], "entities." + entityName + ".spritesheet animations." + animationName + ".frames." + std::to_string(i), "y", Json::intValue))
 										y = frames[i]["y"].asInt();
-									if(valueExists(frames[i], "entities." + entityName + ".spritesheet animations." + animationName + ".frames[" + std::to_string(i) + "]", "w", Json::intValue))
+									
+									//w
+									if(valueExists(frames[i], "entities." + entityName + ".spritesheet animations." + animationName + ".frames." + std::to_string(i), "w", Json::intValue))
 										w = frames[i]["w"].asInt();
-									if(valueExists(frames[i], "entities." + entityName + ".spritesheet animations." + animationName + ".frames[" + std::to_string(i) + "]", "h", Json::intValue))
+									
+									//h
+									if(valueExists(frames[i], "entities." + entityName + ".spritesheet animations." + animationName + ".frames." + std::to_string(i), "h", Json::intValue))
 										h = frames[i]["h"].asInt();
-									if(valueExists(frames[i], "entities." + entityName + ".spritesheet animations." + animationName + ".frames[" + std::to_string(i) + "]", "relative duration", Json::realValue))
+									
+									//relative duration
+									if(valueExists(frames[i], "entities." + entityName + ".spritesheet animations." + animationName + ".frames." + std::to_string(i), "relative duration", Json::realValue))
 										relativeDuration = frames[i]["relative duration"].asFloat();
 									entityAnimation.addFrame(sf::IntRect(static_cast<float>(x)*scale, static_cast<float>(y)*scale, static_cast<float>(w)*scale, static_cast<float>(h)*scale), relativeDuration);
 								}
@@ -310,12 +410,186 @@ void GameState::initWorld(const Json::Value& levelData)
 						}
 						m_animations[entityName].addAnimation(animationName, entityAnimation, importance, sf::seconds(duration), loop);
 					}
+					
+					//play animations
+					if(valueExists(entity, "entities." + entityName, "play animations", Json::arrayValue))
+					{
+						Json::Value animationsToPlay = entity["play animations"];
+						if(not valueExists(entity, "entities." + entityName, "spritesheet animations", Json::objectValue))
+							throw std::runtime_error("entities." + entityName + ".play animations value defined but entities." + entityName + " has no spritesheet animations member.");
+						else
+						{
+							for(Json::ArrayIndex i{0}; i < animationsToPlay.size(); ++i)
+							{
+								if(animationsToPlay[i].type() != Json::stringValue)
+									throw std::runtime_error("entities." + entityName + ".play animations." + std::to_string(i) + " value is not a string value.");
+								else if(not entity["spritesheet animations"].isMember(animationsToPlay[i].asString()))
+									throw std::runtime_error("entities." + entityName + ".play animations." + std::to_string(i) + " animation is not registred in entities." + entityName + ".spritesheet animations");
+								else
+									m_animations[entityName].play(animationsToPlay[i].asString());
+							}
+						}
+					}
+					
+					//activate animations
+					if(valueExists(entity, "entities." + entityName, "activate animations", Json::arrayValue))
+					{
+						Json::Value animationsToActivate = entity["activate animations"];
+						if(not valueExists(entity, "entities." + entityName, "spritesheet animations", Json::objectValue))
+							throw std::runtime_error("entities." + entityName + ".activate animations value defined but entities." + entityName + " has no spritesheet animations member.");
+						else
+						{
+							for(Json::ArrayIndex i{0}; i < animationsToActivate.size(); ++i)
+							{
+								if(animationsToActivate[i].type() != Json::stringValue)
+									throw std::runtime_error("entities." + entityName + ".activate animations." + std::to_string(i) + " value is not a string value.");
+								else if(not entity["spritesheet animations"].isMember(animationsToActivate[i].asString()))
+									throw std::runtime_error("entities." + entityName + ".activate animations." + std::to_string(i) + " animation is not registred in entities." + entityName + ".spritesheet animations");
+								else
+									m_animations[entityName].activate(animationsToActivate[i].asString());
+							}
+						}
+					}
 				}
 			}
 		}
+		
+		//joints
 		if(valueExists(levelData, "root", "joints", Json::arrayValue))
 		{
 			Json::Value joints = levelData["joints"];
+			for(Json::ArrayIndex i{0}; i < joints.size(); ++i)
+			{
+				if(joints[i].type() != Json::objectValue)
+					throw std::runtime_error("joints." + std::to_string(i) + " value is not an object value.");
+				 else
+				 {
+				 	Json::Value joint = joints[i];
+					std::string first, second;
+					b2Body * bodyFirst{nullptr};
+					b2Body * bodySecond{nullptr};
+					
+					//first
+					if(valueExists(joint, "joints." + std::to_string(i), "first", Json::stringValue))
+						first = joint["first"].asString();
+					else
+						throw std::runtime_error("joints." + std::to_string(i) + " has no first member.");
+					if(m_entities.find(first) == m_entities.end())
+						throw std::runtime_error("joints." + std::to_string(i) + ".first is not a member of entities.");
+					else if(not m_entities[first].has_component<Body>())
+						throw std::runtime_error("entities." + first + " required by joints." + std::to_string(i) + ".first has no body member.");
+					else
+						bodyFirst = m_entities[first].component<Body>()->body;
+					
+					//second
+					if(valueExists(joint, "joints." + std::to_string(i), "second", Json::stringValue))
+						second = joint["second"].asString();
+					else
+						throw std::runtime_error("joints." + std::to_string(i) + " has no second member.");
+					if(m_entities.find(second) == m_entities.end())
+						throw std::runtime_error("joints." + std::to_string(i) + ".second is not a member of entities.");
+					else if(not m_entities[second].has_component<Body>())
+						throw std::runtime_error("entities." + second + " required by joints." + std::to_string(i) + ".second has no body member.");
+					else
+						bodySecond = m_entities[second].component<Body>()->body;
+								
+				 	//type
+				 	if(valueExists(joint, "joints." + std::to_string(i), "type", Json::stringValue))
+					{
+						Json::Value type = joint["type"];
+						if(type == "revolute joint")
+						{
+							b2RevoluteJointDef jointDef;
+							float xf{0}, yf{0}, xs{0}, ys{0};
+							jointDef.bodyA = bodyFirst;
+							jointDef.bodyB =  bodySecond;
+							
+							//local anchor first
+							if(valueExists(joint, "joints." + std::to_string(i), "local anchor first", Json::objectValue))
+							{
+								Json::Value firstAnchor = joint["local anchor first"];
+								
+								//x
+								if(valueExists(firstAnchor, "joints." + std::to_string(i) + ".local anchor first", "x", Json::realValue))
+									xf = firstAnchor["x"].asFloat();
+								
+								//y
+								if(valueExists(firstAnchor, "joints." + std::to_string(i) + ".local anchor first", "y", Json::realValue))
+									yf = firstAnchor["y"].asFloat();
+							}
+							jointDef.localAnchorA = {(xf*scale/pixelScale), (yf*scale/pixelScale)};
+							
+							//local anchor second
+							if(valueExists(joint, "joints." + std::to_string(i), "local anchor second", Json::objectValue))
+							{
+								Json::Value secondAnchor = joint["local anchor second"];
+								
+								//x
+								if(valueExists(secondAnchor, "joints." + std::to_string(i) + ".local anchor second", "x", Json::realValue))
+									xs = secondAnchor["x"].asFloat();
+								
+								//y
+								if(valueExists(secondAnchor, "joints." + std::to_string(i) + ".local anchor second", "y", Json::realValue))
+									ys = secondAnchor["y"].asFloat();
+							}
+							jointDef.localAnchorB = {(xs*scale/pixelScale), (ys*scale/pixelScale)};
+							
+							//lower angle
+							if(valueExists(joint, "joints." + std::to_string(i), "lower angle", Json::realValue))
+								jointDef.lowerAngle = (joint["lower angle"].asFloat() * b2_pi) / 180.f;
+							
+							//upper angle
+							if(valueExists(joint, "joints." + std::to_string(i), "upper angle", Json::realValue))
+								jointDef.upperAngle = (joint["upper angle"].asFloat() * b2_pi) / 180.f;
+							
+							//enable limit
+							if(valueExists(joint, "joints." + std::to_string(i), "enable limit", Json::booleanValue))
+								jointDef.enableLimit = joint["enable limit"].asBool();
+							
+							//max motor torque
+							if(valueExists(joint, "joints." + std::to_string(i), "max motor torque", Json::realValue))
+								jointDef.maxMotorTorque = joint["max motor torque"].asFloat();
+							
+							//enable motor
+							if(valueExists(joint, "joints." + std::to_string(i), "enable motor", Json::booleanValue))
+								jointDef.enableMotor = joint["enable motor"].asBool();
+							
+							getContext().world.CreateJoint(&jointDef);
+						}
+						else if(type == "distance joint")
+						{
+						}
+						else if(type == "friction joint")
+						{
+						}
+						else if(type == "gear joint")
+						{
+						}
+						else if(type == "motor joint")
+						{
+						}
+						else if(type == "prismatic joint")
+						{
+						}
+						else if(type == "pulley joint")
+						{
+						}
+						else if(type == "rope joint")
+						{
+						}
+						else if(type == "weld joint")
+						{
+						}
+						else if(type == "wheel joint")
+						{
+						}
+						else
+							throw std::runtime_error("joints." + std::to_string(i) + ".type name does not exists.");
+					}
+					else
+						throw std::runtime_error("no joint type specified for joints." + std::to_string(i) + ".");
+				 }
+			}
 		}
 	}
 	catch(std::runtime_error& e)

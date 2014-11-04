@@ -9,7 +9,11 @@
 
 #include <TheLostGirl/receivers.h>
 
-void FallingListener::BeginContact(b2Contact* contact)
+void ContactListener::PreSolve(b2Contact *contact, const b2Manifold* oldManifold)
+{
+}
+
+void ContactListener::BeginContact(b2Contact* contact)
 {
 	b2Body* bodyA = contact->GetFixtureA()->GetBody();
 	entityx::Entity* entityA = static_cast<entityx::Entity*>(bodyA->GetUserData());
@@ -30,12 +34,12 @@ void FallingListener::BeginContact(b2Contact* contact)
 			if(entityA->has_component<AnimationsComponent>() and entityA->has_component<DirectionComponent>())
 			{
 				Animations* animations = entityA->component<AnimationsComponent>()->animations;
-				animations->stop("fallRight");
-				animations->stop("fallLeft");
+				animations->stop("fall right");
+				animations->stop("fall left");
 				if(entityA->has_component<Jump>())
 				{
-					animations->stop("jumpRight");
-					animations->stop("jumpLeft");
+					animations->stop("jump right");
+					animations->stop("jump left");
 				}
 			}
 			FallComponent::Handle fallComponent = entityA->component<FallComponent>();
@@ -44,7 +48,7 @@ void FallingListener::BeginContact(b2Contact* contact)
 	}
 }
 
-void FallingListener::EndContact(b2Contact* contact)
+void ContactListener::EndContact(b2Contact* contact)
 {
 	b2Body* bodyA = contact->GetFixtureA()->GetBody();
 	entityx::Entity* entityA = static_cast<entityx::Entity*>(bodyA->GetUserData());
@@ -69,9 +73,9 @@ void FallingListener::EndContact(b2Contact* contact)
 				Animations* animations = entityA->component<AnimationsComponent>()->animations;
 				DirectionComponent::Handle directionComponent = entityA->component<DirectionComponent>();
 				if(directionComponent->direction == Direction::Right)
-					animations->play("fallRight");
+					animations->play("fall right");
 				else if(directionComponent->direction == Direction::Left)
-					animations->play("fallLeft");
+					animations->play("fall left");
 			}
 			FallComponent::Handle fallComponent = entityA->component<FallComponent>();
 			fallComponent->inAir = true;

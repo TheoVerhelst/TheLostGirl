@@ -56,9 +56,9 @@ void FallSystem::update(entityx::EntityManager& entityManager, entityx::EventMan
 		if(fallComponent->inAir and body->GetLinearVelocity().y > 2.f)
 		{
 			if(directionComponent->direction == Direction::Left)
-				animations->play("fallLeft");
+				animations->play("fall left");
 			else if(directionComponent->direction == Direction::Right)
-				animations->play("fallRight");
+				animations->play("fall right");
 		}
 	}
 }
@@ -75,9 +75,9 @@ void BendSystem::update(entityx::EntityManager& entityManager, entityx::EventMan
 		Animations* animations = animationsComponent->animations;
 		float newProgress = bendComponent->power / bendComponent->maxPower;
 		if(directionComponent->direction == Direction::Left)
-			animations->setProgress("bendLeft", newProgress);
+			animations->setProgress("bend left", newProgress);
 		else if(directionComponent->direction == Direction::Right)
-			animations->setProgress("bendRight", newProgress);
+			animations->setProgress("bend right", newProgress);
 	}
 }
 

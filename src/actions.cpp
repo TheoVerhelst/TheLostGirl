@@ -24,15 +24,15 @@ void Mover::operator()(entityx::Entity& entity, double) const
 	switch(direction)
 	{
 		case Direction::Left:
-			directionStr = "Left";
-			oppDirectionStr = "Right";
+			directionStr = " left";
+			oppDirectionStr = " right";
 			oppDirection = Direction::Right;
 			moveIsHorizontal = true;
 			break;
 		
 		case Direction::Right:
-			directionStr = "Right";
-			oppDirectionStr = "Left";
+			directionStr = " right";
+			oppDirectionStr = " left";
 			oppDirection = Direction::Left;
 			moveIsHorizontal = true;
 			break;
@@ -161,9 +161,9 @@ void Jumper::operator()(entityx::Entity& entity, double) const
 		{
 			body->SetLinearVelocity({body->GetLinearVelocity().x, -jumpComponent->jumpStrength});
 			if(directionComponent->direction == Direction::Left)
-				animations->play("jumpLeft");
+				animations->play("jump left");
 			else if(directionComponent->direction == Direction::Right)
-				animations->play("jumpRight");
+				animations->play("jump right");
 		}
 	}
 }
@@ -188,9 +188,9 @@ void BowBender::operator()(entityx::Entity& entity, double) const
 		
 		std::string directionStr;//Find the right animation string
 		if(directionComponent->direction == Direction::Left)
-			directionStr = "Left";
+			directionStr = " left";
 		else if(directionComponent->direction == Direction::Right)
-			directionStr = "Right";
+			directionStr = " right";
 		
 		bendComponent->power = cap(power, 0.f, bendComponent->maxPower);//Cap the power
 		float animationPower = bendComponent->power / bendComponent->maxPower;//The progress of the bending, in the range [0, 1]

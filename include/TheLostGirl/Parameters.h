@@ -26,7 +26,6 @@ struct Parameters
 	float scale;                ///< Current scale.
 	sf::Vector2u windowSize;    ///< The current size of the window.
 	float pixelScale;           ///< Pixels/meter scale.
-	sf::Vector2f worldFrameSize;///< Size of a screen, in meters.
 	b2Vec2 gravity;             ///< The gravity vector.
 	int numberOfPlans;          ///< Number of plans in the background.
 	std::string textFont;       ///< Path of the main font.
