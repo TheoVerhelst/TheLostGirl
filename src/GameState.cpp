@@ -116,7 +116,7 @@ void GameState::initWorld(const Json::Value& levelData)
 					else if(sprite.asString() == "bow")
 						m_sprites.emplace(entityName, sf::Sprite(getContext().textureManager.get(Textures::Bow)));
 					else
-						throw std::runtime_error("Failed to parse save file : sprite name does not exists.");
+						throw std::runtime_error("entities." + entityName + ".sprite name does not exists.");
 					m_entities[entityName].assign<SpriteComponent>(&m_sprites[entityName]);
 				}
 				
@@ -128,14 +128,16 @@ void GameState::initWorld(const Json::Value& levelData)
 					for(Json::ArrayIndex i{0}; i < categories.size(); ++i)
 					{
 						//For each cateory in the list, add it to the entity's category.
-						if(categories[i] == "player")
+						if(categories[i].type() != Json::stringValue)
+							throw std::runtime_error("entities." + entityName + ".categories[" + std::to_string(i) + "] value is not a string value.");
+						else if(categories[i] == "player")
 							categoriesInt |= Category::Player;
 						else if(categories[i] == "can fall")
 							categoriesInt |= Category::CanFall;
 						else if(categories[i] == "ground")
 							categoriesInt |= Category::Ground;
 						else
-							throw std::runtime_error("Failed to parse save file : category name does not exists.");
+							throw std::runtime_error("entities." + entityName + ".categories[" + std::to_string(i) + "] name does not exists.");
 					}
 					m_entities[entityName].assign<CategoryComponent>(categoriesInt);
 				}
@@ -163,7 +165,7 @@ void GameState::initWorld(const Json::Value& levelData)
 					else if(direction.asString() == "none")
 						m_entities[entityName].assign<DirectionComponent>(Direction::None);
 					else
-						throw std::runtime_error("Failed to parse save file : direction name does not exists.");
+						throw std::runtime_error("entities." + entityName + ".direction name does not exists.");
 				}
 				
 				//fall
@@ -180,7 +182,14 @@ void GameState::initWorld(const Json::Value& levelData)
 					if(valueExists(body, "entities." + entityName + ".body", "type", Json::stringValue))
 					{
 						Json::Value type = body["type"];
-						entityBodyDef.type = b2_dynamicBody;
+						if(type == "static")
+							entityBodyDef.type = b2_staticBody;
+						else if(type == "kinematic")
+							entityBodyDef.type = b2_kinematicBody;
+						else if(type == "dynamic")
+							entityBodyDef.type = b2_dynamicBody;
+						else
+							throw std::runtime_error("entities." + entityName + ".body.type name does not exists.");
 					}
 					
 					//position
@@ -209,13 +218,13 @@ void GameState::initWorld(const Json::Value& levelData)
 						for(Json::ArrayIndex i{0}; i < fixtures.size(); ++i)
 						{
 							b2FixtureDef entityFixtureDef;
+							b2PolygonShape entityBox;
 							
 							//box
 							if(valueExists(fixtures[i], "entities." + entityName + ".body.fixture[" + std::to_string(i) + "]", "box", Json::objectValue))
 							{
 								Json::Value box = fixtures[i]["box"];
-								float w{0}, h{0};
-								b2PolygonShape entityBox;
+								float w{100}, h{100};
 								
 								//width
 								if(valueExists(box, "entities." + entityName + ".body.fixture[" + std::to_string(i) + "].box", "w", Json::realValue))
@@ -223,10 +232,12 @@ void GameState::initWorld(const Json::Value& levelData)
 								
 								//height
 								if(valueExists(box, "entities." + entityName + ".body.fixture[" + std::to_string(i) + "].box", "h", Json::realValue))
-									w = box["h"].asFloat();
+									h = box["h"].asFloat();
 								entityBox.SetAsBox((w*scale/pixelScale)/2, (h*scale/pixelScale)/2, {(w*scale/pixelScale)/2, (h*scale/pixelScale)/2}, 0);
 								entityFixtureDef.shape = &entityBox;
 							}
+							else
+								std::cout << "nobox" << std::endl;
 							
 							//density
 							if(valueExists(fixtures[i], "entities." + entityName + ".body.fixture[" + std::to_string(i) + "]", "density", Json::realValue))
@@ -242,18 +253,63 @@ void GameState::initWorld(const Json::Value& levelData)
 							entityBody->CreateFixture(&entityFixtureDef);
 						}
 					}
-							
-							
-	//				entityBox.SetAsBox((100.f*scale/pixelScale)/2, (200.f*scale/pixelScale)/2, {(100.f*scale/pixelScale)/2, (200.f*scale/pixelScale)/2}, 0);
-	//
-	//				entityFixtureDef.shape = &entityBox;
-	//				entityFixtureDef.density = 1.0f;
-	//				entityFixtureDef.friction = 1.f;
-	//				entityFixtureDef.restitution = 0.f;
-	//				entityFixtureDef.filter.groupIndex = -1;
-	//				entityBodyDef.userData = &m_entities[entityName];
-	//				b2Body* entityBody = getContext().world.CreateBody(&entityBodyDef);
-	//				m_entities[entityName].assign<Body>(entityBody);
+				}
+				
+				//animations
+				if(valueExists(entity, "entities." + entityName, "spritesheet animations", Json::objectValue))
+				{
+					Json::Value animations = entity["spritesheet animations"];
+					Json::Value::Members animationsNames = animations.getMemberNames();
+					m_animations[entityName] = Animations();
+					m_entities[entityName].assign<AnimationsComponent>(&m_animations[entityName]);
+					for(std::string& animationName : animationsNames)
+					{
+						Json::Value animation = animations[animationName];
+						SpriteSheetAnimation entityAnimation;
+						unsigned short int importance{0};
+						float duration{1.f};
+						bool loop{false};
+						
+						//importance
+						if(valueExists(animation, "entities." + entityName + ".spritesheet animations." + animationName, "importance", Json::uintValue))
+							importance = animation["importance"].asUInt();
+						
+						//duration
+						if(valueExists(animation, "entities." + entityName + ".spritesheet animations." + animationName, "duration", Json::realValue))
+							duration = animation["duration"].asFloat();
+						
+						//loop
+						if(valueExists(animation, "entities." + entityName + ".spritesheet animations." + animationName, "loop", Json::booleanValue))
+							loop = animation["loop"].asBool();
+						
+						//frames
+						if(valueExists(animation, "entities." + entityName + ".spritesheet animations." + animationName, "frames", Json::arrayValue))
+						{
+							Json::Value frames = animation["frames"];
+							for(Json::ArrayIndex i{0}; i < frames.size(); ++i)
+							{
+								if(frames[i].type() != Json::objectValue)
+									throw std::runtime_error("entities." + entityName + ".spritesheet animations." + animationName +  ".frames[" + std::to_string(i) + "] value is not an object value.");
+								else
+								{
+									int x{0}, y{0}, w{0}, h{0};
+									float relativeDuration{0.f};
+									if(valueExists(frames[i], "entities." + entityName + ".spritesheet animations." + animationName + ".frames[" + std::to_string(i) + "]", "x", Json::intValue))
+										x = frames[i]["x"].asInt();
+									if(valueExists(frames[i], "entities." + entityName + ".spritesheet animations." + animationName + ".frames[" + std::to_string(i) + "]", "y", Json::intValue))
+										y = frames[i]["y"].asInt();
+									if(valueExists(frames[i], "entities." + entityName + ".spritesheet animations." + animationName + ".frames[" + std::to_string(i) + "]", "w", Json::intValue))
+										w = frames[i]["w"].asInt();
+									if(valueExists(frames[i], "entities." + entityName + ".spritesheet animations." + animationName + ".frames[" + std::to_string(i) + "]", "h", Json::intValue))
+										h = frames[i]["h"].asInt();
+									if(valueExists(frames[i], "entities." + entityName + ".spritesheet animations." + animationName + ".frames[" + std::to_string(i) + "]", "relative duration", Json::realValue))
+										relativeDuration = frames[i]["relative duration"].asFloat();
+									entityAnimation.addFrame(sf::IntRect(static_cast<float>(x)*scale, static_cast<float>(y)*scale, static_cast<float>(w)*scale, static_cast<float>(h)*scale), relativeDuration);
+								}
+							}
+						}
+						m_animations[entityName].addAnimation(animationName, entityAnimation, importance, sf::seconds(duration), loop);
+					}
 				}
 			}
 		}

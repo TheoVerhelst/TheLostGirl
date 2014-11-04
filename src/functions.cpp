@@ -106,3 +106,58 @@ bool valueExists(const Json::Value& rootValue, const std::string rootName, const
 		return false;
 	}
 }
+
+bool checkElementsType(const Json::Value& rootValue, const std::string rootName, Json::ValueType elementType)
+{
+	if(rootValue.type() == Json::arrayValue)
+	{
+		bool everyElementsAreOK{true};
+		std::string errorMessage;
+		for(Json::ArrayIndex i{0}; i < rootValue.size(); ++i)
+		{
+			Json::Value element = rootValue[i];
+			if(element.type() != elementType)
+			{
+				std::string elementTypeStr;
+				switch(elementType)
+				{
+					case Json::nullValue:
+						elementTypeStr = " null";
+						break;
+					case Json::intValue:
+						elementTypeStr = "n integer";
+						break;
+					case Json::uintValue:
+						elementTypeStr = "n unsigned integer";
+						break;
+					case Json::realValue:
+						elementTypeStr = " floating point";
+						break;
+					case Json::stringValue:
+						elementTypeStr = " string";
+						break;
+					case Json::booleanValue:
+						elementTypeStr = " boolean";
+						break;
+					case Json::arrayValue:
+						elementTypeStr = "n array";
+						break;
+					case Json::objectValue:
+						elementTypeStr = "n object";
+						break;
+				}
+				//The "n " or " " liaises the words
+				errorMessage += rootName + "[" + std::to_string(i) + "] value not a" + elementTypeStr + " value.\n";
+				everyElementsAreOK = false;
+			}
+		}
+		if(not everyElementsAreOK)
+			throw std::runtime_error(errorMessage);
+		return everyElementsAreOK;
+	}
+	else
+	{
+		throw std::runtime_error(rootName + " value not an array value.");
+		return false;
+	}
+}

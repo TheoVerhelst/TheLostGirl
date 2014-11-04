@@ -31,7 +31,7 @@ void SpriteSheetAnimation::addFrame(const sf::IntRect& rect, float duration)
 
 void SpriteSheetAnimation::operator()(entityx::Entity& entity, float progress)
 {
-	if(entity.has_component<SpriteComponent>())
+	if(entity.has_component<SpriteComponent>() and not m_frames.empty())
 	{
 		SpriteComponent::Handle spriteComponent = entity.component<SpriteComponent>();
 		//Find the current frame
