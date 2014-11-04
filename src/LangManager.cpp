@@ -1,9 +1,7 @@
 #include <TheLostGirl/LangManager.h>
 
-using namespace std;
-
 Lang LangManager::m_lang;
-map<string, wstring> LangManager::m_entries;
+std::map<std::string, std::wstring> LangManager::m_entries;
 
 void LangManager::setLang(Lang newLang)
 {
@@ -11,7 +9,7 @@ void LangManager::setLang(Lang newLang)
 	loadLang(m_lang);
 }
 
-wstring LangManager::tr(const string& entryName)
+std::wstring LangManager::tr(const std::string& entryName)
 {
 	if(m_entries.count(entryName) > 0)
 		return m_entries[entryName];
@@ -39,10 +37,10 @@ Lang LangManager::getLang()
 
 void LangManager::loadLang(Lang langToLoad)
 {
-	string filePath;
-	wifstream fileStream;
-	setlocale(LC_ALL, "");//Things to open the file with a wide character table
-	locale loc("");
+	std::string filePath;
+	std::wifstream fileStream;
+	//Things to handle wide encoding
+	std::locale loc("");
 	fileStream.imbue(loc);
 	switch(langToLoad)//Open the right file
 	{
@@ -60,20 +58,20 @@ void LangManager::loadLang(Lang langToLoad)
 	}
 	fileStream.open(filePath);
 	if(not fileStream.is_open())//If failed to open the file
-		throw runtime_error("Unable to open lang file : " + filePath);//Throw an exception
+		throw std::runtime_error("Unable to open lang file : " + filePath);//Throw an exception
 	else
 	{
 		while(not fileStream.eof())
 		{
-			wstring line;
+			std::wstring line;
 			getline(fileStream, line);//fill line with the next line of filestream
-			size_t barPos = line.find(L"|");
-			string entryNameString;
-			wstring entryNameWString = line.substr(0, barPos);//All before the |
+			std::size_t barPos = line.find(L"|");
+			std::string entryNameString;
+			std::wstring entryNameWString = line.substr(0, barPos);//All before the |
 			entryNameString.assign(entryNameWString.begin(), entryNameWString.end());//Convert wstring to string
-			wstring value = line.substr(barPos + 1); //All after the |
+			std::wstring value = line.substr(barPos + 1); //All after the |
 			m_entries.emplace(entryNameString, value);
 		}
-		fileStream.close();
 	}
+	fileStream.close();
 }

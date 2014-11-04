@@ -1,4 +1,5 @@
 #include <iostream>
+#include <fstream>
 
 #include <SFML/Graphics/Texture.hpp>
 #include <SFML/Graphics/View.hpp>
@@ -279,7 +280,6 @@ void GameState::initWorld(const Json::Value& levelData)
 								else if(type == "edge")
 								{
 									float x1{0}, y1{0}, x2{0}, y2{0};
-									std::cout << entityName << " is an edge." << std::endl;
 									//1
 									if(valueExists(fixtures[i], "entities." + entityName + ".body.fixture." + std::to_string(i), "1", Json::objectValue))
 									{
@@ -307,15 +307,6 @@ void GameState::initWorld(const Json::Value& levelData)
 									}
 									else
 										throw std::runtime_error("entities." + entityName + ".body.fixture." + std::to_string(i) + " has no point 2.");
-									
-									std::cout << "raw x1 = " << x1 << std::endl;
-									std::cout << "raw y1 = " << y1 << std::endl;
-									std::cout << "raw x2 = " << x2 << std::endl;
-									std::cout << "raw y2 = " << y2 << std::endl;
-									std::cout << "cal x1 = " << (x1*scale/pixelScale) << std::endl;
-									std::cout << "cal y1 = " << (y1*scale/pixelScale) << std::endl;
-									std::cout << "cal x2 = " << (x2*scale/pixelScale) << std::endl;
-									std::cout << "cal y2 = " << (y2*scale/pixelScale) << std::endl;
 									edgeShape.Set({(x1*scale/pixelScale), (y1*scale/pixelScale)}, {(x2*scale/pixelScale), (y2*scale/pixelScale)});
 									entityFixtureDef.shape = &edgeShape;
 								}
@@ -357,7 +348,7 @@ void GameState::initWorld(const Json::Value& levelData)
 						Json::Value animation = animations[animationName];
 						SpriteSheetAnimation entityAnimation;
 						unsigned short int importance{0};
-						float duration{1.f};
+						float duration{0.f};
 						bool loop{false};
 						
 						//importance

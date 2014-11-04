@@ -4,6 +4,7 @@
 
 int main()
 {
+	
 	#ifdef DEBUG_MODE
 	bool debugMode = true;
 	#else
