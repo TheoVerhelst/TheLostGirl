@@ -79,13 +79,9 @@ sf::Color fadingColor(sf::Time dt = sf::seconds(0), sf::Time fadingLength = sf::
 /// \return True if the child value exists in the root value, throw a runtime_error and return false otherwise.
 bool valueExists(const Json::Value& rootValue, const std::string rootName, const std::string& childName, Json::ValueType childType);
 
-/// Check if the \a value \a with the name \a name is a value of type \a type.
-/// The given name is used in the throwned exceptions if the type does not match.
-/// This function allow to do not must write annoying "else throw exception" blocks.
 /// \param value A Json value containing the data.
-/// \param name The name of the vale.
-/// \param type The expected type of the value.
-/// \return True if the value has the right type, throw a runtime_error and return false otherwise.
-bool isRightType(const Json::Value& value, const std::string name, Json::ValueType type);
+/// \param name The name of the value.
+/// \param valuesTypes The mapping between child names and their types.
+void parseObject(const Json::Value& object, const std::string name, const std::map<std::string, Json::ValueType>& valuesTypes);
 
 #endif // FUNCTIONS_H

@@ -57,8 +57,8 @@ class GameState : public State
 
 	private:
 		/// Initialize the physic world.
-		/// \param levelData A Jsoncpp value containing data of every element to add in the level.
-		void initWorld(const Json::Value& levelData);
+		/// \param filePath The path to the save file.
+		void initWorld(const std::string& filePath);
 		
 		std::unordered_map<std::string, entityx::Entity> m_entities;///< A unordered map allow to reference to elements of the list safely, and use those references outside the scope of the GameState class.
 		std::unordered_map<std::string, sf::Sprite> m_sprites;      ///< Same as above.

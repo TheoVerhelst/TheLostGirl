@@ -107,42 +107,45 @@ bool valueExists(const Json::Value& rootValue, const std::string rootName, const
 	}
 }
 
-bool isRightType(const Json::Value& value, const std::string name, Json::ValueType type)
+void parseObject(const Json::Value& object, const std::string name, const std::map<std::string, Json::ValueType>& valuesTypes)
 {
-	if(value.type() == Json::objectValue)
-		return true;
-	else
+	for(auto& pair : valuesTypes)
 	{
-		std::string typeStr;
-		switch(type)
+		if(not object.isMember(pair.first))
+			throw std::runtime_error(name + pair.first + " value name is not recognized.");
+		else if(object[pair.first].type() != pair.second)
 		{
-			case Json::nullValue:
-				typeStr = " null value";
-				break;
-			case Json::intValue:
-				typeStr = "n integer number";
-				break;
-			case Json::uintValue:
-				typeStr = "n unsigned integer number";
-				break;
-			case Json::realValue:
-				typeStr = " floating point number";
-				break;
-			case Json::stringValue:
-				typeStr = " string";
-				break;
-			case Json::booleanValue:
-				typeStr = " boolean";
-				break;
-			case Json::arrayValue:
-				typeStr = "n array";
-				break;
-			case Json::objectValue:
-				typeStr = "n object";
-				break;
+			
+			std::string typeStr;
+			switch(pair.second)
+			{
+				case Json::nullValue:
+					typeStr = " null";
+					break;
+				case Json::intValue:
+					typeStr = "n integer";
+					break;
+				case Json::uintValue:
+					typeStr = "n unsigned integer";
+					break;
+				case Json::realValue:
+					typeStr = " floating point";
+					break;
+				case Json::stringValue:
+					typeStr = " string";
+					break;
+				case Json::booleanValue:
+					typeStr = " boolean";
+					break;
+				case Json::arrayValue:
+					typeStr = "n array";
+					break;
+				case Json::objectValue:
+					typeStr = "n object";
+					break;
+			}
+			//The "n " or " " liaise the words
+			throw std::runtime_error(name + pair.first + " must be a" + typeStr);
 		}
-		//The "n " or " " liaise the words
-		throw std::runtime_error(name + " value must be a" + typeStr + ".");
-		return false;
 	}
 }

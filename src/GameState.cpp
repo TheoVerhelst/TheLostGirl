@@ -32,19 +32,9 @@ GameState::GameState(StateStack& stack, Context context) :
 	m_ContactListener(),
 	m_timeSystem()
 {
-	Json::Value root; // will contains the root value after parsing.
-	Json::Reader reader;
-	std::ifstream saveFileStream("ressources/levels/save.json", std::ifstream::binary);
-	bool parsingSuccessful = reader.parse(saveFileStream, root);
-	if(!parsingSuccessful)
-	{
-		//report to the user the failure and their locations in the document.
-		std::cerr << "Failed to parse save file " << "ressources/levels/save.json" << ":" << std::endl
-		<< reader.getFormattedErrorMessages() << std::endl;
-	}
-	else
-		initWorld(root);
+	initWorld("ressources/levels/save.json");
 	getContext().player.handleInitialInputState(getContext().commandQueue);
+	getContext().world.SetContactListener(&m_ContactListener);
 }
 
 GameState::~GameState()
@@ -87,15 +77,21 @@ bool GameState::handleEvent(const sf::Event& event)
 	return false;
 }
 
-void GameState::initWorld(const Json::Value& levelData)
+void GameState::initWorld(const std::string& filePath)
 {
 	float scale = getContext().parameters.scale;
 	float pixelScale = getContext().parameters.pixelScale;
-	getContext().world.SetContactListener(&m_ContactListener);
+	
+	Json::Value levelData;//Will contains the root value after parsing.
+	Json::Reader reader;
 	
 	//Parse the level data
 	try
 	{
+		std::ifstream saveFileStream(filePath, std::ifstream::binary);
+		if(!reader.parse(saveFileStream, levelData))//report to the user the failure and their locations in the document.
+			throw std::runtime_error(reader.getFormattedErrorMessages());
+		
 		//entities
 		if(valueExists(levelData, "root", "entities", Json::objectValue))
 		{
@@ -206,7 +202,6 @@ void GameState::initWorld(const Json::Value& levelData)
 					if(valueExists(body, "entities." + entityName + ".body", "position", Json::objectValue))
 					{
 						Json::Value position = body["position"];
-						float x{0}, y{0};
 						if(valueExists(position, "entities." + entityName + ".body.position", "x", Json::realValue))
 							entityBodyDef.position.x = position["x"].asFloat()*scale/pixelScale;
 						if(valueExists(position, "entities." + entityName + ".body.position", "y", Json::realValue))
@@ -637,7 +632,7 @@ void GameState::initWorld(const Json::Value& levelData)
 	}
 	catch(std::runtime_error& e)
 	{
-		std::cerr << "Failed to parse save file : " << e.what() << std::endl;
+		std::cerr << "Failed to parse save file \"" << filePath << "\": " << e.what() << std::endl;
 		//Clear game content in order to prevent segmentation faults.
 		for(auto& pair : m_entities)
 		{
