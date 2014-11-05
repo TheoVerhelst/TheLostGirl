@@ -11,6 +11,17 @@
 
 void ContactListener::PreSolve(b2Contact *contact, const b2Manifold* oldManifold)
 {
+	b2Body* bodyA = contact->GetFixtureA()->GetBody();
+	entityx::Entity* entityA = static_cast<entityx::Entity*>(bodyA->GetUserData());
+	b2Body* bodyB = contact->GetFixtureB()->GetBody();
+	entityx::Entity* entityB = static_cast<entityx::Entity*>(bodyB->GetUserData());
+	if(entityA->has_component<ActorIDComponent>()
+		and entityB->has_component<ActorIDComponent>())
+	{
+		//If the entities have the same ID
+		if(entityA->component<ActorIDComponent>()->ID == entityB->component<ActorIDComponent>()->ID)
+			contact->SetEnabled(false);
+	}
 }
 
 void ContactListener::BeginContact(b2Contact* contact)

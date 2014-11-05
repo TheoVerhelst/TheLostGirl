@@ -155,6 +155,10 @@ void GameState::initWorld(const Json::Value& levelData)
 				if(valueExists(entity, "entities." + entityName, "jump", Json::realValue))
 					m_entities[entityName].assign<Jump>(entity["jump"].asFloat());
 				
+				//bend
+				if(valueExists(entity, "entities." + entityName, "bend", Json::realValue))
+					m_entities[entityName].assign<BendComponent>(entity["bend"].asFloat());
+				
 				//direction
 				if(valueExists(entity, "entities." + entityName, "direction", Json::stringValue))
 				{
@@ -204,15 +208,60 @@ void GameState::initWorld(const Json::Value& levelData)
 						Json::Value position = body["position"];
 						float x{0}, y{0};
 						if(valueExists(position, "entities." + entityName + ".body.position", "x", Json::realValue))
-							x = position["x"].asFloat();
+							entityBodyDef.position.x = position["x"].asFloat()*scale/pixelScale;
 						if(valueExists(position, "entities." + entityName + ".body.position", "y", Json::realValue))
-							y = position["y"].asFloat();
-						entityBodyDef.position = {x*scale/pixelScale, y*scale/pixelScale};
+							entityBodyDef.position.y = position["y"].asFloat()*scale/pixelScale;
 					}
+					
+					//angle
+					if(valueExists(body, "entities." + entityName + ".body", "angle", Json::realValue))
+						entityBodyDef.angle = body["angle"].asFloat();
+					
+					//linear velocity
+					if(valueExists(body, "entities." + entityName + ".body", "linear velocity", Json::objectValue))
+					{
+						Json::Value linearVelocity = body["linear velocity"];
+						if(valueExists(linearVelocity, "entities." + entityName + ".body.linear velocity", "x", Json::realValue))
+							entityBodyDef.linearVelocity.x = linearVelocity["x"].asFloat()*scale/pixelScale;
+						if(valueExists(linearVelocity, "entities." + entityName + ".body.linear velocity", "y", Json::realValue))
+							entityBodyDef.linearVelocity.y = linearVelocity["y"].asFloat()*scale/pixelScale;
+					}
+					
+					//angular velocity
+					if(valueExists(body, "entities." + entityName + ".body", "angular velocity", Json::realValue))
+						entityBodyDef.angularVelocity = body["angular velocity"].asFloat();
+					
+					//linear damping
+					if(valueExists(body, "entities." + entityName + ".body", "linear damping", Json::realValue))
+						entityBodyDef.linearDamping = body["linear damping"].asFloat();
+					
+					//angular damping
+					if(valueExists(body, "entities." + entityName + ".body", "angular damping", Json::realValue))
+						entityBodyDef.angularDamping = body["angular damping"].asFloat();
+					
+					//allow sleep
+					if(valueExists(body, "entities." + entityName + ".body", "allow sleep", Json::booleanValue))
+						entityBodyDef.allowSleep = body["allow sleep"].asBool();
+					
+					//awake
+					if(valueExists(body, "entities." + entityName + ".body", "awake", Json::booleanValue))
+						entityBodyDef.awake = body["awake"].asBool();
 					
 					//fixed rotation
 					if(valueExists(body, "entities." + entityName + ".body", "fixed rotation", Json::booleanValue))
 						entityBodyDef.fixedRotation = body["fixed rotation"].asBool();
+					
+					//bullet
+					if(valueExists(body, "entities." + entityName + ".body", "bullet", Json::booleanValue))
+						entityBodyDef.bullet = body["bullet"].asBool();
+					
+					//active
+					if(valueExists(body, "entities." + entityName + ".body", "active", Json::booleanValue))
+						entityBodyDef.active = body["active"].asBool();
+					
+					//gravity scale
+					if(valueExists(body, "entities." + entityName + ".body", "gravity scale", Json::realValue))
+						entityBodyDef.gravityScale = body["gravity scale"].asFloat();
 					
 					b2Body* entityBody = getContext().world.CreateBody(&entityBodyDef);
 					m_entities[entityName].assign<Body>(entityBody);
@@ -260,16 +309,13 @@ void GameState::initWorld(const Json::Value& levelData)
 												throw std::runtime_error("entities." + entityName + ".body.fixture." + std::to_string(i) + ".vertices." + std::to_string(j) + " value is not an object value.");
 											else
 											{
-												float x{0}, y{0};
-												
 												//x
 												if(valueExists(fixtures[i], "entities." + entityName + ".body.fixture." + std::to_string(i) + ".vertices." + std::to_string(j), "x", Json::realValue))
-													x = fixtures[i]["x"].asFloat();
+													polygonShape.m_vertices[j].x = vertices[j]["x"].asFloat()*scale/pixelScale;
 												
 												//y
 												if(valueExists(fixtures[i], "entities." + entityName + ".body.fixture." + std::to_string(i) + ".vertices." + std::to_string(j), "y", Json::realValue))
-													y = fixtures[i]["y"].asFloat();
-												polygonShape.m_vertices[j] = {(x*scale/pixelScale), (y*scale/pixelScale)};
+													polygonShape.m_vertices[j].y = vertices[j]["y"].asFloat()*scale/pixelScale;
 											}
 										}
 									}
@@ -310,6 +356,7 @@ void GameState::initWorld(const Json::Value& levelData)
 									edgeShape.Set({(x1*scale/pixelScale), (y1*scale/pixelScale)}, {(x2*scale/pixelScale), (y2*scale/pixelScale)});
 									entityFixtureDef.shape = &edgeShape;
 								}
+								// TODO: implementer les autres types de shapes.
 								else if(type == "chain")
 								{
 								}
@@ -331,6 +378,10 @@ void GameState::initWorld(const Json::Value& levelData)
 							//restitution
 							if(valueExists(fixtures[i], "entities." + entityName + ".body.fixture." + std::to_string(i), "restitution", Json::realValue))
 								entityFixtureDef.restitution = fixtures[i]["restitution"].asFloat();
+							
+							//is sensor
+							if(valueExists(fixtures[i], "entities." + entityName + ".body.fixture." + std::to_string(i), "is sensor", Json::booleanValue))
+								entityFixtureDef.isSensor = fixtures[i]["is sensor"].asBool();
 							entityBody->CreateFixture(&entityFixtureDef);
 						}
 					}
@@ -547,6 +598,7 @@ void GameState::initWorld(const Json::Value& levelData)
 							
 							getContext().world.CreateJoint(&jointDef);
 						}
+						// TODO: implementer tous les autres types de joints.
 						else if(type == "distance joint")
 						{
 						}

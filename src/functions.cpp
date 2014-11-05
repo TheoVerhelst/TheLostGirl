@@ -107,57 +107,42 @@ bool valueExists(const Json::Value& rootValue, const std::string rootName, const
 	}
 }
 
-bool checkElementsType(const Json::Value& rootValue, const std::string rootName, Json::ValueType elementType)
+bool isRightType(const Json::Value& value, const std::string name, Json::ValueType type)
 {
-	if(rootValue.type() == Json::arrayValue)
-	{
-		bool everyElementsAreOK{true};
-		std::string errorMessage;
-		for(Json::ArrayIndex i{0}; i < rootValue.size(); ++i)
-		{
-			Json::Value element = rootValue[i];
-			if(element.type() != elementType)
-			{
-				std::string elementTypeStr;
-				switch(elementType)
-				{
-					case Json::nullValue:
-						elementTypeStr = " null";
-						break;
-					case Json::intValue:
-						elementTypeStr = "n integer";
-						break;
-					case Json::uintValue:
-						elementTypeStr = "n unsigned integer";
-						break;
-					case Json::realValue:
-						elementTypeStr = " floating point";
-						break;
-					case Json::stringValue:
-						elementTypeStr = " string";
-						break;
-					case Json::booleanValue:
-						elementTypeStr = " boolean";
-						break;
-					case Json::arrayValue:
-						elementTypeStr = "n array";
-						break;
-					case Json::objectValue:
-						elementTypeStr = "n object";
-						break;
-				}
-				//The "n " or " " liaises the words
-				errorMessage += rootName + "[" + std::to_string(i) + "] value not a" + elementTypeStr + " value.\n";
-				everyElementsAreOK = false;
-			}
-		}
-		if(not everyElementsAreOK)
-			throw std::runtime_error(errorMessage);
-		return everyElementsAreOK;
-	}
+	if(value.type() == Json::objectValue)
+		return true;
 	else
 	{
-		throw std::runtime_error(rootName + " value not an array value.");
+		std::string typeStr;
+		switch(type)
+		{
+			case Json::nullValue:
+				typeStr = " null value";
+				break;
+			case Json::intValue:
+				typeStr = "n integer number";
+				break;
+			case Json::uintValue:
+				typeStr = "n unsigned integer number";
+				break;
+			case Json::realValue:
+				typeStr = " floating point number";
+				break;
+			case Json::stringValue:
+				typeStr = " string";
+				break;
+			case Json::booleanValue:
+				typeStr = " boolean";
+				break;
+			case Json::arrayValue:
+				typeStr = "n array";
+				break;
+			case Json::objectValue:
+				typeStr = "n object";
+				break;
+		}
+		//The "n " or " " liaise the words
+		throw std::runtime_error(name + " value must be a" + typeStr + ".");
 		return false;
 	}
 }

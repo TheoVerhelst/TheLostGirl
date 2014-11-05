@@ -79,14 +79,13 @@ sf::Color fadingColor(sf::Time dt = sf::seconds(0), sf::Time fadingLength = sf::
 /// \return True if the child value exists in the root value, throw a runtime_error and return false otherwise.
 bool valueExists(const Json::Value& rootValue, const std::string rootName, const std::string& childName, Json::ValueType childType);
 
-
-/// Check if the type of all elements in the array value \a rootValue are equal to \a elementType.
-/// The given names are used in the throwned exceptions
-/// if the type of all elements in the array value \a rootValue are not equal to \a elementType or if the root value is not an array.
-/// \param rootValue A Json value containing the data, it must be an array.
-/// \param rootName The name of the rootValue.
-/// \param elementType The expected type of the \a rootValue elements.
-/// \return True if the type of all elements in the array value \a rootValue are equal to \a elementType, throw a runtime_error and return false otherwise.
-bool checkElementsType(const Json::Value& rootValue, const std::string rootName, Json::ValueType elementType);
+/// Check if the \a value \a with the name \a name is a value of type \a type.
+/// The given name is used in the throwned exceptions if the type does not match.
+/// This function allow to do not must write annoying "else throw exception" blocks.
+/// \param value A Json value containing the data.
+/// \param name The name of the vale.
+/// \param type The expected type of the value.
+/// \return True if the value has the right type, throw a runtime_error and return false otherwise.
+bool isRightType(const Json::Value& value, const std::string name, Json::ValueType type);
 
 #endif // FUNCTIONS_H
