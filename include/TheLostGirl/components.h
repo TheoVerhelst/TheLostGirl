@@ -5,6 +5,8 @@
 #include <functional>
 #include <string>
 
+#include <SFML/System/Vector2.hpp>
+
 #include <TheLostGirl/Category.h>
 
 //Forward declarations
@@ -168,6 +170,17 @@ struct ActorIDComponent : public entityx::Component<ActorIDComponent>
 	/// \param _ID Identifier of the actor.
 	ActorIDComponent(unsigned int _ID):
 		ID{_ID}
+	{}
+};
+
+struct SceneComponent : public entityx::Component<SceneComponent>
+{
+	unsigned char planNumber;
+	sf::Vector2f position;
+	
+	SceneComponent(unsigned char _planNumber, sf::Vector2f _position):
+		planNumber(_planNumber),
+		position(_position)
 	{}
 };
 

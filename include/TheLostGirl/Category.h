@@ -11,8 +11,7 @@ namespace Category
 	{
 		None    = 0,      ///< Category that correspond to nothing.
 		Player  = 1 << 0, ///< Category for the entity controlled by the player.
-		Ground  = 1 << 1, ///< Category of the ground.
-		CanFall = 1 << 2  ///< Category for every entity that can fall in the void.
+		Ground  = 1 << 1 ///< Category of the ground.
 	};
 }
 

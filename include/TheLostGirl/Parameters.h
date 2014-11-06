@@ -20,14 +20,14 @@ const std::string paths[5] = {"ressources/images/360p/",
 								"ressources/images/1080p/"};
 struct Parameters
 {
-	Lang lang;               ///< The current language.
-	bool debugMode;          ///< True if the DebugDrawing must be activated.
-	unsigned char scaleIndex;///< The index of the current scale, in the range [0, 4]
-	float scale;             ///< Current scale.
-	float pixelScale;        ///< Pixels/meter scale.
-	b2Vec2 gravity;          ///< The gravity vector.
-	int numberOfPlans;       ///< Number of plans in the background.
-	std::string textFont;    ///< Path of the main font.
+	Lang lang;                  ///< The current language.
+	bool debugMode;             ///< True if the DebugDrawing must be activated.
+	unsigned char scaleIndex;   ///< The index of the current scale, in the range [0, 4]
+	float scale;                ///< Current scale.
+	float pixelScale;           ///< Pixels/meter scale.
+	b2Vec2 gravity;             ///< The gravity vector.
+	unsigned char numberOfPlans;///< Number of plans in the background.
+	std::string textFont;       ///< Path of the main font.
 };
 
 #endif // PARAMETERS_H

@@ -28,7 +28,7 @@ Application::Application(bool debugMode):
 				{0.0f, 9.80665f},
 				4,
 				"ressources/fonts/euphorigenic.ttf"},
-	m_window{sf::VideoMode{1920*m_parameters.scale, 1080*m_parameters.scale}, "The Lost Girl"},
+	m_window{sf::VideoMode{static_cast<unsigned int>(1920*m_parameters.scale), static_cast<unsigned int>(1080*m_parameters.scale)}, "The Lost Girl"},
 	m_gui{m_window},
 	m_textureManager{},
 	m_fontManager{},

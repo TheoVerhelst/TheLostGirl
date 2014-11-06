@@ -138,15 +138,13 @@ void GameState::initWorld(const std::string& filePath)
 				{
 					Json::Value categories = entity["categories"];
 					//Assert that every value in categories is one of the given values
-					parseArray(categories, "entities." + entityName + ".categories", {"player", "can fall", "ground"});
+					parseArray(categories, "entities." + entityName + ".categories", {"player", "ground"});
 					unsigned int categoriesInt{0};
 					for(Json::ArrayIndex i{0}; i < categories.size(); ++i)
 					{
 						//For each cateory in the list, add it to the entity's category.
 						if(categories[i] == "player")
 							categoriesInt |= Category::Player;
-						else if(categories[i] == "can fall")
-							categoriesInt |= Category::CanFall;
 						else if(categories[i] == "ground")
 							categoriesInt |= Category::Ground;
 					}
