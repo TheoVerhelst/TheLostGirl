@@ -27,7 +27,7 @@ MainMenuState::MainMenuState(StateStack& stack, Context context):
 	m_background->setBackgroundColor(sf::Color(255, 255, 255, 100));
 	gui.add(m_background);
 	
-	m_logo = tgui::Picture::create(toPath(getContext().parameters.windowSize) + "title.png");
+	m_logo = tgui::Picture::create(paths[getContext().parameters.scaleIndex] + "title.png");
 	m_logo->setPosition((bindWidth(gui) - bindWidth(m_logo))/2, bindHeight(gui, 0.f));
 	gui.add(m_logo);
 	

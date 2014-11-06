@@ -28,20 +28,6 @@ namespace sf
 /// \return  A new right sized viewport to apply to the view.
 sf::FloatRect handleResize(sf::Event::SizeEvent size);
 
-///Convert a couple of number \a a end \a b representing the game image resolution to a string \e path/axb.
-/// Exemple :
-///> resolution.x = 1920, resolution.y = 1080 => output = "ressources/images/1920x1080/"
-/// \param resolution Current resolution of the images of the game
-/// \return A formatted string.
-std::string toPath(sf::Vector2u resolution);
-
-/// Convert string of the type \e path/axb to a Vector2u wherein x =  and y = b.
-/// Exemple :
-///> input = "ressources/images/1920x1080/" => output = Vector2f(1920, 1080)
-/// \param resolution Current path to the images directory
-/// \return The Vector2f of the resolution.
-sf::Vector2u toVector(std::string resolution);
-
 //Return value capped between min and max
 /// Return \a value capped between \a min and \a max.
 /// That function is useful to keep a number between bounds, e.g. the life of a character between 0 and 100.
@@ -70,18 +56,39 @@ T cap(T value, U min, U max)
 /// \return A color between white and transparent.
 sf::Color fadingColor(sf::Time dt = sf::seconds(0), sf::Time fadingLength = sf::seconds(1), bool in = true);
 
-/// Check if the value \a valueName exists in the object \a root (which is named \a rootName) as a value of type \a type.
-/// The given names are used in the throwned exceptions if the child value does not exists or if the root value is not an object.
-/// \param rootValue A Json value containing the data.
-/// \param rootName The name of the rootValue.
-/// \param childName The name of the child value.
-/// \param childType The type of the expected child.
-/// \return True if the child value exists in the root value, throw a runtime_error and return false otherwise.
-bool valueExists(const Json::Value& rootValue, const std::string rootName, const std::string& childName, Json::ValueType childType);
+/// Return a string depending of the given \a type.
+/// \param type Type to encode in a string.
+/// \return A formated string.
+inline std::string typeToStr(Json::ValueType type);
 
-/// \param value A Json value containing the data.
+/// Check if every element in \a objects corresponds to one element in \a valuesTypes, throw an exception otherwise.
+/// \param object A Json value containing the data, it must be an object.
+/// \param name The name of the object.
+/// \param valuesTypes The mapping between elements names and their types.
+void parseObject(const Json::Value& object, const std::string name, std::map<std::string, Json::ValueType> valuesTypes);
+
+/// Check if every element in \a value have the type \a type.
+/// \param value A Json value containing the data, it must be an object.
+/// \param name The name of the object.
+/// \param type The expected type of every element in \a object.
+void parseObject(const Json::Value& object, const std::string name, Json::ValueType type);
+
+/// Check if \a value corresponds to one element in \a values, throw an exception otherwise.
+/// \param array A Json value.
 /// \param name The name of the value.
-/// \param valuesTypes The mapping between child names and their types.
-void parseObject(const Json::Value& object, const std::string name, const std::map<std::string, Json::ValueType>& valuesTypes);
+/// \param valuesTypes The list of every possible value of \a value.
+void parseValue(const Json::Value& value, const std::string name, std::vector<Json::Value> values);
+
+/// Check if every element in \a array corresponds to one element in \a values, throw an exception otherwise.
+/// \param array A Json value containing the data, it must be an array.
+/// \param name The name of the array.
+/// \param valuesTypes The elements expecteds in \a array.
+void parseArray(const Json::Value& array, const std::string name, std::vector<Json::Value> values);
+
+/// Check if every element in \a value have the type \a type.
+/// \param value A Json value containing the data, it must be an array.
+/// \param name The name of the array.
+/// \param type The expected type of every element in \a array.
+void parseArray(const Json::Value& array, const std::string name, Json::ValueType type);
 
 #endif // FUNCTIONS_H

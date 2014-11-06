@@ -32,20 +32,6 @@ FloatRect handleResize(Event::SizeEvent size)
 	return FloatRect((1 - scalex) / 2.0f, (1 - scaley) / 2.0f, scalex, scaley);
 }
 
-std::string toPath(sf::Vector2u resolution)
-{
-	return std::string("ressources/images/" + std::to_string(resolution.x) + "x" + std::to_string(resolution.y) + "/");
-}
-
-Vector2u toVector(std::string resolution)
-{
-	size_t xPos = resolution.find("x");
-	size_t slashPos = resolution.substr(0, xPos).find_last_of("/");//Find the last slash before the x
-	std::string x = resolution.substr(slashPos+1, xPos);//All before the x and after the slash
-	std::string y = resolution.substr(xPos + 1); //All after the x
-	return Vector2u(std::stoul(x), std::stoul(y));
-}
-
 Color fadingColor(Time dt, Time fadingLength, bool in)
 {
 	float alpha = cap((dt / fadingLength) * 255, 0, 255);
@@ -53,99 +39,92 @@ Color fadingColor(Time dt, Time fadingLength, bool in)
 	return Color(255, 255, 255, alpha);
 }
 
-bool valueExists(const Json::Value& rootValue, const std::string rootName, const std::string& childName,  Json::ValueType childType)
+std::string typeToStr(Json::ValueType type)
 {
-	if(rootValue.type() == Json::objectValue)
+	//The "n " or " " liaise the words
+	switch(type)
 	{
-		if(rootValue.isMember(childName))
-		{
-			Json::Value childValue = rootValue[childName];
-			if(childValue.type() == childType)
-				return true;
-			else
-			{
-				std::string childTypeStr;
-				switch(childType)
-				{
-					case Json::nullValue:
-						childTypeStr = " null";
-						break;
-					case Json::intValue:
-						childTypeStr = "n integer";
-						break;
-					case Json::uintValue:
-						childTypeStr = "n unsigned integer";
-						break;
-					case Json::realValue:
-						childTypeStr = " floating point";
-						break;
-					case Json::stringValue:
-						childTypeStr = " string";
-						break;
-					case Json::booleanValue:
-						childTypeStr = " boolean";
-						break;
-					case Json::arrayValue:
-						childTypeStr = "n array";
-						break;
-					case Json::objectValue:
-						childTypeStr = "n object";
-						break;
-				}
-				//The "n " or " " liaise the words
-				throw std::runtime_error(childName + " value in " + rootName + " value not a" + childTypeStr + " value.");
-				return false;
-			}
-		}
-		else
-			return false;
-	}
-	else
-	{
-		throw std::runtime_error(rootName + " value not an object value.");
-		return false;
+		case Json::nullValue:
+			return " null value";
+		case Json::booleanValue:
+			return " boolean number";
+		case Json::intValue:
+			return "n integer number";
+		case Json::uintValue:
+			return "n unsigned integer number";
+		case Json::realValue:
+			return " real number";
+		case Json::stringValue:
+			return " string";
+		case Json::arrayValue:
+			return "n array";
+		case Json::objectValue:
+			return "n object";
+		default:
+			return "ERROR";
 	}
 }
 
-void parseObject(const Json::Value& object, const std::string name, const std::map<std::string, Json::ValueType>& valuesTypes)
+void parseObject(const Json::Value& object, const std::string name, std::map<std::string, Json::ValueType> valuesTypes)
 {
-	for(auto& pair : valuesTypes)
+	if(object.type() != Json::objectValue)
+		throw std::runtime_error(name + " must be an object.");
+	else
 	{
-		if(not object.isMember(pair.first))
-			throw std::runtime_error(name + pair.first + " value name is not recognized.");
-		else if(object[pair.first].type() != pair.second)
+		for(std::string elementName : object.getMemberNames())
 		{
-			
-			std::string typeStr;
-			switch(pair.second)
-			{
-				case Json::nullValue:
-					typeStr = " null";
-					break;
-				case Json::intValue:
-					typeStr = "n integer";
-					break;
-				case Json::uintValue:
-					typeStr = "n unsigned integer";
-					break;
-				case Json::realValue:
-					typeStr = " floating point";
-					break;
-				case Json::stringValue:
-					typeStr = " string";
-					break;
-				case Json::booleanValue:
-					typeStr = " boolean";
-					break;
-				case Json::arrayValue:
-					typeStr = "n array";
-					break;
-				case Json::objectValue:
-					typeStr = "n object";
-					break;
-			}
-			//The "n " or " " liaise the words
-			throw std::runtime_error(name + pair.first + " must be a" + typeStr);
+			if(valuesTypes.find(elementName) == valuesTypes.end())//If the value in the object does not exists in the map
+				throw std::runtime_error(name + "." + elementName + " identifier is not recognized.");
+			else if(object[elementName].type() != valuesTypes[elementName])//If the value exists but have not the right type
+				throw std::runtime_error(name + "." + elementName + " must be a" + typeToStr(valuesTypes[elementName]));
+		}
+	}
+}
+
+void parseObject(const Json::Value& object, const std::string name, Json::ValueType type)
+{
+	if(object.type() != Json::objectValue)
+		throw std::runtime_error(name + " must be an object.");
+	else
+	{
+		for(std::string& elementName : object.getMemberNames())
+		{
+			if(object[elementName].type() != type)
+				throw std::runtime_error(name + "." + elementName + " must be a" + typeToStr(type) + ".");
+		}
+	}
+}
+
+void parseArray(const Json::Value& array, const std::string name, std::vector<Json::Value> values)
+{
+	if(array.type() != Json::arrayValue)
+		throw std::runtime_error(name + " must be an array.");
+	else
+	{
+		for(Json::ArrayIndex i{0}; i < array.size(); ++i)
+		{
+			if(std::find(values.begin(), values.end(), array[i]) == values.end())//If the value in the array is not in the vector
+				throw std::runtime_error(name + "." + std::to_string(i) + " identifier (" + array[i].asString() + ") is not recognized.");
+		}
+	}
+}
+
+void parseValue(const Json::Value& value, const std::string name, std::vector<Json::Value> values)
+{
+	if(std::find(values.begin(), values.end(), value) == values.end())//If the value is not in the vector
+		throw std::runtime_error(name + " value (" + value.asString() + ") is not recognized.");
+}
+
+void parseArray(const Json::Value& array, const std::string name, Json::ValueType type)
+{
+	if(array.type() != Json::arrayValue)
+		throw std::runtime_error(name + " must be an array.");
+	else
+	{
+		for(Json::ArrayIndex i{0}; i < array.size(); ++i)
+		{
+			if(array[i].type() != type)
+				throw std::runtime_error(name + "." + i + " must be a" + typeToStr(type) + ".");
 		}
 	}
 }

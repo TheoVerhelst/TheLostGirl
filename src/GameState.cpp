@@ -29,12 +29,12 @@ GameState::GameState(StateStack& stack, Context context) :
 	m_entities(),
 	m_sprites(),
 	m_animations(),
-	m_ContactListener(),
+	m_contactListener(),
 	m_timeSystem()
 {
 	initWorld("ressources/levels/save.json");
 	getContext().player.handleInitialInputState(getContext().commandQueue);
-	getContext().world.SetContactListener(&m_ContactListener);
+	getContext().world.SetContactListener(&m_contactListener);
 }
 
 GameState::~GameState()
@@ -73,7 +73,6 @@ bool GameState::handleEvent(const sf::Event& event)
 	//Update the drag and drop state
 	bool isDragAndDropActive{getContext().player.isActived(Player::Action::Bend)};
 	getContext().systemManager.system<DragAndDropSystem>()->setDragAndDropActivation(isDragAndDropActive);
-
 	return false;
 }
 
@@ -92,73 +91,89 @@ void GameState::initWorld(const std::string& filePath)
 		if(!reader.parse(saveFileStream, levelData))//report to the user the failure and their locations in the document.
 			throw std::runtime_error(reader.getFormattedErrorMessages());
 		
+		//Assert that there is only these elements with these types in the root object.
+		parseObject(levelData, "root", {{"entities", Json::objectValue}, {"joints", Json::arrayValue}});
+		
 		//entities
-		if(valueExists(levelData, "root", "entities", Json::objectValue))
+		if(levelData.isMember("entities"))
 		{
 			Json::Value entities = levelData["entities"];
-			Json::Value::Members entitiesNames = entities.getMemberNames();
-			for(std::string& entityName : entitiesNames)
+			//Assert that every elements of entities must be an object
+			parseObject(entities, "entities", Json::objectValue);
+			for(std::string& entityName : entities.getMemberNames())
 			{
 				Json::Value entity = entities[entityName];
+				//Assert that there is only these elements with these types in the entity object.
+				parseObject(entity, "entities." + entityName, {{"sprite", Json::stringValue},
+																{"categories", Json::arrayValue},
+																{"actor ID", Json::intValue},
+																{"walk", Json::realValue},
+																{"jump", Json::realValue},
+																{"bend", Json::realValue},
+																{"direction", Json::stringValue},
+																{"fall", Json::nullValue},
+																{"body", Json::objectValue},
+																{"spritesheet animations", Json::objectValue},
+																{"play animations", Json::arrayValue},
+																{"activate animations", Json::arrayValue}});
 				m_entities.emplace(entityName, getContext().entityManager.create());
 				
 				//sprite
-				if(valueExists(entity, "entities." + entityName, "sprite", Json::stringValue))
+				if(entity.isMember("sprite"))
 				{
 					Json::Value sprite = entity["sprite"];
+					//Assert that the value of sprite is one of the given values
+					parseValue(sprite, "entities." + entityName + ".sprite", {"archer", "arms", "bow"});
 					if(sprite.asString() == "archer")
 						m_sprites.emplace(entityName, sf::Sprite(getContext().textureManager.get(Textures::Archer)));
 					else if(sprite.asString() == "arms")
 						m_sprites.emplace(entityName, sf::Sprite(getContext().textureManager.get(Textures::Arms)));
 					else if(sprite.asString() == "bow")
 						m_sprites.emplace(entityName, sf::Sprite(getContext().textureManager.get(Textures::Bow)));
-					else
-						throw std::runtime_error("entities." + entityName + ".sprite name does not exists.");
 					m_entities[entityName].assign<SpriteComponent>(&m_sprites[entityName]);
 				}
 				
 				//categories
-				if(valueExists(entity, "entities." + entityName, "categories", Json::arrayValue))
+				if(entity.isMember("categories"))
 				{
 					Json::Value categories = entity["categories"];
+					//Assert that every value in categories is one of the given values
+					parseArray(categories, "entities." + entityName + ".categories", {"player", "can fall", "ground"});
 					unsigned int categoriesInt{0};
 					for(Json::ArrayIndex i{0}; i < categories.size(); ++i)
 					{
 						//For each cateory in the list, add it to the entity's category.
-						if(categories[i].type() != Json::stringValue)
-							throw std::runtime_error("entities." + entityName + ".categories." + std::to_string(i) + " value is not a string value.");
-						else if(categories[i] == "player")
+						if(categories[i] == "player")
 							categoriesInt |= Category::Player;
 						else if(categories[i] == "can fall")
 							categoriesInt |= Category::CanFall;
 						else if(categories[i] == "ground")
 							categoriesInt |= Category::Ground;
-						else
-							throw std::runtime_error("entities." + entityName + ".categories." + std::to_string(i) + " name does not exists.");
 					}
 					m_entities[entityName].assign<CategoryComponent>(categoriesInt);
 				}
 				
 				//actor ID
-				if(valueExists(entity, "entities." + entityName, "actor ID", Json::intValue))
+				if(entity.isMember("actor ID"))
 					m_entities[entityName].assign<ActorIDComponent>(entity["actor ID"].asUInt());
 				
 				//walk
-				if(valueExists(entity, "entities." + entityName, "walk", Json::realValue))
+				if(entity.isMember("walk"))
 					m_entities[entityName].assign<Walk>(entity["walk"].asFloat());
 				
 				//jump
-				if(valueExists(entity, "entities." + entityName, "jump", Json::realValue))
+				if(entity.isMember("jump"))
 					m_entities[entityName].assign<Jump>(entity["jump"].asFloat());
 				
 				//bend
-				if(valueExists(entity, "entities." + entityName, "bend", Json::realValue))
+				if(entity.isMember("bend"))
 					m_entities[entityName].assign<BendComponent>(entity["bend"].asFloat());
 				
 				//direction
-				if(valueExists(entity, "entities." + entityName, "direction", Json::stringValue))
+				if(entity.isMember("direction"))
 				{
 					Json::Value direction = entity["direction"];
+					parseValue(direction, "entities." + entityName + ".direction", {"left", "right", "top", "bottom", "none"});
 					if(direction.asString() == "left")
 						m_entities[entityName].assign<DirectionComponent>(Direction::Left);
 					else if(direction.asString() == "right")
@@ -169,181 +184,212 @@ void GameState::initWorld(const std::string& filePath)
 						m_entities[entityName].assign<DirectionComponent>(Direction::Bottom);
 					else if(direction.asString() == "none")
 						m_entities[entityName].assign<DirectionComponent>(Direction::None);
-					else
-						throw std::runtime_error("entities." + entityName + ".direction name does not exists.");
 				}
 				
 				//fall
-				if(valueExists(entity, "entities." + entityName, "fall", Json::nullValue))
+				if(entity.isMember("fall"))
 					m_entities[entityName].assign<FallComponent>();
 				
 				//body
-				if(valueExists(entity, "entities." + entityName, "body", Json::objectValue))
+				if(entity.isMember("body"))
 				{
 					Json::Value body = entity["body"];
+					parseObject(body, "entities." + entityName + ".body", {{"type", Json::stringValue},
+																			{"position", Json::objectValue},
+																			{"angle", Json::realValue},
+																			{"linear velocity", Json::objectValue},
+																			{"angular velocity", Json::realValue},
+																			{"linear damping", Json::realValue},
+																			{"angular damping", Json::realValue},
+																			{"allow sleep", Json::booleanValue},
+																			{"awake", Json::booleanValue},
+																			{"fixed rotation", Json::booleanValue},
+																			{"bullet", Json::booleanValue},
+																			{"active", Json::booleanValue},
+																			{"gravity scale", Json::realValue},
+																			{"fixtures", Json::arrayValue}});
 					b2BodyDef entityBodyDef;
 					entityBodyDef.userData = &m_entities[entityName];
 					
 					//type
-					if(valueExists(body, "entities." + entityName + ".body", "type", Json::stringValue))
+					if(body.isMember("type"))
 					{
 						Json::Value type = body["type"];
+						parseValue(type, "entities." + entityName + ".body.type", {"static", "kinematic", "dynamic"});
 						if(type == "static")
 							entityBodyDef.type = b2_staticBody;
 						else if(type == "kinematic")
 							entityBodyDef.type = b2_kinematicBody;
 						else if(type == "dynamic")
 							entityBodyDef.type = b2_dynamicBody;
-						else
-							throw std::runtime_error("entities." + entityName + ".body.type name does not exists.");
 					}
 					
 					//position
-					if(valueExists(body, "entities." + entityName + ".body", "position", Json::objectValue))
+					if(body.isMember("position"))
 					{
 						Json::Value position = body["position"];
-						if(valueExists(position, "entities." + entityName + ".body.position", "x", Json::realValue))
+						parseObject(position, "entities." + entityName + ".body.position", {{"x", Json::realValue}, {"y", Json::realValue}});
+						if(position.isMember("x"))
 							entityBodyDef.position.x = position["x"].asFloat()*scale/pixelScale;
-						if(valueExists(position, "entities." + entityName + ".body.position", "y", Json::realValue))
+						if(position.isMember("y"))
 							entityBodyDef.position.y = position["y"].asFloat()*scale/pixelScale;
 					}
 					
 					//angle
-					if(valueExists(body, "entities." + entityName + ".body", "angle", Json::realValue))
+					if(body.isMember("angle"))
 						entityBodyDef.angle = body["angle"].asFloat();
 					
 					//linear velocity
-					if(valueExists(body, "entities." + entityName + ".body", "linear velocity", Json::objectValue))
+					if(body.isMember("linear velocity"))
 					{
 						Json::Value linearVelocity = body["linear velocity"];
-						if(valueExists(linearVelocity, "entities." + entityName + ".body.linear velocity", "x", Json::realValue))
+						parseObject(linearVelocity, "entities." + entityName + ".body.linear velocity", {{"x", Json::realValue}, {"y", Json::realValue}});
+						if(linearVelocity.isMember("x"))
 							entityBodyDef.linearVelocity.x = linearVelocity["x"].asFloat()*scale/pixelScale;
-						if(valueExists(linearVelocity, "entities." + entityName + ".body.linear velocity", "y", Json::realValue))
+						if(linearVelocity.isMember("y"))
 							entityBodyDef.linearVelocity.y = linearVelocity["y"].asFloat()*scale/pixelScale;
 					}
 					
 					//angular velocity
-					if(valueExists(body, "entities." + entityName + ".body", "angular velocity", Json::realValue))
+					if(body.isMember("angular velocity"))
 						entityBodyDef.angularVelocity = body["angular velocity"].asFloat();
 					
 					//linear damping
-					if(valueExists(body, "entities." + entityName + ".body", "linear damping", Json::realValue))
+					if(body.isMember("linear damping"))
 						entityBodyDef.linearDamping = body["linear damping"].asFloat();
 					
 					//angular damping
-					if(valueExists(body, "entities." + entityName + ".body", "angular damping", Json::realValue))
+					if(body.isMember("angular damping"))
 						entityBodyDef.angularDamping = body["angular damping"].asFloat();
 					
 					//allow sleep
-					if(valueExists(body, "entities." + entityName + ".body", "allow sleep", Json::booleanValue))
+					if(body.isMember("allow sleep"))
 						entityBodyDef.allowSleep = body["allow sleep"].asBool();
 					
 					//awake
-					if(valueExists(body, "entities." + entityName + ".body", "awake", Json::booleanValue))
+					if(body.isMember("awake"))
 						entityBodyDef.awake = body["awake"].asBool();
 					
 					//fixed rotation
-					if(valueExists(body, "entities." + entityName + ".body", "fixed rotation", Json::booleanValue))
+					if(body.isMember("fixed rotation"))
 						entityBodyDef.fixedRotation = body["fixed rotation"].asBool();
 					
 					//bullet
-					if(valueExists(body, "entities." + entityName + ".body", "bullet", Json::booleanValue))
+					if(body.isMember("bullet"))
 						entityBodyDef.bullet = body["bullet"].asBool();
 					
 					//active
-					if(valueExists(body, "entities." + entityName + ".body", "active", Json::booleanValue))
+					if(body.isMember("active"))
 						entityBodyDef.active = body["active"].asBool();
 					
 					//gravity scale
-					if(valueExists(body, "entities." + entityName + ".body", "gravity scale", Json::realValue))
+					if(body.isMember("gravity scale"))
 						entityBodyDef.gravityScale = body["gravity scale"].asFloat();
 					
 					b2Body* entityBody = getContext().world.CreateBody(&entityBodyDef);
 					m_entities[entityName].assign<Body>(entityBody);
 					
 					//fixtures
-					if(valueExists(body, "entities." + entityName + ".body", "fixtures", Json::arrayValue))
+					if(body.isMember("fixtures"))
 					{
 						Json::Value fixtures = body["fixtures"];
+						parseArray(fixtures, "entities." + entityName + ".body.fixtures", Json::objectValue);
 						for(Json::ArrayIndex i{0}; i < fixtures.size(); ++i)
 						{
+							Json::Value fixture = fixtures[i];
+							parseObject(fixture, "entities." + entityName + ".body.fixtures" + std::to_string(i), {{"type", Json::stringValue},
+																													{"box", Json::objectValue},
+																													{"vertices", Json::arrayValue},
+																													{"1", Json::objectValue},
+																													{"2", Json::objectValue},
+																													{"density", Json::realValue},
+																													{"friction", Json::realValue},
+																													{"restitution", Json::realValue},
+																													{"is sensor", Json::booleanValue}});
 							b2FixtureDef entityFixtureDef;
 							//Initialize shapes here in order to keep pointers alive when assigning entityFixtureDef.shape
 							b2EdgeShape edgeShape;
 							b2PolygonShape polygonShape;
 							
 							//type
-							if(valueExists(fixtures[i], "entities." + entityName + ".body.fixture." + std::to_string(i), "type", Json::stringValue))
+							if(fixture.isMember("type"))
 							{
 								Json::Value type = fixtures[i]["type"];
+								parseValue(type, "entities." + entityName + ".body.fixtures" + std::to_string(i) + ".type", {"polygon", "edge", "chain", "circle"});
+
 								if(type == "polygon")
 								{
 									//box
-									if(valueExists(fixtures[i], "entities." + entityName + ".body.fixture." + std::to_string(i), "box", Json::objectValue))
+									if(fixture.isMember("box"))
 									{
 										Json::Value box = fixtures[i]["box"];
+										parseObject(box, "entities." + entityName + ".body.fixtures." + std::to_string(i) + ".box", {{"w", Json::realValue}, {"h", Json::realValue}});
 										float w{100}, h{100};
 										
 										//width
-										if(valueExists(box, "entities." + entityName + ".body.fixture." + std::to_string(i) + ".box", "w", Json::realValue))
+										if(box.isMember("w"))
 											w = box["w"].asFloat();
 										
 										//height
-										if(valueExists(box, "entities." + entityName + ".body.fixture." + std::to_string(i) + ".box", "h", Json::realValue))
+										if(box.isMember("h"))
 											h = box["h"].asFloat();
 										polygonShape.SetAsBox((w*scale/pixelScale)/2, (h*scale/pixelScale)/2, {(w*scale/pixelScale)/2, (h*scale/pixelScale)/2}, 0);
 									}
 									
 									//vertices
-									else if(valueExists(fixtures[i], "entities." + entityName + ".body.fixture." + std::to_string(i), "vertices", Json::arrayValue))
+									else if(fixture.isMember("vertices"))
 									{
 										Json::Value vertices = fixtures[i]["vertices"];
+										parseArray(vertices, "entities." + entityName + ".body.fixtures." + std::to_string(i) + ".vertices", Json::objectValue);
 										for(Json::ArrayIndex j{0}; j < vertices.size(); ++j)
 										{
-											if(vertices[j].type() != Json::objectValue)
-												throw std::runtime_error("entities." + entityName + ".body.fixture." + std::to_string(i) + ".vertices." + std::to_string(j) + " value is not an object value.");
-											else
-											{
-												//x
-												if(valueExists(fixtures[i], "entities." + entityName + ".body.fixture." + std::to_string(i) + ".vertices." + std::to_string(j), "x", Json::realValue))
-													polygonShape.m_vertices[j].x = vertices[j]["x"].asFloat()*scale/pixelScale;
-												
-												//y
-												if(valueExists(fixtures[i], "entities." + entityName + ".body.fixture." + std::to_string(i) + ".vertices." + std::to_string(j), "y", Json::realValue))
-													polygonShape.m_vertices[j].y = vertices[j]["y"].asFloat()*scale/pixelScale;
-											}
+											Json::Value vertice = vertices[i];
+											parseObject(vertice, "entities." + entityName + ".body.fixtures." + std::to_string(i) + ".vertices" + std::to_string(j), {{"x", Json::realValue}, {"y", Json::realValue}});
+										
+											//x
+											if(vertice.isMember("x"))
+												polygonShape.m_vertices[j].x = vertice["x"].asFloat()*scale/pixelScale;
+											
+											//y
+											if(vertice.isMember("y"))
+												polygonShape.m_vertices[j].y = vertice["y"].asFloat()*scale/pixelScale;
 										}
 									}
 									else
-										throw std::runtime_error("entities." + entityName + ".body.fixture." + std::to_string(i) + " has no geometry.");
+										throw std::runtime_error("entities." + entityName + ".body.fixtures." + std::to_string(i) + " has no geometry.");
 									entityFixtureDef.shape = &polygonShape;
 								}
 								else if(type == "edge")
 								{
 									float x1{0}, y1{0}, x2{0}, y2{0};
+									
 									//1
-									if(valueExists(fixtures[i], "entities." + entityName + ".body.fixture." + std::to_string(i), "1", Json::objectValue))
+									if(fixture.isMember("1"))
 									{
+										parseObject(fixture["1"], "entities." + entityName + ".body.fixtures." + std::to_string(i) + ".1", {{"x", Json::realValue}, {"y", Json::realValue}});
+										
 										//x
-										if(valueExists(fixtures[i]["1"], "entities." + entityName + ".body.fixture." + std::to_string(i) + ".1", "x", Json::realValue))
+										if(fixture["1"].isMember("x"))
 											x1 = fixtures[i]["1"]["x"].asFloat();
 										
 										//y
-										if(valueExists(fixtures[i]["1"], "entities." + entityName + ".body.fixture." + std::to_string(i) + ".1", "y", Json::realValue))
+										if(fixture["1"].isMember("y"))
 											y1 = fixtures[i]["1"]["y"].asFloat();
 									}
 									else
 										throw std::runtime_error("entities." + entityName + ".body.fixture." + std::to_string(i) + " has no point 1.");
 									
 									//2
-									if(valueExists(fixtures[i], "entities." + entityName + ".body.fixture." + std::to_string(i), "2", Json::objectValue))
+									if(fixture.isMember("2"))
 									{
+										parseObject(fixture["2"], "entities." + entityName + ".body.fixtures." + std::to_string(i) + ".2", {{"x", Json::realValue}, {"y", Json::realValue}});
+										
 										//x
-										if(valueExists(fixtures[i]["2"], "entities." + entityName + ".body.fixture." + std::to_string(i) + ".2", "x", Json::realValue))
+										if(fixture["2"].isMember("x"))
 											x2 = fixtures[i]["2"]["x"].asFloat();
 										
 										//y
-										if(valueExists(fixtures[i]["2"], "entities." + entityName + ".body.fixture." + std::to_string(i) + ".2", "y", Json::realValue))
+										if(fixture["2"].isMember("y"))
 											y2 = fixtures[i]["2"]["y"].asFloat();
 									}
 									else
@@ -358,24 +404,22 @@ void GameState::initWorld(const std::string& filePath)
 								else if(type == "circle")
 								{
 								}
-								else
-									throw std::runtime_error("entities." + entityName + ".body.fixture." + std::to_string(i) + ".type name does not exists.");
 							}
 							
 							//density
-							if(valueExists(fixtures[i], "entities." + entityName + ".body.fixture." + std::to_string(i), "density", Json::realValue))
+							if(fixture.isMember("density"))
 								entityFixtureDef.density = fixtures[i]["density"].asFloat();
 							
 							//friction
-							if(valueExists(fixtures[i], "entities." + entityName + ".body.fixture." + std::to_string(i), "friction", Json::realValue))
+							if(fixture.isMember("friction"))
 								entityFixtureDef.friction = fixtures[i]["friction"].asFloat();
 							
 							//restitution
-							if(valueExists(fixtures[i], "entities." + entityName + ".body.fixture." + std::to_string(i), "restitution", Json::realValue))
+							if(fixture.isMember("restitution"))
 								entityFixtureDef.restitution = fixtures[i]["restitution"].asFloat();
 							
 							//is sensor
-							if(valueExists(fixtures[i], "entities." + entityName + ".body.fixture." + std::to_string(i), "is sensor", Json::booleanValue))
+							if(fixture.isMember("is sensor"))
 								entityFixtureDef.isSensor = fixtures[i]["is sensor"].asBool();
 							entityBody->CreateFixture(&entityFixtureDef);
 						}
@@ -383,84 +427,89 @@ void GameState::initWorld(const std::string& filePath)
 				}
 				
 				//animations
-				if(valueExists(entity, "entities." + entityName, "spritesheet animations", Json::objectValue))
+				if(entity.isMember("spritesheet animations"))
 				{
 					Json::Value animations = entity["spritesheet animations"];
-					Json::Value::Members animationsNames = animations.getMemberNames();
+					parseObject(animations, "entities." + entityName + ".spritesheet animations", Json::objectValue);
 					m_animations[entityName] = Animations();
 					m_entities[entityName].assign<AnimationsComponent>(&m_animations[entityName]);
-					for(std::string& animationName : animationsNames)
+					for(std::string& animationName : animations.getMemberNames())
 					{
 						Json::Value animation = animations[animationName];
+						parseObject(animation, "entities." + entityName + ".spritesheet animations." + animationName, {{"importance", Json::intValue},
+																														{"duration", Json::realValue},
+																														{"loop", Json::booleanValue},
+																														{"frames", Json::arrayValue}});
 						SpriteSheetAnimation entityAnimation;
 						unsigned short int importance{0};
 						float duration{0.f};
 						bool loop{false};
 						
 						//importance
-						if(valueExists(animation, "entities." + entityName + ".spritesheet animations." + animationName, "importance", Json::intValue))
+						if(animation.isMember("importance"))
 							importance = animation["importance"].asUInt();
 						
 						//duration
-						if(valueExists(animation, "entities." + entityName + ".spritesheet animations." + animationName, "duration", Json::realValue))
+						if(animation.isMember("duration"))
 							duration = animation["duration"].asFloat();
 						
 						//loop
-						if(valueExists(animation, "entities." + entityName + ".spritesheet animations." + animationName, "loop", Json::booleanValue))
+						if(animation.isMember("loop"))
 							loop = animation["loop"].asBool();
 						
 						//frames
-						if(valueExists(animation, "entities." + entityName + ".spritesheet animations." + animationName, "frames", Json::arrayValue))
+						if(animation.isMember("frames"))
 						{
 							Json::Value frames = animation["frames"];
+							parseArray(frames, "entities." + entityName + ".spritesheet animations." + animationName +  ".frames", Json::objectValue);
 							for(Json::ArrayIndex i{0}; i < frames.size(); ++i)
 							{
-								if(frames[i].type() != Json::objectValue)
-									throw std::runtime_error("entities." + entityName + ".spritesheet animations." + animationName +  ".frames." + std::to_string(i) + " value is not an object value.");
-								else
-								{
-									int x{0}, y{0}, w{0}, h{0};
-									float relativeDuration{0.f};
-									
-									//x
-									if(valueExists(frames[i], "entities." + entityName + ".spritesheet animations." + animationName + ".frames." + std::to_string(i), "x", Json::intValue))
-										x = frames[i]["x"].asInt();
-									
-									//y
-									if(valueExists(frames[i], "entities." + entityName + ".spritesheet animations." + animationName + ".frames." + std::to_string(i), "y", Json::intValue))
-										y = frames[i]["y"].asInt();
-									
-									//w
-									if(valueExists(frames[i], "entities." + entityName + ".spritesheet animations." + animationName + ".frames." + std::to_string(i), "w", Json::intValue))
-										w = frames[i]["w"].asInt();
-									
-									//h
-									if(valueExists(frames[i], "entities." + entityName + ".spritesheet animations." + animationName + ".frames." + std::to_string(i), "h", Json::intValue))
-										h = frames[i]["h"].asInt();
-									
-									//relative duration
-									if(valueExists(frames[i], "entities." + entityName + ".spritesheet animations." + animationName + ".frames." + std::to_string(i), "relative duration", Json::realValue))
-										relativeDuration = frames[i]["relative duration"].asFloat();
-									entityAnimation.addFrame(sf::IntRect(static_cast<float>(x)*scale, static_cast<float>(y)*scale, static_cast<float>(w)*scale, static_cast<float>(h)*scale), relativeDuration);
-								}
+								Json::Value frame = frames[i];
+								parseObject(frame, "entities." + entityName + ".spritesheet animations." + animationName + ".frames." + std::to_string(i), {{"x", Json::intValue},
+																																							{"y", Json::intValue},
+																																							{"w", Json::intValue},
+																																							{"h", Json::intValue},
+																																							{"relative duration", Json::realValue}});
+								int x{0}, y{0}, w{0}, h{0};
+								float relativeDuration{0.f};
+								
+								//x
+								if(frame.isMember("x"))
+									x = frames[i]["x"].asInt();
+								
+								//y
+								if(frame.isMember("y"))
+									y = frames[i]["y"].asInt();
+								
+								//w
+								if(frame.isMember("w"))
+									w = frames[i]["w"].asInt();
+								
+								//h
+								if(frame.isMember("h"))
+									h = frames[i]["h"].asInt();
+								
+								//relative duration
+								if(frame.isMember("relative duration"))
+									relativeDuration = frames[i]["relative duration"].asFloat();
+								entityAnimation.addFrame(sf::IntRect(static_cast<float>(x)*scale, static_cast<float>(y)*scale, static_cast<float>(w)*scale, static_cast<float>(h)*scale), relativeDuration);
 							}
 						}
 						m_animations[entityName].addAnimation(animationName, entityAnimation, importance, sf::seconds(duration), loop);
 					}
 					
 					//play animations
-					if(valueExists(entity, "entities." + entityName, "play animations", Json::arrayValue))
+					if(entity.isMember("play animations"))
 					{
-						Json::Value animationsToPlay = entity["play animations"];
-						if(not valueExists(entity, "entities." + entityName, "spritesheet animations", Json::objectValue))
-							throw std::runtime_error("entities." + entityName + ".play animations value defined but entities." + entityName + " has no spritesheet animations member.");
+						if(not entity.isMember("spritesheet animations"))
+							throw std::runtime_error("entities." + entityName + ".play animations member defined but entities." + entityName + " has no spritesheet animations member.");
 						else
 						{
+							Json::Value animationsToPlay = entity["play animations"];
+							parseArray(animationsToPlay, "entities." + entityName + ".play animations", Json::stringValue);
 							for(Json::ArrayIndex i{0}; i < animationsToPlay.size(); ++i)
 							{
-								if(animationsToPlay[i].type() != Json::stringValue)
-									throw std::runtime_error("entities." + entityName + ".play animations." + std::to_string(i) + " value is not a string value.");
-								else if(not entity["spritesheet animations"].isMember(animationsToPlay[i].asString()))
+								if(not entity["spritesheet animations"].isMember(animationsToPlay[i].asString()))
 									throw std::runtime_error("entities." + entityName + ".play animations." + std::to_string(i) + " animation is not registred in entities." + entityName + ".spritesheet animations");
 								else
 									m_animations[entityName].play(animationsToPlay[i].asString());
@@ -469,18 +518,17 @@ void GameState::initWorld(const std::string& filePath)
 					}
 					
 					//activate animations
-					if(valueExists(entity, "entities." + entityName, "activate animations", Json::arrayValue))
+					if(entity.isMember("activate animations"))
 					{
-						Json::Value animationsToActivate = entity["activate animations"];
-						if(not valueExists(entity, "entities." + entityName, "spritesheet animations", Json::objectValue))
+						if(not entity.isMember("spritesheet animations"))
 							throw std::runtime_error("entities." + entityName + ".activate animations value defined but entities." + entityName + " has no spritesheet animations member.");
 						else
 						{
+							Json::Value animationsToActivate = entity["activate animations"];
+							parseArray(animationsToActivate, "entities." + entityName + ".activate animations", Json::stringValue);
 							for(Json::ArrayIndex i{0}; i < animationsToActivate.size(); ++i)
 							{
-								if(animationsToActivate[i].type() != Json::stringValue)
-									throw std::runtime_error("entities." + entityName + ".activate animations." + std::to_string(i) + " value is not a string value.");
-								else if(not entity["spritesheet animations"].isMember(animationsToActivate[i].asString()))
+								if(not entity["spritesheet animations"].isMember(animationsToActivate[i].asString()))
 									throw std::runtime_error("entities." + entityName + ".activate animations." + std::to_string(i) + " animation is not registred in entities." + entityName + ".spritesheet animations");
 								else
 									m_animations[entityName].activate(animationsToActivate[i].asString());
@@ -492,141 +540,155 @@ void GameState::initWorld(const std::string& filePath)
 		}
 		
 		//joints
-		if(valueExists(levelData, "root", "joints", Json::arrayValue))
+		if(levelData.isMember("joints"))
 		{
 			Json::Value joints = levelData["joints"];
+			parseArray(joints, "joints", Json::objectValue);
 			for(Json::ArrayIndex i{0}; i < joints.size(); ++i)
 			{
-				if(joints[i].type() != Json::objectValue)
-					throw std::runtime_error("joints." + std::to_string(i) + " value is not an object value.");
-				 else
-				 {
-				 	Json::Value joint = joints[i];
-					std::string first, second;
-					b2Body * bodyFirst{nullptr};
-					b2Body * bodySecond{nullptr};
-					
-					//first
-					if(valueExists(joint, "joints." + std::to_string(i), "first", Json::stringValue))
-						first = joint["first"].asString();
-					else
-						throw std::runtime_error("joints." + std::to_string(i) + " has no first member.");
-					if(m_entities.find(first) == m_entities.end())
-						throw std::runtime_error("joints." + std::to_string(i) + ".first is not a member of entities.");
-					else if(not m_entities[first].has_component<Body>())
-						throw std::runtime_error("entities." + first + " required by joints." + std::to_string(i) + ".first has no body member.");
-					else
-						bodyFirst = m_entities[first].component<Body>()->body;
-					
-					//second
-					if(valueExists(joint, "joints." + std::to_string(i), "second", Json::stringValue))
-						second = joint["second"].asString();
-					else
-						throw std::runtime_error("joints." + std::to_string(i) + " has no second member.");
-					if(m_entities.find(second) == m_entities.end())
-						throw std::runtime_error("joints." + std::to_string(i) + ".second is not a member of entities.");
-					else if(not m_entities[second].has_component<Body>())
-						throw std::runtime_error("entities." + second + " required by joints." + std::to_string(i) + ".second has no body member.");
-					else
-						bodySecond = m_entities[second].component<Body>()->body;
-								
-				 	//type
-				 	if(valueExists(joint, "joints." + std::to_string(i), "type", Json::stringValue))
+				Json::Value joint = joints[i];
+				parseObject(joint, "joints." + std::to_string(i), {{"first", Json::stringValue},
+																	{"second", Json::stringValue},
+																	{"type", Json::stringValue},
+																	{"local anchor first", Json::objectValue},
+																	{"local anchor second", Json::objectValue},
+																	{"lower angle", Json::realValue},
+																	{ "upper angle", Json::realValue},
+																	{"enable limit", Json::booleanValue},
+																	{"max motor torque", Json::realValue},
+																	{"enable motor", Json::booleanValue}});
+				std::string first, second;
+				b2Body * bodyFirst{nullptr};
+				b2Body * bodySecond{nullptr};
+				
+				//first
+				if(joint.isMember("first"))
+					first = joint["first"].asString();
+				else
+					throw std::runtime_error("joints." + std::to_string(i) + " has no first member.");
+				if(m_entities.find(first) == m_entities.end())
+					throw std::runtime_error("joints." + std::to_string(i) + ".first is not a member of entities.");
+				if(not m_entities[first].has_component<Body>())
+					throw std::runtime_error("entities." + first + " required by joints." + std::to_string(i) + ".first has no body member.");
+				bodyFirst = m_entities[first].component<Body>()->body;
+				
+				//second
+				if(joint.isMember("second"))
+					second = joint["second"].asString();
+				else
+					throw std::runtime_error("joints." + std::to_string(i) + " has no second member.");
+				if(m_entities.find(second) == m_entities.end())
+					throw std::runtime_error("joints." + std::to_string(i) + ".second is not a member of entities.");
+				if(not m_entities[second].has_component<Body>())
+					throw std::runtime_error("entities." + second + " required by joints." + std::to_string(i) + ".second has no body member.");
+				bodySecond = m_entities[second].component<Body>()->body;
+							
+				//type
+				if(joint.isMember("type"))
+				{
+					Json::Value type = joint["type"];
+					parseValue(type, "joints." + std::to_string(i) + ".type", {"revolute joint",
+																				"distance joint",
+																				"friction joint",
+																				"gear joint",
+																				"motor joint",
+																				"prismatic joint",
+																				"pulley joint",
+																				"rope joint",
+																				"weld joint",
+																				"wheel joint"});											
+					if(type == "revolute joint")
 					{
-						Json::Value type = joint["type"];
-						if(type == "revolute joint")
+						b2RevoluteJointDef jointDef;
+						float xf{0}, yf{0}, xs{0}, ys{0};
+						jointDef.bodyA = bodyFirst;
+						jointDef.bodyB =  bodySecond;
+						
+						//local anchor first
+						if(joint.isMember("local anchor first"))
 						{
-							b2RevoluteJointDef jointDef;
-							float xf{0}, yf{0}, xs{0}, ys{0};
-							jointDef.bodyA = bodyFirst;
-							jointDef.bodyB =  bodySecond;
+							Json::Value firstAnchor = joint["local anchor first"];
+							parseObject(firstAnchor,"joints." + std::to_string(i) + ".local anchor first", {{"x", Json::realValue}, {"y", Json::realValue}});
+										
+							//x
+							if(firstAnchor.isMember("x"))
+								xf = firstAnchor["x"].asFloat();
 							
-							//local anchor first
-							if(valueExists(joint, "joints." + std::to_string(i), "local anchor first", Json::objectValue))
-							{
-								Json::Value firstAnchor = joint["local anchor first"];
-								
-								//x
-								if(valueExists(firstAnchor, "joints." + std::to_string(i) + ".local anchor first", "x", Json::realValue))
-									xf = firstAnchor["x"].asFloat();
-								
-								//y
-								if(valueExists(firstAnchor, "joints." + std::to_string(i) + ".local anchor first", "y", Json::realValue))
-									yf = firstAnchor["y"].asFloat();
-							}
-							jointDef.localAnchorA = {(xf*scale/pixelScale), (yf*scale/pixelScale)};
+							//y
+							if(firstAnchor.isMember("y"))
+								yf = firstAnchor["y"].asFloat();
+						}
+						jointDef.localAnchorA = {(xf*scale/pixelScale), (yf*scale/pixelScale)};
+						
+						//local anchor second
+						if(joint.isMember("local anchor second"))
+						{
+							Json::Value secondAnchor = joint["local anchor second"];
+							parseObject(secondAnchor,"joints." + std::to_string(i) + ".local anchor second", {{"x", Json::realValue}, {"y", Json::realValue}});
 							
-							//local anchor second
-							if(valueExists(joint, "joints." + std::to_string(i), "local anchor second", Json::objectValue))
-							{
-								Json::Value secondAnchor = joint["local anchor second"];
-								
-								//x
-								if(valueExists(secondAnchor, "joints." + std::to_string(i) + ".local anchor second", "x", Json::realValue))
-									xs = secondAnchor["x"].asFloat();
-								
-								//y
-								if(valueExists(secondAnchor, "joints." + std::to_string(i) + ".local anchor second", "y", Json::realValue))
-									ys = secondAnchor["y"].asFloat();
-							}
-							jointDef.localAnchorB = {(xs*scale/pixelScale), (ys*scale/pixelScale)};
+							//x
+							if(secondAnchor.isMember("x"))
+								xs = secondAnchor["x"].asFloat();
 							
-							//lower angle
-							if(valueExists(joint, "joints." + std::to_string(i), "lower angle", Json::realValue))
-								jointDef.lowerAngle = (joint["lower angle"].asFloat() * b2_pi) / 180.f;
-							
-							//upper angle
-							if(valueExists(joint, "joints." + std::to_string(i), "upper angle", Json::realValue))
-								jointDef.upperAngle = (joint["upper angle"].asFloat() * b2_pi) / 180.f;
-							
-							//enable limit
-							if(valueExists(joint, "joints." + std::to_string(i), "enable limit", Json::booleanValue))
-								jointDef.enableLimit = joint["enable limit"].asBool();
-							
-							//max motor torque
-							if(valueExists(joint, "joints." + std::to_string(i), "max motor torque", Json::realValue))
-								jointDef.maxMotorTorque = joint["max motor torque"].asFloat();
-							
-							//enable motor
-							if(valueExists(joint, "joints." + std::to_string(i), "enable motor", Json::booleanValue))
-								jointDef.enableMotor = joint["enable motor"].asBool();
-							
-							getContext().world.CreateJoint(&jointDef);
+							//y
+							if(secondAnchor.isMember("y"))
+								ys = secondAnchor["y"].asFloat();
 						}
-						// TODO: implementer tous les autres types de joints.
-						else if(type == "distance joint")
-						{
-						}
-						else if(type == "friction joint")
-						{
-						}
-						else if(type == "gear joint")
-						{
-						}
-						else if(type == "motor joint")
-						{
-						}
-						else if(type == "prismatic joint")
-						{
-						}
-						else if(type == "pulley joint")
-						{
-						}
-						else if(type == "rope joint")
-						{
-						}
-						else if(type == "weld joint")
-						{
-						}
-						else if(type == "wheel joint")
-						{
-						}
-						else
-							throw std::runtime_error("joints." + std::to_string(i) + ".type name does not exists.");
+						jointDef.localAnchorB = {(xs*scale/pixelScale), (ys*scale/pixelScale)};
+						
+						//lower angle
+						if(joint.isMember("lower angle"))
+							jointDef.lowerAngle = (joint["lower angle"].asFloat() * b2_pi) / 180.f;
+						
+						//upper angle
+						if(joint.isMember("upper angle"))
+							jointDef.upperAngle = (joint["upper angle"].asFloat() * b2_pi) / 180.f;
+						
+						//enable limit
+						if(joint.isMember("enable limit"))
+							jointDef.enableLimit = joint["enable limit"].asBool();
+						
+						//max motor torque
+						if(joint.isMember("max motor torque"))
+							jointDef.maxMotorTorque = joint["max motor torque"].asFloat();
+						
+						//enable motor
+						if(joint.isMember("enable motor"))
+							jointDef.enableMotor = joint["enable motor"].asBool();
+						
+						getContext().world.CreateJoint(&jointDef);
 					}
-					else
-						throw std::runtime_error("no joint type specified for joints." + std::to_string(i) + ".");
-				 }
+					// TODO: implementer tous les autres types de joints.
+					else if(type == "distance joint")
+					{
+					}
+					else if(type == "friction joint")
+					{
+					}
+					else if(type == "gear joint")
+					{
+					}
+					else if(type == "motor joint")
+					{
+					}
+					else if(type == "prismatic joint")
+					{
+					}
+					else if(type == "pulley joint")
+					{
+					}
+					else if(type == "rope joint")
+					{
+					}
+					else if(type == "weld joint")
+					{
+					}
+					else if(type == "wheel joint")
+					{
+					}
+				}
+				else
+					throw std::runtime_error("no joint type specified for joints." + std::to_string(i) + ".");
 			}
 		}
 	}
@@ -636,7 +698,8 @@ void GameState::initWorld(const std::string& filePath)
 		//Clear game content in order to prevent segmentation faults.
 		for(auto& pair : m_entities)
 		{
-			getContext().world.DestroyBody(pair.second.component<Body>()->body);
+			if(pair.second.has_component<Body>())
+				getContext().world.DestroyBody(pair.second.component<Body>()->body);
 			pair.second.destroy();
 		}
 		m_entities.clear();

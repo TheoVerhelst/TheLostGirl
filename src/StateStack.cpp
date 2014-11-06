@@ -61,6 +61,11 @@ bool StateStack::isEmpty() const
 	return m_stack.empty();
 }
 
+State::Context& StateStack::getContext()
+{
+	return m_context;
+}
+
 State::Ptr StateStack::createState(States stateID)
 {
 	auto found = m_factories.find(stateID);

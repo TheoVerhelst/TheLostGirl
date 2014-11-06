@@ -67,6 +67,10 @@ class StateStack : private sf::NonCopyable
 		/// Check if the stack is empty or not.
 		/// \return True if the stack is empty, false otherwise.
 		bool isEmpty() const;
+		
+		/// Acces the current context.
+		/// \return The current context.
+		State::Context& getContext();
 
 	private:
 		/// Construct the given state.

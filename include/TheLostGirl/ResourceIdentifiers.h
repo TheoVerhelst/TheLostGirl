@@ -25,7 +25,8 @@ enum class Textures
 /// This enum is used with a FontManager.
 enum class Fonts
 {
-	Menu///< The GUI font.
+	Menu,///< The GUI font.
+	Debug///< The debug font.
 };
 
 /// Typedef of RessourceManager.

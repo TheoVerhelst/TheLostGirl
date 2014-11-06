@@ -85,7 +85,7 @@ void DragAndDropSystem::update(entityx::EntityManager&, entityx::EventManager&, 
 {
 	if(m_isActive)
 	{
-		m_line[1].position = static_cast<sf::Vector2f>(sf::Mouse::getPosition(m_window));
+		m_line[1].position = m_window.mapPixelToCoords(sf::Mouse::getPosition(m_window));
 		m_window.draw(m_line, 2, sf::Lines);
 		//Compute the drag and drop data
 		float delta_x = m_line[1].position.x- m_line[0].position.x;
@@ -108,7 +108,7 @@ void DragAndDropSystem::update(entityx::EntityManager&, entityx::EventManager&, 
 void DragAndDropSystem::setDragAndDropActivation(bool isActive)
 {
 	if(not m_isActive and isActive)//Activation
-		m_line[0].position = static_cast<sf::Vector2f>(sf::Mouse::getPosition(m_window));
+		m_line[0].position = m_window.mapPixelToCoords(sf::Mouse::getPosition(m_window));
 	if(not isActive and m_isActive)//Desactivation
 	{
 		float delta_x = m_line[1].position.x- m_line[0].position.x;

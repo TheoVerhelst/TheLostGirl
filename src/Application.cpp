@@ -22,13 +22,13 @@
 Application::Application(bool debugMode):
 	m_parameters{FR,
 				debugMode,
-				scales[1],
-				windowSizes[1],
+				1,
+				scales[m_parameters.scaleIndex],
 				120.f*m_parameters.scale,
 				{0.0f, 9.80665f},
 				4,
 				"ressources/fonts/euphorigenic.ttf"},
-	m_window{sf::VideoMode{m_parameters.windowSize.x, m_parameters.windowSize.y}, "The Lost Girl"},
+	m_window{sf::VideoMode{1920*m_parameters.scale, 1080*m_parameters.scale}, "The Lost Girl"},
 	m_gui{m_window},
 	m_textureManager{},
 	m_fontManager{},
@@ -37,7 +37,6 @@ Application::Application(bool debugMode):
 	m_systemManager{m_entityManager, m_eventManager},
 	m_commandQueue{},
 	m_world{m_parameters.gravity},
-	m_debugDraw(m_window, m_parameters),
 	m_stateStack{State::Context{m_parameters,
 								m_window,
 								m_textureManager,
@@ -48,7 +47,8 @@ Application::Application(bool debugMode):
 								m_systemManager,
 								m_world,
 								m_player,
-								m_commandQueue}}
+								m_commandQueue}},			
+	m_debugDraw(m_stateStack.getContext())
 {
 }
 
@@ -68,6 +68,7 @@ int Application::init()
 		m_window.setFramerateLimit(60);//Limit the FPS
 		LangManager::setLang(m_parameters.lang);//Set and load the lang
 		m_fontManager.load(Fonts::Menu, m_parameters.textFont);//Load the GUI font
+		m_fontManager.load(Fonts::Debug, "ressources/fonts/FreeMonoBold.ttf");//Load the debug font
 		m_gui.setGlobalFont(std::make_shared<sf::Font>(m_fontManager.get(Fonts::Menu)));//Set the GUI font
 		m_world.SetDebugDraw(&m_debugDraw);//Set the debug drawer
 		m_debugDraw.SetFlags(b2Draw::e_shapeBit|b2Draw::e_jointBit|b2Draw::e_aabbBit|b2Draw::e_pairBit);//Debug drawing flags
@@ -135,6 +136,7 @@ void Application::render()
 {
 	m_window.clear({127, 127, 127});
 	m_stateStack.draw();
+	m_debugDraw.drawDebugAth();
 	if(m_parameters.debugMode)
 		m_world.DrawDebugData();
 	m_gui.draw();
@@ -162,7 +164,7 @@ void Application::registerSystems()
 
 void Application::loadTextures()
 {
-	m_textureManager.load(Textures::Archer, toPath(m_parameters.windowSize) + "charac.png");
-	m_textureManager.load(Textures::Arms, toPath(m_parameters.windowSize) + "arm1.png");
-	m_textureManager.load(Textures::Bow, toPath(m_parameters.windowSize) + "bow1.png");
+	m_textureManager.load(Textures::Archer, paths[m_parameters.scaleIndex] + "charac.png");
+	m_textureManager.load(Textures::Arms, paths[m_parameters.scaleIndex] + "arm1.png");
+	m_textureManager.load(Textures::Bow, paths[m_parameters.scaleIndex] + "bow1.png");
 }

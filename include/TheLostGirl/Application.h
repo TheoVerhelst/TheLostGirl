@@ -67,10 +67,9 @@ class Application
 		entityx::SystemManager m_systemManager;///< The entity systems manager.
 		Player m_player;                       ///< The input manager.
 		CommandQueue m_commandQueue;           ///< The queue of commands.
-		b2Vec2 m_gravity;                      
 		b2World m_world;                       ///< The Box2D world.
-		DebugDraw m_debugDraw;                 ///< The debugging drawer.
 		StateStack m_stateStack;               ///< The game state manager.
+		DebugDraw m_debugDraw;                 ///< The debugging drawer.
 };
 
 #endif // APPLICATION_H
