@@ -14,7 +14,6 @@
 #include <Box2D/Dynamics/b2World.h>
 #include <Box2D/Common/b2Math.h>
 
-#include <TheLostGirl/ResourceIdentifiers.h>
 #include <TheLostGirl/ResourceManager.h>
 #include <TheLostGirl/StateStack.h>
 #include <TheLostGirl/Player.h>

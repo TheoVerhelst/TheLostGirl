@@ -16,7 +16,6 @@
 #include <TheLostGirl/Command.h>
 #include <TheLostGirl/systems.h>
 #include <TheLostGirl/ResourceManager.h>
-#include <TheLostGirl/ResourceIdentifiers.h>
 #include <TheLostGirl/Player.h>
 #include <TheLostGirl/SpriteSheetAnimation.h>
 #include <TheLostGirl/Parameters.h>
@@ -124,12 +123,9 @@ void GameState::initWorld(const std::string& filePath)
 					Json::Value sprite = entity["sprite"];
 					//Assert that the value of sprite is one of the given values
 					parseValue(sprite, "entities." + entityName + ".sprite", {"archer", "arms", "bow"});
-					if(sprite.asString() == "archer")
-						m_sprites.emplace(entityName, sf::Sprite(getContext().textureManager.get(Textures::Archer)));
-					else if(sprite.asString() == "arms")
-						m_sprites.emplace(entityName, sf::Sprite(getContext().textureManager.get(Textures::Arms)));
-					else if(sprite.asString() == "bow")
-						m_sprites.emplace(entityName, sf::Sprite(getContext().textureManager.get(Textures::Bow)));
+					//Get the texture form the texture manager and make a sprite with this texture
+					m_sprites.emplace(entityName, sf::Sprite(getContext().textureManager.get(sprite.asString())));
+					//Assign this sprite to the entity
 					m_entities[entityName].assign<SpriteComponent>(&m_sprites[entityName]);
 				}
 				

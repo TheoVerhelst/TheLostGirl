@@ -56,6 +56,11 @@ class ResourceManager
 		std::map<Identifier, std::unique_ptr<Resource> >	m_ressourceMap;
 };
 
+/// Typedef of RessourceManager.
+typedef ResourceManager<sf::Texture, std::string> TextureManager;
+/// Typedef of RessourceManager.
+typedef ResourceManager<sf::Font, std::string> FontManager;
+
 #include <TheLostGirl/ResourceManager.inl>
 
 #endif // RESOURCEMANAGER_H

@@ -4,7 +4,6 @@
 #include <memory>
 #include <queue>
 
-#include <TheLostGirl/ResourceIdentifiers.h>
 #include <TheLostGirl/StateIdentifiers.h>
 
 namespace sf
@@ -12,6 +11,8 @@ namespace sf
 	class Event;
 	class Time;
 	class RenderWindow;
+	class Font;
+	class Texture;
 }
 namespace tgui
 {
@@ -30,6 +31,10 @@ class Player;
 class Command;
 struct Parameters;
 typedef std::queue<Command> CommandQueue;
+template <typename Resource, typename Identifier>
+class ResourceManager;
+typedef ResourceManager<sf::Texture, std::string> TextureManager;
+typedef ResourceManager<sf::Font, std::string> FontManager;
 
 /// Base class for the various game states.
 /// In order to make a game state, you must inherit from this class and implement the pure virtal functions.

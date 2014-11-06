@@ -130,7 +130,7 @@ void DebugDraw::drawDebugAth()
 			positionLabel = tgui::Label::create();
 			positionLabel->setPosition(tgui::bindWidth(m_context.gui, 0.01f), tgui::bindHeight(m_context.gui, 0.01f));
 			positionLabel->setTextSize(20);
-			positionLabel->setTextFont(std::make_shared<sf::Font>(m_context.fontManager.get(Fonts::Debug)));
+			positionLabel->setTextFont(std::make_shared<sf::Font>(m_context.fontManager.get("debug")));
 			m_context.gui.add(positionLabel, "positionLabel");
 		}
 		b2Vec2 positionPixels =  (m_context.parameters.pixelScale / m_context.parameters.scale) * position;

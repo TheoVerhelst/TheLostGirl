@@ -3,7 +3,6 @@
 #include <entityx/entityx.h>
 #include <Box2D/Box2D.h>
 
-#include <TheLostGirl/ResourceIdentifiers.h>
 #include <TheLostGirl/StateIdentifiers.h>
 #include <TheLostGirl/State.h>
 #include <TheLostGirl/MainMenuState.h>
@@ -67,9 +66,9 @@ int Application::init()
 		m_window.setKeyRepeatEnabled(false);//Desactive the key repeating
 		m_window.setFramerateLimit(60);//Limit the FPS
 		LangManager::setLang(m_parameters.lang);//Set and load the lang
-		m_fontManager.load(Fonts::Menu, m_parameters.textFont);//Load the GUI font
-		m_fontManager.load(Fonts::Debug, "ressources/fonts/FreeMonoBold.ttf");//Load the debug font
-		m_gui.setGlobalFont(std::make_shared<sf::Font>(m_fontManager.get(Fonts::Menu)));//Set the GUI font
+		m_fontManager.load("menu", m_parameters.textFont);//Load the GUI font
+		m_fontManager.load("debug", "ressources/fonts/FreeMonoBold.ttf");//Load the debug font
+		m_gui.setGlobalFont(std::make_shared<sf::Font>(m_fontManager.get("menu")));//Set the GUI font
 		m_world.SetDebugDraw(&m_debugDraw);//Set the debug drawer
 		m_debugDraw.SetFlags(b2Draw::e_shapeBit|b2Draw::e_jointBit|b2Draw::e_aabbBit|b2Draw::e_pairBit);//Debug drawing flags
 		m_systemManager.configure();//Init the manager
@@ -164,7 +163,7 @@ void Application::registerSystems()
 
 void Application::loadTextures()
 {
-	m_textureManager.load(Textures::Archer, paths[m_parameters.scaleIndex] + "charac.png");
-	m_textureManager.load(Textures::Arms, paths[m_parameters.scaleIndex] + "arm1.png");
-	m_textureManager.load(Textures::Bow, paths[m_parameters.scaleIndex] + "bow1.png");
+	m_textureManager.load("archer", paths[m_parameters.scaleIndex] + "charac.png");
+	m_textureManager.load("arms", paths[m_parameters.scaleIndex] + "arm1.png");
+	m_textureManager.load("bow", paths[m_parameters.scaleIndex] + "bow1.png");
 }
