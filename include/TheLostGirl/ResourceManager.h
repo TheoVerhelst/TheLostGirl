@@ -26,17 +26,22 @@ class ResourceManager
         /// Load the ressource identified by \a id at the path \a filename in the memory.
         /// Once you loaded the ressource, you can then get it simply with the function \e get,
         /// so the ressource is loaded only one time.
-        /// \param id Identifier of the ressource, defined in RessourceIdentifiers.h
+        /// \param id Identifier of the ressource.
         /// \param filename String of the path to the ressource.
 		void load(Identifier id, const std::string& filename);
 
         /// Overloaded function that pass a custom argument to the SFML's loading function.
         /// It is useful to load only a certain part of a texture, a type of shader, ...
-        /// \param id Identifier of the ressource, defined in RessourceIdentifiers.h
+        /// \param id Identifier of the ressource.
         /// \param filename String of the path to the ressource.
         /// \param secondParam Additional parameter, it can be every type you want, and is passed to the SFML's loading function.
 		template <typename Parameter>
 		void load(Identifier id, const std::string& filename, const Parameter& secondParam);
+		
+		/// Check if the given ressource is already loaded.
+		/// \param id Identifier of the ressource.
+		/// \return True if the given ressource is already loaded, false otherwise.
+		bool isLoaded(Identifier id);
 
         /// Get the ressource identified by id.
         /// This function can be called only if the ressource was loaded before by the load function.

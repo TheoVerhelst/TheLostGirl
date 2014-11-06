@@ -26,6 +26,12 @@ void ResourceManager<Resource, Identifier>::load(Identifier id, const std::strin
 }
 
 template <typename Resource, typename Identifier>
+bool ResourceManager<Resource, Identifier>::isLoaded(Identifier id)
+{
+	return m_ressourceMap.find(id) != m_ressourceMap.end();
+}
+
+template <typename Resource, typename Identifier>
 Resource& ResourceManager<Resource, Identifier>::get(Identifier id)
 {
 	auto found = m_ressourceMap.find(id);

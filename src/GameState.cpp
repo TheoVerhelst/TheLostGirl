@@ -80,23 +80,30 @@ void GameState::initWorld(const std::string& filePath)
 	float scale = getContext().parameters.scale;
 	float pixelScale = getContext().parameters.pixelScale;
 	
-	Json::Value levelData;//Will contains the root value after parsing.
+	Json::Value root;//Will contains the root value after parsing.
 	Json::Reader reader;
+	
+	//Load the backgrounds images.
 	
 	//Parse the level data
 	try
 	{
 		std::ifstream saveFileStream(filePath, std::ifstream::binary);
-		if(!reader.parse(saveFileStream, levelData))//report to the user the failure and their locations in the document.
+		if(!reader.parse(saveFileStream, root))//report to the user the failure and their locations in the document.
 			throw std::runtime_error(reader.getFormattedErrorMessages());
 		
 		//Assert that there is only these elements with these types in the root object.
-		parseObject(levelData, "root", {{"entities", Json::objectValue}, {"joints", Json::arrayValue}});
+		parseObject(root, "root", {{"entities", Json::objectValue}, {"joints", Json::arrayValue}, {"level", Json::objectValue}});
 		
 		//entities
-		if(levelData.isMember("entities"))
+		if(root.isMember("level"))
 		{
-			Json::Value entities = levelData["entities"];
+			Json::Value level = root["level"];
+			parseObject(level, "level", {{"length", Json::intValue}});
+		}
+		if(root.isMember("entities"))
+		{
+			Json::Value entities = root["entities"];
 			//Assert that every elements of entities must be an object
 			parseObject(entities, "entities", Json::objectValue);
 			for(std::string& entityName : entities.getMemberNames())
@@ -534,9 +541,9 @@ void GameState::initWorld(const std::string& filePath)
 		}
 		
 		//joints
-		if(levelData.isMember("joints"))
+		if(root.isMember("joints"))
 		{
-			Json::Value joints = levelData["joints"];
+			Json::Value joints = root["joints"];
 			parseArray(joints, "joints", Json::objectValue);
 			for(Json::ArrayIndex i{0}; i < joints.size(); ++i)
 			{

@@ -65,6 +65,7 @@ class GameState : public State
 		std::unordered_map<std::string, Animations> m_animations;   ///< Same as above.
 		ContactListener m_contactListener;                          ///< The falling listener.
 		TimeSystem m_timeSystem;                                    ///< The time manager.
+		unsigned int m_levelLength;                                 ///< The length of the level, in pixels.
 };
 
 #endif // GAMESTATE_H
