@@ -55,6 +55,29 @@ class FallSystem : public entityx::System<FallSystem>
 		void update(entityx::EntityManager &es, entityx::EventManager &events, double dt) override;
 };
 
+/// System that set the correct view according to the player position.
+class ScrollingSystem : public entityx::System<ScrollingSystem>
+{
+	public:
+		/// Default constructor.
+		/// \param window SFML's window of wich set the view.
+		/// \param parameters Structure containing all the game parameters.
+		ScrollingSystem(sf::RenderWindow& window, Parameters& parameters):
+			m_window(window),
+			m_parameters(parameters)
+		{}
+
+		/// System's update function.
+		/// \param es Entity manager.
+		/// \param events Event manager.
+		/// \param dt Elapsed time in the last game frame.
+		void update(entityx::EntityManager &es, entityx::EventManager &events, double dt) override;
+
+	private:
+		sf::RenderWindow& m_window;///< SFML's window of wich set the view.
+		Parameters& m_parameters;///< Structure containing all the game parameters.
+};
+
 /// System that handle the bow bending animation.
 class BendSystem : public entityx::System<BendSystem>
 {
@@ -131,6 +154,7 @@ class Physics : public entityx::System<Physics>
 	public:
 		/// Default constructor.
 		/// \param world b2World where the physics entities should be in.
+		/// \param parameters Structure containing all the game parameters.
 		Physics(b2World& world, Parameters& parameters):
 			m_world(world),
 			m_parameters(parameters)

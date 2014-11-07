@@ -158,6 +158,7 @@ void Application::registerSystems()
 	m_systemManager.add<FallSystem>();
 	m_systemManager.add<Render>(m_window);
 	m_systemManager.add<DragAndDropSystem>(m_window, m_commandQueue);
+	m_systemManager.add<ScrollingSystem>(m_window, m_parameters);
 }
 
 void Application::loadTextures()

@@ -63,6 +63,31 @@ void FallSystem::update(entityx::EntityManager& entityManager, entityx::EventMan
 	}
 }
 
+void ScrollingSystem::update(entityx::EntityManager& entityManager, entityx::EventManager&, double)
+{
+	Body::Handle bodyComponent;
+	CategoryComponent::Handle categoryComponent;
+	entityx::Entity playerEntity;
+	bool found{false};
+	for(auto entity : entityManager.entities_with_components(bodyComponent,
+															categoryComponent))
+	{
+		found = categoryComponent->category & Category::Player;
+		if(found)
+		{
+			playerEntity = entity;
+			break;
+		}
+	}
+	if(found)
+	{
+		b2Vec2 position = m_parameters.pixelScale * playerEntity.component<Body>()->body->GetPosition();
+		View view{m_window.getView()};
+		view.setCenter(position.x, position.y);
+		m_window.setView(view);
+	}
+}
+
 void BendSystem::update(entityx::EntityManager& entityManager, entityx::EventManager&, double)
 {
 	AnimationsComponent::Handle animationsComponent;

@@ -30,7 +30,7 @@ GameState::GameState(StateStack& stack, Context context) :
 	m_animations(),
 	m_contactListener(),
 	m_timeSystem(),
-	m_levelLength(0)
+	m_levelRect(0, 0, 0, 1080)
 {
 	initWorld("ressources/levels/save.json");
 	getContext().player.handleInitialInputState(getContext().commandQueue);
@@ -61,6 +61,7 @@ bool GameState::update(sf::Time elapsedTime)
 	getContext().systemManager.update<Actions>(elapsedTime.asSeconds());
 	getContext().systemManager.update<AnimationSystem>(elapsedTime.asSeconds());
 	getContext().systemManager.update<FallSystem>(elapsedTime.asSeconds());
+	getContext().systemManager.update<ScrollingSystem>(elapsedTime.asSeconds());
 	m_timeSystem.update(elapsedTime);
 	return false;
 }
@@ -98,24 +99,37 @@ void GameState::initWorld(const std::string& filePath)
 		if(root.isMember("level"))
 		{
 			Json::Value level = root["level"];
-			parseObject(level, "level", {{"length", Json::intValue}, {"number of plans", Json::intValue}, {"identifier", Json::stringValue}});
+			parseObject(level, "level", {{"box", Json::objectValue}, {"number of plans", Json::intValue}, {"identifier", Json::stringValue}});
+			requireValues(level, "level", {{"box", Json::objectValue}, {"number of plans", Json::intValue}, {"identifier", Json::stringValue}});
 			
 			//identifier
-			if(level.isMember("identifier"))
-			{
-				std::string identifier = level["identifier"].asString();
-				if(hasWhiteSpace(identifier))
-					throw std::runtime_error("level.identifier value contains whitespaces.");
-				m_levelIdentifier = level["identifier"].asString();
-			}
+			std::string identifier = level["identifier"].asString();
+			if(hasWhiteSpace(identifier))
+				throw std::runtime_error("\"level.identifier\" value contains whitespaces.");
+			m_levelIdentifier = identifier;
 			
 			//length
-			if(level.isMember("length"))
-				m_levelLength = level["length"].asUInt();
+			Json::Value levelBox = level["box"];
+			parseObject(levelBox, "level.box", {{"x", Json::intValue}, {"y", Json::intValue}, {"w", Json::intValue}, {"h", Json::intValue}});
+			requireValues(levelBox, "level.box", {{"w", Json::intValue}});
+			
+			//width
+			m_levelRect.width = levelBox["w"].asInt();
+			
+			//height
+			if(levelBox.isMember("h"))
+				m_levelRect.height = levelBox["h"].asInt();
+			
+			//x
+			if(levelBox.isMember("x"))
+				m_levelRect.top = levelBox["x"].asInt();
+			
+			//y
+			if(levelBox.isMember("y"))
+				m_levelRect.left = levelBox["y"].asInt();
 			
 			//number of plans
-			if(level.isMember("number of plans"))
-				m_numberOfPlans = level["number of plans"].asUInt();
+			m_numberOfPlans = level["number of plans"].asUInt();
 		}
 		
 		//entities
@@ -409,7 +423,7 @@ void GameState::initWorld(const std::string& filePath)
 										}
 									}
 									else
-										throw std::runtime_error("entities." + entityName + ".body.fixtures." + std::to_string(i) + " has no geometry.");
+										throw std::runtime_error("\"entities." + entityName + ".body.fixtures." + std::to_string(i) + "\" has no geometry.");
 									entityFixtureDef.shape = &polygonShape;
 								}
 								else if(type == "edge")
@@ -609,138 +623,122 @@ void GameState::initWorld(const std::string& filePath)
 																	{"enable limit", Json::booleanValue},
 																	{"max motor torque", Json::realValue},
 																	{"enable motor", Json::booleanValue}});
-				std::string first, second;
-				b2Body * bodyFirst{nullptr};
-				b2Body * bodySecond{nullptr};
-				
-				//first
-				if(joint.isMember("first"))
-					first = joint["first"].asString();
-				else
-					throw std::runtime_error("joints." + std::to_string(i) + " has no first member.");
-				if(m_entities.find(first) == m_entities.end())
-					throw std::runtime_error("joints." + std::to_string(i) + ".first is not a member of entities.");
+				requireValues(joint, "joints." + std::to_string(i), {{"first", Json::stringValue},
+																	{"second", Json::stringValue},
+																	{"type", Json::stringValue}});
+				std::string first = joint["first"].asString();
+				std::string second = joint["second"].asString();
+				//Assert that theses entities are defined
+				requireValues(root, "root", {{"entities", Json::objectValue}});
+				requireValues(root["entities"], "entities", {{first, Json::objectValue}, {second, Json::objectValue}});
 				if(not m_entities[first].has_component<Body>())
-					throw std::runtime_error("entities." + first + " required by joints." + std::to_string(i) + ".first has no body member.");
-				bodyFirst = m_entities[first].component<Body>()->body;
-				
-				//second
-				if(joint.isMember("second"))
-					second = joint["second"].asString();
-				else
-					throw std::runtime_error("joints." + std::to_string(i) + " has no second member.");
-				if(m_entities.find(second) == m_entities.end())
-					throw std::runtime_error("joints." + std::to_string(i) + ".second is not a member of entities.");
+					throw std::runtime_error("\"entities." + first + "\" required by \"joints." + std::to_string(i) + ".first\" has no body member.");
 				if(not m_entities[second].has_component<Body>())
-					throw std::runtime_error("entities." + second + " required by joints." + std::to_string(i) + ".second has no body member.");
-				bodySecond = m_entities[second].component<Body>()->body;
+					throw std::runtime_error("\"entities." + second + "\" required by \"joints." + std::to_string(i) + ".second\" has no body member.");
+				b2Body * bodyFirst{m_entities[first].component<Body>()->body};
+				b2Body * bodySecond{m_entities[second].component<Body>()->body};
 							
 				//type
-				if(joint.isMember("type"))
+				Json::Value type = joint["type"];
+				parseValue(type, "joints." + std::to_string(i) + ".type", {"revolute joint",
+																			"distance joint",
+																			"friction joint",
+																			"gear joint",
+																			"motor joint",
+																			"prismatic joint",
+																			"pulley joint",
+																			"rope joint",
+																			"weld joint",
+																			"wheel joint"});											
+				if(type == "revolute joint")
 				{
-					Json::Value type = joint["type"];
-					parseValue(type, "joints." + std::to_string(i) + ".type", {"revolute joint",
-																				"distance joint",
-																				"friction joint",
-																				"gear joint",
-																				"motor joint",
-																				"prismatic joint",
-																				"pulley joint",
-																				"rope joint",
-																				"weld joint",
-																				"wheel joint"});											
-					if(type == "revolute joint")
+					b2RevoluteJointDef jointDef;
+					float xf{0}, yf{0}, xs{0}, ys{0};
+					jointDef.bodyA = bodyFirst;
+					jointDef.bodyB =  bodySecond;
+					
+					//local anchor first
+					if(joint.isMember("local anchor first"))
 					{
-						b2RevoluteJointDef jointDef;
-						float xf{0}, yf{0}, xs{0}, ys{0};
-						jointDef.bodyA = bodyFirst;
-						jointDef.bodyB =  bodySecond;
+						Json::Value firstAnchor = joint["local anchor first"];
+						parseObject(firstAnchor,"joints." + std::to_string(i) + ".local anchor first", {{"x", Json::realValue}, {"y", Json::realValue}});
+									
+						//x
+						if(firstAnchor.isMember("x"))
+							xf = firstAnchor["x"].asFloat();
 						
-						//local anchor first
-						if(joint.isMember("local anchor first"))
-						{
-							Json::Value firstAnchor = joint["local anchor first"];
-							parseObject(firstAnchor,"joints." + std::to_string(i) + ".local anchor first", {{"x", Json::realValue}, {"y", Json::realValue}});
-										
-							//x
-							if(firstAnchor.isMember("x"))
-								xf = firstAnchor["x"].asFloat();
-							
-							//y
-							if(firstAnchor.isMember("y"))
-								yf = firstAnchor["y"].asFloat();
-						}
-						jointDef.localAnchorA = {(xf*uniqScale), (yf*uniqScale)};
+						//y
+						if(firstAnchor.isMember("y"))
+							yf = firstAnchor["y"].asFloat();
+					}
+					jointDef.localAnchorA = {(xf*uniqScale), (yf*uniqScale)};
+					
+					//local anchor second
+					if(joint.isMember("local anchor second"))
+					{
+						Json::Value secondAnchor = joint["local anchor second"];
+						parseObject(secondAnchor,"joints." + std::to_string(i) + ".local anchor second", {{"x", Json::realValue}, {"y", Json::realValue}});
 						
-						//local anchor second
-						if(joint.isMember("local anchor second"))
-						{
-							Json::Value secondAnchor = joint["local anchor second"];
-							parseObject(secondAnchor,"joints." + std::to_string(i) + ".local anchor second", {{"x", Json::realValue}, {"y", Json::realValue}});
-							
-							//x
-							if(secondAnchor.isMember("x"))
-								xs = secondAnchor["x"].asFloat();
-							
-							//y
-							if(secondAnchor.isMember("y"))
-								ys = secondAnchor["y"].asFloat();
-						}
-						jointDef.localAnchorB = {(xs*uniqScale), (ys*uniqScale)};
+						//x
+						if(secondAnchor.isMember("x"))
+							xs = secondAnchor["x"].asFloat();
 						
-						//lower angle
-						if(joint.isMember("lower angle"))
-							jointDef.lowerAngle = (joint["lower angle"].asFloat() * b2_pi) / 180.f;
-						
-						//upper angle
-						if(joint.isMember("upper angle"))
-							jointDef.upperAngle = (joint["upper angle"].asFloat() * b2_pi) / 180.f;
-						
-						//enable limit
-						if(joint.isMember("enable limit"))
-							jointDef.enableLimit = joint["enable limit"].asBool();
-						
-						//max motor torque
-						if(joint.isMember("max motor torque"))
-							jointDef.maxMotorTorque = joint["max motor torque"].asFloat();
-						
-						//enable motor
-						if(joint.isMember("enable motor"))
-							jointDef.enableMotor = joint["enable motor"].asBool();
-						
-						getContext().world.CreateJoint(&jointDef);
+						//y
+						if(secondAnchor.isMember("y"))
+							ys = secondAnchor["y"].asFloat();
 					}
-					// TODO: implementer tous les autres types de joints.
-					else if(type == "distance joint")
-					{
-					}
-					else if(type == "friction joint")
-					{
-					}
-					else if(type == "gear joint")
-					{
-					}
-					else if(type == "motor joint")
-					{
-					}
-					else if(type == "prismatic joint")
-					{
-					}
-					else if(type == "pulley joint")
-					{
-					}
-					else if(type == "rope joint")
-					{
-					}
-					else if(type == "weld joint")
-					{
-					}
-					else if(type == "wheel joint")
-					{
-					}
+					jointDef.localAnchorB = {(xs*uniqScale), (ys*uniqScale)};
+					
+					//lower angle
+					if(joint.isMember("lower angle"))
+						jointDef.lowerAngle = (joint["lower angle"].asFloat() * b2_pi) / 180.f;
+					
+					//upper angle
+					if(joint.isMember("upper angle"))
+						jointDef.upperAngle = (joint["upper angle"].asFloat() * b2_pi) / 180.f;
+					
+					//enable limit
+					if(joint.isMember("enable limit"))
+						jointDef.enableLimit = joint["enable limit"].asBool();
+					
+					//max motor torque
+					if(joint.isMember("max motor torque"))
+						jointDef.maxMotorTorque = joint["max motor torque"].asFloat();
+					
+					//enable motor
+					if(joint.isMember("enable motor"))
+						jointDef.enableMotor = joint["enable motor"].asBool();
+					
+					getContext().world.CreateJoint(&jointDef);
 				}
-				else
-					throw std::runtime_error("no joint type specified for joints." + std::to_string(i) + ".");
+				// TODO: implementer tous les autres types de joints.
+				else if(type == "distance joint")
+				{
+				}
+				else if(type == "friction joint")
+				{
+				}
+				else if(type == "gear joint")
+				{
+				}
+				else if(type == "motor joint")
+				{
+				}
+				else if(type == "prismatic joint")
+				{
+				}
+				else if(type == "pulley joint")
+				{
+				}
+				else if(type == "rope joint")
+				{
+				}
+				else if(type == "weld joint")
+				{
+				}
+				else if(type == "wheel joint")
+				{
+				}
 			}
 		}
 		
@@ -751,7 +749,7 @@ void GameState::initWorld(const std::string& filePath)
 		for(unsigned short int i{1}; i < m_numberOfPlans; ++i)
 		{
 			//The length of the plan, relatively to the second.
-			unsigned int planLength = (m_levelLength * (2.25 / pow(1.5, i + 1)))*getContext().parameters.scale;
+			unsigned int planLength = (m_levelRect.width * (2.25 / pow(1.5, i + 1)))*getContext().parameters.scale;
 			//Number of chunks to load in this plan
 			unsigned int numberOfChunks{(planLength/chunkSize)+1};
 			//Path to the image to load
@@ -770,7 +768,7 @@ void GameState::initWorld(const std::string& filePath)
 					currentChunkSize = planLength - chunkSize*j;
 				//If the texture is not alreday loaded (first loading of the level)
 				if(not texManager.isLoaded(textureIdentifier))
-					texManager.load<sf::IntRect>(textureIdentifier, path, sf::IntRect(j*chunkSize, 0, currentChunkSize, 1080*getContext().parameters.scale));
+					texManager.load<sf::IntRect>(textureIdentifier, path, sf::IntRect(j*chunkSize, 0, currentChunkSize, m_levelRect.height*getContext().parameters.scale));
 				//Create an entity
 				m_entities.emplace(textureIdentifier, getContext().entityManager.create());
 				//Create a sprite with the loaded texture
