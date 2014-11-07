@@ -147,10 +147,9 @@ void GameState::initWorld(const std::string& filePath)
 				if(entity.isMember("sprite"))
 				{
 					Json::Value sprite = entity["sprite"];
-					parseObject(sprite, "entities." + entityName + ".sprite", {{"identifier", Json::stringValue}, {"plan", Json::intValue}});
+					parseObject(sprite, "entities." + entityName + ".sprite", {{"plan", Json::intValue}, {"identifier", Json::stringValue}});
 					//Assert that the identifier is defined
-					if(not sprite.isMember("identifier"))
-						throw std::runtime_error("entities." + entityName + ".sprite.identifier is not defined.");
+					requireValues(sprite, "entities." + entityName + ".sprite", {{"identifier", Json::stringValue}});
 					//Assert that the identifier is one of the given values
 					parseValue(sprite["identifier"], "entities." + entityName + ".sprite.identifier", {"archer", "bow", "arms"});
 					//Get the texture form the texture manager and make a sprite with this texture
@@ -398,7 +397,7 @@ void GameState::initWorld(const std::string& filePath)
 										for(Json::ArrayIndex j{0}; j < vertices.size(); ++j)
 										{
 											Json::Value vertice = vertices[j];
-											parseObject(vertice, "entities." + entityName + ".body.fixtures." + std::to_string(i) + ".vertices" + std::to_string(j), {{"x", Json::realValue}, {"y", Json::realValue}});
+											parseObject(vertice, "entities." + entityName + ".body.fixtures." + std::to_string(i) + ".vertices." + std::to_string(j), {{"x", Json::realValue}, {"y", Json::realValue}});
 										
 											//x
 											if(vertice.isMember("x"))
@@ -416,65 +415,50 @@ void GameState::initWorld(const std::string& filePath)
 								else if(type == "edge")
 								{
 									float x1{0}, y1{0}, x2{0}, y2{0};
+									//Assert that 1 and 2 exist
+									requireValues(fixture, "entities." + entityName + ".body.fixtures." + std::to_string(i), {{"1", Json::objectValue}, {"2", Json::objectValue}});
 									
 									//1
-									if(fixture.isMember("1"))
-									{
-										parseObject(fixture["1"], "entities." + entityName + ".body.fixtures." + std::to_string(i) + ".1", {{"x", Json::realValue},{"y", Json::realValue}});
-										
-										//x
-										if(fixture["1"].isMember("x"))
-											x1 = fixtures[i]["1"]["x"].asFloat();
-										
-										//y
-										if(fixture["1"].isMember("y"))
-											y1 = fixtures[i]["1"]["y"].asFloat();
-									}
-									else
-										throw std::runtime_error("entities." + entityName + ".body.fixture." + std::to_string(i) + " has no point 1.");
+									parseObject(fixture["1"], "entities." + entityName + ".body.fixtures." + std::to_string(i) + ".1", {{"x", Json::realValue},{"y", Json::realValue}});
+									//x
+									if(fixture["1"].isMember("x"))
+										x1 = fixtures[i]["1"]["x"].asFloat();
+									//y
+									if(fixture["1"].isMember("y"))
+										y1 = fixtures[i]["1"]["y"].asFloat();
 									
 									//2
-									if(fixture.isMember("2"))
-									{
-										parseObject(fixture["2"], "entities." + entityName + ".body.fixtures." + std::to_string(i) + ".2", {{"x", Json::realValue}, {"y", Json::realValue}});
-										
-										//x
-										if(fixture["2"].isMember("x"))
-											x2 = fixtures[i]["2"]["x"].asFloat();
-										
-										//y
-										if(fixture["2"].isMember("y"))
-											y2 = fixtures[i]["2"]["y"].asFloat();
-									}
-									else
-										throw std::runtime_error("entities." + entityName + ".body.fixture." + std::to_string(i) + " has no point 2.");
+									parseObject(fixture["2"], "entities." + entityName + ".body.fixtures." + std::to_string(i) + ".2", {{"x", Json::realValue}, {"y", Json::realValue}});
+									//x
+									if(fixture["2"].isMember("x"))
+										x2 = fixtures[i]["2"]["x"].asFloat();
+									//y
+									if(fixture["2"].isMember("y"))
+										y2 = fixtures[i]["2"]["y"].asFloat();
+									
 									edgeShape.Set({(x1*uniqScale), (y1*uniqScale)}, {(x2*uniqScale), (y2*uniqScale)});
 									entityFixtureDef.shape = &edgeShape;
 								}
 								else if(type == "chain")
 								{
 									//vertices
-									if(fixture.isMember("vertices"))
+									requireValues(fixture, "entities." + entityName + ".body.fixtures." + std::to_string(i), {{"vertices", Json::arrayValue}});
+									Json::Value vertices = fixtures[i]["vertices"];
+									parseArray(vertices, "entities." + entityName + ".body.fixtures." + std::to_string(i) + ".vertices", Json::objectValue);
+									//Vertices of the chain shape
+									for(Json::ArrayIndex j{0}; j < vertices.size(); ++j)
 									{
-										Json::Value vertices = fixtures[i]["vertices"];
-										parseArray(vertices, "entities." + entityName + ".body.fixtures." + std::to_string(i) + ".vertices", Json::objectValue);
-										//Vertices of the chain shape
-										for(Json::ArrayIndex j{0}; j < vertices.size(); ++j)
-										{
-											Json::Value vertice = vertices[j];
-											parseObject(vertice, "entities." + entityName + ".body.fixtures." + std::to_string(i) + ".vertices." + std::to_string(j), {{"x", Json::realValue}, {"y", Json::realValue}});
-											verticesArray.push_back(b2Vec2(0, 0));
-											//x
-											if(vertice.isMember("x"))
-												verticesArray[j].x = vertice["x"].asFloat()*uniqScale;
-											
-											//y
-											if(vertice.isMember("y"))
-												verticesArray[j].y = vertice["y"].asFloat()*uniqScale;
-										}
+										Json::Value vertice = vertices[j];
+										parseObject(vertice, "entities." + entityName + ".body.fixtures." + std::to_string(i) + ".vertices." + std::to_string(j), {{"x", Json::realValue}, {"y", Json::realValue}});
+										verticesArray.push_back(b2Vec2(0, 0));
+										//x
+										if(vertice.isMember("x"))
+											verticesArray[j].x = vertice["x"].asFloat()*uniqScale;
+										
+										//y
+										if(vertice.isMember("y"))
+											verticesArray[j].y = vertice["y"].asFloat()*uniqScale;
 									}
-									else
-										throw std::runtime_error("entities." + entityName + ".body.fixtures." + std::to_string(i) + " has no geometry.");
 									chainShape.CreateChain(verticesArray.data(), verticesArray.size());
 									entityFixtureDef.shape = &chainShape;
 								}
@@ -579,38 +563,28 @@ void GameState::initWorld(const std::string& filePath)
 					//play animations
 					if(entity.isMember("play animations"))
 					{
-						if(not entity.isMember("spritesheet animations"))
-							throw std::runtime_error("entities." + entityName + ".play animations member defined but entities." + entityName + " has no spritesheet animations member.");
-						else
+						//Assert that some animations are defined
+						requireValues(entity, "entities." + entityName, {{"spritesheet animations", Json::objectValue}});
+						Json::Value animationsToPlay = entity["play animations"];
+						parseArray(animationsToPlay, "entities." + entityName + ".play animations", Json::stringValue);
+						for(Json::ArrayIndex i{0}; i < animationsToPlay.size(); ++i)
 						{
-							Json::Value animationsToPlay = entity["play animations"];
-							parseArray(animationsToPlay, "entities." + entityName + ".play animations", Json::stringValue);
-							for(Json::ArrayIndex i{0}; i < animationsToPlay.size(); ++i)
-							{
-								if(not entity["spritesheet animations"].isMember(animationsToPlay[i].asString()))
-									throw std::runtime_error("entities." + entityName + ".play animations." + std::to_string(i) + " animation is not registred in entities." + entityName + ".spritesheet animations");
-								else
-									m_animations[entityName].play(animationsToPlay[i].asString());
-							}
+							//Assert that the animation is defined
+							requireValues(entity["spritesheet animations"], "entities." + entityName + ".spritesheet animations", {{animationsToPlay[i].asString(), Json::objectValue}});
+							m_animations[entityName].play(animationsToPlay[i].asString());
 						}
 					}
 					
 					//activate animations
 					if(entity.isMember("activate animations"))
 					{
-						if(not entity.isMember("spritesheet animations"))
-							throw std::runtime_error("entities." + entityName + ".activate animations value defined but entities." + entityName + " has no spritesheet animations member.");
-						else
+						requireValues(entity, "entities." + entityName, {{"spritesheet animations", Json::objectValue}});
+						Json::Value animationsToActivate = entity["activate animations"];
+						parseArray(animationsToActivate, "entities." + entityName + ".activate animations", Json::stringValue);
+						for(Json::ArrayIndex i{0}; i < animationsToActivate.size(); ++i)
 						{
-							Json::Value animationsToActivate = entity["activate animations"];
-							parseArray(animationsToActivate, "entities." + entityName + ".activate animations", Json::stringValue);
-							for(Json::ArrayIndex i{0}; i < animationsToActivate.size(); ++i)
-							{
-								if(not entity["spritesheet animations"].isMember(animationsToActivate[i].asString()))
-									throw std::runtime_error("entities." + entityName + ".activate animations." + std::to_string(i) + " animation is not registred in entities." + entityName + ".spritesheet animations");
-								else
-									m_animations[entityName].activate(animationsToActivate[i].asString());
-							}
+							requireValues(entity["spritesheet animations"], "entities." + entityName + ".spritesheet animations", {{animationsToActivate[i].asString(), Json::objectValue}});
+							m_animations[entityName].activate(animationsToActivate[i].asString());
 						}
 					}
 				}
@@ -813,7 +787,8 @@ void GameState::initWorld(const std::string& filePath)
 	}
 	catch(std::runtime_error& e)
 	{
-		std::cerr << "Failed to load save file \"" << filePath << "\": " << e.what() << std::endl;
+		std::cerr << e.what() << std::endl;
+		std::cerr << "Failed to load save file \"" << filePath << "\"." << std::endl;
 		//Clear game content in order to prevent segmentation faults.
 		for(auto& pair : m_entities)
 		{

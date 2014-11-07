@@ -68,15 +68,15 @@ std::string typeToStr(Json::ValueType type)
 void parseObject(const Json::Value& object, const std::string name, std::map<std::string, Json::ValueType> valuesTypes)
 {
 	if(object.type() != Json::objectValue)
-		throw std::runtime_error(name + " must be an object.");
+		throw std::runtime_error("\"" + name + "\" must be an object.");
 	else
 	{
 		for(std::string elementName : object.getMemberNames())
 		{
 			if(valuesTypes.find(elementName) == valuesTypes.end())//If the value in the object does not exists in the map
-				throw std::runtime_error(name + "." + elementName + " identifier is not recognized.");
+				throw std::runtime_error("\"" + name + "." + elementName + "\" identifier is not recognized.");
 			else if(object[elementName].type() != valuesTypes[elementName])//If the value exists but have not the right type
-				throw std::runtime_error(name + "." + elementName + " must be a" + typeToStr(valuesTypes[elementName]) + ".");
+				throw std::runtime_error("\"" + name + "." + elementName + "\" must be a" + typeToStr(valuesTypes[elementName]) + ".");
 		}
 	}
 }
@@ -84,15 +84,15 @@ void parseObject(const Json::Value& object, const std::string name, std::map<std
 void requireValues(const Json::Value& object, const std::string name, std::map<std::string, Json::ValueType> valuesTypes)
 {
 	if(object.type() != Json::objectValue)
-		throw std::runtime_error(name + " must be an object.");
+		throw std::runtime_error("\"" + name + "\" must be an object.");
 	else
 	{
 		for(auto& pair : valuesTypes)
 		{
 			if(not object.isMember(pair.first))//If the value in the map does not exists in the object
-				throw std::runtime_error(name + "." + pair.first + " value must be defined.");
+				throw std::runtime_error("\"" + name + "." + pair.first + "\" value must be defined.");
 			else if(object[pair.first].type() != valuesTypes[pair.first])//If the value exists but have not the right type
-				throw std::runtime_error(name + "." + pair.first + " must be a" + typeToStr(valuesTypes[pair.first]) + " (it is currently a" + typeToStr(object[pair.first].type()) + ").");
+				throw std::runtime_error("\"" + name + "." + pair.first + "\" must be a" + typeToStr(valuesTypes[pair.first]) + " (it is currently a" + typeToStr(object[pair.first].type()) + ").");
 		}
 	}
 }
@@ -100,13 +100,13 @@ void requireValues(const Json::Value& object, const std::string name, std::map<s
 void parseObject(const Json::Value& object, const std::string name, Json::ValueType type)
 {
 	if(object.type() != Json::objectValue)
-		throw std::runtime_error(name + " must be an object.");
+		throw std::runtime_error("\"" + name + "\" must be an object.");
 	else
 	{
 		for(std::string& elementName : object.getMemberNames())
 		{
 			if(object[elementName].type() != type)
-				throw std::runtime_error(name + "." + elementName + " must be a" + typeToStr(type) + ".");
+				throw std::runtime_error("\"" + name + "." + elementName + "\" must be a" + typeToStr(type) + ".");
 		}
 	}
 }
@@ -114,13 +114,13 @@ void parseObject(const Json::Value& object, const std::string name, Json::ValueT
 void parseArray(const Json::Value& array, const std::string name, std::vector<Json::Value> values)
 {
 	if(array.type() != Json::arrayValue)
-		throw std::runtime_error(name + " must be an array.");
+		throw std::runtime_error("\"" + name + "\" must be an array.");
 	else
 	{
 		for(Json::ArrayIndex i{0}; i < array.size(); ++i)
 		{
 			if(std::find(values.begin(), values.end(), array[i]) == values.end())//If the value in the array is not in the vector
-				throw std::runtime_error(name + "." + std::to_string(i) + " identifier (" + array[i].asString() + ") is not recognized.");
+				throw std::runtime_error("\"" + name + "." + std::to_string(i) + "\" identifier (" + array[i].asString() + ") is not recognized.");
 		}
 	}
 }
@@ -128,19 +128,19 @@ void parseArray(const Json::Value& array, const std::string name, std::vector<Js
 void parseValue(const Json::Value& value, const std::string name, std::vector<Json::Value> values)
 {
 	if(std::find(values.begin(), values.end(), value) == values.end())//If the value is not in the vector
-		throw std::runtime_error(name + " value (" + value.asString() + ") is not recognized.");
+		throw std::runtime_error("\"" + name + "\" value (" + value.asString() + ") is not recognized.");
 }
 
 void parseArray(const Json::Value& array, const std::string name, Json::ValueType type)
 {
 	if(array.type() != Json::arrayValue)
-		throw std::runtime_error(name + " must be an array.");
+		throw std::runtime_error("\"" + name + "\" must be an array.");
 	else
 	{
 		for(Json::ArrayIndex i{0}; i < array.size(); ++i)
 		{
 			if(array[i].type() != type)
-				throw std::runtime_error(name + "." + i + " must be a" + typeToStr(type) + ".");
+				throw std::runtime_error("\"" + name + "." + i + "\" must be a" + typeToStr(type) + ".");
 		}
 	}
 }
