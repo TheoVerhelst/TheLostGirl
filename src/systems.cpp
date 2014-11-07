@@ -126,8 +126,18 @@ void DragAndDropSystem::setDragAndDropActivation(bool isActive)
 void Render::update(entityx::EntityManager& entityManager, entityx::EventManager&, double)
 {
 	SpriteComponent::Handle spriteComponent;
-	for(auto entity : entityManager.entities_with_components(spriteComponent))
-		m_window.draw(*spriteComponent->sprite);
+	//A map containing all entities grouped by z-order
+	std::map<unsigned int, std::vector<entityx::Entity> > orderedEntities;
+	//Sort the entities in the map
+	for(entityx::Entity entity : entityManager.entities_with_components(spriteComponent))
+		orderedEntities[spriteComponent->plan].push_back(entity);
+	//For each plan, in the reverse order
+	for(std::map<unsigned int, std::vector<entityx::Entity> >::const_reverse_iterator it{orderedEntities.crbegin()}; it != orderedEntities.crend(); it++)
+	{
+		//Draw every entity of this plan
+		for(entityx::Entity entity : it->second)
+			m_window.draw(*entity.component<SpriteComponent>()->sprite);
+	}
 }
 
 void Physics::update(entityx::EntityManager& entityManager, entityx::EventManager&, double dt)

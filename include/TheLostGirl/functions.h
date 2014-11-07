@@ -62,12 +62,21 @@ sf::Color fadingColor(sf::Time dt = sf::seconds(0), sf::Time fadingLength = sf::
 inline std::string typeToStr(Json::ValueType type);
 
 /// Check if every element in \a objects corresponds to one element in \a valuesTypes, throw an exception otherwise.
+/// If all elements in the object don't have the right type, an exception is raised.
 /// \param object A Json value containing the data, it must be an object.
 /// \param name The name of the object.
 /// \param valuesTypes The mapping between elements names and their types.
 void parseObject(const Json::Value& object, const std::string name, std::map<std::string, Json::ValueType> valuesTypes);
 
+/// Check if every element listed in \a valuesTypes exists in \a object and has the right type.
+/// If all elements are not found in the object, an exception is raised.
+/// \param object A Json value containing the data, it must be an object.
+/// \param name The name of the object.
+/// \param valuesTypes The mapping between elements names and their types.
+void requireValues(const Json::Value& object, const std::string name, std::map<std::string, Json::ValueType> valuesTypes);
+
 /// Check if every element in \a value have the type \a type.
+/// If all elements in the object don't have the right type, an exception is raised.
 /// \param value A Json value containing the data, it must be an object.
 /// \param name The name of the object.
 /// \param type The expected type of every element in \a object.
@@ -86,9 +95,16 @@ void parseValue(const Json::Value& value, const std::string name, std::vector<Js
 void parseArray(const Json::Value& array, const std::string name, std::vector<Json::Value> values);
 
 /// Check if every element in \a value have the type \a type.
+/// If all elements in the array don't have the right type, an exception is raised.
 /// \param value A Json value containing the data, it must be an array.
 /// \param name The name of the array.
 /// \param type The expected type of every element in \a array.
 void parseArray(const Json::Value& array, const std::string name, Json::ValueType type);
+
+
+/// Check if the given string contains at least one whitespace.
+/// \param str String to check.
+/// \return True if the given string contains at least one whitespace, false otherwise.
+bool hasWhiteSpace(const std::string str);
 
 #endif // FUNCTIONS_H

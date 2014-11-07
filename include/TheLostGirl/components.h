@@ -30,7 +30,7 @@ struct Body : public entityx::Component<Body>
 
 	/// Default constructor
 	/// \param _body Pointer to the physic body.
-	Body(b2Body* _body = nullptr):
+	Body(b2Body* _body):
 		body{_body}
 	{}
 };
@@ -40,12 +40,15 @@ struct Body : public entityx::Component<Body>
 /// For more information about sprites, see the SFML doc.
 struct SpriteComponent : public entityx::Component<SpriteComponent>
 {
-	sf::Sprite* sprite;///< Pointer to the sprite to draw.
+	sf::Sprite* sprite;     ///< Pointer to the sprite to draw.
+	unsigned short int plan;///< Indicate in wich layer the sprite should be drawn.
 
 	/// Default constructor
 	/// \param _sprite Pointer to the sprite to draw.
-	SpriteComponent(sf::Sprite* _sprite = nullptr):
-		sprite{_sprite}
+	/// \param _z-order Indicate in wich layer the sprite should be drawn.
+	SpriteComponent(sf::Sprite* _sprite, unsigned short int _plan = 1):
+		sprite{_sprite},
+		plan{_plan}
 	{}
 };
 
@@ -71,7 +74,7 @@ struct Jump : public entityx::Component<Jump>
 
 	/// Default constructor
 	/// \param _jumpStrength The power of the entity's jump.
-	Jump(float _jumpStrength = 0):
+	Jump(float _jumpStrength = 1.f):
 		jumpStrength{_jumpStrength}
 	{}
 };
@@ -86,7 +89,7 @@ struct BendComponent : public entityx::Component<BendComponent>
 
 	/// Default constructor
 	/// \param _maxPower The maximum power of the bending of the bow.
-	BendComponent(float _maxPower = 0.f):
+	BendComponent(float _maxPower = 1.f):
 		angle{0.f},
 		power{0.f},
 		maxPower{_maxPower}
@@ -97,11 +100,13 @@ struct BendComponent : public entityx::Component<BendComponent>
 /// The fall component must be added to every entity that can fall.
 struct FallComponent : public entityx::Component<FallComponent>
 {
-	bool inAir;///< True when the entity falls, false otherwise.
+	bool inAir;                     ///< True when the entity falls, false otherwise.
+	unsigned short int contactCount;///< Number of contacts between the actor and the ground.
 
 	/// Default constructor
-	FallComponent():
-		inAir{true}
+	FallComponent(bool _inAir, unsigned short int _contactCount):
+		inAir{_inAir},
+		contactCount{_contactCount}
 	{}
 };
 
@@ -173,13 +178,14 @@ struct ActorIDComponent : public entityx::Component<ActorIDComponent>
 	{}
 };
 
+/// The Scene component.
+/// It indicate where the entity should be drawn,
+/// if the entity has no physic body.
 struct SceneComponent : public entityx::Component<SceneComponent>
 {
-	unsigned char planNumber;
 	sf::Vector2f position;
 	
-	SceneComponent(unsigned char _planNumber, sf::Vector2f _position):
-		planNumber(_planNumber),
+	SceneComponent(sf::Vector2f _position = {0, 0}):
 		position(_position)
 	{}
 };

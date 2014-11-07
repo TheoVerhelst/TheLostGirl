@@ -29,7 +29,8 @@ GameState::GameState(StateStack& stack, Context context) :
 	m_sprites(),
 	m_animations(),
 	m_contactListener(),
-	m_timeSystem()
+	m_timeSystem(),
+	m_levelLength(0)
 {
 	initWorld("ressources/levels/save.json");
 	getContext().player.handleInitialInputState(getContext().commandQueue);
@@ -40,7 +41,8 @@ GameState::~GameState()
 {
 	for(auto& pair : m_entities)
 	{
-		getContext().world.DestroyBody(pair.second.component<Body>()->body);
+		if(pair.second.has_component<Body>())
+			getContext().world.DestroyBody(pair.second.component<Body>()->body);
 		pair.second.destroy();
 	}
 	getContext().world.ClearForces();
@@ -79,15 +81,13 @@ void GameState::initWorld(const std::string& filePath)
 {
 	float scale = getContext().parameters.scale;
 	float pixelScale = getContext().parameters.pixelScale;
-	
-	Json::Value root;//Will contains the root value after parsing.
-	Json::Reader reader;
-	
-	//Load the backgrounds images.
-	
-	//Parse the level data
+	float uniqScale = scale / pixelScale;//The pixel/meters scale at the maximum resolution, about 1.f/120.f
 	try
 	{
+		
+		//Parse the level data
+		Json::Value root;//Will contains the root value after parsing.
+		Json::Reader reader;
 		std::ifstream saveFileStream(filePath, std::ifstream::binary);
 		if(!reader.parse(saveFileStream, root))//report to the user the failure and their locations in the document.
 			throw std::runtime_error(reader.getFormattedErrorMessages());
@@ -95,29 +95,48 @@ void GameState::initWorld(const std::string& filePath)
 		//Assert that there is only these elements with these types in the root object.
 		parseObject(root, "root", {{"entities", Json::objectValue}, {"joints", Json::arrayValue}, {"level", Json::objectValue}});
 		
-		//entities
+		//level
 		if(root.isMember("level"))
 		{
 			Json::Value level = root["level"];
-			parseObject(level, "level", {{"length", Json::intValue}});
+			parseObject(level, "level", {{"length", Json::intValue}, {"number of plans", Json::intValue}, {"identifier", Json::stringValue}});
+			
+			//identifier
+			if(level.isMember("identifier"))
+			{
+				std::string identifier = level["identifier"].asString();
+				if(hasWhiteSpace(identifier))
+					throw std::runtime_error("level.identifier value contains whitespaces.");
+				m_levelIdentifier = level["identifier"].asString();
+			}
+			
+			//length
+			if(level.isMember("length"))
+				m_levelLength = level["length"].asUInt();
+			
+			//number of plans
+			if(level.isMember("number of plans"))
+				m_numberOfPlans = level["number of plans"].asUInt();
 		}
+		
+		//entities
 		if(root.isMember("entities"))
 		{
 			Json::Value entities = root["entities"];
-			//Assert that every elements of entities must be an object
+			//Assert that every element of entities must be an object
 			parseObject(entities, "entities", Json::objectValue);
 			for(std::string& entityName : entities.getMemberNames())
 			{
 				Json::Value entity = entities[entityName];
 				//Assert that there is only these elements with these types in the entity object.
-				parseObject(entity, "entities." + entityName, {{"sprite", Json::stringValue},
+				parseObject(entity, "entities." + entityName, {{"sprite", Json::objectValue},
 																{"categories", Json::arrayValue},
 																{"actor ID", Json::intValue},
 																{"walk", Json::realValue},
 																{"jump", Json::realValue},
 																{"bend", Json::realValue},
 																{"direction", Json::stringValue},
-																{"fall", Json::nullValue},
+																{"fall", Json::objectValue},
 																{"body", Json::objectValue},
 																{"spritesheet animations", Json::objectValue},
 																{"play animations", Json::arrayValue},
@@ -128,12 +147,20 @@ void GameState::initWorld(const std::string& filePath)
 				if(entity.isMember("sprite"))
 				{
 					Json::Value sprite = entity["sprite"];
-					//Assert that the value of sprite is one of the given values
-					parseValue(sprite, "entities." + entityName + ".sprite", {"archer", "arms", "bow"});
+					parseObject(sprite, "entities." + entityName + ".sprite", {{"identifier", Json::stringValue}, {"plan", Json::intValue}});
+					//Assert that the identifier is defined
+					if(not sprite.isMember("identifier"))
+						throw std::runtime_error("entities." + entityName + ".sprite.identifier is not defined.");
+					//Assert that the identifier is one of the given values
+					parseValue(sprite["identifier"], "entities." + entityName + ".sprite.identifier", {"archer", "bow", "arms"});
 					//Get the texture form the texture manager and make a sprite with this texture
-					m_sprites.emplace(entityName, sf::Sprite(getContext().textureManager.get(sprite.asString())));
+					m_sprites.emplace(entityName, sf::Sprite(getContext().textureManager.get(sprite["identifier"].asString())));
 					//Assign this sprite to the entity
 					m_entities[entityName].assign<SpriteComponent>(&m_sprites[entityName]);
+					
+					//plan
+					if(sprite.isMember("plan"))
+						m_entities[entityName].component<SpriteComponent>()->plan = sprite["plan"].asUInt();
 				}
 				
 				//categories
@@ -189,7 +216,11 @@ void GameState::initWorld(const std::string& filePath)
 				
 				//fall
 				if(entity.isMember("fall"))
-					m_entities[entityName].assign<FallComponent>();
+				{
+					Json::Value fall = entity["fall"];
+					parseObject(fall, "entities." + entityName + ".fall", {{"in air", Json::booleanValue}, {"contact count", Json::intValue}});
+					m_entities[entityName].assign<FallComponent>(fall["in air"].asBool(), fall["contact count"].asUInt());
+				}
 				
 				//body
 				if(entity.isMember("body"))
@@ -231,9 +262,9 @@ void GameState::initWorld(const std::string& filePath)
 						Json::Value position = body["position"];
 						parseObject(position, "entities." + entityName + ".body.position", {{"x", Json::realValue}, {"y", Json::realValue}});
 						if(position.isMember("x"))
-							entityBodyDef.position.x = position["x"].asFloat()*scale/pixelScale;
+							entityBodyDef.position.x = position["x"].asFloat()*uniqScale;
 						if(position.isMember("y"))
-							entityBodyDef.position.y = position["y"].asFloat()*scale/pixelScale;
+							entityBodyDef.position.y = position["y"].asFloat()*uniqScale;
 					}
 					
 					//angle
@@ -246,9 +277,9 @@ void GameState::initWorld(const std::string& filePath)
 						Json::Value linearVelocity = body["linear velocity"];
 						parseObject(linearVelocity, "entities." + entityName + ".body.linear velocity", {{"x", Json::realValue}, {"y", Json::realValue}});
 						if(linearVelocity.isMember("x"))
-							entityBodyDef.linearVelocity.x = linearVelocity["x"].asFloat()*scale/pixelScale;
+							entityBodyDef.linearVelocity.x = linearVelocity["x"].asFloat()*uniqScale;
 						if(linearVelocity.isMember("y"))
-							entityBodyDef.linearVelocity.y = linearVelocity["y"].asFloat()*scale/pixelScale;
+							entityBodyDef.linearVelocity.y = linearVelocity["y"].asFloat()*uniqScale;
 					}
 					
 					//angular velocity
@@ -311,6 +342,8 @@ void GameState::initWorld(const std::string& filePath)
 							//Initialize shapes here in order to keep pointers alive when assigning entityFixtureDef.shape
 							b2EdgeShape edgeShape;
 							b2PolygonShape polygonShape;
+							b2ChainShape chainShape;
+							std::vector<b2Vec2> verticesArray;
 							
 							//type
 							if(fixture.isMember("type"))
@@ -324,8 +357,13 @@ void GameState::initWorld(const std::string& filePath)
 									if(fixture.isMember("box"))
 									{
 										Json::Value box = fixtures[i]["box"];
-										parseObject(box, "entities." + entityName + ".body.fixtures." + std::to_string(i) + ".box", {{"w", Json::realValue}, {"h", Json::realValue}});
+										parseObject(box, "entities." + entityName + ".body.fixtures." + std::to_string(i) + ".box", {{"w", Json::realValue},
+																																	{"h", Json::realValue},
+																																	{"center x", Json::realValue},
+																																	{"center y", Json::realValue},
+																																	{"angle", Json::realValue}});
 										float w{100}, h{100};
+										float angle{0};
 										
 										//width
 										if(box.isMember("w"))
@@ -334,7 +372,22 @@ void GameState::initWorld(const std::string& filePath)
 										//height
 										if(box.isMember("h"))
 											h = box["h"].asFloat();
-										polygonShape.SetAsBox((w*scale/pixelScale)/2, (h*scale/pixelScale)/2, {(w*scale/pixelScale)/2, (h*scale/pixelScale)/2}, 0);
+										
+										float cx{w/2}, cy{h/2};
+										
+										//center x
+										if(box.isMember("center x"))
+											cx = box["center x"].asFloat();
+										
+										//center y
+										if(box.isMember("center y"))
+											cy = box["center y"].asFloat();
+										
+										//angle
+										if(box.isMember("angle"))
+											angle = box["angle"].asFloat();
+											
+										polygonShape.SetAsBox((w*uniqScale)/2, (h*uniqScale)/2, {cx*uniqScale, cy*uniqScale}, angle);
 									}
 									
 									//vertices
@@ -344,16 +397,16 @@ void GameState::initWorld(const std::string& filePath)
 										parseArray(vertices, "entities." + entityName + ".body.fixtures." + std::to_string(i) + ".vertices", Json::objectValue);
 										for(Json::ArrayIndex j{0}; j < vertices.size(); ++j)
 										{
-											Json::Value vertice = vertices[i];
+											Json::Value vertice = vertices[j];
 											parseObject(vertice, "entities." + entityName + ".body.fixtures." + std::to_string(i) + ".vertices" + std::to_string(j), {{"x", Json::realValue}, {"y", Json::realValue}});
 										
 											//x
 											if(vertice.isMember("x"))
-												polygonShape.m_vertices[j].x = vertice["x"].asFloat()*scale/pixelScale;
+												polygonShape.m_vertices[j].x = vertice["x"].asFloat()*uniqScale;
 											
 											//y
 											if(vertice.isMember("y"))
-												polygonShape.m_vertices[j].y = vertice["y"].asFloat()*scale/pixelScale;
+												polygonShape.m_vertices[j].y = vertice["y"].asFloat()*uniqScale;
 										}
 									}
 									else
@@ -367,7 +420,7 @@ void GameState::initWorld(const std::string& filePath)
 									//1
 									if(fixture.isMember("1"))
 									{
-										parseObject(fixture["1"], "entities." + entityName + ".body.fixtures." + std::to_string(i) + ".1", {{"x", Json::realValue}, {"y", Json::realValue}});
+										parseObject(fixture["1"], "entities." + entityName + ".body.fixtures." + std::to_string(i) + ".1", {{"x", Json::realValue},{"y", Json::realValue}});
 										
 										//x
 										if(fixture["1"].isMember("x"))
@@ -395,13 +448,37 @@ void GameState::initWorld(const std::string& filePath)
 									}
 									else
 										throw std::runtime_error("entities." + entityName + ".body.fixture." + std::to_string(i) + " has no point 2.");
-									edgeShape.Set({(x1*scale/pixelScale), (y1*scale/pixelScale)}, {(x2*scale/pixelScale), (y2*scale/pixelScale)});
+									edgeShape.Set({(x1*uniqScale), (y1*uniqScale)}, {(x2*uniqScale), (y2*uniqScale)});
 									entityFixtureDef.shape = &edgeShape;
 								}
-								// TODO: implementer les autres types de shapes.
 								else if(type == "chain")
 								{
+									//vertices
+									if(fixture.isMember("vertices"))
+									{
+										Json::Value vertices = fixtures[i]["vertices"];
+										parseArray(vertices, "entities." + entityName + ".body.fixtures." + std::to_string(i) + ".vertices", Json::objectValue);
+										//Vertices of the chain shape
+										for(Json::ArrayIndex j{0}; j < vertices.size(); ++j)
+										{
+											Json::Value vertice = vertices[j];
+											parseObject(vertice, "entities." + entityName + ".body.fixtures." + std::to_string(i) + ".vertices." + std::to_string(j), {{"x", Json::realValue}, {"y", Json::realValue}});
+											verticesArray.push_back(b2Vec2(0, 0));
+											//x
+											if(vertice.isMember("x"))
+												verticesArray[j].x = vertice["x"].asFloat()*uniqScale;
+											
+											//y
+											if(vertice.isMember("y"))
+												verticesArray[j].y = vertice["y"].asFloat()*uniqScale;
+										}
+									}
+									else
+										throw std::runtime_error("entities." + entityName + ".body.fixtures." + std::to_string(i) + " has no geometry.");
+									chainShape.CreateChain(verticesArray.data(), verticesArray.size());
+									entityFixtureDef.shape = &chainShape;
 								}
+								// TODO: implementer l'autre type de shapes.
 								else if(type == "circle")
 								{
 								}
@@ -619,7 +696,7 @@ void GameState::initWorld(const std::string& filePath)
 							if(firstAnchor.isMember("y"))
 								yf = firstAnchor["y"].asFloat();
 						}
-						jointDef.localAnchorA = {(xf*scale/pixelScale), (yf*scale/pixelScale)};
+						jointDef.localAnchorA = {(xf*uniqScale), (yf*uniqScale)};
 						
 						//local anchor second
 						if(joint.isMember("local anchor second"))
@@ -635,7 +712,7 @@ void GameState::initWorld(const std::string& filePath)
 							if(secondAnchor.isMember("y"))
 								ys = secondAnchor["y"].asFloat();
 						}
-						jointDef.localAnchorB = {(xs*scale/pixelScale), (ys*scale/pixelScale)};
+						jointDef.localAnchorB = {(xs*uniqScale), (ys*uniqScale)};
 						
 						//lower angle
 						if(joint.isMember("lower angle"))
@@ -692,10 +769,51 @@ void GameState::initWorld(const std::string& filePath)
 					throw std::runtime_error("no joint type specified for joints." + std::to_string(i) + ".");
 			}
 		}
+		
+		//Load the backgrounds images
+		unsigned int chunkSize{sf::Texture::getMaximumSize()};
+		TextureManager& texManager = getContext().textureManager;
+		//Le i{1} au lieu de 0 est la tant que je n'ai pas implémenté l'agencement spécifique du décor
+//		for(unsigned short int i{1}; i < m_numberOfPlans; ++i)
+//		{
+//			//The length of the plan, relatively to the second.
+//			unsigned int planLength = (m_levelLength * (2.25 / pow(1.5, i + 1)))*getContext().parameters.scale;
+//			//Number of chunks to load in this plan
+//			unsigned int numberOfChunks{(planLength/chunkSize)+1};
+//			//Path to the image to load
+//			std::string file{m_levelIdentifier + "_" + std::to_string(i)};
+//			std::string path{paths[getContext().parameters.scaleIndex] + "levels/" + m_levelIdentifier + "/" + file + ".png"};
+//							
+//			//Ici, il faudrait aussi vérifier si on ne veut pas agencer d'une manière spécifique le plan
+//			//Plutot que de le charger et de tout mettre cote à cote.
+//			for(unsigned int j{0}; j < numberOfChunks; ++j)
+//			{
+//				//Name of the texture
+//				std::string textureIdentifier{file + "_" + std::to_string(j)};
+//				//Size of the chunk to load, may be truncated if we reach the end of the image.
+//				unsigned int currentChunkSize{chunkSize};
+//				if(j >= planLength/chunkSize)
+//					currentChunkSize = planLength - chunkSize*j;
+//				//If the texture is not alreday loaded (first loading of the level)
+//				if(not texManager.isLoaded(textureIdentifier))
+//					texManager.load<sf::IntRect>(textureIdentifier, path, sf::IntRect(j*chunkSize, 0, currentChunkSize, 1080*getContext().parameters.scale));
+//				//Create an entity
+//				m_entities.emplace(textureIdentifier, getContext().entityManager.create());
+//				//Create a sprite with the loaded texture
+//				m_sprites.emplace(textureIdentifier, sf::Sprite(texManager.get(textureIdentifier)));
+//				//Assign the sprite to the entity
+//				m_entities[textureIdentifier].assign<SpriteComponent>(&m_sprites[textureIdentifier]);
+//				//Assign the plan number
+//				m_entities[textureIdentifier].component<SpriteComponent>()->plan = i;
+//				//Set the right position
+//				m_sprites[textureIdentifier].setPosition(j*chunkSize, 0);
+//				std::cout << "Loaded plan " << i << " chunk " << j << ", of size " << currentChunkSize << "px!" << std::endl;
+//			}
+//		}
 	}
 	catch(std::runtime_error& e)
 	{
-		std::cerr << "Failed to parse save file \"" << filePath << "\": " << e.what() << std::endl;
+		std::cerr << "Failed to load save file \"" << filePath << "\": " << e.what() << std::endl;
 		//Clear game content in order to prevent segmentation faults.
 		for(auto& pair : m_entities)
 		{

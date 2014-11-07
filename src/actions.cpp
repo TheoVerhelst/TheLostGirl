@@ -159,12 +159,15 @@ void Jumper::operator()(entityx::Entity& entity, double) const
 		DirectionComponent::Handle directionComponent = entity.component<DirectionComponent>();
 		if(not fallComponent->inAir)
 		{
+			std::cout << "not in air -> jump" << std::endl;
 			body->SetLinearVelocity({body->GetLinearVelocity().x, -jumpComponent->jumpStrength});
 			if(directionComponent->direction == Direction::Left)
 				animations->play("jump left");
 			else if(directionComponent->direction == Direction::Right)
 				animations->play("jump right");
 		}
+		else
+			std::cout << "in air -> not jump" << std::endl;
 	}
 }
 
