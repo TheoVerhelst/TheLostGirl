@@ -84,7 +84,6 @@ void GameState::initWorld(const std::string& filePath)
 	float uniqScale = scale / pixelScale;//The pixel/meters scale at the maximum resolution, about 1.f/120.f
 	try
 	{
-		
 		//Parse the level data
 		Json::Value root;//Will contains the root value after parsing.
 		Json::Reader reader;
@@ -218,6 +217,7 @@ void GameState::initWorld(const std::string& filePath)
 				{
 					Json::Value fall = entity["fall"];
 					parseObject(fall, "entities." + entityName + ".fall", {{"in air", Json::booleanValue}, {"contact count", Json::intValue}});
+					requireValues(fall, "entities." + entityName + ".fall", {{"in air", Json::booleanValue}, {"contact count", Json::intValue}});
 					m_entities[entityName].assign<FallComponent>(fall["in air"].asBool(), fall["contact count"].asUInt());
 				}
 				
@@ -748,42 +748,42 @@ void GameState::initWorld(const std::string& filePath)
 		unsigned int chunkSize{sf::Texture::getMaximumSize()};
 		TextureManager& texManager = getContext().textureManager;
 		//Le i{1} au lieu de 0 est la tant que je n'ai pas implémenté l'agencement spécifique du décor
-//		for(unsigned short int i{1}; i < m_numberOfPlans; ++i)
-//		{
-//			//The length of the plan, relatively to the second.
-//			unsigned int planLength = (m_levelLength * (2.25 / pow(1.5, i + 1)))*getContext().parameters.scale;
-//			//Number of chunks to load in this plan
-//			unsigned int numberOfChunks{(planLength/chunkSize)+1};
-//			//Path to the image to load
-//			std::string file{m_levelIdentifier + "_" + std::to_string(i)};
-//			std::string path{paths[getContext().parameters.scaleIndex] + "levels/" + m_levelIdentifier + "/" + file + ".png"};
-//							
-//			//Ici, il faudrait aussi vérifier si on ne veut pas agencer d'une manière spécifique le plan
-//			//Plutot que de le charger et de tout mettre cote à cote.
-//			for(unsigned int j{0}; j < numberOfChunks; ++j)
-//			{
-//				//Name of the texture
-//				std::string textureIdentifier{file + "_" + std::to_string(j)};
-//				//Size of the chunk to load, may be truncated if we reach the end of the image.
-//				unsigned int currentChunkSize{chunkSize};
-//				if(j >= planLength/chunkSize)
-//					currentChunkSize = planLength - chunkSize*j;
-//				//If the texture is not alreday loaded (first loading of the level)
-//				if(not texManager.isLoaded(textureIdentifier))
-//					texManager.load<sf::IntRect>(textureIdentifier, path, sf::IntRect(j*chunkSize, 0, currentChunkSize, 1080*getContext().parameters.scale));
-//				//Create an entity
-//				m_entities.emplace(textureIdentifier, getContext().entityManager.create());
-//				//Create a sprite with the loaded texture
-//				m_sprites.emplace(textureIdentifier, sf::Sprite(texManager.get(textureIdentifier)));
-//				//Assign the sprite to the entity
-//				m_entities[textureIdentifier].assign<SpriteComponent>(&m_sprites[textureIdentifier]);
-//				//Assign the plan number
-//				m_entities[textureIdentifier].component<SpriteComponent>()->plan = i;
-//				//Set the right position
-//				m_sprites[textureIdentifier].setPosition(j*chunkSize, 0);
-//				std::cout << "Loaded plan " << i << " chunk " << j << ", of size " << currentChunkSize << "px!" << std::endl;
-//			}
-//		}
+		for(unsigned short int i{1}; i < m_numberOfPlans; ++i)
+		{
+			//The length of the plan, relatively to the second.
+			unsigned int planLength = (m_levelLength * (2.25 / pow(1.5, i + 1)))*getContext().parameters.scale;
+			//Number of chunks to load in this plan
+			unsigned int numberOfChunks{(planLength/chunkSize)+1};
+			//Path to the image to load
+			std::string file{m_levelIdentifier + "_" + std::to_string(i)};
+			std::string path{paths[getContext().parameters.scaleIndex] + "levels/" + m_levelIdentifier + "/" + file + ".png"};
+							
+			//Ici, il faudrait aussi vérifier si on ne veut pas agencer d'une manière spécifique le plan
+			//Plutot que de le charger et de tout mettre cote à cote.
+			for(unsigned int j{0}; j < numberOfChunks; ++j)
+			{
+				//Name of the texture
+				std::string textureIdentifier{file + "_" + std::to_string(j)};
+				//Size of the chunk to load, may be truncated if we reach the end of the image.
+				unsigned int currentChunkSize{chunkSize};
+				if(j >= planLength/chunkSize)
+					currentChunkSize = planLength - chunkSize*j;
+				//If the texture is not alreday loaded (first loading of the level)
+				if(not texManager.isLoaded(textureIdentifier))
+					texManager.load<sf::IntRect>(textureIdentifier, path, sf::IntRect(j*chunkSize, 0, currentChunkSize, 1080*getContext().parameters.scale));
+				//Create an entity
+				m_entities.emplace(textureIdentifier, getContext().entityManager.create());
+				//Create a sprite with the loaded texture
+				m_sprites.emplace(textureIdentifier, sf::Sprite(texManager.get(textureIdentifier)));
+				//Assign the sprite to the entity
+				m_entities[textureIdentifier].assign<SpriteComponent>(&m_sprites[textureIdentifier]);
+				//Assign the plan number
+				m_entities[textureIdentifier].component<SpriteComponent>()->plan = i;
+				//Set the right position
+				m_sprites[textureIdentifier].setPosition(j*chunkSize, 0);
+				std::cout << "Loaded plan " << i << " chunk " << j << ", of size " << currentChunkSize << "px!" << std::endl;
+			}
+		}
 	}
 	catch(std::runtime_error& e)
 	{

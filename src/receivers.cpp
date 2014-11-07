@@ -50,7 +50,6 @@ void ContactListener::BeginContact(b2Contact* contact)
 		//Now we are sure that A is an actor that fall on the ground B
 		if(fixtureA->IsSensor())
 		{
-	std::cout << "begin contact" << std::endl;
 			if(entityA->has_component<AnimationsComponent>() and entityA->has_component<DirectionComponent>())
 			{
 				Animations* animations = entityA->component<AnimationsComponent>()->animations;
@@ -62,6 +61,7 @@ void ContactListener::BeginContact(b2Contact* contact)
 					animations->stop("jump left");
 				}
 			}
+			entityA->component<FallComponent>()->contactCount++;
 			entityA->component<FallComponent>()->inAir = false;
 		}
 	}
@@ -93,7 +93,6 @@ void ContactListener::EndContact(b2Contact* contact)
 		//Now we are sure that A is an actor that fall from the ground B
 		if(fixtureA->IsSensor())
 		{
-	std::cout << "end contact" << std::endl;
 			if(entityA->has_component<AnimationsComponent>() and
 				entityA->has_component<DirectionComponent>() and
 				not entityA->has_component<Jump>())
@@ -105,7 +104,9 @@ void ContactListener::EndContact(b2Contact* contact)
 				else if(directionComponent->direction == Direction::Left)
 					animations->play("fall left");
 			}
-			entityA->component<FallComponent>()->inAir = true;
+			entityA->component<FallComponent>()->contactCount--;
+			if(entityA->component<FallComponent>()->contactCount <= 0)
+				entityA->component<FallComponent>()->inAir = true;
 		}
 	}
 }
