@@ -8,6 +8,7 @@
 
 #include <SFML/Graphics/Rect.hpp>
 #include <SFML/Window/Event.hpp>
+#include <Box2D/Common/b2Math.h>
 #include <dist/json/json.h>
 
 //Forward declarations
@@ -106,5 +107,15 @@ void parseArray(const Json::Value& array, const std::string name, Json::ValueTyp
 /// \param str String to check.
 /// \return True if the given string contains at least one whitespace, false otherwise.
 bool hasWhiteSpace(const std::string str);
+
+/// Convert a Box2D vector to a SFML vector
+/// \param vec A Box2D vector.
+/// \return A SFML vector.
+sf::Vector2f b2tosf(const b2Vec2& vec);
+
+/// Convert a SFML vector to a Box2D vector
+/// \param vec A SFML vector.
+/// \return A Box2D vector.
+b2Vec2 sftob2(const sf::Vector2f& vec);
 
 #endif // FUNCTIONS_H

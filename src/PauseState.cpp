@@ -91,7 +91,7 @@ bool PauseState::update(sf::Time)
 bool PauseState::handleEvent(const sf::Event& event)
 {
 	if(event.type == sf::Event::KeyPressed and event.key.code == sf::Keyboard::Escape)
-		requestStackPop();
+		backToGame();
 	return false;
 }
 

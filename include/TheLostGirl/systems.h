@@ -64,8 +64,13 @@ class ScrollingSystem : public entityx::System<ScrollingSystem>
 		/// \param parameters Structure containing all the game parameters.
 		ScrollingSystem(sf::RenderWindow& window, Parameters& parameters):
 			m_window(window),
-			m_parameters(parameters)
+			m_parameters(parameters),
+			m_levelRect{0, 0, 0, 0}
 		{}
+		
+		/// Set the level bounds. This must be called before the first update.
+		/// \param levelRect Rectangle defining the level bounds.
+		void setLevelBounds(const sf::IntRect& levelRect);
 
 		/// System's update function.
 		/// \param es Entity manager.
@@ -75,7 +80,8 @@ class ScrollingSystem : public entityx::System<ScrollingSystem>
 
 	private:
 		sf::RenderWindow& m_window;///< SFML's window of wich set the view.
-		Parameters& m_parameters;///< Structure containing all the game parameters.
+		Parameters& m_parameters;  ///< Structure containing all the game parameters.
+		sf::IntRect m_levelRect;  ///< Rectangle defining the level bounds.
 };
 
 /// System that handle the bow bending animation.

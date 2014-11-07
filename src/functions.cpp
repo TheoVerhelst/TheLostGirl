@@ -149,3 +149,13 @@ bool hasWhiteSpace(const std::string str)
 {
 	return std::any_of(str.cbegin(), str.cend(), [](const char& chr){return isspace(chr);});
 }
+
+Vector2f b2tosf(const b2Vec2& vec)
+{
+	return {vec.x, vec.y};
+}
+
+b2Vec2 sftob2(const Vector2f& vec)
+{
+	return {vec.x, vec.y};
+}

@@ -30,11 +30,14 @@ GameState::GameState(StateStack& stack, Context context) :
 	m_animations(),
 	m_contactListener(),
 	m_timeSystem(),
+	m_levelIdentifier(""),
+	m_numberOfPlans(1),
 	m_levelRect(0, 0, 0, 1080)
 {
 	initWorld("ressources/levels/save.json");
 	getContext().player.handleInitialInputState(getContext().commandQueue);
 	getContext().world.SetContactListener(&m_contactListener);
+	getContext().systemManager.system<ScrollingSystem>()->setLevelBounds(m_levelRect);
 }
 
 GameState::~GameState()
@@ -99,8 +102,25 @@ void GameState::initWorld(const std::string& filePath)
 		if(root.isMember("level"))
 		{
 			Json::Value level = root["level"];
-			parseObject(level, "level", {{"box", Json::objectValue}, {"number of plans", Json::intValue}, {"identifier", Json::stringValue}});
-			requireValues(level, "level", {{"box", Json::objectValue}, {"number of plans", Json::intValue}, {"identifier", Json::stringValue}});
+			
+			//number of plans
+			//must load it now in order to now how much plans can be defined
+			if(level.isMember("number of plans"))
+				m_numberOfPlans = level["number of plans"].asUInt();
+			
+			//Generate a map containing all the plan numbers and the type of each
+			std::map<std::string, Json::ValueType> plans;
+			for(unsigned short int i{0}; i < m_numberOfPlans; i++)
+				plans[std::to_string(i)] = Json::arrayValue;
+			
+			//add the others values
+			plans["number of plans"] = Json::intValue;
+			plans["box"] = Json::objectValue;
+			plans["identifier"] = Json::stringValue;
+			
+			//Requires that all the identifiers in "level" are in the map "plans"
+			parseObject(level, "level", plans);
+			requireValues(level, "level", {{"box", Json::objectValue}, {"identifier", Json::stringValue}});
 			
 			//identifier
 			std::string identifier = level["identifier"].asString();
@@ -127,9 +147,6 @@ void GameState::initWorld(const std::string& filePath)
 			//y
 			if(levelBox.isMember("y"))
 				m_levelRect.left = levelBox["y"].asInt();
-			
-			//number of plans
-			m_numberOfPlans = level["number of plans"].asUInt();
 		}
 		
 		//entities

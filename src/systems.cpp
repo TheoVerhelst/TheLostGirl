@@ -14,6 +14,7 @@
 #include <TheLostGirl/Category.h>
 #include <TheLostGirl/Animations.h>
 #include <TheLostGirl/Parameters.h>
+#include <TheLostGirl/functions.h>
 
 #include <TheLostGirl/systems.h>
 
@@ -65,27 +66,46 @@ void FallSystem::update(entityx::EntityManager& entityManager, entityx::EventMan
 
 void ScrollingSystem::update(entityx::EntityManager& entityManager, entityx::EventManager&, double)
 {
-	Body::Handle bodyComponent;
-	CategoryComponent::Handle categoryComponent;
-	entityx::Entity playerEntity;
-	bool found{false};
-	for(auto entity : entityManager.entities_with_components(bodyComponent,
-															categoryComponent))
+	if(m_levelRect != sf::IntRect(0, 0, 0, 0))
 	{
-		found = categoryComponent->category & Category::Player;
+		Body::Handle bodyComponent;
+		CategoryComponent::Handle categoryComponent;
+		Walk::Handle walkComponent;
+		entityx::Entity playerEntity;
+		bool found{false};
+		for(auto entity : entityManager.entities_with_components(bodyComponent,
+																categoryComponent,
+																walkComponent))
+		{
+			found = categoryComponent->category & Category::Player;
+			if(found)
+			{
+				playerEntity = entity;
+				break;
+			}
+		}
 		if(found)
 		{
-			playerEntity = entity;
-			break;
+			Vector2f position = b2tosf(m_parameters.pixelScale * playerEntity.component<Body>()->body->GetPosition());
+			View view{m_window.getView()};
+			//Compute the maximum and minimum coordinates that the view can have
+			float xmin{m_levelRect.left*m_parameters.scale + (view.getSize().x / 2)};
+			float xmax{m_levelRect.left*m_parameters.scale + m_levelRect.width*m_parameters.scale - (view.getSize().x / 2)};
+			float ymin{m_levelRect.top*m_parameters.scale + (view.getSize().y / 2)};
+			float ymax{m_levelRect.top*m_parameters.scale + m_levelRect.height*m_parameters.scale - (view.getSize().y / 2)};
+			//Cap the position between min and max
+			position.x = cap(position.x, xmin, xmax);
+			position.y = cap(position.y, ymin, ymax);
+			//Assign the position to the view
+			view.setCenter(position);
+			m_window.setView(view);
 		}
 	}
-	if(found)
-	{
-		b2Vec2 position = m_parameters.pixelScale * playerEntity.component<Body>()->body->GetPosition();
-		View view{m_window.getView()};
-		view.setCenter(position.x, position.y);
-		m_window.setView(view);
-	}
+}
+
+void ScrollingSystem::setLevelBounds(const sf::IntRect& levelRect)
+{
+	m_levelRect = levelRect;
 }
 
 void BendSystem::update(entityx::EntityManager& entityManager, entityx::EventManager&, double)
