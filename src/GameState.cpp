@@ -147,6 +147,107 @@ void GameState::initWorld(const std::string& filePath)
 			//y
 			if(levelBox.isMember("y"))
 				m_levelRect.left = levelBox["y"].asInt();
+			
+			TextureManager& texManager = getContext().textureManager;
+			//for each plan
+			for(unsigned short int i{0}; i < m_numberOfPlans; i++)
+			{
+				//Filename of the image to load
+				std::string file{m_levelIdentifier + "_" + std::to_string(i)};
+				//Path of the image to load
+				std::string path{paths[getContext().parameters.scaleIndex] + "levels/" + m_levelIdentifier + "/" + file + ".png"};
+				//Check if the plan is defined
+				if(level.isMember(std::to_string(i)))
+				{
+					Json::Value plan = level[std::to_string(i)];
+					parseArray(plan, "level." + std::to_string(i), Json::objectValue);
+					//For each image frame in the plan
+					for(Json::ArrayIndex j{0}; j < plan.size(); j++)
+					{
+						Json::Value image = plan[j];
+						requireValues(image, "level." + std::to_string(i) + "." + std::to_string(j), {{"origin", Json::objectValue}, {"replace", Json::arrayValue}});
+						Json::Value origin = image["origin"];
+						requireValues(origin, "level." + std::to_string(i) + "." + std::to_string(j) + ".origin", {{"x", Json::intValue},
+																										{"y", Json::intValue},
+																										{"w", Json::intValue},
+																										{"h", Json::intValue}});
+						//Coordinates of the original image
+						unsigned int ox{static_cast<unsigned int>(origin["x"].asUInt()*getContext().parameters.scale)};
+						unsigned int oy{static_cast<unsigned int>(origin["y"].asUInt()*getContext().parameters.scale)};
+						unsigned int ow{static_cast<unsigned int>(origin["w"].asUInt()*getContext().parameters.scale)};
+						unsigned int oh{static_cast<unsigned int>(origin["h"].asUInt()*getContext().parameters.scale)};
+						
+						//Load the texture
+						//Identifier of the entity and the texture, e.g. first image loaded in the plan 3 : "3_0"
+						std::string textureIdentifier{std::to_string(i) + "_" + std::to_string(j)};
+						//If the texture is not alreday loaded (first loading of the level)
+						if(not texManager.isLoaded(textureIdentifier))
+						{
+							texManager.load<sf::IntRect>(textureIdentifier, path, sf::IntRect(ox, oy, ow, oh));
+							std::cout << "Loaded plan " << i << " image " << j << ", of size " << ow << "x" << oh << "px!" << std::endl;
+						}
+								
+						Json::Value replaces = image["replace"];
+						parseArray(replaces, "level." + std::to_string(i) + "." + std::to_string(j) + ".replace", Json::objectValue);
+						//For each replacing of the image
+						for(Json::ArrayIndex k{0}; k < replaces.size(); k++)
+						{
+							Json::Value replace = replaces[k];
+							requireValues(replace, "level." + std::to_string(i) + "." + std::to_string(j) + ".replace" + std::to_string(k), {{"x", Json::realValue},
+																															{"y", Json::realValue}});
+							//Position where the frame should be replaced
+							float rx{replace["x"].asFloat()*getContext().parameters.scale};
+							float ry{replace["y"].asFloat()*getContext().parameters.scale};
+							//Create an entity
+							m_entities.emplace(textureIdentifier, getContext().entityManager.create());
+							//Create a sprite with the loaded texture
+							m_sprites.emplace(textureIdentifier, sf::Sprite(texManager.get(textureIdentifier)));
+							//Assign the sprite to the entity
+							m_entities[textureIdentifier].assign<SpriteComponent>(&m_sprites[textureIdentifier]);
+							//Assign the plan number
+							m_entities[textureIdentifier].component<SpriteComponent>()->plan = i;
+							//Set the right position
+							m_sprites[textureIdentifier].setPosition(rx, ry);
+						}
+					}
+				}
+				//If the plan is not defined, load all the image in multiples chunks
+				else
+				{
+					unsigned int chunkSize{sf::Texture::getMaximumSize()};
+					//The length of the plan, relatively to the second.
+					unsigned int planLength = (m_levelRect.width * (2.25 / pow(1.5, i + 1)))*getContext().parameters.scale;
+					//Number of chunks to load in this plan
+					unsigned int numberOfChunks{(planLength/chunkSize)+1};
+					//Path to the image to load
+					
+					for(unsigned int j{0}; j < numberOfChunks; ++j)
+					{
+						//Name of the texture
+						std::string textureIdentifier{file + "_" + std::to_string(j)};
+						//Size of the chunk to load, may be truncated if we reach the end of the image.
+						unsigned int currentChunkSize{chunkSize};
+						if(j >= planLength/chunkSize)
+							currentChunkSize = planLength - chunkSize*j;
+						//If the texture is not alreday loaded (first loading of the level)
+						if(not texManager.isLoaded(textureIdentifier))
+						{
+							texManager.load<sf::IntRect>(textureIdentifier, path, sf::IntRect(j*chunkSize, 0, currentChunkSize, m_levelRect.height*getContext().parameters.scale));
+							std::cout << "Loaded plan " << i << " chunk " << j << ", of size " << currentChunkSize << "px!" << std::endl;
+						}
+						//Create an entity
+						m_entities.emplace(textureIdentifier, getContext().entityManager.create());
+						//Create a sprite with the loaded texture
+						m_sprites.emplace(textureIdentifier, sf::Sprite(texManager.get(textureIdentifier)));
+						//Assign the sprite to the entity
+						m_entities[textureIdentifier].assign<SpriteComponent>(&m_sprites[textureIdentifier]);
+						//Assign the plan number
+						m_entities[textureIdentifier].component<SpriteComponent>()->plan = i;
+						//Set the right position
+						m_sprites[textureIdentifier].setPosition(j*chunkSize, 0);
+					}
+				}
+			}
 		}
 		
 		//entities
@@ -756,47 +857,6 @@ void GameState::initWorld(const std::string& filePath)
 				else if(type == "wheel joint")
 				{
 				}
-			}
-		}
-		
-		//Load the backgrounds images
-		unsigned int chunkSize{sf::Texture::getMaximumSize()};
-		TextureManager& texManager = getContext().textureManager;
-		//Le i{1} au lieu de 0 est la tant que je n'ai pas implémenté l'agencement spécifique du décor
-		for(unsigned short int i{1}; i < m_numberOfPlans; ++i)
-		{
-			//The length of the plan, relatively to the second.
-			unsigned int planLength = (m_levelRect.width * (2.25 / pow(1.5, i + 1)))*getContext().parameters.scale;
-			//Number of chunks to load in this plan
-			unsigned int numberOfChunks{(planLength/chunkSize)+1};
-			//Path to the image to load
-			std::string file{m_levelIdentifier + "_" + std::to_string(i)};
-			std::string path{paths[getContext().parameters.scaleIndex] + "levels/" + m_levelIdentifier + "/" + file + ".png"};
-							
-			//Ici, il faudrait aussi vérifier si on ne veut pas agencer d'une manière spécifique le plan
-			//Plutot que de le charger et de tout mettre cote à cote.
-			for(unsigned int j{0}; j < numberOfChunks; ++j)
-			{
-				//Name of the texture
-				std::string textureIdentifier{file + "_" + std::to_string(j)};
-				//Size of the chunk to load, may be truncated if we reach the end of the image.
-				unsigned int currentChunkSize{chunkSize};
-				if(j >= planLength/chunkSize)
-					currentChunkSize = planLength - chunkSize*j;
-				//If the texture is not alreday loaded (first loading of the level)
-				if(not texManager.isLoaded(textureIdentifier))
-					texManager.load<sf::IntRect>(textureIdentifier, path, sf::IntRect(j*chunkSize, 0, currentChunkSize, m_levelRect.height*getContext().parameters.scale));
-				//Create an entity
-				m_entities.emplace(textureIdentifier, getContext().entityManager.create());
-				//Create a sprite with the loaded texture
-				m_sprites.emplace(textureIdentifier, sf::Sprite(texManager.get(textureIdentifier)));
-				//Assign the sprite to the entity
-				m_entities[textureIdentifier].assign<SpriteComponent>(&m_sprites[textureIdentifier]);
-				//Assign the plan number
-				m_entities[textureIdentifier].component<SpriteComponent>()->plan = i;
-				//Set the right position
-				m_sprites[textureIdentifier].setPosition(j*chunkSize, 0);
-				std::cout << "Loaded plan " << i << " chunk " << j << ", of size " << currentChunkSize << "px!" << std::endl;
 			}
 		}
 	}
