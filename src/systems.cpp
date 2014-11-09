@@ -41,29 +41,6 @@ void Actions::update(entityx::EntityManager& entityManager, entityx::EventManage
 	}
 }
 
-void FallSystem::update(entityx::EntityManager& entityManager, entityx::EventManager&, double)
-{
-	AnimationsComponent::Handle animationsComponent;
-	FallComponent::Handle fallComponent;
-	Body::Handle bodyComponent;
-	DirectionComponent::Handle directionComponent;
-	for(auto entity : entityManager.entities_with_components(animationsComponent,
-															bodyComponent,
-															directionComponent,
-															fallComponent))
-	{//For every entity that can fall, set the right animation
-		Animations* animations = animationsComponent->animations;
-		b2Body* body = bodyComponent->body;
-		if(fallComponent->inAir and body->GetLinearVelocity().y > 2.f)
-		{
-			if(directionComponent->direction == Direction::Left)
-				animations->play("fall left");
-			else if(directionComponent->direction == Direction::Right)
-				animations->play("fall right");
-		}
-	}
-}
-
 void ScrollingSystem::update(entityx::EntityManager& entityManager, entityx::EventManager&, double)
 {
 	if(m_levelRect != sf::IntRect(0, 0, 0, 0))
@@ -121,24 +98,6 @@ void ScrollingSystem::setLevelData(const sf::IntRect& levelRect, float reference
 {
 	m_levelRect = levelRect;
 	m_referencePlan = referencePlan;
-}
-
-void BendSystem::update(entityx::EntityManager& entityManager, entityx::EventManager&, double)
-{
-	AnimationsComponent::Handle animationsComponent;
-	BendComponent::Handle bendComponent;
-	DirectionComponent::Handle directionComponent;
-	for(auto entity : entityManager.entities_with_components(animationsComponent,
-															bendComponent,
-															directionComponent))
-	{//For every entity that can bend a bow, set the right animation
-		Animations* animations = animationsComponent->animations;
-		float newProgress = bendComponent->power / bendComponent->maxPower;
-		if(directionComponent->direction == Direction::Left)
-			animations->setProgress("bend left", newProgress);
-		else if(directionComponent->direction == Direction::Right)
-			animations->setProgress("bend right", newProgress);
-	}
 }
 
 void DragAndDropSystem::update(entityx::EntityManager&, entityx::EventManager&, double)
@@ -250,7 +209,30 @@ void Physics::update(entityx::EntityManager& entityManager, entityx::EventManage
 
 void AnimationSystem::update(entityx::EntityManager& entityManager, entityx::EventManager&, double dt)
 {
-	AnimationsComponent::Handle anims;
-	for(auto entity : entityManager.entities_with_components(anims))
-		anims->animations->update(entity, sf::seconds(dt));
+	AnimationsComponent::Handle animationsComponent;
+	FallComponent::Handle fallComponent;
+	Body::Handle bodyComponent;
+	DirectionComponent::Handle directionComponent;
+	BendComponent::Handle bendComponent;
+	
+	//For every entity that can fall, set the right animation
+	for(auto entity : entityManager.entities_with_components(animationsComponent,
+															bodyComponent,
+															directionComponent,
+															fallComponent))
+	{
+		Animations* animations = animationsComponent->animations;
+		b2Body* body = bodyComponent->body;
+		if(fallComponent->inAir and body->GetLinearVelocity().y > 2.f)
+		{
+			if(directionComponent->direction == Direction::Left)
+				animations->play("fall left");
+			else if(directionComponent->direction == Direction::Right)
+				animations->play("fall right");
+		}
+	}
+	
+	//Update the Animations components
+	for(auto entity : entityManager.entities_with_components(animationsComponent))
+		animationsComponent->animations->update(entity, sf::seconds(dt));
 }

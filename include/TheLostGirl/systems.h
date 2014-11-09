@@ -40,21 +40,6 @@ class Actions : public entityx::System<Actions>
 		CommandQueue& m_commandQueue;///< Queue of command where the actions should be in.
 };
 
-/// System that handle the jump animation.
-class FallSystem : public entityx::System<FallSystem>
-{
-	public:
-		/// Default constructor.
-		FallSystem()
-		{}
-
-		/// System's update function.
-		/// \param es Entity manager.
-		/// \param events Event manager.
-		/// \param dt Elapsed time in the last game frame.
-		void update(entityx::EntityManager &es, entityx::EventManager &events, double dt) override;
-};
-
 /// System that set the correct view according to the player position.
 class ScrollingSystem : public entityx::System<ScrollingSystem>
 {
@@ -84,21 +69,6 @@ class ScrollingSystem : public entityx::System<ScrollingSystem>
 		Parameters& m_parameters;  ///< Structure containing all the game parameters.
 		sf::IntRect m_levelRect;   ///< Rectangle defining the level bounds.
 		float m_referencePlan;     ///< Number of the plan where actors evolute.
-};
-
-/// System that handle the bow bending animation.
-class BendSystem : public entityx::System<BendSystem>
-{
-	public:
-		/// Default constructor.
-		BendSystem()
-		{}
-
-		/// System's update function.
-		/// \param es Entity manager.
-		/// \param events Event manager.
-		/// \param dt Elapsed time in the last game frame.
-		void update(entityx::EntityManager &es, entityx::EventManager &events, double dt) override;
 };
 
 /// System that handle the drag and drop.

@@ -155,7 +155,6 @@ void Application::registerSystems()
 	m_systemManager.add<Physics>(m_world, m_parameters);
 	m_systemManager.add<Actions>(m_commandQueue);
 	m_systemManager.add<AnimationSystem>();
-	m_systemManager.add<FallSystem>();
 	m_systemManager.add<Render>(m_window);
 	m_systemManager.add<DragAndDropSystem>(m_window, m_commandQueue);
 	m_systemManager.add<ScrollingSystem>(m_window, m_parameters);
