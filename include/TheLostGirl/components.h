@@ -5,7 +5,7 @@
 #include <functional>
 #include <string>
 
-#include <SFML/System/Vector2.hpp>
+#include <SFML/System/Vector3.hpp>
 
 #include <TheLostGirl/Category.h>
 
@@ -40,15 +40,15 @@ struct Body : public entityx::Component<Body>
 /// For more information about sprites, see the SFML doc.
 struct SpriteComponent : public entityx::Component<SpriteComponent>
 {
-	sf::Sprite* sprite;     ///< Pointer to the sprite to draw.
-	unsigned short int plan;///< Indicate in wich layer the sprite should be drawn.
+	sf::Sprite* sprite;        ///< Pointer to the sprite to draw.
+	sf::Vector3f worldPosition;///< x and y indicates the target position in the world,and z indicates in wich layer the sprite should be drawn.
 
 	/// Default constructor
 	/// \param _sprite Pointer to the sprite to draw.
-	/// \param _z-order Indicate in wich layer the sprite should be drawn.
-	SpriteComponent(sf::Sprite* _sprite, unsigned short int _plan = 1):
+	/// \param _worldPosition Indicate th' position and the layer the sprite should be drawn.
+	SpriteComponent(sf::Sprite* _sprite, sf::Vector3f _worldPosition):
 		sprite{_sprite},
-		plan{_plan}
+		worldPosition{_worldPosition}
 	{}
 };
 
@@ -175,18 +175,6 @@ struct ActorIDComponent : public entityx::Component<ActorIDComponent>
 	/// \param _ID Identifier of the actor.
 	ActorIDComponent(unsigned int _ID):
 		ID{_ID}
-	{}
-};
-
-/// The Scene component.
-/// It indicate where the entity should be drawn,
-/// if the entity has no physic body.
-struct SceneComponent : public entityx::Component<SceneComponent>
-{
-	sf::Vector2f position;
-	
-	SceneComponent(sf::Vector2f _position = {0, 0}):
-		position(_position)
 	{}
 };
 

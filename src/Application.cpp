@@ -115,7 +115,7 @@ void Application::processInput()
 			m_parameters.debugMode = not m_parameters.debugMode;//Switch the debug mode
 		else if(event.type == sf::Event::Resized)
 		{
-			sf::View view = m_window.getView();//Resized view, maybe not in a 16:9 ratio
+			sf::View view = m_window.getDefaultView();//Resized view, maybe not in a 16:9 ratio
 			view.setViewport(handleResize(event.size));
 			m_window.setView(view);
 			m_gui.setView(view);

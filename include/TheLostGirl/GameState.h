@@ -4,6 +4,7 @@
 #include <forward_list>
 
 #include <dist/json/json-forwards.h>
+#include <SFML/System/Thread.hpp>
 
 #include <SFML/Graphics/Sprite.hpp>
 #include <TheLostGirl/Animations.h>
@@ -57,17 +58,24 @@ class GameState : public State
 
 	private:
 		/// Initialize the physic world.
-		/// \param filePath The path to the save file.
-		void initWorld(const std::string& filePath);
+		void initWorld();
 		
 		std::unordered_map<std::string, entityx::Entity> m_entities;///< A unordered map allow to reference to elements of the list safely, and use those references outside the scope of the GameState class.
 		std::unordered_map<std::string, sf::Sprite> m_sprites;      ///< Same as above.
 		std::unordered_map<std::string, Animations> m_animations;   ///< Same as above.
 		ContactListener m_contactListener;                          ///< The falling listener.
 		TimeSystem m_timeSystem;                                    ///< The time manager.
+		float m_timeSpeed;                                          ///< The speed of the time (usually 1.f). This influes only on the TimeSystem, not on physics!
+		
+		//Level informations
 		std::string m_levelIdentifier;                              ///< Identifer of the level, must be a non-spaced name.
 		unsigned short int m_numberOfPlans;                         ///< Number of plans in the background.
+		float m_referencePlan;                                      ///< Number of the plan where actors evolute.
 		sf::IntRect m_levelRect;                                    ///< The dimensions of the level, in pixels.
+		
+		//Loading
+		bool m_loadingFinished;                                     ///< Indicate if the level loading is finished.
+		sf::Thread m_threadLoad;                                    ///< Thread launched when loading the level.
 };
 
 #endif // GAMESTATE_H

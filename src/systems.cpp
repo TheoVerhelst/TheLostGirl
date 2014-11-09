@@ -71,6 +71,7 @@ void ScrollingSystem::update(entityx::EntityManager& entityManager, entityx::Eve
 		Body::Handle bodyComponent;
 		CategoryComponent::Handle categoryComponent;
 		Walk::Handle walkComponent;
+		SpriteComponent::Handle spriteComponent;
 		entityx::Entity playerEntity;
 		bool found{false};
 		for(auto entity : entityManager.entities_with_components(bodyComponent,
@@ -96,6 +97,19 @@ void ScrollingSystem::update(entityx::EntityManager& entityManager, entityx::Eve
 			//Cap the position between min and max
 			position.x = cap(position.x, xmin, xmax);
 			position.y = cap(position.y, ymin, ymax);
+			
+			//Assign position on every entity Sprite
+			for(auto entity : entityManager.entities_with_components(spriteComponent))
+			{
+				//The number of the layer where is the entity
+				float z = spriteComponent->worldPosition.z;
+				//The x-ordinate of the left border of the screen.
+				float xScreen = position.x - xmin;
+				//So the abscissa of the entity on the screen, relatively to the reference plan and the position of the player
+				float xScaled = spriteComponent->worldPosition.x + xScreen - (xScreen * pow(1.5, m_referencePlan - z));
+				spriteComponent->sprite->setPosition(xScaled, spriteComponent->worldPosition.y);
+			}
+			
 			//Assign the position to the view
 			view.setCenter(position);
 			m_window.setView(view);
@@ -103,9 +117,10 @@ void ScrollingSystem::update(entityx::EntityManager& entityManager, entityx::Eve
 	}
 }
 
-void ScrollingSystem::setLevelBounds(const sf::IntRect& levelRect)
+void ScrollingSystem::setLevelData(const sf::IntRect& levelRect, float referencePlan)
 {
 	m_levelRect = levelRect;
+	m_referencePlan = referencePlan;
 }
 
 void BendSystem::update(entityx::EntityManager& entityManager, entityx::EventManager&, double)
@@ -130,6 +145,7 @@ void DragAndDropSystem::update(entityx::EntityManager&, entityx::EventManager&, 
 {
 	if(m_isActive)
 	{
+		m_line[0].position = m_window.mapPixelToCoords(m_origin);
 		m_line[1].position = m_window.mapPixelToCoords(sf::Mouse::getPosition(m_window));
 		m_window.draw(m_line, 2, sf::Lines);
 		//Compute the drag and drop data
@@ -153,7 +169,7 @@ void DragAndDropSystem::update(entityx::EntityManager&, entityx::EventManager&, 
 void DragAndDropSystem::setDragAndDropActivation(bool isActive)
 {
 	if(not m_isActive and isActive)//Activation
-		m_line[0].position = m_window.mapPixelToCoords(sf::Mouse::getPosition(m_window));
+		m_origin = sf::Mouse::getPosition(m_window);
 	if(not isActive and m_isActive)//Desactivation
 	{
 		float delta_x = m_line[1].position.x- m_line[0].position.x;
@@ -171,16 +187,22 @@ void DragAndDropSystem::setDragAndDropActivation(bool isActive)
 void Render::update(entityx::EntityManager& entityManager, entityx::EventManager&, double)
 {
 	SpriteComponent::Handle spriteComponent;
-	//A map containing all entities grouped by z-order
-	std::map<unsigned int, std::vector<entityx::Entity> > orderedEntities;
-	//Sort the entities in the map
+	//A map containing all entities grouped and sorted by z-order
+	std::map<float, std::deque<entityx::Entity> > orderedEntities;
+	//Add the entities in the map
 	for(entityx::Entity entity : entityManager.entities_with_components(spriteComponent))
-		orderedEntities[spriteComponent->plan].push_back(entity);
-	//For each plan, in the reverse order
-	for(std::map<unsigned int, std::vector<entityx::Entity> >::const_reverse_iterator it{orderedEntities.crbegin()}; it != orderedEntities.crend(); it++)
 	{
-		//Draw every entity of this plan
-		for(entityx::Entity entity : it->second)
+		//If this is a scene entity, add it beyond the others entities in this plan
+		if(entity.has_component<CategoryComponent>() and entity.component<CategoryComponent>()->category & Category::Scene)
+			orderedEntities[spriteComponent->worldPosition.z].push_front(entity);
+		else
+			orderedEntities[spriteComponent->worldPosition.z].push_back(entity);
+	}
+	//For each plan, in the reverse order
+	for(std::multimap<float, std::deque<entityx::Entity> >::const_reverse_iterator it{orderedEntities.crbegin()}; it != orderedEntities.crend(); it++)
+	{
+		//Draw the entities of this plan
+		for(auto entity : it->second)
 			m_window.draw(*entity.component<SpriteComponent>()->sprite);
 	}
 }
@@ -220,7 +242,8 @@ void Physics::update(entityx::EntityManager& entityManager, entityx::EventManage
 	{
 		b2Vec2 pos = bodyComponent->body->GetPosition();
 		float32 angle = bodyComponent->body->GetAngle();
-		spriteComponent->sprite->setPosition(pos.x * m_parameters.pixelScale, pos.y * m_parameters.pixelScale);
+		spriteComponent->worldPosition.x = pos.x * m_parameters.pixelScale;
+		spriteComponent->worldPosition.y = pos.y * m_parameters.pixelScale;
 		spriteComponent->sprite->setRotation(angle*180/b2_pi);
 	}
 }

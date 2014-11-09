@@ -29,15 +29,16 @@ GameState::GameState(StateStack& stack, Context context) :
 	m_sprites(),
 	m_animations(),
 	m_contactListener(),
-	m_timeSystem(),
-	m_levelIdentifier(""),
-	m_numberOfPlans(1),
-	m_levelRect(0, 0, 0, 1080)
+	m_timeSystem(sf::seconds(0.f)),
+	m_timeSpeed{1.f},
+	m_levelIdentifier{""},
+	m_numberOfPlans{1},
+	m_referencePlan{0.f},
+	m_levelRect{0, 0, 0, 1080},
+	m_loadingFinished{false},
+	m_threadLoad(&GameState::initWorld, this)
 {
-	initWorld("ressources/levels/save.json");
-	getContext().player.handleInitialInputState(getContext().commandQueue);
-	getContext().world.SetContactListener(&m_contactListener);
-	getContext().systemManager.system<ScrollingSystem>()->setLevelBounds(m_levelRect);
+	m_threadLoad.launch();
 }
 
 GameState::~GameState()
@@ -53,39 +54,54 @@ GameState::~GameState()
 
 void GameState::draw()
 {
-	getContext().systemManager.update<Render>(sf::Time::Zero.asSeconds());
-	//The drag and drop system draw a line on the screen, so we must put it here
-	getContext().systemManager.update<DragAndDropSystem>(sf::Time::Zero.asSeconds());
+	if(m_loadingFinished)
+	{
+		getContext().systemManager.update<Render>(sf::Time::Zero.asSeconds());
+		//The drag and drop system draw a line on the screen, so we must put it here
+		getContext().systemManager.update<DragAndDropSystem>(sf::Time::Zero.asSeconds());
+	}
 }
 
 bool GameState::update(sf::Time elapsedTime)
 {
-	getContext().systemManager.update<Physics>(elapsedTime.asSeconds());
-	getContext().systemManager.update<Actions>(elapsedTime.asSeconds());
-	getContext().systemManager.update<AnimationSystem>(elapsedTime.asSeconds());
-	getContext().systemManager.update<FallSystem>(elapsedTime.asSeconds());
-	getContext().systemManager.update<ScrollingSystem>(elapsedTime.asSeconds());
-	m_timeSystem.update(elapsedTime);
+	if(m_loadingFinished)
+	{
+		//Scale the time.
+		getContext().systemManager.update<Physics>(elapsedTime.asSeconds());
+		getContext().systemManager.update<Actions>(elapsedTime.asSeconds());
+		getContext().systemManager.update<AnimationSystem>(elapsedTime.asSeconds());
+		getContext().systemManager.update<FallSystem>(elapsedTime.asSeconds());
+		getContext().systemManager.update<ScrollingSystem>(elapsedTime.asSeconds());
+		m_timeSystem.update(elapsedTime * m_timeSpeed);
+	}
 	return false;
 }
 
 bool GameState::handleEvent(const sf::Event& event)
 {
-	if(event.type == sf::Event::KeyPressed and event.key.code == sf::Keyboard::Escape)
-		requestStackPush(States::Pause);
-	
-	getContext().player.handleEvent(event, getContext().commandQueue);
-	//Update the drag and drop state
-	bool isDragAndDropActive{getContext().player.isActived(Player::Action::Bend)};
-	getContext().systemManager.system<DragAndDropSystem>()->setDragAndDropActivation(isDragAndDropActive);
+	if(m_loadingFinished)
+	{
+		if(event.type == sf::Event::KeyPressed and event.key.code == sf::Keyboard::Escape)
+			requestStackPush(States::Pause);
+		
+		getContext().player.handleEvent(event, getContext().commandQueue);
+		//Update the drag and drop state
+		bool isDragAndDropActive{getContext().player.isActived(Player::Action::Bend)};
+		getContext().systemManager.system<DragAndDropSystem>()->setDragAndDropActivation(isDragAndDropActive);
+	}
 	return false;
 }
 
-void GameState::initWorld(const std::string& filePath)
+void GameState::initWorld()
 {
-	float scale = getContext().parameters.scale;
-	float pixelScale = getContext().parameters.pixelScale;
-	float uniqScale = scale / pixelScale;//The pixel/meters scale at the maximum resolution, about 1.f/120.f
+	//Push the loading state
+	requestStackPush(States::Loading);
+	
+	const std::string filePath{"ressources/levels/save.json"};
+	const float scale = getContext().parameters.scale;
+	const float pixelScale = getContext().parameters.pixelScale;
+	const float uniqScale = scale / pixelScale;//The pixel/meters scale at the maximum resolution, about 1.f/120.f
+	TextureManager& texManager = getContext().textureManager;
 	try
 	{
 		//Parse the level data
@@ -96,12 +112,29 @@ void GameState::initWorld(const std::string& filePath)
 			throw std::runtime_error(reader.getFormattedErrorMessages());
 		
 		//Assert that there is only these elements with these types in the root object.
-		parseObject(root, "root", {{"entities", Json::objectValue}, {"joints", Json::arrayValue}, {"level", Json::objectValue}});
+		parseObject(root, "root", {{"entities", Json::objectValue},
+									{"joints", Json::arrayValue},
+									{"level", Json::objectValue},
+									{"time", Json::objectValue}});
+		requireValues(root, "root", {{"level", Json::objectValue}});
 		
-		//level
+		//time
+		if(root.isMember("time"))
+		{
+			const Json::Value time = root["time"];
+			parseObject(time, "time", {{"date", Json::realValue}, {"speed", Json::realValue}});
+			
+			//date
+			if(time.isMember("date"))
+				m_timeSystem.update(sf::seconds(time["date"].asFloat()));
+			
+			//speed
+			if(time.isMember("speed"))
+				m_timeSpeed = time["speed"].asFloat();
+		}
 		if(root.isMember("level"))
 		{
-			Json::Value level = root["level"];
+			const Json::Value level = root["level"];
 			
 			//number of plans
 			//must load it now in order to now how much plans can be defined
@@ -115,6 +148,7 @@ void GameState::initWorld(const std::string& filePath)
 			
 			//add the others values
 			plans["number of plans"] = Json::intValue;
+			plans["reference plan"] = Json::realValue;
 			plans["box"] = Json::objectValue;
 			plans["identifier"] = Json::stringValue;
 			
@@ -128,8 +162,12 @@ void GameState::initWorld(const std::string& filePath)
 				throw std::runtime_error("\"level.identifier\" value contains whitespaces.");
 			m_levelIdentifier = identifier;
 			
+			//reference plan
+			if(level.isMember("reference plan"))
+				m_referencePlan = level["reference plan"].asFloat();
+			
 			//length
-			Json::Value levelBox = level["box"];
+			const Json::Value levelBox = level["box"];
 			parseObject(levelBox, "level.box", {{"x", Json::intValue}, {"y", Json::intValue}, {"w", Json::intValue}, {"h", Json::intValue}});
 			requireValues(levelBox, "level.box", {{"w", Json::intValue}});
 			
@@ -148,7 +186,6 @@ void GameState::initWorld(const std::string& filePath)
 			if(levelBox.isMember("y"))
 				m_levelRect.left = levelBox["y"].asInt();
 			
-			TextureManager& texManager = getContext().textureManager;
 			//for each plan
 			for(unsigned short int i{0}; i < m_numberOfPlans; i++)
 			{
@@ -159,14 +196,14 @@ void GameState::initWorld(const std::string& filePath)
 				//Check if the plan is defined
 				if(level.isMember(std::to_string(i)))
 				{
-					Json::Value plan = level[std::to_string(i)];
+					const Json::Value plan = level[std::to_string(i)];
 					parseArray(plan, "level." + std::to_string(i), Json::objectValue);
 					//For each image frame in the plan
 					for(Json::ArrayIndex j{0}; j < plan.size(); j++)
 					{
-						Json::Value image = plan[j];
+						const Json::Value image = plan[j];
 						requireValues(image, "level." + std::to_string(i) + "." + std::to_string(j), {{"origin", Json::objectValue}, {"replace", Json::arrayValue}});
-						Json::Value origin = image["origin"];
+						const Json::Value origin = image["origin"];
 						requireValues(origin, "level." + std::to_string(i) + "." + std::to_string(j) + ".origin", {{"x", Json::intValue},
 																										{"y", Json::intValue},
 																										{"w", Json::intValue},
@@ -186,13 +223,14 @@ void GameState::initWorld(const std::string& filePath)
 							texManager.load<sf::IntRect>(textureIdentifier, path, sf::IntRect(ox, oy, ow, oh));
 							std::cout << "Loaded plan " << i << " image " << j << ", of size " << ow << "x" << oh << "px!" << std::endl;
 						}
-								
-						Json::Value replaces = image["replace"];
+						
+						//Replaces
+						const Json::Value replaces = image["replace"];
 						parseArray(replaces, "level." + std::to_string(i) + "." + std::to_string(j) + ".replace", Json::objectValue);
 						//For each replacing of the image
 						for(Json::ArrayIndex k{0}; k < replaces.size(); k++)
 						{
-							Json::Value replace = replaces[k];
+							const Json::Value replace = replaces[k];
 							requireValues(replace, "level." + std::to_string(i) + "." + std::to_string(j) + ".replace" + std::to_string(k), {{"x", Json::realValue},
 																															{"y", Json::realValue}});
 							//Position where the frame should be replaced
@@ -203,11 +241,8 @@ void GameState::initWorld(const std::string& filePath)
 							//Create a sprite with the loaded texture
 							m_sprites.emplace(textureIdentifier, sf::Sprite(texManager.get(textureIdentifier)));
 							//Assign the sprite to the entity
-							m_entities[textureIdentifier].assign<SpriteComponent>(&m_sprites[textureIdentifier]);
-							//Assign the plan number
-							m_entities[textureIdentifier].component<SpriteComponent>()->plan = i;
-							//Set the right position
-							m_sprites[textureIdentifier].setPosition(rx, ry);
+							m_entities[textureIdentifier].assign<SpriteComponent>(&m_sprites[textureIdentifier], sf::Vector3f(rx, ry, static_cast<float>(i)));
+							m_entities[textureIdentifier].assign<CategoryComponent>(Category::Scene);
 						}
 					}
 				}
@@ -216,7 +251,7 @@ void GameState::initWorld(const std::string& filePath)
 				{
 					unsigned int chunkSize{sf::Texture::getMaximumSize()};
 					//The length of the plan, relatively to the second.
-					unsigned int planLength = (m_levelRect.width * (2.25 / pow(1.5, i + 1)))*getContext().parameters.scale;
+					unsigned int planLength = (m_levelRect.width * pow(1.5, m_referencePlan - i))*getContext().parameters.scale;
 					//Number of chunks to load in this plan
 					unsigned int numberOfChunks{(planLength/chunkSize)+1};
 					//Path to the image to load
@@ -240,11 +275,8 @@ void GameState::initWorld(const std::string& filePath)
 						//Create a sprite with the loaded texture
 						m_sprites.emplace(textureIdentifier, sf::Sprite(texManager.get(textureIdentifier)));
 						//Assign the sprite to the entity
-						m_entities[textureIdentifier].assign<SpriteComponent>(&m_sprites[textureIdentifier]);
-						//Assign the plan number
-						m_entities[textureIdentifier].component<SpriteComponent>()->plan = i;
-						//Set the right position
-						m_sprites[textureIdentifier].setPosition(j*chunkSize, 0);
+						m_entities[textureIdentifier].assign<SpriteComponent>(&m_sprites[textureIdentifier], sf::Vector3f(j*chunkSize, 0, static_cast<float>(i)));
+						m_entities[textureIdentifier].assign<CategoryComponent>(Category::Scene);
 					}
 				}
 			}
@@ -253,12 +285,12 @@ void GameState::initWorld(const std::string& filePath)
 		//entities
 		if(root.isMember("entities"))
 		{
-			Json::Value entities = root["entities"];
+			const Json::Value entities = root["entities"];
 			//Assert that every element of entities must be an object
 			parseObject(entities, "entities", Json::objectValue);
 			for(std::string& entityName : entities.getMemberNames())
 			{
-				Json::Value entity = entities[entityName];
+				const Json::Value entity = entities[entityName];
 				//Assert that there is only these elements with these types in the entity object.
 				parseObject(entity, "entities." + entityName, {{"sprite", Json::objectValue},
 																{"categories", Json::arrayValue},
@@ -277,26 +309,29 @@ void GameState::initWorld(const std::string& filePath)
 				//sprite
 				if(entity.isMember("sprite"))
 				{
-					Json::Value sprite = entity["sprite"];
-					parseObject(sprite, "entities." + entityName + ".sprite", {{"plan", Json::intValue}, {"identifier", Json::stringValue}});
+					const Json::Value sprite = entity["sprite"];
+					parseObject(sprite, "entities." + entityName + ".sprite", {{"plan", Json::realValue}, {"identifier", Json::stringValue}});
 					//Assert that the identifier is defined
 					requireValues(sprite, "entities." + entityName + ".sprite", {{"identifier", Json::stringValue}});
 					//Assert that the identifier is one of the given values
 					parseValue(sprite["identifier"], "entities." + entityName + ".sprite.identifier", {"archer", "bow", "arms"});
-					//Get the texture form the texture manager and make a sprite with this texture
-					m_sprites.emplace(entityName, sf::Sprite(getContext().textureManager.get(sprite["identifier"].asString())));
-					//Assign this sprite to the entity
-					m_entities[entityName].assign<SpriteComponent>(&m_sprites[entityName]);
+					//Default value for the plan
+					float plan = m_referencePlan;
 					
 					//plan
 					if(sprite.isMember("plan"))
-						m_entities[entityName].component<SpriteComponent>()->plan = sprite["plan"].asUInt();
+						plan = sprite["plan"].asFloat();
+					
+					//Get the texture form the texture manager and make a sprite with this texture
+					m_sprites.emplace(entityName, sf::Sprite(getContext().textureManager.get(sprite["identifier"].asString())));
+					//Assign this sprite to the entity
+					m_entities[entityName].assign<SpriteComponent>(&m_sprites[entityName], sf::Vector3f(0, 0, plan));
 				}
 				
 				//categories
 				if(entity.isMember("categories"))
 				{
-					Json::Value categories = entity["categories"];
+					const Json::Value categories = entity["categories"];
 					//Assert that every value in categories is one of the given values
 					parseArray(categories, "entities." + entityName + ".categories", {"player", "ground"});
 					unsigned int categoriesInt{0};
@@ -330,7 +365,7 @@ void GameState::initWorld(const std::string& filePath)
 				//direction
 				if(entity.isMember("direction"))
 				{
-					Json::Value direction = entity["direction"];
+					const Json::Value direction = entity["direction"];
 					parseValue(direction, "entities." + entityName + ".direction", {"left", "right", "top", "bottom", "none"});
 					if(direction.asString() == "left")
 						m_entities[entityName].assign<DirectionComponent>(Direction::Left);
@@ -347,7 +382,7 @@ void GameState::initWorld(const std::string& filePath)
 				//fall
 				if(entity.isMember("fall"))
 				{
-					Json::Value fall = entity["fall"];
+					const Json::Value fall = entity["fall"];
 					parseObject(fall, "entities." + entityName + ".fall", {{"in air", Json::booleanValue}, {"contact count", Json::intValue}});
 					requireValues(fall, "entities." + entityName + ".fall", {{"in air", Json::booleanValue}, {"contact count", Json::intValue}});
 					m_entities[entityName].assign<FallComponent>(fall["in air"].asBool(), fall["contact count"].asUInt());
@@ -356,7 +391,7 @@ void GameState::initWorld(const std::string& filePath)
 				//body
 				if(entity.isMember("body"))
 				{
-					Json::Value body = entity["body"];
+					const Json::Value body = entity["body"];
 					parseObject(body, "entities." + entityName + ".body", {{"type", Json::stringValue},
 																			{"position", Json::objectValue},
 																			{"angle", Json::realValue},
@@ -377,7 +412,7 @@ void GameState::initWorld(const std::string& filePath)
 					//type
 					if(body.isMember("type"))
 					{
-						Json::Value type = body["type"];
+						const Json::Value type = body["type"];
 						parseValue(type, "entities." + entityName + ".body.type", {"static", "kinematic", "dynamic"});
 						if(type == "static")
 							entityBodyDef.type = b2_staticBody;
@@ -390,7 +425,7 @@ void GameState::initWorld(const std::string& filePath)
 					//position
 					if(body.isMember("position"))
 					{
-						Json::Value position = body["position"];
+						const Json::Value position = body["position"];
 						parseObject(position, "entities." + entityName + ".body.position", {{"x", Json::realValue}, {"y", Json::realValue}});
 						if(position.isMember("x"))
 							entityBodyDef.position.x = position["x"].asFloat()*uniqScale;
@@ -405,7 +440,7 @@ void GameState::initWorld(const std::string& filePath)
 					//linear velocity
 					if(body.isMember("linear velocity"))
 					{
-						Json::Value linearVelocity = body["linear velocity"];
+						const Json::Value linearVelocity = body["linear velocity"];
 						parseObject(linearVelocity, "entities." + entityName + ".body.linear velocity", {{"x", Json::realValue}, {"y", Json::realValue}});
 						if(linearVelocity.isMember("x"))
 							entityBodyDef.linearVelocity.x = linearVelocity["x"].asFloat()*uniqScale;
@@ -455,11 +490,11 @@ void GameState::initWorld(const std::string& filePath)
 					//fixtures
 					if(body.isMember("fixtures"))
 					{
-						Json::Value fixtures = body["fixtures"];
+						const Json::Value fixtures = body["fixtures"];
 						parseArray(fixtures, "entities." + entityName + ".body.fixtures", Json::objectValue);
 						for(Json::ArrayIndex i{0}; i < fixtures.size(); ++i)
 						{
-							Json::Value fixture = fixtures[i];
+							const Json::Value fixture = fixtures[i];
 							parseObject(fixture, "entities." + entityName + ".body.fixtures" + std::to_string(i), {{"type", Json::stringValue},
 																													{"box", Json::objectValue},
 																													{"vertices", Json::arrayValue},
@@ -479,7 +514,7 @@ void GameState::initWorld(const std::string& filePath)
 							//type
 							if(fixture.isMember("type"))
 							{
-								Json::Value type = fixtures[i]["type"];
+								const Json::Value type = fixtures[i]["type"];
 								parseValue(type, "entities." + entityName + ".body.fixtures" + std::to_string(i) + ".type", {"polygon", "edge", "chain", "circle"});
 
 								if(type == "polygon")
@@ -487,7 +522,7 @@ void GameState::initWorld(const std::string& filePath)
 									//box
 									if(fixture.isMember("box"))
 									{
-										Json::Value box = fixtures[i]["box"];
+										const Json::Value box = fixtures[i]["box"];
 										parseObject(box, "entities." + entityName + ".body.fixtures." + std::to_string(i) + ".box", {{"w", Json::realValue},
 																																	{"h", Json::realValue},
 																																	{"center x", Json::realValue},
@@ -524,11 +559,11 @@ void GameState::initWorld(const std::string& filePath)
 									//vertices
 									else if(fixture.isMember("vertices"))
 									{
-										Json::Value vertices = fixtures[i]["vertices"];
+										const Json::Value vertices = fixtures[i]["vertices"];
 										parseArray(vertices, "entities." + entityName + ".body.fixtures." + std::to_string(i) + ".vertices", Json::objectValue);
 										for(Json::ArrayIndex j{0}; j < vertices.size(); ++j)
 										{
-											Json::Value vertice = vertices[j];
+											const Json::Value vertice = vertices[j];
 											parseObject(vertice, "entities." + entityName + ".body.fixtures." + std::to_string(i) + ".vertices." + std::to_string(j), {{"x", Json::realValue}, {"y", Json::realValue}});
 										
 											//x
@@ -575,12 +610,12 @@ void GameState::initWorld(const std::string& filePath)
 								{
 									//vertices
 									requireValues(fixture, "entities." + entityName + ".body.fixtures." + std::to_string(i), {{"vertices", Json::arrayValue}});
-									Json::Value vertices = fixtures[i]["vertices"];
+									const Json::Value vertices = fixtures[i]["vertices"];
 									parseArray(vertices, "entities." + entityName + ".body.fixtures." + std::to_string(i) + ".vertices", Json::objectValue);
 									//Vertices of the chain shape
 									for(Json::ArrayIndex j{0}; j < vertices.size(); ++j)
 									{
-										Json::Value vertice = vertices[j];
+										const Json::Value vertice = vertices[j];
 										parseObject(vertice, "entities." + entityName + ".body.fixtures." + std::to_string(i) + ".vertices." + std::to_string(j), {{"x", Json::realValue}, {"y", Json::realValue}});
 										verticesArray.push_back(b2Vec2(0, 0));
 										//x
@@ -623,13 +658,13 @@ void GameState::initWorld(const std::string& filePath)
 				//animations
 				if(entity.isMember("spritesheet animations"))
 				{
-					Json::Value animations = entity["spritesheet animations"];
+					const Json::Value animations = entity["spritesheet animations"];
 					parseObject(animations, "entities." + entityName + ".spritesheet animations", Json::objectValue);
 					m_animations[entityName] = Animations();
 					m_entities[entityName].assign<AnimationsComponent>(&m_animations[entityName]);
 					for(std::string& animationName : animations.getMemberNames())
 					{
-						Json::Value animation = animations[animationName];
+						const Json::Value animation = animations[animationName];
 						parseObject(animation, "entities." + entityName + ".spritesheet animations." + animationName, {{"importance", Json::intValue},
 																														{"duration", Json::realValue},
 																														{"loop", Json::booleanValue},
@@ -654,11 +689,11 @@ void GameState::initWorld(const std::string& filePath)
 						//frames
 						if(animation.isMember("frames"))
 						{
-							Json::Value frames = animation["frames"];
+							const Json::Value frames = animation["frames"];
 							parseArray(frames, "entities." + entityName + ".spritesheet animations." + animationName +  ".frames", Json::objectValue);
 							for(Json::ArrayIndex i{0}; i < frames.size(); ++i)
 							{
-								Json::Value frame = frames[i];
+								const Json::Value frame = frames[i];
 								parseObject(frame, "entities." + entityName + ".spritesheet animations." + animationName + ".frames." + std::to_string(i), {{"x", Json::intValue},
 																																							{"y", Json::intValue},
 																																							{"w", Json::intValue},
@@ -697,7 +732,7 @@ void GameState::initWorld(const std::string& filePath)
 					{
 						//Assert that some animations are defined
 						requireValues(entity, "entities." + entityName, {{"spritesheet animations", Json::objectValue}});
-						Json::Value animationsToPlay = entity["play animations"];
+						const Json::Value animationsToPlay = entity["play animations"];
 						parseArray(animationsToPlay, "entities." + entityName + ".play animations", Json::stringValue);
 						for(Json::ArrayIndex i{0}; i < animationsToPlay.size(); ++i)
 						{
@@ -711,7 +746,7 @@ void GameState::initWorld(const std::string& filePath)
 					if(entity.isMember("activate animations"))
 					{
 						requireValues(entity, "entities." + entityName, {{"spritesheet animations", Json::objectValue}});
-						Json::Value animationsToActivate = entity["activate animations"];
+						const Json::Value animationsToActivate = entity["activate animations"];
 						parseArray(animationsToActivate, "entities." + entityName + ".activate animations", Json::stringValue);
 						for(Json::ArrayIndex i{0}; i < animationsToActivate.size(); ++i)
 						{
@@ -726,11 +761,11 @@ void GameState::initWorld(const std::string& filePath)
 		//joints
 		if(root.isMember("joints"))
 		{
-			Json::Value joints = root["joints"];
+			const Json::Value joints = root["joints"];
 			parseArray(joints, "joints", Json::objectValue);
 			for(Json::ArrayIndex i{0}; i < joints.size(); ++i)
 			{
-				Json::Value joint = joints[i];
+				const Json::Value joint = joints[i];
 				parseObject(joint, "joints." + std::to_string(i), {{"first", Json::stringValue},
 																	{"second", Json::stringValue},
 																	{"type", Json::stringValue},
@@ -757,7 +792,7 @@ void GameState::initWorld(const std::string& filePath)
 				b2Body * bodySecond{m_entities[second].component<Body>()->body};
 							
 				//type
-				Json::Value type = joint["type"];
+				const Json::Value type = joint["type"];
 				parseValue(type, "joints." + std::to_string(i) + ".type", {"revolute joint",
 																			"distance joint",
 																			"friction joint",
@@ -778,7 +813,7 @@ void GameState::initWorld(const std::string& filePath)
 					//local anchor first
 					if(joint.isMember("local anchor first"))
 					{
-						Json::Value firstAnchor = joint["local anchor first"];
+						const Json::Value firstAnchor = joint["local anchor first"];
 						parseObject(firstAnchor,"joints." + std::to_string(i) + ".local anchor first", {{"x", Json::realValue}, {"y", Json::realValue}});
 									
 						//x
@@ -794,7 +829,7 @@ void GameState::initWorld(const std::string& filePath)
 					//local anchor second
 					if(joint.isMember("local anchor second"))
 					{
-						Json::Value secondAnchor = joint["local anchor second"];
+						const Json::Value secondAnchor = joint["local anchor second"];
 						parseObject(secondAnchor,"joints." + std::to_string(i) + ".local anchor second", {{"x", Json::realValue}, {"y", Json::realValue}});
 						
 						//x
@@ -859,6 +894,35 @@ void GameState::initWorld(const std::string& filePath)
 				}
 			}
 		}
+		//Load the day sky
+		const std::string dayIdentifier{"day sky"};
+		if(not texManager.isLoaded(dayIdentifier))
+		{
+			texManager.load(dayIdentifier, paths[getContext().parameters.scaleIndex] + "day.png");
+			std::cout << "Loaded day sky!" << std::endl;
+		}
+		//Create an entity
+		m_entities.emplace(dayIdentifier, getContext().entityManager.create());
+		//Create a sprite with the loaded texture
+		m_sprites.emplace(dayIdentifier, sf::Sprite(texManager.get(dayIdentifier)));
+		//Assign the sprite to the entity, and set its z-ordinate to infinity
+		m_entities[dayIdentifier].assign<SpriteComponent>(&m_sprites[dayIdentifier], sf::Vector3f(0, 0, std::numeric_limits<double>::infinity()));
+		m_entities[dayIdentifier].assign<CategoryComponent>(Category::Scene|Category::Sky);
+		
+		//Load the night sky
+		const std::string nightIdentifier{"night sky"};
+		if(not texManager.isLoaded(nightIdentifier))
+		{
+			texManager.load(nightIdentifier, paths[getContext().parameters.scaleIndex] + "night.png");
+			std::cout << "Loaded night sky!" << std::endl;
+		}
+		//Create an entity
+		m_entities.emplace(nightIdentifier, getContext().entityManager.create());
+		//Create a sprite with the loaded texture
+		m_sprites.emplace(nightIdentifier, sf::Sprite(texManager.get(nightIdentifier)));
+		//Assign the sprite to the entity, and set its z-ordinate to infinity
+		m_entities[nightIdentifier].assign<SpriteComponent>(&m_sprites[nightIdentifier], sf::Vector3f(0, 0, std::numeric_limits<double>::infinity()));
+		m_entities[nightIdentifier].assign<CategoryComponent>(Category::Scene|Category::Sky);
 	}
 	catch(std::runtime_error& e)
 	{
@@ -876,4 +940,11 @@ void GameState::initWorld(const std::string& filePath)
 		m_animations.clear();
 		getContext().world.ClearForces();
 	}
+	getContext().player.handleInitialInputState(getContext().commandQueue);
+	getContext().world.SetContactListener(&m_contactListener);
+	getContext().systemManager.system<ScrollingSystem>()->setLevelData(m_levelRect, m_referencePlan);
+	
+	m_loadingFinished = true;
+	//Pop the loading state
+	requestStackPop();
 }

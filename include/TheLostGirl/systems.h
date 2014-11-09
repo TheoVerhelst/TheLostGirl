@@ -70,7 +70,8 @@ class ScrollingSystem : public entityx::System<ScrollingSystem>
 		
 		/// Set the level bounds. This must be called before the first update.
 		/// \param levelRect Rectangle defining the level bounds.
-		void setLevelBounds(const sf::IntRect& levelRect);
+		/// \param referencePlan Number of the plan where actors evolute.
+		void setLevelData(const sf::IntRect& levelRect, float referencePlan);
 
 		/// System's update function.
 		/// \param es Entity manager.
@@ -81,7 +82,8 @@ class ScrollingSystem : public entityx::System<ScrollingSystem>
 	private:
 		sf::RenderWindow& m_window;///< SFML's window of wich set the view.
 		Parameters& m_parameters;  ///< Structure containing all the game parameters.
-		sf::IntRect m_levelRect;  ///< Rectangle defining the level bounds.
+		sf::IntRect m_levelRect;   ///< Rectangle defining the level bounds.
+		float m_referencePlan;     ///< Number of the plan where actors evolute.
 };
 
 /// System that handle the bow bending animation.
@@ -110,6 +112,7 @@ class DragAndDropSystem : public entityx::System<DragAndDropSystem>
 		DragAndDropSystem(sf::RenderWindow& window, CommandQueue& commandQueue):
 			m_window(window),
 			m_commandQueue(commandQueue),
+			m_origin{0, 0},
 			m_line{sf::Vertex({0, 0}, sf::Color::Black),
 				   sf::Vertex({0, 0}, sf::Color::Black)},//Initialize the line and set his color
 			m_isActive{false}
@@ -130,6 +133,7 @@ class DragAndDropSystem : public entityx::System<DragAndDropSystem>
 	private:
 		sf::RenderWindow& m_window;      ///< SFML's window on wich to render the entities.
 		CommandQueue& m_commandQueue;    ///< Queue of command where the actions should be in.
+		sf::Vector2i m_origin;
 		sf::Vertex m_line[2];            ///< The drag and drop line.
 		bool m_isActive;                 ///< True when the drag and drop is actived.
 };

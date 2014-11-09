@@ -1,6 +1,8 @@
 #ifndef LOADINGSTATE_H
 #define LOADINGSTATE_H
 
+#include <TGUI/Label.hpp>
+
 //Forward declarations
 namespace sf
 {
@@ -38,6 +40,7 @@ class LoadingState : public State
 		virtual bool handleEvent(const sf::Event& event);
 
 	private:
+		tgui::Label::Ptr m_loadLabel;
 };
 
 #endif // LOADINGSTATE_H
