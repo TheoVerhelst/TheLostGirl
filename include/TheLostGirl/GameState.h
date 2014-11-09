@@ -8,7 +8,6 @@
 
 #include <SFML/Graphics/Sprite.hpp>
 #include <TheLostGirl/Animations.h>
-#include <TheLostGirl/TimeSystem.h>
 #include <TheLostGirl/receivers.h>
 
 //Forward declarations
@@ -64,7 +63,6 @@ class GameState : public State
 		std::unordered_map<std::string, sf::Sprite> m_sprites;      ///< Same as above.
 		std::unordered_map<std::string, Animations> m_animations;   ///< Same as above.
 		ContactListener m_contactListener;                          ///< The falling listener.
-		TimeSystem m_timeSystem;                                    ///< The time manager.
 		float m_timeSpeed;                                          ///< The speed of the time (usually 1.f). This influes only on the TimeSystem, not on physics!
 		
 		//Level informations

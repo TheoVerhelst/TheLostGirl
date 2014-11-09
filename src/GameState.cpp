@@ -29,7 +29,6 @@ GameState::GameState(StateStack& stack, Context context) :
 	m_sprites(),
 	m_animations(),
 	m_contactListener(),
-	m_timeSystem(sf::seconds(0.f)),
 	m_timeSpeed{1.f},
 	m_levelIdentifier{""},
 	m_numberOfPlans{1},
@@ -66,13 +65,12 @@ bool GameState::update(sf::Time elapsedTime)
 {
 	if(m_loadingFinished)
 	{
-		//Scale the time.
 		getContext().systemManager.update<Physics>(elapsedTime.asSeconds());
 		getContext().systemManager.update<Actions>(elapsedTime.asSeconds());
 		getContext().systemManager.update<AnimationSystem>(elapsedTime.asSeconds());
 		getContext().systemManager.update<ScrollingSystem>(elapsedTime.asSeconds());
-		m_timeSystem.update(elapsedTime * m_timeSpeed);
-		getContext().systemManager.update<SkySystem>(m_timeSystem.getRealTime().asSeconds());
+		getContext().systemManager.update<TimeSystem>(elapsedTime.asSeconds()*m_timeSpeed);//Scale the time
+		getContext().systemManager.update<SkySystem>(getContext().systemManager.system<TimeSystem>()->getRealTime().asSeconds());
 	}
 	return false;
 }
@@ -126,7 +124,7 @@ void GameState::initWorld()
 			
 			//date
 			if(time.isMember("date"))
-				m_timeSystem.update(sf::seconds(time["date"].asFloat()));
+				getContext().systemManager.update<TimeSystem>(time["date"].asFloat());
 			
 			//speed
 			if(time.isMember("speed"))
