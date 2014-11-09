@@ -72,6 +72,7 @@ bool GameState::update(sf::Time elapsedTime)
 		getContext().systemManager.update<AnimationSystem>(elapsedTime.asSeconds());
 		getContext().systemManager.update<ScrollingSystem>(elapsedTime.asSeconds());
 		m_timeSystem.update(elapsedTime * m_timeSpeed);
+		getContext().systemManager.update<SkySystem>(m_timeSystem.getRealTime().asSeconds());
 	}
 	return false;
 }
@@ -893,8 +894,11 @@ void GameState::initWorld()
 				}
 			}
 		}
+		
 		//Load the day sky
 		const std::string dayIdentifier{"day sky"};
+		sf::Vector2f position{(1920.f/2.f) * scale, 1080.f * scale};
+		sf::Vector2f origin{(2900.f/2.f) * scale, (2900.f/2.f) * scale};
 		if(not texManager.isLoaded(dayIdentifier))
 		{
 			texManager.load(dayIdentifier, paths[getContext().parameters.scaleIndex] + "day.png");
@@ -904,10 +908,13 @@ void GameState::initWorld()
 		m_entities.emplace(dayIdentifier, getContext().entityManager.create());
 		//Create a sprite with the loaded texture
 		m_sprites.emplace(dayIdentifier, sf::Sprite(texManager.get(dayIdentifier)));
+		//Assign origin of the sprite to the center of the day image
+		m_sprites[dayIdentifier].setOrigin(origin);
 		//Assign the sprite to the entity, and set its z-ordinate to infinity
-		m_entities[dayIdentifier].assign<SpriteComponent>(&m_sprites[dayIdentifier], sf::Vector3f(0, 0, std::numeric_limits<double>::infinity()));
-		m_entities[dayIdentifier].assign<CategoryComponent>(Category::Scene|Category::Sky);
-		
+		m_entities[dayIdentifier].assign<SpriteComponent>(&m_sprites[dayIdentifier], sf::Vector3f(position.x, position.y, std::numeric_limits<double>::infinity()));
+		m_entities[dayIdentifier].assign<SkyComponent>(true);
+		m_entities[dayIdentifier].assign<CategoryComponent>(Category::Scene);
+	
 		//Load the night sky
 		const std::string nightIdentifier{"night sky"};
 		if(not texManager.isLoaded(nightIdentifier))
@@ -919,9 +926,12 @@ void GameState::initWorld()
 		m_entities.emplace(nightIdentifier, getContext().entityManager.create());
 		//Create a sprite with the loaded texture
 		m_sprites.emplace(nightIdentifier, sf::Sprite(texManager.get(nightIdentifier)));
+		//Assign origin of the sprite to the center of the night image
+		m_sprites[nightIdentifier].setOrigin(origin);
 		//Assign the sprite to the entity, and set its z-ordinate to infinity
-		m_entities[nightIdentifier].assign<SpriteComponent>(&m_sprites[nightIdentifier], sf::Vector3f(0, 0, std::numeric_limits<double>::infinity()));
-		m_entities[nightIdentifier].assign<CategoryComponent>(Category::Scene|Category::Sky);
+		m_entities[nightIdentifier].assign<SpriteComponent>(&m_sprites[nightIdentifier], sf::Vector3f(position.x, position.y, std::numeric_limits<double>::infinity()));
+		m_entities[nightIdentifier].assign<SkyComponent>(false);
+		m_entities[nightIdentifier].assign<CategoryComponent>(Category::Scene);
 	}
 	catch(std::runtime_error& e)
 	{

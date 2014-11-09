@@ -178,4 +178,18 @@ struct ActorIDComponent : public entityx::Component<ActorIDComponent>
 	{}
 };
 
+/// The sky component
+/// It indicates that the entity represents the sky,
+/// and if it represent rather the day or the night.
+struct SkyComponent : public entityx::Component<SkyComponent>
+{
+	bool day;///< True if it represent the day, false if it represents the night.
+
+	/// Default constructor
+	/// \param _day True if it represent the day, false if it represents the night.
+	SkyComponent(bool _day):
+		day{_day}
+	{}
+};
+
 #endif //COMPONENTS_H

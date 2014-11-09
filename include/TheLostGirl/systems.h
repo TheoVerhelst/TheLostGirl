@@ -71,6 +71,23 @@ class ScrollingSystem : public entityx::System<ScrollingSystem>
 		float m_referencePlan;     ///< Number of the plan where actors evolute.
 };
 
+/// System that handle the sky animation.
+class SkySystem : public entityx::System<SkySystem>
+{
+	public:
+		/// Default constructor.
+		SkySystem()
+		{}
+
+		/// System's update function.
+		/// \warning The spentTime argument do not refers to the elapsed time in the last game frame,
+		/// but to the total time spend in the game!
+		/// \param es Entity manager.
+		/// \param events Event manager.
+		/// \param spentTime Total time spend in the game.
+		void update(entityx::EntityManager &es, entityx::EventManager &events, double spentTime) override;
+};
+
 /// System that handle the drag and drop.
 /// It draw a line on the screen, and set the bending angle of the playr's archer.
 class DragAndDropSystem : public entityx::System<DragAndDropSystem>
