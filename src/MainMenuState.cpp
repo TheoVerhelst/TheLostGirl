@@ -91,5 +91,6 @@ bool MainMenuState::handleEvent(const sf::Event&)
 void MainMenuState::playGame()
 {
 	requestStackPop();
-	requestStackPush(States::Game);	
+	requestStackPush(States::Game);
+	requestStackPush(States::Loading);
 }

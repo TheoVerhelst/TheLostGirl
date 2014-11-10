@@ -1,12 +1,19 @@
 #ifndef EVENTS_H
 #define EVENTS_H
 
-//struct WonGame : public entityx::Event<WonGame>
-//{
-//	WonGame(entityx::Entity _winner):
-//		winner(_winner)
-//	{}
-//	entityx::Entity winner;
-//};
+#include <string>
+
+#include <entityx/Event.h>
+
+struct LoadingStateChange : public entityx::Event<LoadingStateChange>
+{
+	LoadingStateChange(short int _percent, std::wstring _sentence):
+		percent(_percent),
+		sentence(_sentence)
+	{}
+	
+	short int percent;
+	std::wstring sentence;
+};
 
 #endif // EVENTS_H

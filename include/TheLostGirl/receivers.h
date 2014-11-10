@@ -3,22 +3,6 @@
 
 #include <Box2D/Dynamics/b2WorldCallbacks.h>
 
-//struct Score : public entityx::Receiver<Score>
-//{
-//	Score(entityx::Entity _entity, unsigned int initialScore = 0):
-//		entity(_entity),
-//		count(initialScore)
-//	{}
-//	
-//	void receive(const WonGame &wonGame)
-//	{
-//		if(wonGame.winner == entity)
-//			count++;
-//	}
-//	entityx::Entity entity;
-//	unsigned int count;
-//};
-
 /// Ground collision listener.
 /// - Handle collisions between actors and the ground
 /// to set the right animation and update the FallComponent.

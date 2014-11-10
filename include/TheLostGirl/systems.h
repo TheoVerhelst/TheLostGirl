@@ -217,6 +217,10 @@ class TimeSystem : public entityx::System<TimeSystem>
 		/// \param events Event manager.
 		/// \param dt Elapsed time in the last game frame.
 		void update(entityx::EntityManager &es, entityx::EventManager &events, double dt) override;
+
+		/// Set the total elapsed time.
+		/// \param totalTime Total time spent in game.
+		void setTotalTime(sf::Time totalTime = sf::seconds(0.f));
 		
 		/// Return the name of the current season.
 		/// \return a wide string with the name of the current season.

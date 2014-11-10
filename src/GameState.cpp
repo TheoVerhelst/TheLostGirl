@@ -20,6 +20,7 @@
 #include <TheLostGirl/SpriteSheetAnimation.h>
 #include <TheLostGirl/Parameters.h>
 #include <TheLostGirl/functions.h>
+#include <TheLostGirl/events.h>
 
 #include <TheLostGirl/GameState.h>
 
@@ -34,7 +35,6 @@ GameState::GameState(StateStack& stack, Context context) :
 	m_numberOfPlans{1},
 	m_referencePlan{0.f},
 	m_levelRect{0, 0, 0, 1080},
-	m_loadingFinished{false},
 	m_threadLoad(&GameState::initWorld, this)
 {
 	m_threadLoad.launch();
@@ -53,48 +53,36 @@ GameState::~GameState()
 
 void GameState::draw()
 {
-	if(m_loadingFinished)
-	{
-		getContext().systemManager.update<Render>(sf::Time::Zero.asSeconds());
-		//The drag and drop system draw a line on the screen, so we must put it here
-		getContext().systemManager.update<DragAndDropSystem>(sf::Time::Zero.asSeconds());
-	}
+	getContext().systemManager.update<Render>(sf::Time::Zero.asSeconds());
+	//The drag and drop system draw a line on the screen, so we must put it here
+	getContext().systemManager.update<DragAndDropSystem>(sf::Time::Zero.asSeconds());
 }
 
 bool GameState::update(sf::Time elapsedTime)
 {
-	if(m_loadingFinished)
-	{
-		getContext().systemManager.update<Physics>(elapsedTime.asSeconds());
-		getContext().systemManager.update<Actions>(elapsedTime.asSeconds());
-		getContext().systemManager.update<AnimationSystem>(elapsedTime.asSeconds());
-		getContext().systemManager.update<ScrollingSystem>(elapsedTime.asSeconds());
-		getContext().systemManager.update<TimeSystem>(elapsedTime.asSeconds()*m_timeSpeed);//Scale the time
-		getContext().systemManager.update<SkySystem>(getContext().systemManager.system<TimeSystem>()->getRealTime().asSeconds());
-	}
+	getContext().systemManager.update<Physics>(elapsedTime.asSeconds());
+	getContext().systemManager.update<Actions>(elapsedTime.asSeconds());
+	getContext().systemManager.update<AnimationSystem>(elapsedTime.asSeconds());
+	getContext().systemManager.update<ScrollingSystem>(elapsedTime.asSeconds());
+	getContext().systemManager.update<TimeSystem>(elapsedTime.asSeconds()*m_timeSpeed);//Scale the time
+	getContext().systemManager.update<SkySystem>(getContext().systemManager.system<TimeSystem>()->getRealTime().asSeconds());
 	return false;
 }
 
 bool GameState::handleEvent(const sf::Event& event)
 {
-	if(m_loadingFinished)
-	{
-		if(event.type == sf::Event::KeyPressed and event.key.code == sf::Keyboard::Escape)
-			requestStackPush(States::Pause);
-		
-		getContext().player.handleEvent(event, getContext().commandQueue);
-		//Update the drag and drop state
-		bool isDragAndDropActive{getContext().player.isActived(Player::Action::Bend)};
-		getContext().systemManager.system<DragAndDropSystem>()->setDragAndDropActivation(isDragAndDropActive);
-	}
+	if(event.type == sf::Event::KeyPressed and event.key.code == sf::Keyboard::Escape)
+		requestStackPush(States::Pause);
+	
+	getContext().player.handleEvent(event, getContext().commandQueue);
+	//Update the drag and drop state
+	bool isDragAndDropActive{getContext().player.isActived(Player::Action::Bend)};
+	getContext().systemManager.system<DragAndDropSystem>()->setDragAndDropActivation(isDragAndDropActive);
 	return false;
 }
 
 void GameState::initWorld()
 {
-	//Push the loading state
-	requestStackPush(States::Loading);
-	
 	const std::string filePath{"ressources/levels/save.json"};
 	const float scale = getContext().parameters.scale;
 	const float pixelScale = getContext().parameters.pixelScale;
@@ -124,7 +112,7 @@ void GameState::initWorld()
 			
 			//date
 			if(time.isMember("date"))
-				getContext().systemManager.update<TimeSystem>(time["date"].asFloat());
+				getContext().systemManager.system<TimeSystem>()->setTotalTime(sf::seconds(time["date"].asFloat()));
 			
 			//speed
 			if(time.isMember("speed"))
@@ -218,8 +206,8 @@ void GameState::initWorld()
 						//If the texture is not alreday loaded (first loading of the level)
 						if(not texManager.isLoaded(textureIdentifier))
 						{
+							getContext().eventManager.emit<LoadingStateChange>(float(i*100)/float(m_numberOfPlans+1) + (float(j*100)/float(plan.size()*(m_numberOfPlans+1))), L"Loading plan " + std::to_wstring(i) + L" image " + std::to_wstring(j));
 							texManager.load<sf::IntRect>(textureIdentifier, path, sf::IntRect(ox, oy, ow, oh));
-							std::cout << "Loaded plan " << i << " image " << j << ", of size " << ow << "x" << oh << "px!" << std::endl;
 						}
 						
 						//Replaces
@@ -265,8 +253,8 @@ void GameState::initWorld()
 						//If the texture is not alreday loaded (first loading of the level)
 						if(not texManager.isLoaded(textureIdentifier))
 						{
+							getContext().eventManager.emit<LoadingStateChange>((float(i*100)/float(m_numberOfPlans+1)) + (float(j*100)/float(numberOfChunks*(m_numberOfPlans+1))), L"Loading plan " + std::to_wstring(i) + L" chunk " + std::to_wstring(j));
 							texManager.load<sf::IntRect>(textureIdentifier, path, sf::IntRect(j*chunkSize, 0, currentChunkSize, m_levelRect.height*getContext().parameters.scale));
-							std::cout << "Loaded plan " << i << " chunk " << j << ", of size " << currentChunkSize << "px!" << std::endl;
 						}
 						//Create an entity
 						m_entities.emplace(textureIdentifier, getContext().entityManager.create());
@@ -899,8 +887,8 @@ void GameState::initWorld()
 		sf::Vector2f origin{(2900.f/2.f) * scale, (2900.f/2.f) * scale};
 		if(not texManager.isLoaded(dayIdentifier))
 		{
+			getContext().eventManager.emit<LoadingStateChange>(float(m_numberOfPlans*100)/float(m_numberOfPlans+1), L"Loading day sky");
 			texManager.load(dayIdentifier, paths[getContext().parameters.scaleIndex] + "day.png");
-			std::cout << "Loaded day sky!" << std::endl;
 		}
 		//Create an entity
 		m_entities.emplace(dayIdentifier, getContext().entityManager.create());
@@ -917,8 +905,8 @@ void GameState::initWorld()
 		const std::string nightIdentifier{"night sky"};
 		if(not texManager.isLoaded(nightIdentifier))
 		{
+			getContext().eventManager.emit<LoadingStateChange>(float(m_numberOfPlans*100 + 50)/float(m_numberOfPlans+1), L"Loading night sky");
 			texManager.load(nightIdentifier, paths[getContext().parameters.scaleIndex] + "night.png");
-			std::cout << "Loaded night sky!" << std::endl;
 		}
 		//Create an entity
 		m_entities.emplace(nightIdentifier, getContext().entityManager.create());
@@ -951,7 +939,6 @@ void GameState::initWorld()
 	getContext().world.SetContactListener(&m_contactListener);
 	getContext().systemManager.system<ScrollingSystem>()->setLevelData(m_levelRect, m_referencePlan);
 	
-	m_loadingFinished = true;
-	//Pop the loading state
 	requestStackPop();
+	Body::Handle bodyComp;
 }

@@ -99,11 +99,7 @@ void SkySystem::update(entityx::EntityManager& entityManager, entityx::EventMana
 {
 	SkyComponent::Handle skyComponent;
 	SpriteComponent::Handle spriteComponent;
-	//Modulo don't work on floating point numbers, so we must do that in that way
-	while(spentTime < 0.f)
-		spentTime += 600.f;//The time must be greater than 0
-	while(spentTime > 600.f)
-		spentTime -= 600.f;//The time must be lower than 600
+	spentTime = remainder(spentTime, 600.f);//Get elapsed time since midnight
 	
 	for(auto entity : entityManager.entities_with_components(skyComponent, spriteComponent))
 	{
@@ -279,6 +275,51 @@ void AnimationSystem::update(entityx::EntityManager& entityManager, entityx::Eve
 TimeSystem::~TimeSystem()
 {}
 
+void TimeSystem::update(entityx::EntityManager& entityManager, entityx::EventManager&, double dt)
+{
+	m_totalTime += dt;
+	float seasonFactor = sin((m_totalTime / 24000.f) * 360.f); //Vary between -1  and 1, maximum in the spring and the automn
+	seasonFactor = (seasonFactor + 1.f) / 2.f; //Now between 0 and 1
+
+	/*
+	The wind works by period of a random number of seconds, m_windTransitionLength,
+	and choose a new random number, m_nextWindStrength, at every end of period,
+	So the old m_nextWindStrength become m_initialWindStrength,
+	and the wind tends to be progressively equal to m_nextWindStrength.
+	The wind is also influenced by windStrengthSeasonFactor.
+	This system is applied a second time, in smaller proportions.
+	*/
+	if(m_totalTime >= m_periodBeginning + m_windTransitionLength)//End of a period
+	{
+		m_periodBeginning = m_totalTime;
+		m_initialWindStrength = m_nextWindStrength;
+		m_windTransitionLength = static_cast<float>(rand() % 586000 + 15000) / 1000.f; //A random number between 15 and 600
+		m_nextWindStrength = static_cast<float>(rand() % 21000 - 10000) / 1000.f; //Another random number, between -10 and 10
+	}
+
+	float deltaStrength = m_nextWindStrength - m_initialWindStrength;
+	float elapsedTimeSincePeriodBeginning = m_totalTime - m_periodBeginning;
+	m_windStrength = m_initialWindStrength + (deltaStrength * elapsedTimeSincePeriodBeginning / m_windTransitionLength);
+
+	if(m_totalTime >= m_microPeriodBeginning + m_microWindTransitionLength)//End of a period
+	{
+		m_microPeriodBeginning = m_totalTime;
+		m_microInitialWindStrength = m_microNextWindStrength;
+		m_microWindTransitionLength = static_cast<float>(rand() % 1600 + 500) / 5000.f; //A random number between 0.5 and 2
+		m_microNextWindStrength = static_cast<float>(rand() % 1000 - 2000) / 1000.f; //Another random number, between -1 and 1
+	}
+
+	deltaStrength = m_microNextWindStrength - m_microInitialWindStrength;
+	elapsedTimeSincePeriodBeginning = m_totalTime - m_microPeriodBeginning;
+	m_windStrength += m_microInitialWindStrength + (deltaStrength * elapsedTimeSincePeriodBeginning / m_microWindTransitionLength);
+	m_windStrength *= seasonFactor;//Apply the factor of the season
+}
+
+void TimeSystem::setTotalTime(sf::Time totalTime)
+{
+	m_totalTime = totalTime.asSeconds();
+}
+
 std::wstring TimeSystem::seasonName() const
 {
 	switch(months() / 4)
@@ -362,46 +403,6 @@ std::wstring TimeSystem::getFormatedDate() const
 std::wstring TimeSystem::getFormatedTime() const
 {
 	return std::to_wstring(hours()) + L":" + std::to_wstring(minutes());
-}
-
-void TimeSystem::update(entityx::EntityManager& entityManager, entityx::EventManager&, double dt)
-{
-	m_totalTime += dt;
-	float seasonFactor = sin((m_totalTime / 24000.f) * 360.f); //Vary between -1  and 1, maximum in the spring and the automn
-	seasonFactor = (seasonFactor + 1.f) / 2.f; //Now between 0 and 1
-
-	/*
-	The wind works by period of a random number of seconds, m_windTransitionLength,
-	and choose a new random number, m_nextWindStrength, at every end of period,
-	So the old m_nextWindStrength become m_initialWindStrength,
-	and the wind tends to be progressively equal to m_nextWindStrength.
-	The wind is also influenced by windStrengthSeasonFactor.
-	This system is applied a second time, in smaller proportions.
-	*/
-	if(m_totalTime >= m_periodBeginning + m_windTransitionLength)//End of a period
-	{
-		m_periodBeginning = m_totalTime;
-		m_initialWindStrength = m_nextWindStrength;
-		m_windTransitionLength = static_cast<float>(rand() % 586000 + 15000) / 1000.f; //A random number between 15 and 600
-		m_nextWindStrength = static_cast<float>(rand() % 21000 - 10000) / 1000.f; //Another random number, between -10 and 10
-	}
-
-	float deltaStrength = m_nextWindStrength - m_initialWindStrength;
-	float elapsedTimeSincePeriodBeginning = m_totalTime - m_periodBeginning;
-	m_windStrength = m_initialWindStrength + (deltaStrength * elapsedTimeSincePeriodBeginning / m_windTransitionLength);
-
-	if(m_totalTime >= m_microPeriodBeginning + m_microWindTransitionLength)//End of a period
-	{
-		m_microPeriodBeginning = m_totalTime;
-		m_microInitialWindStrength = m_microNextWindStrength;
-		m_microWindTransitionLength = static_cast<float>(rand() % 1600 + 500) / 5000.f; //A random number between 0.5 and 2
-		m_microNextWindStrength = static_cast<float>(rand() % 1000 - 2000) / 1000.f; //Another random number, between -1 and 1
-	}
-
-	deltaStrength = m_microNextWindStrength - m_microInitialWindStrength;
-	elapsedTimeSincePeriodBeginning = m_totalTime - m_microPeriodBeginning;
-	m_windStrength += m_microInitialWindStrength + (deltaStrength * elapsedTimeSincePeriodBeginning / m_microWindTransitionLength);
-	m_windStrength *= seasonFactor;//Apply the factor of the season
 }
 
 unsigned TimeSystem::years() const

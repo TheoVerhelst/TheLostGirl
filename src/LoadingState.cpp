@@ -1,33 +1,45 @@
 #include <SFML/System/Time.hpp>
 #include <SFML/Window/Event.hpp>
+#include <TGUI/Gui.hpp>
 
 #include <TheLostGirl/State.h>
+#include <TheLostGirl/LangManager.h>
+#include <TheLostGirl/events.h>
 
 #include <TheLostGirl/LoadingState.h>
 
 LoadingState::LoadingState(StateStack& stack, Context context) :
 	State(stack, context),
-	m_loadLabel(nullptr)
+	m_sentenceLabel{nullptr},
+	m_percentLabel{nullptr}
 {
+	getContext().eventManager.subscribe<LoadingStateChange>(*this);
+	
 	using tgui::bindWidth;
 	using tgui::bindHeight;
 	tgui::Gui& gui = getContext().gui;
 	
-	// Left:   25% of window width
-	// Top:    40% of window height
-	// Width:  50% of window width
-	// Height: 15% of window height
-//	m_loadLabel = tgui::Button::create();
-//	m_loadLabel->setPosition(bindWidth(gui, 0.25f), bindHeight(gui, 0.4f));
-//	m_loadLabel->setSize(bindWidth(gui, 0.5f), bindHeight(gui, 0.15f));
-//	m_loadLabel->setText(LangManager::tr("Loading") + "..");
-//	m_loadLabel->getRenderer()->setBorders(0.f, 0.f);
-//	m_loadLabel->getRenderer()->setProperty("backgroundcolor", "(255, 255, 255, 0)");
-//	m_loadLabel->getRenderer()->setProperty("backgroundcolorhover", "(255, 255, 255, 55)");
-//	m_loadLabel->getRenderer()->setProperty("backgroundcolordown", "(255, 255, 255, 90)");
-//	m_loadLabel->getRenderer()->setProperty("textcolornormal", "(0, 0, 0)");
-//	unsigned int playGameSignal = m_loadLabel->connect("pressed", &MainMenuState::playGame, this);
-//	gui.add(m_loadLabel);
+	m_sentenceLabel = tgui::Label::create();
+	m_sentenceLabel->setTextSize(40);
+	//Center the label
+	m_sentenceLabel->setPosition((bindWidth(gui) - bindWidth(m_sentenceLabel))/2, bindHeight(gui, 0.4));
+	m_sentenceLabel->setText(LangManager::tr("Loading") + L"...");
+	m_sentenceLabel->setTextColor(sf::Color::Black);
+	gui.add(m_sentenceLabel);
+	
+	m_percentLabel = tgui::Label::create();
+	m_percentLabel->setTextSize(35);
+	//Center the label
+	m_percentLabel->setPosition((bindWidth(gui) - bindWidth(m_percentLabel))/2, bindHeight(gui, 0.5));
+	m_percentLabel->setText("0%");
+	m_percentLabel->setTextColor(sf::Color::Black);
+	gui.add(m_percentLabel);
+}
+
+LoadingState::~LoadingState()
+{
+	getContext().gui.remove(m_sentenceLabel);
+	getContext().gui.remove(m_percentLabel);
 }
 
 void LoadingState::draw()
@@ -36,10 +48,16 @@ void LoadingState::draw()
 
 bool LoadingState::update(sf::Time)
 {
-	return true;
+	return false;
 }
 
 bool LoadingState::handleEvent(const sf::Event&)
 {
 	return false;
+}
+
+void LoadingState::receive(const LoadingStateChange &loadingStateChange)
+{
+	m_sentenceLabel->setText(loadingStateChange.sentence);
+	m_percentLabel->setText(std::to_string(loadingStateChange.percent) + "%");
 }
