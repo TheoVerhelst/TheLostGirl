@@ -29,7 +29,6 @@ LoadingState::LoadingState(StateStack& stack, Context context) :
 	m_sentenceLabel->setTextSize(30);
 	//Center the label
 	m_sentenceLabel->setPosition((bindWidth(gui) - bindWidth(m_sentenceLabel))/2, bindHeight(gui, 0.5));
-	m_sentenceLabel->setText(LangManager::tr("Loading") + L"...");
 	m_sentenceLabel->setTextColor(sf::Color::Black);
 	gui.add(m_sentenceLabel);
 	
@@ -37,7 +36,6 @@ LoadingState::LoadingState(StateStack& stack, Context context) :
 	m_percentLabel->setTextSize(50);
 	//Center the label
 	m_percentLabel->setPosition((bindWidth(gui) - bindWidth(m_percentLabel))/2, bindHeight(gui, 0.38));
-	m_percentLabel->setText("0%");
 	m_percentLabel->setTextColor(sf::Color::Black);
 	gui.add(m_percentLabel);
 }

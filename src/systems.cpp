@@ -204,7 +204,7 @@ void Render::update(entityx::EntityManager& entityManager, entityx::EventManager
 void Physics::update(entityx::EntityManager& entityManager, entityx::EventManager&, double dt)
 {
 	int32 velocityIterations = 8;
-	int32 positionIterations = 3;
+	int32 positionIterations = 8;
 	m_world.Step(dt, velocityIterations, positionIterations);
 	BodyComponent::Handle bodyComponent;
 	SpriteComponent::Handle spriteComponent;
@@ -226,7 +226,7 @@ void Physics::update(entityx::EntityManager& entityManager, entityx::EventManage
 	{
 		b2Body* body = bodyComponent->body;
 		b2RevoluteJoint* joint = static_cast<b2RevoluteJoint*>(body->GetJointList()->joint);
-		float angleTarget{bendComponent->angle};
+		float angleTarget{-bendComponent->angle};
 		float32 angleError = joint->GetJointAngle() - angleTarget;
 		float32 gain = 10.f;
 		joint->SetMotorSpeed(-gain * angleError);
@@ -275,7 +275,7 @@ void AnimationSystem::update(entityx::EntityManager& entityManager, entityx::Eve
 TimeSystem::~TimeSystem()
 {}
 
-void TimeSystem::update(entityx::EntityManager& entityManager, entityx::EventManager&, double dt)
+void TimeSystem::update(entityx::EntityManager&, entityx::EventManager&, double dt)
 {
 	m_totalTime += dt;
 	float seasonFactor = sin((m_totalTime / 24000.f) * 360.f); //Vary between -1  and 1, maximum in the spring and the automn

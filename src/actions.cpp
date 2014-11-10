@@ -261,6 +261,5 @@ void BowBender::operator()(entityx::Entity& entity, double) const
 		bendComponent->power = cap(power, 0.f, bendComponent->maxPower);//Cap the power
 		float animationPower = bendComponent->power / bendComponent->maxPower;//The progress of the bending, in the range [0, 1]
 		animations->setProgress("bend"+directionStr, animationPower);
-		std::cout << "bend"+directionStr << " at " << bendComponent->angle << " radians." << std::endl;
 	}
 }
