@@ -59,12 +59,12 @@ void Mover::operator()(entityx::Entity& entity, double) const
 	{
 		//If the entity can walk, set the right animation.
 		if(entity.has_component<AnimationsComponent>()
-			and entity.has_component<Walk>()
+			and entity.has_component<WalkComponent>()
 			and entity.has_component<DirectionComponent>())
 		{
 			Animations* animations = entity.component<AnimationsComponent>()->animations;
 			DirectionComponent::Handle directionComponent = entity.component<DirectionComponent>();
-			Walk::Handle walkComponent = entity.component<Walk>();
+			WalkComponent::Handle walkComponent = entity.component<WalkComponent>();
 			//References to the moveToLeft and moveToRight data in directionComponent
 			bool& moveToDirection = (direction == Direction::Left ? directionComponent->moveToLeft : directionComponent->moveToRight);
 			bool& moveToOppDirection = (direction == Direction::Right ? directionComponent->moveToLeft : directionComponent->moveToRight);
@@ -106,7 +106,7 @@ void Mover::operator()(entityx::Entity& entity, double) const
 		}
 		//If the entity can jump, set the right animation if it jumps
 		if(entity.has_component<AnimationsComponent>()
-			and entity.has_component<Jump>()
+			and entity.has_component<JumpComponent>()
 			and entity.has_component<FallComponent>()
 			and entity.has_component<DirectionComponent>())
 		{
@@ -147,14 +147,14 @@ Jumper::~Jumper()
 void Jumper::operator()(entityx::Entity& entity, double) const
 {
 	if(entity.has_component<AnimationsComponent>()
-		and entity.has_component<Body>()
-		and entity.has_component<Jump>()
+		and entity.has_component<BodyComponent>()
+		and entity.has_component<JumpComponent>()
 		and entity.has_component<FallComponent>()
 		and entity.has_component<DirectionComponent>())
 	{
 		Animations* animations = entity.component<AnimationsComponent>()->animations;
-		b2Body* body = entity.component<Body>()->body;
-		Jump::Handle jumpComponent = entity.component<Jump>();
+		b2Body* body = entity.component<BodyComponent>()->body;
+		JumpComponent::Handle jumpComponent = entity.component<JumpComponent>();
 		FallComponent::Handle fallComponent = entity.component<FallComponent>();
 		DirectionComponent::Handle directionComponent = entity.component<DirectionComponent>();
 		if(not fallComponent->inAir)

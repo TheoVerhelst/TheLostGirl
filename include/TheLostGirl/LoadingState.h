@@ -48,6 +48,7 @@ class LoadingState : public State, public entityx::Receiver<LoadingState>
 
 	private:
 		tgui::Label::Ptr m_sentenceLabel;
+		std::wstring m_sentence;
 		tgui::Label::Ptr m_percentLabel;
 };
 

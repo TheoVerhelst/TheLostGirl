@@ -58,6 +58,7 @@ bool LoadingState::handleEvent(const sf::Event&)
 
 void LoadingState::receive(const LoadingStateChange &loadingStateChange)
 {
-	m_sentenceLabel->setText(loadingStateChange.sentence);
+	m_sentence = loadingStateChange.sentence + L"...";
+	m_sentenceLabel->setText(m_sentence);
 	m_percentLabel->setText(std::to_string(loadingStateChange.percent) + "%");
 }

@@ -22,15 +22,15 @@ namespace entityx
 class b2Body;
 class Animations;
 
-/// Body component.
-/// The Body component store a pointer to a b2Body and is used to simulate physics in the game world.
-struct Body : public entityx::Component<Body>
+/// BodyComponent component.
+/// The BodyComponent component store a pointer to a b2Body and is used to simulate physics in the game world.
+struct BodyComponent : public entityx::Component<BodyComponent>
 {
 	b2Body* body;///< Pointer to the physic body.
 
 	/// Default constructor
 	/// \param _body Pointer to the physic body.
-	Body(b2Body* _body):
+	BodyComponent(b2Body* _body):
 		body{_body}
 	{}
 };
@@ -65,16 +65,16 @@ struct AnimationsComponent : public entityx::Component<AnimationsComponent>
 	{}
 };
 
-/// Jump component.
-/// The Jump component must be added to every entity that want to jump.
+/// The jump component.
+/// The JumpComponent component must be added to every entity that want to jump.
 /// The jumpStrength member influences directly the height of the jump of the entity.
-struct Jump : public entityx::Component<Jump>
+struct JumpComponent : public entityx::Component<JumpComponent>
 {
 	float jumpStrength;///< The power of the entity's jump.
 
 	/// Default constructor
 	/// \param _jumpStrength The power of the entity's jump.
-	Jump(float _jumpStrength = 1.f):
+	JumpComponent(float _jumpStrength = 1.f):
 		jumpStrength{_jumpStrength}
 	{}
 };
@@ -137,17 +137,17 @@ struct DirectionComponent : public entityx::Component<DirectionComponent>
 	{}
 };
 
-/// The Walk component.
+/// The walk component.
 /// The walk component must be added to every entity that want to move itself in the world.
 /// The walkSpeed member is the maximum speed that the entity can reach when walking.
-struct Walk : public entityx::Component<Walk>
+struct WalkComponent : public entityx::Component<WalkComponent>
 {
 	float walkSpeed;            ///< The current speed of the entity.
 	Direction effectiveMovement;///< Indicate the real movement of the entity.
 	
 	/// Default constructor
 	/// \param _walkSpeed The current speed of the entity.
-	Walk(float _walkSpeed = 1.f):
+	WalkComponent(float _walkSpeed = 1.f):
 		walkSpeed{_walkSpeed},
 		effectiveMovement{Direction::None}
 	{}

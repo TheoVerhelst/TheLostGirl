@@ -110,9 +110,9 @@ void DebugDraw::drawDebugAth()
 	{
 		m_debugMode = true;
 		//Find out position
-		Body::Handle bodyComponent;
+		BodyComponent::Handle bodyComponent;
 		CategoryComponent::Handle categoryComponent;
-		Walk::Handle walkComponent;
+		WalkComponent::Handle walkComponent;
 		b2Vec2 position{0, 0};
 		for(auto entity : m_context.entityManager.entities_with_components(bodyComponent, categoryComponent, walkComponent))
 		{

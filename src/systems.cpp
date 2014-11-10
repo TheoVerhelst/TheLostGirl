@@ -46,9 +46,9 @@ void ScrollingSystem::update(entityx::EntityManager& entityManager, entityx::Eve
 {
 	if(m_levelRect != sf::IntRect(0, 0, 0, 0))
 	{
-		Body::Handle bodyComponent;
+		BodyComponent::Handle bodyComponent;
 		CategoryComponent::Handle categoryComponent;
-		Walk::Handle walkComponent;
+		WalkComponent::Handle walkComponent;
 		SpriteComponent::Handle spriteComponent;
 		entityx::Entity playerEntity;
 		bool found{false};
@@ -65,7 +65,7 @@ void ScrollingSystem::update(entityx::EntityManager& entityManager, entityx::Eve
 		}
 		if(found)
 		{
-			Vector2f position = b2tosf(m_parameters.pixelScale * playerEntity.component<Body>()->body->GetPosition());
+			Vector2f position = b2tosf(m_parameters.pixelScale * playerEntity.component<BodyComponent>()->body->GetPosition());
 			View view{m_window.getView()};
 			//Compute the maximum and minimum coordinates that the view can have
 			float xmin{m_levelRect.left*m_parameters.scale + (view.getSize().x / 2)};
@@ -206,9 +206,9 @@ void Physics::update(entityx::EntityManager& entityManager, entityx::EventManage
 	int32 velocityIterations = 8;
 	int32 positionIterations = 3;
 	m_world.Step(dt, velocityIterations, positionIterations);
-	Body::Handle bodyComponent;
+	BodyComponent::Handle bodyComponent;
 	SpriteComponent::Handle spriteComponent;
-	Walk::Handle walkComponent;
+	WalkComponent::Handle walkComponent;
 	BendComponent::Handle bendComponent;
 	//Update the walkers
 	for(auto entity : entityManager.entities_with_components(bodyComponent, walkComponent))
@@ -246,7 +246,7 @@ void AnimationSystem::update(entityx::EntityManager& entityManager, entityx::Eve
 {
 	AnimationsComponent::Handle animationsComponent;
 	FallComponent::Handle fallComponent;
-	Body::Handle bodyComponent;
+	BodyComponent::Handle bodyComponent;
 	DirectionComponent::Handle directionComponent;
 	BendComponent::Handle bendComponent;
 	

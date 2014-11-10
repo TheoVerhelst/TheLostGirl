@@ -44,8 +44,8 @@ GameState::~GameState()
 {
 	for(auto& pair : m_entities)
 	{
-		if(pair.second.has_component<Body>())
-			getContext().world.DestroyBody(pair.second.component<Body>()->body);
+		if(pair.second.has_component<BodyComponent>())
+			getContext().world.DestroyBody(pair.second.component<BodyComponent>()->body);
 		pair.second.destroy();
 	}
 	getContext().world.ClearForces();
@@ -88,6 +88,7 @@ void GameState::initWorld()
 	const float pixelScale = getContext().parameters.pixelScale;
 	const float uniqScale = scale / pixelScale;//The pixel/meters scale at the maximum resolution, about 1.f/120.f
 	TextureManager& texManager = getContext().textureManager;
+	getContext().eventManager.emit<LoadingStateChange>(0, LangManager::tr("Loading save file"));
 	try
 	{
 		//Parse the level data
@@ -206,7 +207,7 @@ void GameState::initWorld()
 						//If the texture is not alreday loaded (first loading of the level)
 						if(not texManager.isLoaded(textureIdentifier))
 						{
-							getContext().eventManager.emit<LoadingStateChange>(float(i*100)/float(m_numberOfPlans+1) + (float(j*100)/float(plan.size()*(m_numberOfPlans+1))), L"Loading plan " + std::to_wstring(i) + L" image " + std::to_wstring(j));
+							getContext().eventManager.emit<LoadingStateChange>(float(i*100)/float(m_numberOfPlans+1) + (float(j*100)/float(plan.size()*(m_numberOfPlans+1))), LangManager::tr("Loading plan") + L" " + std::to_wstring(i));
 							texManager.load<sf::IntRect>(textureIdentifier, path, sf::IntRect(ox, oy, ow, oh));
 						}
 						
@@ -253,7 +254,7 @@ void GameState::initWorld()
 						//If the texture is not alreday loaded (first loading of the level)
 						if(not texManager.isLoaded(textureIdentifier))
 						{
-							getContext().eventManager.emit<LoadingStateChange>((float(i*100)/float(m_numberOfPlans+1)) + (float(j*100)/float(numberOfChunks*(m_numberOfPlans+1))), L"Loading plan " + std::to_wstring(i) + L" chunk " + std::to_wstring(j));
+							getContext().eventManager.emit<LoadingStateChange>((float(i*100)/float(m_numberOfPlans+1)) + (float(j*100)/float(numberOfChunks*(m_numberOfPlans+1))), LangManager::tr("Loading plan") + L" " + std::to_wstring(i));
 							texManager.load<sf::IntRect>(textureIdentifier, path, sf::IntRect(j*chunkSize, 0, currentChunkSize, m_levelRect.height*getContext().parameters.scale));
 						}
 						//Create an entity
@@ -338,11 +339,11 @@ void GameState::initWorld()
 				
 				//walk
 				if(entity.isMember("walk"))
-					m_entities[entityName].assign<Walk>(entity["walk"].asFloat());
+					m_entities[entityName].assign<WalkComponent>(entity["walk"].asFloat());
 				
 				//jump
 				if(entity.isMember("jump"))
-					m_entities[entityName].assign<Jump>(entity["jump"].asFloat());
+					m_entities[entityName].assign<JumpComponent>(entity["jump"].asFloat());
 				
 				//bend
 				if(entity.isMember("bend"))
@@ -392,8 +393,8 @@ void GameState::initWorld()
 																			{"active", Json::booleanValue},
 																			{"gravity scale", Json::realValue},
 																			{"fixtures", Json::arrayValue}});
-					b2BodyDef entityBodyDef;
-					entityBodyDef.userData = &m_entities[entityName];
+					b2BodyDef entityBodyComponentDef;
+					entityBodyComponentDef.userData = &m_entities[entityName];
 					
 					//type
 					if(body.isMember("type"))
@@ -401,11 +402,11 @@ void GameState::initWorld()
 						const Json::Value type = body["type"];
 						parseValue(type, "entities." + entityName + ".body.type", {"static", "kinematic", "dynamic"});
 						if(type == "static")
-							entityBodyDef.type = b2_staticBody;
+							entityBodyComponentDef.type = b2_staticBody;
 						else if(type == "kinematic")
-							entityBodyDef.type = b2_kinematicBody;
+							entityBodyComponentDef.type = b2_kinematicBody;
 						else if(type == "dynamic")
-							entityBodyDef.type = b2_dynamicBody;
+							entityBodyComponentDef.type = b2_dynamicBody;
 					}
 					
 					//position
@@ -414,14 +415,14 @@ void GameState::initWorld()
 						const Json::Value position = body["position"];
 						parseObject(position, "entities." + entityName + ".body.position", {{"x", Json::realValue}, {"y", Json::realValue}});
 						if(position.isMember("x"))
-							entityBodyDef.position.x = position["x"].asFloat()*uniqScale;
+							entityBodyComponentDef.position.x = position["x"].asFloat()*uniqScale;
 						if(position.isMember("y"))
-							entityBodyDef.position.y = position["y"].asFloat()*uniqScale;
+							entityBodyComponentDef.position.y = position["y"].asFloat()*uniqScale;
 					}
 					
 					//angle
 					if(body.isMember("angle"))
-						entityBodyDef.angle = body["angle"].asFloat();
+						entityBodyComponentDef.angle = body["angle"].asFloat();
 					
 					//linear velocity
 					if(body.isMember("linear velocity"))
@@ -429,49 +430,49 @@ void GameState::initWorld()
 						const Json::Value linearVelocity = body["linear velocity"];
 						parseObject(linearVelocity, "entities." + entityName + ".body.linear velocity", {{"x", Json::realValue}, {"y", Json::realValue}});
 						if(linearVelocity.isMember("x"))
-							entityBodyDef.linearVelocity.x = linearVelocity["x"].asFloat()*uniqScale;
+							entityBodyComponentDef.linearVelocity.x = linearVelocity["x"].asFloat()*uniqScale;
 						if(linearVelocity.isMember("y"))
-							entityBodyDef.linearVelocity.y = linearVelocity["y"].asFloat()*uniqScale;
+							entityBodyComponentDef.linearVelocity.y = linearVelocity["y"].asFloat()*uniqScale;
 					}
 					
 					//angular velocity
 					if(body.isMember("angular velocity"))
-						entityBodyDef.angularVelocity = body["angular velocity"].asFloat();
+						entityBodyComponentDef.angularVelocity = body["angular velocity"].asFloat();
 					
 					//linear damping
 					if(body.isMember("linear damping"))
-						entityBodyDef.linearDamping = body["linear damping"].asFloat();
+						entityBodyComponentDef.linearDamping = body["linear damping"].asFloat();
 					
 					//angular damping
 					if(body.isMember("angular damping"))
-						entityBodyDef.angularDamping = body["angular damping"].asFloat();
+						entityBodyComponentDef.angularDamping = body["angular damping"].asFloat();
 					
 					//allow sleep
 					if(body.isMember("allow sleep"))
-						entityBodyDef.allowSleep = body["allow sleep"].asBool();
+						entityBodyComponentDef.allowSleep = body["allow sleep"].asBool();
 					
 					//awake
 					if(body.isMember("awake"))
-						entityBodyDef.awake = body["awake"].asBool();
+						entityBodyComponentDef.awake = body["awake"].asBool();
 					
 					//fixed rotation
 					if(body.isMember("fixed rotation"))
-						entityBodyDef.fixedRotation = body["fixed rotation"].asBool();
+						entityBodyComponentDef.fixedRotation = body["fixed rotation"].asBool();
 					
 					//bullet
 					if(body.isMember("bullet"))
-						entityBodyDef.bullet = body["bullet"].asBool();
+						entityBodyComponentDef.bullet = body["bullet"].asBool();
 					
 					//active
 					if(body.isMember("active"))
-						entityBodyDef.active = body["active"].asBool();
+						entityBodyComponentDef.active = body["active"].asBool();
 					
 					//gravity scale
 					if(body.isMember("gravity scale"))
-						entityBodyDef.gravityScale = body["gravity scale"].asFloat();
+						entityBodyComponentDef.gravityScale = body["gravity scale"].asFloat();
 					
-					b2Body* entityBody = getContext().world.CreateBody(&entityBodyDef);
-					m_entities[entityName].assign<Body>(entityBody);
+					b2Body* entityBodyComponent = getContext().world.CreateBody(&entityBodyComponentDef);
+					m_entities[entityName].assign<BodyComponent>(entityBodyComponent);
 					
 					//fixtures
 					if(body.isMember("fixtures"))
@@ -636,7 +637,7 @@ void GameState::initWorld()
 							//is sensor
 							if(fixture.isMember("is sensor"))
 								entityFixtureDef.isSensor = fixtures[i]["is sensor"].asBool();
-							entityBody->CreateFixture(&entityFixtureDef);
+							entityBodyComponent->CreateFixture(&entityFixtureDef);
 						}
 					}
 				}
@@ -770,12 +771,12 @@ void GameState::initWorld()
 				//Assert that theses entities are defined
 				requireValues(root, "root", {{"entities", Json::objectValue}});
 				requireValues(root["entities"], "entities", {{first, Json::objectValue}, {second, Json::objectValue}});
-				if(not m_entities[first].has_component<Body>())
+				if(not m_entities[first].has_component<BodyComponent>())
 					throw std::runtime_error("\"entities." + first + "\" required by \"joints." + std::to_string(i) + ".first\" has no body member.");
-				if(not m_entities[second].has_component<Body>())
+				if(not m_entities[second].has_component<BodyComponent>())
 					throw std::runtime_error("\"entities." + second + "\" required by \"joints." + std::to_string(i) + ".second\" has no body member.");
-				b2Body * bodyFirst{m_entities[first].component<Body>()->body};
-				b2Body * bodySecond{m_entities[second].component<Body>()->body};
+				b2Body * bodyFirst{m_entities[first].component<BodyComponent>()->body};
+				b2Body * bodySecond{m_entities[second].component<BodyComponent>()->body};
 							
 				//type
 				const Json::Value type = joint["type"];
@@ -887,7 +888,7 @@ void GameState::initWorld()
 		sf::Vector2f origin{(2900.f/2.f) * scale, (2900.f/2.f) * scale};
 		if(not texManager.isLoaded(dayIdentifier))
 		{
-			getContext().eventManager.emit<LoadingStateChange>(float(m_numberOfPlans*100)/float(m_numberOfPlans+1), L"Loading day sky");
+			getContext().eventManager.emit<LoadingStateChange>(float(m_numberOfPlans*100)/float(m_numberOfPlans+1), LangManager::tr("Loading day sky"));
 			texManager.load(dayIdentifier, paths[getContext().parameters.scaleIndex] + "day.png");
 		}
 		//Create an entity
@@ -896,7 +897,7 @@ void GameState::initWorld()
 		m_sprites.emplace(dayIdentifier, sf::Sprite(texManager.get(dayIdentifier)));
 		//Assign origin of the sprite to the center of the day image
 		m_sprites[dayIdentifier].setOrigin(origin);
-		//Assign the sprite to the entity, and set its z-ordinate to infinity
+		//Assign the sprite to the entity, and set its z-ordinate to positive infinity
 		m_entities[dayIdentifier].assign<SpriteComponent>(&m_sprites[dayIdentifier], sf::Vector3f(position.x, position.y, std::numeric_limits<double>::infinity()));
 		m_entities[dayIdentifier].assign<SkyComponent>(true);
 		m_entities[dayIdentifier].assign<CategoryComponent>(Category::Scene);
@@ -905,7 +906,7 @@ void GameState::initWorld()
 		const std::string nightIdentifier{"night sky"};
 		if(not texManager.isLoaded(nightIdentifier))
 		{
-			getContext().eventManager.emit<LoadingStateChange>(float(m_numberOfPlans*100 + 50)/float(m_numberOfPlans+1), L"Loading night sky");
+			getContext().eventManager.emit<LoadingStateChange>(float(m_numberOfPlans*100 + 50)/float(m_numberOfPlans+1), LangManager::tr("Loading night sky"));
 			texManager.load(nightIdentifier, paths[getContext().parameters.scaleIndex] + "night.png");
 		}
 		//Create an entity
@@ -914,7 +915,7 @@ void GameState::initWorld()
 		m_sprites.emplace(nightIdentifier, sf::Sprite(texManager.get(nightIdentifier)));
 		//Assign origin of the sprite to the center of the night image
 		m_sprites[nightIdentifier].setOrigin(origin);
-		//Assign the sprite to the entity, and set its z-ordinate to infinity
+		//Assign the sprite to the entity, and set its z-ordinate to positive infinity
 		m_entities[nightIdentifier].assign<SpriteComponent>(&m_sprites[nightIdentifier], sf::Vector3f(position.x, position.y, std::numeric_limits<double>::infinity()));
 		m_entities[nightIdentifier].assign<SkyComponent>(false);
 		m_entities[nightIdentifier].assign<CategoryComponent>(Category::Scene);
@@ -926,8 +927,8 @@ void GameState::initWorld()
 		//Clear game content in order to prevent segmentation faults.
 		for(auto& pair : m_entities)
 		{
-			if(pair.second.has_component<Body>())
-				getContext().world.DestroyBody(pair.second.component<Body>()->body);
+			if(pair.second.has_component<BodyComponent>())
+				getContext().world.DestroyBody(pair.second.component<BodyComponent>()->body);
 			pair.second.destroy();
 		}
 		m_entities.clear();
@@ -938,7 +939,5 @@ void GameState::initWorld()
 	getContext().player.handleInitialInputState(getContext().commandQueue);
 	getContext().world.SetContactListener(&m_contactListener);
 	getContext().systemManager.system<ScrollingSystem>()->setLevelData(m_levelRect, m_referencePlan);
-	
 	requestStackPop();
-	Body::Handle bodyComp;
 }

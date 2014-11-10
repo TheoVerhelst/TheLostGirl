@@ -55,7 +55,7 @@ void ContactListener::BeginContact(b2Contact* contact)
 				Animations* animations = entityA->component<AnimationsComponent>()->animations;
 				animations->stop("fall right");
 				animations->stop("fall left");
-				if(entityA->has_component<Jump>())
+				if(entityA->has_component<JumpComponent>())
 				{
 					animations->stop("jump right");
 					animations->stop("jump left");
@@ -95,7 +95,7 @@ void ContactListener::EndContact(b2Contact* contact)
 		{
 			if(entityA->has_component<AnimationsComponent>() and
 				entityA->has_component<DirectionComponent>() and
-				not entityA->has_component<Jump>())
+				not entityA->has_component<JumpComponent>())
 			{
 				Animations* animations = entityA->component<AnimationsComponent>()->animations;
 				DirectionComponent::Handle directionComponent = entityA->component<DirectionComponent>();
