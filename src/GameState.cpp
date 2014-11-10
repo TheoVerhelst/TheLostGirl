@@ -229,6 +229,7 @@ void GameState::initWorld()
 							m_sprites.emplace(textureIdentifier, sf::Sprite(texManager.get(textureIdentifier)));
 							//Assign the sprite to the entity
 							m_entities[textureIdentifier].assign<SpriteComponent>(&m_sprites[textureIdentifier], sf::Vector3f(rx, ry, static_cast<float>(i)));
+							m_sprites[textureIdentifier].setPosition(rx, ry);
 							m_entities[textureIdentifier].assign<CategoryComponent>(Category::Scene);
 						}
 					}
@@ -263,6 +264,7 @@ void GameState::initWorld()
 						m_sprites.emplace(textureIdentifier, sf::Sprite(texManager.get(textureIdentifier)));
 						//Assign the sprite to the entity
 						m_entities[textureIdentifier].assign<SpriteComponent>(&m_sprites[textureIdentifier], sf::Vector3f(j*chunkSize, 0, static_cast<float>(i)));
+						m_sprites[textureIdentifier].setPosition(j*chunkSize, 0);
 						m_entities[textureIdentifier].assign<CategoryComponent>(Category::Scene);
 					}
 				}

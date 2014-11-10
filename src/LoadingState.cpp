@@ -19,18 +19,24 @@ LoadingState::LoadingState(StateStack& stack, Context context) :
 	using tgui::bindHeight;
 	tgui::Gui& gui = getContext().gui;
 	
+	m_background = tgui::Panel::create();
+	m_background->setPosition(bindWidth(gui, 0.f), bindHeight(gui, 0.3f));
+	m_background->setSize(bindWidth(gui), bindHeight(gui, 0.35f));
+	m_background->setBackgroundColor(sf::Color(255, 255, 255, 100));
+	gui.add(m_background);
+	
 	m_sentenceLabel = tgui::Label::create();
-	m_sentenceLabel->setTextSize(40);
+	m_sentenceLabel->setTextSize(30);
 	//Center the label
-	m_sentenceLabel->setPosition((bindWidth(gui) - bindWidth(m_sentenceLabel))/2, bindHeight(gui, 0.4));
+	m_sentenceLabel->setPosition((bindWidth(gui) - bindWidth(m_sentenceLabel))/2, bindHeight(gui, 0.5));
 	m_sentenceLabel->setText(LangManager::tr("Loading") + L"...");
 	m_sentenceLabel->setTextColor(sf::Color::Black);
 	gui.add(m_sentenceLabel);
 	
 	m_percentLabel = tgui::Label::create();
-	m_percentLabel->setTextSize(35);
+	m_percentLabel->setTextSize(50);
 	//Center the label
-	m_percentLabel->setPosition((bindWidth(gui) - bindWidth(m_percentLabel))/2, bindHeight(gui, 0.5));
+	m_percentLabel->setPosition((bindWidth(gui) - bindWidth(m_percentLabel))/2, bindHeight(gui, 0.38));
 	m_percentLabel->setText("0%");
 	m_percentLabel->setTextColor(sf::Color::Black);
 	gui.add(m_percentLabel);
@@ -38,6 +44,7 @@ LoadingState::LoadingState(StateStack& stack, Context context) :
 
 LoadingState::~LoadingState()
 {
+	getContext().gui.remove(m_background);
 	getContext().gui.remove(m_sentenceLabel);
 	getContext().gui.remove(m_percentLabel);
 }

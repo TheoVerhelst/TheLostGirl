@@ -148,8 +148,8 @@ void DragAndDropSystem::update(entityx::EntityManager&, entityx::EventManager&, 
 		float power = hypot(delta_x, delta_y);//Distance between the two points
 		float angle = atan2(delta_x, delta_y);//Angle of the line with the horizontal axis
 		angle += b2_pi/2.f;//Turn the angle of 90 degrees to fit with the gameplay requirements
-		if(angle > b2_pi + b2_pi/4.f)//Keep the angle in the range [-3*pi/4, 5*pi/4]
-			angle = angle - 2*b2_pi;
+//		if(angle > b2_pi + b2_pi/4.f)//Keep the angle in the range [-pi, pi]
+//			angle = angle - 2*b2_pi;
 		//Send a command to player's entities to bend them bows according to the drag and drop data
 		Command bendCommand;
 		bendCommand.targetIsSpecific = false;
@@ -214,7 +214,7 @@ void Physics::update(entityx::EntityManager& entityManager, entityx::EventManage
 	for(auto entity : entityManager.entities_with_components(bodyComponent, walkComponent))
 	{
 		b2Body* body = bodyComponent->body;
-		float velocity = 0;
+		float velocity = 0.f;
 		if(walkComponent->effectiveMovement ==  Direction::Left)
 			velocity = -walkComponent->walkSpeed;
 		else if(walkComponent->effectiveMovement ==  Direction::Right)

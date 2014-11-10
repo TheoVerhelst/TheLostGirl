@@ -29,13 +29,12 @@ namespace sf
 /// \return  A new right sized viewport to apply to the view.
 sf::FloatRect handleResize(sf::Event::SizeEvent size);
 
-//Return value capped between min and max
 /// Return \a value capped between \a min and \a max.
 /// That function is useful to keep a number between bounds, e.g. the life of a character between 0 and 100.
 /// \param value Value to cap.
 /// \param min Minimum.
 /// \param max Maximum.
-/// \return A value of type T that is strictly in betweend [min, max].
+/// \return A value of type T that is strictly comprised in [min, max].
 template <typename T, typename U>
 T cap(T value, U min, U max)
 {
@@ -45,6 +44,23 @@ T cap(T value, U min, U max)
 		return max;
 	else
 		return value;
+}
+
+/// Return \a value capped between \a min and \a max.
+/// The \a value is incremented or decremented by \a period until it fits between min and max.
+/// \param value Value to cap.
+/// \param min Minimum.
+/// \param max Maximum.
+/// \param period Value used to in/decrement.
+/// \return A value of type T that is strictly comprised in [min, max].
+template <typename T, typename U>
+T cap(T value, U min, U max, T period)
+{
+	while(value < min)
+		value += period;
+	while(value > max)
+		value -= period;
+	return value;
 }
 
 /// Return a color according to a certain transparent fading.

@@ -2,6 +2,7 @@
 #define LOADINGSTATE_H
 
 #include <TGUI/Label.hpp>
+#include <TGUI/Panel.hpp>
 #include <entityx/Event.h>
 
 //Forward declarations
@@ -47,6 +48,7 @@ class LoadingState : public State, public entityx::Receiver<LoadingState>
 		void receive(const LoadingStateChange &loadingStateChange);
 
 	private:
+		tgui::Panel::Ptr m_background;
 		tgui::Label::Ptr m_sentenceLabel;
 		std::wstring m_sentence;
 		tgui::Label::Ptr m_percentLabel;

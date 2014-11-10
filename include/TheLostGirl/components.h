@@ -74,7 +74,7 @@ struct JumpComponent : public entityx::Component<JumpComponent>
 
 	/// Default constructor
 	/// \param _jumpStrength The power of the entity's jump.
-	JumpComponent(float _jumpStrength = 1.f):
+	JumpComponent(float _jumpStrength):
 		jumpStrength{_jumpStrength}
 	{}
 };
@@ -89,7 +89,7 @@ struct BendComponent : public entityx::Component<BendComponent>
 
 	/// Default constructor
 	/// \param _maxPower The maximum power of the bending of the bow.
-	BendComponent(float _maxPower = 1.f):
+	BendComponent(float _maxPower):
 		angle{0.f},
 		power{0.f},
 		maxPower{_maxPower}
@@ -130,7 +130,7 @@ struct DirectionComponent : public entityx::Component<DirectionComponent>
 
 	/// Default constructor
 	/// \param _direction Indicate the effective direction of the entity.
-	DirectionComponent(Direction _direction = Direction::Left):
+	DirectionComponent(Direction _direction):
 		direction{_direction},
 		moveToLeft{false},
 		moveToRight{false}
@@ -147,7 +147,7 @@ struct WalkComponent : public entityx::Component<WalkComponent>
 	
 	/// Default constructor
 	/// \param _walkSpeed The current speed of the entity.
-	WalkComponent(float _walkSpeed = 1.f):
+	WalkComponent(float _walkSpeed):
 		walkSpeed{_walkSpeed},
 		effectiveMovement{Direction::None}
 	{}
@@ -160,7 +160,7 @@ struct CategoryComponent : public entityx::Component<CategoryComponent>
 
 	/// Default constructor.
 	/// \param _category Category of the entity.
-	CategoryComponent(unsigned int _category = Category::None):
+	CategoryComponent(unsigned int _category):
 		category{_category}
 	{}
 };
