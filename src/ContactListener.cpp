@@ -1,96 +1,33 @@
 #include <iostream>
-#include <utility> //std::swap
-
-#include <Box2D/Dynamics/b2Body.h>
-#include <Box2D/Dynamics/Contacts/b2Contact.h>
-#include <entityx/Entity.h>
-#include <TheLostGirl/components.h>
-#include <TheLostGirl/Animations.h>
 
 #include <TheLostGirl/ContactListener.h>
 
-void ContactListener::PreSolve(b2Contact *contact, const b2Manifold*)
+ContactListener::ContactListener():
+	m_fallingListener(),
+	m_actorIDListener()
+{}
+
+
+void ContactListener::PreSolve(b2Contact* contact, const b2Manifold* oldManifold)
 {
-	b2Body* bodyA = contact->GetFixtureA()->GetBody();
-	entityx::Entity* entityA = static_cast<entityx::Entity*>(bodyA->GetUserData());
-	b2Body* bodyB = contact->GetFixtureB()->GetBody();
-	entityx::Entity* entityB = static_cast<entityx::Entity*>(bodyB->GetUserData());
-	if(entityA->has_component<ActorIDComponent>()
-		and entityB->has_component<ActorIDComponent>())
-	{
-		//If the entities have the same ID
-		if(entityA->component<ActorIDComponent>()->ID == entityB->component<ActorIDComponent>()->ID)
-			contact->SetEnabled(false);
-	}
+	m_fallingListener.PreSolve(contact, oldManifold);
+	m_actorIDListener.PreSolve(contact, oldManifold);
 }
 
 void ContactListener::BeginContact(b2Contact* contact)
 {
-	b2Fixture* fixtureA = contact->GetFixtureA();
-	b2Body* bodyA = fixtureA->GetBody();
-	entityx::Entity* entityA = static_cast<entityx::Entity*>(bodyA->GetUserData());
-	b2Fixture* fixtureB = contact->GetFixtureB();
-	b2Body* bodyB = fixtureB->GetBody();
-	entityx::Entity* entityB = static_cast<entityx::Entity*>(bodyB->GetUserData());
-	//If B is an actor that fall on the ground A
-	if(fixtureB->IsSensor() and entityB->has_component<FallComponent>())
-	{
-		//Swap the pointers
-		std::swap(fixtureA, fixtureB);
-		std::swap(bodyA, bodyB);
-		std::swap(entityA, entityB);
-	}
-	//Now we are sure that A is an actor that fall on the ground B
-	if(fixtureA->IsSensor() and entityA->has_component<FallComponent>())
-	{
-		if(entityA->has_component<AnimationsComponent>() and entityA->has_component<DirectionComponent>())
-		{
-			Animations* animations = entityA->component<AnimationsComponent>()->animations;
-			animations->stop("fall right");
-			animations->stop("fall left");
-			if(entityA->has_component<JumpComponent>())
-			{
-				animations->stop("jump right");
-				animations->stop("jump left");
-			}
-		}
-		entityA->component<FallComponent>()->contactCount++;
-		entityA->component<FallComponent>()->inAir = false;
-	}
+	m_fallingListener.BeginContact(contact);
+	m_actorIDListener.BeginContact(contact);
 }
 
 void ContactListener::EndContact(b2Contact* contact)
 {
-	b2Fixture* fixtureA = contact->GetFixtureA();
-	b2Body* bodyA = fixtureA->GetBody();
-	entityx::Entity* entityA = static_cast<entityx::Entity*>(bodyA->GetUserData());
-	b2Fixture* fixtureB = contact->GetFixtureB();
-	b2Body* bodyB = fixtureB->GetBody();
-	entityx::Entity* entityB = static_cast<entityx::Entity*>(bodyB->GetUserData());
-	//If an actor A fall from the ground B, or if an actor B fall from the ground A
-	if(fixtureB->IsSensor() and entityB->has_component<FallComponent>())
-	{
-		//Swap the pointers
-		std::swap(fixtureA, fixtureB);
-		std::swap(bodyA, bodyB);
-		std::swap(entityA, entityB);
-	}
-	//Now we are sure that A is an actor that fall on the ground B
-	if(fixtureA->IsSensor() and entityA->has_component<FallComponent>())
-	{
-		if(entityA->has_component<AnimationsComponent>() and
-			entityA->has_component<DirectionComponent>() and
-			not entityA->has_component<JumpComponent>())
-		{
-			Animations* animations = entityA->component<AnimationsComponent>()->animations;
-			DirectionComponent::Handle directionComponent = entityA->component<DirectionComponent>();
-			if(directionComponent->direction == Direction::Right)
-				animations->play("fall right");
-			else if(directionComponent->direction == Direction::Left)
-				animations->play("fall left");
-		}
-		entityA->component<FallComponent>()->contactCount--;
-		if(entityA->component<FallComponent>()->contactCount <= 0)
-			entityA->component<FallComponent>()->inAir = true;
-	}
+	m_fallingListener.EndContact(contact);
+	m_actorIDListener.EndContact(contact);
+}
+
+void ContactListener::PostSolve(b2Contact* contact, const b2ContactImpulse* impulse)
+{
+	m_fallingListener.PostSolve(contact, impulse);
+	m_actorIDListener.PostSolve(contact, impulse);
 }

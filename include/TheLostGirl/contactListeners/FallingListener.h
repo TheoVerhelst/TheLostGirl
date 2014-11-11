@@ -1,21 +1,14 @@
-#ifndef CONTACTLISTENER_H
-#define CONTACTLISTENER_H
+#ifndef FALLINGLISTENER_H
+#define FALLINGLISTENER_H
 
 #include <Box2D/Dynamics/b2WorldCallbacks.h>
-
-#include <TheLostGirl/contactListeners/ActorIDListener.h>
-#include <TheLostGirl/contactListeners/FallingListener.h>
 
 /// Collision listener.
 /// - Handle collisions between falling actors and others entities 
 /// to set the right animation and update the FallComponent.
-/// - Disable collision between multiples body of the same actor.
-class ContactListener : public b2ContactListener
+class FallingListener : public b2ContactListener
 {
 	public:
-		///Default constructor.
-		ContactListener();
-		
 		/// This is called after a contact is updated.
 		/// This allows to inspect a contact before it goes to the solver.
 		/// It prevent the collision between entities with the same actor ID.
@@ -34,10 +27,6 @@ class ContactListener : public b2ContactListener
 		/// This is called after the solver is finished.
 		/// This allows to inspect e.g. impulses.
 		void PostSolve(b2Contact* contact, const b2ContactImpulse* impulse);
-	
-	private:
-		FallingListener m_fallingListener;
-		ActorIDListener m_actorIDListener;
 };
 
-#endif // CONTACTLISTENER_H
+#endif // FALLINGLISTENER_H
