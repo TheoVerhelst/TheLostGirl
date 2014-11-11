@@ -27,7 +27,6 @@
 GameState::GameState(StateStack& stack, Context context) :
 	State(stack, context),
 	m_entities(),
-	m_animations(),
 	m_contactListener(),
 	m_timeSpeed{1.f},
 	m_levelIdentifier{""},
@@ -709,8 +708,7 @@ void GameState::initWorld()
 				{
 					const Json::Value animations = entity["spritesheet animations"];
 					parseObject(animations, "entities." + entityName + ".spritesheet animations", Json::objectValue);
-					m_animations[entityName] = Animations();
-					m_entities[entityName].assign<AnimationsComponent>(&m_animations[entityName]);
+					AnimationsComponent::Handle animationsComponent = m_entities[entityName].assign<AnimationsComponent>(Animations());
 					for(std::string& animationName : animations.getMemberNames())
 					{
 						const Json::Value animation = animations[animationName];
@@ -773,7 +771,7 @@ void GameState::initWorld()
 								entityAnimation.addFrame(sf::IntRect(static_cast<float>(x)*scale, static_cast<float>(y)*scale, static_cast<float>(w)*scale, static_cast<float>(h)*scale), relativeDuration);
 							}
 						}
-						m_animations[entityName].addAnimation(animationName, entityAnimation, importance, sf::seconds(duration), loop);
+						animationsComponent->animations.addAnimation(animationName, entityAnimation, importance, sf::seconds(duration), loop);
 					}
 					
 					//play animations
@@ -787,7 +785,7 @@ void GameState::initWorld()
 						{
 							//Assert that the animation is defined
 							requireValues(entity["spritesheet animations"], "entities." + entityName + ".spritesheet animations", {{animationsToPlay[i].asString(), Json::objectValue}});
-							m_animations[entityName].play(animationsToPlay[i].asString());
+							m_entities[entityName].component<AnimationsComponent>()->animations.play(animationsToPlay[i].asString());
 						}
 					}
 					
@@ -800,7 +798,7 @@ void GameState::initWorld()
 						for(Json::ArrayIndex i{0}; i < animationsToActivate.size(); ++i)
 						{
 							requireValues(entity["spritesheet animations"], "entities." + entityName + ".spritesheet animations", {{animationsToActivate[i].asString(), Json::objectValue}});
-							m_animations[entityName].activate(animationsToActivate[i].asString());
+							m_entities[entityName].component<AnimationsComponent>()->animations.activate(animationsToActivate[i].asString());
 						}
 					}
 				}
@@ -994,7 +992,6 @@ void GameState::initWorld()
 			pair.second.destroy();
 		}
 		m_entities.clear();
-		m_animations.clear();
 		getContext().world.ClearForces();
 	}
 	getContext().player.handleInitialInputState(getContext().commandQueue);

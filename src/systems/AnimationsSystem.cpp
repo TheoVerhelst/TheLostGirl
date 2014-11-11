@@ -23,18 +23,18 @@ void AnimationSystem::update(entityx::EntityManager& entityManager, entityx::Eve
 															directionComponent,
 															fallComponent))
 	{
-		Animations* animations = animationsComponent->animations;
+		Animations& animations = animationsComponent->animations;
 		b2Body* body = bodyComponent->body;
 		if(fallComponent->inAir and body->GetLinearVelocity().y > 2.f)
 		{
 			if(directionComponent->direction == Direction::Left)
-				animations->play("fall left");
+				animations.play("fall left");
 			else if(directionComponent->direction == Direction::Right)
-				animations->play("fall right");
+				animations.play("fall right");
 		}
 	}
 	
 	//Update the Animations components
 	for(auto entity : entityManager.entities_with_components(animationsComponent))
-		animationsComponent->animations->update(entity, sf::seconds(dt));
+		animationsComponent->animations.update(entity, sf::seconds(dt));
 }

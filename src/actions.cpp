@@ -82,7 +82,7 @@ void Mover::operator()(entityx::Entity& entity, double) const
 			and entity.has_component<WalkComponent>()
 			and entity.has_component<DirectionComponent>())
 		{
-			Animations* animations = entity.component<AnimationsComponent>()->animations;
+			Animations& animations = entity.component<AnimationsComponent>()->animations;
 			DirectionComponent::Handle directionComponent = entity.component<DirectionComponent>();
 			WalkComponent::Handle walkComponent = entity.component<WalkComponent>();
 			//References to the moveToLeft and moveToRight data in directionComponent
@@ -90,28 +90,28 @@ void Mover::operator()(entityx::Entity& entity, double) const
 			if(start)
 			{
 				//Force to set the right animations
-				animations->stop("stay" + oppDirectionStr);
-				animations->play("stay" + directionStr);
-				animations->stop("move" + oppDirectionStr);
-				animations->play("move" + directionStr);
+				animations.stop("stay" + oppDirectionStr);
+				animations.play("stay" + directionStr);
+				animations.stop("move" + oppDirectionStr);
+				animations.play("move" + directionStr);
 				if(moveToOppDirection)
 				{
 					//Stop the player
 					walkComponent->effectiveMovement = Direction::None;//Stop the player
-					animations->stop("move" + directionStr);
+					animations.stop("move" + directionStr);
 				}
 				else
 					walkComponent->effectiveMovement = direction;
 			}
 			else
 			{
-				animations->stop("move" + directionStr);
+				animations.stop("move" + directionStr);
 				if(moveToOppDirection)
 				{
 					//Force to play the opposite direction animations
-					animations->play("move" + oppDirectionStr);
-					animations->stop("stay" + directionStr);
-					animations->play("stay" + oppDirectionStr);
+					animations.play("move" + oppDirectionStr);
+					animations.stop("stay" + directionStr);
+					animations.play("stay" + oppDirectionStr);
 					walkComponent->effectiveMovement = oppDirection;
 				}
 				else
@@ -124,14 +124,14 @@ void Mover::operator()(entityx::Entity& entity, double) const
 			and entity.has_component<FallComponent>()
 			and entity.has_component<DirectionComponent>())
 		{
-			Animations* animations = entity.component<AnimationsComponent>()->animations;
+			Animations& animations = entity.component<AnimationsComponent>()->animations;
 			//If jumping and diriged to the opposite side
-			if(animations->isActive("jump" + oppDirectionStr))
+			if(animations.isActive("jump" + oppDirectionStr))
 			{
-				float progress = animations->getProgress("jump" + oppDirectionStr);
-				animations->stop("jump" + oppDirectionStr);
-				animations->play("jump" + directionStr);
-				animations->setProgress("jump" + directionStr, progress);
+				float progress = animations.getProgress("jump" + oppDirectionStr);
+				animations.stop("jump" + oppDirectionStr);
+				animations.play("jump" + directionStr);
+				animations.setProgress("jump" + directionStr, progress);
 			}
 		}
 		//If the entity can fall, set the right animation if it falls
@@ -139,14 +139,14 @@ void Mover::operator()(entityx::Entity& entity, double) const
 			and entity.has_component<FallComponent>()
 			and entity.has_component<DirectionComponent>())
 		{
-			Animations* animations = entity.component<AnimationsComponent>()->animations;
+			Animations& animations = entity.component<AnimationsComponent>()->animations;
 			//If falling and diriged to the opposite side
-			if(animations->isActive("fall" + oppDirectionStr))
+			if(animations.isActive("fall" + oppDirectionStr))
 			{
-				float progress = animations->getProgress("fall" + oppDirectionStr);
-				animations->stop("fall" + oppDirectionStr);
-				animations->play("fall" + directionStr);
-				animations->setProgress("fall" + directionStr, progress);
+				float progress = animations.getProgress("fall" + oppDirectionStr);
+				animations.stop("fall" + oppDirectionStr);
+				animations.play("fall" + directionStr);
+				animations.setProgress("fall" + directionStr, progress);
 			}
 		}
 		//If the entity can bend a bow, set the right animation if it bends
@@ -154,23 +154,23 @@ void Mover::operator()(entityx::Entity& entity, double) const
 			and entity.has_component<BendComponent>()
 			and entity.has_component<DirectionComponent>())
 		{
-			Animations* animations = entity.component<AnimationsComponent>()->animations;
+			Animations& animations = entity.component<AnimationsComponent>()->animations;
 //			//If falling and diriged to the opposite side
-//			if(animations->isActive("bend" + oppDirectionStr))
+//			if(animations.isActive("bend" + oppDirectionStr))
 //			{
-//				float progress = animations->getProgress("bend" + oppDirectionStr);
-//				animations->stop("bend" + oppDirectionStr);
-//				animations->activate("bend" + directionStr);
-//				animations->setProgress("bend" + directionStr, progress);
+//				float progress = animations.getProgress("bend" + oppDirectionStr);
+//				animations.stop("bend" + oppDirectionStr);
+//				animations.activate("bend" + directionStr);
+//				animations.setProgress("bend" + directionStr, progress);
 //				entity.component<BendComponent>()->angle = remainder(entity.component<BendComponent>()->angle, b2_pi) - b2_pi;
 //			}
 			DirectionComponent::Handle directionComponent = entity.component<DirectionComponent>();
 			bool moveToOppDirection = (direction == Direction::Right ? directionComponent->moveToLeft : directionComponent->moveToRight);
 			if(start)
 			{
-				float progress = animations->getProgress("bend" + oppDirectionStr);
+				float progress = animations.getProgress("bend" + oppDirectionStr);
 				//If a second key is pressed when the other is held
-				if(animations->isActive("bend" + oppDirectionStr))
+				if(animations.isActive("bend" + oppDirectionStr))
 				{
 					//Flip the angle
 					if(direction == Direction::Left)
@@ -178,21 +178,21 @@ void Mover::operator()(entityx::Entity& entity, double) const
 					else if(direction == Direction::Right)
 						entity.component<BendComponent>()->angle = cap(entity.component<BendComponent>()->angle - b2_pi, -b2_pi/2, b2_pi, 2*b2_pi);
 				}
-				animations->stop("bend" + oppDirectionStr);
-				animations->activate("bend" + directionStr);
-				animations->setProgress("bend" + directionStr, progress);
+				animations.stop("bend" + oppDirectionStr);
+				animations.activate("bend" + directionStr);
+				animations.setProgress("bend" + directionStr, progress);
 			}
 			else if(moveToOppDirection)
 			{
-				float progress = animations->getProgress("bend" + directionStr);
+				float progress = animations.getProgress("bend" + directionStr);
 				//Flip the angle
 				if(direction == Direction::Left)
 					entity.component<BendComponent>()->angle = cap(entity.component<BendComponent>()->angle - b2_pi, -b2_pi, b2_pi/2, 2*b2_pi);
 				else if(direction == Direction::Right)
 					entity.component<BendComponent>()->angle = cap(entity.component<BendComponent>()->angle - b2_pi, -b2_pi/2, b2_pi, 2*b2_pi);
-				animations->stop("bend" + directionStr);
-				animations->activate("bend" + oppDirectionStr);
-				animations->setProgress("bend" + oppDirectionStr, progress);
+				animations.stop("bend" + directionStr);
+				animations.activate("bend" + oppDirectionStr);
+				animations.setProgress("bend" + oppDirectionStr, progress);
 			}
 		}
 	}
@@ -212,7 +212,7 @@ void Jumper::operator()(entityx::Entity& entity, double) const
 		and entity.has_component<FallComponent>()
 		and entity.has_component<DirectionComponent>())
 	{
-		Animations* animations = entity.component<AnimationsComponent>()->animations;
+		Animations& animations = entity.component<AnimationsComponent>()->animations;
 		b2Body* body = entity.component<BodyComponent>()->body;
 		JumpComponent::Handle jumpComponent = entity.component<JumpComponent>();
 		FallComponent::Handle fallComponent = entity.component<FallComponent>();
@@ -221,9 +221,9 @@ void Jumper::operator()(entityx::Entity& entity, double) const
 		{
 			body->SetLinearVelocity({body->GetLinearVelocity().x, -jumpComponent->jumpStrength});
 			if(directionComponent->direction == Direction::Left)
-				animations->play("jump left");
+				animations.play("jump left");
 			else if(directionComponent->direction == Direction::Right)
-				animations->play("jump right");
+				animations.play("jump right");
 		}
 	}
 }
@@ -243,7 +243,7 @@ void BowBender::operator()(entityx::Entity& entity, double) const
 		and entity.has_component<DirectionComponent>())
 	{
 		BendComponent::Handle bendComponent = entity.component<BendComponent>();
-		Animations* animations = entity.component<AnimationsComponent>()->animations;
+		Animations& animations = entity.component<AnimationsComponent>()->animations;
 		DirectionComponent::Handle directionComponent = entity.component<DirectionComponent>();
 		
 		std::string directionStr;//Find the right animation string, and set the angle
@@ -260,6 +260,6 @@ void BowBender::operator()(entityx::Entity& entity, double) const
 		
 		bendComponent->power = cap(power, 0.f, bendComponent->maxPower);//Cap the power
 		float animationPower = bendComponent->power / bendComponent->maxPower;//The progress of the bending, in the range [0, 1]
-		animations->setProgress("bend"+directionStr, animationPower);
+		animations.setProgress("bend"+directionStr, animationPower);
 	}
 }

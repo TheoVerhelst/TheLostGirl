@@ -33,13 +33,13 @@ void FallingListener::BeginContact(b2Contact* contact)
 	{
 		if(entityA->has_component<AnimationsComponent>() and entityA->has_component<DirectionComponent>())
 		{
-			Animations* animations = entityA->component<AnimationsComponent>()->animations;
-			animations->stop("fall right");
-			animations->stop("fall left");
+			Animations& animations = entityA->component<AnimationsComponent>()->animations;
+			animations.stop("fall right");
+			animations.stop("fall left");
 			if(entityA->has_component<JumpComponent>())
 			{
-				animations->stop("jump right");
-				animations->stop("jump left");
+				animations.stop("jump right");
+				animations.stop("jump left");
 			}
 		}
 		entityA->component<FallComponent>()->contactCount++;
@@ -70,12 +70,12 @@ void FallingListener::EndContact(b2Contact* contact)
 			entityA->has_component<DirectionComponent>() and
 			not entityA->has_component<JumpComponent>())
 		{
-			Animations* animations = entityA->component<AnimationsComponent>()->animations;
+			Animations& animations = entityA->component<AnimationsComponent>()->animations;
 			DirectionComponent::Handle directionComponent = entityA->component<DirectionComponent>();
 			if(directionComponent->direction == Direction::Right)
-				animations->play("fall right");
+				animations.play("fall right");
 			else if(directionComponent->direction == Direction::Left)
-				animations->play("fall left");
+				animations.play("fall left");
 		}
 		entityA->component<FallComponent>()->contactCount--;
 		if(entityA->component<FallComponent>()->contactCount <= 0)

@@ -25,10 +25,10 @@ namespace entityx
 /// anim.addFrame(rect2, 0.9f);
 ///
 /// //Add the component to the entity :
-/// AnimationsComponent::Handle animationsComponent = entity->assign<AnimationsComponent>(new Animations());
+/// AnimationsComponent::Handle animationsComponent = entity->assign<AnimationsComponent>(Animations());
 /// //Add the animation to the animations manager
-/// animationsComponent->animations->addAnimation("run", anim, 1, sf::seconds(3.f), true);
-/// animationsComponent->animations->play("run");
+/// animationsComponent->animations.addAnimation("run", anim, 1, sf::seconds(3.f), true);
+/// animationsComponent->animations.play("run");
 /// \endcode
 /// \see AnimationSystem
 ///

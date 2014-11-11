@@ -60,7 +60,6 @@ class GameState : public State
 		void initWorld();
 		
 		std::unordered_map<std::string, entityx::Entity> m_entities;///< A unordered map allow to reference to elements of the list safely, and use those references outside the scope of the GameState class.
-		std::unordered_map<std::string, Animations> m_animations;   ///< Same as above.
 		ContactListener m_contactListener;                          ///< The falling listener.
 		float m_timeSpeed;                                          ///< The speed of the time (usually 1.f). This influes only on the TimeSystem, not on physics!
 		

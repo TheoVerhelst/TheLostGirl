@@ -10,6 +10,7 @@
 #include <entityx/Entity.h>
 
 #include <TheLostGirl/Category.h>
+#include <TheLostGirl/Animations.h>
 
 //Forward declarations
 class b2Body;
@@ -33,12 +34,12 @@ struct BodyComponent : public entityx::Component<BodyComponent>
 /// For more information about sprites, see the SFML doc.
 struct SpriteComponent : public entityx::Component<SpriteComponent>
 {
-	sf::Sprite sprite;        ///< Pointer to the sprite to draw.
+	sf::Sprite sprite;         ///< Sprite to draw.
 	sf::Vector3f worldPosition;///< x and y indicates the target position in the world,and z indicates in wich layer the sprite should be drawn.
 
 	/// Default constructor
-	/// \param _sprite Pointer to the sprite to draw.
-	/// \param _worldPosition Indicate th' position and the layer the sprite should be drawn.
+	/// \param _sprite Sprite to draw.
+	/// \param _worldPosition Indicates the position and the layer wherein the sprite should be drawn.
 	SpriteComponent(const sf::Sprite& _sprite, sf::Vector3f _worldPosition):
 		sprite{_sprite},
 		worldPosition{_worldPosition}
@@ -49,11 +50,11 @@ struct SpriteComponent : public entityx::Component<SpriteComponent>
 /// Essential for every dynamic entity in the game.
 struct AnimationsComponent : public entityx::Component<AnimationsComponent>
 {
-	Animations* animations;///< Pointer to the animations manager.
+	Animations animations;///< Animations manager.
 
 	/// Default constructor.
-	/// \param _animations Pointer to the animations manager.
-	AnimationsComponent(Animations* _animations):
+	/// \param _animations Animations manager.
+	AnimationsComponent(const Animations& _animations):
 		animations{_animations}
 	{}
 };
