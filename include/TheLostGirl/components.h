@@ -6,6 +6,7 @@
 #include <string>
 
 #include <SFML/System/Vector3.hpp>
+#include <entityx/Entity.h>
 
 #include <TheLostGirl/Category.h>
 
@@ -13,11 +14,6 @@
 namespace sf
 {
 	class Sprite;
-}
-namespace entityx
-{
-	template <typename Derived>
-	struct Component;
 }
 class b2Body;
 class Animations;
@@ -65,51 +61,6 @@ struct AnimationsComponent : public entityx::Component<AnimationsComponent>
 	{}
 };
 
-/// The jump component.
-/// The JumpComponent component must be added to every entity that want to jump.
-/// The jumpStrength member influences directly the height of the jump of the entity.
-struct JumpComponent : public entityx::Component<JumpComponent>
-{
-	float jumpStrength;///< The power of the entity's jump.
-
-	/// Default constructor
-	/// \param _jumpStrength The power of the entity's jump.
-	JumpComponent(float _jumpStrength):
-		jumpStrength{_jumpStrength}
-	{}
-};
-
-/// Bending component.
-/// The BendComponent must be added to every entity that want to bend a bow.
-struct BendComponent : public entityx::Component<BendComponent>
-{
-	float angle;///< The current angle of the bow, in radians
-	float power;///< The current power of the bending of the bow.
-	float maxPower;///< The maximum power of the bending of the bow.
-
-	/// Default constructor
-	/// \param _maxPower The maximum power of the bending of the bow.
-	BendComponent(float _maxPower):
-		angle{0.f},
-		power{0.f},
-		maxPower{_maxPower}
-	{}
-};
-
-/// Falling component.
-/// The fall component must be added to every entity that can fall.
-struct FallComponent : public entityx::Component<FallComponent>
-{
-	bool inAir;                     ///< True when the entity falls, false otherwise.
-	unsigned short int contactCount;///< Number of contacts between the actor and the ground.
-
-	/// Default constructor
-	FallComponent(bool _inAir, unsigned short int _contactCount):
-		inAir{_inAir},
-		contactCount{_contactCount}
-	{}
-};
-
 /// Enumeration of every possible direction.
 enum class Direction
 {
@@ -126,30 +77,16 @@ struct DirectionComponent : public entityx::Component<DirectionComponent>
 {
 	Direction direction;///< Indicate the effective direction of the entity.
 	bool moveToLeft;    ///< Indicate if the entity want to move to left (e.g. left arrow key pressed).
-	bool moveToRight;   ///< Indicate if the entity want to move to right (e.g. right arrow key pressed).
+	bool moveToRight;   ///< Indicate if the entity want to move to right (e.g. left arrow key pressed).
 
 	/// Default constructor
 	/// \param _direction Indicate the effective direction of the entity.
-	DirectionComponent(Direction _direction):
+	/// \param _moveToLeft Indicate if the entity want to move to left (e.g. left arrow key pressed).
+	/// \param _moveToRight Indicate if the entity want to move to right (e.g. right arrow key pressed).
+	DirectionComponent(Direction _direction, bool _moveToLeft, bool _moveToRight):
 		direction{_direction},
-		moveToLeft{false},
-		moveToRight{false}
-	{}
-};
-
-/// The walk component.
-/// The walk component must be added to every entity that want to move itself in the world.
-/// The walkSpeed member is the maximum speed that the entity can reach when walking.
-struct WalkComponent : public entityx::Component<WalkComponent>
-{
-	float walkSpeed;            ///< The current speed of the entity.
-	Direction effectiveMovement;///< Indicate the real movement of the entity.
-	
-	/// Default constructor
-	/// \param _walkSpeed The current speed of the entity.
-	WalkComponent(float _walkSpeed):
-		walkSpeed{_walkSpeed},
-		effectiveMovement{Direction::None}
+		moveToLeft{_moveToLeft},
+		moveToRight{_moveToRight}
 	{}
 };
 
@@ -189,6 +126,97 @@ struct SkyComponent : public entityx::Component<SkyComponent>
 	/// \param _day True if it represent the day, false if it represents the night.
 	SkyComponent(bool _day):
 		day{_day}
+	{}
+};
+
+/// Falling component.
+/// The fall component must be added to every entity that can fall.
+struct FallComponent : public entityx::Component<FallComponent>
+{
+	bool inAir;                     ///< True when the entity falls, false otherwise.
+	unsigned short int contactCount;///< Number of contacts between the actor and the ground.
+
+	/// Default constructor
+	FallComponent(bool _inAir, unsigned short int _contactCount):
+		inAir{_inAir},
+		contactCount{_contactCount}
+	{}
+};
+
+/// The walk component.
+/// The walk component must be added to every entity that want to move itself in the world.
+/// The walkSpeed member is the maximum speed that the entity can reach when walking.
+struct WalkComponent : public entityx::Component<WalkComponent>
+{
+	float walkSpeed;            ///< The current speed of the entity.
+	Direction effectiveMovement;///< Indicate the real movement of the entity.
+	
+	/// Default constructor
+	/// \param _walkSpeed The current speed of the entity.
+	WalkComponent(float _walkSpeed, Direction _effectiveMovemen):
+		walkSpeed{_walkSpeed},
+		effectiveMovement{_effectiveMovemen}
+	{}
+};
+
+/// The jump component.
+/// The JumpComponent component must be added to every entity that want to jump.
+/// The jumpStrength member influences directly the height of the jump of the entity.
+struct JumpComponent : public entityx::Component<JumpComponent>
+{
+	float jumpStrength;///< The power of the entity's jump.
+
+	/// Default constructor
+	/// \param _jumpStrength The power of the entity's jump.
+	JumpComponent(float _jumpStrength):
+		jumpStrength{_jumpStrength}
+	{}
+};
+
+/// Bending component.
+/// The BendComponent must be added to every entity that want to bend a bow.
+struct BendComponent : public entityx::Component<BendComponent>
+{
+	float maxPower;///< The maximum power of the bending of the bow.
+	float power;///< The current power of the bending of the bow.
+	float angle;///< The current angle of the bow, in radians
+
+	/// Default constructor
+	/// \param _maxPower The maximum power of the bending of the bow.
+	BendComponent(float _maxPower, float _power, float _angle):
+		maxPower{_maxPower},
+		power{_power},
+		angle{_angle}
+	{}
+};
+
+/// Health component.
+struct HealthComponent : public entityx::Component<HealthComponent>
+{
+	float maxHealth;///< The maximum health.
+	float health;///< The current health.
+
+	/// Default constructor
+	/// \param _maxHealth The maximum health.
+	/// \param _health The current health.
+	HealthComponent(float _maxHealth, float _health):
+		maxHealth{_maxHealth},
+		health{_health}
+	{}
+};
+
+/// Stamina component.
+struct StaminaComponent : public entityx::Component<StaminaComponent>
+{
+	float maxStamina;///< The maximum stamina.
+	float stamina;///< The current stamina.
+
+	/// Default constructor
+	/// \param _maxStamina The maximum stamina.
+	/// \param _stamina The current stamina.
+	StaminaComponent(float _maxStamina, float _stamina):
+		maxStamina{_maxStamina},
+		stamina{_stamina}
 	{}
 };
 

@@ -4,7 +4,7 @@
 #include <TheLostGirl/State.h>
 #include <TheLostGirl/StateStack.h>
 
-#include <TheLostGirl/IntroState.h>
+#include <TheLostGirl/states/IntroState.h>
 
 IntroState::IntroState(StateStack& stack, Context context) :
 	State(stack, context)

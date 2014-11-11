@@ -3,8 +3,8 @@
 
 #include <Box2D/Dynamics/b2WorldCallbacks.h>
 
-/// Ground collision listener.
-/// - Handle collisions between actors and the ground
+/// Collision listener.
+/// - Handle collisions between falling actors and others entities 
 /// to set the right animation and update the FallComponent.
 /// - Disable collision between multiples body of the same actor.
 class ContactListener : public b2ContactListener

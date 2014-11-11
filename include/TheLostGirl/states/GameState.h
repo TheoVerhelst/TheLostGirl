@@ -8,7 +8,7 @@
 
 #include <SFML/Graphics/Sprite.hpp>
 #include <TheLostGirl/Animations.h>
-#include <TheLostGirl/receivers.h>
+#include <TheLostGirl/ContactListener.h>
 
 //Forward declarations
 namespace sf

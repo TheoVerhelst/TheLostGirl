@@ -5,11 +5,7 @@
 
 #include <TheLostGirl/StateIdentifiers.h>
 #include <TheLostGirl/State.h>
-#include <TheLostGirl/MainMenuState.h>
-#include <TheLostGirl/IntroState.h>
-#include <TheLostGirl/LoadingState.h>
-#include <TheLostGirl/GameState.h>
-#include <TheLostGirl/PauseState.h>
+#include <TheLostGirl/states.h>
 #include <TheLostGirl/components.h>
 #include <TheLostGirl/systems.h>
 #include <TheLostGirl/functions.h>
@@ -152,10 +148,10 @@ void Application::registerStates()
 
 void Application::registerSystems()
 {
-	m_systemManager.add<Physics>(m_world, m_parameters);
-	m_systemManager.add<Actions>(m_commandQueue);
+	m_systemManager.add<PhysicsSystem>(m_world, m_parameters);
+	m_systemManager.add<ActionsSystem>(m_commandQueue);
 	m_systemManager.add<AnimationSystem>();
-	m_systemManager.add<Render>(m_window);
+	m_systemManager.add<RenderSystem>(m_window);
 	m_systemManager.add<DragAndDropSystem>(m_window, m_commandQueue);
 	m_systemManager.add<ScrollingSystem>(m_window, m_parameters);
 	m_systemManager.add<TimeSystem>();

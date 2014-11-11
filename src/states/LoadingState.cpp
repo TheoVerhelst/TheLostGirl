@@ -6,7 +6,7 @@
 #include <TheLostGirl/LangManager.h>
 #include <TheLostGirl/events.h>
 
-#include <TheLostGirl/LoadingState.h>
+#include <TheLostGirl/states/LoadingState.h>
 
 LoadingState::LoadingState(StateStack& stack, Context context) :
 	State(stack, context),

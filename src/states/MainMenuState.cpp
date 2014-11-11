@@ -7,7 +7,7 @@
 #include <TheLostGirl/functions.h>
 #include <TheLostGirl/Parameters.h>
 
-#include <TheLostGirl/MainMenuState.h>
+#include <TheLostGirl/states/MainMenuState.h>
 
 MainMenuState::MainMenuState(StateStack& stack, Context context):
 	State(stack, context),

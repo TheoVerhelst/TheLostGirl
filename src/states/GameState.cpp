@@ -22,7 +22,7 @@
 #include <TheLostGirl/functions.h>
 #include <TheLostGirl/events.h>
 
-#include <TheLostGirl/GameState.h>
+#include <TheLostGirl/states/GameState.h>
 
 GameState::GameState(StateStack& stack, Context context) :
 	State(stack, context),
@@ -53,15 +53,15 @@ GameState::~GameState()
 
 void GameState::draw()
 {
-	getContext().systemManager.update<Render>(sf::Time::Zero.asSeconds());
+	getContext().systemManager.update<RenderSystem>(sf::Time::Zero.asSeconds());
 	//The drag and drop system draw a line on the screen, so we must put it here
 	getContext().systemManager.update<DragAndDropSystem>(sf::Time::Zero.asSeconds());
 }
 
 bool GameState::update(sf::Time elapsedTime)
 {
-	getContext().systemManager.update<Physics>(elapsedTime.asSeconds());
-	getContext().systemManager.update<Actions>(elapsedTime.asSeconds());
+	getContext().systemManager.update<PhysicsSystem>(elapsedTime.asSeconds());
+	getContext().systemManager.update<ActionsSystem>(elapsedTime.asSeconds());
 	getContext().systemManager.update<AnimationSystem>(elapsedTime.asSeconds());
 	getContext().systemManager.update<ScrollingSystem>(elapsedTime.asSeconds());
 	getContext().systemManager.update<TimeSystem>(elapsedTime.asSeconds()*m_timeSpeed);//Scale the time
@@ -284,10 +284,10 @@ void GameState::initWorld()
 				parseObject(entity, "entities." + entityName, {{"sprite", Json::objectValue},
 																{"categories", Json::arrayValue},
 																{"actor ID", Json::intValue},
-																{"walk", Json::realValue},
+																{"walk", Json::objectValue},
 																{"jump", Json::realValue},
-																{"bend", Json::realValue},
-																{"direction", Json::stringValue},
+																{"bend", Json::objectValue},
+																{"direction", Json::objectValue},
 																{"fall", Json::objectValue},
 																{"body", Json::objectValue},
 																{"spritesheet animations", Json::objectValue},
@@ -322,15 +322,15 @@ void GameState::initWorld()
 				{
 					const Json::Value categories = entity["categories"];
 					//Assert that every value in categories is one of the given values
-					parseArray(categories, "entities." + entityName + ".categories", {"player", "ground"});
+					parseArray(categories, "entities." + entityName + ".categories", {"player", "scene"});
 					unsigned int categoriesInt{0};
 					for(Json::ArrayIndex i{0}; i < categories.size(); ++i)
 					{
 						//For each cateory in the list, add it to the entity's category.
 						if(categories[i] == "player")
 							categoriesInt |= Category::Player;
-						else if(categories[i] == "ground")
-							categoriesInt |= Category::Ground;
+						else if(categories[i] == "scene")
+							categoriesInt |= Category::Scene;
 					}
 					m_entities[entityName].assign<CategoryComponent>(categoriesInt);
 				}
@@ -341,7 +341,33 @@ void GameState::initWorld()
 				
 				//walk
 				if(entity.isMember("walk"))
-					m_entities[entityName].assign<WalkComponent>(entity["walk"].asFloat());
+				{
+					const Json::Value walk = entity["walk"];
+					parseObject(walk, "entities." + entityName + ".walk", {{"speed", Json::realValue}, {"effective movement", Json::stringValue}});
+					requireValues(walk, "entities." + entityName + ".walk", {{"speed", Json::realValue}});
+					
+					//speed
+					float speed{walk["speed"].asFloat()};
+					
+					//effective movement
+					Direction effectiveMovementEnum{Direction::None};
+					if(walk.isMember("effective movement"))
+					{
+						const Json::Value effectiveMovement = walk["effective movement"];
+						parseValue(effectiveMovement, "entities." + entityName + ".walk.effective movement", {"left", "right", "top", "bottom", "none"});
+						if(effectiveMovement.asString() == "left")
+							effectiveMovementEnum = Direction::Left;
+						else if(effectiveMovement.asString() == "right")
+							effectiveMovementEnum = Direction::Right;
+						else if(effectiveMovement.asString() == "top")
+							effectiveMovementEnum = Direction::Top;
+						else if(effectiveMovement.asString() == "bottom")
+							effectiveMovementEnum = Direction::Bottom;
+						else if(effectiveMovement.asString() == "none")
+							effectiveMovementEnum = Direction::None;
+					}
+					m_entities[entityName].assign<WalkComponent>(speed, effectiveMovementEnum);
+				}
 				
 				//jump
 				if(entity.isMember("jump"))
@@ -349,23 +375,60 @@ void GameState::initWorld()
 				
 				//bend
 				if(entity.isMember("bend"))
-					m_entities[entityName].assign<BendComponent>(entity["bend"].asFloat());
+				{
+					const Json::Value bend = entity["bend"];
+					parseObject(bend, "entities." + entityName + ".bend", {{"maximum power", Json::realValue}, {"power", Json::realValue}, {"angle", Json::realValue}});
+					requireValues(bend, "entities." + entityName + ".bend", {{"maximum power", Json::realValue}});
+					
+					//maximum power
+					float maxPower{bend["maximum power"].asFloat()};
+					
+					//power
+					float power{0.f};
+					if(bend.isMember("power"))
+						power = bend["power"].asFloat();
+					
+					//angle
+					float angle{0.f};
+					if(bend.isMember("angle"))
+						angle = bend["angle"].asFloat();
+						
+					m_entities[entityName].assign<BendComponent>(maxPower, power, angle);
+				}
 				
 				//direction
 				if(entity.isMember("direction"))
 				{
-					const Json::Value direction = entity["direction"];
+					const Json::Value directionObj = entity["direction"];
+					parseObject(directionObj, "entities." + entityName + ".direction", {{"direction", Json::stringValue}, {"move to left", Json::booleanValue}, {"move to right", Json::booleanValue}});
+					requireValues(directionObj, "entities." + entityName + ".direction", {{"direction", Json::stringValue}});
+					
+					//direction
+					const Json::Value direction = directionObj["direction"];
 					parseValue(direction, "entities." + entityName + ".direction", {"left", "right", "top", "bottom", "none"});
+					Direction directionEnum{Direction::None};
 					if(direction.asString() == "left")
-						m_entities[entityName].assign<DirectionComponent>(Direction::Left);
+						directionEnum = Direction::Left;
 					else if(direction.asString() == "right")
-						m_entities[entityName].assign<DirectionComponent>(Direction::Right);
+						directionEnum = Direction::Right;
 					else if(direction.asString() == "top")
-						m_entities[entityName].assign<DirectionComponent>(Direction::Top);
+						directionEnum = Direction::Top;
 					else if(direction.asString() == "bottom")
-						m_entities[entityName].assign<DirectionComponent>(Direction::Bottom);
+						directionEnum = Direction::Bottom;
 					else if(direction.asString() == "none")
-						m_entities[entityName].assign<DirectionComponent>(Direction::None);
+						directionEnum = Direction::None;
+					
+					//move to left
+					bool moveToLeft{false};
+					if(directionObj.isMember("move to left"))
+						moveToLeft = directionObj["move to left"].asBool();
+					
+					//move to right
+					bool moveToRight{false};
+					if(directionObj.isMember("move to right"))
+						moveToRight = directionObj["move to right"].asBool();
+					
+					m_entities[entityName].assign<DirectionComponent>(directionEnum, moveToLeft, moveToRight);
 				}
 				
 				//fall

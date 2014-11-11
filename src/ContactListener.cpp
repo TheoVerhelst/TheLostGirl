@@ -7,7 +7,7 @@
 #include <TheLostGirl/components.h>
 #include <TheLostGirl/Animations.h>
 
-#include <TheLostGirl/receivers.h>
+#include <TheLostGirl/ContactListener.h>
 
 void ContactListener::PreSolve(b2Contact *contact, const b2Manifold*)
 {
@@ -43,7 +43,6 @@ void ContactListener::BeginContact(b2Contact* contact)
 	//Now we are sure that A is an actor that fall on the ground B
 	if(fixtureA->IsSensor() and entityA->has_component<FallComponent>())
 	{
-		std::cout << "stop air" << std::endl;
 		if(entityA->has_component<AnimationsComponent>() and entityA->has_component<DirectionComponent>())
 		{
 			Animations* animations = entityA->component<AnimationsComponent>()->animations;

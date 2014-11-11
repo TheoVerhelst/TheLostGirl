@@ -5,7 +5,7 @@
 #include <TheLostGirl/LangManager.h>
 #include <TheLostGirl/Player.h>
 
-#include <TheLostGirl/PauseState.h>
+#include <TheLostGirl/states/PauseState.h>
 
 PauseState::PauseState(StateStack& stack, Context context) :
 	State(stack, context),
