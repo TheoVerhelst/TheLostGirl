@@ -14,7 +14,8 @@
 
 void DragAndDropSystem::update(entityx::EntityManager&, entityx::EventManager&, double)
 {
-	if(m_isActive)
+	//If the drag and drop is active and effective
+	if(m_isActive and m_origin != sf::Mouse::getPosition(m_window))
 	{
 		m_line[0].position = m_window.mapPixelToCoords(m_origin);
 		m_line[1].position = m_window.mapPixelToCoords(sf::Mouse::getPosition(m_window));
