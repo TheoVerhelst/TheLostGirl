@@ -94,26 +94,26 @@ void requireValues(const Json::Value& object, const std::string name, std::map<s
 
 /// Check if every element in \a value have the type \a type.
 /// If all elements in the object don't have the right type, an exception is raised.
-/// \param value A Json value containing the data, it must be an object.
+/// \param object A Json value containing the data, it must be an object.
 /// \param name The name of the object.
 /// \param type The expected type of every element in \a object.
 void parseObject(const Json::Value& object, const std::string name, Json::ValueType type);
 
 /// Check if \a value corresponds to one element in \a values, throw an exception otherwise.
-/// \param array A Json value.
+/// \param value A Json value.
 /// \param name The name of the value.
-/// \param valuesTypes The list of every possible value of \a value.
+/// \param values The list of every possible value of \a value.
 void parseValue(const Json::Value& value, const std::string name, std::vector<Json::Value> values);
 
 /// Check if every element in \a array corresponds to one element in \a values, throw an exception otherwise.
 /// \param array A Json value containing the data, it must be an array.
 /// \param name The name of the array.
-/// \param valuesTypes The elements expecteds in \a array.
+/// \param values The elements expecteds in \a array.
 void parseArray(const Json::Value& array, const std::string name, std::vector<Json::Value> values);
 
 /// Check if every element in \a value have the type \a type.
 /// If all elements in the array don't have the right type, an exception is raised.
-/// \param value A Json value containing the data, it must be an array.
+/// \param array A Json value containing the data, it must be an array.
 /// \param name The name of the array.
 /// \param type The expected type of every element in \a array.
 void parseArray(const Json::Value& array, const std::string name, Json::ValueType type);

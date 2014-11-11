@@ -48,13 +48,15 @@ struct Jumper : public Action
 };
 
 /// Structure that bend the given bow.
+/// This action does not have a boolean parameter indicating if the action start or stops,
+/// but must be called at every frame when the bending is active,
+/// since the angle or the power can change.
 struct BowBender : public Action
 {
 	/// Default constructor.
-	/// \param _start True if the bending starts, false if it stops.
 	/// \param _angle The angle of the bending.
 	/// \param _power The power of the bending.
-	BowBender(float _angle = 0.f, float _power = 0.f);
+	BowBender(float _angle, float _power);
 	
 	/// Default destructor
 	virtual ~BowBender();

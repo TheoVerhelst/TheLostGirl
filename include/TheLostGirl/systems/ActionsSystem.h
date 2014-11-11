@@ -24,7 +24,7 @@ class ActionsSystem : public entityx::System<ActionsSystem>
 {
 	public:
 		/// Default constructor.
-		/// \param commandQueue Queue of command where the actions should be in.
+		/// \param commandQueue Queue of command where the actions should be putted in.
 		ActionsSystem(CommandQueue& commandQueue):
 			m_commandQueue(commandQueue)
 		{}
@@ -37,7 +37,7 @@ class ActionsSystem : public entityx::System<ActionsSystem>
 		void update(entityx::EntityManager &es, entityx::EventManager &events, double dt) override;
 
 	private:
-		CommandQueue& m_commandQueue;///< Queue of command where the actions should be in.
+		CommandQueue& m_commandQueue;///< Queue of command where the actions should be putted in.
 };
 
 #endif // ACTIONSSYSTEM_H

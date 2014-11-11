@@ -75,6 +75,7 @@ class StateStack : private sf::NonCopyable
 	private:
 		/// Construct the given state.
 		/// \param stateID Identifier of the state to construct.
+		/// \return A pointer to the created state.
 		State::Ptr createState(States stateID);
 		
 		/// Remove states that need to be removed, constructs others states, ...
@@ -88,7 +89,7 @@ class StateStack : private sf::NonCopyable
 			
 			/// Default constructor.
 			/// \param _action Action to do.
-			/// \param _statID Identifier of the state on wich to do the action.
+			/// \param _stateID Identifier of the state on wich to do the action.
 			explicit PendingChange(Action _action, States _stateID = States::None);
 		};
 		

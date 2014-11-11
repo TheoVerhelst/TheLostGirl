@@ -21,7 +21,7 @@ class PauseState : public State
 	public:
         /// Default constructor.
         /// \param stack StateStack wherein the State is added.
-        /// \param context Context of the game.
+        /// \param context Current context of the application.
 		PauseState(StateStack& stack, Context context);
 		
 		/// Default destructor.
@@ -45,14 +45,20 @@ class PauseState : public State
 		virtual bool handleEvent(const sf::Event& event);
 		
 	private:
+		/// Return to the GameState state and delete this one.
 		void backToGame();
+		
+		/// Add an OptionsState state in top of this one.
 		void goToOptions();
+		
+		/// Go back to the main menu, delete this state and the GameState state.
 		void backToMainMenu();
-		tgui::Panel::Ptr m_background;
-		tgui::Label::Ptr m_pauseLabel;
-		tgui::Button::Ptr m_backToGameButton;
-		tgui::Button::Ptr m_goToOptionsButton;
-		tgui::Button::Ptr m_backToMainMenuButton;
+		
+		tgui::Panel::Ptr m_background;           ///< The background of the menu.
+		tgui::Label::Ptr m_pauseLabel;           ///< The pause label.
+		tgui::Button::Ptr m_backToGameButton;    ///< The Back to game button.
+		tgui::Button::Ptr m_goToOptionsButton;   ///< The Go to options button.
+		tgui::Button::Ptr m_backToMainMenuButton;///< The Back to main menu button.
 };
 
 #endif // PAUSESTATE_H

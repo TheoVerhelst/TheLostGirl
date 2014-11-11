@@ -37,7 +37,7 @@ typedef ResourceManager<sf::Texture, std::string> TextureManager;
 typedef ResourceManager<sf::Font, std::string> FontManager;
 
 /// Base class for the various game states.
-/// In order to make a game state, you must inherit from this class and implement the pure virtal functions.
+/// In order to make a game state, you must inherit from this class and implement the pure virtual members.
 /// The new state must then be registered and pushed in a StateStack.
 class State
 {
@@ -89,26 +89,25 @@ class State
 
         /// Default constructor.
         /// \param stack StateStack wherein the State is added.
-        /// \param context Context of the game.
+        /// \param context Current context of the application.
 		State(StateStack& stack, Context context);
 		virtual ~State();
 
         /// The drawing function.
-        /// \return virtual void
         /// It must do all things related to drawing stuff on the screen.
 		virtual void draw() = 0;
 
         /// The logic update function.
+        /// This function call e.g. the physic update function, the AI function, etc...
         /// \param dt Elapsed time in the last game frame.
         /// \return Return true if the state under this one in the stack must be also updated.
-        /// This function call e.g. the physic update function, the AI function, etc...
 		virtual bool update(sf::Time dt) = 0;
 
         /// The event handling function.
+        /// The state must decide what to do with the event.
+        /// \note The closing window and resizing window events are already handled by the Application class.
         /// \param event Event to handle.
         /// \return Return true if the state under this state in the stack must be also updated.
-        /// The state must decide what to do with the event.
-        /// \note The closing window and resinzing window events are already handled by the Application class.
 		virtual bool handleEvent(const sf::Event& event) = 0;
 
 	protected:

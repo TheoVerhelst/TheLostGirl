@@ -35,7 +35,11 @@ typedef std::queue<Command> CommandQueue;
 class Application
 {
 	public:
+		/// Default constructor.
+		/// \param debugMode Indicate if the appliaction should start in debug mode.
 		Application(bool debugMode = false);
+		
+		/// Default destructor.
 		~Application();
 		
         /// Initialize the game.

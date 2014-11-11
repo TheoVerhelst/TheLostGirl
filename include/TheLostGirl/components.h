@@ -16,7 +16,9 @@
 class b2Body;
 class Animations;
 
-/// BodyComponent component.
+/// \file components.h
+
+/// Box2D body component.
 /// The BodyComponent component store a pointer to a b2Body and is used to simulate physics in the game world.
 struct BodyComponent : public entityx::Component<BodyComponent>
 {
@@ -46,7 +48,7 @@ struct SpriteComponent : public entityx::Component<SpriteComponent>
 	{}
 };
 
-/// Component that hold a pointer to an Animation instances.
+/// Animations component.
 /// Essential for every dynamic entity in the game.
 struct AnimationsComponent : public entityx::Component<AnimationsComponent>
 {
@@ -135,6 +137,8 @@ struct FallComponent : public entityx::Component<FallComponent>
 	unsigned short int contactCount;///< Number of contacts between the actor and the ground.
 
 	/// Default constructor
+	/// \param _inAir True when the entity falls, false otherwise.
+	/// \param _contactCount Number of contacts between the actor and the ground.
 	FallComponent(bool _inAir, unsigned short int _contactCount):
 		inAir{_inAir},
 		contactCount{_contactCount}
@@ -151,6 +155,7 @@ struct WalkComponent : public entityx::Component<WalkComponent>
 	
 	/// Default constructor
 	/// \param _walkSpeed The current speed of the entity.
+	/// \param _effectiveMovemen Indicate the real movement of the entity.
 	WalkComponent(float _walkSpeed, Direction _effectiveMovemen):
 		walkSpeed{_walkSpeed},
 		effectiveMovement{_effectiveMovemen}
@@ -172,15 +177,16 @@ struct JumpComponent : public entityx::Component<JumpComponent>
 };
 
 /// Bending component.
-/// The BendComponent must be added to every entity that want to bend a bow.
 struct BendComponent : public entityx::Component<BendComponent>
 {
 	float maxPower;///< The maximum power of the bending of the bow.
-	float power;///< The current power of the bending of the bow.
-	float angle;///< The current angle of the bow, in radians
+	float power;   ///< The current power of the bending of the bow.
+	float angle;   ///< The current angle of the bow, in radians.
 
 	/// Default constructor
 	/// \param _maxPower The maximum power of the bending of the bow.
+	/// \param _power The current power of the bending of the bow.
+	/// \param _angle TThe current angle of the bow, in radians.
 	BendComponent(float _maxPower, float _power, float _angle):
 		maxPower{_maxPower},
 		power{_power},

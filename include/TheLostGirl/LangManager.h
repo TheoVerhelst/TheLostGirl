@@ -41,9 +41,12 @@ class LangManager
 		static std::wstring tr(const std::string& entryName);
 
 	private:
+		/// Load the data related to the given lang.
+		/// \param langToLoad Lang to load.
 		static void loadLang(Lang langToLoad);
-		static Lang m_lang;
-		static std::map<std::string, std::wstring> m_entries;
+		
+		static Lang m_lang;                                  ///< The current lang.
+		static std::map<std::string, std::wstring> m_entries;///< Translations related to the current lang.
 };
 
 #endif // LANGMANAGER_H

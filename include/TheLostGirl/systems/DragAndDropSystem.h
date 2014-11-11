@@ -23,13 +23,12 @@ class DragAndDropSystem : public entityx::System<DragAndDropSystem>
 	public:
 		/// Default constructor.
 		/// \param window SFML's window on wich to render the drag and drop line.
-		/// \param commandQueue Queue of command where the actions should be in.
+		/// \param commandQueue Queue of command where the actions should be putted in.
 		DragAndDropSystem(sf::RenderWindow& window, CommandQueue& commandQueue):
 			m_window(window),
 			m_commandQueue(commandQueue),
 			m_origin{0, 0},
-			m_line{sf::Vertex({0, 0}, sf::Color::Black),
-				   sf::Vertex({0, 0}, sf::Color::Black)},//Initialize the line and set his color
+			m_line{sf::Vertex({0, 0}, sf::Color::Black), sf::Vertex({0, 0}, sf::Color::Black)},
 			m_isActive{false}
 		{}
 		
@@ -46,11 +45,11 @@ class DragAndDropSystem : public entityx::System<DragAndDropSystem>
 		void setDragAndDropActivation(bool isActive);
 		
 	private:
-		sf::RenderWindow& m_window;      ///< SFML's window on wich to render the entities.
-		CommandQueue& m_commandQueue;    ///< Queue of command where the actions should be in.
-		sf::Vector2i m_origin;
-		sf::Vertex m_line[2];            ///< The drag and drop line.
-		bool m_isActive;                 ///< True when the drag and drop is actived.
+		sf::RenderWindow& m_window;  ///< SFML's window on wich to render the entities.
+		CommandQueue& m_commandQueue;///< Queue of command where the actions should be putted in.
+		sf::Vector2i m_origin;       ///< Position of the mouse when the drag and drop started.
+		sf::Vertex m_line[2];        ///< The drag and drop line.
+		bool m_isActive;             ///< True when the drag and drop is actived.
 };
 
 #endif // DRAGANDDROPSYSTEM_H

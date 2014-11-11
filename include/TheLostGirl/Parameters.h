@@ -18,6 +18,8 @@ const std::string paths[5] = {"ressources/images/360p/",
 								"ressources/images/720p/",
 								"ressources/images/900p/",
 								"ressources/images/1080p/"};
+
+/// Structure that hold various informations about the application.
 struct Parameters
 {
 	Lang lang;               ///< The current language.

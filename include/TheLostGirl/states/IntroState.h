@@ -17,7 +17,7 @@ class IntroState : public State
 	public:
         /// Default constructor.
         /// \param stack StateStack wherein the State is added.
-        /// \param context Context of the game.
+        /// \param context Current context of the application.
 		IntroState(StateStack& stack, Context context);
 		
         /// The drawing function.

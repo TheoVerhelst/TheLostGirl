@@ -19,6 +19,8 @@ class ContactListener : public b2ContactListener
 		/// This is called after a contact is updated.
 		/// This allows to inspect a contact before it goes to the solver.
 		/// It prevent the collision between entities with the same actor ID.
+		/// \param contact Structure containing data about the contact.
+		/// \param oldManifold Old manifold.
 		void PreSolve(b2Contact* contact, const b2Manifold* oldManifold);
 		
 		/// Handle the hitting of an actor with the ground.
@@ -33,11 +35,13 @@ class ContactListener : public b2ContactListener
 		
 		/// This is called after the solver is finished.
 		/// This allows to inspect e.g. impulses.
+		/// \param contact Structure containing data about the contact.
+		/// \param impulse Resulting impulse.
 		void PostSolve(b2Contact* contact, const b2ContactImpulse* impulse);
 	
 	private:
-		FallingListener m_fallingListener;
-		ActorIDListener m_actorIDListener;
+		FallingListener m_fallingListener;///< The falling collision listener.
+		ActorIDListener m_actorIDListener;///< The actor ID collision listener.
 };
 
 #endif // CONTACTLISTENER_H

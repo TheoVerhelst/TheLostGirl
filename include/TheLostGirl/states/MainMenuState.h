@@ -22,7 +22,7 @@ class MainMenuState : public State
 	public:
         /// Default constructor.
         /// \param stack StateStack wherein the State is added.
-        /// \param context Context of the game.
+        /// \param context Current context of the application.
 		MainMenuState(StateStack& stack, Context context);
 		
 		/// Default destructor.
@@ -47,12 +47,14 @@ class MainMenuState : public State
 		virtual bool handleEvent(const sf::Event& event);
 		
 	private:
+		///< Launch a GameState state and delete this one.
 		void playGame();
-		tgui::Panel::Ptr m_background;
-		tgui::Picture::Ptr m_logo;
-		tgui::Button::Ptr m_newButton;
-		tgui::Button::Ptr m_loadButton;
-		tgui::Button::Ptr m_exitButton;
+		
+		tgui::Panel::Ptr m_background; ///< The background of the menu.
+		tgui::Picture::Ptr m_logo;     ///< The Lost Girl logo.
+		tgui::Button::Ptr m_newButton; ///< The New game button.
+		tgui::Button::Ptr m_loadButton;///< The Load game button.
+		tgui::Button::Ptr m_exitButton;///< The Exit button.
 };
 
 #endif // MAINMENUSTATE_H

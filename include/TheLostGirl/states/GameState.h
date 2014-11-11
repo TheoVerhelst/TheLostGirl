@@ -31,7 +31,7 @@ class GameState : public State
 	public:
         /// Default constructor.
         /// \param stack StateStack wherein the State is added.
-        /// \param context Context of the game.
+        /// \param context Current context of the application.
 		GameState(StateStack& stack, Context context);
 		
 		/// Default destructor.
@@ -62,16 +62,14 @@ class GameState : public State
 		std::unordered_map<std::string, entityx::Entity> m_entities;///< A unordered map allow to reference to elements of the list safely, and use those references outside the scope of the GameState class.
 		ContactListener m_contactListener;                          ///< The falling listener.
 		float m_timeSpeed;                                          ///< The speed of the time (usually 1.f). This influes only on the TimeSystem, not on physics!
+		bool m_loadingFinished;                                     ///< Indicate if the level loading is finished.
+		sf::Thread m_threadLoad;                                    ///< Thread launched when loading the level.
 		
 		//Level informations
 		std::string m_levelIdentifier;                              ///< Identifer of the level, must be a non-spaced name.
 		unsigned short int m_numberOfPlans;                         ///< Number of plans in the background.
 		float m_referencePlan;                                      ///< Number of the plan where actors evolute.
 		sf::IntRect m_levelRect;                                    ///< The dimensions of the level, in pixels.
-		
-		//Loading
-		bool m_loadingFinished;                                     ///< Indicate if the level loading is finished.
-		sf::Thread m_threadLoad;                                    ///< Thread launched when loading the level.
 };
 
 #endif // GAMESTATE_H

@@ -97,6 +97,7 @@ class Player
 		std::vector<sf::Joystick::Axis> getAssignedJoystickAxis(Action action) const;
 		
 		/// Check if any of the inputs binded with action is currently actived.
+		/// \param action Action to check.
 		/// \return True if any of the keys binded with action is currently pressed, false otherwise.
 		bool isActived(Action action) const;
 		
@@ -104,6 +105,7 @@ class Player
 		/// the current state of the various imputs.
 		/// That allow to check the real state of e.g. the keyboard at the beginnning
 		/// of the game and move the player if the move key is pressed while the construction of the game state.
+		/// \param commands Command queue wherein put commands to the player.
 		void handleInitialInputState(CommandQueue& commands);
 
 	private:
@@ -112,10 +114,12 @@ class Player
 		
 		/// Check if the given action is immediate (e.g. knife hit).
 		/// \param action Action to check.
+		/// \return True if the given action is immediate, false otherwise.
 		bool isImmediateAction(Action action) const;
 		
 		/// Check if the given action is real time (e.g. sneaking).
 		/// \param action Action to check.
+		/// \return True if the given action is real time, false otherwise.
 		bool isRealtimeAction(Action action) const;
 
 		std::map<sf::Keyboard::Key, Action> m_keyBinding;          ///< Binding between keyboard keys and theoric actions.
