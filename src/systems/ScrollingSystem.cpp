@@ -55,7 +55,7 @@ void ScrollingSystem::update(entityx::EntityManager& entityManager, entityx::Eve
 				float xScreen = position.x - xmin;
 				//So the abscissa of the entity on the screen, relatively to the reference plan and the position of the player
 				float xScaled = spriteComponent->worldPosition.x + xScreen - (xScreen * pow(1.5, m_referencePlan - z));
-				spriteComponent->sprite->setPosition(xScaled, spriteComponent->worldPosition.y);
+				spriteComponent->sprite.setPosition(xScaled, spriteComponent->worldPosition.y);
 			}
 			
 			//Assign the position to the view

@@ -42,10 +42,10 @@ void SpriteSheetAnimation::operator()(entityx::Entity& entity, float progress)
 			progressCounter += frame.duration;
 			if(progressCounter > progress)
 			{
-				spriteComponent->sprite->setTextureRect(frame.rect);
+				spriteComponent->sprite.setTextureRect(frame.rect);
 				return;
 			}
 		}
-		spriteComponent->sprite->setTextureRect(m_frames[m_frames.size()-1].rect);
+		spriteComponent->sprite.setTextureRect(m_frames[m_frames.size()-1].rect);
 	}
 }

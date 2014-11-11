@@ -48,6 +48,6 @@ void PhysicsSystem::update(entityx::EntityManager& entityManager, entityx::Event
 		float32 angle = bodyComponent->body->GetAngle();
 		spriteComponent->worldPosition.x = pos.x * m_parameters.pixelScale;
 		spriteComponent->worldPosition.y = pos.y * m_parameters.pixelScale;
-		spriteComponent->sprite->setRotation(angle*180/b2_pi);
+		spriteComponent->sprite.setRotation(angle*180/b2_pi);
 	}
 }

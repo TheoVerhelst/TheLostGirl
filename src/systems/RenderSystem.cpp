@@ -29,6 +29,6 @@ void RenderSystem::update(entityx::EntityManager& entityManager, entityx::EventM
 	{
 		//Draw the entities of this plan
 		for(auto entity : it->second)
-			m_window.draw(*entity.component<SpriteComponent>()->sprite);
+			m_window.draw(entity.component<SpriteComponent>()->sprite);
 	}
 }

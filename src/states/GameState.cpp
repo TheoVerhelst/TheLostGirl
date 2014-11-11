@@ -27,7 +27,6 @@
 GameState::GameState(StateStack& stack, Context context) :
 	State(stack, context),
 	m_entities(),
-	m_sprites(),
 	m_animations(),
 	m_contactListener(),
 	m_timeSpeed{1.f},
@@ -226,10 +225,10 @@ void GameState::initWorld()
 							//Create an entity
 							m_entities.emplace(textureIdentifier, getContext().entityManager.create());
 							//Create a sprite with the loaded texture
-							m_sprites.emplace(textureIdentifier, sf::Sprite(texManager.get(textureIdentifier)));
 							//Assign the sprite to the entity
-							m_entities[textureIdentifier].assign<SpriteComponent>(&m_sprites[textureIdentifier], sf::Vector3f(rx, ry, static_cast<float>(i)));
-							m_sprites[textureIdentifier].setPosition(rx, ry);
+							sf::Sprite replaceSpr(texManager.get(textureIdentifier));
+							replaceSpr.setPosition(rx, ry);
+							m_entities[textureIdentifier].assign<SpriteComponent>(replaceSpr, sf::Vector3f(rx, ry, static_cast<float>(i)));
 							m_entities[textureIdentifier].assign<CategoryComponent>(Category::Scene);
 						}
 					}
@@ -261,10 +260,10 @@ void GameState::initWorld()
 						//Create an entity
 						m_entities.emplace(textureIdentifier, getContext().entityManager.create());
 						//Create a sprite with the loaded texture
-						m_sprites.emplace(textureIdentifier, sf::Sprite(texManager.get(textureIdentifier)));
 						//Assign the sprite to the entity
-						m_entities[textureIdentifier].assign<SpriteComponent>(&m_sprites[textureIdentifier], sf::Vector3f(j*chunkSize, 0, static_cast<float>(i)));
-						m_sprites[textureIdentifier].setPosition(j*chunkSize, 0);
+						sf::Sprite chunkSpr(texManager.get(textureIdentifier));
+						chunkSpr.setPosition(j*chunkSize, 0);
+						m_entities[textureIdentifier].assign<SpriteComponent>(chunkSpr, sf::Vector3f(j*chunkSize, 0, static_cast<float>(i)));
 						m_entities[textureIdentifier].assign<CategoryComponent>(Category::Scene);
 					}
 				}
@@ -311,10 +310,8 @@ void GameState::initWorld()
 					if(sprite.isMember("plan"))
 						plan = sprite["plan"].asFloat();
 					
-					//Get the texture form the texture manager and make a sprite with this texture
-					m_sprites.emplace(entityName, sf::Sprite(getContext().textureManager.get(sprite["identifier"].asString())));
-					//Assign this sprite to the entity
-					m_entities[entityName].assign<SpriteComponent>(&m_sprites[entityName], sf::Vector3f(0, 0, plan));
+					//Assign the sprite to the entity
+					m_entities[entityName].assign<SpriteComponent>(sf::Sprite(getContext().textureManager.get(sprite["identifier"].asString())), sf::Vector3f(0, 0, plan));
 				}
 				
 				//categories
@@ -959,11 +956,11 @@ void GameState::initWorld()
 		//Create an entity
 		m_entities.emplace(dayIdentifier, getContext().entityManager.create());
 		//Create a sprite with the loaded texture
-		m_sprites.emplace(dayIdentifier, sf::Sprite(texManager.get(dayIdentifier)));
+		sf::Sprite daySpr(texManager.get(dayIdentifier));
 		//Assign origin of the sprite to the center of the day image
-		m_sprites[dayIdentifier].setOrigin(origin);
+		daySpr.setOrigin(origin);
 		//Assign the sprite to the entity, and set its z-ordinate to positive infinity
-		m_entities[dayIdentifier].assign<SpriteComponent>(&m_sprites[dayIdentifier], sf::Vector3f(position.x, position.y, std::numeric_limits<double>::infinity()));
+		m_entities[dayIdentifier].assign<SpriteComponent>(daySpr, sf::Vector3f(position.x, position.y, std::numeric_limits<double>::infinity()));
 		m_entities[dayIdentifier].assign<SkyComponent>(true);
 		m_entities[dayIdentifier].assign<CategoryComponent>(Category::Scene);
 	
@@ -977,11 +974,11 @@ void GameState::initWorld()
 		//Create an entity
 		m_entities.emplace(nightIdentifier, getContext().entityManager.create());
 		//Create a sprite with the loaded texture
-		m_sprites.emplace(nightIdentifier, sf::Sprite(texManager.get(nightIdentifier)));
+		sf::Sprite nightSpr(texManager.get(nightIdentifier));
 		//Assign origin of the sprite to the center of the night image
-		m_sprites[nightIdentifier].setOrigin(origin);
+		nightSpr.setOrigin(origin);
 		//Assign the sprite to the entity, and set its z-ordinate to positive infinity
-		m_entities[nightIdentifier].assign<SpriteComponent>(&m_sprites[nightIdentifier], sf::Vector3f(position.x, position.y, std::numeric_limits<double>::infinity()));
+		m_entities[nightIdentifier].assign<SpriteComponent>(nightSpr, sf::Vector3f(position.x, position.y, std::numeric_limits<double>::infinity()));
 		m_entities[nightIdentifier].assign<SkyComponent>(false);
 		m_entities[nightIdentifier].assign<CategoryComponent>(Category::Scene);
 	}
@@ -997,7 +994,6 @@ void GameState::initWorld()
 			pair.second.destroy();
 		}
 		m_entities.clear();
-		m_sprites.clear();
 		m_animations.clear();
 		getContext().world.ClearForces();
 	}
