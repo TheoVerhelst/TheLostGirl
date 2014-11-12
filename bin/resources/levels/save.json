@@ -1,0 +1,666 @@
+{
+    "time" :
+    {
+        "date" : 400.0,
+        "speed" : 1.0
+    },
+    "level" : 
+    {
+        "identifier" : "1",
+        "box" : 
+        {
+            "w" : 19200
+        },
+        "number of plans" : 5,
+        "reference plan" : 2.0,
+        "0" :
+        [
+            {
+                "origin" :
+                {
+                    "x" : 0,
+                    "y" : 0,
+                    "w" : 1000,
+                    "h" : 1080
+                },
+                "replace" :
+                [
+                    {
+                        "x" : 1000.0,
+                        "y" : 0.0
+                    }
+                ]
+            },
+            {
+                "origin" :
+                {
+                    "x" : 5000,
+                    "y" : 0,
+                    "w" : 1000,
+                    "h" : 1080
+                },
+                "replace" :
+                [
+                    {
+                        "x" : 3000.0,
+                        "y" : 0.0
+                    }
+                ]
+            }
+        ]
+    },
+	"entities" : 
+	{
+	    "archer" : 
+	    {
+	        "walk" : 
+	        {
+	            "speed" : 3.5
+	        },
+	        "jump" : 5.0,
+	        "direction" : 
+	        {
+	            "direction" : "right"
+	        },
+	        "categories" : ["player"],
+	        "actor ID" : 0,
+	        "fall" :
+	        {
+	            "in air" : true,
+	            "contact count" : 0
+	        },
+	        "sprite" :
+	        {
+	            "identifier" : "archer"
+            },
+	        "spritesheet animations" : 
+	        {
+	            "stay left" :
+	            {
+	                "importance" : 0,
+	                "duration" : 1.0,
+	                "loop" : false,
+	                "frames" : 
+	                [
+	                    {
+	                        "x" : 0,
+	                        "y" : 0,
+	                        "w" : 100,
+	                        "h" : 200,
+	                        "relative duration" : 1.0
+	                    }
+	                ]
+	            },
+	            "stay right" :
+	            {
+	                "importance" : 0,
+	                "duration" : 1.0,
+	                "loop" : false,
+	                "frames" : 
+	                [
+	                    {
+	                        "x" : 0,
+	                        "y" : 400,
+	                        "w" : 100,
+	                        "h" : 200,
+	                        "relative duration" : 1.0
+	                    }
+	                ]
+	            },
+	            "move left" :
+	            {
+	                "importance" : 1,
+	                "duration" : 0.3,
+	                "loop" : true,
+	                "frames" : 
+	                [
+	                    {
+	                        "x" : 100,
+	                        "y" : 0,
+	                        "w" : 100,
+	                        "h" : 200,
+	                        "relative duration" : 0.125
+	                    },
+	                    {
+	                        "x" : 200,
+	                        "y" : 0,
+	                        "w" : 100,
+	                        "h" : 200,
+	                        "relative duration" : 0.25
+	                    },
+	                    {
+	                        "x" : 300,
+	                        "y" : 0,
+	                        "w" : 100,
+	                        "h" : 200,
+	                        "relative duration" : 0.25
+	                    },
+	                    {
+	                        "x" : 400,
+	                        "y" : 0,
+	                        "w" : 100,
+	                        "h" : 200,
+	                        "relative duration" : 0.25
+	                    },
+	                    {
+	                        "x" : 500,
+	                        "y" : 0,
+	                        "w" : 100,
+	                        "h" : 200,
+	                        "relative duration" : 0.125
+	                    }
+	                ]
+	            },
+	            "move right" :
+	            {
+	                "importance" : 1,
+	                "duration" : 0.3,
+	                "loop" : true,
+	                "frames" : 
+	                [
+	                    {
+	                        "x" : 100,
+	                        "y" : 400,
+	                        "w" : 100,
+	                        "h" : 200,
+	                        "relative duration" : 0.125
+	                    },
+	                    {
+	                        "x" : 200,
+	                        "y" : 400,
+	                        "w" : 100,
+	                        "h" : 200,
+	                        "relative duration" : 0.25
+	                    },
+	                    {
+	                        "x" : 300,
+	                        "y" : 400,
+	                        "w" : 100,
+	                        "h" : 200,
+	                        "relative duration" : 0.25
+	                    },
+	                    {
+	                        "x" : 400,
+	                        "y" : 400,
+	                        "w" : 100,
+	                        "h" : 200,
+	                        "relative duration" : 0.25
+	                    },
+	                    {
+	                        "x" : 500,
+	                        "y" : 400,
+	                        "w" : 100,
+	                        "h" : 200,
+	                        "relative duration" : 0.125
+	                    }
+	                ]
+	            },
+	            "jump left" :
+	            {
+	                "importance" : 2,
+	                "duration" : 0.6,
+	                "loop" : false,
+	                "frames" :
+	                [
+	                    {
+	                        "x" : 0,
+	                        "y" : 600,
+	                        "w" : 100,
+	                        "h" : 200,
+	                        "relative duration" : 0.33
+	                    },
+	                    {
+	                        "x" : 100,
+	                        "y" : 600,
+	                        "w" : 100,
+	                        "h" : 200,
+	                        "relative duration" : 0.33
+	                    },
+	                    {
+	                        "x" : 200,
+	                        "y" : 600,
+	                        "w" : 100,
+	                        "h" : 200,
+	                        "relative duration" : 0.33
+	                    }
+	                ]
+	            },
+	            "jump right" :
+	            {
+	                "importance" : 2,
+	                "duration" : 0.6,
+	                "loop" : false,
+	                "frames" :
+	                [
+	                    {
+	                        "x" : 0,
+	                        "y" : 200,
+	                        "w" : 100,
+	                        "h" : 200,
+	                        "relative duration" : 0.33
+	                    },
+	                    {
+	                        "x" : 100,
+	                        "y" : 200,
+	                        "w" : 100,
+	                        "h" : 200,
+	                        "relative duration" : 0.33
+	                    },
+	                    {
+	                        "x" : 200,
+	                        "y" : 200,
+	                        "w" : 100,
+	                        "h" : 200,
+	                        "relative duration" : 0.33
+	                    }
+	                ]
+	            },
+	            "fall left" :
+	            {
+	                "importance" : 3,
+	                "duration" : 1.0,
+	                "loop" : false,
+	                "frames" : 
+	                [
+	                    {
+	                        "x" : 300,
+	                        "y" : 600,
+	                        "w" : 100,
+	                        "h" : 200,
+	                        "relative duration" : 1.0
+	                    }
+	                ]
+	            },
+	            "fall right" :
+	            {
+	                "importance" : 3,
+	                "duration" : 1.0,
+	                "loop" : false,
+	                "frames" : 
+	                [
+	                    {
+	                        "x" : 300,
+	                        "y" : 200,
+	                        "w" : 100,
+	                        "h" : 200,
+	                        "relative duration" : 1.0
+	                    }
+	                ]
+	            }
+	        },
+	        "play animations" : ["stay right"],
+	        "body" :
+	        {
+	            "type" : "dynamic",
+	            "position" :
+	            {
+	                "x" : 100.0,
+	                "y" : 0.0
+	            },
+	            "fixed rotation" : true,
+	            "fixtures" :
+	            [
+	                {
+	                    "type" : "polygon",
+	                    "box" : 
+	                    {
+	                        "w" : 100.0,
+	                        "h" : 200.0
+	                    },
+	                    "friction" : 0.0,
+	                    "restitution" : 0.0,
+	                    "density" : 1.0
+	                },
+	                {
+	                    "type" : "polygon",
+	                    "box" : 
+	                    {
+	                        "w" : 80.0,
+	                        "h" : 10.0,
+	                        "center x" : 50.0,
+	                        "center y" : 200.0
+	                    },
+	                    "density" : 0.0,
+	                    "is sensor" : true
+	                }
+	            ]
+	        }
+	    },
+	    "arms" :
+	    {
+	         "direction" : 
+	        {
+	            "direction" : "right"
+	        },
+	        "categories" : ["player"],
+	        "actor ID" : 0,
+	        "sprite" :
+	        {
+	            "identifier" : "arms"
+            },
+	        "bend" :
+	        {
+	            "maximum power" : 400.0
+	        },
+	        "spritesheet animations" : 
+	        {
+	            "bend left" :
+	            {
+	                "frames" : 
+	                [
+	                    {
+	                        "x" : 0,
+	                        "y" : 250,
+	                        "w" : 100,
+	                        "h" : 70,
+	                        "relative duration" : 0.25
+	                    },
+	                    {
+	                        "x" : 100,
+	                        "y" : 250,
+	                        "w" : 100,
+	                        "h" : 70,
+	                        "relative duration" : 0.25
+	                    },
+	                    {
+	                        "x" : 200,
+	                        "y" : 250,
+	                        "w" : 100,
+	                        "h" : 70,
+	                        "relative duration" : 0.25
+	                    },
+	                    {
+	                        "x" : 300,
+	                        "y" : 250,
+	                        "w" : 100,
+	                        "h" : 70,
+	                        "relative duration" : 0.25
+	                    }
+	                ]
+	            },
+	            "bend right" :
+	            {
+	                "frames" : 
+	                [
+	                    {
+	                        "x" : 0,
+	                        "y" : 50,
+	                        "w" : 100,
+	                        "h" : 70,
+	                        "relative duration" : 0.25
+	                    },
+	                    {
+	                        "x" : 100,
+	                        "y" : 50,
+	                        "w" : 100,
+	                        "h" : 70,
+	                        "relative duration" : 0.25
+	                    },
+	                    {
+	                        "x" : 200,
+	                        "y" : 50,
+	                        "w" : 100,
+	                        "h" : 70,
+	                        "relative duration" : 0.25
+	                    },
+	                    {
+	                        "x" : 300,
+	                        "y" : 50,
+	                        "w" : 100,
+	                        "h" : 70,
+	                        "relative duration" : 0.25
+	                    }
+	                ]
+	            }
+	        },
+	        "activate animations" : ["bend right"],
+	        "body" :
+	        {
+	            "type" : "dynamic",
+	            "position" :
+	            {
+	                "x" : 100.0,
+	                "y" : 0.0
+	            },
+	            "fixtures" :
+	            [
+	                {
+	                    "type" : "polygon",
+	                    "box" : 
+	                    {
+	                        "w" : 100.0,
+	                        "h" : 70.0
+	                    },
+	                    "density" : 0.001,
+	                    "is sensor" : true
+	                }
+	            ]
+	        }
+	    },
+	    "bow" :
+	    {
+	         "direction" : 
+	        {
+	            "direction" : "right"
+	        },
+	        "categories" : ["player"],
+	        "actor ID" : 0,
+	        "sprite" :
+	        {
+	            "identifier" : "bow"
+            },
+	        "bend" :
+	        {
+	            "maximum power" : 400.0
+	        },
+	        "spritesheet animations" :
+	        {
+	            "bend left" :
+	            {
+	                "frames" : 
+	                [
+	                    {
+	                        "x" : 0,
+	                        "y" : 245,
+	                        "w" : 100,
+	                        "h" : 100,
+	                        "relative duration" : 0.25
+	                    },
+	                    {
+	                        "x" : 100,
+	                        "y" : 245,
+	                        "w" : 100,
+	                        "h" : 100,
+	                        "relative duration" : 0.25
+	                    },
+	                    {
+	                        "x" : 200,
+	                        "y" : 245,
+	                        "w" : 100,
+	                        "h" : 100,
+	                        "relative duration" : 0.25
+	                    },
+	                    {
+	                        "x" : 300,
+	                        "y" : 245,
+	                        "w" : 100,
+	                        "h" : 100,
+	                        "relative duration" : 0.25
+	                    }
+	                ]
+	            },
+	            "bend right" :
+	            {
+	                "frames" : 
+	                [
+	                    {
+	                        "x" : 0,
+	                        "y" : 45,
+	                        "w" : 100,
+	                        "h" : 100,
+	                        "relative duration" : 0.25
+	                    },
+	                    {
+	                        "x" : 100,
+	                        "y" : 45,
+	                        "w" : 100,
+	                        "h" : 100,
+	                        "relative duration" : 0.25
+	                    },
+	                    {
+	                        "x" : 200,
+	                        "y" : 45,
+	                        "w" : 100,
+	                        "h" : 100,
+	                        "relative duration" : 0.25
+	                    },
+	                    {
+	                        "x" : 300,
+	                        "y" : 45,
+	                        "w" : 100,
+	                        "h" : 100,
+	                        "relative duration" : 0.25
+	                    }
+	                ]
+	            }
+	        },
+	        "activate animations" : ["bend right"],
+	        "body" :
+	        {
+	            "type" : "dynamic",
+	            "position" :
+	            {
+	                "x" : 0.0,
+	                "y" : 0.0
+	            },
+	            "fixtures" :
+	            [
+	                {
+	                    "type" : "polygon",
+	                    "box" : 
+	                    {
+	                        "w" : 100.0,
+	                        "h" : 100.0
+	                    },
+	                    "density" : 0.001,
+	                    "is sensor" : true
+	                }
+	            ]
+	        }
+	    },
+	    "quiver" :
+	    {
+	         "direction" : 
+	        {
+	            "direction" : "right"
+	        },
+	        "body" :
+	        {
+	            "type" : "dynamic",
+	            "position" :
+	            {
+	                "x" : 0.0,
+	                "y" : 0.0
+	            },
+	            "fixtures" :
+	            [
+	                {
+	                    "type" : "polygon",
+	                    "box" : 
+	                    {
+	                        "w" : 100.0,
+	                        "h" : 100.0
+	                    },
+	                    "density" : 0.8
+	                }
+	            ]
+	        }
+	    },
+	    "ground" :
+	    {
+	        "body" :
+	        {
+	            "fixtures" :
+	            [
+	                {
+	                    "type" : "chain",
+	                    "vertices" :
+	                    [
+	                        {
+	                            "x" : 0.0,
+	                            "y" : 0.0
+	                        },
+	                        {
+	                            "x" : 0.0,
+	                            "y" : 300.0
+	                        },
+	                        {
+	                            "x" : 50.0,
+	                            "y" : 800.0
+	                        },
+	                        {
+	                            "x" : 600.0,
+	                            "y" : 800.0
+	                        },
+	                        {
+	                            "x" : 900.0,
+	                            "y" : 750.0
+	                        },
+	                        {
+	                            "x" : 1150.0,
+	                            "y" : 800.0
+	                        },
+	                        {
+	                            "x" : 19200.0,
+	                            "y" : 800.0
+	                        },
+	                        {
+	                            "x" : 19200.0,
+	                            "y" : 0.0
+	                        }
+	                    ],
+	                    "restitution" : 0.1,
+	                    "friction" : 0.5
+	                }
+	            ]
+	        }
+	    }
+	},
+	"joints" :
+	[
+	    {
+	        "type" : "revolute joint",
+	        "first" : "archer",
+	        "second" : "arms",
+	        "local anchor first" : 
+	        {
+	            "x" : 50.0,
+	            "y" : 68.0
+	        },
+	        "local anchor second" : 
+	        {
+	            "x" : 50.0,
+	            "y" : 18.0
+	        },
+	        "max motor torque" : 10.00,
+	        "enable motor" : true
+	    },
+	    {
+	        "type" : "revolute joint",
+	        "first" : "archer",
+	        "second" : "bow",
+	        "local anchor first" : 
+	        {
+	            "x" : 50.0,
+	            "y" : 68.0
+	        },
+	        "local anchor second" : 
+	        {
+	            "x" : 50.0,
+	            "y" : 23.0
+	        },
+	        "max motor torque" : 10.0,
+	        "enable motor" : true
+	    }
+	]
+}
