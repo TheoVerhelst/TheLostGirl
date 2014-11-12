@@ -24,12 +24,15 @@ void PhysicsSystem::update(entityx::EntityManager& entityManager, entityx::Event
 	for(auto entity : entityManager.entities_with_components(bodyComponent, walkComponent))
 	{
 		b2Body* body = bodyComponent->body;
-		float velocity = 0.f;
+		float targetVelocity = 0.f;
 		if(walkComponent->effectiveMovement ==  Direction::Left)
-			velocity = -walkComponent->walkSpeed;
+			targetVelocity = -walkComponent->walkSpeed - body->GetLinearVelocity().x;
 		else if(walkComponent->effectiveMovement ==  Direction::Right)
-			velocity = walkComponent->walkSpeed;
-		body->SetLinearVelocity({velocity, body->GetLinearVelocity().y});
+			targetVelocity = walkComponent->walkSpeed - body->GetLinearVelocity().x;
+		else if(walkComponent->effectiveMovement ==  Direction::None)
+			targetVelocity = -body->GetLinearVelocity().x;
+		//Apply an impulse relatively to the mass of the body
+		body->ApplyLinearImpulse({targetVelocity*body->GetMass(), 0.f}, body->GetWorldCenter(), true);
 	}
 	//Update the archers
 	for(auto entity : entityManager.entities_with_components(bodyComponent, bendComponent))

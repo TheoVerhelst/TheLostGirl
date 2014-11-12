@@ -3,3 +3,5 @@ TheLostGirl.cbp
 TheLostGirl.depend
 TheLostGirl.layout
 doxygen/
+bin/TheLostGirl
+bin/TheLostGirl-d

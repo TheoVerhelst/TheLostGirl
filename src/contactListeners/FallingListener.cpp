@@ -44,6 +44,11 @@ void FallingListener::BeginContact(b2Contact* contact)
 		}
 		entityA->component<FallComponent>()->contactCount++;
 		entityA->component<FallComponent>()->inAir = false;
+		std::cout << "BEGIN" << std::endl;
+		std::cout << "A : " << bodyA->GetLinearVelocity().y << std::endl;
+		std::cout << "B : " << bodyB->GetLinearVelocity().y << std::endl;
+		float impactPower = std::abs(bodyA->GetLinearVelocity().y - bodyB->GetLinearVelocity().y);
+		std::cout << "dif : " << impactPower << std::endl;
 	}
 }
 
@@ -80,6 +85,7 @@ void FallingListener::EndContact(b2Contact* contact)
 		entityA->component<FallComponent>()->contactCount--;
 		if(entityA->component<FallComponent>()->contactCount <= 0)
 			entityA->component<FallComponent>()->inAir = true;
+		float impactPower = std::abs(bodyA->GetLinearVelocity().y - bodyB->GetLinearVelocity().y);
 	}
 }
 

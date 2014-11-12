@@ -55,7 +55,7 @@
 	    {
 	        "walk" : 
 	        {
-	            "speed" : 3.5
+	            "speed" : 6.0
 	        },
 	        "jump" : 5.0,
 	        "direction" : 
@@ -619,7 +619,7 @@
 	                            "y" : 0.0
 	                        }
 	                    ],
-	                    "restitution" : 0.1,
+	                    "restitution" : 0.0,
 	                    "friction" : 0.5
 	                }
 	            ]
