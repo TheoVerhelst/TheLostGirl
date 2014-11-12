@@ -9,7 +9,7 @@
 
 #include <TheLostGirl/contactListeners/FallingListener.h>
 
-void FallingListener::PreSolve(b2Contact *contact, const b2Manifold*)
+void FallingListener::PreSolve(b2Contact *, const b2Manifold*)
 {}
 
 void FallingListener::BeginContact(b2Contact* contact)
@@ -83,5 +83,5 @@ void FallingListener::EndContact(b2Contact* contact)
 	}
 }
 
-void FallingListener::PostSolve(b2Contact* contact, const b2ContactImpulse* impulse)
+void FallingListener::PostSolve(b2Contact*, const b2ContactImpulse*)
 {}

@@ -21,7 +21,7 @@ Application::Application(bool debugMode):
 				scales[m_parameters.scaleIndex],
 				120.f*m_parameters.scale,
 				{0.0f, 9.80665f},
-				"ressources/fonts/euphorigenic.ttf"},
+				"resources/fonts/euphorigenic.ttf"},
 	m_window{sf::VideoMode{static_cast<unsigned int>(1920*m_parameters.scale), static_cast<unsigned int>(1080*m_parameters.scale)}, "The Lost Girl"},
 	m_gui{m_window},
 	m_textureManager{},
@@ -62,7 +62,7 @@ int Application::init()
 		m_window.setFramerateLimit(60);//Limit the FPS
 		LangManager::setLang(m_parameters.lang);//Set and load the lang
 		m_fontManager.load("menu", m_parameters.textFont);//Load the GUI font
-		m_fontManager.load("debug", "ressources/fonts/FreeMonoBold.ttf");//Load the debug font
+		m_fontManager.load("debug", "resources/fonts/FreeMonoBold.ttf");//Load the debug font
 		m_gui.setGlobalFont(std::make_shared<sf::Font>(m_fontManager.get("menu")));//Set the GUI font
 		m_world.SetDebugDraw(&m_debugDraw);//Set the debug drawer
 		m_debugDraw.SetFlags(b2Draw::e_shapeBit|b2Draw::e_jointBit|b2Draw::e_pairBit);//Debug drawing flags

@@ -45,15 +45,15 @@ void LangManager::loadLang(Lang langToLoad)
 	switch(langToLoad)//Open the right file
 	{
 		case EN:
-			filePath = "ressources/lang/EN";
+			filePath = "resources/lang/EN";
 			break;
 
 		case FR:
-			filePath = "ressources/lang/FR";
+			filePath = "resources/lang/FR";
 			break;
 
 		default:
-			filePath = "ressources/lang/EN";
+			filePath = "resources/lang/EN";
 			break;
 	}
 	fileStream.open(filePath);

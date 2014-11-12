@@ -29,11 +29,11 @@ GameState::GameState(StateStack& stack, Context context) :
 	m_entities(),
 	m_contactListener(),
 	m_timeSpeed{1.f},
+	m_threadLoad(&GameState::initWorld, this),
 	m_levelIdentifier{""},
 	m_numberOfPlans{1},
 	m_referencePlan{0.f},
-	m_levelRect{0, 0, 0, 1080},
-	m_threadLoad(&GameState::initWorld, this)
+	m_levelRect{0, 0, 0, 1080}
 {
 	m_threadLoad.launch();
 }
@@ -81,7 +81,7 @@ bool GameState::handleEvent(const sf::Event& event)
 
 void GameState::initWorld()
 {
-	const std::string filePath{"ressources/levels/save.json"};
+	const std::string filePath{"resources/levels/save.json"};
 	const float scale = getContext().parameters.scale;
 	const float pixelScale = getContext().parameters.pixelScale;
 	const float uniqScale = scale / pixelScale;//The pixel/meters scale at the maximum resolution, about 1.f/120.f

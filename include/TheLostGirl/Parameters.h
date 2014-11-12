@@ -13,11 +13,11 @@ const float scales[5] = {30.f/90.f,
 						60.f/90.f,
 						75.f/90.f,
 						90.f/90.f};///<Differents scales, relatively to the maximum resolution.
-const std::string paths[5] = {"ressources/images/360p/",
-								"ressources/images/576p/",
-								"ressources/images/720p/",
-								"ressources/images/900p/",
-								"ressources/images/1080p/"};
+const std::string paths[5] = {"resources/images/360p/",
+								"resources/images/576p/",
+								"resources/images/720p/",
+								"resources/images/900p/",
+								"resources/images/1080p/"};
 
 /// Structure that hold various informations about the application.
 struct Parameters

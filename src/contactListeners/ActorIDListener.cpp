@@ -23,11 +23,11 @@ void ActorIDListener::PreSolve(b2Contact *contact, const b2Manifold*)
 	}
 }
 
-void ActorIDListener::BeginContact(b2Contact* contact)
+void ActorIDListener::BeginContact(b2Contact*)
 {}
 
-void ActorIDListener::EndContact(b2Contact* contact)
+void ActorIDListener::EndContact(b2Contact*)
 {}
 
-void ActorIDListener::PostSolve(b2Contact* contact, const b2ContactImpulse* impulse)
+void ActorIDListener::PostSolve(b2Contact*, const b2ContactImpulse*)
 {}

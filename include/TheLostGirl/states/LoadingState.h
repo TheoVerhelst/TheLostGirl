@@ -16,7 +16,7 @@ class Context;
 class StateStack;
 class LoadingStateChange;
 
-/// State that load all the ressources that need to be loaded in order to play a level.
+/// State that load all the resources that need to be loaded in order to play a level.
 class LoadingState : public State, public entityx::Receiver<LoadingState>
 {
 	public:

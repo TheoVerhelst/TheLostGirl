@@ -47,7 +47,7 @@ class State
 
         /// Various managers and globals instances.
         /// It is useful to pass the context to the states,
-        /// they can then use these various ressources managers.
+        /// they can then use these various resources managers.
 		struct Context
 		{
 			/// Default constructor
