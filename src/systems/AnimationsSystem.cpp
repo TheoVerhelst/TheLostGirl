@@ -11,7 +11,8 @@
 
 void AnimationSystem::update(entityx::EntityManager& entityManager, entityx::EventManager&, double dt)
 {
-	AnimationsComponent::Handle animationsComponent;
+	AnimationsComponent<sf::Sprite>::Handle animationsComponent;
+	SpriteComponent::Handle spriteComponent;
 	FallComponent::Handle fallComponent;
 	BodyComponent::Handle bodyComponent;
 	DirectionComponent::Handle directionComponent;
@@ -23,7 +24,7 @@ void AnimationSystem::update(entityx::EntityManager& entityManager, entityx::Eve
 															directionComponent,
 															fallComponent))
 	{
-		Animations& animations = animationsComponent->animations;
+		Animations<sf::Sprite>& animations = animationsComponent->animations;
 		b2Body* body = bodyComponent->body;
 		if(fallComponent->inAir and body->GetLinearVelocity().y > 2.f)
 		{
@@ -35,6 +36,6 @@ void AnimationSystem::update(entityx::EntityManager& entityManager, entityx::Eve
 	}
 	
 	//Update the Animations components
-	for(auto entity : entityManager.entities_with_components(animationsComponent))
-		animationsComponent->animations.update(entity, sf::seconds(dt));
+	for(auto entity : entityManager.entities_with_components(animationsComponent, spriteComponent))
+		animationsComponent->animations.update(spriteComponent->sprite, sf::seconds(dt));
 }

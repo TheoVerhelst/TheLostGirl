@@ -36,9 +36,9 @@ void FallingListener::BeginContact(b2Contact* contact)
 	//Now we are sure that A is an actor that fall on the ground B
 	if(fixtureA->IsSensor() and entityA->has_component<FallComponent>())
 	{
-		if(entityA->has_component<AnimationsComponent>() and entityA->has_component<DirectionComponent>())
+		if(entityA->has_component<AnimationsComponent<sf::Sprite>>() and entityA->has_component<DirectionComponent>())
 		{
-			Animations& animations = entityA->component<AnimationsComponent>()->animations;
+			Animations<sf::Sprite>& animations = entityA->component<AnimationsComponent<sf::Sprite>>()->animations;
 			animations.stop("fall right");
 			animations.stop("fall left");
 			if(entityA->has_component<JumpComponent>())
@@ -71,11 +71,11 @@ void FallingListener::EndContact(b2Contact* contact)
 	//Now we are sure that A is an actor that fall on the ground B
 	if(fixtureA->IsSensor() and entityA->has_component<FallComponent>())
 	{
-		if(entityA->has_component<AnimationsComponent>() and
+		if(entityA->has_component<AnimationsComponent<sf::Sprite>>() and
 			entityA->has_component<DirectionComponent>() and
 			not entityA->has_component<JumpComponent>())
 		{
-			Animations& animations = entityA->component<AnimationsComponent>()->animations;
+			Animations<sf::Sprite>& animations = entityA->component<AnimationsComponent<sf::Sprite>>()->animations;
 			DirectionComponent::Handle directionComponent = entityA->component<DirectionComponent>();
 			if(directionComponent->direction == Direction::Right)
 				animations.play("fall right");

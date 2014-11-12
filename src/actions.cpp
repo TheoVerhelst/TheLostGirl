@@ -78,11 +78,11 @@ void Mover::operator()(entityx::Entity& entity, double) const
 			}
 		}
 		//If the entity can walk, set the right animation.
-		if(entity.has_component<AnimationsComponent>()
+		if(entity.has_component<AnimationsComponent<sf::Sprite> >()
 			and entity.has_component<WalkComponent>()
 			and entity.has_component<DirectionComponent>())
 		{
-			Animations& animations = entity.component<AnimationsComponent>()->animations;
+			Animations<sf::Sprite>& animations = entity.component<AnimationsComponent<sf::Sprite> >()->animations;
 			DirectionComponent::Handle directionComponent = entity.component<DirectionComponent>();
 			WalkComponent::Handle walkComponent = entity.component<WalkComponent>();
 			//References to the moveToLeft and moveToRight data in directionComponent
@@ -119,12 +119,12 @@ void Mover::operator()(entityx::Entity& entity, double) const
 			}
 		}
 		//If the entity can jump, set the right animation if it jumps
-		if(entity.has_component<AnimationsComponent>()
+		if(entity.has_component<AnimationsComponent<sf::Sprite>>()
 			and entity.has_component<JumpComponent>()
 			and entity.has_component<FallComponent>()
 			and entity.has_component<DirectionComponent>())
 		{
-			Animations& animations = entity.component<AnimationsComponent>()->animations;
+			Animations<sf::Sprite>& animations = entity.component<AnimationsComponent<sf::Sprite>>()->animations;
 			//If jumping and diriged to the opposite side
 			if(animations.isActive("jump" + oppDirectionStr))
 			{
@@ -135,11 +135,11 @@ void Mover::operator()(entityx::Entity& entity, double) const
 			}
 		}
 		//If the entity can fall, set the right animation if it falls
-		if(entity.has_component<AnimationsComponent>()
+		if(entity.has_component<AnimationsComponent<sf::Sprite>>()
 			and entity.has_component<FallComponent>()
 			and entity.has_component<DirectionComponent>())
 		{
-			Animations& animations = entity.component<AnimationsComponent>()->animations;
+			Animations<sf::Sprite>& animations = entity.component<AnimationsComponent<sf::Sprite>>()->animations;
 			//If falling and diriged to the opposite side
 			if(animations.isActive("fall" + oppDirectionStr))
 			{
@@ -150,11 +150,11 @@ void Mover::operator()(entityx::Entity& entity, double) const
 			}
 		}
 		//If the entity can bend a bow, set the right animation if it bends
-		if(entity.has_component<AnimationsComponent>()
+		if(entity.has_component<AnimationsComponent<sf::Sprite>>()
 			and entity.has_component<BendComponent>()
 			and entity.has_component<DirectionComponent>())
 		{
-			Animations& animations = entity.component<AnimationsComponent>()->animations;
+			Animations<sf::Sprite>& animations = entity.component<AnimationsComponent<sf::Sprite>>()->animations;
 //			//If falling and diriged to the opposite side
 //			if(animations.isActive("bend" + oppDirectionStr))
 //			{
@@ -206,13 +206,13 @@ Jumper::~Jumper()
 
 void Jumper::operator()(entityx::Entity& entity, double) const
 {
-	if(entity.has_component<AnimationsComponent>()
+	if(entity.has_component<AnimationsComponent<sf::Sprite>>()
 		and entity.has_component<BodyComponent>()
 		and entity.has_component<JumpComponent>()
 		and entity.has_component<FallComponent>()
 		and entity.has_component<DirectionComponent>())
 	{
-		Animations& animations = entity.component<AnimationsComponent>()->animations;
+		Animations<sf::Sprite>& animations = entity.component<AnimationsComponent<sf::Sprite>>()->animations;
 		b2Body* body = entity.component<BodyComponent>()->body;
 		JumpComponent::Handle jumpComponent = entity.component<JumpComponent>();
 		FallComponent::Handle fallComponent = entity.component<FallComponent>();
@@ -239,11 +239,11 @@ BowBender::~BowBender()
 void BowBender::operator()(entityx::Entity& entity, double) const
 {
 	if(entity.has_component<BendComponent>()
-		and entity.has_component<AnimationsComponent>()
+		and entity.has_component<AnimationsComponent<sf::Sprite>>()
 		and entity.has_component<DirectionComponent>())
 	{
 		BendComponent::Handle bendComponent = entity.component<BendComponent>();
-		Animations& animations = entity.component<AnimationsComponent>()->animations;
+		Animations<sf::Sprite>& animations = entity.component<AnimationsComponent<sf::Sprite>>()->animations;
 		DirectionComponent::Handle directionComponent = entity.component<DirectionComponent>();
 		
 		std::string directionStr;//Find the right animation string, and set the angle

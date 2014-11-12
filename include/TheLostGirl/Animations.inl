@@ -3,47 +3,52 @@
 #include <algorithm>
 #include <iostream>
 
-#include <TheLostGirl/Animations.h>
-
-Animations::Animations():
+template<typename T>
+Animations<T>::Animations():
 	m_animationsMap()
 {}
 
-Animations::~Animations()
+template<typename T>
+Animations<T>::~Animations()
 {}
 
-void Animations::addAnimation(const std::string& identifier,
-							Animation animation,
-							unsigned short int importance,
-							sf::Time duration,
-							bool loop)
+template<typename T>
+void Animations<T>::addAnimation(const std::string& identifier,
+								std::function<void(T&, float)> animation,
+								unsigned short int importance,
+								sf::Time duration,
+								bool loop)
 {
 	TimeAnimation timeAnime{animation, importance, duration, loop};
 	m_animationsMap.emplace(identifier, timeAnime);
 }
 
-void Animations::removeAnimation(const std::string& identifier)
+template<typename T>
+void Animations<T>::removeAnimation(const std::string& identifier)
 {
 	auto found = m_animationsMap.find(identifier);
 	assert(found != m_animationsMap.end());//Assert that the animation exists
 	m_animationsMap.erase(found);
 }
 
-bool Animations::isPaused(const std::string& identifier) const
+template<typename T>
+bool Animations<T>::isPaused(const std::string& identifier) const
 {
 	auto found = m_animationsMap.find(identifier);
 	assert(found != m_animationsMap.end());//Assert that the animation exists
 	return found->second.isPaused;
 }
 
-bool Animations::isActive(const std::string& identifier) const
+template<typename T>
+bool Animations<T>::isActive(const std::string& identifier) const
 {
 	auto found = m_animationsMap.find(identifier);
 	assert(found != m_animationsMap.end());//Assert that the animation exists
 	return found->second.isActive;
 }
 
-void Animations::play(const std::string& identifier)
+template<typename T>
+void Animations<T>::play(const std::string& identifier)
 {
 	auto found = m_animationsMap.find(identifier);
 	assert(found != m_animationsMap.end());//Assert that the animation exists
@@ -51,21 +56,24 @@ void Animations::play(const std::string& identifier)
 	found->second.isActive = true;
 }
 
-void Animations::activate(const std::string& identifier)
+template<typename T>
+void Animations<T>::activate(const std::string& identifier)
 {
 	auto found = m_animationsMap.find(identifier);
 	assert(found != m_animationsMap.end());//Assert that the animation exists
 	found->second.isActive = true;
 }
 
-void Animations::pause(const std::string& identifier)
+template<typename T>
+void Animations<T>::pause(const std::string& identifier)
 {
 	auto found = m_animationsMap.find(identifier);
 	assert(found != m_animationsMap.end());//Assert that the animation exists
 	found->second.isPaused = true;
 }
 
-void Animations::stop(const std::string& identifier)
+template<typename T>
+void Animations<T>::stop(const std::string& identifier)
 {
 	auto found = m_animationsMap.find(identifier);
 	assert(found != m_animationsMap.end());//Assert that the animation exists
@@ -74,24 +82,28 @@ void Animations::stop(const std::string& identifier)
 	found->second.progress = 0.f;
 }
 
-float Animations::getProgress(const std::string& identifier) const
+template<typename T>
+float Animations<T>::getProgress(const std::string& identifier) const
 {
 	auto found = m_animationsMap.find(identifier);
 	assert(found != m_animationsMap.end());//Assert that the animation exists
 	return found->second.progress;
 }
 
-void Animations::setProgress(const std::string& identifier, float newProgress)
+template<typename T>
+void Animations<T>::setProgress(const std::string& identifier, float newProgress)
 {
 	auto found = m_animationsMap.find(identifier);
 	assert(found != m_animationsMap.end());//Assert that the animation exists
 	found->second.progress = newProgress;
 }
-void Animations::update(entityx::Entity& entity, sf::Time dt)
+template<typename T>
+void Animations<T>::update(T& object, sf::Time dt)
 {
 	if(not m_animationsMap.empty())
 	{
 		//Find the animation to play
+		typename
 		std::map<std::string, TimeAnimation>::iterator mostImportant;
 		bool activeAnimationFound{false};
 		for(auto it = m_animationsMap.begin(); it != m_animationsMap.end(); it++)
@@ -117,11 +129,12 @@ void Animations::update(entityx::Entity& entity, sf::Time dt)
 				else if(timeAnim.progress < 1.f)//If the animation doesn't loops, incerement progress only if less than 1
 					timeAnim.progress += dt.asSeconds()/timeAnim.duration.asSeconds();
 			}
-			timeAnim.animation(entity, timeAnim.progress);
+			timeAnim.animation(object, timeAnim.progress);
 		}
 	}
 }
-Animations::TimeAnimation::TimeAnimation(Animation _animation, unsigned short int _importance, sf::Time _duration, bool _loops):
+template<typename T>
+Animations<T>::TimeAnimation::TimeAnimation(std::function<void(T&, float)> _animation, unsigned short int _importance, sf::Time _duration, bool _loops):
 	animation{_animation},
 	importance{_importance},
 	duration{_duration},

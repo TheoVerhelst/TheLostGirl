@@ -746,7 +746,7 @@ void GameState::initWorld()
 				{
 					const Json::Value animations = entity["spritesheet animations"];
 					parseObject(animations, "entities." + entityName + ".spritesheet animations", Json::objectValue);
-					AnimationsComponent::Handle animationsComponent = m_entities[entityName].assign<AnimationsComponent>(Animations());
+					AnimationsComponent<sf::Sprite>::Handle animationsComponent = m_entities[entityName].assign<AnimationsComponent<sf::Sprite>>(Animations<sf::Sprite>());
 					for(std::string& animationName : animations.getMemberNames())
 					{
 						const Json::Value animation = animations[animationName];
@@ -823,7 +823,7 @@ void GameState::initWorld()
 						{
 							//Assert that the animation is defined
 							requireValues(entity["spritesheet animations"], "entities." + entityName + ".spritesheet animations", {{animationsToPlay[i].asString(), Json::objectValue}});
-							m_entities[entityName].component<AnimationsComponent>()->animations.play(animationsToPlay[i].asString());
+							m_entities[entityName].component<AnimationsComponent<sf::Sprite>>()->animations.play(animationsToPlay[i].asString());
 						}
 					}
 					
@@ -836,7 +836,7 @@ void GameState::initWorld()
 						for(Json::ArrayIndex i{0}; i < animationsToActivate.size(); ++i)
 						{
 							requireValues(entity["spritesheet animations"], "entities." + entityName + ".spritesheet animations", {{animationsToActivate[i].asString(), Json::objectValue}});
-							m_entities[entityName].component<AnimationsComponent>()->animations.activate(animationsToActivate[i].asString());
+							m_entities[entityName].component<AnimationsComponent<sf::Sprite>>()->animations.activate(animationsToActivate[i].asString());
 						}
 					}
 				}

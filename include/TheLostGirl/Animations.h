@@ -25,41 +25,35 @@ namespace entityx
 /// anim.addFrame(rect2, 0.9f);
 ///
 /// //Add the component to the entity :
-/// AnimationsComponent::Handle animationsComponent = entity->assign<AnimationsComponent>(Animations());
+/// AnimationsComponent::Handle animationsComponent = entity->assign<AnimationsComponent>(Animations<sf::Sprite>());
 /// //Add the animation to the animations manager
 /// animationsComponent->animations.addAnimation("run", anim, 1, sf::seconds(3.f), true);
 /// animationsComponent->animations.play("run");
 /// \endcode
 /// \see AnimationSystem
 ///
-/// This animation system is inspired by the Animator system in the Jan Haller's Thor C++ library.
+/// This animation system is inspired by the Animator system from the Jan Haller's Thor C++ library.
+template<typename T>
 class Animations
 {
 	public:
-		/// Typedef for the Animation functor.
-		/// The functor must have exactly this signature:
-		/// void (entityx::Entity&, float);
-		/// \arg \a entityx::Entity& reference to the entity to animate.
-		/// \arg \a float Current state of the animation.
-		typedef std::function<void(entityx::Entity&, float)> Animation;
-
 		/// Animation associated with a certain duration.
 		struct TimeAnimation
 		{
-			Animation animation;           ///< Functor to  the concrete animation.
-			unsigned short int importance; ///< Indicates the importance of the animation, relatively to the others.
-			sf::Time duration;             ///< Duration of the animation.
-			bool loops;                    ///< Indicates if the animation must loop or not.
-			float progress;                ///< Current progress of the animation, in the range [0,1].
-			bool isPaused;                 ///< Indicates if the animations is paused.
-			bool isActive;                 ///< Indicates if the animations is active.
+			std::function<void(T&, float)> animation;///< Functor to  the concrete animation.
+			unsigned short int importance;           ///< Indicates the importance of the animation, relatively to the others.
+			sf::Time duration;                       ///< Duration of the animation.
+			bool loops;                              ///< Indicates if the animation must loop or not.
+			float progress;                          ///< Current progress of the animation, in the range [0,1].
+			bool isPaused;                           ///< Indicates if the animations is paused.
+			bool isActive;                           ///< Indicates if the animations is active.
 
 			/// Default constructor.
 			/// \param _animation Functor of the animation.
 			/// \param _importance Indicates the importance of the animation, relatively to the others.
 			/// \param _duration Duration of the animation.
 			/// \param _loops Indicates if the animation must loop or not.
-			TimeAnimation(Animation _animation, unsigned short int _importance = 0, sf::Time _duration = sf::seconds(1.f), bool _loops = false);
+			TimeAnimation(std::function<void(T&, float)> _animation, unsigned short int _importance = 0, sf::Time _duration = sf::seconds(1.f), bool _loops = false);
 		};
 
 		/// Default constructor
@@ -75,7 +69,7 @@ class Animations
 		/// \param duration Duration fo the animation.
 		/// \param loop Indicate if the animation must loop or not.
 		/// \see removeAnimation
-		void addAnimation(const std::string& identifier, Animation animation, unsigned short int importance = 0, sf::Time duration = sf::seconds(1.f), bool loop = false);
+		void addAnimation(const std::string& identifier, std::function<void(T&, float)> animation, unsigned short int importance = 0, sf::Time duration = sf::seconds(1.f), bool loop = false);
 
 		/// Remove an animation from the animation manager.
 		/// \param identifier Identifier of the animation to delete.
@@ -142,13 +136,14 @@ class Animations
 		void setProgress(const std::string& identifier, float newProgress);
 
 		/// Update the animation system.
-		/// \param entity Entity on wich to apply the animation.
+		/// \param object Object on wich to apply the animation.
 		/// \param dt Elapsed time in the last game frame.
-		void update(entityx::Entity& entity, sf::Time dt = sf::Time::Zero);
+		void update(T& object, sf::Time dt = sf::Time::Zero);
 
 	private:
 		std::map<std::string, TimeAnimation> m_animationsMap;///< List of all registred animations.
 };
 
+#include <TheLostGirl/Animations.inl>
 
 #endif // ANIMATIONS_H

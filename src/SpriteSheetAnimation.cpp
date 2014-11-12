@@ -29,11 +29,10 @@ void SpriteSheetAnimation::addFrame(const sf::IntRect& rect, float duration)
 	m_frames.push_back(Frame(rect, duration));
 }
 
-void SpriteSheetAnimation::operator()(entityx::Entity& entity, float progress)
+void SpriteSheetAnimation::operator()(sf::Sprite& sprite, float progress)
 {
-	if(entity.has_component<SpriteComponent>() and not m_frames.empty())
+	if(not m_frames.empty())
 	{
-		SpriteComponent::Handle spriteComponent = entity.component<SpriteComponent>();
 		//Find the current frame
 		float progressCounter{0};
 		for(auto& frame : m_frames)
@@ -42,10 +41,10 @@ void SpriteSheetAnimation::operator()(entityx::Entity& entity, float progress)
 			progressCounter += frame.duration;
 			if(progressCounter > progress)
 			{
-				spriteComponent->sprite.setTextureRect(frame.rect);
+				sprite.setTextureRect(frame.rect);
 				return;
 			}
 		}
-		spriteComponent->sprite.setTextureRect(m_frames[m_frames.size()-1].rect);
+		sprite.setTextureRect(m_frames[m_frames.size()-1].rect);
 	}
 }

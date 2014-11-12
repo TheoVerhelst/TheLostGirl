@@ -70,11 +70,11 @@ class SpriteSheetAnimation
 		void addFrame(const sf::IntRect& rect, float duration);
 		
 		/// Overload of the () operator.
-		/// Call this operator apply the animation to the given entity.
-		/// In fact, it just search wich rect to apply the the texture of the entity.
-		/// \param entity Entity on wich to apply the animation.
+		/// Call this operator apply the animation to the given sprite.
+		/// In fact, it just search wich rect to apply the the texture of the sprite.
+		/// \param sprite Sprite on wich to apply the animation.
 		/// \param progress Progress of the animation to apply.
-		void operator()(entityx::Entity& entity, float progress);
+		void operator()(sf::Sprite& sprite, float progress);
 		
 	private:
 		std::vector<Frame> m_frames; ///< Array of all registred frames.

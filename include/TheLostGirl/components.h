@@ -14,6 +14,7 @@
 
 //Forward declarations
 class b2Body;
+template<typename T>
 class Animations;
 
 /// \file components.h
@@ -50,13 +51,14 @@ struct SpriteComponent : public entityx::Component<SpriteComponent>
 
 /// Animations component.
 /// Essential for every dynamic entity in the game.
-struct AnimationsComponent : public entityx::Component<AnimationsComponent>
+template<typename T>
+struct AnimationsComponent : public entityx::Component<AnimationsComponent<T> >
 {
-	Animations animations;///< Animations manager.
+	Animations<T> animations;///< Animations manager.
 
 	/// Default constructor.
 	/// \param _animations Animations manager.
-	AnimationsComponent(const Animations& _animations):
+	AnimationsComponent(const Animations<T>& _animations):
 		animations{_animations}
 	{}
 };
