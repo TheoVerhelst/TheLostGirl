@@ -142,6 +142,7 @@ void Application::registerStates()
 	m_stateStack.registerState<MainMenuState>(States::MainMenu);
 	m_stateStack.registerState<LoadingState>(States::Loading);
 	m_stateStack.registerState<IntroState>(States::Intro);
+	m_stateStack.registerState<HUDState>(States::HUD);
 	m_stateStack.registerState<GameState>(States::Game);
 	m_stateStack.registerState<PauseState>(States::Pause);
 }

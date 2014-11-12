@@ -70,7 +70,7 @@ class StateStack : private sf::NonCopyable
 		
 		/// Acces the current context.
 		/// \return The current context.
-		State::Context& getContext();
+		State::Context getContext();
 
 	private:
 		/// Construct the given state.

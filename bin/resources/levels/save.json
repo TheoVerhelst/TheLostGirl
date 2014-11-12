@@ -69,6 +69,10 @@
 	            "in air" : true,
 	            "contact count" : 0
 	        },
+	        "health" :
+	        {
+	            "maximum health" : 100.0
+	        },
 	        "sprite" :
 	        {
 	            "identifier" : "archer"
@@ -580,6 +584,7 @@
 	    {
 	        "body" :
 	        {
+	            "type" : "static",
 	            "fixtures" :
 	            [
 	                {

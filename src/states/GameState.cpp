@@ -27,7 +27,7 @@
 GameState::GameState(StateStack& stack, Context context) :
 	State(stack, context),
 	m_entities(),
-	m_contactListener(),
+	m_contactListener(getContext()),
 	m_timeSpeed{1.f},
 	m_threadLoad(&GameState::initWorld, this),
 	m_levelIdentifier{""},
@@ -285,6 +285,8 @@ void GameState::initWorld()
 																{"walk", Json::objectValue},
 																{"jump", Json::realValue},
 																{"bend", Json::objectValue},
+																{"health", Json::objectValue},
+																{"stamina", Json::objectValue},
 																{"direction", Json::objectValue},
 																{"fall", Json::objectValue},
 																{"body", Json::objectValue},
@@ -390,6 +392,42 @@ void GameState::initWorld()
 						angle = bend["angle"].asFloat();
 						
 					m_entities[entityName].assign<BendComponent>(maxPower, power, angle);
+				}
+				
+				//health
+				if(entity.isMember("health"))
+				{
+					const Json::Value healthObj = entity["health"];
+					parseObject(healthObj, "entities." + entityName + ".health", {{"maximum health", Json::realValue}, {"current health", Json::realValue}});
+					requireValues(healthObj, "entities." + entityName + ".health", {{"maximum health", Json::realValue}});
+					
+					//maximum health
+					float maxHealth{healthObj["maximum health"].asFloat()};
+					
+					//health
+					float health{maxHealth};
+					if(healthObj.isMember("current health"))
+						health = healthObj["current health"].asFloat();
+						
+					m_entities[entityName].assign<HealthComponent>(maxHealth, health);
+				}
+				
+				//stamina
+				if(entity.isMember("stamina"))
+				{
+					const Json::Value staminaObj = entity["stamina"];
+					parseObject(staminaObj, "entities." + entityName + ".stamina", {{"maximum stamina", Json::realValue}, {"current stamina", Json::realValue}});
+					requireValues(staminaObj, "entities." + entityName + ".stamina", {{"maximum stamina", Json::realValue}});
+					
+					//maximum stamina
+					float maxStamina{staminaObj["maximum stamina"].asFloat()};
+					
+					//stamina
+					float stamina{maxStamina};
+					if(staminaObj.isMember("current stamina"))
+						stamina = staminaObj["current stamina"].asFloat();
+						
+					m_entities[entityName].assign<StaminaComponent>(maxStamina, stamina);
 				}
 				
 				//direction
@@ -998,4 +1036,14 @@ void GameState::initWorld()
 	getContext().world.SetContactListener(&m_contactListener);
 	getContext().systemManager.system<ScrollingSystem>()->setLevelData(m_levelRect, m_referencePlan);
 	requestStackPop();
+	requestStackPush(States::HUD);
+	CategoryComponent::Handle categoryComponent;
+	//Set the new health and stamina to the HUD
+	for(auto entity : getContext().entityManager.entities_with_components(categoryComponent))
+	{
+		if(categoryComponent->category & Category::Player and entity.has_component<HealthComponent>())
+			getContext().eventManager.emit<PlayerHealthChange>(entity.component<HealthComponent>()->health);
+		if(categoryComponent->category & Category::Player and entity.has_component<StaminaComponent>())
+			getContext().eventManager.emit<PlayerStaminaChange>(entity.component<StaminaComponent>()->stamina);
+	}
 }

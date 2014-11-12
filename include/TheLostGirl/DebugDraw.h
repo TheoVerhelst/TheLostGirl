@@ -20,7 +20,7 @@ class DebugDraw : public b2Draw
 	public:
 		/// Default constructor.
 		/// \param context Current context of the application.
-		DebugDraw(State::Context& context);
+		DebugDraw(State::Context context);
 		
 		/// Draw a holow Box2D polygon.
 		/// \param vertices Vertices to draw.
@@ -67,7 +67,7 @@ class DebugDraw : public b2Draw
 		std::string roundOutput(float x);
 		
 		bool m_debugMode;         ///< Indicate if the debug ath should be drawn.
-		State::Context& m_context;///< Current context of the application.
+		State::Context m_context;///< Current context of the application.
 };
 
 #endif // DEBUGDRAW_H

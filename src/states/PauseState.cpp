@@ -106,7 +106,8 @@ void PauseState::goToOptions()
 
 void PauseState::backToMainMenu()
 {
-	requestStackPop();
-	requestStackPop();
+	requestStackPop();//The pause state
+	requestStackPop();//The HUD state
+	requestStackPop();//The game state
 	requestStackPush(States::MainMenu);
 }

@@ -8,7 +8,7 @@
 
 #include <TheLostGirl/states/LoadingState.h>
 
-LoadingState::LoadingState(StateStack& stack, Context context) :
+LoadingState::LoadingState(StateStack& stack, Context context):
 	State(stack, context),
 	m_sentenceLabel{nullptr},
 	m_percentLabel{nullptr}

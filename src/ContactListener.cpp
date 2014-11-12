@@ -2,9 +2,10 @@
 
 #include <TheLostGirl/ContactListener.h>
 
-ContactListener::ContactListener():
-	m_fallingListener(),
-	m_actorIDListener()
+ContactListener::ContactListener(State::Context context):
+	m_context(context),
+	m_fallingListener(m_context),
+	m_actorIDListener(m_context)
 {}
 
 

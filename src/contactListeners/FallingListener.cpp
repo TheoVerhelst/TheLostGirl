@@ -6,8 +6,13 @@
 #include <entityx/Entity.h>
 #include <TheLostGirl/components.h>
 #include <TheLostGirl/Animations.h>
+#include <TheLostGirl/events.h>
 
 #include <TheLostGirl/contactListeners/FallingListener.h>
+
+FallingListener::FallingListener(State::Context context):
+	m_context(context)
+{}
 
 void FallingListener::PreSolve(b2Contact *, const b2Manifold*)
 {}
@@ -44,11 +49,6 @@ void FallingListener::BeginContact(b2Contact* contact)
 		}
 		entityA->component<FallComponent>()->contactCount++;
 		entityA->component<FallComponent>()->inAir = false;
-		std::cout << "BEGIN" << std::endl;
-		std::cout << "A : " << bodyA->GetLinearVelocity().y << std::endl;
-		std::cout << "B : " << bodyB->GetLinearVelocity().y << std::endl;
-		float impactPower = std::abs(bodyA->GetLinearVelocity().y - bodyB->GetLinearVelocity().y);
-		std::cout << "dif : " << impactPower << std::endl;
 	}
 }
 
@@ -85,9 +85,28 @@ void FallingListener::EndContact(b2Contact* contact)
 		entityA->component<FallComponent>()->contactCount--;
 		if(entityA->component<FallComponent>()->contactCount <= 0)
 			entityA->component<FallComponent>()->inAir = true;
-		float impactPower = std::abs(bodyA->GetLinearVelocity().y - bodyB->GetLinearVelocity().y);
 	}
 }
 
-void FallingListener::PostSolve(b2Contact*, const b2ContactImpulse*)
-{}
+void FallingListener::PostSolve(b2Contact* contact, const b2ContactImpulse* impulse)
+{
+	//Pretty basic falling damage
+	if(impulse->normalImpulses[0] > 10.f)
+	{
+		float impact = impulse->normalImpulses[0];
+		entityx::Entity* entityA = static_cast<entityx::Entity*>(contact->GetFixtureA()->GetBody()->GetUserData());
+		entityx::Entity* entityB = static_cast<entityx::Entity*>(contact->GetFixtureB()->GetBody()->GetUserData());
+		if(entityA->has_component<HealthComponent>())
+		{
+			entityA->component<HealthComponent>()->health -= impact - 10;
+			std::cout << "New health : " << entityA->component<HealthComponent>()->health << std::endl;
+			m_context.eventManager.emit<PlayerHealthChange>(entityA->component<HealthComponent>()->health);
+		}
+		if(entityB->has_component<HealthComponent>())
+		{
+			entityB->component<HealthComponent>()->health -= impact - 10;
+			std::cout << "New health : " << entityB->component<HealthComponent>()->health << std::endl;
+			m_context.eventManager.emit<PlayerHealthChange>(entityB->component<HealthComponent>()->health);
+		}
+	}
+}

@@ -3,11 +3,17 @@
 
 #include <Box2D/Dynamics/b2WorldCallbacks.h>
 
+#include <TheLostGirl/State.h>
+
 /// Collision listener.
 /// - Disable collision between multiples body of the same actor.
 class ActorIDListener : public b2ContactListener
 {
 	public:
+		///Default constructor.
+        /// \param context Current context of the application.
+		ActorIDListener(State::Context context);
+		
 		/// This is called after a contact is updated.
 		/// This allows to inspect a contact before it goes to the solver.
 		/// It prevent the collision between entities with the same actor ID.
@@ -30,6 +36,9 @@ class ActorIDListener : public b2ContactListener
 		/// \param contact Structure containing data about the contact.
 		/// \param impulse Resulting impulse.
 		void PostSolve(b2Contact* contact, const b2ContactImpulse* impulse);
+	
+	private:
+		State::Context m_context;                ///< Current context of the application.
 };
 
 #endif // ACTORIDLISTENER_H

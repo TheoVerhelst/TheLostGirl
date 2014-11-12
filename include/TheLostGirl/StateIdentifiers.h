@@ -10,7 +10,8 @@ enum class States
 	Loading, ///< The state where the level is loaded.
 	Intro,   ///< The intro state.
 	Game,    ///< The main gamepay state.
-	Pause    ///< The pause state, on top of the Game state.
+	Pause,   ///< The pause state, on top of the Game state.
+	HUD      ///< The HUD state, on top of the Game state.
 };
 
 #endif // STATEIDENTIFIERS_H

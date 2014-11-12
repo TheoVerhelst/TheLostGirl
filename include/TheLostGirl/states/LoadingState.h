@@ -16,7 +16,7 @@ class Context;
 class StateStack;
 class LoadingStateChange;
 
-/// State that load all the resources that need to be loaded in order to play a level.
+/// State that display the current state of the loading.
 class LoadingState : public State, public entityx::Receiver<LoadingState>
 {
 	public:
@@ -36,7 +36,6 @@ class LoadingState : public State, public entityx::Receiver<LoadingState>
         /// The logic update function.
         /// \param dt Elapsed time in the last game frame.
         /// \return Return true if the state under this one in the stack must be also updated.
-        /// This function call e.g. the physic update function, the AI function, etc...
 		virtual bool update(sf::Time dt);
 
         /// The event handling function.

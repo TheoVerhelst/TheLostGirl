@@ -61,7 +61,7 @@ bool StateStack::isEmpty() const
 	return m_stack.empty();
 }
 
-State::Context& StateStack::getContext()
+State::Context StateStack::getContext()
 {
 	return m_context;
 }

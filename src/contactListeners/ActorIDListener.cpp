@@ -8,6 +8,10 @@
 
 #include <TheLostGirl/contactListeners/ActorIDListener.h>
 
+ActorIDListener::ActorIDListener(State::Context context):
+	m_context(context)
+{}
+
 void ActorIDListener::PreSolve(b2Contact *contact, const b2Manifold*)
 {
 	b2Body* bodyA = contact->GetFixtureA()->GetBody();
