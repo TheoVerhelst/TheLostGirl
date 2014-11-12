@@ -62,7 +62,7 @@ class ResourceManager
 		/// \param resource Resource to insert.
 		void insertResource(Identifier id, std::unique_ptr<Resource> resource);
 		
-		std::map<Identifier, std::unique_ptr<Resource> > m_resourceMap;///< Resources mapped with their identifiers.
+		std::map<Identifier, std::unique_ptr<Resource> > m_ressourceMap;///< Resources mapped with their identifiers.
 };
 
 /// Typedef of RessourceManager.
