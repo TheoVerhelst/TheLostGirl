@@ -30,13 +30,13 @@ GameState::GameState(StateStack& stack, Context context) :
 	m_entities(),
 	m_contactListener(getContext()),
 	m_timeSpeed{1.f},
-	m_threadLoad(&GameState::initWorld, this),
+	m_threadLoad(),
 	m_levelIdentifier{""},
 	m_numberOfPlans{1},
 	m_referencePlan{0.f},
 	m_levelRect{0, 0, 0, 1080}
 {
-	m_threadLoad.launch();
+	m_threadLoad = std::thread([this](const std::string& str){return this->initWorld(str);}, "resources/levels/save.json");
 }
 
 GameState::~GameState()
@@ -51,6 +51,8 @@ GameState::~GameState()
 		entity.second.destroy();
 	}
 	getContext().world.ClearForces();
+	if(m_threadLoad.joinable())
+		m_threadLoad.join();
 }
 
 void GameState::draw()
@@ -83,9 +85,8 @@ bool GameState::handleEvent(const sf::Event& event)
 	return false;
 }
 
-void GameState::initWorld()
+void GameState::initWorld(const std::string& file)
 {
-	const std::string filePath{"resources/levels/save.json"};
 	const float scale = getContext().parameters.scale;
 	const float pixelScale = getContext().parameters.pixelScale;
 	const float uniqScale = scale / pixelScale;//The pixel/meters scale at the maximum resolution, about 1.f/120.f
@@ -96,7 +97,7 @@ void GameState::initWorld()
 		//Parse the level data
 		Json::Value root;//Will contains the root value after parsing.
 		Json::Reader reader;
-		std::ifstream saveFileStream(filePath, std::ifstream::binary);
+		std::ifstream saveFileStream(file, std::ifstream::binary);
 		if(!reader.parse(saveFileStream, root))//report to the user the failure and their locations in the document.
 			throw std::runtime_error(reader.getFormattedErrorMessages());
 		
@@ -179,9 +180,9 @@ void GameState::initWorld()
 			for(unsigned short int i{0}; i < m_numberOfPlans; i++)
 			{
 				//Filename of the image to load
-				std::string file{m_levelIdentifier + "_" + std::to_string(i)};
+				std::string fileTexture{m_levelIdentifier + "_" + std::to_string(i)};
 				//Path of the image to load
-				std::string path{paths[getContext().parameters.scaleIndex] + "levels/" + m_levelIdentifier + "/" + file + ".png"};
+				std::string path{paths[getContext().parameters.scaleIndex] + "levels/" + m_levelIdentifier + "/" + fileTexture + ".png"};
 				//Check if the plan is defined
 				if(level.isMember(std::to_string(i)))
 				{
@@ -251,7 +252,7 @@ void GameState::initWorld()
 					for(unsigned int j{0}; j < numberOfChunks; ++j)
 					{
 						//Name of the texture
-						std::string textureIdentifier{file + "_" + std::to_string(j)};
+						std::string textureIdentifier{fileTexture + "_" + std::to_string(j)};
 						//Size of the chunk to load, may be truncated if we reach the end of the image.
 						unsigned int currentChunkSize{chunkSize};
 						if(j >= planLength/chunkSize)
@@ -309,7 +310,7 @@ void GameState::initWorld()
 					for(std::string& partName : parts.getMemberNames())
 					{
 						const Json::Value part = parts[partName];
-						parseObject(part, "entities." + entityName + ".parts." + partName, {{"sprite", Json::stringValue},
+						parseObject(part, "entities." + entityName + ".parts." + partName, {{"sprite", Json::objectValue},
 																							{"body", Json::objectValue},
 																							{"spritesheet animations", Json::objectValue},
 																							{"play animations", Json::arrayValue},
@@ -1104,7 +1105,7 @@ void GameState::initWorld()
 	catch(std::runtime_error& e)
 	{
 		std::cerr << e.what() << std::endl;
-		std::cerr << "Failed to load save file \"" << filePath << "\"." << std::endl;
+		std::cerr << "Failed to load save file \"" << file << "\"." << std::endl;
 		//Clear game content in order to prevent segmentation faults.
 		for(auto& entity : m_entities)
 		{

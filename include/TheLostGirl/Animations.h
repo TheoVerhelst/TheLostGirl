@@ -12,6 +12,11 @@ namespace entityx
 {
 	class Entity;
 }
+namespace Json
+{
+	class Value;
+}
+
 /// Animations class.
 /// To use this class, you must add some animations
 /// and play one of them with the play() member.
@@ -144,6 +149,10 @@ class Animations
 		/// \param identifier Identifier of the animation to check.
 		/// \return True if the given animation is registred in the manager, false otherwise.
 		bool isRegistred(const std::string& identifier) const;
+		
+		/// Serialize the animations manager.
+		/// \return A Json value containing all the data.
+		Json::Value serialize() const;
 
 	private:
 		std::map<std::string, TimeAnimation> m_animationsMap;///< List of all registred animations.

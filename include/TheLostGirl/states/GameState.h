@@ -2,6 +2,7 @@
 #define GAMESTATE_H
 
 #include <forward_list>
+#include <thread>
 
 #include <dist/json/json-forwards.h>
 #include <SFML/System/Thread.hpp>
@@ -57,13 +58,13 @@ class GameState : public State
 
 	private:
 		/// Initialize the physic world.
-		void initWorld();
+		void initWorld(const std::string& file);
 		
 		std::unordered_map<std::string, entityx::Entity> m_entities;///< A unordered map allow to reference to elements of the list safely, and use those references outside the scope of the GameState class.
 		ContactListener m_contactListener;                          ///< The falling listener.
 		float m_timeSpeed;                                          ///< The speed of the time (usually 1.f). This influes only on the TimeSystem, not on physics!
 		bool m_loadingFinished;                                     ///< Indicate if the level loading is finished.
-		sf::Thread m_threadLoad;                                    ///< Thread launched when loading the level.
+		std::thread m_threadLoad;                                   ///< Thread launched when loading the level.
 		
 		//Level informations
 		std::string m_levelIdentifier;                              ///< Identifer of the level, must be a non-spaced name.

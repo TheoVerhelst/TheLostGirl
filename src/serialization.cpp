@@ -12,7 +12,7 @@ Json::Value serialize(entityx::ComponentHandle<BodyComponent> component)
 	Json::Value ret;
 	for(auto& bodyPair : component->bodies)
 	{
-		std::string partName{bodyPair.first};
+		const std::string partName{bodyPair.first};
 		b2Body* body{bodyPair.second};
 		switch(body->GetType())
 		{
@@ -51,7 +51,7 @@ Json::Value serialize(entityx::ComponentHandle<SpriteComponent> component, Textu
 	Json::Value ret;
 	for(auto& spritePair : component->sprites)
 	{
-		std::string partName{spritePair.first};
+		const std::string partName{spritePair.first};
 		const sf::Texture* tex = spritePair.second.getTexture();
 		//Compare the pointer to the texture
 		if(tex == &textureManager.get("archer"))
@@ -63,7 +63,7 @@ Json::Value serialize(entityx::ComponentHandle<SpriteComponent> component, Textu
 	}
 	for(auto& positionPair : component->worldPositions)
 	{
-		std::string partName{positionPair.first};
+		const std::string partName{positionPair.first};
 		ret[partName]["sprite"]["position"]["x"] = positionPair.second.x;
 		ret[partName]["sprite"]["position"]["y"] = positionPair.second.y;
 	}
@@ -74,8 +74,7 @@ Json::Value serialize(entityx::ComponentHandle<AnimationsComponent<sf::Sprite>> 
 {
 	Json::Value ret;
 	for(auto& animationsPair : component->animationsManagers)
-	{
-	}
+		ret[animationsPair.first] = animationsPair.second.serialize();
 	return ret;
 }
 

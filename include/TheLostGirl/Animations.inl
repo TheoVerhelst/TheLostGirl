@@ -3,6 +3,8 @@
 #include <algorithm>
 #include <iostream>
 
+#include <dist/json/json.h>
+
 template<typename T>
 Animations<T>::Animations():
 	m_animationsMap()
@@ -132,10 +134,27 @@ void Animations<T>::update(T& object, sf::Time dt)
 		}
 	}
 }
+
 template<typename T>
 bool Animations<T>::isRegistred(const std::string& identifier) const
 {
 	return m_animationsMap.find(identifier) != m_animationsMap.end();
+}
+
+template<typename T>
+Json::Value Animations<T>::serialize() const
+{
+	Json::Value ret;
+	for(auto& pair : m_animationsMap)
+	{
+		ret[pair.first]["importance"] = pair.second.importance;
+		ret[pair.first]["duration"] = pair.second.duration.asSeconds();
+		ret[pair.first]["loops"] = pair.second.loops;
+		ret[pair.first]["progress"] = pair.second.progress;
+		ret[pair.first]["is paused"] = pair.second.isPaused;
+		ret[pair.first]["is active"] = pair.second.isActive;
+	}
+	return ret;
 }
 
 template<typename T>

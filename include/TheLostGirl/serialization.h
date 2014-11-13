@@ -22,7 +22,7 @@ Json::Value serialize(entityx::ComponentHandle<BodyComponent> component);
 /// Serialize the given component.
 /// \param component Component to serialize
 /// \return A Json value.
-Json::Value serialize(entityx::ComponentHandle<SpriteComponent> component);
+Json::Value serialize(entityx::ComponentHandle<SpriteComponent> component, TextureManager& textureManager);
 
 /// Serialize the given component.
 /// \param component Component to serialize
