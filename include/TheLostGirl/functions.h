@@ -1,10 +1,7 @@
 #ifndef FUNCTIONS_H
 #define FUNCTIONS_H
 
-#include <cmath>
 #include <string>
-#include <algorithm>
-#include <iostream>
 
 #include <SFML/Graphics/Rect.hpp>
 #include <SFML/Window/Event.hpp>

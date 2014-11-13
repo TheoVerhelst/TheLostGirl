@@ -8,6 +8,7 @@
 #include <SFML/System/Vector3.hpp>
 #include <SFML/Graphics/Sprite.hpp>
 #include <entityx/Entity.h>
+#include <dist/json/json-forwards.h>
 
 #include <TheLostGirl/Category.h>
 #include <TheLostGirl/Animations.h>
