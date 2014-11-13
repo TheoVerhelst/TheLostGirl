@@ -39,14 +39,14 @@ void FallingListener::BeginContact(b2Contact* contact)
 		//Now we are sure that A is an actor that fall on the ground B
 		if(fixtureA->GetUserData() and (unsigned int)(fixtureA->GetUserData()) & FixtureRole::Foot and entityA->has_component<FallComponent>())
 		{
-			if(entityA->has_component<AnimationsComponent<sf::Sprite>>() and entityA->has_component<DirectionComponent>())
+			if(entityA->has_component<AnimationsComponent<SpriteSheetAnimation>>() and entityA->has_component<DirectionComponent>())
 			{
 				//Get all the animations managers of the entity
-				std::map<std::string, AnimationsManager<sf::Sprite>>& animationsManagers(entityA->component<AnimationsComponent<sf::Sprite>>()->animationsManagers);
+				auto& animationsManagers(entityA->component<AnimationsComponent<SpriteSheetAnimation>>()->animationsManagers);
 				//For each animations manager of the entity
 				for(auto& animationsPair : animationsManagers)
 				{
-					AnimationsManager<sf::Sprite>& animations = animationsPair.second;
+					AnimationsManager<SpriteSheetAnimation>& animations = animationsPair.second;
 					//If the animations manager have the required animation
 					if(animations.isRegistred("fall left") and animations.isRegistred("fall right"))
 					{
@@ -88,17 +88,17 @@ void FallingListener::EndContact(b2Contact* contact)
 		//Now we are sure that A is an actor that fall on the ground B
 		if(fixtureA->GetUserData() and (unsigned int)(fixtureA->GetUserData()) & FixtureRole::Foot and entityA->has_component<FallComponent>())
 		{
-			if(entityA->has_component<AnimationsComponent<sf::Sprite>>() and
+			if(entityA->has_component<AnimationsComponent<SpriteSheetAnimation>>() and
 				entityA->has_component<DirectionComponent>() and
 				not entityA->has_component<JumpComponent>())
 			{
 				DirectionComponent::Handle directionComponent = entityA->component<DirectionComponent>();
 				//Get all the animations managers of the entity
-				std::map<std::string, AnimationsManager<sf::Sprite>>& animationsManagers(entityA->component<AnimationsComponent<sf::Sprite>>()->animationsManagers);
+				auto& animationsManagers(entityA->component<AnimationsComponent<SpriteSheetAnimation>>()->animationsManagers);
 				//For each animations manager of the entity
 				for(auto& animationsPair : animationsManagers)
 				{
-					AnimationsManager<sf::Sprite>& animations = animationsPair.second;
+					AnimationsManager<SpriteSheetAnimation>& animations = animationsPair.second;
 					//If the animations manager have the required animation
 					if(animations.isRegistred("fall left") and animations.isRegistred("fall right"))
 					{

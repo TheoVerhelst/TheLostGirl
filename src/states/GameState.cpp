@@ -101,8 +101,8 @@ void GameState::saveWorld(const std::string& file)
 			if(entity.second.has_component<SpriteComponent>())
 				root["entities"][entity.first]["sprite"] = serialize(entity.second.component<SpriteComponent>(), getContext().textureManager);
 			
-			if(entity.second.has_component<AnimationsComponent<sf::Sprite>>())
-				root["entities"][entity.first]["spritesheet animations"] = serialize(entity.second.component<AnimationsComponent<sf::Sprite>>());
+			if(entity.second.has_component<AnimationsComponent<SpriteSheetAnimation>>())
+				root["entities"][entity.first]["spritesheet animations"] = serialize(entity.second.component<AnimationsComponent<SpriteSheetAnimation>>());
 			
 			if(entity.second.has_component<DirectionComponent>())
 				root["entities"][entity.first]["direction"] = serialize(entity.second.component<DirectionComponent>());
@@ -704,7 +704,7 @@ void GameState::initWorld(const std::string& file)
 						{
 							const Json::Value animations = part["spritesheet animations"];
 							parseObject(animations, "entities." + entityName + ".parts." + partName + ".spritesheet animations", Json::objectValue);
-							AnimationsManager<sf::Sprite> animationsManager;
+							AnimationsManager<SpriteSheetAnimation> animationsManager;
 							for(std::string& animationName : animations.getMemberNames())
 							{
 								const Json::Value animation = animations[animationName];
@@ -712,7 +712,8 @@ void GameState::initWorld(const std::string& file)
 																																{"duration", Json::realValue},
 																																{"loop", Json::booleanValue},
 																																{"data", Json::arrayValue}});
-								SpriteSheetAnimation* entityAnimation = new SpriteSheetAnimation();
+								sf::Sprite& spr = m_entities[entityName].component<SpriteComponent>()->sprites[partName];
+								SpriteSheetAnimation entityAnimation(spr);
 								unsigned short int importance{0};
 								float duration{0.f};
 								bool loop{false};
@@ -764,18 +765,18 @@ void GameState::initWorld(const std::string& file)
 										//relative duration
 										if(frame.isMember("relative duration"))
 											relativeDuration = frames[i]["relative duration"].asFloat();
-										entityAnimation->addFrame(sf::IntRect(static_cast<float>(x)*scale, static_cast<float>(y)*scale, static_cast<float>(w)*scale, static_cast<float>(h)*scale), relativeDuration);
+										entityAnimation.addFrame(sf::IntRect(static_cast<float>(x)*scale, static_cast<float>(y)*scale, static_cast<float>(w)*scale, static_cast<float>(h)*scale), relativeDuration);
 									}
 								}
 								animationsManager.addAnimation(animationName, entityAnimation, importance, sf::seconds(duration), loop);
 							}
-							if(not m_entities[entityName].has_component<AnimationsComponent<sf::Sprite>>())
+							if(not m_entities[entityName].has_component<AnimationsComponent<SpriteSheetAnimation>>())
 							{
-								std::map<std::string, AnimationsManager<sf::Sprite>> animationsManagers{{partName, animationsManager}};
-								m_entities[entityName].assign<AnimationsComponent<sf::Sprite>>(animationsManagers);
+								std::map<const std::string, AnimationsManager<SpriteSheetAnimation>> animationsManagers{{partName, animationsManager}};
+								m_entities[entityName].assign<AnimationsComponent<SpriteSheetAnimation>>(animationsManagers);
 							}
 							else
-								m_entities[entityName].component<AnimationsComponent<sf::Sprite>>()->animationsManagers.emplace(partName, animationsManager);
+								m_entities[entityName].component<AnimationsComponent<SpriteSheetAnimation>>()->animationsManagers.emplace(partName, animationsManager);
 						}
 						
 						//play animations
@@ -789,7 +790,7 @@ void GameState::initWorld(const std::string& file)
 							{
 								//Assert that the animation is defined
 								requireValues(part["spritesheet animations"], "entities." + entityName + ".parts." + partName + ".spritesheet animations", {{animationsToPlay[i].asString(), Json::objectValue}});
-								m_entities[entityName].component<AnimationsComponent<sf::Sprite>>()->animationsManagers[partName].play(animationsToPlay[i].asString());
+								m_entities[entityName].component<AnimationsComponent<SpriteSheetAnimation>>()->animationsManagers[partName].play(animationsToPlay[i].asString());
 							}
 						}
 						
@@ -802,7 +803,7 @@ void GameState::initWorld(const std::string& file)
 							for(Json::ArrayIndex i{0}; i < animationsToActivate.size(); ++i)
 							{
 								requireValues(part["spritesheet animations"], "entities." + entityName + ".parts." + partName + ".spritesheet animations", {{animationsToActivate[i].asString(), Json::objectValue}});
-								m_entities[entityName].component<AnimationsComponent<sf::Sprite>>()->animationsManagers[partName].activate(animationsToActivate[i].asString());
+								m_entities[entityName].component<AnimationsComponent<SpriteSheetAnimation>>()->animationsManagers[partName].activate(animationsToActivate[i].asString());
 							}
 						}
 					}

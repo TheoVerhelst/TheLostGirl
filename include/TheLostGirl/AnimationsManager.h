@@ -7,8 +7,6 @@
 
 #include <SFML/System/Time.hpp>
 
-#include <TheLostGirl/Animation.h>
-
 //Forward declarations
 namespace entityx
 {
@@ -27,12 +25,12 @@ namespace Json
 /// Usage exemple:
 /// \code
 /// //Make a TimeAnimation structure :
-/// SpriteSheetAnimation anim;
+/// SpriteSheetAnimation anim(sprite);
 /// anim.addFrame(rect1, 0.1f);
 /// anim.addFrame(rect2, 0.9f);
 ///
 /// //Add the component to the entity :
-/// AnimationsComponent::Handle animationsComponent = entity->assign<AnimationsComponent>(AnimationsManager<sf::Sprite>());
+/// AnimationsComponent::Handle animationsComponent = entity->assign<AnimationsComponent>(AnimationsManager<SpriteSheetAnimation>());
 /// //Add the animation to the animations manager
 /// animationsComponent->animations.addAnimation("run", anim, 1, sf::seconds(3.f), true);
 /// animationsComponent->animations.play("run");
@@ -40,14 +38,14 @@ namespace Json
 /// \see AnimationsSystem
 ///
 /// This animation system is inspired by the Animator system from the Jan Haller's Thor C++ library.
-template<typename T>
+template<typename A>
 class AnimationsManager
 {
 	public:
 		/// Animation associated with a certain duration.
 		struct TimeAnimation
 		{
-			Animation<T>* animation;      ///< Pointer to the concrete animation.
+			A animation;      ///< Pointer to the concrete animation.
 			unsigned short int importance;///< Indicates the importance of the animation, relatively to the others.
 			sf::Time duration;            ///< Duration of the animation.
 			bool loops;                   ///< Indicates if the animation must loop or not.
@@ -60,13 +58,19 @@ class AnimationsManager
 			/// \param _importance Indicates the importance of the animation, relatively to the others.
 			/// \param _duration Duration of the animation.
 			/// \param _loops Indicates if the animation must loop or not.
-			TimeAnimation(Animation<T>* _animation, unsigned short int _importance = 0, sf::Time _duration = sf::seconds(1.f), bool _loops = false);
+			TimeAnimation(A _animation,
+							unsigned short int _importance = 0,
+							sf::Time _duration = sf::seconds(1.f),
+							bool _loops = false,
+							float _progress = 0.f,
+							bool _isPaused = true,
+							bool _isActive = false);
 		};
 
-		/// Default constructor
+		/// Default constructor.
 		AnimationsManager();
 
-		/// Default destructor
+		/// Default destructor.
 		~AnimationsManager();
 
 		/// Add a new animation to the manager.
@@ -76,7 +80,7 @@ class AnimationsManager
 		/// \param duration Duration fo the animation.
 		/// \param loop Indicate if the animation must loop or not.
 		/// \see removeAnimation
-		void addAnimation(const std::string& identifier, Animation<T>* animation, unsigned short int importance = 0, sf::Time duration = sf::seconds(1.f), bool loop = false);
+		void addAnimation(const std::string& identifier, A animation, unsigned short int importance = 0, sf::Time duration = sf::seconds(1.f), bool loop = false);
 
 		/// Remove an animation from the animation manager.
 		/// \param identifier Identifier of the animation to delete.
@@ -143,9 +147,8 @@ class AnimationsManager
 		void setProgress(const std::string& identifier, float newProgress);
 
 		/// Update the animation system.
-		/// \param object Object on wich to apply the animation.
 		/// \param dt Elapsed time in the last game frame.
-		void update(T& object, sf::Time dt = sf::Time::Zero);
+		void update(sf::Time dt = sf::Time::Zero);
 		
 		/// Check if the given animation exists in the manager.
 		/// \param identifier Identifier of the animation to check.
@@ -155,6 +158,12 @@ class AnimationsManager
 		/// Serialize the animations manager.
 		/// \return A Json value containing all the data.
 		Json::Value serialize() const;
+		
+		/// Serialize the animations manager.
+		/// That copy all data in value and construct them in this instance of animations manager.
+		/// \param value A Json value containing all the data.
+		template <typename T>
+		void deserialize(const Json::Value& value, T& object);
 
 	private:
 		std::map<std::string, TimeAnimation> m_animationsMap;///< List of all registred animations.

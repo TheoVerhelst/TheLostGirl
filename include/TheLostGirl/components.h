@@ -55,14 +55,14 @@ struct SpriteComponent : public entityx::Component<SpriteComponent>
 
 /// AnimationsManager component.
 /// Essential for every dynamic entity in the game.
-template<typename T>
-struct AnimationsComponent : public entityx::Component<AnimationsComponent<T>>
+template<typename A>
+struct AnimationsComponent : public entityx::Component<AnimationsComponent<A>>
 {
-	std::map<std::string, AnimationsManager<T>> animationsManagers;///< AnimationsManager managers.
+	std::map<const std::string, AnimationsManager<A>> animationsManagers;///< AnimationsManager managers.
 
 	/// Default constructor.
 	/// \param _animationsManagers AnimationsManager manager.
-	AnimationsComponent(const std::map<std::string, AnimationsManager<T>>& _animationsManagers):
+	AnimationsComponent(const std::map<const std::string, AnimationsManager<A>>& _animationsManagers):
 		animationsManagers{_animationsManagers}
 	{}
 };

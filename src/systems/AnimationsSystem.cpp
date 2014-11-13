@@ -11,7 +11,7 @@
 
 void AnimationsSystem::update(entityx::EntityManager& entityManager, entityx::EventManager&, double dt)
 {
-	AnimationsComponent<sf::Sprite>::Handle animationsComponent;
+	AnimationsComponent<SpriteSheetAnimation>::Handle animationsComponent;
 	SpriteComponent::Handle spriteComponent;
 	FallComponent::Handle fallComponent;
 	BodyComponent::Handle bodyComponent;
@@ -27,7 +27,7 @@ void AnimationsSystem::update(entityx::EntityManager& entityManager, entityx::Ev
 		std::map<std::string, b2Body*>& bodies = bodyComponent->bodies;
 		for(auto& animationsPair : animationsComponent->animationsManagers)
 		{
-			AnimationsManager<sf::Sprite>& animations = animationsPair.second;
+			AnimationsManager<SpriteSheetAnimation>& animations = animationsPair.second;
 			if(bodies.find(animationsPair.first) != bodies.end())
 			{
 				b2Body* body = bodies[animationsPair.first];
@@ -44,11 +44,8 @@ void AnimationsSystem::update(entityx::EntityManager& entityManager, entityx::Ev
 	}
 	
 	//Update the AnimationsManager components
-	for(auto entity : entityManager.entities_with_components(animationsComponent, spriteComponent))
+	for(auto entity : entityManager.entities_with_components(animationsComponent))
 		//For each animations manager of the entity
 		for(auto& animationsPair : animationsComponent->animationsManagers)
-			//If the associated sprite exists
-			if(spriteComponent->sprites.find(animationsPair.first) != spriteComponent->sprites.end())
-				//Animate the sprite with the associed animations
-				animationsPair.second.update(spriteComponent->sprites[animationsPair.first], sf::seconds(dt));
+			animationsPair.second.update(sf::seconds(dt));
 }

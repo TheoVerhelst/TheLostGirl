@@ -3,21 +3,13 @@
 #include <entityx/Entity.h>
 
 #include <TheLostGirl/components.h>
+#include <TheLostGirl/functions.h>
 
 #include <TheLostGirl/SpriteSheetAnimation.h>
 
-SpriteSheetAnimation::SpriteSheetAnimation()
+SpriteSheetAnimation::SpriteSheetAnimation(sf::Sprite& sprite):
+	m_sprite(sprite)
 {}
-
-SpriteSheetAnimation::SpriteSheetAnimation(const SpriteSheetAnimation& other):
-	m_frames(other.m_frames)
-{}
-
-SpriteSheetAnimation& SpriteSheetAnimation::operator=(const SpriteSheetAnimation& rhs)
-{
-	if (this == &rhs) return *this; // handle self assignment
-	return *this;
-}
 
 void SpriteSheetAnimation::addFrame(const Frame& frame)
 {
@@ -29,7 +21,7 @@ void SpriteSheetAnimation::addFrame(const sf::IntRect& rect, float duration)
 	m_frames.push_back(Frame(rect, duration));
 }
 
-void SpriteSheetAnimation::animate(sf::Sprite& sprite, float progress)
+void SpriteSheetAnimation::animate(float progress)
 {
 	if(not m_frames.empty())
 	{
@@ -41,11 +33,11 @@ void SpriteSheetAnimation::animate(sf::Sprite& sprite, float progress)
 			progressCounter += frame.duration;
 			if(progressCounter > progress)
 			{
-				sprite.setTextureRect(frame.rect);
+				m_sprite.setTextureRect(frame.rect);
 				return;
 			}
 		}
-		sprite.setTextureRect(m_frames[m_frames.size()-1].rect);
+		m_sprite.setTextureRect(m_frames[m_frames.size()-1].rect);
 	}
 }
 
@@ -61,4 +53,20 @@ Json::Value SpriteSheetAnimation::serialize() const
 		ret[i]["relative duration"] = m_frames[i].duration;
 	}
 	return ret;
+}
+
+void SpriteSheetAnimation::deserialize(const Json::Value& value)
+{
+	m_frames.clear();
+	for(size_t i{0}; i < value.size(); ++i)
+	{
+		sf::IntRect rect;
+		float duration;
+		rect.left = value[i]["x"].asInt();
+		rect.top = value[i]["y"].asInt();
+		rect.width = value[i]["w"].asInt();
+		rect.height = value[i]["h"].asInt();
+		duration = value[i]["relative duration"].asFloat();
+		m_frames.push_back(Frame(rect, duration));
+	}
 }

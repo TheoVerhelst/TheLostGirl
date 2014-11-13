@@ -4,8 +4,6 @@
 #include <unordered_map>
 #include <iterator>
 
-#include <TheLostGirl/Animation.h>
-
 //Forward declarations
 namespace sf
 {
@@ -29,7 +27,7 @@ namespace Json
 /// In order to use this class, you must add some frames to the object
 /// with the addFrame member, and then pass the instance to the
 /// addAnimation member of an AnimationsManager object.
-class SpriteSheetAnimation : public Animation<sf::Sprite>
+class SpriteSheetAnimation
 {
 	public:
 		/// Structure that represent a frame of a spritesheet.
@@ -43,7 +41,7 @@ class SpriteSheetAnimation : public Animation<sf::Sprite>
 		struct Frame
 		{
 			sf::IntRect rect;///< Rect to display.
-			float duration;///< Relative duration of the frame, in the range [0, 1].
+			float duration;  ///< Relative duration of the frame, in the range [0, 1].
 			
 			/// Default constructor.
 			/// \param _rect Rect to display.
@@ -54,17 +52,9 @@ class SpriteSheetAnimation : public Animation<sf::Sprite>
 			{}
 		};
 		
-		/// Default constructor.
-		SpriteSheetAnimation();
-		
-		/// Copy constructor.
-		/// \param other Object to copy from.
-		SpriteSheetAnimation(const SpriteSheetAnimation& other);
-		
-		/// Assignment operator.
-		/// \param other Object to assign from.
-		/// \return A reference to this.
-		SpriteSheetAnimation& operator=(const SpriteSheetAnimation& other);
+		/// Constructor.
+		/// \param object Object to animate.
+		SpriteSheetAnimation(sf::Sprite& sprite);
 		
 		/// Registers a new frame.
 		/// \param frame Frame of texture to display on the sprite of the entity.
@@ -81,14 +71,19 @@ class SpriteSheetAnimation : public Animation<sf::Sprite>
 		/// In fact, it just search wich rect to apply the the texture of the sprite.
 		/// \param sprite Sprite on wich to apply the animation.
 		/// \param progress Progress of the animation to apply.
-		virtual void animate(sf::Sprite& sprite, float progress);
+		void animate(float progress);
 		
 		/// Serialize the spritesheet animation.
 		/// \return A Json value containing all the data.
-		virtual Json::Value serialize() const;
+		Json::Value serialize() const;
+		
+		/// Deserialize the value and set it in the animation.
+		/// \param value A Json value containing the data.
+		void deserialize(const Json::Value& value);
 		
 	private:
 		std::vector<Frame> m_frames;///< Array of all registred frames.
+		sf::Sprite& m_sprite;
 };
 
 #endif // SPRITESHEETANIMATION_H
