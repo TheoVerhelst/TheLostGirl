@@ -109,32 +109,41 @@ void DebugDraw::drawDebugAth()
 	if(m_context.parameters.debugMode)
 	{
 		m_debugMode = true;
-		//Find out position
-		BodyComponent::Handle bodyComponent;
 		CategoryComponent::Handle categoryComponent;
-		WalkComponent::Handle walkComponent;
+		//Find out position and bending
 		b2Vec2 position{0, 0};
-		for(auto entity : m_context.entityManager.entities_with_components(bodyComponent, categoryComponent, walkComponent))
+		float bendPower{0};
+		float bendAngle{0};
+		for(auto entity : m_context.entityManager.entities_with_components(categoryComponent))
 		{
 			//We found the player
 			if(categoryComponent->category & Category::Player)
 			{
-				//Find the main body
-				std::map<std::string, b2Body*>& bodies(entity.component<BodyComponent>()->bodies);
-				if(not bodies.empty())
+				if(entity.has_component<BodyComponent>() and entity.has_component<WalkComponent>())
 				{
-					//If there is a main body
-					if(bodies.find("main") != bodies.end())
-						position = bodies["main"]->GetPosition();
-					//Else, take the first that come in hand
-					else
-						position = bodies.begin()->second->GetPosition();
+					//Find the main body
+					std::map<std::string, b2Body*>& bodies(entity.component<BodyComponent>()->bodies);
+					if(not bodies.empty())
+					{
+						//If there is a main body
+						if(bodies.find("main") != bodies.end())
+							position = bodies["main"]->GetPosition();
+						//Else, take the first that come in hand
+						else
+							position = bodies.begin()->second->GetPosition();
+					}
+				}
+				if(entity.has_component<BendComponent>())
+				{
+					bendPower = entity.component<BendComponent>()->power;
+					bendAngle = entity.component<BendComponent>()->angle;
 				}
 				break;
 			}
 		}
 		
 		//Draw GUI
+		//Position
 		tgui::Label::Ptr positionLabel{m_context.gui.get<tgui::Label>("positionLabel")};
 		if(positionLabel == nullptr)
 		{
@@ -148,6 +157,19 @@ void DebugDraw::drawDebugAth()
 		b2Vec2 positionPixels =  (m_context.parameters.pixelScale / m_context.parameters.scale) * position;
 		positionLabel->setText("Meters (" + roundOutput(position.x) + ", " + roundOutput(position.y) + ")\n" + 
 							   "Pixels (" + roundOutput(positionPixels.x) + ", " + roundOutput(positionPixels.y) + ")");
+		
+		//Bending
+		tgui::Label::Ptr bendingLabel{m_context.gui.get<tgui::Label>("bendingLabel")};
+		if(bendingLabel == nullptr)
+		{
+			bendingLabel = tgui::Label::create();
+			bendingLabel->setPosition(tgui::bindWidth(m_context.gui, 0.35f), tgui::bindHeight(m_context.gui, 0.01f));
+			bendingLabel->setTextSize(20);
+			bendingLabel->setTextColor(sf::Color::Black);
+			bendingLabel->setTextFont(std::make_shared<sf::Font>(m_context.fontManager.get("debug")));
+			m_context.gui.add(bendingLabel, "bendingLabel");
+		}
+		bendingLabel->setText("Power : " + roundOutput(bendPower)+ "\nAngle : " + roundOutput(bendAngle));
 	}
 	else if(not m_context.parameters.debugMode and m_debugMode)
 	{
@@ -156,6 +178,9 @@ void DebugDraw::drawDebugAth()
 		tgui::Label::Ptr positionLabel{m_context.gui.get<tgui::Label>("positionLabel")};
 		if(positionLabel != nullptr)
 			m_context.gui.remove(positionLabel);
+		tgui::Label::Ptr bendingLabel{m_context.gui.get<tgui::Label>("bendingLabel")};
+		if(bendingLabel != nullptr)
+			m_context.gui.remove(bendingLabel);
 	}
 	
 }

@@ -201,20 +201,10 @@ void Mover::operator()(entityx::Entity& entity, double) const
 				if(animations.isRegistred("bend" + directionStr)
 					and animations.isRegistred("bend" + oppDirectionStr))
 				{
-					//If falling and diriged to the opposite side
-					if(animations.isActive("bend" + oppDirectionStr))
-					{
-						float progress = animations.getProgress("bend" + oppDirectionStr);
-						animations.stop("bend" + oppDirectionStr);
-						animations.activate("bend" + directionStr);
-						animations.setProgress("bend" + directionStr, progress);
-						entity.component<BendComponent>()->angle = remainder(entity.component<BendComponent>()->angle, b2_pi) - b2_pi;
-					}
 					if(start)
 					{
-						float progress = animations.getProgress("bend" + oppDirectionStr);
-						//If a second key is pressed when the other is held
-						if(animations.isActive("bend" + oppDirectionStr))
+						//If the player is diriged to the other side, and the bending is currently actived
+						if(animations.isActive("bend" + oppDirectionStr) and entity.component<BendComponent>()->power > 0.f)
 						{
 							//Flip the angle
 							if(direction == Direction::Left)
@@ -222,6 +212,7 @@ void Mover::operator()(entityx::Entity& entity, double) const
 							else if(direction == Direction::Right)
 								entity.component<BendComponent>()->angle = cap(entity.component<BendComponent>()->angle - b2_pi, -b2_pi/2, b2_pi, 2*b2_pi);
 						}
+						float progress = animations.getProgress("bend" + oppDirectionStr);
 						animations.stop("bend" + oppDirectionStr);
 						animations.activate("bend" + directionStr);
 						animations.setProgress("bend" + directionStr, progress);
@@ -229,11 +220,15 @@ void Mover::operator()(entityx::Entity& entity, double) const
 					else if(moveToOppDirection)
 					{
 						float progress = animations.getProgress("bend" + directionStr);
-						//Flip the angle
-						if(direction == Direction::Left)
-							entity.component<BendComponent>()->angle = cap(entity.component<BendComponent>()->angle - b2_pi, -b2_pi, b2_pi/2, 2*b2_pi);
-						else if(direction == Direction::Right)
-							entity.component<BendComponent>()->angle = cap(entity.component<BendComponent>()->angle - b2_pi, -b2_pi/2, b2_pi, 2*b2_pi);
+						//If the bending is currently actived
+						if(entity.component<BendComponent>()->power > 0.f)
+						{
+							//Flip the angle
+							if(direction == Direction::Left)
+								entity.component<BendComponent>()->angle = cap(entity.component<BendComponent>()->angle - b2_pi, -b2_pi, b2_pi/2, 2*b2_pi);
+							else if(direction == Direction::Right)
+								entity.component<BendComponent>()->angle = cap(entity.component<BendComponent>()->angle - b2_pi, -b2_pi/2, b2_pi, 2*b2_pi);
+						}
 						animations.stop("bend" + directionStr);
 						animations.activate("bend" + oppDirectionStr);
 						animations.setProgress("bend" + oppDirectionStr, progress);

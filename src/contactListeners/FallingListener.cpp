@@ -63,7 +63,6 @@ void FallingListener::BeginContact(b2Contact* contact)
 			}
 			entityA->component<FallComponent>()->contactCount++;
 			entityA->component<FallComponent>()->inAir = false;
-			std::cout << "in air = false" << std::endl;
 		}
 	}
 }

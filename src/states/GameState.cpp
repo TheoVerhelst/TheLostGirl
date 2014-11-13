@@ -357,7 +357,6 @@ void GameState::initWorld()
 																					{"fixtures", Json::arrayValue}});
 							b2BodyDef entityBodyComponentDef;
 							entityBodyComponentDef.userData = &m_entities[entityName];
-							std::cout << entityName << "." << partName << ".userData = " << &m_entities[entityName] << std::endl;
 							
 							//type
 							if(body.isMember("type"))
