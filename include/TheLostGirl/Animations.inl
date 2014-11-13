@@ -103,8 +103,7 @@ void Animations<T>::update(T& object, sf::Time dt)
 	if(not m_animationsMap.empty())
 	{
 		//Find the animation to play
-		typename
-		std::map<std::string, TimeAnimation>::iterator mostImportant;
+		typename std::map<std::string, TimeAnimation>::iterator mostImportant;//The map is T-dependent, so the typename keyword is necessary
 		bool activeAnimationFound{false};
 		for(auto it = m_animationsMap.begin(); it != m_animationsMap.end(); it++)
 		{
@@ -133,6 +132,12 @@ void Animations<T>::update(T& object, sf::Time dt)
 		}
 	}
 }
+template<typename T>
+bool Animations<T>::isRegistred(const std::string& identifier) const
+{
+	return m_animationsMap.find(identifier) != m_animationsMap.end();
+}
+
 template<typename T>
 Animations<T>::TimeAnimation::TimeAnimation(std::function<void(T&, float)> _animation, unsigned short int _importance, sf::Time _duration, bool _loops):
 	animation{_animation},

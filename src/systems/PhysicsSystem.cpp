@@ -23,7 +23,7 @@ void PhysicsSystem::update(entityx::EntityManager& entityManager, entityx::Event
 	//Update the walkers
 	for(auto entity : entityManager.entities_with_components(bodyComponent, walkComponent))
 	{
-		b2Body* body = bodyComponent->body;
+		b2Body* body = bodyComponent->bodies["main"];
 		float targetVelocity = 0.f;
 		if(walkComponent->effectiveMovement ==  Direction::Left)
 			targetVelocity = -walkComponent->walkSpeed - body->GetLinearVelocity().x;
@@ -37,20 +37,36 @@ void PhysicsSystem::update(entityx::EntityManager& entityManager, entityx::Event
 	//Update the archers
 	for(auto entity : entityManager.entities_with_components(bodyComponent, bendComponent))
 	{
-		b2Body* body = bodyComponent->body;
-		b2RevoluteJoint* joint = static_cast<b2RevoluteJoint*>(body->GetJointList()->joint);
 		float angleTarget{-bendComponent->angle};
-		float32 angleError = joint->GetJointAngle() - angleTarget;
 		float32 gain = 10.f;
-		joint->SetMotorSpeed(-gain * angleError);
+		b2Body* bodyArms = bodyComponent->bodies["arms"];
+		b2RevoluteJoint* jointArms = static_cast<b2RevoluteJoint*>(bodyArms->GetJointList()->joint);
+		float32 angleError = jointArms->GetJointAngle() - angleTarget;
+		jointArms->SetMotorSpeed(-gain * angleError);
+		
+		b2Body* bodyBow = bodyComponent->bodies["bow"];
+		b2RevoluteJoint* jointBow = static_cast<b2RevoluteJoint*>(bodyBow->GetJointList()->joint);
+		angleError = jointBow->GetJointAngle() - angleTarget;
+		jointBow->SetMotorSpeed(-gain * angleError);
 	}
 	//Update the sprite transformation according to the one of the b2Body.
 	for(auto entity : entityManager.entities_with_components(bodyComponent, spriteComponent))
 	{
-		b2Vec2 pos = bodyComponent->body->GetPosition();
-		float32 angle = bodyComponent->body->GetAngle();
-		spriteComponent->worldPosition.x = pos.x * m_parameters.pixelScale;
-		spriteComponent->worldPosition.y = pos.y * m_parameters.pixelScale;
-		spriteComponent->sprite.setRotation(angle*180/b2_pi);
+		std::map<std::string, sf::Sprite>& sprites(spriteComponent->sprites);
+		std::map<std::string, sf::Vector2f>& worldPositions(spriteComponent->worldPositions);
+		std::map<std::string, b2Body*>& bodies(bodyComponent->bodies);
+		for(auto& bodyPair : bodies)
+		{
+			//If the body exists in sprites and positions maps
+			if(sprites.find(bodyPair.first) != sprites.end()
+				and worldPositions.find(bodyPair.first) != worldPositions.end())
+			{
+				b2Vec2 pos = bodyPair.second->GetPosition();
+				float32 angle = bodyPair.second->GetAngle();
+				worldPositions[bodyPair.first].x = pos.x * m_parameters.pixelScale;
+				worldPositions[bodyPair.first].y = pos.y * m_parameters.pixelScale;
+				sprites[bodyPair.first].setRotation(angle*180/b2_pi);
+			}
+		}
 	}
 }

@@ -116,9 +116,20 @@ void DebugDraw::drawDebugAth()
 		b2Vec2 position{0, 0};
 		for(auto entity : m_context.entityManager.entities_with_components(bodyComponent, categoryComponent, walkComponent))
 		{
+			//We found the player
 			if(categoryComponent->category & Category::Player)
 			{
-				position = bodyComponent->body->GetPosition();
+				//Find the main body
+				std::map<std::string, b2Body*>& bodies(entity.component<BodyComponent>()->bodies);
+				if(not bodies.empty())
+				{
+					//If there is a main body
+					if(bodies.find("main") != bodies.end())
+						position = bodies["main"]->GetPosition();
+					//Else, take the first that come in hand
+					else
+						position = bodies.begin()->second->GetPosition();
+				}
 				break;
 			}
 		}

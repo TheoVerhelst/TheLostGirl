@@ -139,6 +139,11 @@ class Animations
 		/// \param object Object on wich to apply the animation.
 		/// \param dt Elapsed time in the last game frame.
 		void update(T& object, sf::Time dt = sf::Time::Zero);
+		
+		/// Check if the given animation exists in the manager.
+		/// \param identifier Identifier of the animation to check.
+		/// \return True if the given animation is registred in the manager, false otherwise.
+		bool isRegistred(const std::string& identifier) const;
 
 	private:
 		std::map<std::string, TimeAnimation> m_animationsMap;///< List of all registred animations.

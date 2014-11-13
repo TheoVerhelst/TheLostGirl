@@ -23,12 +23,12 @@ class Animations;
 /// The BodyComponent component store a pointer to a b2Body and is used to simulate physics in the game world.
 struct BodyComponent : public entityx::Component<BodyComponent>
 {
-	b2Body* body;///< Pointer to the physic body.
-
-	/// Default constructor
-	/// \param _body Pointer to the physic body.
-	BodyComponent(b2Body* _body):
-		body{_body}
+	std::map<std::string, b2Body*> bodies;///< Pointers to the physic body.
+	
+	/// Default constructor.
+	/// \param _bodies Pointer to the physic body.
+	BodyComponent(const std::map<std::string, b2Body*>& _bodies):
+		bodies{_bodies}
 	{}
 };
 
@@ -37,29 +37,32 @@ struct BodyComponent : public entityx::Component<BodyComponent>
 /// For more information about sprites, see the SFML doc.
 struct SpriteComponent : public entityx::Component<SpriteComponent>
 {
-	sf::Sprite sprite;         ///< Sprite to draw.
-	sf::Vector3f worldPosition;///< x and y indicates the target position in the world,and z indicates in wich layer the sprite should be drawn.
-
-	/// Default constructor
-	/// \param _sprite Sprite to draw.
-	/// \param _worldPosition Indicates the position and the layer wherein the sprite should be drawn.
-	SpriteComponent(const sf::Sprite& _sprite, sf::Vector3f _worldPosition):
-		sprite{_sprite},
-		worldPosition{_worldPosition}
+	std::map<std::string, sf::Sprite> sprites;        ///< Sprites to draw.
+	std::map<std::string, sf::Vector2f> worldPositions;///< Indicates the target position in the world.
+	float plan;                                       ///< Indicates in wich layer the sprite should be drawn.
+	
+	/// Default constructor.
+	/// \param _sprites Sprite to draw.
+	/// \param _worldPositions Indicates the position where the sprite should be drawn.
+	/// \param _plan Indicates the layer wherein the sprite should be drawn.
+	SpriteComponent(const std::map<std::string, sf::Sprite>& _sprites, const std::map<std::string, sf::Vector2f>& _worldPositions, float _plan):
+		sprites{_sprites},
+		worldPositions{_worldPositions},
+		plan{_plan}
 	{}
 };
 
 /// Animations component.
 /// Essential for every dynamic entity in the game.
 template<typename T>
-struct AnimationsComponent : public entityx::Component<AnimationsComponent<T> >
+struct AnimationsComponent : public entityx::Component<AnimationsComponent<T>>
 {
-	Animations<T> animations;///< Animations manager.
+	std::map<std::string, Animations<T>> animationsManagers;///< Animations managers.
 
 	/// Default constructor.
-	/// \param _animations Animations manager.
-	AnimationsComponent(const Animations<T>& _animations):
-		animations{_animations}
+	/// \param _animationsManagers Animations manager.
+	AnimationsComponent(const std::map<std::string, Animations<T>>& _animationsManagers):
+		animationsManagers{_animationsManagers}
 	{}
 };
 
