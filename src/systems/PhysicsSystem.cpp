@@ -32,7 +32,7 @@ void PhysicsSystem::update(entityx::EntityManager& entityManager, entityx::Event
 		else if(walkComponent->effectiveMovement ==  Direction::None)
 			targetVelocity = -body->GetLinearVelocity().x;
 		//Apply an impulse relatively to the mass of the body
-		body->ApplyLinearImpulse({targetVelocity*body->GetMass(), 0.f}, body->GetWorldCenter(), true);
+		body->ApplyLinearImpulse({targetVelocity*body->GetMass()/4, 0.f}, body->GetWorldCenter(), true);
 	}
 	//Update the archers
 	for(auto entity : entityManager.entities_with_components(bodyComponent, bendComponent))

@@ -22,12 +22,14 @@
 #include <TheLostGirl/functions.h>
 #include <TheLostGirl/events.h>
 #include <TheLostGirl/FixtureRoles.h>
+#include <TheLostGirl/serialization.h>
 
 #include <TheLostGirl/states/GameState.h>
 
 GameState::GameState(StateStack& stack, Context context) :
 	State(stack, context),
 	m_entities(),
+	m_levelEntities(),
 	m_contactListener(getContext()),
 	m_timeSpeed{1.f},
 	m_threadLoad(),
@@ -36,6 +38,7 @@ GameState::GameState(StateStack& stack, Context context) :
 	m_referencePlan{0.f},
 	m_levelRect{0, 0, 0, 1080}
 {
+	//Dunno how to make a cleaner thread initialization from function member
 	m_threadLoad = std::thread([this](const std::string& str){return this->initWorld(str);}, "resources/levels/save.json");
 }
 
@@ -66,7 +69,7 @@ bool GameState::update(sf::Time elapsedTime)
 {
 	getContext().systemManager.update<PhysicsSystem>(elapsedTime.asSeconds());
 	getContext().systemManager.update<ActionsSystem>(elapsedTime.asSeconds());
-	getContext().systemManager.update<AnimationSystem>(elapsedTime.asSeconds());
+	getContext().systemManager.update<AnimationsSystem>(elapsedTime.asSeconds());
 	getContext().systemManager.update<ScrollingSystem>(elapsedTime.asSeconds());
 	getContext().systemManager.update<TimeSystem>(elapsedTime.asSeconds()*m_timeSpeed);//Scale the time
 	getContext().systemManager.update<SkySystem>(getContext().systemManager.system<TimeSystem>()->getRealTime().asSeconds());
@@ -83,6 +86,66 @@ bool GameState::handleEvent(const sf::Event& event)
 	bool isDragAndDropActive{getContext().player.isActived(Player::Action::Bend)};
 	getContext().systemManager.system<DragAndDropSystem>()->setDragAndDropActivation(isDragAndDropActive);
 	return false;
+}
+
+void GameState::saveWorld(const std::string& file)
+{
+		Json::Value root;//Will contains the root value after serializing.
+		Json::StyledWriter writer;
+		std::ofstream saveFileStream(file, std::ofstream::binary);
+		for(auto& entity : m_entities)
+		{
+			if(entity.second.has_component<BodyComponent>())
+				root["entities"][entity.first]["body"] = serialize(entity.second.component<BodyComponent>());
+			
+			if(entity.second.has_component<SpriteComponent>())
+				root["entities"][entity.first]["sprite"] = serialize(entity.second.component<SpriteComponent>(), getContext().textureManager);
+			
+			if(entity.second.has_component<AnimationsComponent<sf::Sprite>>())
+				root["entities"][entity.first]["spritesheet animations"] = serialize(entity.second.component<AnimationsComponent<sf::Sprite>>());
+			
+			if(entity.second.has_component<DirectionComponent>())
+				root["entities"][entity.first]["direction"] = serialize(entity.second.component<DirectionComponent>());
+			
+			if(entity.second.has_component<CategoryComponent>())
+				root["entities"][entity.first]["category"] = serialize(entity.second.component<CategoryComponent>());
+			
+			if(entity.second.has_component<ActorIDComponent>())
+				root["entities"][entity.first]["actor ID"] = serialize(entity.second.component<ActorIDComponent>());
+			
+			if(entity.second.has_component<SkyComponent>())
+				root["entities"][entity.first]["sky"] = serialize(entity.second.component<SkyComponent>());
+			
+			if(entity.second.has_component<FallComponent>())
+				root["entities"][entity.first]["fall"] = serialize(entity.second.component<FallComponent>());
+			
+			if(entity.second.has_component<WalkComponent>())
+				root["entities"][entity.first]["walk"] = serialize(entity.second.component<WalkComponent>());
+			
+			if(entity.second.has_component<JumpComponent>())
+				root["entities"][entity.first]["jump"] = serialize(entity.second.component<JumpComponent>());
+			
+			if(entity.second.has_component<BendComponent>())
+				root["entities"][entity.first]["bend"] = serialize(entity.second.component<BendComponent>());
+			
+			if(entity.second.has_component<HealthComponent>())
+				root["entities"][entity.first]["health"] = serialize(entity.second.component<HealthComponent>());
+			
+			if(entity.second.has_component<StaminaComponent>())
+				root["entities"][entity.first]["stamina"] = serialize(entity.second.component<StaminaComponent>());
+		}
+		
+		//level data
+		root["level"]["identifier"] = m_levelIdentifier;
+		root["level"]["box"]["x"] = m_levelRect.left;
+		root["level"]["box"]["y"] = m_levelRect.top;
+		root["level"]["box"]["w"] = m_levelRect.width;
+		root["level"]["box"]["h"] = m_levelRect.height;
+		root["level"]["number of plans"] = m_numberOfPlans;
+		root["level"]["reference plan"] = m_referencePlan;
+		
+		saveFileStream << writer.write(root);
+		saveFileStream.close();
 }
 
 void GameState::initWorld(const std::string& file)
@@ -181,6 +244,7 @@ void GameState::initWorld(const std::string& file)
 			{
 				//Filename of the image to load
 				std::string fileTexture{m_levelIdentifier + "_" + std::to_string(i)};
+				std::cout << "filetexture = " << fileTexture << std::endl;
 				//Path of the image to load
 				std::string path{paths[getContext().parameters.scaleIndex] + "levels/" + m_levelIdentifier + "/" + fileTexture + ".png"};
 				//Check if the plan is defined
@@ -205,8 +269,8 @@ void GameState::initWorld(const std::string& file)
 						unsigned int oh{static_cast<unsigned int>(origin["h"].asUInt()*getContext().parameters.scale)};
 						
 						//Load the texture
-						//Identifier of the entity and the texture, e.g. first image loaded in the plan 3 : "3_0"
-						std::string textureIdentifier{std::to_string(i) + "_" + std::to_string(j)};
+						//Identifier of the texture, in format "level_plan_texture"
+						std::string textureIdentifier{fileTexture + "_" + std::to_string(j)};
 						//If the texture is not alreday loaded (first loading of the level)
 						if(not texManager.isLoaded(textureIdentifier))
 						{
@@ -221,21 +285,24 @@ void GameState::initWorld(const std::string& file)
 						for(Json::ArrayIndex k{0}; k < replaces.size(); k++)
 						{
 							const Json::Value replace = replaces[k];
-							requireValues(replace, "level." + std::to_string(i) + "." + std::to_string(j) + ".replace" + std::to_string(k), {{"x", Json::realValue},
+							//Identifier of the entity, in format "level_plan_texture_replace"
+							std::string replaceIdentifier{textureIdentifier + "_" + std::to_string(k)};
+							requireValues(replace, "level." + std::to_string(i) + "." + std::to_string(j) + ".replace." + std::to_string(k), {{"x", Json::realValue},
 																															{"y", Json::realValue}});
 							//Position where the frame should be replaced
 							float rx{replace["x"].asFloat()*getContext().parameters.scale};
 							float ry{replace["y"].asFloat()*getContext().parameters.scale};
 							//Create an entity
-							m_entities.emplace(textureIdentifier, getContext().entityManager.create());
+							m_levelEntities.emplace(replaceIdentifier, getContext().entityManager.create());
 							//Create a sprite with the loaded texture
 							//Assign the sprite to the entity
 							sf::Sprite replaceSpr(texManager.get(textureIdentifier));
 							replaceSpr.setPosition(rx, ry);
 							std::map<std::string, sf::Sprite> sprites{{"main", replaceSpr}};
 							std::map<std::string, sf::Vector2f> worldPositions{{"main", {rx, ry}}};
-							m_entities[textureIdentifier].assign<SpriteComponent>(sprites, worldPositions, static_cast<float>(i));
-							m_entities[textureIdentifier].assign<CategoryComponent>(Category::Scene);
+							m_levelEntities[replaceIdentifier].assign<SpriteComponent>(sprites, worldPositions, static_cast<float>(i));
+							m_levelEntities[replaceIdentifier].assign<CategoryComponent>(Category::Scene);
+							std::cout << "assigned to replace " << replaceIdentifier << std::endl;
 						}
 					}
 				}
@@ -251,7 +318,7 @@ void GameState::initWorld(const std::string& file)
 					
 					for(unsigned int j{0}; j < numberOfChunks; ++j)
 					{
-						//Name of the texture
+						//Identifier of the entity, in format "level_plan_chunk"
 						std::string textureIdentifier{fileTexture + "_" + std::to_string(j)};
 						//Size of the chunk to load, may be truncated if we reach the end of the image.
 						unsigned int currentChunkSize{chunkSize};
@@ -264,15 +331,16 @@ void GameState::initWorld(const std::string& file)
 							texManager.load<sf::IntRect>(textureIdentifier, path, sf::IntRect(j*chunkSize, 0, currentChunkSize, m_levelRect.height*getContext().parameters.scale));
 						}
 						//Create an entity
-						m_entities.emplace(textureIdentifier, getContext().entityManager.create());
+						m_levelEntities.emplace(textureIdentifier, getContext().entityManager.create());
 						//Create a sprite with the loaded texture
 						//Assign the sprite to the entity
 						sf::Sprite chunkSpr(texManager.get(textureIdentifier));
 						chunkSpr.setPosition(j*chunkSize, 0);
 						std::map<std::string, sf::Sprite> sprites{{"main", chunkSpr}};
 						std::map<std::string, sf::Vector2f> worldPositions{{"main", {static_cast<float>(j*chunkSize), 0}}};
-						m_entities[textureIdentifier].assign<SpriteComponent>(sprites, worldPositions, static_cast<float>(i));
-						m_entities[textureIdentifier].assign<CategoryComponent>(Category::Scene);
+						m_levelEntities[textureIdentifier].assign<SpriteComponent>(sprites, worldPositions, static_cast<float>(i));
+						m_levelEntities[textureIdentifier].assign<CategoryComponent>(Category::Scene);
+							std::cout << "assigned to normal " << textureIdentifier << std::endl;
 					}
 				}
 			}
@@ -636,15 +704,15 @@ void GameState::initWorld(const std::string& file)
 						{
 							const Json::Value animations = part["spritesheet animations"];
 							parseObject(animations, "entities." + entityName + ".parts." + partName + ".spritesheet animations", Json::objectValue);
-							Animations<sf::Sprite> animationsManager;
+							AnimationsManager<sf::Sprite> animationsManager;
 							for(std::string& animationName : animations.getMemberNames())
 							{
 								const Json::Value animation = animations[animationName];
 								parseObject(animation, "entities." + entityName + ".spritesheet animations." + animationName, {{"importance", Json::intValue},
 																																{"duration", Json::realValue},
 																																{"loop", Json::booleanValue},
-																																{"frames", Json::arrayValue}});
-								SpriteSheetAnimation entityAnimation;
+																																{"data", Json::arrayValue}});
+								SpriteSheetAnimation* entityAnimation = new SpriteSheetAnimation();
 								unsigned short int importance{0};
 								float duration{0.f};
 								bool loop{false};
@@ -661,15 +729,15 @@ void GameState::initWorld(const std::string& file)
 								if(animation.isMember("loop"))
 									loop = animation["loop"].asBool();
 								
-								//frames
-								if(animation.isMember("frames"))
+								//frames (=data, because of template implementation)
+								if(animation.isMember("data"))
 								{
-									const Json::Value frames = animation["frames"];
-									parseArray(frames, "entities." + entityName + ".spritesheet animations." + animationName +  ".frames", Json::objectValue);
+									const Json::Value frames = animation["data"];
+									parseArray(frames, "entities." + entityName + ".spritesheet animations." + animationName +  ".data", Json::objectValue);
 									for(Json::ArrayIndex i{0}; i < frames.size(); ++i)
 									{
 										const Json::Value frame = frames[i];
-										parseObject(frame, "entities." + entityName + ".spritesheet animations." + animationName + ".frames." + std::to_string(i), {{"x", Json::intValue},
+										parseObject(frame, "entities." + entityName + ".spritesheet animations." + animationName + ".data." + std::to_string(i), {{"x", Json::intValue},
 																																									{"y", Json::intValue},
 																																									{"w", Json::intValue},
 																																									{"h", Json::intValue},
@@ -696,14 +764,14 @@ void GameState::initWorld(const std::string& file)
 										//relative duration
 										if(frame.isMember("relative duration"))
 											relativeDuration = frames[i]["relative duration"].asFloat();
-										entityAnimation.addFrame(sf::IntRect(static_cast<float>(x)*scale, static_cast<float>(y)*scale, static_cast<float>(w)*scale, static_cast<float>(h)*scale), relativeDuration);
+										entityAnimation->addFrame(sf::IntRect(static_cast<float>(x)*scale, static_cast<float>(y)*scale, static_cast<float>(w)*scale, static_cast<float>(h)*scale), relativeDuration);
 									}
 								}
 								animationsManager.addAnimation(animationName, entityAnimation, importance, sf::seconds(duration), loop);
 							}
 							if(not m_entities[entityName].has_component<AnimationsComponent<sf::Sprite>>())
 							{
-								std::map<std::string, Animations<sf::Sprite>> animationsManagers{{partName, animationsManager}};
+								std::map<std::string, AnimationsManager<sf::Sprite>> animationsManagers{{partName, animationsManager}};
 								m_entities[entityName].assign<AnimationsComponent<sf::Sprite>>(animationsManagers);
 							}
 							else
@@ -1070,7 +1138,7 @@ void GameState::initWorld(const std::string& file)
 			texManager.load(dayIdentifier, paths[getContext().parameters.scaleIndex] + "day.png");
 		}
 		//Create an entity
-		m_entities.emplace(dayIdentifier, getContext().entityManager.create());
+		m_levelEntities.emplace(dayIdentifier, getContext().entityManager.create());
 		//Create a sprite with the loaded texture
 		sf::Sprite daySpr(texManager.get(dayIdentifier));
 		//Assign origin of the sprite to the center of the day image
@@ -1078,9 +1146,9 @@ void GameState::initWorld(const std::string& file)
 		//Assign the sprite to the entity, and set its z-ordinate to positive infinity
 		std::map<std::string, sf::Sprite> daySprites{{"main", daySpr}};
 		std::map<std::string, sf::Vector2f> dayWorldPositions{{"main", {position.x, position.y}}};
-		m_entities[dayIdentifier].assign<SpriteComponent>(daySprites, dayWorldPositions, std::numeric_limits<double>::infinity());
-		m_entities[dayIdentifier].assign<SkyComponent>(true);
-		m_entities[dayIdentifier].assign<CategoryComponent>(Category::Scene);
+		m_levelEntities[dayIdentifier].assign<SpriteComponent>(daySprites, dayWorldPositions, std::numeric_limits<double>::infinity());
+		m_levelEntities[dayIdentifier].assign<SkyComponent>(true);
+		m_levelEntities[dayIdentifier].assign<CategoryComponent>(Category::Scene);
 	
 		//Load the night sky
 		const std::string nightIdentifier{"night sky"};
@@ -1090,7 +1158,7 @@ void GameState::initWorld(const std::string& file)
 			texManager.load(nightIdentifier, paths[getContext().parameters.scaleIndex] + "night.png");
 		}
 		//Create an entity
-		m_entities.emplace(nightIdentifier, getContext().entityManager.create());
+		m_levelEntities.emplace(nightIdentifier, getContext().entityManager.create());
 		//Create a sprite with the loaded texture
 		sf::Sprite nightSpr(texManager.get(nightIdentifier));
 		//Assign origin of the sprite to the center of the night image
@@ -1098,9 +1166,9 @@ void GameState::initWorld(const std::string& file)
 		//Assign the sprite to the entity, and set its z-ordinate to positive infinity
 		std::map<std::string, sf::Sprite> nightSprites{{"main", nightSpr}};
 		std::map<std::string, sf::Vector2f> nightWorldPositions{{"main", {position.x, position.y}}};
-		m_entities[nightIdentifier].assign<SpriteComponent>(nightSprites, nightWorldPositions, std::numeric_limits<double>::infinity());
-		m_entities[nightIdentifier].assign<SkyComponent>(false);
-		m_entities[nightIdentifier].assign<CategoryComponent>(Category::Scene);
+		m_levelEntities[nightIdentifier].assign<SpriteComponent>(nightSprites, nightWorldPositions, std::numeric_limits<double>::infinity());
+		m_levelEntities[nightIdentifier].assign<SkyComponent>(false);
+		m_levelEntities[nightIdentifier].assign<CategoryComponent>(Category::Scene);
 	}
 	catch(std::runtime_error& e)
 	{
@@ -1126,6 +1194,7 @@ void GameState::initWorld(const std::string& file)
 	requestStackPush(States::HUD);
 	CategoryComponent::Handle categoryComponent;
 	//Set the new health and stamina to the HUD
+	saveWorld("resources/levels/test.json");
 	for(auto entity : getContext().entityManager.entities_with_components(categoryComponent))
 	{
 		if(categoryComponent->category & Category::Player and entity.has_component<HealthComponent>())

@@ -29,7 +29,7 @@ void SpriteSheetAnimation::addFrame(const sf::IntRect& rect, float duration)
 	m_frames.push_back(Frame(rect, duration));
 }
 
-void SpriteSheetAnimation::operator()(sf::Sprite& sprite, float progress)
+void SpriteSheetAnimation::animate(sf::Sprite& sprite, float progress)
 {
 	if(not m_frames.empty())
 	{
@@ -47,4 +47,18 @@ void SpriteSheetAnimation::operator()(sf::Sprite& sprite, float progress)
 		}
 		sprite.setTextureRect(m_frames[m_frames.size()-1].rect);
 	}
+}
+
+Json::Value SpriteSheetAnimation::serialize() const
+{
+	Json::Value ret;
+	for(size_t i{0}; i < m_frames.size(); ++i)
+	{
+		ret[i]["x"] = m_frames[i].rect.left;
+		ret[i]["y"] = m_frames[i].rect.top;
+		ret[i]["w"] = m_frames[i].rect.width;
+		ret[i]["h"] = m_frames[i].rect.height;
+		ret[i]["relative duration"] = m_frames[i].duration;
+	}
+	return ret;
 }

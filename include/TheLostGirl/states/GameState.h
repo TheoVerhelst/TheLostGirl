@@ -8,7 +8,7 @@
 #include <SFML/System/Thread.hpp>
 
 #include <SFML/Graphics/Sprite.hpp>
-#include <TheLostGirl/Animations.h>
+#include <TheLostGirl/AnimationsManager.h>
 #include <TheLostGirl/ContactListener.h>
 
 //Forward declarations
@@ -58,19 +58,25 @@ class GameState : public State
 
 	private:
 		/// Initialize the physic world.
+		/// \param file Path of the save file to load.
 		void initWorld(const std::string& file);
 		
-		std::unordered_map<std::string, entityx::Entity> m_entities;///< A unordered map allow to reference to elements of the list safely, and use those references outside the scope of the GameState class.
-		ContactListener m_contactListener;                          ///< The falling listener.
-		float m_timeSpeed;                                          ///< The speed of the time (usually 1.f). This influes only on the TimeSystem, not on physics!
-		bool m_loadingFinished;                                     ///< Indicate if the level loading is finished.
-		std::thread m_threadLoad;                                   ///< Thread launched when loading the level.
+		/// Save the physic world.
+		/// \param file Path of the save file to override.
+		void saveWorld(const std::string& file);
 		
-		//Level informations
-		std::string m_levelIdentifier;                              ///< Identifer of the level, must be a non-spaced name.
-		unsigned short int m_numberOfPlans;                         ///< Number of plans in the background.
-		float m_referencePlan;                                      ///< Number of the plan where actors evolute.
-		sf::IntRect m_levelRect;                                    ///< The dimensions of the level, in pixels.
+		std::unordered_map<std::string, entityx::Entity> m_entities;     ///< A unordered map allow to reference to elements of the list safely, and use those references outside the scope of the GameState class.
+		std::unordered_map<std::string, entityx::Entity> m_levelEntities;///< A unordered map allow to reference to elements of the list safely, and use those references outside the scope of the GameState class.
+		ContactListener m_contactListener;                               ///< The falling listener.
+		float m_timeSpeed;                                               ///< The speed of the time (usually 1.f). This influes only on the TimeSystem, not on physics!
+		bool m_loadingFinished;                                          ///< Indicate if the level loading is finished.
+		std::thread m_threadLoad;                                        ///< Thread launched when loading the level.
+		
+		                                                                 //Level informations
+		std::string m_levelIdentifier;                                   ///< Identifer of the level, must be a non-spaced name.
+		unsigned short int m_numberOfPlans;                              ///< Number of plans in the background.
+		float m_referencePlan;                                           ///< Number of the plan where actors evolute.
+		sf::IntRect m_levelRect;                                         ///< The dimensions of the level, in pixels.
 };
 
 #endif // GAMESTATE_H

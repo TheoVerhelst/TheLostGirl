@@ -11,12 +11,12 @@
 #include <dist/json/json-forwards.h>
 
 #include <TheLostGirl/Category.h>
-#include <TheLostGirl/Animations.h>
+#include <TheLostGirl/AnimationsManager.h>
 
 //Forward declarations
 class b2Body;
 template<typename T>
-class Animations;
+class AnimationsManager;
 
 /// \file components.h
 
@@ -53,16 +53,16 @@ struct SpriteComponent : public entityx::Component<SpriteComponent>
 	{}
 };
 
-/// Animations component.
+/// AnimationsManager component.
 /// Essential for every dynamic entity in the game.
 template<typename T>
 struct AnimationsComponent : public entityx::Component<AnimationsComponent<T>>
 {
-	std::map<std::string, Animations<T>> animationsManagers;///< Animations managers.
+	std::map<std::string, AnimationsManager<T>> animationsManagers;///< AnimationsManager managers.
 
 	/// Default constructor.
-	/// \param _animationsManagers Animations manager.
-	AnimationsComponent(const std::map<std::string, Animations<T>>& _animationsManagers):
+	/// \param _animationsManagers AnimationsManager manager.
+	AnimationsComponent(const std::map<std::string, AnimationsManager<T>>& _animationsManagers):
 		animationsManagers{_animationsManagers}
 	{}
 };

@@ -5,7 +5,7 @@
 #include <Box2D/Dynamics/Contacts/b2Contact.h>
 #include <entityx/Entity.h>
 #include <TheLostGirl/components.h>
-#include <TheLostGirl/Animations.h>
+#include <TheLostGirl/AnimationsManager.h>
 #include <TheLostGirl/events.h>
 #include <TheLostGirl/FixtureRoles.h>
 
@@ -42,11 +42,11 @@ void FallingListener::BeginContact(b2Contact* contact)
 			if(entityA->has_component<AnimationsComponent<sf::Sprite>>() and entityA->has_component<DirectionComponent>())
 			{
 				//Get all the animations managers of the entity
-				std::map<std::string, Animations<sf::Sprite>>& animationsManagers(entityA->component<AnimationsComponent<sf::Sprite>>()->animationsManagers);
+				std::map<std::string, AnimationsManager<sf::Sprite>>& animationsManagers(entityA->component<AnimationsComponent<sf::Sprite>>()->animationsManagers);
 				//For each animations manager of the entity
 				for(auto& animationsPair : animationsManagers)
 				{
-					Animations<sf::Sprite>& animations = animationsPair.second;
+					AnimationsManager<sf::Sprite>& animations = animationsPair.second;
 					//If the animations manager have the required animation
 					if(animations.isRegistred("fall left") and animations.isRegistred("fall right"))
 					{
@@ -94,11 +94,11 @@ void FallingListener::EndContact(b2Contact* contact)
 			{
 				DirectionComponent::Handle directionComponent = entityA->component<DirectionComponent>();
 				//Get all the animations managers of the entity
-				std::map<std::string, Animations<sf::Sprite>>& animationsManagers(entityA->component<AnimationsComponent<sf::Sprite>>()->animationsManagers);
+				std::map<std::string, AnimationsManager<sf::Sprite>>& animationsManagers(entityA->component<AnimationsComponent<sf::Sprite>>()->animationsManagers);
 				//For each animations manager of the entity
 				for(auto& animationsPair : animationsManagers)
 				{
-					Animations<sf::Sprite>& animations = animationsPair.second;
+					AnimationsManager<sf::Sprite>& animations = animationsPair.second;
 					//If the animations manager have the required animation
 					if(animations.isRegistred("fall left") and animations.isRegistred("fall right"))
 					{

@@ -4,6 +4,8 @@
 #include <unordered_map>
 #include <iterator>
 
+#include <TheLostGirl/Animation.h>
+
 //Forward declarations
 namespace sf
 {
@@ -15,14 +17,19 @@ namespace entityx
 {
 	class Entity;
 }
+namespace Json
+{
+	class Value;
+}
+
 /// Animation of a spritesheet.
 /// A spritesheet (or tileset) is an animation tricks
 /// that constists in display only one part of a given texture at one time
 /// and fastly change this area to give the illusion of continuous movement.
 /// In order to use this class, you must add some frames to the object
 /// with the addFrame member, and then pass the instance to the
-/// addAnimation member of an Animations object.
-class SpriteSheetAnimation
+/// addAnimation member of an AnimationsManager object.
+class SpriteSheetAnimation : public Animation<sf::Sprite>
 {
 	public:
 		/// Structure that represent a frame of a spritesheet.
@@ -74,10 +81,14 @@ class SpriteSheetAnimation
 		/// In fact, it just search wich rect to apply the the texture of the sprite.
 		/// \param sprite Sprite on wich to apply the animation.
 		/// \param progress Progress of the animation to apply.
-		void operator()(sf::Sprite& sprite, float progress);
+		virtual void animate(sf::Sprite& sprite, float progress);
+		
+		/// Serialize the spritesheet animation.
+		/// \return A Json value containing all the data.
+		virtual Json::Value serialize() const;
 		
 	private:
-		std::vector<Frame> m_frames; ///< Array of all registred frames.
+		std::vector<Frame> m_frames;///< Array of all registred frames.
 };
 
 #endif // SPRITESHEETANIMATION_H

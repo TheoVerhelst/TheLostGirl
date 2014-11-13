@@ -5,11 +5,11 @@
 #include <Box2D/Box2D.h>
 
 #include <TheLostGirl/components.h>
-#include <TheLostGirl/Animations.h>
+#include <TheLostGirl/AnimationsManager.h>
 
 #include <TheLostGirl/systems/AnimationsSystem.h>
 
-void AnimationSystem::update(entityx::EntityManager& entityManager, entityx::EventManager&, double dt)
+void AnimationsSystem::update(entityx::EntityManager& entityManager, entityx::EventManager&, double dt)
 {
 	AnimationsComponent<sf::Sprite>::Handle animationsComponent;
 	SpriteComponent::Handle spriteComponent;
@@ -27,7 +27,7 @@ void AnimationSystem::update(entityx::EntityManager& entityManager, entityx::Eve
 		std::map<std::string, b2Body*>& bodies = bodyComponent->bodies;
 		for(auto& animationsPair : animationsComponent->animationsManagers)
 		{
-			Animations<sf::Sprite>& animations = animationsPair.second;
+			AnimationsManager<sf::Sprite>& animations = animationsPair.second;
 			if(bodies.find(animationsPair.first) != bodies.end())
 			{
 				b2Body* body = bodies[animationsPair.first];
@@ -43,7 +43,7 @@ void AnimationSystem::update(entityx::EntityManager& entityManager, entityx::Eve
 		}
 	}
 	
-	//Update the Animations components
+	//Update the AnimationsManager components
 	for(auto entity : entityManager.entities_with_components(animationsComponent, spriteComponent))
 		//For each animations manager of the entity
 		for(auto& animationsPair : animationsComponent->animationsManagers)

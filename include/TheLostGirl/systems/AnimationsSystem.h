@@ -18,12 +18,12 @@ class b2World;
 struct Parameters;
 
 /// System that plays animations on entities.
-/// \see Animations
-class AnimationSystem : public entityx::System<AnimationSystem>
+/// \see AnimationsManager
+class AnimationsSystem : public entityx::System<AnimationsSystem>
 {
 	public:
 		/// Default constructor.
-		AnimationSystem()
+		AnimationsSystem()
 		{}
 
 		/// System's update function.

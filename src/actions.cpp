@@ -2,7 +2,7 @@
 #include <entityx/Entity.h>
 
 #include <TheLostGirl/components.h>
-#include <TheLostGirl/Animations.h>
+#include <TheLostGirl/AnimationsManager.h>
 #include <TheLostGirl/functions.h>
 
 #include <TheLostGirl/actions.h>
@@ -83,7 +83,7 @@ void Mover::operator()(entityx::Entity& entity, double) const
 			and entity.has_component<DirectionComponent>())
 		{
 			//Get all the animations managers of the entity
-			std::map<std::string, Animations<sf::Sprite>>& animationsManagers(entity.component<AnimationsComponent<sf::Sprite>>()->animationsManagers);
+			std::map<std::string, AnimationsManager<sf::Sprite>>& animationsManagers(entity.component<AnimationsComponent<sf::Sprite>>()->animationsManagers);
 			DirectionComponent::Handle directionComponent = entity.component<DirectionComponent>();
 			WalkComponent::Handle walkComponent = entity.component<WalkComponent>();
 			//References to the moveToLeft and moveToRight data in directionComponent
@@ -91,7 +91,7 @@ void Mover::operator()(entityx::Entity& entity, double) const
 			//For each animations manager of the entity
 			for(auto& animationsPair : animationsManagers)
 			{
-				Animations<sf::Sprite>& animations = animationsPair.second;
+				AnimationsManager<sf::Sprite>& animations = animationsPair.second;
 				//If the animations manager have the required animations
 				if(animations.isRegistred("stay" + directionStr)
 					and animations.isRegistred("stay" + oppDirectionStr)
@@ -138,11 +138,11 @@ void Mover::operator()(entityx::Entity& entity, double) const
 			and entity.has_component<DirectionComponent>())
 		{
 			//Get all the animations managers of the entity
-			std::map<std::string, Animations<sf::Sprite>>& animationsManagers(entity.component<AnimationsComponent<sf::Sprite>>()->animationsManagers);
+			std::map<std::string, AnimationsManager<sf::Sprite>>& animationsManagers(entity.component<AnimationsComponent<sf::Sprite>>()->animationsManagers);
 			//For each animations manager of the entity
 			for(auto& animationsPair : animationsManagers)
 			{
-				Animations<sf::Sprite>& animations = animationsPair.second;
+				AnimationsManager<sf::Sprite>& animations = animationsPair.second;
 				//If the animations manager have the required animations
 				if(animations.isRegistred("jump" + directionStr)
 					and animations.isRegistred("jump" + oppDirectionStr))
@@ -164,11 +164,11 @@ void Mover::operator()(entityx::Entity& entity, double) const
 			and entity.has_component<DirectionComponent>())
 		{
 			//Get all the animations managers of the entity
-			std::map<std::string, Animations<sf::Sprite>>& animationsManagers(entity.component<AnimationsComponent<sf::Sprite>>()->animationsManagers);
+			std::map<std::string, AnimationsManager<sf::Sprite>>& animationsManagers(entity.component<AnimationsComponent<sf::Sprite>>()->animationsManagers);
 			//For each animations manager of the entity
 			for(auto& animationsPair : animationsManagers)
 			{
-				Animations<sf::Sprite>& animations = animationsPair.second;
+				AnimationsManager<sf::Sprite>& animations = animationsPair.second;
 				//If the animations manager have the required animations
 				if(animations.isRegistred("fall" + directionStr)
 					and animations.isRegistred("fall" + oppDirectionStr))
@@ -192,11 +192,11 @@ void Mover::operator()(entityx::Entity& entity, double) const
 			DirectionComponent::Handle directionComponent = entity.component<DirectionComponent>();
 			bool moveToOppDirection = (direction == Direction::Right ? directionComponent->moveToLeft : directionComponent->moveToRight);
 			//Get all the animations managers of the entity
-			std::map<std::string, Animations<sf::Sprite>>& animationsManagers(entity.component<AnimationsComponent<sf::Sprite>>()->animationsManagers);
+			std::map<std::string, AnimationsManager<sf::Sprite>>& animationsManagers(entity.component<AnimationsComponent<sf::Sprite>>()->animationsManagers);
 			//For each animations manager of the entity
 			for(auto& animationsPair : animationsManagers)
 			{
-				Animations<sf::Sprite>& animations = animationsPair.second;
+				AnimationsManager<sf::Sprite>& animations = animationsPair.second;
 				//If the animations manager have the required animations
 				if(animations.isRegistred("bend" + directionStr)
 					and animations.isRegistred("bend" + oppDirectionStr))
@@ -257,13 +257,13 @@ void Jumper::operator()(entityx::Entity& entity, double) const
 		FallComponent::Handle fallComponent = entity.component<FallComponent>();
 		DirectionComponent::Handle directionComponent = entity.component<DirectionComponent>();
 		//Get all the animations managers of the entity
-		std::map<std::string, Animations<sf::Sprite>>& animationsManagers(entity.component<AnimationsComponent<sf::Sprite>>()->animationsManagers);
+		std::map<std::string, AnimationsManager<sf::Sprite>>& animationsManagers(entity.component<AnimationsComponent<sf::Sprite>>()->animationsManagers);
 		//Get all the bodies of the entity
 		std::map<std::string, b2Body*>& bodies(entity.component<BodyComponent>()->bodies);
 		//For each animations manager of the entity
 		for(auto& animationsPair : animationsManagers)
 		{
-			Animations<sf::Sprite>& animations = animationsPair.second;
+			AnimationsManager<sf::Sprite>& animations = animationsPair.second;
 			//If the animations manager have the required animations
 			if(animations.isRegistred("jump left") and animations.isRegistred("jump right")
 				and bodies.find(animationsPair.first) != bodies.end())
@@ -314,11 +314,11 @@ void BowBender::operator()(entityx::Entity& entity, double) const
 		bendComponent->power = cap(power, 0.f, bendComponent->maxPower);//Cap the power
 		float animationPower = bendComponent->power / bendComponent->maxPower;//The progress of the bending, in the range [0, 1]
 		//Get all the animations managers of the entity
-		std::map<std::string, Animations<sf::Sprite>>& animationsManagers(entity.component<AnimationsComponent<sf::Sprite>>()->animationsManagers);
+		std::map<std::string, AnimationsManager<sf::Sprite>>& animationsManagers(entity.component<AnimationsComponent<sf::Sprite>>()->animationsManagers);
 		//For each animations manager of the entity
 		for(auto& animationsPair : animationsManagers)
 		{
-			Animations<sf::Sprite>& animations = animationsPair.second;
+			AnimationsManager<sf::Sprite>& animations = animationsPair.second;
 			//If the animations manager have the required animation
 			if(animations.isRegistred("bend"+directionStr))
 				animations.setProgress("bend"+directionStr, animationPower);
