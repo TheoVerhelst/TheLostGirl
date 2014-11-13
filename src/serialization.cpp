@@ -1,7 +1,9 @@
 #include <dist/json/json.h>
 #include <entityx/Entity.h>
+#include <Box2D/Dynamics/b2Body.h>
 
 #include <TheLostGirl/components.h>
+#include <TheLostGirl/ResourceManager.h>
 
 #include <TheLostGirl/serialization.h>
 
@@ -10,15 +12,60 @@ Json::Value serialize(entityx::ComponentHandle<BodyComponent> component)
 	Json::Value ret;
 	for(auto& bodyPair : component->bodies)
 	{
+		std::string partName{bodyPair.first};
+		b2Body* body{bodyPair.second};
+		switch(body->GetType())
+		{
+			case b2_kinematicBody:
+				ret[partName]["body"]["type"] = "kinematic";
+				break;
+			case b2_dynamicBody:
+				ret[partName]["body"]["type"] = "dynamic";
+				break;
+			case b2_staticBody:
+			default:
+				ret[partName]["body"]["type"] = "static";
+				break;
+		}
+									
+		ret[partName]["body"]["position"]["x"] = body->GetPosition().x;
+		ret[partName]["body"]["position"]["y"] = body->GetPosition().y;
+		ret[partName]["body"]["angle"] = body->GetAngle();
+		ret[partName]["body"]["linear velocity"]["x"] = body->GetLinearVelocity().x;
+		ret[partName]["body"]["linear velocity"]["y"] = body->GetLinearVelocity().y;
+		ret[partName]["body"]["angular velocity"] = body->GetAngularVelocity();
+		ret[partName]["body"]["linear damping"] = body->GetLinearDamping();
+		ret[partName]["body"]["angular damping"] = body->GetAngularDamping();
+		ret[partName]["body"]["allow sleep"] = body->IsSleepingAllowed();
+		ret[partName]["body"]["awake"] = body->IsAwake();
+		ret[partName]["body"]["fixed rotation"] = body->IsFixedRotation();
+		ret[partName]["body"]["bullet"] = body->IsBullet();
+		ret[partName]["body"]["active"] = body->IsActive();
+		ret[partName]["body"]["gravity scale"] = body->GetGravityScale();
 	}
 	return ret;
 }
 
-Json::Value serialize(entityx::ComponentHandle<SpriteComponent> component)
+Json::Value serialize(entityx::ComponentHandle<SpriteComponent> component, TextureManager& textureManager)
 {
 	Json::Value ret;
 	for(auto& spritePair : component->sprites)
 	{
+		std::string partName{spritePair.first};
+		const sf::Texture* tex = spritePair.second.getTexture();
+		//Compare the pointer to the texture
+		if(tex == &textureManager.get("archer"))
+			ret[partName]["sprite"]["identifier"] = "archer";
+		else if(tex == &textureManager.get("arms"))
+			ret[partName]["sprite"]["identifier"] = "arms";
+		else if(tex == &textureManager.get("bow"))
+			ret[partName]["sprite"]["identifier"] = "bow";
+	}
+	for(auto& positionPair : component->worldPositions)
+	{
+		std::string partName{positionPair.first};
+		ret[partName]["sprite"]["position"]["x"] = positionPair.second.x;
+		ret[partName]["sprite"]["position"]["y"] = positionPair.second.y;
 	}
 	return ret;
 }

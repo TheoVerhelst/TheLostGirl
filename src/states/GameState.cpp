@@ -319,21 +319,35 @@ void GameState::initWorld()
 						if(part.isMember("sprite"))
 						{
 							const Json::Value sprite = part["sprite"];
-							parseValue(sprite, "entities." + entityName + ".sprite", {"archer", "bow", "arms"});
+							parseObject(sprite, "entities." + entityName + ".sprite", {{"identifier", Json::stringValue}, {"position", Json::objectValue}});
+							requireValues(sprite, "entities." + entityName + ".sprite", {{"identifier", Json::stringValue}});
+							parseValue(sprite["identifier"], "entities." + entityName + ".sprite.identifier", {"archer", "bow", "arms"});
+							
+							//position
+							sf::Vector2f position{0, 0};
+							if(sprite.isMember("position"))
+							{
+								const Json::Value positionObj = sprite["position"];
+								parseObject(positionObj, "entities." + entityName + ".body.position", {{"x", Json::realValue}, {"y", Json::realValue}});
+								if(positionObj.isMember("x"))
+									position.x = positionObj["x"].asFloat()*uniqScale;
+								if(positionObj.isMember("y"))
+									position.y = positionObj["y"].asFloat()*uniqScale;
+							}
 							
 							//Create the sprite
-							sf::Sprite entitySpr(getContext().textureManager.get(sprite.asString()));
+							sf::Sprite entitySpr(getContext().textureManager.get(sprite["identifier"].asString()));
 							//If the component do not already exists
 							if(not m_entities[entityName].has_component<SpriteComponent>())
 							{
 								std::map<std::string, sf::Sprite> sprites{{partName, entitySpr}};
-								std::map<std::string, sf::Vector2f> worldPositions{{partName, {0, 0}}};
+								std::map<std::string, sf::Vector2f> worldPositions{{partName, position}};
 								m_entities[entityName].assign<SpriteComponent>(sprites, worldPositions, m_referencePlan);
 							}
 							else
 							{
 								m_entities[entityName].component<SpriteComponent>()->sprites.emplace(partName, entitySpr);
-								m_entities[entityName].component<SpriteComponent>()->worldPositions.emplace(partName, sf::Vector2f(0, 0));
+								m_entities[entityName].component<SpriteComponent>()->worldPositions.emplace(partName, position);
 							}
 						}
 						

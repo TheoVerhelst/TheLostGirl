@@ -70,7 +70,10 @@
 	        {
 	            "main" : 
 	            {
-	                "sprite" : "archer",
+	                "sprite" :
+	                {
+	                    "identifier" : "archer"
+	                },
 	                "spritesheet animations" : 
 	                {
 	                    "stay left" :
@@ -327,7 +330,10 @@
 	           },
 	           "arms" :
 	           {
-	                "sprite" : "arms",
+	                "sprite" :
+	                {
+	                    "identifier" : "arms"
+	                },
 	                "spritesheet animations" : 
 	                {
 	                    "bend left" :
@@ -425,7 +431,10 @@
 	            },
 	            "bow" :
 	            {
-	                "sprite" : "bow",
+	                "sprite" :
+	                {
+	                    "identifier" : "bow"
+	                },
 	                "spritesheet animations" :
 	                {
 	                    "bend left" :
