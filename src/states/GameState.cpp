@@ -90,13 +90,16 @@ bool GameState::handleEvent(const sf::Event& event)
 
 void GameState::saveWorld(const std::string& file)
 {
+		const float scale = getContext().parameters.scale;
+		const float pixelScale = getContext().parameters.pixelScale;
+		const float uniqScale = scale / pixelScale;//The pixel/meters scale at the maximum resolution, about 1.f/120.f
 		Json::Value root;//Will contains the root value after serializing.
 		Json::StyledWriter writer;
 		std::ofstream saveFileStream(file, std::ofstream::binary);
 		for(auto& entity : m_entities)
 		{
 			if(entity.second.has_component<BodyComponent>())
-				root["entities"][entity.first]["body"] = serialize(entity.second.component<BodyComponent>());
+				root["entities"][entity.first]["body"] = serialize(entity.second.component<BodyComponent>(), uniqScale);
 			
 			if(entity.second.has_component<SpriteComponent>())
 				root["entities"][entity.first]["sprite"] = serialize(entity.second.component<SpriteComponent>(), getContext().textureManager);
@@ -300,8 +303,12 @@ void GameState::initWorld(const std::string& file)
 							replaceSpr.setPosition(rx, ry);
 							std::map<std::string, sf::Sprite> sprites{{"main", replaceSpr}};
 							std::map<std::string, sf::Vector2f> worldPositions{{"main", {rx, ry}}};
-							m_levelEntities[replaceIdentifier].assign<SpriteComponent>(sprites, worldPositions, static_cast<float>(i));
-							m_levelEntities[replaceIdentifier].assign<CategoryComponent>(Category::Scene);
+							SpriteComponent::Handle sprComp = m_levelEntities[replaceIdentifier].assign<SpriteComponent>();
+							sprComp->sprites = sprites;
+							sprComp->worldPositions = worldPositions;
+							sprComp->plan = static_cast<float>(i);
+							CategoryComponent::Handle catComp = m_levelEntities[replaceIdentifier].assign<CategoryComponent>();
+							catComp->category = Category::Scene;
 							std::cout << "assigned to replace " << replaceIdentifier << std::endl;
 						}
 					}
@@ -338,8 +345,12 @@ void GameState::initWorld(const std::string& file)
 						chunkSpr.setPosition(j*chunkSize, 0);
 						std::map<std::string, sf::Sprite> sprites{{"main", chunkSpr}};
 						std::map<std::string, sf::Vector2f> worldPositions{{"main", {static_cast<float>(j*chunkSize), 0}}};
-						m_levelEntities[textureIdentifier].assign<SpriteComponent>(sprites, worldPositions, static_cast<float>(i));
-						m_levelEntities[textureIdentifier].assign<CategoryComponent>(Category::Scene);
+						SpriteComponent::Handle sprComp = m_levelEntities[textureIdentifier].assign<SpriteComponent>();
+						sprComp->sprites = sprites;
+						sprComp->worldPositions = worldPositions;
+						sprComp->plan = static_cast<float>(i);
+						CategoryComponent::Handle catComp = m_levelEntities[textureIdentifier].assign<CategoryComponent>();
+						catComp->category = Category::Scene;
 							std::cout << "assigned to normal " << textureIdentifier << std::endl;
 					}
 				}
@@ -358,478 +369,192 @@ void GameState::initWorld(const std::string& file)
 				//Assert that there is only these elements with these types in the entity object.
 				parseObject(entity, "entities." + entityName, {{"categories", Json::arrayValue},
 																{"actor ID", Json::intValue},
+																{"sprite", Json::objectValue},
+																{"body", Json::objectValue},
+																{"spritesheet animations", Json::objectValue},
 																{"plan", Json::realValue},
 																{"walk", Json::objectValue},
-																{"jump", Json::realValue},
+																{"jump", Json::objectValue},
 																{"bend", Json::objectValue},
 																{"health", Json::objectValue},
 																{"stamina", Json::objectValue},
 																{"direction", Json::objectValue},
-																{"fall", Json::objectValue},
-																{"parts", Json::objectValue}});
+																{"fall", Json::objectValue}});
 				m_entities.emplace(entityName, getContext().entityManager.create());
 				
-				//parts
-				if(entity.isMember("parts"))
+				//sprite
+				if(entity.isMember("sprite"))
 				{
-					const Json::Value parts = entity["parts"];
-					//Assert that every element of the parts must be an object
-					parseObject(parts, "entities." + entityName + ".parts", Json::objectValue);
-					for(std::string& partName : parts.getMemberNames())
+					const Json::Value sprites = entity["sprite"];
+					parseObject(sprites, "entities." + entityName + ".sprite", Json::objectValue);
+					for(std::string& partName : sprites.getMemberNames())
 					{
-						const Json::Value part = parts[partName];
-						parseObject(part, "entities." + entityName + ".parts." + partName, {{"sprite", Json::objectValue},
-																							{"body", Json::objectValue},
-																							{"spritesheet animations", Json::objectValue},
-																							{"play animations", Json::arrayValue},
-																							{"activate animations", Json::arrayValue}});
+						const Json::Value sprite = sprites[partName];
+						parseObject(sprite, "entities." + entityName + ".sprite." + partName, {{"identifier", Json::stringValue}, {"position", Json::objectValue}});
+						requireValues(sprite, "entities." + entityName + ".sprite." + partName, {{"identifier", Json::stringValue}});
+						parseValue(sprite["identifier"], "entities." + entityName + ".sprite." + partName + ".identifier", {"archer", "bow", "arms"});
 						
-						//sprite
-						if(part.isMember("sprite"))
-						{
-							const Json::Value sprite = part["sprite"];
-							parseObject(sprite, "entities." + entityName + ".sprite", {{"identifier", Json::stringValue}, {"position", Json::objectValue}});
-							requireValues(sprite, "entities." + entityName + ".sprite", {{"identifier", Json::stringValue}});
-							parseValue(sprite["identifier"], "entities." + entityName + ".sprite.identifier", {"archer", "bow", "arms"});
-							
-							//position
-							sf::Vector2f position{0, 0};
-							if(sprite.isMember("position"))
-							{
-								const Json::Value positionObj = sprite["position"];
-								parseObject(positionObj, "entities." + entityName + ".body.position", {{"x", Json::realValue}, {"y", Json::realValue}});
-								if(positionObj.isMember("x"))
-									position.x = positionObj["x"].asFloat()*uniqScale;
-								if(positionObj.isMember("y"))
-									position.y = positionObj["y"].asFloat()*uniqScale;
-							}
-							
-							//Create the sprite
-							sf::Sprite entitySpr(getContext().textureManager.get(sprite["identifier"].asString()));
-							//If the component do not already exists
-							if(not m_entities[entityName].has_component<SpriteComponent>())
-							{
-								std::map<std::string, sf::Sprite> sprites{{partName, entitySpr}};
-								std::map<std::string, sf::Vector2f> worldPositions{{partName, position}};
-								m_entities[entityName].assign<SpriteComponent>(sprites, worldPositions, m_referencePlan);
-							}
-							else
-							{
-								m_entities[entityName].component<SpriteComponent>()->sprites.emplace(partName, entitySpr);
-								m_entities[entityName].component<SpriteComponent>()->worldPositions.emplace(partName, position);
-							}
-						}
+						//position
+						if(sprite.isMember("position"))
+							requireValues(sprite["position"], "entities." + entityName + ".sprite." + partName + ".position", {{"x", Json::realValue}, {"y", Json::realValue}});
+					}
+					deserialize(sprites, m_entities[entityName].assign<SpriteComponent>(), texManager);
+				}
+					
+				//body
+				if(entity.isMember("body"))
+				{
+					const Json::Value bodies = entity["body"];
+					parseObject(bodies, "entities." + entityName + ".body", Json::objectValue);
+					for(std::string& partName : bodies.getMemberNames())
+					{
+						const Json::Value body = bodies[partName];
+						parseObject(body, "entities." + entityName + ".body." + partName, {{"type", Json::stringValue},
+																							{"position", Json::objectValue},
+																							{"angle", Json::realValue},
+																							{"linear velocity", Json::objectValue},
+																							{"angular velocity", Json::realValue},
+																							{"linear damping", Json::realValue},
+																							{"angular damping", Json::realValue},
+																							{"allow sleep", Json::booleanValue},
+																							{"awake", Json::booleanValue},
+																							{"fixed rotation", Json::booleanValue},
+																							{"bullet", Json::booleanValue},
+																							{"active", Json::booleanValue},
+																							{"gravity scale", Json::realValue},
+																							{"fixtures", Json::arrayValue}});
 						
-						//body
-						if(part.isMember("body"))
+						//type
+						if(body.isMember("type"))
+							parseValue(body["type"], "entities." + entityName + ".body." + partName + ".type", {"static", "kinematic", "dynamic"});
+						
+						//position
+						if(body.isMember("position"))
+							requireValues(body["position"], "entities." + entityName + ".body." + partName + ".position", {{"x", Json::realValue}, {"y", Json::realValue}});
+						
+						//linear velocity
+						if(body.isMember("linear velocity"))
+							parseObject(body["linear velocity"], "entities." + entityName + ".body." + partName + ".linear velocity", {{"x", Json::realValue}, {"y", Json::realValue}});
+						
+						//fixtures
+						if(body.isMember("fixtures"))
 						{
-							const Json::Value body = part["body"];
-							parseObject(body, "entities." + entityName + ".parts." + partName + ".body", {{"type", Json::stringValue},
-																					{"position", Json::objectValue},
-																					{"angle", Json::realValue},
-																					{"linear velocity", Json::objectValue},
-																					{"angular velocity", Json::realValue},
-																					{"linear damping", Json::realValue},
-																					{"angular damping", Json::realValue},
-																					{"allow sleep", Json::booleanValue},
-																					{"awake", Json::booleanValue},
-																					{"fixed rotation", Json::booleanValue},
-																					{"bullet", Json::booleanValue},
-																					{"active", Json::booleanValue},
-																					{"gravity scale", Json::realValue},
-																					{"fixtures", Json::arrayValue}});
-							b2BodyDef entityBodyComponentDef;
-							entityBodyComponentDef.userData = &m_entities[entityName];
-							
-							//type
-							if(body.isMember("type"))
+							const Json::Value fixtures = body["fixtures"];
+							parseArray(fixtures, "entities." + entityName + ".body." + partName + ".fixtures", Json::objectValue);
+							for(Json::ArrayIndex i{0}; i < fixtures.size(); ++i)
 							{
-								const Json::Value type = body["type"];
-								parseValue(type, "entities." + entityName + ".body.type", {"static", "kinematic", "dynamic"});
-								if(type == "static")
-									entityBodyComponentDef.type = b2_staticBody;
-								else if(type == "kinematic")
-									entityBodyComponentDef.type = b2_kinematicBody;
-								else if(type == "dynamic")
-									entityBodyComponentDef.type = b2_dynamicBody;
-							}
-							
-							//position
-							if(body.isMember("position"))
-							{
-								const Json::Value position = body["position"];
-								parseObject(position, "entities." + entityName + ".body.position", {{"x", Json::realValue}, {"y", Json::realValue}});
-								if(position.isMember("x"))
-									entityBodyComponentDef.position.x = position["x"].asFloat()*uniqScale;
-								if(position.isMember("y"))
-									entityBodyComponentDef.position.y = position["y"].asFloat()*uniqScale;
-							}
-							
-							//angle
-							if(body.isMember("angle"))
-								entityBodyComponentDef.angle = body["angle"].asFloat();
-							
-							//linear velocity
-							if(body.isMember("linear velocity"))
-							{
-								const Json::Value linearVelocity = body["linear velocity"];
-								parseObject(linearVelocity, "entities." + entityName + ".body.linear velocity", {{"x", Json::realValue}, {"y", Json::realValue}});
-								if(linearVelocity.isMember("x"))
-									entityBodyComponentDef.linearVelocity.x = linearVelocity["x"].asFloat()*uniqScale;
-								if(linearVelocity.isMember("y"))
-									entityBodyComponentDef.linearVelocity.y = linearVelocity["y"].asFloat()*uniqScale;
-							}
-							
-							//angular velocity
-							if(body.isMember("angular velocity"))
-								entityBodyComponentDef.angularVelocity = body["angular velocity"].asFloat();
-							
-							//linear damping
-							if(body.isMember("linear damping"))
-								entityBodyComponentDef.linearDamping = body["linear damping"].asFloat();
-							
-							//angular damping
-							if(body.isMember("angular damping"))
-								entityBodyComponentDef.angularDamping = body["angular damping"].asFloat();
-							
-							//allow sleep
-							if(body.isMember("allow sleep"))
-								entityBodyComponentDef.allowSleep = body["allow sleep"].asBool();
-							
-							//awake
-							if(body.isMember("awake"))
-								entityBodyComponentDef.awake = body["awake"].asBool();
-							
-							//fixed rotation
-							if(body.isMember("fixed rotation"))
-								entityBodyComponentDef.fixedRotation = body["fixed rotation"].asBool();
-							
-							//bullet
-							if(body.isMember("bullet"))
-								entityBodyComponentDef.bullet = body["bullet"].asBool();
-							
-							//active
-							if(body.isMember("active"))
-								entityBodyComponentDef.active = body["active"].asBool();
-							
-							//gravity scale
-							if(body.isMember("gravity scale"))
-								entityBodyComponentDef.gravityScale = body["gravity scale"].asFloat();
-							
-							b2Body* entityBodyComponent = getContext().world.CreateBody(&entityBodyComponentDef);
-							if(not m_entities[entityName].has_component<BodyComponent>())
-							{
-								std::map<std::string, b2Body*> bodies{{partName, entityBodyComponent}};
-								m_entities[entityName].assign<BodyComponent>(bodies);
-							}
-							else
-								m_entities[entityName].component<BodyComponent>()->bodies.emplace(partName, entityBodyComponent);
-							
-							//fixtures
-							if(body.isMember("fixtures"))
-							{
-								const Json::Value fixtures = body["fixtures"];
-								parseArray(fixtures, "entities." + entityName + ".body.fixtures", Json::objectValue);
-								for(Json::ArrayIndex i{0}; i < fixtures.size(); ++i)
+								const Json::Value fixture = fixtures[i];
+								parseObject(fixture, "entities." + entityName + ".body." + partName + ".fixtures" + std::to_string(i), {{"type", Json::stringValue},
+																														{"box", Json::objectValue},
+																														{"vertices", Json::arrayValue},
+																														{"1", Json::objectValue},
+																														{"2", Json::objectValue},
+																														{"density", Json::realValue},
+																														{"friction", Json::realValue},
+																														{"restitution", Json::realValue},
+																														{"is sensor", Json::booleanValue},
+																														{"is foot sensor", Json::booleanValue}});
+								//type
+								if(fixture.isMember("type"))
 								{
-									const Json::Value fixture = fixtures[i];
-									parseObject(fixture, "entities." + entityName + ".body.fixtures" + std::to_string(i), {{"type", Json::stringValue},
-																															{"box", Json::objectValue},
-																															{"vertices", Json::arrayValue},
-																															{"1", Json::objectValue},
-																															{"2", Json::objectValue},
-																															{"density", Json::realValue},
-																															{"friction", Json::realValue},
-																															{"restitution", Json::realValue},
-																															{"is sensor", Json::booleanValue},
-																															{"is foot sensor", Json::booleanValue}});
-									b2FixtureDef entityFixtureDef;
-									//Initialize shapes here in order to keep pointers alive when assigning entityFixtureDef.shape
-									b2EdgeShape edgeShape;
-									b2PolygonShape polygonShape;
-									b2ChainShape chainShape;
-									std::vector<b2Vec2> verticesArray;
-									
-									//type
-									if(fixture.isMember("type"))
-									{
-										const Json::Value type = fixtures[i]["type"];
-										parseValue(type, "entities." + entityName + ".body.fixtures" + std::to_string(i) + ".type", {"polygon", "edge", "chain", "circle"});
+									const Json::Value type = fixtures[i]["type"];
+									parseValue(type, "entities." + entityName + ".body." + partName + ".fixtures" + std::to_string(i) + ".type", {"polygon", "edge", "chain", "circle"});
 
-										if(type == "polygon")
-										{
-											//box
-											if(fixture.isMember("box"))
-											{
-												const Json::Value box = fixtures[i]["box"];
-												parseObject(box, "entities." + entityName + ".body.fixtures." + std::to_string(i) + ".box", {{"w", Json::realValue},
-																																			{"h", Json::realValue},
-																																			{"center x", Json::realValue},
-																																			{"center y", Json::realValue},
-																																			{"angle", Json::realValue}});
-												float w{100}, h{100};
-												float angle{0};
-												
-												//width
-												if(box.isMember("w"))
-													w = box["w"].asFloat();
-												
-												//height
-												if(box.isMember("h"))
-													h = box["h"].asFloat();
-												
-												float cx{w/2}, cy{h/2};
-												
-												//center x
-												if(box.isMember("center x"))
-													cx = box["center x"].asFloat();
-												
-												//center y
-												if(box.isMember("center y"))
-													cy = box["center y"].asFloat();
-												
-												//angle
-												if(box.isMember("angle"))
-													angle = box["angle"].asFloat();
-													
-												polygonShape.SetAsBox((w*uniqScale)/2, (h*uniqScale)/2, {cx*uniqScale, cy*uniqScale}, angle);
-											}
-											
-											//vertices
-											else if(fixture.isMember("vertices"))
-											{
-												const Json::Value vertices = fixtures[i]["vertices"];
-												parseArray(vertices, "entities." + entityName + ".body.fixtures." + std::to_string(i) + ".vertices", Json::objectValue);
-												for(Json::ArrayIndex j{0}; j < vertices.size(); ++j)
-												{
-													const Json::Value vertice = vertices[j];
-													parseObject(vertice, "entities." + entityName + ".body.fixtures." + std::to_string(i) + ".vertices." + std::to_string(j), {{"x", Json::realValue}, {"y", Json::realValue}});
-												
-													//x
-													if(vertice.isMember("x"))
-														polygonShape.m_vertices[j].x = vertice["x"].asFloat()*uniqScale;
-													
-													//y
-													if(vertice.isMember("y"))
-														polygonShape.m_vertices[j].y = vertice["y"].asFloat()*uniqScale;
-												}
-											}
-											else
-												throw std::runtime_error("\"entities." + entityName + ".body.fixtures." + std::to_string(i) + "\" has no geometry.");
-											entityFixtureDef.shape = &polygonShape;
-										}
-										else if(type == "edge")
-										{
-											float x1{0}, y1{0}, x2{0}, y2{0};
-											//Assert that 1 and 2 exist
-											requireValues(fixture, "entities." + entityName + ".body.fixtures." + std::to_string(i), {{"1", Json::objectValue}, {"2", Json::objectValue}});
-											
-											//1
-											parseObject(fixture["1"], "entities." + entityName + ".body.fixtures." + std::to_string(i) + ".1", {{"x", Json::realValue},{"y", Json::realValue}});
-											//x
-											if(fixture["1"].isMember("x"))
-												x1 = fixtures[i]["1"]["x"].asFloat();
-											//y
-											if(fixture["1"].isMember("y"))
-												y1 = fixtures[i]["1"]["y"].asFloat();
-											
-											//2
-											parseObject(fixture["2"], "entities." + entityName + ".body.fixtures." + std::to_string(i) + ".2", {{"x", Json::realValue}, {"y", Json::realValue}});
-											//x
-											if(fixture["2"].isMember("x"))
-												x2 = fixtures[i]["2"]["x"].asFloat();
-											//y
-											if(fixture["2"].isMember("y"))
-												y2 = fixtures[i]["2"]["y"].asFloat();
-											
-											edgeShape.Set({(x1*uniqScale), (y1*uniqScale)}, {(x2*uniqScale), (y2*uniqScale)});
-											entityFixtureDef.shape = &edgeShape;
-										}
-										else if(type == "chain")
-										{
-											//vertices
-											requireValues(fixture, "entities." + entityName + ".body.fixtures." + std::to_string(i), {{"vertices", Json::arrayValue}});
-											const Json::Value vertices = fixtures[i]["vertices"];
-											parseArray(vertices, "entities." + entityName + ".body.fixtures." + std::to_string(i) + ".vertices", Json::objectValue);
-											//Vertices of the chain shape
-											for(Json::ArrayIndex j{0}; j < vertices.size(); ++j)
-											{
-												const Json::Value vertice = vertices[j];
-												parseObject(vertice, "entities." + entityName + ".body.fixtures." + std::to_string(i) + ".vertices." + std::to_string(j), {{"x", Json::realValue}, {"y", Json::realValue}});
-												verticesArray.push_back(b2Vec2(0, 0));
-												//x
-												if(vertice.isMember("x"))
-													verticesArray[j].x = vertice["x"].asFloat()*uniqScale;
-												
-												//y
-												if(vertice.isMember("y"))
-													verticesArray[j].y = vertice["y"].asFloat()*uniqScale;
-											}
-											chainShape.CreateChain(verticesArray.data(), verticesArray.size());
-											entityFixtureDef.shape = &chainShape;
-										}
-										// TODO: implementer l'autre type de shapes.
-										else if(type == "circle")
-										{
-										}
-									}
-									
-									//density
-									if(fixture.isMember("density"))
-										entityFixtureDef.density = fixture["density"].asFloat();
-									
-									//friction
-									if(fixture.isMember("friction"))
-										entityFixtureDef.friction = fixture["friction"].asFloat();
-									
-									//restitution
-									if(fixture.isMember("restitution"))
-										entityFixtureDef.restitution = fixture["restitution"].asFloat();
-									
-									//is sensor
-									if(fixture.isMember("is sensor"))
-										entityFixtureDef.isSensor = fixture["is sensor"].asBool();
-									
-									//is foot sensor
-									if(fixture.isMember("is foot sensor") and fixture["is foot sensor"].asBool())
-										entityFixtureDef.userData = (void*)FixtureRole::Foot;
-										
-									entityBodyComponent->CreateFixture(&entityFixtureDef);
-								}
-							}
-						}
-						
-						//animations
-						if(part.isMember("spritesheet animations"))
-						{
-							const Json::Value animations = part["spritesheet animations"];
-							parseObject(animations, "entities." + entityName + ".parts." + partName + ".spritesheet animations", Json::objectValue);
-							AnimationsManager<SpriteSheetAnimation> animationsManager;
-							for(std::string& animationName : animations.getMemberNames())
-							{
-								const Json::Value animation = animations[animationName];
-								parseObject(animation, "entities." + entityName + ".spritesheet animations." + animationName, {{"importance", Json::intValue},
-																																{"duration", Json::realValue},
-																																{"loop", Json::booleanValue},
-																																{"data", Json::arrayValue}});
-								sf::Sprite& spr = m_entities[entityName].component<SpriteComponent>()->sprites[partName];
-								SpriteSheetAnimation entityAnimation(spr);
-								unsigned short int importance{0};
-								float duration{0.f};
-								bool loop{false};
-								
-								//importance
-								if(animation.isMember("importance"))
-									importance = animation["importance"].asUInt();
-								
-								//duration
-								if(animation.isMember("duration"))
-									duration = animation["duration"].asFloat();
-								
-								//loop
-								if(animation.isMember("loop"))
-									loop = animation["loop"].asBool();
-								
-								//frames (=data, because of template implementation)
-								if(animation.isMember("data"))
-								{
-									const Json::Value frames = animation["data"];
-									parseArray(frames, "entities." + entityName + ".spritesheet animations." + animationName +  ".data", Json::objectValue);
-									for(Json::ArrayIndex i{0}; i < frames.size(); ++i)
+									if(type == "polygon")
 									{
-										const Json::Value frame = frames[i];
-										parseObject(frame, "entities." + entityName + ".spritesheet animations." + animationName + ".data." + std::to_string(i), {{"x", Json::intValue},
-																																									{"y", Json::intValue},
-																																									{"w", Json::intValue},
-																																									{"h", Json::intValue},
-																																									{"relative duration", Json::realValue}});
-										int x{0}, y{0}, w{0}, h{0};
-										float relativeDuration{0.f};
-										
-										//x
-										if(frame.isMember("x"))
-											x = frames[i]["x"].asInt();
-										
-										//y
-										if(frame.isMember("y"))
-											y = frames[i]["y"].asInt();
-										
-										//w
-										if(frame.isMember("w"))
-											w = frames[i]["w"].asInt();
-										
-										//h
-										if(frame.isMember("h"))
-											h = frames[i]["h"].asInt();
-										
-										//relative duration
-										if(frame.isMember("relative duration"))
-											relativeDuration = frames[i]["relative duration"].asFloat();
-										entityAnimation.addFrame(sf::IntRect(static_cast<float>(x)*scale, static_cast<float>(y)*scale, static_cast<float>(w)*scale, static_cast<float>(h)*scale), relativeDuration);
+										//box
+										if(fixture.isMember("box"))
+											parseObject(fixtures[i]["box"], "entities." + entityName + ".body." + partName + ".fixtures." + std::to_string(i) + ".box", {{"w", Json::realValue},
+																																		{"h", Json::realValue},
+																																		{"center x", Json::realValue},
+																																		{"center y", Json::realValue},
+																																		{"angle", Json::realValue}});
+										//vertices
+										else if(fixture.isMember("vertices"))
+										{
+											const Json::Value vertices = fixtures[i]["vertices"];
+											parseArray(vertices, "entities." + entityName + ".body." + partName + ".fixtures." + std::to_string(i) + ".vertices", Json::objectValue);
+											for(Json::ArrayIndex j{0}; j < vertices.size(); ++j)
+												requireValues(vertices[j], "entities." + entityName + ".body." + partName + ".fixtures." + std::to_string(i) + ".vertices." + std::to_string(j), {{"x", Json::realValue}, {"y", Json::realValue}});
+										}
+										else
+											throw std::runtime_error("\"entities." + entityName + ".body." + partName + ".fixtures." + std::to_string(i) + "\" has no geometry.");
+									}
+									else if(type == "edge")
+									{
+										requireValues(fixture, "entities." + entityName + ".body." + partName + ".fixtures." + std::to_string(i), {{"1", Json::objectValue}, {"2", Json::objectValue}});
+										//1
+										requireValues(fixture["1"], "entities." + entityName + ".body." + partName + ".fixtures." + std::to_string(i) + ".1", {{"x", Json::realValue},{"y", Json::realValue}});
+										//2
+										requireValues(fixture["2"], "entities." + entityName + ".body." + partName + ".fixtures." + std::to_string(i) + ".2", {{"x", Json::realValue}, {"y", Json::realValue}});
+									}
+									else if(type == "chain")
+									{
+										//vertices
+										requireValues(fixture, "entities." + entityName + ".body." + partName + ".fixtures." + std::to_string(i), {{"vertices", Json::arrayValue}});
+										const Json::Value vertices = fixtures[i]["vertices"];
+										parseArray(vertices, "entities." + entityName + ".body." + partName + ".fixtures." + std::to_string(i) + ".vertices", Json::objectValue);
+										//Vertices of the chain shape
+										for(Json::ArrayIndex j{0}; j < vertices.size(); ++j)
+											requireValues(vertices[j], "entities." + entityName + ".body." + partName + ".fixtures." + std::to_string(i) + ".vertices." + std::to_string(j), {{"x", Json::realValue}, {"y", Json::realValue}});
+									}
+									// TODO: implementer l'autre type de shapes.
+									else if(type == "circle")
+									{
 									}
 								}
-								animationsManager.addAnimation(animationName, entityAnimation, importance, sf::seconds(duration), loop);
-							}
-							if(not m_entities[entityName].has_component<AnimationsComponent<SpriteSheetAnimation>>())
-							{
-								std::map<const std::string, AnimationsManager<SpriteSheetAnimation>> animationsManagers{{partName, animationsManager}};
-								m_entities[entityName].assign<AnimationsComponent<SpriteSheetAnimation>>(animationsManagers);
-							}
-							else
-								m_entities[entityName].component<AnimationsComponent<SpriteSheetAnimation>>()->animationsManagers.emplace(partName, animationsManager);
-						}
-						
-						//play animations
-						if(part.isMember("play animations"))
-						{
-							//Assert that some animations are defined
-							requireValues(part, "entities." + entityName + ".parts." + partName, {{"spritesheet animations", Json::objectValue}});
-							const Json::Value animationsToPlay = part["play animations"];
-							parseArray(animationsToPlay, "entities." + entityName + ".parts." + partName + ".play animations", Json::stringValue);
-							for(Json::ArrayIndex i{0}; i < animationsToPlay.size(); ++i)
-							{
-								//Assert that the animation is defined
-								requireValues(part["spritesheet animations"], "entities." + entityName + ".parts." + partName + ".spritesheet animations", {{animationsToPlay[i].asString(), Json::objectValue}});
-								m_entities[entityName].component<AnimationsComponent<SpriteSheetAnimation>>()->animationsManagers[partName].play(animationsToPlay[i].asString());
-							}
-						}
-						
-						//activate animations
-						if(part.isMember("activate animations"))
-						{
-							requireValues(part, "entities." + entityName + ".parts." + partName, {{"spritesheet animations", Json::objectValue}});
-							const Json::Value animationsToActivate = part["activate animations"];
-							parseArray(animationsToActivate, "entities." + entityName + ".parts." + partName + ".activate animations", Json::stringValue);
-							for(Json::ArrayIndex i{0}; i < animationsToActivate.size(); ++i)
-							{
-								requireValues(part["spritesheet animations"], "entities." + entityName + ".parts." + partName + ".spritesheet animations", {{animationsToActivate[i].asString(), Json::objectValue}});
-								m_entities[entityName].component<AnimationsComponent<SpriteSheetAnimation>>()->animationsManagers[partName].activate(animationsToActivate[i].asString());
 							}
 						}
 					}
+					deserialize(bodies, m_entities[entityName].assign<BodyComponent>(), getContext().world, uniqScale);
+					//Assign user data to every body of the entity
+					for(auto& bodyPair : m_entities[entityName].component<BodyComponent>()->bodies)
+						bodyPair.second->SetUserData(&m_entities[entityName]);
+				}
+				//spritesheet animations
+				if(entity.isMember("spritesheet animations"))
+				{
+					const Json::Value animationsManagers = entity["spritesheet animations"];
+					parseObject(animationsManagers, "entities." + entityName + ".spritesheet animations", Json::objectValue);
+					for(std::string& partName : animationsManagers.getMemberNames())
+					{
+						const Json::Value animations = animationsManagers[partName];
+						parseObject(animations, "entities." + entityName + ".spritesheet animations." + partName, Json::objectValue);
+						for(std::string& animationName : animations.getMemberNames())
+						{
+							const Json::Value animation = animations[animationName];
+							parseObject(animation, "entities." + entityName + ".spritesheet animations." + partName + "." + animationName, {{"importance", Json::intValue},
+																															{"duration", Json::realValue},
+																															{"loop", Json::booleanValue},
+																															{"data", Json::arrayValue}});
+							//frames (=data, because of template implementation)
+							if(animation.isMember("data"))
+							{
+								const Json::Value frames = animation["data"];
+								parseArray(frames, "entities." + entityName + ".spritesheet animations." + partName + "." + animationName +  ".data", Json::objectValue);
+								for(Json::ArrayIndex i{0}; i < frames.size(); ++i)
+									requireValues(frames[i], "entities." + entityName + ".spritesheet animations." + partName + "." + animationName + ".data." + std::to_string(i), {{"x", Json::intValue},
+																																								{"y", Json::intValue},
+																																								{"w", Json::intValue},
+																																								{"h", Json::intValue},
+																																								{"relative duration", Json::realValue}});
+							}
+						}
+					}
+					deserialize(animationsManagers, m_entities[entityName].assign<AnimationsComponent<SpriteSheetAnimation>>(),  m_entities[entityName].component<SpriteComponent>());
 				}
 				
 				//categories
 				if(entity.isMember("categories"))
 				{
-					const Json::Value categories = entity["categories"];
 					//Assert that every value in categories is one of the given values
-					parseArray(categories, "entities." + entityName + ".categories", {"player", "scene"});
-					unsigned int categoriesInt{0};
-					for(Json::ArrayIndex i{0}; i < categories.size(); ++i)
-					{
-						//For each cateory in the list, add it to the entity's category.
-						if(categories[i] == "player")
-							categoriesInt |= Category::Player;
-						else if(categories[i] == "scene")
-							categoriesInt |= Category::Scene;
-					}
-					m_entities[entityName].assign<CategoryComponent>(categoriesInt);
+					parseArray(entity["categories"], "entities." + entityName + ".categories", {"player", "scene"});
+					deserialize(entity["categories"], m_entities[entityName].assign<CategoryComponent>());
 				}
 				
 				//actor ID
 				if(entity.isMember("actor ID"))
-					m_entities[entityName].assign<ActorIDComponent>(entity["actor ID"].asUInt());
+					deserialize(entity["actor ID"], m_entities[entityName].assign<ActorIDComponent>());
 				
 				//plan
 				if(entity.isMember("plan"))
@@ -844,76 +569,33 @@ void GameState::initWorld(const std::string& file)
 				//walk
 				if(entity.isMember("walk"))
 				{
-					const Json::Value walk = entity["walk"];
-					parseObject(walk, "entities." + entityName + ".walk", {{"speed", Json::realValue}, {"effective movement", Json::stringValue}});
-					requireValues(walk, "entities." + entityName + ".walk", {{"speed", Json::realValue}});
-					
-					//speed
-					float speed{walk["speed"].asFloat()};
-					
-					//effective movement
-					Direction effectiveMovementEnum{Direction::None};
-					if(walk.isMember("effective movement"))
-					{
-						const Json::Value effectiveMovement = walk["effective movement"];
-						parseValue(effectiveMovement, "entities." + entityName + ".walk.effective movement", {"left", "right", "top", "bottom", "none"});
-						if(effectiveMovement.asString() == "left")
-							effectiveMovementEnum = Direction::Left;
-						else if(effectiveMovement.asString() == "right")
-							effectiveMovementEnum = Direction::Right;
-						else if(effectiveMovement.asString() == "top")
-							effectiveMovementEnum = Direction::Top;
-						else if(effectiveMovement.asString() == "bottom")
-							effectiveMovementEnum = Direction::Bottom;
-						else if(effectiveMovement.asString() == "none")
-							effectiveMovementEnum = Direction::None;
-					}
-					m_entities[entityName].assign<WalkComponent>(speed, effectiveMovementEnum);
+					parseObject(entity["walk"], "entities." + entityName + ".walk", {{"speed", Json::realValue}, {"effective movement", Json::stringValue}});
+					requireValues(entity["walk"], "entities." + entityName + ".walk", {{"speed", Json::realValue}});
+					deserialize(entity["walk"], m_entities[entityName].assign<WalkComponent>());
 				}
 				
 				//jump
 				if(entity.isMember("jump"))
-					m_entities[entityName].assign<JumpComponent>(entity["jump"].asFloat());
+				{
+					parseObject(entity["jump"], "entities." + entityName + ".jump", {{"strength", Json::realValue}});
+					requireValues(entity["jump"], "entities." + entityName + ".jump", {{"strength", Json::realValue}});
+					deserialize(entity["jump"], m_entities[entityName].assign<JumpComponent>());
+				}
 				
 				//bend
 				if(entity.isMember("bend"))
 				{
-					const Json::Value bend = entity["bend"];
-					parseObject(bend, "entities." + entityName + ".bend", {{"maximum power", Json::realValue}, {"power", Json::realValue}, {"angle", Json::realValue}});
-					requireValues(bend, "entities." + entityName + ".bend", {{"maximum power", Json::realValue}});
-					
-					//maximum power
-					float maxPower{bend["maximum power"].asFloat()};
-					
-					//power
-					float power{0.f};
-					if(bend.isMember("power"))
-						power = bend["power"].asFloat();
-					
-					//angle
-					float angle{0.f};
-					if(bend.isMember("angle"))
-						angle = bend["angle"].asFloat();
-						
-					m_entities[entityName].assign<BendComponent>(maxPower, power, angle);
+					parseObject(entity["bend"], "entities." + entityName + ".bend", {{"maximum power", Json::realValue}, {"power", Json::realValue}, {"angle", Json::realValue}});
+					requireValues(entity["bend"], "entities." + entityName + ".bend", {{"maximum power", Json::realValue}});
+					deserialize(entity["bend"], m_entities[entityName].assign<BendComponent>());
 				}
 				
 				//health
 				if(entity.isMember("health"))
 				{
-					const Json::Value healthObj = entity["health"];
-					parseObject(healthObj, "entities." + entityName + ".health", {{"maximum health", Json::realValue}, {"current health", Json::realValue}});
-					requireValues(healthObj, "entities." + entityName + ".health", {{"maximum health", Json::realValue}});
-					
-					//maximum health
-					float maxHealth{healthObj["maximum health"].asFloat()};
-					
-					//health
-					float health{maxHealth};
-					if(healthObj.isMember("current health"))
-						health = healthObj["current health"].asFloat();
-						
-					m_entities[entityName].assign<HealthComponent>(maxHealth, health);
+					parseObject(entity["health"], "entities." + entityName + ".health", {{"maximum health", Json::realValue}, {"current health", Json::realValue}});
+					requireValues(entity["health"], "entities." + entityName + ".health", {{"maximum health", Json::realValue}});
+					deserialize(entity["health"], m_entities[entityName].assign<HealthComponent>());
 				}
 				
 				//stamina
@@ -922,60 +604,24 @@ void GameState::initWorld(const std::string& file)
 					const Json::Value staminaObj = entity["stamina"];
 					parseObject(staminaObj, "entities." + entityName + ".stamina", {{"maximum stamina", Json::realValue}, {"current stamina", Json::realValue}});
 					requireValues(staminaObj, "entities." + entityName + ".stamina", {{"maximum stamina", Json::realValue}});
-					
-					//maximum stamina
-					float maxStamina{staminaObj["maximum stamina"].asFloat()};
-					
-					//stamina
-					float stamina{maxStamina};
-					if(staminaObj.isMember("current stamina"))
-						stamina = staminaObj["current stamina"].asFloat();
-						
-					m_entities[entityName].assign<StaminaComponent>(maxStamina, stamina);
+					deserialize(entity["stamina"], m_entities[entityName].assign<StaminaComponent>());
 				}
 				
 				//direction
 				if(entity.isMember("direction"))
 				{
-					const Json::Value directionObj = entity["direction"];
-					parseObject(directionObj, "entities." + entityName + ".direction", {{"direction", Json::stringValue}, {"move to left", Json::booleanValue}, {"move to right", Json::booleanValue}});
-					requireValues(directionObj, "entities." + entityName + ".direction", {{"direction", Json::stringValue}});
-					
-					//direction
-					const Json::Value direction = directionObj["direction"];
-					parseValue(direction, "entities." + entityName + ".direction", {"left", "right", "top", "bottom", "none"});
-					Direction directionEnum{Direction::None};
-					if(direction.asString() == "left")
-						directionEnum = Direction::Left;
-					else if(direction.asString() == "right")
-						directionEnum = Direction::Right;
-					else if(direction.asString() == "top")
-						directionEnum = Direction::Top;
-					else if(direction.asString() == "bottom")
-						directionEnum = Direction::Bottom;
-					else if(direction.asString() == "none")
-						directionEnum = Direction::None;
-					
-					//move to left
-					bool moveToLeft{false};
-					if(directionObj.isMember("move to left"))
-						moveToLeft = directionObj["move to left"].asBool();
-					
-					//move to right
-					bool moveToRight{false};
-					if(directionObj.isMember("move to right"))
-						moveToRight = directionObj["move to right"].asBool();
-					
-					m_entities[entityName].assign<DirectionComponent>(directionEnum, moveToLeft, moveToRight);
+					parseObject(entity["direction"], "entities." + entityName + ".direction", {{"direction", Json::stringValue}, {"move to left", Json::booleanValue}, {"move to right", Json::booleanValue}});
+					requireValues(entity["direction"], "entities." + entityName + ".direction", {{"direction", Json::stringValue}});
+					parseValue(entity["direction"]["direction"], "entities." + entityName + ".direction", {"left", "right", "top", "bottom", "none"});
+					deserialize(entity["direction"], m_entities[entityName].assign<DirectionComponent>());
 				}
 				
 				//fall
 				if(entity.isMember("fall"))
 				{
-					const Json::Value fall = entity["fall"];
-					parseObject(fall, "entities." + entityName + ".fall", {{"in air", Json::booleanValue}, {"contact count", Json::intValue}});
-					requireValues(fall, "entities." + entityName + ".fall", {{"in air", Json::booleanValue}, {"contact count", Json::intValue}});
-					m_entities[entityName].assign<FallComponent>(fall["in air"].asBool(), fall["contact count"].asUInt());
+					parseObject(entity["fall"], "entities." + entityName + ".fall", {{"in air", Json::booleanValue}, {"contact count", Json::intValue}});
+					requireValues(entity["fall"], "entities." + entityName + ".fall", {{"in air", Json::booleanValue}, {"contact count", Json::intValue}});
+					deserialize(entity["fall"], m_entities[entityName].assign<FallComponent>());
 				}
 			}
 		}
@@ -1005,25 +651,24 @@ void GameState::initWorld(const std::string& file)
 																	{"part A", Json::stringValue},
 																	{"part B", Json::stringValue},
 																	{"type", Json::stringValue}});
-				std::string entityA = joint["entity A"].asString();
-				std::string entityB = joint["entity B"].asString();
-				std::string partA = joint["part A"].asString();
-				std::string partB = joint["part B"].asString();
+																	
+				Joint jointData;
+				jointData.entityA = joint["entity A"].asString();
+				jointData.entityB = joint["entity B"].asString();
+				jointData.partA = joint["part A"].asString();
+				jointData.partB = joint["part B"].asString();
 				//Assert that somes entities exists
 				requireValues(root, "root", {{"entities", Json::objectValue}});
 				//Assert that the given entities exist
-				requireValues(root["entities"], "entities", {{entityA, Json::objectValue}, {entityB, Json::objectValue}});
-				//Assert that that entities have some parts
-				requireValues(root["entities"][entityA], "entities." + entityA, {{"parts", Json::objectValue}});
-				requireValues(root["entities"][entityB], "entities." + entityB, {{"parts", Json::objectValue}});
+				requireValues(root["entities"], "entities", {{jointData.entityA, Json::objectValue}, {jointData.entityB, Json::objectValue}});
+				//Assert that that entities have some bodies
+				requireValues(root["entities"][jointData.entityA], "entities." + jointData.entityA, {{"body", Json::objectValue}});
+				requireValues(root["entities"][jointData.entityB], "entities." + jointData.entityB, {{"body", Json::objectValue}});
 				//Assert that that entities have the givens parts
-				requireValues(root["entities"][entityA]["parts"], "entities." + entityA + ".parts", {{partA, Json::objectValue}});
-				requireValues(root["entities"][entityB]["parts"], "entities." + entityB + ".parts", {{partB, Json::objectValue}});
-				//Assert that the given parts have a body
-				requireValues(root["entities"][entityA]["parts"][partA], "entities." + entityA + ".parts." + partA, {{"body", Json::objectValue}});
-				requireValues(root["entities"][entityB]["parts"][partB], "entities." + entityB + ".parts." + partB, {{"body", Json::objectValue}});
-				b2Body * bodyA{m_entities[entityA].component<BodyComponent>()->bodies[partA]};
-				b2Body * bodyB{m_entities[entityB].component<BodyComponent>()->bodies[partB]};
+				requireValues(root["entities"][jointData.entityA]["body"], "entities." + jointData.entityA + ".body", {{jointData.partA, Json::stringValue}});
+				requireValues(root["entities"][jointData.entityB]["body"], "entities." + jointData.entityB + ".body", {{jointData.partB, Json::stringValue}});
+				b2Body * bodyA{m_entities[jointData.entityA].component<BodyComponent>()->bodies[jointData.partA]};
+				b2Body * bodyB{m_entities[jointData.entityB].component<BodyComponent>()->bodies[jointData.partB]};
 							
 				//type
 				const Json::Value type = joint["type"];
@@ -1039,26 +684,26 @@ void GameState::initWorld(const std::string& file)
 																			"wheel joint"});											
 				if(type == "revolute joint")
 				{
-					b2RevoluteJointDef jointDef;
-					float xf{0}, yf{0}, xs{0}, ys{0};
-					jointDef.bodyA = bodyA;
-					jointDef.bodyB =  bodyB;
+					jointData.type = e_revoluteJoint;
+					jointData.definition = new b2RevoluteJointDef();
+					b2RevoluteJointDef* castedJointDef = static_cast<b2RevoluteJointDef*>(castedJointDef);
+					float xA{0}, yA{0}, xB{0}, yB{0};
+					castedJointDef->bodyA = bodyA;
+					castedJointDef->bodyB =  bodyB;
 					
 					//local anchor A
 					if(joint.isMember("local anchor A"))
 					{
 						const Json::Value firstAnchor = joint["local anchor A"];
-						parseObject(firstAnchor,"joints." + std::to_string(i) + ".local anchor A", {{"x", Json::realValue}, {"y", Json::realValue}});
+						requireValues(firstAnchor,"joints." + std::to_string(i) + ".local anchor A", {{"x", Json::realValue}, {"y", Json::realValue}});
 									
 						//x
-						if(firstAnchor.isMember("x"))
-							xf = firstAnchor["x"].asFloat();
+						xA = firstAnchor["x"].asFloat();
 						
 						//y
-						if(firstAnchor.isMember("y"))
-							yf = firstAnchor["y"].asFloat();
+						yA = firstAnchor["y"].asFloat();
 					}
-					jointDef.localAnchorA = {(xf*uniqScale), (yf*uniqScale)};
+					castedJointDef->localAnchorA = {(xA*uniqScale), (yA*uniqScale)};
 					
 					//local anchor B
 					if(joint.isMember("local anchor B"))
@@ -1068,35 +713,36 @@ void GameState::initWorld(const std::string& file)
 						
 						//x
 						if(secondAnchor.isMember("x"))
-							xs = secondAnchor["x"].asFloat();
+							xB = secondAnchor["x"].asFloat();
 						
 						//y
 						if(secondAnchor.isMember("y"))
-							ys = secondAnchor["y"].asFloat();
+							yB = secondAnchor["y"].asFloat();
 					}
-					jointDef.localAnchorB = {(xs*uniqScale), (ys*uniqScale)};
+					castedJointDef->localAnchorB = {(xB*uniqScale), (yB*uniqScale)};
 					
 					//lower angle
 					if(joint.isMember("lower angle"))
-						jointDef.lowerAngle = (joint["lower angle"].asFloat() * b2_pi) / 180.f;
+						castedJointDef->lowerAngle = (joint["lower angle"].asFloat() * b2_pi) / 180.f;
 					
 					//upper angle
 					if(joint.isMember("upper angle"))
-						jointDef.upperAngle = (joint["upper angle"].asFloat() * b2_pi) / 180.f;
+						castedJointDef->upperAngle = (joint["upper angle"].asFloat() * b2_pi) / 180.f;
 					
 					//enable limit
 					if(joint.isMember("enable limit"))
-						jointDef.enableLimit = joint["enable limit"].asBool();
+						castedJointDef->enableLimit = joint["enable limit"].asBool();
 					
 					//max motor torque
 					if(joint.isMember("max motor torque"))
-						jointDef.maxMotorTorque = joint["max motor torque"].asFloat();
+						castedJointDef->maxMotorTorque = joint["max motor torque"].asFloat();
 					
 					//enable motor
 					if(joint.isMember("enable motor"))
-						jointDef.enableMotor = joint["enable motor"].asBool();
+						castedJointDef->enableMotor = joint["enable motor"].asBool();
 					
-					getContext().world.CreateJoint(&jointDef);
+					getContext().world.CreateJoint(castedJointDef);
+					m_joints.push_back(jointData);
 				}
 				// TODO: implementer tous les autres types de joints.
 				else if(type == "distance joint")
@@ -1147,9 +793,14 @@ void GameState::initWorld(const std::string& file)
 		//Assign the sprite to the entity, and set its z-ordinate to positive infinity
 		std::map<std::string, sf::Sprite> daySprites{{"main", daySpr}};
 		std::map<std::string, sf::Vector2f> dayWorldPositions{{"main", {position.x, position.y}}};
-		m_levelEntities[dayIdentifier].assign<SpriteComponent>(daySprites, dayWorldPositions, std::numeric_limits<double>::infinity());
-		m_levelEntities[dayIdentifier].assign<SkyComponent>(true);
-		m_levelEntities[dayIdentifier].assign<CategoryComponent>(Category::Scene);
+		SpriteComponent::Handle sprComp = m_levelEntities[dayIdentifier].assign<SpriteComponent>();
+		sprComp->sprites = daySprites;
+		sprComp->worldPositions = dayWorldPositions;
+		sprComp->plan = std::numeric_limits<float>::infinity();
+		CategoryComponent::Handle catComp = m_levelEntities[dayIdentifier].assign<CategoryComponent>();
+		catComp->category = Category::Scene;
+		SkyComponent::Handle skyComp = m_levelEntities[dayIdentifier].assign<SkyComponent>();
+		skyComp->day = true;
 	
 		//Load the night sky
 		const std::string nightIdentifier{"night sky"};
@@ -1167,9 +818,14 @@ void GameState::initWorld(const std::string& file)
 		//Assign the sprite to the entity, and set its z-ordinate to positive infinity
 		std::map<std::string, sf::Sprite> nightSprites{{"main", nightSpr}};
 		std::map<std::string, sf::Vector2f> nightWorldPositions{{"main", {position.x, position.y}}};
-		m_levelEntities[nightIdentifier].assign<SpriteComponent>(nightSprites, nightWorldPositions, std::numeric_limits<double>::infinity());
-		m_levelEntities[nightIdentifier].assign<SkyComponent>(false);
-		m_levelEntities[nightIdentifier].assign<CategoryComponent>(Category::Scene);
+		sprComp = m_levelEntities[nightIdentifier].assign<SpriteComponent>();
+		sprComp->sprites = nightSprites;
+		sprComp->worldPositions = nightWorldPositions;
+		sprComp->plan = std::numeric_limits<float>::infinity();
+		catComp = m_levelEntities[nightIdentifier].assign<CategoryComponent>();
+		catComp->category = Category::Scene;
+		skyComp = m_levelEntities[nightIdentifier].assign<SkyComponent>();
+		skyComp->day = false;
 	}
 	catch(std::runtime_error& e)
 	{

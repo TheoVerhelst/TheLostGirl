@@ -17,7 +17,7 @@ namespace entityx
 /// Serialize the given component.
 /// \param component Component to serialize
 /// \return A Json value.
-Json::Value serialize(entityx::ComponentHandle<BodyComponent> component);
+Json::Value serialize(entityx::ComponentHandle<BodyComponent> component, float scale);
 
 /// Serialize the given component.
 /// \param component Component to serialize

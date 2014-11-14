@@ -6,6 +6,7 @@
 
 #include <dist/json/json-forwards.h>
 #include <SFML/System/Thread.hpp>
+#include <Box2D/Dynamics/Joints/b2Joint.h>
 
 #include <SFML/Graphics/Sprite.hpp>
 #include <TheLostGirl/AnimationsManager.h>
@@ -57,6 +58,16 @@ class GameState : public State
 		virtual bool handleEvent(const sf::Event& event);
 
 	private:
+		struct Joint
+		{
+			b2JointDef* definition;
+			b2JointType type;
+			std::string entityA;
+			std::string entityB;
+			std::string partA;
+			std::string partB;
+		};
+		
 		/// Initialize the physic world.
 		/// \param file Path of the save file to load.
 		void initWorld(const std::string& file);
@@ -67,6 +78,7 @@ class GameState : public State
 		
 		std::unordered_map<std::string, entityx::Entity> m_entities;     ///< A unordered map allow to reference to elements of the list safely, and use those references outside the scope of the GameState class.
 		std::unordered_map<std::string, entityx::Entity> m_levelEntities;///< A unordered map allow to reference to elements of the list safely, and use those references outside the scope of the GameState class.
+		std::vector<Joint> m_joints;                                     ///< A vector containing all informations about joints.
 		ContactListener m_contactListener;                               ///< The falling listener.
 		float m_timeSpeed;                                               ///< The speed of the time (usually 1.f). This influes only on the TimeSystem, not on physics!
 		bool m_loadingFinished;                                          ///< Indicate if the level loading is finished.

@@ -8,7 +8,7 @@
 
 #include <TheLostGirl/serialization.h>
 
-Json::Value serialize(entityx::ComponentHandle<BodyComponent> component)
+Json::Value serialize(entityx::ComponentHandle<BodyComponent> component, float scale)
 {
 	Json::Value ret;
 	for(auto& bodyPair : component->bodies)
@@ -18,31 +18,110 @@ Json::Value serialize(entityx::ComponentHandle<BodyComponent> component)
 		switch(body->GetType())
 		{
 			case b2_kinematicBody:
-				ret[partName]["body"]["type"] = "kinematic";
+				ret[partName]["type"] = "kinematic";
 				break;
 			case b2_dynamicBody:
-				ret[partName]["body"]["type"] = "dynamic";
+				ret[partName]["type"] = "dynamic";
 				break;
 			case b2_staticBody:
 			default:
-				ret[partName]["body"]["type"] = "static";
+				ret[partName]["type"] = "static";
 				break;
 		}
 									
-		ret[partName]["body"]["position"]["x"] = body->GetPosition().x;
-		ret[partName]["body"]["position"]["y"] = body->GetPosition().y;
-		ret[partName]["body"]["angle"] = body->GetAngle();
-		ret[partName]["body"]["linear velocity"]["x"] = body->GetLinearVelocity().x;
-		ret[partName]["body"]["linear velocity"]["y"] = body->GetLinearVelocity().y;
-		ret[partName]["body"]["angular velocity"] = body->GetAngularVelocity();
-		ret[partName]["body"]["linear damping"] = body->GetLinearDamping();
-		ret[partName]["body"]["angular damping"] = body->GetAngularDamping();
-		ret[partName]["body"]["allow sleep"] = body->IsSleepingAllowed();
-		ret[partName]["body"]["awake"] = body->IsAwake();
-		ret[partName]["body"]["fixed rotation"] = body->IsFixedRotation();
-		ret[partName]["body"]["bullet"] = body->IsBullet();
-		ret[partName]["body"]["active"] = body->IsActive();
-		ret[partName]["body"]["gravity scale"] = body->GetGravityScale();
+		ret[partName]["position"]["x"] = body->GetPosition().x/scale;
+		ret[partName]["position"]["y"] = body->GetPosition().y/scale;
+		ret[partName]["angle"] = body->GetAngle();
+		ret[partName]["linear velocity"]["x"] = body->GetLinearVelocity().x/scale;
+		ret[partName]["linear velocity"]["y"] = body->GetLinearVelocity().y/scale;
+		ret[partName]["angular velocity"] = body->GetAngularVelocity();
+		ret[partName]["linear damping"] = body->GetLinearDamping();
+		ret[partName]["angular damping"] = body->GetAngularDamping();
+		ret[partName]["allow sleep"] = body->IsSleepingAllowed();
+		ret[partName]["awake"] = body->IsAwake();
+		ret[partName]["fixed rotation"] = body->IsFixedRotation();
+		ret[partName]["bullet"] = body->IsBullet();
+		ret[partName]["active"] = body->IsActive();
+		ret[partName]["gravity scale"] = body->GetGravityScale();
+		
+		Json::ArrayIndex i{0};
+		//For each fixture of the body
+		for(b2Fixture* fix{body->GetFixtureList()}; fix; fix = fix->GetNext())
+		{
+			Json::Value fixtureObj;
+			b2Shape::Type type{fix->GetType()};
+			if(type == b2Shape::e_circle)
+			{
+				fixtureObj["type"] = "circle";
+				b2CircleShape* shape = static_cast<b2CircleShape*>(fix->GetShape());
+				fixtureObj["position"]["x"] = shape->m_p.x/scale;
+				fixtureObj["position"]["y"] = shape->m_p.y/scale;
+				fixtureObj["radius"] = shape->m_radius/scale;
+			}
+			else if(type == b2Shape::e_edge)
+			{
+				fixtureObj["type"] = "edge";
+				b2EdgeShape* shape = static_cast<b2EdgeShape*>(fix->GetShape());
+				//Copy all vertices
+				if(shape->m_hasVertex0)
+				{
+					fixtureObj["0"]["x"] = shape->m_vertex0.x/scale;
+					fixtureObj["0"]["y"] = shape->m_vertex0.y/scale;
+				}
+				fixtureObj["1"]["x"] = shape->m_vertex1.x/scale;
+				fixtureObj["1"]["y"] = shape->m_vertex1.y/scale;
+				fixtureObj["2"]["x"] = shape->m_vertex2.x/scale;
+				fixtureObj["2"]["y"] = shape->m_vertex2.y/scale;
+				if(shape->m_hasVertex3)
+				{
+					fixtureObj["3"]["x"] = shape->m_vertex3.x/scale;
+					fixtureObj["3"]["y"] = shape->m_vertex3.y/scale;
+				}
+			}
+			else if(type == b2Shape::e_polygon)
+			{
+				fixtureObj["type"] = "polygon";
+				b2PolygonShape* shape = static_cast<b2PolygonShape*>(fix->GetShape());
+				//Copy all vertices
+				for(int32 j{0}; j < shape->GetVertexCount(); ++j)
+				{
+					fixtureObj["vertices"][j]["x"] = shape->m_vertices[j].x/scale;
+					fixtureObj["vertices"][j]["y"] = shape->m_vertices[j].y/scale;
+				}
+			}
+			//Chain shape
+			else
+			{
+				fixtureObj["type"] = "chain";
+				b2ChainShape* shape = static_cast<b2ChainShape*>(fix->GetShape());
+				//Copy all vertices
+				if(shape->m_hasPrevVertex)
+				{
+					fixtureObj["previous vertex"]["x"] = shape->m_prevVertex.x/scale;
+					fixtureObj["previous vertex"]["y"] = shape->m_prevVertex.y/scale;
+				}
+				for(int32 j{0}; j < shape->m_count; ++j)
+				{
+					fixtureObj["vertices"][j]["x"] = shape->m_vertices[j].x/scale;
+					fixtureObj["vertices"][j]["y"] = shape->m_vertices[j].y/scale;
+				}
+				if(shape->m_hasNextVertex)
+				{
+					fixtureObj["next vertex"]["x"] = shape->m_nextVertex.x/scale;
+					fixtureObj["next vertex"]["y"] = shape->m_nextVertex.y/scale;
+				}
+			}
+			fixtureObj["density"] = fix->GetDensity();
+			fixtureObj["friction"] = fix->GetFriction();
+			fixtureObj["resitution"] = fix->GetRestitution();
+			fixtureObj["is sensor"] = fix->IsSensor();
+			//If the fixture is a foot sensor
+			if(fix->GetUserData() and (unsigned int)(fix->GetUserData()) & FixtureRole::Foot)
+				fixtureObj["is foot sensor"] = true;
+			
+			ret[partName]["fixtures"][i] = fixtureObj;
+			i++;
+		}
 	}
 	return ret;
 }
@@ -286,6 +365,7 @@ void deserialize(const Json::Value& value, entityx::ComponentHandle<BodyComponen
 				b2EdgeShape edgeShape;
 				b2PolygonShape polygonShape;
 				b2ChainShape chainShape;
+				b2CircleShape circleShape;
 				std::vector<b2Vec2> verticesArray;
 				
 				//type
@@ -343,34 +423,60 @@ void deserialize(const Json::Value& value, entityx::ComponentHandle<BodyComponen
 								if(vertice.isMember("y"))
 									polygonShape.m_vertices[j].y = vertice["y"].asFloat()*scale;
 							}
+							polygonShape.m_count = vertices.size();
 						}
 						entityFixtureDef.shape = &polygonShape;
 					}
 					else if(type == "edge")
 					{
-						float x1{0}, y1{0}, x2{0}, y2{0};
+						b2Vec2 one{0, 0}, two{0, 0};
+						
 						//x 1
 						if(fixture["1"].isMember("x"))
-							x1 = fixtures[i]["1"]["x"].asFloat();
+							one.x = fixtures[i]["1"]["x"].asFloat();
 						//y 1
 						if(fixture["1"].isMember("y"))
-							y1 = fixtures[i]["1"]["y"].asFloat();
+							one.y = fixtures[i]["1"]["y"].asFloat();
 						
 						//x 2
 						if(fixture["2"].isMember("x"))
-							x2 = fixtures[i]["2"]["x"].asFloat();
+							two.x = fixtures[i]["2"]["x"].asFloat();
 						//y 2
 						if(fixture["2"].isMember("y"))
-							y2 = fixtures[i]["2"]["y"].asFloat();
+							two.y = fixtures[i]["2"]["y"].asFloat();
 						
-						edgeShape.Set({(x1*scale), (y1*scale)}, {(x2*scale), (y2*scale)});
+						edgeShape.Set(scale*one, scale*two);
+						
+						//0
+						if(fixture.isMember("0"))
+						{
+							edgeShape.m_hasVertex0 = true;
+							//x
+							if(fixture["0"].isMember("x"))
+								edgeShape.m_vertex0.x = fixtures[i]["0"]["x"].asFloat()*scale;
+							//y
+							if(fixture["0"].isMember("y"))
+								edgeShape.m_vertex0.y = fixtures[i]["0"]["y"].asFloat()*scale;
+						}
+						
+						//3
+						if(fixture.isMember("3"))
+						{
+							edgeShape.m_hasVertex3 = true;
+							//x
+							if(fixture["3"].isMember("x"))
+								edgeShape.m_vertex3.x = fixtures[i]["3"]["x"].asFloat()*scale;
+							//y
+							if(fixture["3"].isMember("y"))
+								edgeShape.m_vertex3.y = fixtures[i]["3"]["y"].asFloat()*scale;
+						}
+						
 						entityFixtureDef.shape = &edgeShape;
 					}
 					else if(type == "chain")
 					{
-						//vertices
 						const Json::Value vertices = fixtures[i]["vertices"];
-						//Vertices of the chain shape
+						//For each vertex of the chain shape
 						for(Json::ArrayIndex j{0}; j < vertices.size(); ++j)
 						{
 							const Json::Value vertice = vertices[j];
@@ -384,11 +490,49 @@ void deserialize(const Json::Value& value, entityx::ComponentHandle<BodyComponen
 								verticesArray[j].y = vertice["y"].asFloat()*scale;
 						}
 						chainShape.CreateChain(verticesArray.data(), verticesArray.size());
+						
+						//previous vertex
+						if(fixtures[i].isMember("previous vertex"))
+						{
+							chainShape.m_hasPrevVertex = true;
+							
+							//x
+							if(fixtures[i]["previous vertex"].isMember("x"))
+								chainShape.m_prevVertex.x = fixtures[i]["previous vertex"]["x"].asFloat()*scale;
+							
+							//y
+							if(fixtures[i]["previous vertex"].isMember("y"))
+								chainShape.m_prevVertex.y = fixtures[i]["previous vertex"]["y"].asFloat()*scale;
+						}
+						
+						//next vertex
+						if(fixtures[i].isMember("next vertex"))
+						{
+							chainShape.m_hasNextVertex = true;
+							
+							//x
+							if(fixtures[i]["next vertex"].isMember("x"))
+								chainShape.m_nextVertex.x = fixtures[i]["next vertex"]["x"].asFloat()*scale;
+							
+							//y
+							if(fixtures[i]["next vertex"].isMember("y"))
+								chainShape.m_nextVertex.y = fixtures[i]["next vertex"]["y"].asFloat()*scale;
+						}
 						entityFixtureDef.shape = &chainShape;
 					}
-					// TODO: implementer l'autre type de shapes.
 					else if(type == "circle")
 					{
+						//x
+						if(fixture[i]["position"].isMember("x"))
+							 circleShape.m_p.x = fixtures[i]["position"]["x"].asFloat()*scale;
+						
+						//y
+						if(fixture[i]["position"].isMember("y"))
+							circleShape.m_p.y = fixtures[i]["position"]["y"].asFloat()*scale;
+						
+						//radius
+						circleShape.m_radius = fixtures[i]["radius"].asFloat()*scale;
+						entityFixtureDef.shape = &circleShape;
 					}
 				}
 				
@@ -458,10 +602,10 @@ void deserialize(const Json::Value& value, entityx::ComponentHandle<DirectionCom
 		component->direction = Direction::Top;
 	else if(value["direction"] == "bottom")
 		component->direction = Direction::Bottom;
-	else
-		component->direction = Direction::None;
-	component->moveToLeft = value["move to left"].asBool();
-	component->moveToRight = value["move to right"].asBool();
+	if(value.isMember("move to left"))
+		component->moveToLeft = value["move to left"].asBool();
+	if(value.isMember("move to right"))
+		component->moveToRight = value["move to right"].asBool();
 }
 
 void deserialize(const Json::Value& value, entityx::ComponentHandle<CategoryComponent> component)
@@ -474,7 +618,7 @@ void deserialize(const Json::Value& value, entityx::ComponentHandle<CategoryComp
 		else if(value[i] == "scene")
 			category &= Category::Scene;
 	}
-	component->category = category
+	component->category = category;
 }
 
 void deserialize(const Json::Value& value, entityx::ComponentHandle<ActorIDComponent> component)
@@ -489,22 +633,27 @@ void deserialize(const Json::Value& value, entityx::ComponentHandle<SkyComponent
 
 void deserialize(const Json::Value& value, entityx::ComponentHandle<FallComponent> component)
 {
-	component->inAir = value["in air"].asBool();
-	component->contactCount = value["contact count"].asUInt();
+	if(value.isMember("in air"))
+		component->inAir = value["in air"].asBool();
+	if(value.isMember("contact count"))
+		component->contactCount = value["contact count"].asUInt();
 }
 
 void deserialize(const Json::Value& value, entityx::ComponentHandle<WalkComponent> component)
 {
-	if(value["effective movement"] == "left")
-		component->effectiveMovement = Direction::Left;
-	else if(value["effective movement"] == "right")
-		component->effectiveMovement = Direction::Right;
-	else if(value["effective movement"] == "top")
-		component->effectiveMovement = Direction::Top;
-	else if(value["effective movement"] == "bottom")
-		component->effectiveMovement = Direction::Bottom;
-	else
-		component->effectiveMovement = Direction::None;
+	if(value.isMember("effective movement"))
+	{
+		if(value["effective movement"] == "left")
+			component->effectiveMovement = Direction::Left;
+		else if(value["effective movement"] == "right")
+			component->effectiveMovement = Direction::Right;
+		else if(value["effective movement"] == "top")
+			component->effectiveMovement = Direction::Top;
+		else if(value["effective movement"] == "bottom")
+			component->effectiveMovement = Direction::Bottom;
+		else
+			component->effectiveMovement = Direction::None;
+	}
 	component->walkSpeed = value["speed"].asFloat();
 }
 
@@ -515,19 +664,23 @@ void deserialize(const Json::Value& value, entityx::ComponentHandle<JumpComponen
 
 void deserialize(const Json::Value& value, entityx::ComponentHandle<BendComponent> component)
 {
-	component->power = value["power"].asFloat();
-	component->angle = value["angle"].asFloat();
+	if(value.isMember("power"))
+		component->power = value["power"].asFloat();
+	if(value.isMember("angle"))
+		component->angle = value["angle"].asFloat();
 	component->maxPower = value["maximum power"].asFloat();
 }
 
 void deserialize(const Json::Value& value, entityx::ComponentHandle<HealthComponent> component)
 {
-	component->health = value["current health"].asFloat();
+	if(value.isMember("current health"))
+		component->health = value["current health"].asFloat();
 	component->maxHealth = value["maximum health"].asFloat();
 }
 
 void deserialize(const Json::Value& value, entityx::ComponentHandle<StaminaComponent> component)
 {
-	component->stamina = value["current stamina"].asFloat();
+	if(value.isMember("current stamina"))
+		component->stamina = value["current stamina"].asFloat();
 	component->maxStamina = value["maximum stamina"].asFloat();
 }
