@@ -158,7 +158,7 @@ Json::Value AnimationsManager<A>::serialize() const
 }
 
 template<typename A> template<typename T>
-void AnimationsManager<A>::deserialize(const Json::Value& value, T& object)
+void AnimationsManager<A>::deserialize(const Json::Value& value, T& object, float scale)
 {
 	m_animationsMap.clear();
 	//For each animation name in the value
@@ -167,7 +167,7 @@ void AnimationsManager<A>::deserialize(const Json::Value& value, T& object)
 		Json::Value animationObj = value[animationName];
 		A animation(object);
 		//Copy the data inside the animation
-		animation.deserialize(animationObj["data"]);
+		animation.deserialize(animationObj["data"], scale);
 		TimeAnimation timeAnim(animation);
 		timeAnim.importance = animationObj["importance"].asUInt();
 		timeAnim.duration = sf::seconds(animationObj["duration"].asFloat());

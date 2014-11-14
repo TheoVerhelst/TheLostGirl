@@ -55,18 +55,22 @@ Json::Value SpriteSheetAnimation::serialize() const
 	return ret;
 }
 
-void SpriteSheetAnimation::deserialize(const Json::Value& value)
+void SpriteSheetAnimation::deserialize(const Json::Value& value, float scale)
 {
 	m_frames.clear();
 	for(size_t i{0}; i < value.size(); ++i)
 	{
 		sf::IntRect rect;
 		float duration;
-		rect.left = value[i]["x"].asInt();
-		rect.top = value[i]["y"].asInt();
-		rect.width = value[i]["w"].asInt();
-		rect.height = value[i]["h"].asInt();
+		rect.left = float(value[i]["x"].asInt())*scale;
+		rect.top = float(value[i]["y"].asInt())*scale;
+		rect.width = float(value[i]["w"].asInt())*scale;
+		rect.height = float(value[i]["h"].asInt())*scale;
 		duration = value[i]["relative duration"].asFloat();
+		std::cout << "left = " << rect.left << std::endl;
+		std::cout << "top = " << rect.top << std::endl;
+		std::cout << "width = " << rect.width << std::endl;
+		std::cout << "height = " << rect.height << std::endl;
 		m_frames.push_back(Frame(rect, duration));
 	}
 }

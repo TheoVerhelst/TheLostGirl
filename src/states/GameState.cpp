@@ -398,7 +398,7 @@ void GameState::initWorld(const std::string& file)
 						if(sprite.isMember("position"))
 							requireValues(sprite["position"], "entities." + entityName + ".sprite." + partName + ".position", {{"x", Json::realValue}, {"y", Json::realValue}});
 					}
-					deserialize(sprites, m_entities[entityName].assign<SpriteComponent>(), texManager);
+					deserialize(sprites, m_entities[entityName].assign<SpriteComponent>(), texManager, scale);
 				}
 					
 				//body
@@ -541,7 +541,7 @@ void GameState::initWorld(const std::string& file)
 							}
 						}
 					}
-					deserialize(animationsManagers, m_entities[entityName].assign<AnimationsComponent<SpriteSheetAnimation>>(),  m_entities[entityName].component<SpriteComponent>());
+					deserialize(animationsManagers, m_entities[entityName].assign<AnimationsComponent<SpriteSheetAnimation>>(),  m_entities[entityName].component<SpriteComponent>(), scale);
 				}
 				
 				//categories
@@ -665,8 +665,8 @@ void GameState::initWorld(const std::string& file)
 				requireValues(root["entities"][jointData.entityA], "entities." + jointData.entityA, {{"body", Json::objectValue}});
 				requireValues(root["entities"][jointData.entityB], "entities." + jointData.entityB, {{"body", Json::objectValue}});
 				//Assert that that entities have the givens parts
-				requireValues(root["entities"][jointData.entityA]["body"], "entities." + jointData.entityA + ".body", {{jointData.partA, Json::stringValue}});
-				requireValues(root["entities"][jointData.entityB]["body"], "entities." + jointData.entityB + ".body", {{jointData.partB, Json::stringValue}});
+				requireValues(root["entities"][jointData.entityA]["body"], "entities." + jointData.entityA + ".body", {{jointData.partA, Json::objectValue}});
+				requireValues(root["entities"][jointData.entityB]["body"], "entities." + jointData.entityB + ".body", {{jointData.partB, Json::objectValue}});
 				b2Body * bodyA{m_entities[jointData.entityA].component<BodyComponent>()->bodies[jointData.partA]};
 				b2Body * bodyB{m_entities[jointData.entityB].component<BodyComponent>()->bodies[jointData.partB]};
 							
@@ -686,10 +686,10 @@ void GameState::initWorld(const std::string& file)
 				{
 					jointData.type = e_revoluteJoint;
 					jointData.definition = new b2RevoluteJointDef();
-					b2RevoluteJointDef* castedJointDef = static_cast<b2RevoluteJointDef*>(castedJointDef);
+					b2RevoluteJointDef* castedJointDef = static_cast<b2RevoluteJointDef*>(jointData.definition);
 					float xA{0}, yA{0}, xB{0}, yB{0};
 					castedJointDef->bodyA = bodyA;
-					castedJointDef->bodyB =  bodyB;
+					castedJointDef->bodyB = bodyB;
 					
 					//local anchor A
 					if(joint.isMember("local anchor A"))
@@ -854,9 +854,9 @@ void GameState::initWorld(const std::string& file)
 	saveWorld("resources/levels/test.json");
 	for(auto entity : getContext().entityManager.entities_with_components(categoryComponent))
 	{
-		if(categoryComponent->category & Category::Player and entity.has_component<HealthComponent>())
-			getContext().eventManager.emit<PlayerHealthChange>(entity.component<HealthComponent>()->health);
-		if(categoryComponent->category & Category::Player and entity.has_component<StaminaComponent>())
-			getContext().eventManager.emit<PlayerStaminaChange>(entity.component<StaminaComponent>()->stamina);
+//		if(categoryComponent->category & Category::Player and entity.has_component<HealthComponent>())
+//			getContext().eventManager.emit<PlayerHealthChange>(entity.component<HealthComponent>()->health);
+//		if(categoryComponent->category & Category::Player and entity.has_component<StaminaComponent>())
+//			getContext().eventManager.emit<PlayerStaminaChange>(entity.component<StaminaComponent>()->stamina);
 	}
 }

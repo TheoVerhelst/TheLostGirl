@@ -562,7 +562,7 @@ void deserialize(const Json::Value& value, entityx::ComponentHandle<BodyComponen
 	}
 }
 
-void deserialize(const Json::Value& value, entityx::ComponentHandle<SpriteComponent> component, TextureManager& textureManager)
+void deserialize(const Json::Value& value, entityx::ComponentHandle<SpriteComponent> component, TextureManager& textureManager, float scale)
 {
 	component->sprites.clear();
 	component->worldPositions.clear();
@@ -571,13 +571,13 @@ void deserialize(const Json::Value& value, entityx::ComponentHandle<SpriteCompon
 		Json::Value part = value[partName];
 		component->sprites.emplace(partName, sf::Sprite(textureManager.get(part["identifier"].asString())));
 		sf::Vector2f position;
-		position.x = part["position"]["x"].asFloat();
-		position.y = part["position"]["y"].asFloat();
+		position.x = part["position"]["x"].asFloat()*scale;
+		position.y = part["position"]["y"].asFloat()*scale;
 		component->worldPositions.emplace(partName, position);
 	}
 }
 
-void deserialize(const Json::Value& value, entityx::ComponentHandle<AnimationsComponent<SpriteSheetAnimation>> component, entityx::ComponentHandle<SpriteComponent> spriteComponent)
+void deserialize(const Json::Value& value, entityx::ComponentHandle<AnimationsComponent<SpriteSheetAnimation>> component, entityx::ComponentHandle<SpriteComponent> spriteComponent, float scale)
 {
 	component->animationsManagers.clear();
 	for(std::string& partName : value.getMemberNames())
@@ -586,7 +586,7 @@ void deserialize(const Json::Value& value, entityx::ComponentHandle<AnimationsCo
 		if(spriteComponent->sprites.find(partName) != spriteComponent->sprites.end())
 		{
 			AnimationsManager<SpriteSheetAnimation> animationsManager;
-			animationsManager.deserialize(value[partName], spriteComponent->sprites[partName]);
+			animationsManager.deserialize(value[partName], spriteComponent->sprites[partName], scale);
 			component->animationsManagers.emplace(partName, animationsManager);
 		}
 	}

@@ -163,7 +163,7 @@ class AnimationsManager
 		/// That copy all data in value and construct them in this instance of animations manager.
 		/// \param value A Json value containing all the data.
 		template <typename T>
-		void deserialize(const Json::Value& value, T& object);
+		void deserialize(const Json::Value& value, T& object, float scale);
 
 	private:
 		std::map<std::string, TimeAnimation> m_animationsMap;///< List of all registred animations.

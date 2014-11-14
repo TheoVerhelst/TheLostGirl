@@ -79,7 +79,7 @@ class SpriteSheetAnimation
 		
 		/// Deserialize the value and set it in the animation.
 		/// \param value A Json value containing the data.
-		void deserialize(const Json::Value& value);
+		void deserialize(const Json::Value& value, float scale);
 		
 	private:
 		std::vector<Frame> m_frames;///< Array of all registred frames.
