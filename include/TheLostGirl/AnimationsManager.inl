@@ -1,10 +1,3 @@
-#include <cmath>
-#include <cassert>
-#include <algorithm>
-#include <iostream>
-
-#include <dist/json/json.h>
-
 #include <TheLostGirl/SpriteSheetAnimation.h>
 
 template<typename A>
@@ -17,9 +10,9 @@ AnimationsManager<A>::~AnimationsManager()
 {}
 
 template<typename A>
-void AnimationsManager<A>::addAnimation(const std::string& identifier, A animation, unsigned short int importance, sf::Time duration, bool loop)
+void AnimationsManager<A>::addAnimation(const std::string& identifier, A animation, unsigned short int importance, sf::Time duration, bool loops)
 {
-	TimeAnimation timeAnime{animation, importance, duration, loop};
+	TimeAnimation timeAnime{animation, importance, duration, loops};
 	m_animationsMap.emplace(identifier, timeAnime);
 }
 
@@ -122,7 +115,7 @@ void AnimationsManager<A>::update(sf::Time dt)
 				if(timeAnim.loops)//Always increment progress if the animation loops
 				{
 					timeAnim.progress += dt.asSeconds()/timeAnim.duration.asSeconds();
-					if(timeAnim.progress > 1.f)//If we must loop
+					if(timeAnim.progress > 1.f)//If we must loops
 						timeAnim.progress -= std::floor(timeAnim.progress);//Keep the progress in the range [0, 1]
 				}
 				else if(timeAnim.progress < 1.f)//If the animation doesn't loops, incerement progress only if less than 1
@@ -158,23 +151,29 @@ Json::Value AnimationsManager<A>::serialize() const
 }
 
 template<typename A> template<typename T>
-void AnimationsManager<A>::deserialize(const Json::Value& value, T& object, float scale)
+void AnimationsManager<A>::deserialize(const Json::Value& value, T& object, State::Context context)
 {
 	m_animationsMap.clear();
 	//For each animation name in the value
 	for(std::string& animationName : value.getMemberNames())
 	{
 		Json::Value animationObj = value[animationName];
-		A animation(object);
+		A animation(object, context);
 		//Copy the data inside the animation
-		animation.deserialize(animationObj["data"], scale);
+		animation.deserialize(animationObj["data"]);
 		TimeAnimation timeAnim(animation);
-		timeAnim.importance = animationObj["importance"].asUInt();
-		timeAnim.duration = sf::seconds(animationObj["duration"].asFloat());
-		timeAnim.loops = animationObj["loops"].asBool();
-		timeAnim.progress = animationObj["progress"].asFloat();
-		timeAnim.isPaused = animationObj["is paused"].asBool();
-		timeAnim.isActive = animationObj["is active"].asBool();
+		if(animationObj.isMember("importance"))
+			timeAnim.importance = animationObj["importance"].asUInt();
+		if(animationObj.isMember("duration"))
+			timeAnim.duration = sf::seconds(animationObj["duration"].asFloat());
+		if(animationObj.isMember("loops"))
+			timeAnim.loops = animationObj["loops"].asBool();
+		if(animationObj.isMember("progress"))
+			timeAnim.progress = animationObj["progress"].asFloat();
+		if(animationObj.isMember("is active"))
+			timeAnim.isPaused = animationObj["is paused"].asBool();
+		if(animationObj.isMember("is active"))
+			timeAnim.isActive = animationObj["is active"].asBool();
 		m_animationsMap.emplace(animationName, timeAnim);
 	}
 }

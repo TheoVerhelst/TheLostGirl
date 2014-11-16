@@ -50,70 +50,77 @@ Json::Value serialize(entityx::ComponentHandle<BodyComponent> component, float s
 		{
 			Json::Value fixtureObj;
 			b2Shape::Type type{fix->GetType()};
-			if(type == b2Shape::e_circle)
+			switch(type)
 			{
-				fixtureObj["type"] = "circle";
-				b2CircleShape* shape = static_cast<b2CircleShape*>(fix->GetShape());
-				fixtureObj["position"]["x"] = shape->m_p.x/scale;
-				fixtureObj["position"]["y"] = shape->m_p.y/scale;
-				fixtureObj["radius"] = shape->m_radius/scale;
-			}
-			else if(type == b2Shape::e_edge)
-			{
-				fixtureObj["type"] = "edge";
-				b2EdgeShape* shape = static_cast<b2EdgeShape*>(fix->GetShape());
-				//Copy all vertices
-				if(shape->m_hasVertex0)
+				case b2Shape::e_circle:
 				{
-					fixtureObj["0"]["x"] = shape->m_vertex0.x/scale;
-					fixtureObj["0"]["y"] = shape->m_vertex0.y/scale;
+					fixtureObj["type"] = "circle";
+					b2CircleShape* shape = static_cast<b2CircleShape*>(fix->GetShape());
+					fixtureObj["position"]["x"] = shape->m_p.x/scale;
+					fixtureObj["position"]["y"] = shape->m_p.y/scale;
+					fixtureObj["radius"] = shape->m_radius/scale;
+					break;
 				}
-				fixtureObj["1"]["x"] = shape->m_vertex1.x/scale;
-				fixtureObj["1"]["y"] = shape->m_vertex1.y/scale;
-				fixtureObj["2"]["x"] = shape->m_vertex2.x/scale;
-				fixtureObj["2"]["y"] = shape->m_vertex2.y/scale;
-				if(shape->m_hasVertex3)
+				case b2Shape::e_edge:
 				{
-					fixtureObj["3"]["x"] = shape->m_vertex3.x/scale;
-					fixtureObj["3"]["y"] = shape->m_vertex3.y/scale;
+					fixtureObj["type"] = "edge";
+					b2EdgeShape* shape = static_cast<b2EdgeShape*>(fix->GetShape());
+					//Copy all vertices
+					if(shape->m_hasVertex0)
+					{
+						fixtureObj["0"]["x"] = shape->m_vertex0.x/scale;
+						fixtureObj["0"]["y"] = shape->m_vertex0.y/scale;
+					}
+					fixtureObj["1"]["x"] = shape->m_vertex1.x/scale;
+					fixtureObj["1"]["y"] = shape->m_vertex1.y/scale;
+					fixtureObj["2"]["x"] = shape->m_vertex2.x/scale;
+					fixtureObj["2"]["y"] = shape->m_vertex2.y/scale;
+					if(shape->m_hasVertex3)
+					{
+						fixtureObj["3"]["x"] = shape->m_vertex3.x/scale;
+						fixtureObj["3"]["y"] = shape->m_vertex3.y/scale;
+					}
+					break;
 				}
-			}
-			else if(type == b2Shape::e_polygon)
-			{
-				fixtureObj["type"] = "polygon";
-				b2PolygonShape* shape = static_cast<b2PolygonShape*>(fix->GetShape());
-				//Copy all vertices
-				for(int32 j{0}; j < shape->GetVertexCount(); ++j)
+				case b2Shape::e_polygon:
 				{
-					fixtureObj["vertices"][j]["x"] = shape->m_vertices[j].x/scale;
-					fixtureObj["vertices"][j]["y"] = shape->m_vertices[j].y/scale;
+					fixtureObj["type"] = "polygon";
+					b2PolygonShape* shape = static_cast<b2PolygonShape*>(fix->GetShape());
+					//Copy all vertices
+					for(int32 j{0}; j < shape->GetVertexCount(); ++j)
+					{
+						fixtureObj["vertices"][j]["x"] = shape->m_vertices[j].x/scale;
+						fixtureObj["vertices"][j]["y"] = shape->m_vertices[j].y/scale;
+					}
+					break;
 				}
-			}
-			//Chain shape
-			else
-			{
-				fixtureObj["type"] = "chain";
-				b2ChainShape* shape = static_cast<b2ChainShape*>(fix->GetShape());
-				//Copy all vertices
-				if(shape->m_hasPrevVertex)
+				default:
+				case b2Shape::e_chain:
 				{
-					fixtureObj["previous vertex"]["x"] = shape->m_prevVertex.x/scale;
-					fixtureObj["previous vertex"]["y"] = shape->m_prevVertex.y/scale;
-				}
-				for(int32 j{0}; j < shape->m_count; ++j)
-				{
-					fixtureObj["vertices"][j]["x"] = shape->m_vertices[j].x/scale;
-					fixtureObj["vertices"][j]["y"] = shape->m_vertices[j].y/scale;
-				}
-				if(shape->m_hasNextVertex)
-				{
-					fixtureObj["next vertex"]["x"] = shape->m_nextVertex.x/scale;
-					fixtureObj["next vertex"]["y"] = shape->m_nextVertex.y/scale;
+					fixtureObj["type"] = "chain";
+					b2ChainShape* shape = static_cast<b2ChainShape*>(fix->GetShape());
+					//Copy all vertices
+					if(shape->m_hasPrevVertex)
+					{
+						fixtureObj["previous vertex"]["x"] = shape->m_prevVertex.x/scale;
+						fixtureObj["previous vertex"]["y"] = shape->m_prevVertex.y/scale;
+					}
+					for(int32 j{0}; j < shape->m_count; ++j)
+					{
+						fixtureObj["vertices"][j]["x"] = shape->m_vertices[j].x/scale;
+						fixtureObj["vertices"][j]["y"] = shape->m_vertices[j].y/scale;
+					}
+					if(shape->m_hasNextVertex)
+					{
+						fixtureObj["next vertex"]["x"] = shape->m_nextVertex.x/scale;
+						fixtureObj["next vertex"]["y"] = shape->m_nextVertex.y/scale;
+					}
+					break;
 				}
 			}
 			fixtureObj["density"] = fix->GetDensity();
 			fixtureObj["friction"] = fix->GetFriction();
-			fixtureObj["resitution"] = fix->GetRestitution();
+			fixtureObj["restitution"] = fix->GetRestitution();
 			fixtureObj["is sensor"] = fix->IsSensor();
 			//If the fixture is a foot sensor
 			if(fix->GetUserData() and (unsigned int)(fix->GetUserData()) & FixtureRole::Foot)
@@ -126,7 +133,7 @@ Json::Value serialize(entityx::ComponentHandle<BodyComponent> component, float s
 	return ret;
 }
 
-Json::Value serialize(entityx::ComponentHandle<SpriteComponent> component, TextureManager& textureManager)
+Json::Value serialize(entityx::ComponentHandle<SpriteComponent> component, TextureManager& textureManager, float scale)
 {
 	Json::Value ret;
 	for(auto& spritePair : component->sprites)
@@ -135,17 +142,17 @@ Json::Value serialize(entityx::ComponentHandle<SpriteComponent> component, Textu
 		const sf::Texture* tex = spritePair.second.getTexture();
 		//Compare the pointer to the texture
 		if(tex == &textureManager.get("archer"))
-			ret[partName]["sprite"]["identifier"] = "archer";
+			ret[partName]["identifier"] = "archer";
 		else if(tex == &textureManager.get("arms"))
-			ret[partName]["sprite"]["identifier"] = "arms";
+			ret[partName]["identifier"] = "arms";
 		else if(tex == &textureManager.get("bow"))
-			ret[partName]["sprite"]["identifier"] = "bow";
+			ret[partName]["identifier"] = "bow";
 	}
 	for(auto& positionPair : component->worldPositions)
 	{
 		const std::string partName{positionPair.first};
-		ret[partName]["sprite"]["position"]["x"] = positionPair.second.x;
-		ret[partName]["sprite"]["position"]["y"] = positionPair.second.y;
+		ret[partName]["position"]["x"] = positionPair.second.x/scale;
+		ret[partName]["position"]["y"] = positionPair.second.y/scale;
 	}
 	return ret;
 }
@@ -577,7 +584,7 @@ void deserialize(const Json::Value& value, entityx::ComponentHandle<SpriteCompon
 	}
 }
 
-void deserialize(const Json::Value& value, entityx::ComponentHandle<AnimationsComponent<SpriteSheetAnimation>> component, entityx::ComponentHandle<SpriteComponent> spriteComponent, float scale)
+void deserialize(const Json::Value& value, entityx::ComponentHandle<AnimationsComponent<SpriteSheetAnimation>> component, entityx::ComponentHandle<SpriteComponent> spriteComponent, State::Context context)
 {
 	component->animationsManagers.clear();
 	for(std::string& partName : value.getMemberNames())
@@ -586,7 +593,7 @@ void deserialize(const Json::Value& value, entityx::ComponentHandle<AnimationsCo
 		if(spriteComponent->sprites.find(partName) != spriteComponent->sprites.end())
 		{
 			AnimationsManager<SpriteSheetAnimation> animationsManager;
-			animationsManager.deserialize(value[partName], spriteComponent->sprites[partName], scale);
+			animationsManager.deserialize(value[partName], spriteComponent->sprites[partName], context);
 			component->animationsManagers.emplace(partName, animationsManager);
 		}
 	}

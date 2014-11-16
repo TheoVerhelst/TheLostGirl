@@ -29,7 +29,8 @@
 GameState::GameState(StateStack& stack, Context context) :
 	State(stack, context),
 	m_entities(),
-	m_levelEntities(),
+	m_sceneEntities(),
+	m_sceneEntitiesData(),
 	m_contactListener(getContext()),
 	m_timeSpeed{1.f},
 	m_threadLoad(),
@@ -53,6 +54,10 @@ GameState::~GameState()
 		}
 		entity.second.destroy();
 	}
+	for(auto& sceneEntity : m_sceneEntities)
+		sceneEntity.second.destroy();
+	for(auto& joint : m_joints)
+		delete joint.definition;
 	getContext().world.ClearForces();
 	if(m_threadLoad.joinable())
 		m_threadLoad.join();
@@ -102,7 +107,7 @@ void GameState::saveWorld(const std::string& file)
 				root["entities"][entity.first]["body"] = serialize(entity.second.component<BodyComponent>(), uniqScale);
 			
 			if(entity.second.has_component<SpriteComponent>())
-				root["entities"][entity.first]["sprite"] = serialize(entity.second.component<SpriteComponent>(), getContext().textureManager);
+				root["entities"][entity.first]["sprite"] = serialize(entity.second.component<SpriteComponent>(), getContext().textureManager, scale);
 			
 			if(entity.second.has_component<AnimationsComponent<SpriteSheetAnimation>>())
 				root["entities"][entity.first]["spritesheet animations"] = serialize(entity.second.component<AnimationsComponent<SpriteSheetAnimation>>());
@@ -111,7 +116,7 @@ void GameState::saveWorld(const std::string& file)
 				root["entities"][entity.first]["direction"] = serialize(entity.second.component<DirectionComponent>());
 			
 			if(entity.second.has_component<CategoryComponent>())
-				root["entities"][entity.first]["category"] = serialize(entity.second.component<CategoryComponent>());
+				root["entities"][entity.first]["categories"] = serialize(entity.second.component<CategoryComponent>());
 			
 			if(entity.second.has_component<ActorIDComponent>())
 				root["entities"][entity.first]["actor ID"] = serialize(entity.second.component<ActorIDComponent>());
@@ -145,7 +150,109 @@ void GameState::saveWorld(const std::string& file)
 		root["level"]["box"]["w"] = m_levelRect.width;
 		root["level"]["box"]["h"] = m_levelRect.height;
 		root["level"]["number of plans"] = m_numberOfPlans;
+		root["level"]["reference plan"] = Json::Value(Json::realValue);
 		root["level"]["reference plan"] = m_referencePlan;
+		
+		//replaces
+		for(auto& planData : m_sceneEntitiesData)
+		{
+			for(size_t i{0}; i < planData.second.size(); ++i)
+			{
+				root["level"][planData.first][i]["origin"]["x"] = planData.second[i].origin.left/scale;
+				root["level"][planData.first][i]["origin"]["y"] = planData.second[i].origin.top/scale;
+				root["level"][planData.first][i]["origin"]["w"] = planData.second[i].origin.width/scale;
+				root["level"][planData.first][i]["origin"]["h"] = planData.second[i].origin.height/scale;
+				for(Json::ArrayIndex j{0}; j < planData.second[i].replaces.size(); ++j)
+				{
+					root["level"][planData.first][i]["replaces"][j]["x"] = planData.second[i].replaces[j].x/scale;
+					root["level"][planData.first][i]["replaces"][j]["y"] = planData.second[i].replaces[j].y/scale;
+				}
+			}
+		}
+		
+		//joints
+		for(auto& joint : m_joints)
+		{
+			switch(joint.type)
+			{
+				case e_revoluteJoint:
+				{
+					b2RevoluteJointDef* castedJointDef = static_cast<b2RevoluteJointDef*>(joint.definition);
+					root["joints"]["revolute joints"].append(Json::objectValue);
+					root["joints"]["revolute joints"][root["joints"]["revolute joints"].size()-1]["entity A"] = joint.entityA;
+					root["joints"]["revolute joints"][root["joints"]["revolute joints"].size()-1]["entity B"] = joint.entityB;
+					root["joints"]["revolute joints"][root["joints"]["revolute joints"].size()-1]["part A"] = joint.partA;
+					root["joints"]["revolute joints"][root["joints"]["revolute joints"].size()-1]["part B"] = joint.partB;
+					root["joints"]["revolute joints"][root["joints"]["revolute joints"].size()-1]["local anchor A"]["x"] = castedJointDef->localAnchorA.x/uniqScale;
+					root["joints"]["revolute joints"][root["joints"]["revolute joints"].size()-1]["local anchor A"]["y"] = castedJointDef->localAnchorA.y/uniqScale;
+					root["joints"]["revolute joints"][root["joints"]["revolute joints"].size()-1]["local anchor B"]["x"] = castedJointDef->localAnchorB.x/uniqScale;
+					root["joints"]["revolute joints"][root["joints"]["revolute joints"].size()-1]["local anchor B"]["y"] = castedJointDef->localAnchorB.y/uniqScale;
+					root["joints"]["revolute joints"][root["joints"]["revolute joints"].size()-1]["lower angle"] = (castedJointDef->lowerAngle / b2_pi) * 180.f;
+					root["joints"]["revolute joints"][root["joints"]["revolute joints"].size()-1]["upper angle"] = (castedJointDef->upperAngle / b2_pi) * 180.f;
+					root["joints"]["revolute joints"][root["joints"]["revolute joints"].size()-1]["enable limit"] = castedJointDef->enableLimit;
+					root["joints"]["revolute joints"][root["joints"]["revolute joints"].size()-1]["max motor torque"] = castedJointDef->maxMotorTorque;
+					root["joints"]["revolute joints"][root["joints"]["revolute joints"].size()-1]["enable motor"] = castedJointDef->enableMotor;
+					break;
+				}
+				
+				case e_prismaticJoint:
+				{
+					break;
+				}
+					
+				case e_distanceJoint:
+				{
+					break;
+				}
+					
+				case e_pulleyJoint:
+				{
+					break;
+				}
+					
+				case e_mouseJoint:
+				{
+					break;
+				}
+					
+				case e_gearJoint:
+				{
+					break;
+				}
+					
+				case e_wheelJoint:
+				{
+					break;
+				}
+					
+				case e_weldJoint:
+				{
+					break;
+				}
+					
+				case e_frictionJoint:
+				{
+					break;
+				}
+					
+				case e_ropeJoint:
+				{
+					break;
+				}
+				
+				case e_motorJoint:
+				{
+					break;
+				}
+				
+				case e_unknownJoint:
+				default:
+				{
+					break;
+				}
+			}
+			
+		}
 		
 		saveFileStream << writer.write(root);
 		saveFileStream.close();
@@ -169,7 +276,7 @@ void GameState::initWorld(const std::string& file)
 		
 		//Assert that there is only these elements with these types in the root object.
 		parseObject(root, "root", {{"entities", Json::objectValue},
-									{"joints", Json::arrayValue},
+									{"joints", Json::objectValue},
 									{"level", Json::objectValue},
 									{"time", Json::objectValue}});
 		requireValues(root, "root", {{"level", Json::objectValue}});
@@ -247,7 +354,6 @@ void GameState::initWorld(const std::string& file)
 			{
 				//Filename of the image to load
 				std::string fileTexture{m_levelIdentifier + "_" + std::to_string(i)};
-				std::cout << "filetexture = " << fileTexture << std::endl;
 				//Path of the image to load
 				std::string path{paths[getContext().parameters.scaleIndex] + "levels/" + m_levelIdentifier + "/" + fileTexture + ".png"};
 				//Check if the plan is defined
@@ -255,21 +361,27 @@ void GameState::initWorld(const std::string& file)
 				{
 					const Json::Value plan = level[std::to_string(i)];
 					parseArray(plan, "level." + std::to_string(i), Json::objectValue);
+					//Vector that will be added to m_sceneEntitiesData
+					std::vector<SceneReplaces> planData;
 					//For each image frame in the plan
 					for(Json::ArrayIndex j{0}; j < plan.size(); j++)
 					{
 						const Json::Value image = plan[j];
-						requireValues(image, "level." + std::to_string(i) + "." + std::to_string(j), {{"origin", Json::objectValue}, {"replace", Json::arrayValue}});
+						requireValues(image, "level." + std::to_string(i) + "." + std::to_string(j), {{"origin", Json::objectValue}, {"replaces", Json::arrayValue}});
 						const Json::Value origin = image["origin"];
 						requireValues(origin, "level." + std::to_string(i) + "." + std::to_string(j) + ".origin", {{"x", Json::intValue},
 																										{"y", Json::intValue},
 																										{"w", Json::intValue},
 																										{"h", Json::intValue}});
 						//Coordinates of the original image
-						unsigned int ox{static_cast<unsigned int>(origin["x"].asUInt()*getContext().parameters.scale)};
-						unsigned int oy{static_cast<unsigned int>(origin["y"].asUInt()*getContext().parameters.scale)};
-						unsigned int ow{static_cast<unsigned int>(origin["w"].asUInt()*getContext().parameters.scale)};
-						unsigned int oh{static_cast<unsigned int>(origin["h"].asUInt()*getContext().parameters.scale)};
+						sf::IntRect originRect;
+						originRect.left = static_cast<unsigned int>(origin["x"].asUInt()*getContext().parameters.scale);
+						originRect.top = static_cast<unsigned int>(origin["y"].asUInt()*getContext().parameters.scale);
+						originRect.width = static_cast<unsigned int>(origin["w"].asUInt()*getContext().parameters.scale);
+						originRect.height = static_cast<unsigned int>(origin["h"].asUInt()*getContext().parameters.scale);
+						
+						SceneReplaces replacesData;
+						replacesData.origin = originRect;
 						
 						//Load the texture
 						//Identifier of the texture, in format "level_plan_texture"
@@ -278,40 +390,45 @@ void GameState::initWorld(const std::string& file)
 						if(not texManager.isLoaded(textureIdentifier))
 						{
 							getContext().eventManager.emit<LoadingStateChange>(float(i*100)/float(m_numberOfPlans+1) + (float(j*100)/float(plan.size()*(m_numberOfPlans+1))), LangManager::tr("Loading plan") + L" " + std::to_wstring(i));
-							texManager.load<sf::IntRect>(textureIdentifier, path, sf::IntRect(ox, oy, ow, oh));
+							texManager.load<sf::IntRect>(textureIdentifier, path, originRect);
 						}
 						
 						//Replaces
-						const Json::Value replaces = image["replace"];
-						parseArray(replaces, "level." + std::to_string(i) + "." + std::to_string(j) + ".replace", Json::objectValue);
+						const Json::Value replaces = image["replaces"];
+						parseArray(replaces, "level." + std::to_string(i) + "." + std::to_string(j) + ".replaces", Json::objectValue);
 						//For each replacing of the image
 						for(Json::ArrayIndex k{0}; k < replaces.size(); k++)
 						{
 							const Json::Value replace = replaces[k];
 							//Identifier of the entity, in format "level_plan_texture_replace"
 							std::string replaceIdentifier{textureIdentifier + "_" + std::to_string(k)};
-							requireValues(replace, "level." + std::to_string(i) + "." + std::to_string(j) + ".replace." + std::to_string(k), {{"x", Json::realValue},
+							requireValues(replace, "level." + std::to_string(i) + "." + std::to_string(j) + ".replaces." + std::to_string(k), {{"x", Json::realValue},
 																															{"y", Json::realValue}});
 							//Position where the frame should be replaced
-							float rx{replace["x"].asFloat()*getContext().parameters.scale};
-							float ry{replace["y"].asFloat()*getContext().parameters.scale};
+							sf::Vector2f replacePosition;
+							replacePosition.x = replace["x"].asFloat()*getContext().parameters.scale;
+							replacePosition.y = replace["y"].asFloat()*getContext().parameters.scale;
+							
+							replacesData.replaces.push_back(replacePosition);
+							
 							//Create an entity
-							m_levelEntities.emplace(replaceIdentifier, getContext().entityManager.create());
+							m_sceneEntities.emplace(replaceIdentifier, getContext().entityManager.create());
 							//Create a sprite with the loaded texture
 							//Assign the sprite to the entity
 							sf::Sprite replaceSpr(texManager.get(textureIdentifier));
-							replaceSpr.setPosition(rx, ry);
+							replaceSpr.setPosition(replacePosition);
 							std::map<std::string, sf::Sprite> sprites{{"main", replaceSpr}};
-							std::map<std::string, sf::Vector2f> worldPositions{{"main", {rx, ry}}};
-							SpriteComponent::Handle sprComp = m_levelEntities[replaceIdentifier].assign<SpriteComponent>();
+							std::map<std::string, sf::Vector2f> worldPositions{{"main", replacePosition}};
+							SpriteComponent::Handle sprComp = m_sceneEntities[replaceIdentifier].assign<SpriteComponent>();
 							sprComp->sprites = sprites;
 							sprComp->worldPositions = worldPositions;
 							sprComp->plan = static_cast<float>(i);
-							CategoryComponent::Handle catComp = m_levelEntities[replaceIdentifier].assign<CategoryComponent>();
+							CategoryComponent::Handle catComp = m_sceneEntities[replaceIdentifier].assign<CategoryComponent>();
 							catComp->category = Category::Scene;
-							std::cout << "assigned to replace " << replaceIdentifier << std::endl;
 						}
+						planData.push_back(replacesData);
 					}
+					m_sceneEntitiesData.emplace(std::to_string(i), planData);
 				}
 				//If the plan is not defined, load all the image in multiples chunks
 				else
@@ -338,20 +455,19 @@ void GameState::initWorld(const std::string& file)
 							texManager.load<sf::IntRect>(textureIdentifier, path, sf::IntRect(j*chunkSize, 0, currentChunkSize, m_levelRect.height*getContext().parameters.scale));
 						}
 						//Create an entity
-						m_levelEntities.emplace(textureIdentifier, getContext().entityManager.create());
+						m_sceneEntities.emplace(textureIdentifier, getContext().entityManager.create());
 						//Create a sprite with the loaded texture
 						//Assign the sprite to the entity
 						sf::Sprite chunkSpr(texManager.get(textureIdentifier));
 						chunkSpr.setPosition(j*chunkSize, 0);
 						std::map<std::string, sf::Sprite> sprites{{"main", chunkSpr}};
 						std::map<std::string, sf::Vector2f> worldPositions{{"main", {static_cast<float>(j*chunkSize), 0}}};
-						SpriteComponent::Handle sprComp = m_levelEntities[textureIdentifier].assign<SpriteComponent>();
+						SpriteComponent::Handle sprComp = m_sceneEntities[textureIdentifier].assign<SpriteComponent>();
 						sprComp->sprites = sprites;
 						sprComp->worldPositions = worldPositions;
 						sprComp->plan = static_cast<float>(i);
-						CategoryComponent::Handle catComp = m_levelEntities[textureIdentifier].assign<CategoryComponent>();
+						CategoryComponent::Handle catComp = m_sceneEntities[textureIdentifier].assign<CategoryComponent>();
 						catComp->category = Category::Scene;
-							std::cout << "assigned to normal " << textureIdentifier << std::endl;
 					}
 				}
 			}
@@ -444,7 +560,7 @@ void GameState::initWorld(const std::string& file)
 							for(Json::ArrayIndex i{0}; i < fixtures.size(); ++i)
 							{
 								const Json::Value fixture = fixtures[i];
-								parseObject(fixture, "entities." + entityName + ".body." + partName + ".fixtures" + std::to_string(i), {{"type", Json::stringValue},
+								parseObject(fixture, "entities." + entityName + ".body." + partName + ".fixtures." + std::to_string(i), {{"type", Json::stringValue},
 																														{"box", Json::objectValue},
 																														{"vertices", Json::arrayValue},
 																														{"1", Json::objectValue},
@@ -458,7 +574,7 @@ void GameState::initWorld(const std::string& file)
 								if(fixture.isMember("type"))
 								{
 									const Json::Value type = fixtures[i]["type"];
-									parseValue(type, "entities." + entityName + ".body." + partName + ".fixtures" + std::to_string(i) + ".type", {"polygon", "edge", "chain", "circle"});
+									parseValue(type, "entities." + entityName + ".body." + partName + ".fixtures." + std::to_string(i) + ".type", {"polygon", "edge", "chain", "circle"});
 
 									if(type == "polygon")
 									{
@@ -525,7 +641,10 @@ void GameState::initWorld(const std::string& file)
 							const Json::Value animation = animations[animationName];
 							parseObject(animation, "entities." + entityName + ".spritesheet animations." + partName + "." + animationName, {{"importance", Json::intValue},
 																															{"duration", Json::realValue},
-																															{"loop", Json::booleanValue},
+																															{"loops", Json::booleanValue},
+																															{"progress", Json::realValue},
+																															{"is active", Json::booleanValue},
+																															{"is paused", Json::booleanValue},
 																															{"data", Json::arrayValue}});
 							//frames (=data, because of template implementation)
 							if(animation.isMember("data"))
@@ -541,7 +660,7 @@ void GameState::initWorld(const std::string& file)
 							}
 						}
 					}
-					deserialize(animationsManagers, m_entities[entityName].assign<AnimationsComponent<SpriteSheetAnimation>>(),  m_entities[entityName].component<SpriteComponent>(), scale);
+					deserialize(animationsManagers, m_entities[entityName].assign<AnimationsComponent<SpriteSheetAnimation>>(), m_entities[entityName].component<SpriteComponent>(), getContext());
 				}
 				
 				//categories
@@ -630,60 +749,57 @@ void GameState::initWorld(const std::string& file)
 		if(root.isMember("joints"))
 		{
 			const Json::Value joints = root["joints"];
-			parseArray(joints, "joints", Json::objectValue);
-			for(Json::ArrayIndex i{0}; i < joints.size(); ++i)
+			parseObject(joints, "joints", {{"revolute joints", Json::arrayValue},
+										{"distance joints", Json::arrayValue},
+										{"friction joints", Json::arrayValue},
+										{"gear joints", Json::arrayValue},
+										{"motor joints", Json::arrayValue},
+										{"prismatic joints", Json::arrayValue},
+										{"pulley joints", Json::arrayValue},
+										{"rope joints", Json::arrayValue},
+										{"weld joints", Json::arrayValue},
+										{"wheel joints", Json::arrayValue}});
+			if(joints.isMember("revolute joints"))
 			{
-				const Json::Value joint = joints[i];
-				parseObject(joint, "joints." + std::to_string(i), {{"entity A", Json::stringValue},
-																	{"entity B", Json::stringValue},
-																	{"part A", Json::stringValue},
-																	{"part B", Json::stringValue},
-																	{"type", Json::stringValue},
-																	{"local anchor A", Json::objectValue},
-																	{"local anchor B", Json::objectValue},
-																	{"lower angle", Json::realValue},
-																	{"upper angle", Json::realValue},
-																	{"enable limit", Json::booleanValue},
-																	{"max motor torque", Json::realValue},
-																	{"enable motor", Json::booleanValue}});
-				requireValues(joint, "joints." + std::to_string(i), {{"entity A", Json::stringValue},
-																	{"entity B", Json::stringValue},
-																	{"part A", Json::stringValue},
-																	{"part B", Json::stringValue},
-																	{"type", Json::stringValue}});
-																	
-				Joint jointData;
-				jointData.entityA = joint["entity A"].asString();
-				jointData.entityB = joint["entity B"].asString();
-				jointData.partA = joint["part A"].asString();
-				jointData.partB = joint["part B"].asString();
-				//Assert that somes entities exists
-				requireValues(root, "root", {{"entities", Json::objectValue}});
-				//Assert that the given entities exist
-				requireValues(root["entities"], "entities", {{jointData.entityA, Json::objectValue}, {jointData.entityB, Json::objectValue}});
-				//Assert that that entities have some bodies
-				requireValues(root["entities"][jointData.entityA], "entities." + jointData.entityA, {{"body", Json::objectValue}});
-				requireValues(root["entities"][jointData.entityB], "entities." + jointData.entityB, {{"body", Json::objectValue}});
-				//Assert that that entities have the givens parts
-				requireValues(root["entities"][jointData.entityA]["body"], "entities." + jointData.entityA + ".body", {{jointData.partA, Json::objectValue}});
-				requireValues(root["entities"][jointData.entityB]["body"], "entities." + jointData.entityB + ".body", {{jointData.partB, Json::objectValue}});
-				b2Body * bodyA{m_entities[jointData.entityA].component<BodyComponent>()->bodies[jointData.partA]};
-				b2Body * bodyB{m_entities[jointData.entityB].component<BodyComponent>()->bodies[jointData.partB]};
-							
-				//type
-				const Json::Value type = joint["type"];
-				parseValue(type, "joints." + std::to_string(i) + ".type", {"revolute joint",
-																			"distance joint",
-																			"friction joint",
-																			"gear joint",
-																			"motor joint",
-																			"prismatic joint",
-																			"pulley joint",
-																			"rope joint",
-																			"weld joint",
-																			"wheel joint"});											
-				if(type == "revolute joint")
+				const Json::Value revoluteJoints = joints["revolute joints"];
+				parseArray(revoluteJoints, "joints.revolute joints", Json::objectValue);
+				for(Json::ArrayIndex i{0}; i < revoluteJoints.size(); ++i)
 				{
+					const Json::Value joint = revoluteJoints[i];
+					parseObject(joint, "joints.revolute joints." + std::to_string(i), {{"entity A", Json::stringValue},
+																						{"entity B", Json::stringValue},
+																						{"part A", Json::stringValue},
+																						{"part B", Json::stringValue},
+																						{"local anchor A", Json::objectValue},
+																						{"local anchor B", Json::objectValue},
+																						{"lower angle", Json::realValue},
+																						{"upper angle", Json::realValue},
+																						{"enable limit", Json::booleanValue},
+																						{"max motor torque", Json::realValue},
+																						{"enable motor", Json::booleanValue}});
+					requireValues(joint, "joints.revolute joints." + std::to_string(i), {{"entity A", Json::stringValue},
+																						{"entity B", Json::stringValue},
+																						{"part A", Json::stringValue},
+																						{"part B", Json::stringValue}});
+																	
+					Joint jointData;
+					jointData.entityA = joint["entity A"].asString();
+					jointData.entityB = joint["entity B"].asString();
+					jointData.partA = joint["part A"].asString();
+					jointData.partB = joint["part B"].asString();
+					//Assert that somes entities exists
+					requireValues(root, "root", {{"entities", Json::objectValue}});
+					//Assert that the given entities exist
+					requireValues(root["entities"], "entities", {{jointData.entityA, Json::objectValue}, {jointData.entityB, Json::objectValue}});
+					//Assert that that entities have some bodies
+					requireValues(root["entities"][jointData.entityA], "entities." + jointData.entityA, {{"body", Json::objectValue}});
+					requireValues(root["entities"][jointData.entityB], "entities." + jointData.entityB, {{"body", Json::objectValue}});
+					//Assert that that entities have the givens parts
+					requireValues(root["entities"][jointData.entityA]["body"], "entities." + jointData.entityA + ".body", {{jointData.partA, Json::objectValue}});
+					requireValues(root["entities"][jointData.entityB]["body"], "entities." + jointData.entityB + ".body", {{jointData.partB, Json::objectValue}});
+					b2Body * bodyA{m_entities[jointData.entityA].component<BodyComponent>()->bodies[jointData.partA]};
+					b2Body * bodyB{m_entities[jointData.entityB].component<BodyComponent>()->bodies[jointData.partB]};
+
 					jointData.type = e_revoluteJoint;
 					jointData.definition = new b2RevoluteJointDef();
 					b2RevoluteJointDef* castedJointDef = static_cast<b2RevoluteJointDef*>(jointData.definition);
@@ -695,7 +811,7 @@ void GameState::initWorld(const std::string& file)
 					if(joint.isMember("local anchor A"))
 					{
 						const Json::Value firstAnchor = joint["local anchor A"];
-						requireValues(firstAnchor,"joints." + std::to_string(i) + ".local anchor A", {{"x", Json::realValue}, {"y", Json::realValue}});
+						requireValues(firstAnchor,"joints.revolute joints." + std::to_string(i) + ".local anchor A", {{"x", Json::realValue}, {"y", Json::realValue}});
 									
 						//x
 						xA = firstAnchor["x"].asFloat();
@@ -709,7 +825,7 @@ void GameState::initWorld(const std::string& file)
 					if(joint.isMember("local anchor B"))
 					{
 						const Json::Value secondAnchor = joint["local anchor B"];
-						parseObject(secondAnchor,"joints." + std::to_string(i) + ".local anchor B", {{"x", Json::realValue}, {"y", Json::realValue}});
+						parseObject(secondAnchor,"joints.revolute joints." + std::to_string(i) + ".local anchor B", {{"x", Json::realValue}, {"y", Json::realValue}});
 						
 						//x
 						if(secondAnchor.isMember("x"))
@@ -744,33 +860,77 @@ void GameState::initWorld(const std::string& file)
 					getContext().world.CreateJoint(castedJointDef);
 					m_joints.push_back(jointData);
 				}
-				// TODO: implementer tous les autres types de joints.
-				else if(type == "distance joint")
+			}
+			if(joints.isMember("distance joints"))
+			{
+				const Json::Value distanceJoints = joints["distance joints"];
+				for(Json::ArrayIndex i{0}; i < distanceJoints.size(); ++i)
 				{
+					const Json::Value joint = distanceJoints[i];
 				}
-				else if(type == "friction joint")
+			}
+			if(joints.isMember("friction joints"))
+			{
+				const Json::Value frictionJoints = joints["friction joints"];
+				for(Json::ArrayIndex i{0}; i < frictionJoints.size(); ++i)
 				{
+					const Json::Value joint = frictionJoints[i];
 				}
-				else if(type == "gear joint")
+			}
+			if(joints.isMember("gear joints"))
+			{
+				const Json::Value gearJoints = joints["gear joints"];
+				for(Json::ArrayIndex i{0}; i < gearJoints.size(); ++i)
 				{
+					const Json::Value joint = gearJoints[i];
 				}
-				else if(type == "motor joint")
+			}
+			if(joints.isMember("motor joints"))
+			{
+				const Json::Value motorJoints = joints["motor joints"];
+				for(Json::ArrayIndex i{0}; i < motorJoints.size(); ++i)
 				{
+					const Json::Value joint = motorJoints[i];
 				}
-				else if(type == "prismatic joint")
+			}
+			if(joints.isMember("prismatic joints"))
+			{
+				const Json::Value prismaticJoints = joints["prismatic joints"];
+				for(Json::ArrayIndex i{0}; i < prismaticJoints.size(); ++i)
 				{
+					const Json::Value joint = prismaticJoints[i];
 				}
-				else if(type == "pulley joint")
+			}
+			if(joints.isMember("pulley joints"))
+			{
+				const Json::Value pulleyJoints = joints["pulley joints"];
+				for(Json::ArrayIndex i{0}; i < pulleyJoints.size(); ++i)
 				{
+					const Json::Value joint = pulleyJoints[i];
 				}
-				else if(type == "rope joint")
+			}
+			if(joints.isMember("rope joints"))
+			{
+				const Json::Value ropeJoints = joints["rope joints"];
+				for(Json::ArrayIndex i{0}; i < ropeJoints.size(); ++i)
 				{
+					const Json::Value joint = ropeJoints[i];
 				}
-				else if(type == "weld joint")
+			}
+			if(joints.isMember("weld joints"))
+			{
+				const Json::Value weldJoints = joints["weld joints"];
+				for(Json::ArrayIndex i{0}; i < weldJoints.size(); ++i)
 				{
+					const Json::Value joint = weldJoints[i];
 				}
-				else if(type == "wheel joint")
+			}
+			if(joints.isMember("wheel joints"))
+			{
+				const Json::Value wheelJoints = joints["wheel joints"];
+				for(Json::ArrayIndex i{0}; i < wheelJoints.size(); ++i)
 				{
+					const Json::Value joint = wheelJoints[i];
 				}
 			}
 		}
@@ -785,7 +945,7 @@ void GameState::initWorld(const std::string& file)
 			texManager.load(dayIdentifier, paths[getContext().parameters.scaleIndex] + "day.png");
 		}
 		//Create an entity
-		m_levelEntities.emplace(dayIdentifier, getContext().entityManager.create());
+		m_sceneEntities.emplace(dayIdentifier, getContext().entityManager.create());
 		//Create a sprite with the loaded texture
 		sf::Sprite daySpr(texManager.get(dayIdentifier));
 		//Assign origin of the sprite to the center of the day image
@@ -793,13 +953,13 @@ void GameState::initWorld(const std::string& file)
 		//Assign the sprite to the entity, and set its z-ordinate to positive infinity
 		std::map<std::string, sf::Sprite> daySprites{{"main", daySpr}};
 		std::map<std::string, sf::Vector2f> dayWorldPositions{{"main", {position.x, position.y}}};
-		SpriteComponent::Handle sprComp = m_levelEntities[dayIdentifier].assign<SpriteComponent>();
+		SpriteComponent::Handle sprComp = m_sceneEntities[dayIdentifier].assign<SpriteComponent>();
 		sprComp->sprites = daySprites;
 		sprComp->worldPositions = dayWorldPositions;
 		sprComp->plan = std::numeric_limits<float>::infinity();
-		CategoryComponent::Handle catComp = m_levelEntities[dayIdentifier].assign<CategoryComponent>();
+		CategoryComponent::Handle catComp = m_sceneEntities[dayIdentifier].assign<CategoryComponent>();
 		catComp->category = Category::Scene;
-		SkyComponent::Handle skyComp = m_levelEntities[dayIdentifier].assign<SkyComponent>();
+		SkyComponent::Handle skyComp = m_sceneEntities[dayIdentifier].assign<SkyComponent>();
 		skyComp->day = true;
 	
 		//Load the night sky
@@ -810,7 +970,7 @@ void GameState::initWorld(const std::string& file)
 			texManager.load(nightIdentifier, paths[getContext().parameters.scaleIndex] + "night.png");
 		}
 		//Create an entity
-		m_levelEntities.emplace(nightIdentifier, getContext().entityManager.create());
+		m_sceneEntities.emplace(nightIdentifier, getContext().entityManager.create());
 		//Create a sprite with the loaded texture
 		sf::Sprite nightSpr(texManager.get(nightIdentifier));
 		//Assign origin of the sprite to the center of the night image
@@ -818,14 +978,16 @@ void GameState::initWorld(const std::string& file)
 		//Assign the sprite to the entity, and set its z-ordinate to positive infinity
 		std::map<std::string, sf::Sprite> nightSprites{{"main", nightSpr}};
 		std::map<std::string, sf::Vector2f> nightWorldPositions{{"main", {position.x, position.y}}};
-		sprComp = m_levelEntities[nightIdentifier].assign<SpriteComponent>();
+		sprComp = m_sceneEntities[nightIdentifier].assign<SpriteComponent>();
 		sprComp->sprites = nightSprites;
 		sprComp->worldPositions = nightWorldPositions;
 		sprComp->plan = std::numeric_limits<float>::infinity();
-		catComp = m_levelEntities[nightIdentifier].assign<CategoryComponent>();
+		catComp = m_sceneEntities[nightIdentifier].assign<CategoryComponent>();
 		catComp->category = Category::Scene;
-		skyComp = m_levelEntities[nightIdentifier].assign<SkyComponent>();
+		skyComp = m_sceneEntities[nightIdentifier].assign<SkyComponent>();
 		skyComp->day = false;
+		
+	saveWorld(file);
 	}
 	catch(std::runtime_error& e)
 	{
@@ -851,7 +1013,6 @@ void GameState::initWorld(const std::string& file)
 	requestStackPush(States::HUD);
 	CategoryComponent::Handle categoryComponent;
 	//Set the new health and stamina to the HUD
-	saveWorld("resources/levels/test.json");
 	for(auto entity : getContext().entityManager.entities_with_components(categoryComponent))
 	{
 //		if(categoryComponent->category & Category::Player and entity.has_component<HealthComponent>())

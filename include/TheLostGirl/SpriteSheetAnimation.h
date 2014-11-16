@@ -4,6 +4,9 @@
 #include <unordered_map>
 #include <iterator>
 
+#include <TheLostGirl/State.h>
+#include <TheLostGirl/Parameters.h>
+
 //Forward declarations
 namespace sf
 {
@@ -54,7 +57,7 @@ class SpriteSheetAnimation
 		
 		/// Constructor.
 		/// \param object Object to animate.
-		SpriteSheetAnimation(sf::Sprite& sprite);
+		SpriteSheetAnimation(sf::Sprite& sprite, State::Context context);
 		
 		/// Registers a new frame.
 		/// \param frame Frame of texture to display on the sprite of the entity.
@@ -79,11 +82,23 @@ class SpriteSheetAnimation
 		
 		/// Deserialize the value and set it in the animation.
 		/// \param value A Json value containing the data.
-		void deserialize(const Json::Value& value, float scale);
+		void deserialize(const Json::Value& value);
 		
 	private:
+		template<typename T>
+		sf::Rect<T> scale(sf::Rect<T> rect)
+		{
+			float scaleRes = m_context.parameters.scale;
+			sf::Rect<T> res;
+			res.left = T(float(rect.left)*scaleRes);
+			res.top = T(float(rect.top)*scaleRes);
+			res.width = T(float(rect.width)*scaleRes);
+			res.height = T(float(rect.height)*scaleRes);
+			return res;
+		}
 		std::vector<Frame> m_frames;///< Array of all registred frames.
 		sf::Sprite& m_sprite;
+		State::Context m_context;
 };
 
 #endif // SPRITESHEETANIMATION_H

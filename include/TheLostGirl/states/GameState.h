@@ -68,6 +68,12 @@ class GameState : public State
 			std::string partB;
 		};
 		
+		struct SceneReplaces
+		{
+			sf::IntRect origin;
+			std::vector<sf::Vector2f> replaces;
+		};
+		
 		/// Initialize the physic world.
 		/// \param file Path of the save file to load.
 		void initWorld(const std::string& file);
@@ -76,19 +82,21 @@ class GameState : public State
 		/// \param file Path of the save file to override.
 		void saveWorld(const std::string& file);
 		
-		std::unordered_map<std::string, entityx::Entity> m_entities;     ///< A unordered map allow to reference to elements of the list safely, and use those references outside the scope of the GameState class.
-		std::unordered_map<std::string, entityx::Entity> m_levelEntities;///< A unordered map allow to reference to elements of the list safely, and use those references outside the scope of the GameState class.
-		std::vector<Joint> m_joints;                                     ///< A vector containing all informations about joints.
-		ContactListener m_contactListener;                               ///< The falling listener.
-		float m_timeSpeed;                                               ///< The speed of the time (usually 1.f). This influes only on the TimeSystem, not on physics!
-		bool m_loadingFinished;                                          ///< Indicate if the level loading is finished.
-		std::thread m_threadLoad;                                        ///< Thread launched when loading the level.
+		//A unordered map allow to reference to elements of the list safely, and use those references outside the scope of the GameState class.
+		std::unordered_map<std::string, entityx::Entity> m_entities;          ///< All game entities.
+		std::unordered_map<std::string, entityx::Entity> m_sceneEntities;     ///< All scene entities.
+		std::map<std::string, std::vector<SceneReplaces>> m_sceneEntitiesData;///< A map containing data about scene entities.
+		std::vector<Joint> m_joints;                                          ///< A vector containing all informations about joints.
+		ContactListener m_contactListener;                                    ///< The falling listener.
+		float m_timeSpeed;                                                    ///< The speed of the time (usually 1.f). This influes only on the TimeSystem, not on physics!
+		bool m_loadingFinished;                                               ///< Indicate if the level loading is finished.
+		std::thread m_threadLoad;                                             ///< Thread launched when loading the level.
 		
-		                                                                 //Level informations
-		std::string m_levelIdentifier;                                   ///< Identifer of the level, must be a non-spaced name.
-		unsigned short int m_numberOfPlans;                              ///< Number of plans in the background.
-		float m_referencePlan;                                           ///< Number of the plan where actors evolute.
-		sf::IntRect m_levelRect;                                         ///< The dimensions of the level, in pixels.
+		                                                                     //Level informations
+		std::string m_levelIdentifier;                                        ///< Identifer of the level, must be a non-spaced name.
+		unsigned short int m_numberOfPlans;                                   ///< Number of plans in the background.
+		float m_referencePlan;                                                ///< Number of the plan where actors evolute.
+		sf::IntRect m_levelRect;                                              ///< The dimensions of the level, in pixels.
 };
 
 #endif // GAMESTATE_H

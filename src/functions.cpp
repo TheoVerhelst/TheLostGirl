@@ -79,7 +79,7 @@ void parseObject(const Json::Value& object, const std::string name, std::map<std
 		{
 			if(valuesTypes.find(elementName) == valuesTypes.end())//If the value in the object does not exists in the map
 				throw std::runtime_error("\"" + name + "." + elementName + "\" identifier is not recognized.");
-			else if(object[elementName].type() != valuesTypes[elementName])//If the value exists but have not the right type
+			else if(not object[elementName].isConvertibleTo(valuesTypes[elementName]))//If the value exists but have not the right type
 				throw std::runtime_error("\"" + name + "." + elementName + "\" must be a" + typeToStr(valuesTypes[elementName]) + ".");
 		}
 	}
@@ -95,7 +95,7 @@ void requireValues(const Json::Value& object, const std::string name, std::map<s
 		{
 			if(not object.isMember(pair.first))//If the value in the map does not exists in the object
 				throw std::runtime_error("\"" + name + "." + pair.first + "\" value must be defined.");
-			else if(object[pair.first].type() != valuesTypes[pair.first])//If the value exists but have not the right type
+			else if(not object[pair.first].isConvertibleTo(valuesTypes[pair.first]))//If the value exists but have not the right type
 				throw std::runtime_error("\"" + name + "." + pair.first + "\" must be a" + typeToStr(valuesTypes[pair.first]) + " (it is currently a" + typeToStr(object[pair.first].type()) + ").");
 		}
 	}
@@ -109,7 +109,7 @@ void parseObject(const Json::Value& object, const std::string name, Json::ValueT
 	{
 		for(std::string& elementName : object.getMemberNames())
 		{
-			if(object[elementName].type() != type)
+			if(not object[elementName].isConvertibleTo(type))
 				throw std::runtime_error("\"" + name + "." + elementName + "\" must be a" + typeToStr(type) + ".");
 		}
 	}
@@ -143,7 +143,7 @@ void parseArray(const Json::Value& array, const std::string name, Json::ValueTyp
 	{
 		for(Json::ArrayIndex i{0}; i < array.size(); ++i)
 		{
-			if(array[i].type() != type)
+			if(not array[i].isConvertibleTo(type))
 				throw std::runtime_error("\"" + name + "." + i + "\" must be a" + typeToStr(type) + ".");
 		}
 	}

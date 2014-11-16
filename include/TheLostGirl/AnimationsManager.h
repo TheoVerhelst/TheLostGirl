@@ -4,17 +4,20 @@
 #include <functional>
 #include <string>
 #include <map>
+#include <cmath>
+#include <cassert>
+#include <algorithm>
+#include <iostream>
 
 #include <SFML/System/Time.hpp>
+#include <dist/json/json.h>
+
+#include <TheLostGirl/State.h>
 
 //Forward declarations
 namespace entityx
 {
 	class Entity;
-}
-namespace Json
-{
-	class Value;
 }
 
 /// AnimationsManager class.
@@ -48,7 +51,7 @@ class AnimationsManager
 			A animation;      ///< Pointer to the concrete animation.
 			unsigned short int importance;///< Indicates the importance of the animation, relatively to the others.
 			sf::Time duration;            ///< Duration of the animation.
-			bool loops;                   ///< Indicates if the animation must loop or not.
+			bool loops;                   ///< Indicates if the animation must loops or not.
 			float progress;               ///< Current progress of the animation, in the range [0,1].
 			bool isPaused;                ///< Indicates if the animations is paused.
 			bool isActive;                ///< Indicates if the animations is active.
@@ -57,7 +60,7 @@ class AnimationsManager
 			/// \param _animation Functor of the animation.
 			/// \param _importance Indicates the importance of the animation, relatively to the others.
 			/// \param _duration Duration of the animation.
-			/// \param _loops Indicates if the animation must loop or not.
+			/// \param _loops Indicates if the animation must loops or not.
 			TimeAnimation(A _animation,
 							unsigned short int _importance = 0,
 							sf::Time _duration = sf::seconds(1.f),
@@ -78,9 +81,9 @@ class AnimationsManager
 		/// \param animation Functor to the animation.
 		/// \param importance Order of importance of the animation, relatively to others animations.
 		/// \param duration Duration fo the animation.
-		/// \param loop Indicate if the animation must loop or not.
+		/// \param loops Indicate if the animation must loops or not.
 		/// \see removeAnimation
-		void addAnimation(const std::string& identifier, A animation, unsigned short int importance = 0, sf::Time duration = sf::seconds(1.f), bool loop = false);
+		void addAnimation(const std::string& identifier, A animation, unsigned short int importance = 0, sf::Time duration = sf::seconds(1.f), bool loops = false);
 
 		/// Remove an animation from the animation manager.
 		/// \param identifier Identifier of the animation to delete.
@@ -163,7 +166,7 @@ class AnimationsManager
 		/// That copy all data in value and construct them in this instance of animations manager.
 		/// \param value A Json value containing all the data.
 		template <typename T>
-		void deserialize(const Json::Value& value, T& object, float scale);
+		void deserialize(const Json::Value& value, T& object, State::Context context);
 
 	private:
 		std::map<std::string, TimeAnimation> m_animationsMap;///< List of all registred animations.

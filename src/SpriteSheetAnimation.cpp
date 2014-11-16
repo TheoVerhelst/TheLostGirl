@@ -7,8 +7,9 @@
 
 #include <TheLostGirl/SpriteSheetAnimation.h>
 
-SpriteSheetAnimation::SpriteSheetAnimation(sf::Sprite& sprite):
-	m_sprite(sprite)
+SpriteSheetAnimation::SpriteSheetAnimation(sf::Sprite& sprite, State::Context context):
+	m_sprite(sprite),
+	m_context(context)
 {}
 
 void SpriteSheetAnimation::addFrame(const Frame& frame)
@@ -33,11 +34,11 @@ void SpriteSheetAnimation::animate(float progress)
 			progressCounter += frame.duration;
 			if(progressCounter > progress)
 			{
-				m_sprite.setTextureRect(frame.rect);
+				m_sprite.setTextureRect(scale<int>(frame.rect));
 				return;
 			}
 		}
-		m_sprite.setTextureRect(m_frames[m_frames.size()-1].rect);
+		m_sprite.setTextureRect(scale<int>(m_frames[m_frames.size()-1].rect));
 	}
 }
 
@@ -46,31 +47,27 @@ Json::Value SpriteSheetAnimation::serialize() const
 	Json::Value ret;
 	for(size_t i{0}; i < m_frames.size(); ++i)
 	{
-		ret[i]["x"] = m_frames[i].rect.left;
-		ret[i]["y"] = m_frames[i].rect.top;
-		ret[i]["w"] = m_frames[i].rect.width;
-		ret[i]["h"] = m_frames[i].rect.height;
+		ret[i]["x"] = int(float(m_frames[i].rect.left));
+		ret[i]["y"] = int(float(m_frames[i].rect.top));
+		ret[i]["w"] = int(float(m_frames[i].rect.width));
+		ret[i]["h"] = int(float(m_frames[i].rect.height));
 		ret[i]["relative duration"] = m_frames[i].duration;
 	}
 	return ret;
 }
 
-void SpriteSheetAnimation::deserialize(const Json::Value& value, float scale)
+void SpriteSheetAnimation::deserialize(const Json::Value& value)
 {
 	m_frames.clear();
 	for(size_t i{0}; i < value.size(); ++i)
 	{
 		sf::IntRect rect;
 		float duration;
-		rect.left = float(value[i]["x"].asInt())*scale;
-		rect.top = float(value[i]["y"].asInt())*scale;
-		rect.width = float(value[i]["w"].asInt())*scale;
-		rect.height = float(value[i]["h"].asInt())*scale;
+		rect.left = float(value[i]["x"].asInt());
+		rect.top = float(value[i]["y"].asInt());
+		rect.width = float(value[i]["w"].asInt());
+		rect.height = float(value[i]["h"].asInt());
 		duration = value[i]["relative duration"].asFloat();
-		std::cout << "left = " << rect.left << std::endl;
-		std::cout << "top = " << rect.top << std::endl;
-		std::cout << "width = " << rect.width << std::endl;
-		std::cout << "height = " << rect.height << std::endl;
 		m_frames.push_back(Frame(rect, duration));
 	}
 }
