@@ -45,6 +45,8 @@ GameState::GameState(StateStack& stack, Context context) :
 
 GameState::~GameState()
 {
+		
+	saveWorld("resources/levels/save.json");
 	for(auto& entity : m_entities)
 	{
 		if(entity.second.has_component<BodyComponent>())
@@ -107,7 +109,10 @@ void GameState::saveWorld(const std::string& file)
 				root["entities"][entity.first]["body"] = serialize(entity.second.component<BodyComponent>(), uniqScale);
 			
 			if(entity.second.has_component<SpriteComponent>())
+			{
 				root["entities"][entity.first]["sprite"] = serialize(entity.second.component<SpriteComponent>(), getContext().textureManager, scale);
+				root["entities"][entity.first]["plan"] = entity.second.component<SpriteComponent>()->plan;
+			}
 			
 			if(entity.second.has_component<AnimationsComponent<SpriteSheetAnimation>>())
 				root["entities"][entity.first]["spritesheet animations"] = serialize(entity.second.component<AnimationsComponent<SpriteSheetAnimation>>());
@@ -142,6 +147,10 @@ void GameState::saveWorld(const std::string& file)
 			if(entity.second.has_component<StaminaComponent>())
 				root["entities"][entity.first]["stamina"] = serialize(entity.second.component<StaminaComponent>());
 		}
+		
+		//time
+		root["time"]["speed"] = m_timeSpeed;
+		root["time"]["date"] = getContext().systemManager.system<TimeSystem>()->getRealTime().asSeconds();
 		
 		//level data
 		root["level"]["identifier"] = m_levelIdentifier;
@@ -986,8 +995,6 @@ void GameState::initWorld(const std::string& file)
 		catComp->category = Category::Scene;
 		skyComp = m_sceneEntities[nightIdentifier].assign<SkyComponent>();
 		skyComp->day = false;
-		
-	saveWorld(file);
 	}
 	catch(std::runtime_error& e)
 	{

@@ -418,19 +418,20 @@ void deserialize(const Json::Value& value, entityx::ComponentHandle<BodyComponen
 						else if(fixture.isMember("vertices"))
 						{
 							const Json::Value vertices = fixtures[i]["vertices"];
+							b2Vec2 verticesVec[vertices.size()];
 							for(Json::ArrayIndex j{0}; j < vertices.size(); ++j)
 							{
 								const Json::Value vertice = vertices[j];
 							
 								//x
 								if(vertice.isMember("x"))
-									polygonShape.m_vertices[j].x = vertice["x"].asFloat()*scale;
+									verticesVec[j].x = vertice["x"].asFloat()*scale;
 								
 								//y
 								if(vertice.isMember("y"))
-									polygonShape.m_vertices[j].y = vertice["y"].asFloat()*scale;
+									verticesVec[j].y = vertice["y"].asFloat()*scale;
 							}
-							polygonShape.m_count = vertices.size();
+							polygonShape.Set(verticesVec, vertices.size());
 						}
 						entityFixtureDef.shape = &polygonShape;
 					}
