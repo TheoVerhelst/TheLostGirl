@@ -278,10 +278,16 @@ void GameState::initWorld(const std::string& file)
 	{
 		//Parse the level data
 		Json::Value root;//Will contains the root value after parsing.
+		Json::Value model;
 		Json::Reader reader;
-		std::ifstream saveFileStream(file, std::ifstream::binary);
-		if(!reader.parse(saveFileStream, root))//report to the user the failure and their locations in the document.
+		std::ifstream saveFile(file, std::ifstream::binary);
+		std::ifstream modelSaveFile("resources/levels/test.json", std::ifstream::binary);
+		if(!reader.parse(saveFile, root))//report to the user the failure and their locations in the document.
 			throw std::runtime_error(reader.getFormattedErrorMessages());
+		if(!reader.parse(modelSaveFile, model))
+			throw std::runtime_error(reader.getFormattedErrorMessages());
+		
+		parse(root, model, "root", "root");
 		
 		//Assert that there is only these elements with these types in the root object.
 		parseObject(root, "root", {{"entities", Json::objectValue},
@@ -309,9 +315,8 @@ void GameState::initWorld(const std::string& file)
 			const Json::Value level = root["level"];
 			
 			//number of plans
-			//must load it now in order to now how much plans can be defined
-			if(level.isMember("number of plans"))
-				m_numberOfPlans = level["number of plans"].asUInt();
+			//must load it now in order to know how much plans can be defined
+			m_numberOfPlans = level["number of plans"].asUInt();
 			
 			//Generate a map containing all the plan numbers and the type of each
 			std::map<std::string, Json::ValueType> plans;

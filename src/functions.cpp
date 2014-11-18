@@ -185,6 +185,11 @@ void parse(Json::Value& value, const Json::Value& model, const std::string& valu
 		requireValues(model, modelName, {{"free children names", Json::booleanValue}});
 		if(model["free children names"].asBool())
 		{
+			parseObject(model, modelName, {{"free children names", Json::booleanValue},
+											{"name", Json::stringValue},
+											{"required", Json::booleanValue},
+											{"type", Json::stringValue},
+											{"children", Json::objectValue}});
 			//If names are free, children must be an object
 			requireValues(model, modelName, {{"children", Json::objectValue}});
 			requireValues(model["children"], modelName + ".children", {{"type", Json::stringValue}});
@@ -195,6 +200,11 @@ void parse(Json::Value& value, const Json::Value& model, const std::string& valu
 		}
 		else
 		{
+			parseObject(model, modelName, {{"free children names", Json::booleanValue},
+											{"name", Json::stringValue},
+											{"required", Json::booleanValue},
+											{"type", Json::stringValue},
+											{"children", Json::arrayValue}});
 			//If names are not free, children must be an array
 			requireValues(model, modelName, {{"children", Json::arrayValue}});
 			parseArray(model["children"], modelName, Json::objectValue);
@@ -203,42 +213,58 @@ void parse(Json::Value& value, const Json::Value& model, const std::string& valu
 			{
 				Json::Value modelChild = model["children"][i];
 				//A not-free-name child must have these three members defined
-				requireValues(modelChild, modelName + ".children." + std::to_string(i), {{"required", Json::booleanValue},
-																						{"name", Json::stringValue},
-																						{"type", Json::stringValue}});
+				//Require name before, and if the name is defined we can require the others member with a fancier exception than ".children.i"
+				requireValues(modelChild, modelName + ".children." + std::to_string(i), {{"name", Json::stringValue}});
 				const std::string childName = modelChild["name"].asString();
+				requireValues(modelChild, modelName + "." + childName, {{"required", Json::booleanValue},
+																		{"type", Json::stringValue}});
 				//If the current child is required
 				if(modelChild["required"].asBool())
 					//Add it to the required children map
 					requiredChildren.emplace(childName, strToType(modelChild["type"].asString()));
 				if(value.isMember(childName))
-					parse(value[childName], modelChild, valueName + "." + childName, modelName + ".children." + std::to_string(i));
+					parse(value[childName], modelChild, valueName + "." + childName, modelName + "." + childName);
 			}
 			//Assert that all required children are defined in value
-			parseObject(value, valueName, requiredChildren);
+			requireValues(value, valueName, requiredChildren);
 		}
 	}
 	else if(model["type"].asString() == "array")
 	{
+		parseObject(model, modelName, {{"name", Json::stringValue},
+										{"required", Json::booleanValue},
+										{"type", Json::stringValue},
+										{"children", Json::objectValue}});
 		requireValues(model, modelName, {{"children", Json::objectValue}});
 		//For each element in value
 		for(unsigned int i{0}; i < value.size(); ++i)
 			//Parse it according to the model child
-			parse(value[i], model["children"], valueName + "." + std::to_string(i), modelName + ".children");
+			parse(value[i], model["children"], valueName + "." + std::to_string(i), modelName);
 	}
 	//Base type
 	else
 	{
-		//Assert that default, if defined, has the right type.
-		parseValue(model, modelName, {{"default", strToType(value["type"].asString())}});
+		//Assert that the value has only thoses members defined
+		parseObject(model, modelName, {{"default value", strToType(model["type"].asString())},
+										{"name", Json::stringValue},
+										{"required", Json::booleanValue},
+										{"type", Json::stringValue},
+										{"possible values", Json::arrayValue}});
 		//If default and required = true defined at the same time
-		if(model.isMember("default") and model.get("required", false).asBool())
+		if(model.isMember("default value") and model.get("required", false).asBool())
 			throw std::runtime_error("\"" + modelName + ".default\" is defined but \"" + modelName + ".required\" is set to true");
-		//Get the default value in model if it exists, null otherwise
-		Json::Value defaultValue = model.get("default", Json::Value(Json::nullValue));
-		//If value is a null value, so if the value do not exists
-		if(value == Json::Value(Json::nullValue))
-			value = model["default"];
+		//If value is a null value, so if the value do not exists, and if there is a default value
+		if(value == Json::Value(Json::nullValue) and model.isMember("default value"))
+			value = model["default value"];
+		
+		//Assert that the value is one of the possible values
+		if(model.isMember("possible values"))
+		{
+			std::vector<Json::Value> possibleValues;
+			for(unsigned int i{0}; i < model["possible values"].size(); ++i)
+				possibleValues.push_back(model["possible values"][i]);
+			parseValue(value, valueName, possibleValues);
+		}
 	}
 }
 

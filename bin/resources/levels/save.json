@@ -3,7 +3,7 @@
       "archer" : {
          "actor ID" : 0,
          "bend" : {
-            "angle" : -0.1407632827758789,
+            "angle" : 0.6337563395500183,
             "maximum power" : 400,
             "power" : 0
          },
@@ -11,19 +11,18 @@
             "arms" : {
                "active" : true,
                "allow sleep" : true,
-               "angle" : 0.1407632827758789,
+               "angle" : -0.6337553262710571,
                "angular damping" : 0,
-               "angular velocity" : 9.895194885700676e-09,
+               "angular velocity" : -1.072685427061515e-05,
                "awake" : true,
                "bullet" : false,
                "fixed rotation" : false,
-               "fixtures" : [
+               "polygon fixtures" : [
                   {
                      "density" : 0.001000000047497451,
                      "friction" : 0.2000000029802322,
                      "is sensor" : true,
                      "restitution" : 0,
-                     "type" : "polygon",
                      "vertices" : [
                         {
                            "x" : 99.99999955296519,
@@ -47,31 +46,30 @@
                "gravity scale" : 1,
                "linear damping" : 0,
                "linear velocity" : {
-                  "x" : 1.477257942104298,
-                  "y" : 285.3944915699851
+                  "x" : 0.005840737271745422,
+                  "y" : -0.0001080620234491028
                },
                "position" : {
-                  "x" : 483.4016166343442,
-                  "y" : -54.92545795084383
+                  "x" : 1728.40567157537,
+                  "y" : 681.304342976731
                },
                "type" : "dynamic"
             },
             "bow" : {
                "active" : true,
                "allow sleep" : true,
-               "angle" : 0.1407637596130371,
+               "angle" : -0.6337552666664124,
                "angular damping" : 0,
-               "angular velocity" : 2.668689603524399e-06,
+               "angular velocity" : -1.191075443784939e-05,
                "awake" : true,
                "bullet" : false,
                "fixed rotation" : false,
-               "fixtures" : [
+               "polygon fixtures" : [
                   {
                      "density" : 0.001000000047497451,
                      "friction" : 0.2000000029802322,
                      "is sensor" : true,
                      "restitution" : 0,
-                     "type" : "polygon",
                      "vertices" : [
                         {
                            "x" : 99.99999955296519,
@@ -95,12 +93,12 @@
                "gravity scale" : 1,
                "linear damping" : 0,
                "linear velocity" : {
-                  "x" : 1.477186751810407,
-                  "y" : 285.3944915699851
+                  "x" : 0.00595293340541956,
+                  "y" : -0.0001905127911188488
                },
                "position" : {
-                  "x" : 484.1031394249054,
-                  "y" : -59.87602875283211
+                  "x" : 1725.444741859189,
+                  "y" : 677.2752790083963
                },
                "type" : "dynamic"
             },
@@ -113,7 +111,32 @@
                "awake" : true,
                "bullet" : false,
                "fixed rotation" : true,
-               "fixtures" : [
+               "polygon fixtures" : [
+                  {
+                     "density" : 1,
+                     "friction" : 0,
+                     "is sensor" : false,
+                     "restitution" : 0,
+                     "type" : "polygon",
+                     "vertices" : [
+                        {
+                           "x" : 99.99999955296519,
+                           "y" : 0
+                        },
+                        {
+                           "x" : 99.99999955296519,
+                           "y" : 199.9999991059304
+                        },
+                        {
+                           "x" : 0,
+                           "y" : 199.9999991059304
+                        },
+                        {
+                           "x" : 0,
+                           "y" : 0
+                        }
+                     ]
+                  },
                   {
                      "density" : 0,
                      "friction" : 0.2000000029802322,
@@ -139,42 +162,17 @@
                            "y" : 195.000004135072
                         }
                      ]
-                  },
-                  {
-                     "density" : 1,
-                     "friction" : 0,
-                     "is sensor" : false,
-                     "restitution" : 0,
-                     "type" : "polygon",
-                     "vertices" : [
-                        {
-                           "x" : 99.99999955296519,
-                           "y" : 0
-                        },
-                        {
-                           "x" : 99.99999955296519,
-                           "y" : 199.9999991059304
-                        },
-                        {
-                           "x" : 0,
-                           "y" : 199.9999991059304
-                        },
-                        {
-                           "x" : 0,
-                           "y" : 0
-                        }
-                     ]
                   }
                ],
                "gravity scale" : 1,
                "linear damping" : 0,
                "linear velocity" : {
-                  "x" : 1.107943596276602,
-                  "y" : 285.3944915699851
+                  "x" : 0.004270344575271666,
+                  "y" : -7.505256024921754e-08
                },
                "position" : {
-                  "x" : 480.3816926280271,
-                  "y" : -98.08855737283899
+                  "x" : 1729.355187822235,
+                  "y" : 598.2000992640801
                },
                "type" : "dynamic"
             }
@@ -201,22 +199,22 @@
             "arms" : {
                "identifier" : "arms",
                "position" : {
-                  "x" : 483.4016166343442,
-                  "y" : -54.92545795084383
+                  "x" : 1728.40567157537,
+                  "y" : 681.304342976731
                }
             },
             "bow" : {
                "identifier" : "bow",
                "position" : {
-                  "x" : 484.1031394249054,
-                  "y" : -59.87602875283211
+                  "x" : 1725.444741859189,
+                  "y" : 677.2752790083963
                }
             },
             "main" : {
                "identifier" : "archer",
                "position" : {
-                  "x" : 480.3816926280271,
-                  "y" : -98.08855737283899
+                  "x" : 1729.355187822235,
+                  "y" : 598.2000992640801
                }
             }
          },
@@ -469,10 +467,10 @@
                   ],
                   "duration" : 0.6,
                   "importance" : 2,
-                  "is active" : true,
-                  "is paused" : false,
+                  "is active" : false,
+                  "is paused" : true,
                   "loops" : false,
-                  "progress" : 1.026735067367554
+                  "progress" : 0
                },
                "move left" : {
                   "data" : [
@@ -596,7 +594,7 @@
                   "is active" : true,
                   "is paused" : false,
                   "loops" : false,
-                  "progress" : 0
+                  "progress" : 1.020237922668457
                }
             }
          },
@@ -617,16 +615,15 @@
                "angle" : 0,
                "angular damping" : 0,
                "angular velocity" : 0,
-               "awake" : false,
+               "awake" : true,
                "bullet" : false,
                "fixed rotation" : false,
-               "fixtures" : [
+               "chain fixtures" : [
                   {
                      "density" : 0,
                      "friction" : 0.5,
                      "is sensor" : false,
                      "restitution" : 0,
-                     "type" : "chain",
                      "vertices" : [
                         {
                            "x" : 0,
@@ -682,19 +679,18 @@
             "main" : {
                "active" : true,
                "allow sleep" : true,
-               "angle" : 7.997358011380129e-07,
+               "angle" : 0.00376459676772356,
                "angular damping" : 0,
                "angular velocity" : 0,
                "awake" : false,
                "bullet" : false,
                "fixed rotation" : false,
-               "fixtures" : [
+               "polygon fixtures" : [
                   {
                      "density" : 0.800000011920929,
                      "friction" : 0.2000000029802322,
                      "is sensor" : false,
                      "restitution" : 0,
-                     "type" : "polygon",
                      "vertices" : [
                         {
                            "x" : 99.99999955296519,
@@ -722,8 +718,8 @@
                   "y" : 0
                },
                "position" : {
-                  "x" : 57.68400964298794,
-                  "y" : 698.2002275630713
+                  "x" : 206.937750514118,
+                  "y" : 697.8242319466947
                },
                "type" : "dynamic"
             }
@@ -778,40 +774,42 @@
       ]
    },
    "level" : {
-      "0" : [
-         {
-            "origin" : {
-               "h" : 1072.499944064769,
-               "w" : 991.8749482696903,
-               "x" : 0,
-               "y" : 0
-            },
-            "replaces" : [
-               {
-                  "x" : 1000.00002413988,
-                  "y" : 0
-               }
-            ]
-         },
-         {
-            "origin" : {
-               "h" : 1072.499944064769,
-               "w" : 991.8749482696903,
-               "x" : 4991.249739686041,
-               "y" : 0
-            },
-            "replaces" : [
-               {
-                  "x" : 3000.00007241964,
-                  "y" : 0
-               },
-               {
-                  "x" : 99.99999955296519,
-                  "y" : 0
-               }
-            ]
-         }
-      ],
+      "plans" : {
+          "0" : [
+             {
+                "origin" : {
+                   "h" : 1074.37494396698,
+                   "w" : 993.7499481719015,
+                   "x" : 0,
+                   "y" : 0
+                },
+                "replaces" : [
+                   {
+                      "x" : 1000.00002413988,
+                      "y" : 0
+                   }
+                ]
+             },
+             {
+                "origin" : {
+                   "h" : 1074.37494396698,
+                   "w" : 993.7499481719015,
+                   "x" : 4993.124739588252,
+                   "y" : 0
+                },
+                "replaces" : [
+                   {
+                      "x" : 3000.00007241964,
+                      "y" : 0
+                   },
+                   {
+                      "x" : 99.99999955296519,
+                      "y" : 0
+                   }
+                ]
+             }
+          ]
+      },
       "box" : {
          "h" : 1080,
          "w" : 19200,
@@ -823,7 +821,7 @@
       "reference plan" : 2
    },
    "time" : {
-      "date" : 520.613037,
+      "date" : 513.369384,
       "speed" : 1
    }
 }
