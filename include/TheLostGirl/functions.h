@@ -75,6 +75,11 @@ sf::Color fadingColor(sf::Time dt = sf::seconds(0), sf::Time fadingLength = sf::
 /// \return A formated string.
 inline std::string typeToStr(Json::ValueType type);
 
+/// Return a Json::ValueType from the the given \a string.
+/// \param str String to decode.
+/// \return A Json type.
+inline Json::ValueType strToType(std::string str);
+
 /// Check if every element in \a objects corresponds to one element in \a valuesTypes, throw an exception otherwise.
 /// If all elements in the object don't have the right type, an exception is raised.
 /// \param object A Json value containing the data, it must be an object.
@@ -102,6 +107,13 @@ void parseObject(const Json::Value& object, const std::string name, Json::ValueT
 /// \param values The list of every possible value of \a value.
 void parseValue(const Json::Value& value, const std::string name, std::vector<Json::Value> values);
 
+/// Check if \a value have the type \a type.
+/// If value don't have the right type, an exception is raised.
+/// \param object A Json value.
+/// \param name The name of the value.
+/// \param type The expected type of \a value.
+void parseValue(const Json::Value& value, const std::string name, Json::ValueType type);
+
 /// Check if every element in \a array corresponds to one element in \a values, throw an exception otherwise.
 /// \param array A Json value containing the data, it must be an array.
 /// \param name The name of the array.
@@ -115,6 +127,13 @@ void parseArray(const Json::Value& array, const std::string name, std::vector<Js
 /// \param type The expected type of every element in \a array.
 void parseArray(const Json::Value& array, const std::string name, Json::ValueType type);
 
+/// Check if the \a value is conformant to \a model.
+/// If not, raise an exception.
+/// \param value Value to check.
+/// \param model Description model.
+/// \param valueName The name of the value.
+/// \param modelName The name of the model value.
+void parse(Json::Value& value, const Json::Value& model, const std::string& valueName, const std::string& modelName);
 
 /// Check if the given string contains at least one whitespace.
 /// \param str String to check.

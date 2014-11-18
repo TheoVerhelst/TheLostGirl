@@ -3,7 +3,7 @@
       "archer" : {
          "actor ID" : 0,
          "bend" : {
-            "angle" : 0.6337563395500183,
+            "angle" : -0.1407632827758789,
             "maximum power" : 400,
             "power" : 0
          },
@@ -11,9 +11,9 @@
             "arms" : {
                "active" : true,
                "allow sleep" : true,
-               "angle" : -0.6337553262710571,
+               "angle" : 0.1407632827758789,
                "angular damping" : 0,
-               "angular velocity" : -1.072685427061515e-05,
+               "angular velocity" : 9.895194885700676e-09,
                "awake" : true,
                "bullet" : false,
                "fixed rotation" : false,
@@ -47,21 +47,21 @@
                "gravity scale" : 1,
                "linear damping" : 0,
                "linear velocity" : {
-                  "x" : 0.005840737271745422,
-                  "y" : -0.0001080620234491028
+                  "x" : 1.477257942104298,
+                  "y" : 285.3944915699851
                },
                "position" : {
-                  "x" : 1728.40567157537,
-                  "y" : 681.304342976731
+                  "x" : 483.4016166343442,
+                  "y" : -54.92545795084383
                },
                "type" : "dynamic"
             },
             "bow" : {
                "active" : true,
                "allow sleep" : true,
-               "angle" : -0.6337552666664124,
+               "angle" : 0.1407637596130371,
                "angular damping" : 0,
-               "angular velocity" : -1.191075443784939e-05,
+               "angular velocity" : 2.668689603524399e-06,
                "awake" : true,
                "bullet" : false,
                "fixed rotation" : false,
@@ -95,12 +95,12 @@
                "gravity scale" : 1,
                "linear damping" : 0,
                "linear velocity" : {
-                  "x" : 0.00595293340541956,
-                  "y" : -0.0001905127911188488
+                  "x" : 1.477186751810407,
+                  "y" : 285.3944915699851
                },
                "position" : {
-                  "x" : 1725.444741859189,
-                  "y" : 677.2752790083963
+                  "x" : 484.1031394249054,
+                  "y" : -59.87602875283211
                },
                "type" : "dynamic"
             },
@@ -114,31 +114,6 @@
                "bullet" : false,
                "fixed rotation" : true,
                "fixtures" : [
-                  {
-                     "density" : 1,
-                     "friction" : 0,
-                     "is sensor" : false,
-                     "restitution" : 0,
-                     "type" : "polygon",
-                     "vertices" : [
-                        {
-                           "x" : 99.99999955296519,
-                           "y" : 0
-                        },
-                        {
-                           "x" : 99.99999955296519,
-                           "y" : 199.9999991059304
-                        },
-                        {
-                           "x" : 0,
-                           "y" : 199.9999991059304
-                        },
-                        {
-                           "x" : 0,
-                           "y" : 0
-                        }
-                     ]
-                  },
                   {
                      "density" : 0,
                      "friction" : 0.2000000029802322,
@@ -164,17 +139,42 @@
                            "y" : 195.000004135072
                         }
                      ]
+                  },
+                  {
+                     "density" : 1,
+                     "friction" : 0,
+                     "is sensor" : false,
+                     "restitution" : 0,
+                     "type" : "polygon",
+                     "vertices" : [
+                        {
+                           "x" : 99.99999955296519,
+                           "y" : 0
+                        },
+                        {
+                           "x" : 99.99999955296519,
+                           "y" : 199.9999991059304
+                        },
+                        {
+                           "x" : 0,
+                           "y" : 199.9999991059304
+                        },
+                        {
+                           "x" : 0,
+                           "y" : 0
+                        }
+                     ]
                   }
                ],
                "gravity scale" : 1,
                "linear damping" : 0,
                "linear velocity" : {
-                  "x" : 0.004270344575271666,
-                  "y" : -7.505256024921754e-08
+                  "x" : 1.107943596276602,
+                  "y" : 285.3944915699851
                },
                "position" : {
-                  "x" : 1729.355187822235,
-                  "y" : 598.2000992640801
+                  "x" : 480.3816926280271,
+                  "y" : -98.08855737283899
                },
                "type" : "dynamic"
             }
@@ -201,22 +201,22 @@
             "arms" : {
                "identifier" : "arms",
                "position" : {
-                  "x" : 1728.40567157537,
-                  "y" : 681.304342976731
+                  "x" : 483.4016166343442,
+                  "y" : -54.92545795084383
                }
             },
             "bow" : {
                "identifier" : "bow",
                "position" : {
-                  "x" : 1725.444741859189,
-                  "y" : 677.2752790083963
+                  "x" : 484.1031394249054,
+                  "y" : -59.87602875283211
                }
             },
             "main" : {
                "identifier" : "archer",
                "position" : {
-                  "x" : 1729.355187822235,
-                  "y" : 598.2000992640801
+                  "x" : 480.3816926280271,
+                  "y" : -98.08855737283899
                }
             }
          },
@@ -469,10 +469,10 @@
                   ],
                   "duration" : 0.6,
                   "importance" : 2,
-                  "is active" : false,
-                  "is paused" : true,
+                  "is active" : true,
+                  "is paused" : false,
                   "loops" : false,
-                  "progress" : 0
+                  "progress" : 1.026735067367554
                },
                "move left" : {
                   "data" : [
@@ -596,7 +596,7 @@
                   "is active" : true,
                   "is paused" : false,
                   "loops" : false,
-                  "progress" : 1.020237922668457
+                  "progress" : 0
                }
             }
          },
@@ -617,7 +617,7 @@
                "angle" : 0,
                "angular damping" : 0,
                "angular velocity" : 0,
-               "awake" : true,
+               "awake" : false,
                "bullet" : false,
                "fixed rotation" : false,
                "fixtures" : [
@@ -682,7 +682,7 @@
             "main" : {
                "active" : true,
                "allow sleep" : true,
-               "angle" : 0.00376459676772356,
+               "angle" : 7.997358011380129e-07,
                "angular damping" : 0,
                "angular velocity" : 0,
                "awake" : false,
@@ -722,8 +722,8 @@
                   "y" : 0
                },
                "position" : {
-                  "x" : 206.937750514118,
-                  "y" : 697.8242319466947
+                  "x" : 57.68400964298794,
+                  "y" : 698.2002275630713
                },
                "type" : "dynamic"
             }
@@ -781,8 +781,8 @@
       "0" : [
          {
             "origin" : {
-               "h" : 1074.37494396698,
-               "w" : 993.7499481719015,
+               "h" : 1072.499944064769,
+               "w" : 991.8749482696903,
                "x" : 0,
                "y" : 0
             },
@@ -795,9 +795,9 @@
          },
          {
             "origin" : {
-               "h" : 1074.37494396698,
-               "w" : 993.7499481719015,
-               "x" : 4993.124739588252,
+               "h" : 1072.499944064769,
+               "w" : 991.8749482696903,
+               "x" : 4991.249739686041,
                "y" : 0
             },
             "replaces" : [
@@ -823,7 +823,7 @@
       "reference plan" : 2
    },
    "time" : {
-      "date" : 513.369384,
+      "date" : 520.613037,
       "speed" : 1
    }
 }

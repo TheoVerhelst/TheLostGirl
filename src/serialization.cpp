@@ -418,7 +418,7 @@ void deserialize(const Json::Value& value, entityx::ComponentHandle<BodyComponen
 						else if(fixture.isMember("vertices"))
 						{
 							const Json::Value vertices = fixtures[i]["vertices"];
-							b2Vec2 verticesVec[vertices.size()];
+							std::vector<b2Vec2> verticesVec(vertices.size());
 							for(Json::ArrayIndex j{0}; j < vertices.size(); ++j)
 							{
 								const Json::Value vertice = vertices[j];
@@ -431,7 +431,7 @@ void deserialize(const Json::Value& value, entityx::ComponentHandle<BodyComponen
 								if(vertice.isMember("y"))
 									verticesVec[j].y = vertice["y"].asFloat()*scale;
 							}
-							polygonShape.Set(verticesVec, vertices.size());
+							polygonShape.Set(verticesVec.data(), verticesVec.size());
 						}
 						entityFixtureDef.shape = &polygonShape;
 					}
@@ -622,9 +622,9 @@ void deserialize(const Json::Value& value, entityx::ComponentHandle<CategoryComp
 	for(Json::ArrayIndex i{0}; i < value.size(); ++i)
 	{
 		if(value[i] == "player")
-			category &= Category::Player;
+			category |= Category::Player;
 		else if(value[i] == "scene")
-			category &= Category::Scene;
+			category |= Category::Scene;
 	}
 	component->category = category;
 }
