@@ -326,8 +326,8 @@
                                 "name" : "falling resistance",
                                 "type" : "real",
                                 "required" : false,
-                                "default" : 0
-                            },
+                                "default value" : 0
+                            }
                         ]
                     },
                     {

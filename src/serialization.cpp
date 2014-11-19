@@ -53,7 +53,6 @@ Json::Value serialize(entityx::ComponentHandle<BodyComponent> component, float s
 			{
 				case b2Shape::e_circle:
 				{
-					fixtureObj["type"] = "circle";
 					b2CircleShape* shape = static_cast<b2CircleShape*>(fix->GetShape());
 					fixtureObj["position"]["x"] = shape->m_p.x/scale;
 					fixtureObj["position"]["y"] = shape->m_p.y/scale;
@@ -62,7 +61,6 @@ Json::Value serialize(entityx::ComponentHandle<BodyComponent> component, float s
 				}
 				case b2Shape::e_edge:
 				{
-					fixtureObj["type"] = "edge";
 					b2EdgeShape* shape = static_cast<b2EdgeShape*>(fix->GetShape());
 					//Copy all vertices
 					if(shape->m_hasVertex0)
@@ -83,7 +81,6 @@ Json::Value serialize(entityx::ComponentHandle<BodyComponent> component, float s
 				}
 				case b2Shape::e_polygon:
 				{
-					fixtureObj["type"] = "polygon";
 					b2PolygonShape* shape = static_cast<b2PolygonShape*>(fix->GetShape());
 					//Copy all vertices
 					for(int32 j{0}; j < shape->GetVertexCount(); ++j)
@@ -96,7 +93,6 @@ Json::Value serialize(entityx::ComponentHandle<BodyComponent> component, float s
 				default:
 				case b2Shape::e_chain:
 				{
-					fixtureObj["type"] = "chain";
 					b2ChainShape* shape = static_cast<b2ChainShape*>(fix->GetShape());
 					//Copy all vertices
 					if(shape->m_hasPrevVertex)
