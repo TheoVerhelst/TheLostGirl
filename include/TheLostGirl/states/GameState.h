@@ -71,7 +71,7 @@ class GameState : public State
 		struct SceneReplaces
 		{
 			sf::IntRect origin;
-			std::vector<sf::Vector2f> replaces;
+			std::vector<sf::Vector3f> replaces;
 		};
 		
 		/// Initialize the physic world.

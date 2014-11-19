@@ -13,22 +13,31 @@
 void RenderSystem::update(entityx::EntityManager& entityManager, entityx::EventManager&, double)
 {
 	SpriteComponent::Handle spriteComponent;
-	//A map containing all entities grouped and sorted by z-order
-	std::map<float, std::deque<entityx::Entity>> orderedEntities;
-	//Add the entities in the map
+	//A map containing all sprites grouped and sorted by z-order
+	std::map<float, std::deque<sf::Sprite*>> orderedEntities;
+	//Add the sprites in the map
 	for(entityx::Entity entity : entityManager.entities_with_components(spriteComponent))
 	{
-		//If this is a scene entity, add it beyond the others entities in this plan
+		//If this is a scene entity, add them sprites beyond the others entities in this plan
 		if(entity.has_component<CategoryComponent>() and entity.component<CategoryComponent>()->category & Category::Scene)
-			orderedEntities[spriteComponent->plan].push_front(entity);
+		{
+			for(auto& spritePair : spriteComponent->sprites)
+			{
+				orderedEntities[spriteComponent->worldPositions[spritePair.first].z].push_front(&spritePair.second);
+			}
+		}
 		else
-			orderedEntities[spriteComponent->plan].push_back(entity);
+		{
+			for(auto& spritePair : spriteComponent->sprites)
+			{
+				orderedEntities[spriteComponent->worldPositions[spritePair.first].z].push_back(&spritePair.second);
+				std::cout << spriteComponent->worldPositions[spritePair.first].z << std::endl;
+			}
+		}
 	}
 	//For each plan, in the reverse order
-	for(std::multimap<float, std::deque<entityx::Entity>>::const_reverse_iterator it{orderedEntities.crbegin()}; it != orderedEntities.crend(); it++)
+	for(std::multimap<float, std::deque<sf::Sprite*>>::const_reverse_iterator it{orderedEntities.crbegin()}; it != orderedEntities.crend(); it++)
 		//Draw the entities of this plan
-		for(auto entity : it->second)
-			//Draw every sprite of the entity
-			for(auto& spritePair : entity.component<SpriteComponent>()->sprites)
-				m_window.draw(spritePair.second);
+		for(auto sprite : it->second)
+			m_window.draw(*sprite);
 }

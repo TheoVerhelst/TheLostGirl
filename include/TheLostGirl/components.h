@@ -33,8 +33,7 @@ struct BodyComponent : public entityx::Component<BodyComponent>
 struct SpriteComponent : public entityx::Component<SpriteComponent>
 {
 	std::map<std::string, sf::Sprite> sprites;        ///< Sprites to draw.
-	std::map<std::string, sf::Vector2f> worldPositions;///< Indicates the target position in the world.
-	float plan;                                       ///< Indicates in wich layer the sprite should be drawn.
+	std::map<std::string, sf::Vector3f> worldPositions;///< Indicates the target position in the world, and the layer the sprite should be drawn.
 };
 
 /// AnimationsManager component.

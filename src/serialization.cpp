@@ -44,7 +44,6 @@ Json::Value serialize(entityx::ComponentHandle<BodyComponent> component, float s
 		ret[partName]["active"] = body->IsActive();
 		ret[partName]["gravity scale"] = body->GetGravityScale();
 		
-		Json::ArrayIndex i{0};
 		//For each fixture of the body
 		for(b2Fixture* fix{body->GetFixtureList()}; fix; fix = fix->GetNext())
 		{
@@ -125,9 +124,26 @@ Json::Value serialize(entityx::ComponentHandle<BodyComponent> component, float s
 			//If the fixture is a foot sensor
 			if(fix->GetUserData() and (unsigned int)(fix->GetUserData()) & FixtureRole::Foot)
 				fixtureObj["is foot sensor"] = true;
-			
-			ret[partName]["fixtures"][i] = fixtureObj;
-			i++;
+			//Add the fixture in the right array
+			switch(type)
+			{
+				case b2Shape::e_circle:
+					ret[partName]["circle fixtures"].append(fixtureObj);
+					break;
+					
+				case b2Shape::e_edge:
+					ret[partName]["edge fixtures"].append(fixtureObj);
+					break;
+					
+				case b2Shape::e_polygon:
+					ret[partName]["polygon fixtures"].append(fixtureObj);
+					break;
+					
+				default:
+				case b2Shape::e_chain:
+					ret[partName]["chain fixtures"].append(fixtureObj);
+					break;
+			}
 		}
 	}
 	return ret;
@@ -153,6 +169,7 @@ Json::Value serialize(entityx::ComponentHandle<SpriteComponent> component, Textu
 		const std::string partName{positionPair.first};
 		ret[partName]["position"]["x"] = positionPair.second.x/scale;
 		ret[partName]["position"]["y"] = positionPair.second.y/scale;
+		ret[partName]["position"]["z"] = positionPair.second.z;
 	}
 	return ret;
 }
@@ -359,210 +376,224 @@ void deserialize(const Json::Value& value, entityx::ComponentHandle<BodyComponen
 		b2Body* entityBodyComponent = world.CreateBody(&entityBodyComponentDef);
 		component->bodies.emplace(partName, entityBodyComponent);
 		
-		//fixtures
-		if(body.isMember("fixtures"))
+		//polygon fixtures
+		if(body.isMember("polygon fixtures"))
 		{
-			const Json::Value fixtures = body["fixtures"];
+			const Json::Value fixtures = body["polygon fixtures"];
+			for(Json::ArrayIndex i{0}; i < fixtures.size(); ++i)
+			{
+				const Json::Value fixture = fixtures[i];
+				b2FixtureDef entityFixtureDef;
+				b2PolygonShape polygonShape;
+				
+				//vertices
+				const Json::Value vertices = fixtures[i]["vertices"];
+				std::vector<b2Vec2> verticesVec(vertices.size());
+				for(Json::ArrayIndex j{0}; j < vertices.size(); ++j)
+				{
+					const Json::Value vertice = vertices[j];
+				
+					//x
+					verticesVec[j].x = vertice["x"].asFloat()*scale;
+					
+					//y
+					verticesVec[j].y = vertice["y"].asFloat()*scale;
+				}
+				polygonShape.Set(verticesVec.data(), verticesVec.size());
+				entityFixtureDef.shape = &polygonShape;
+				
+				//density
+				entityFixtureDef.density = fixture["density"].asFloat();
+				
+				//friction
+				entityFixtureDef.friction = fixture["friction"].asFloat();
+				
+				//restitution
+				entityFixtureDef.restitution = fixture["restitution"].asFloat();
+				
+				//is sensor
+				entityFixtureDef.isSensor = fixture["is sensor"].asBool();
+				
+				//is foot sensor
+				entityFixtureDef.userData = (void*)FixtureRole::Foot;
+					
+				entityBodyComponent->CreateFixture(&entityFixtureDef);
+			}
+		}
+		
+		//edge fixtures
+		if(body.isMember("edge fixtures"))
+		{
+			const Json::Value fixtures = body["edge fixtures"];
 			for(Json::ArrayIndex i{0}; i < fixtures.size(); ++i)
 			{
 				const Json::Value fixture = fixtures[i];
 								
 				b2FixtureDef entityFixtureDef;
-				//Initialize shapes here in order to keep pointers alive when assigning entityFixtureDef.shape
 				b2EdgeShape edgeShape;
-				b2PolygonShape polygonShape;
-				b2ChainShape chainShape;
-				b2CircleShape circleShape;
-				std::vector<b2Vec2> verticesArray;
+				b2Vec2 one{0, 0}, two{0, 0};
 				
-				//type
-				if(fixture.isMember("type"))
+				//x 1
+				one.x = fixtures[i]["1"]["x"].asFloat();
+				
+				//y 1
+				one.y = fixtures[i]["1"]["y"].asFloat();
+				
+				//x 2
+				two.x = fixtures[i]["2"]["x"].asFloat();
+				
+				//y 2
+				two.y = fixtures[i]["2"]["y"].asFloat();
+				
+				edgeShape.Set(scale*one, scale*two);
+				
+				//0
+				if(fixture.isMember("0"))
 				{
-					const Json::Value type = fixtures[i]["type"];
-
-					if(type == "polygon")
-					{
-						//box
-						if(fixture.isMember("box"))
-						{
-							const Json::Value box = fixtures[i]["box"];
-							float w{100}, h{100};
-							float angle{0};
-							
-							//width
-							if(box.isMember("w"))
-								w = box["w"].asFloat();
-							
-							//height
-							if(box.isMember("h"))
-								h = box["h"].asFloat();
-							
-							float cx{w/2}, cy{h/2};
-							
-							//center x
-							if(box.isMember("center x"))
-								cx = box["center x"].asFloat();
-							
-							//center y
-							if(box.isMember("center y"))
-								cy = box["center y"].asFloat();
-							
-							//angle
-							if(box.isMember("angle"))
-								angle = box["angle"].asFloat();
-								
-							polygonShape.SetAsBox((w*scale)/2, (h*scale)/2, {cx*scale, cy*scale}, angle);
-						}
-						
-						//vertices
-						else if(fixture.isMember("vertices"))
-						{
-							const Json::Value vertices = fixtures[i]["vertices"];
-							std::vector<b2Vec2> verticesVec(vertices.size());
-							for(Json::ArrayIndex j{0}; j < vertices.size(); ++j)
-							{
-								const Json::Value vertice = vertices[j];
-							
-								//x
-								if(vertice.isMember("x"))
-									verticesVec[j].x = vertice["x"].asFloat()*scale;
-								
-								//y
-								if(vertice.isMember("y"))
-									verticesVec[j].y = vertice["y"].asFloat()*scale;
-							}
-							polygonShape.Set(verticesVec.data(), verticesVec.size());
-						}
-						entityFixtureDef.shape = &polygonShape;
-					}
-					else if(type == "edge")
-					{
-						b2Vec2 one{0, 0}, two{0, 0};
-						
-						//x 1
-						if(fixture["1"].isMember("x"))
-							one.x = fixtures[i]["1"]["x"].asFloat();
-						//y 1
-						if(fixture["1"].isMember("y"))
-							one.y = fixtures[i]["1"]["y"].asFloat();
-						
-						//x 2
-						if(fixture["2"].isMember("x"))
-							two.x = fixtures[i]["2"]["x"].asFloat();
-						//y 2
-						if(fixture["2"].isMember("y"))
-							two.y = fixtures[i]["2"]["y"].asFloat();
-						
-						edgeShape.Set(scale*one, scale*two);
-						
-						//0
-						if(fixture.isMember("0"))
-						{
-							edgeShape.m_hasVertex0 = true;
-							//x
-							if(fixture["0"].isMember("x"))
-								edgeShape.m_vertex0.x = fixtures[i]["0"]["x"].asFloat()*scale;
-							//y
-							if(fixture["0"].isMember("y"))
-								edgeShape.m_vertex0.y = fixtures[i]["0"]["y"].asFloat()*scale;
-						}
-						
-						//3
-						if(fixture.isMember("3"))
-						{
-							edgeShape.m_hasVertex3 = true;
-							//x
-							if(fixture["3"].isMember("x"))
-								edgeShape.m_vertex3.x = fixtures[i]["3"]["x"].asFloat()*scale;
-							//y
-							if(fixture["3"].isMember("y"))
-								edgeShape.m_vertex3.y = fixtures[i]["3"]["y"].asFloat()*scale;
-						}
-						
-						entityFixtureDef.shape = &edgeShape;
-					}
-					else if(type == "chain")
-					{
-						const Json::Value vertices = fixtures[i]["vertices"];
-						//For each vertex of the chain shape
-						for(Json::ArrayIndex j{0}; j < vertices.size(); ++j)
-						{
-							const Json::Value vertice = vertices[j];
-							verticesArray.push_back(b2Vec2(0, 0));
-							//x
-							if(vertice.isMember("x"))
-								verticesArray[j].x = vertice["x"].asFloat()*scale;
-							
-							//y
-							if(vertice.isMember("y"))
-								verticesArray[j].y = vertice["y"].asFloat()*scale;
-						}
-						chainShape.CreateChain(verticesArray.data(), verticesArray.size());
-						
-						//previous vertex
-						if(fixtures[i].isMember("previous vertex"))
-						{
-							chainShape.m_hasPrevVertex = true;
-							
-							//x
-							if(fixtures[i]["previous vertex"].isMember("x"))
-								chainShape.m_prevVertex.x = fixtures[i]["previous vertex"]["x"].asFloat()*scale;
-							
-							//y
-							if(fixtures[i]["previous vertex"].isMember("y"))
-								chainShape.m_prevVertex.y = fixtures[i]["previous vertex"]["y"].asFloat()*scale;
-						}
-						
-						//next vertex
-						if(fixtures[i].isMember("next vertex"))
-						{
-							chainShape.m_hasNextVertex = true;
-							
-							//x
-							if(fixtures[i]["next vertex"].isMember("x"))
-								chainShape.m_nextVertex.x = fixtures[i]["next vertex"]["x"].asFloat()*scale;
-							
-							//y
-							if(fixtures[i]["next vertex"].isMember("y"))
-								chainShape.m_nextVertex.y = fixtures[i]["next vertex"]["y"].asFloat()*scale;
-						}
-						entityFixtureDef.shape = &chainShape;
-					}
-					else if(type == "circle")
-					{
-						//x
-						if(fixture[i]["position"].isMember("x"))
-							 circleShape.m_p.x = fixtures[i]["position"]["x"].asFloat()*scale;
-						
-						//y
-						if(fixture[i]["position"].isMember("y"))
-							circleShape.m_p.y = fixtures[i]["position"]["y"].asFloat()*scale;
-						
-						//radius
-						circleShape.m_radius = fixtures[i]["radius"].asFloat()*scale;
-						entityFixtureDef.shape = &circleShape;
-					}
+					edgeShape.m_hasVertex0 = true;
+					
+					//x
+					edgeShape.m_vertex0.x = fixtures[i]["0"]["x"].asFloat()*scale;
+					
+					//y
+					edgeShape.m_vertex0.y = fixtures[i]["0"]["y"].asFloat()*scale;
 				}
 				
+				//3
+				if(fixture.isMember("3"))
+				{
+					edgeShape.m_hasVertex3 = true;
+					
+					//x
+					edgeShape.m_vertex3.x = fixtures[i]["3"]["x"].asFloat()*scale;
+					
+					//y
+					edgeShape.m_vertex3.y = fixtures[i]["3"]["y"].asFloat()*scale;
+				}
+				entityFixtureDef.shape = &edgeShape;
+				
 				//density
-				if(fixture.isMember("density"))
-					entityFixtureDef.density = fixture["density"].asFloat();
+				entityFixtureDef.density = fixture["density"].asFloat();
 				
 				//friction
-				if(fixture.isMember("friction"))
-					entityFixtureDef.friction = fixture["friction"].asFloat();
+				entityFixtureDef.friction = fixture["friction"].asFloat();
 				
 				//restitution
-				if(fixture.isMember("restitution"))
-					entityFixtureDef.restitution = fixture["restitution"].asFloat();
+				entityFixtureDef.restitution = fixture["restitution"].asFloat();
 				
 				//is sensor
-				if(fixture.isMember("is sensor"))
-					entityFixtureDef.isSensor = fixture["is sensor"].asBool();
+				entityFixtureDef.isSensor = fixture["is sensor"].asBool();
 				
 				//is foot sensor
-				if(fixture.isMember("is foot sensor") and fixture["is foot sensor"].asBool())
-					entityFixtureDef.userData = (void*)FixtureRole::Foot;
+				entityFixtureDef.userData = (void*)FixtureRole::Foot;
+					
+				entityBodyComponent->CreateFixture(&entityFixtureDef);
+			}
+		}
+		
+		//chain fixtures
+		if(body.isMember("chain fixtures"))
+		{
+			const Json::Value fixtures = body["chain fixtures"];
+			for(Json::ArrayIndex i{0}; i < fixtures.size(); ++i)
+			{
+				const Json::Value fixture = fixtures[i];
+				b2FixtureDef entityFixtureDef;
+				b2ChainShape chainShape;
+				std::vector<b2Vec2> verticesArray;
+				const Json::Value vertices = fixtures[i]["vertices"];
+				//For each vertex of the chain shape
+				for(Json::ArrayIndex j{0}; j < vertices.size(); ++j)
+				{
+					const Json::Value vertice = vertices[j];
+					verticesArray.push_back(b2Vec2(0, 0));
+					//x
+					verticesArray[j].x = vertice["x"].asFloat()*scale;
+					
+					//y
+					verticesArray[j].y = vertice["y"].asFloat()*scale;
+				}
+				chainShape.CreateChain(verticesArray.data(), verticesArray.size());
+				
+				//previous vertex
+				if(fixtures[i].isMember("previous vertex"))
+				{
+					chainShape.m_hasPrevVertex = true;
+					
+					//x
+					chainShape.m_prevVertex.x = fixtures[i]["previous vertex"]["x"].asFloat()*scale;
+					
+					//y
+					chainShape.m_prevVertex.y = fixtures[i]["previous vertex"]["y"].asFloat()*scale;
+				}
+				
+				//next vertex
+				if(fixtures[i].isMember("next vertex"))
+				{
+					chainShape.m_hasNextVertex = true;
+					
+					//x
+					chainShape.m_nextVertex.x = fixtures[i]["next vertex"]["x"].asFloat()*scale;
+					
+					//y
+					chainShape.m_nextVertex.y = fixtures[i]["next vertex"]["y"].asFloat()*scale;
+				}
+				entityFixtureDef.shape = &chainShape;
+				
+				//density
+				entityFixtureDef.density = fixture["density"].asFloat();
+				
+				//friction
+				entityFixtureDef.friction = fixture["friction"].asFloat();
+				
+				//restitution
+				entityFixtureDef.restitution = fixture["restitution"].asFloat();
+				
+				//is sensor
+				entityFixtureDef.isSensor = fixture["is sensor"].asBool();
+				
+				//is foot sensor
+				entityFixtureDef.userData = (void*)FixtureRole::Foot;
+					
+				entityBodyComponent->CreateFixture(&entityFixtureDef);
+			}
+		}
+		
+		//circle fixtures
+		if(body.isMember("circle fixtures"))
+		{
+			const Json::Value fixtures = body["circle fixtures"];
+			for(Json::ArrayIndex i{0}; i < fixtures.size(); ++i)
+			{
+				const Json::Value fixture = fixtures[i];
+								
+				b2FixtureDef entityFixtureDef;
+				b2CircleShape circleShape;
+				
+				//x
+				circleShape.m_p.x = fixtures[i]["position"]["x"].asFloat()*scale;
+				
+				//y
+				circleShape.m_p.y = fixtures[i]["position"]["y"].asFloat()*scale;
+				
+				//radius
+				circleShape.m_radius = fixtures[i]["radius"].asFloat()*scale;
+				entityFixtureDef.shape = &circleShape;
+				
+				//density
+				entityFixtureDef.density = fixture["density"].asFloat();
+				
+				//friction
+				entityFixtureDef.friction = fixture["friction"].asFloat();
+				
+				//restitution
+				entityFixtureDef.restitution = fixture["restitution"].asFloat();
+				
+				//is sensor
+				entityFixtureDef.isSensor = fixture["is sensor"].asBool();
+				
+				//is foot sensor
+				entityFixtureDef.userData = (void*)FixtureRole::Foot;
 					
 				entityBodyComponent->CreateFixture(&entityFixtureDef);
 			}
@@ -578,9 +609,10 @@ void deserialize(const Json::Value& value, entityx::ComponentHandle<SpriteCompon
 	{
 		Json::Value part = value[partName];
 		component->sprites.emplace(partName, sf::Sprite(textureManager.get(part["identifier"].asString())));
-		sf::Vector2f position;
+		sf::Vector3f position;
 		position.x = part["position"]["x"].asFloat()*scale;
 		position.y = part["position"]["y"].asFloat()*scale;
+		position.z = part["position"]["z"].asFloat();
 		component->worldPositions.emplace(partName, position);
 	}
 }

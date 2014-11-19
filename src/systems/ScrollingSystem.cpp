@@ -60,12 +60,10 @@ void ScrollingSystem::update(entityx::EntityManager& entityManager, entityx::Eve
 			//Assign position on every entity Sprite
 			for(auto entity : entityManager.entities_with_components(spriteComponent))
 			{
-				//The number of the layer where is the entity
-				float z = spriteComponent->plan;
 				//The x-ordinate of the left border of the screen.
 				float xScreen = playerPosition.x - xmin;
 				std::map<std::string, sf::Sprite>& sprites(spriteComponent->sprites);
-				std::map<std::string, sf::Vector2f>& worldPositions(spriteComponent->worldPositions);
+				std::map<std::string, sf::Vector3f>& worldPositions(spriteComponent->worldPositions);
 				//For each position in the map
 				for(auto& positionPair : worldPositions)
 				{
@@ -73,7 +71,7 @@ void ScrollingSystem::update(entityx::EntityManager& entityManager, entityx::Eve
 					if(sprites.find(positionPair.first) != sprites.end())
 					{
 						//The abscissa of the entity on the screen, relatively to the reference plan and the position of the player
-						float xScaled = positionPair.second.x + xScreen - (xScreen * pow(1.5, m_referencePlan - z));
+						float xScaled = positionPair.second.x + xScreen - (xScreen * pow(1.5, m_referencePlan - positionPair.second.z));
 						sprites[positionPair.first].setPosition(xScaled, positionPair.second.y);
 					}
 				}

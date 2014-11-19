@@ -53,7 +53,7 @@ void PhysicsSystem::update(entityx::EntityManager& entityManager, entityx::Event
 	for(auto entity : entityManager.entities_with_components(bodyComponent, spriteComponent))
 	{
 		std::map<std::string, sf::Sprite>& sprites(spriteComponent->sprites);
-		std::map<std::string, sf::Vector2f>& worldPositions(spriteComponent->worldPositions);
+		std::map<std::string, sf::Vector3f>& worldPositions(spriteComponent->worldPositions);
 		std::map<std::string, b2Body*>& bodies(bodyComponent->bodies);
 		for(auto& bodyPair : bodies)
 		{

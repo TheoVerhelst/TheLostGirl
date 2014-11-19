@@ -1,0 +1,1152 @@
+{
+    "name" : "root",
+    "type" : "object",
+    "required" : true,
+    "free children names" : false,
+    "children":
+    [
+        {
+            "name" : "time",
+            "type" : "object",
+            "required" : true,
+            "free children names" : false,
+            "children" :
+            [
+                {
+                    "name" : "speed",
+                    "type" : "real",
+                    "required" : false,
+                    "default value" : 1
+                },
+                {
+                    "name" : "date",
+                    "type" : "real",
+                    "required" : false,
+                    "default value" : 0
+                }
+            ]
+        },
+        {
+            "name" : "level",
+            "type" : "object",
+            "required" : true,
+            "free children names" : false,
+            "children" :
+            [
+                {
+                    "name" : "number of plans",
+                    "type" : "int",
+                    "required" : false,
+                    "default value" : 1
+                },
+                {
+                    "name" : "reference plan",
+                    "type" : "real",
+                    "required" : false,
+                    "default value" : 1
+                },
+                {
+                    "name" : "identifier",
+                    "type" : "string",
+                    "required" : true
+                },
+                {
+                    "name" : "box",
+                    "type" : "object",
+                    "required" : true,
+                    "free children names" : false,
+                    "children" : 
+                    [
+                        {
+                            "name" : "x",
+                            "type" : "int",
+                            "required" : false,
+                            "default value" : 0
+                        },
+                        {
+                            "name" : "y",
+                            "type" : "int",
+                            "required" : false,
+                            "default value" : 0
+                        },
+                        {
+                            "name" : "w",
+                            "type" : "int",
+                            "required" : true
+                        },
+                        {
+                            "name" : "h",
+                            "type" : "int",
+                            "required" : false,
+                            "default value" : 1080
+                        }
+                    ]
+                },
+                {
+                    "name" : "replaces",
+                    "type" : "object",
+                    "required" : true,
+                    "free children names" : true,
+                    "children" :
+                    {
+                        "type" : "array",
+                        "children" :
+                        {
+                            "type" : "object",
+                            "free children names" : false,
+                            "children" :
+                            [
+                                {
+                                    "name" : "origin",
+                                    "type" : "object",
+                                    "required" : true,
+                                    "free children names" : false,
+                                    "children" :
+                                    [
+                                        {
+                                            "name" : "x",
+                                            "type" : "int",
+                                            "required" : true
+                                        },
+                                        {
+                                            "name" : "y",
+                                            "type" : "int",
+                                            "required" : true
+                                        },
+                                        {
+                                            "name" : "w",
+                                            "type" : "int",
+                                            "required" : true
+                                        },
+                                        {
+                                            "name" : "h",
+                                            "type" : "int",
+                                            "required" : true
+                                        }
+                                    ]
+                                },
+                                {
+                                    "name" : "replaces",
+                                    "type" : "array",
+                                    "required" : true,
+                                    "children" :
+                                    {
+                                        "type" : "object",
+                                        "free children names" : false,
+                                        "children" :
+                                        [
+                                            {
+                                                "name" : "x",
+                                                "type" : "int",
+                                                "required" : true
+                                            },
+                                            {
+                                                "name" : "y",
+                                                "type" : "int",
+                                                "required" : true
+                                            },
+                                            {
+                                                "name" : "z",
+                                                "type" : "int",
+                                                "required" : true
+                                            }
+                                        ]
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            "name" : "entities",
+            "type" : "object",
+            "required" : false,
+            "free children names" : true,
+            "children" :
+            {
+                "type" : "object",
+                "free children names" : false,
+                "children" :
+                [
+                    {
+                        "name" : "actor ID",
+                        "type" : "int",
+                        "required" : false
+                    },
+                    {
+                        "name" : "walk",
+                        "type" : "object",
+                        "free children names" : false,
+                        "required" : false,
+                        "children":
+                        [
+                            {
+                                "name" : "speed",
+                                "type" : "real",
+                                "required" : true
+                            }
+                        ]
+                    },
+                    {
+                        "name" : "jump",
+                        "type" : "object",
+                        "free children names" : false,
+                        "required" : false,
+                        "children":
+                        [
+                            {
+                                "name" : "strength",
+                                "type" : "real",
+                                "required" : true
+                            }
+                        ]
+                    },
+                    {
+                        "name" : "direction",
+                        "type" : "object",
+                        "free children names" : false,
+                        "required" : false,
+                        "children":
+                        [
+                            {
+                                "name" : "direction",
+                                "type" : "string",
+                                "required" : true,
+                                "possible values" : ["left", "right", "top", "bottom", "none"]
+                            },
+                            {
+                                "name" : "move to left",
+                                "type" : "bool",
+                                "required" : false,
+                                "default value" : false
+                            },
+                            {
+                                "name" : "move to right",
+                                "type" : "bool",
+                                "required" : false,
+                                "default value" : false
+                            }
+                        ]
+                    },
+                    {
+                        "name" : "categories",
+                        "type" : "array",
+                        "required" : false,
+                        "children":
+                        {
+                            "type" : "string",
+                            "possible values" : ["player", "scene"]
+                        }
+                    },
+                    {
+                        "name" : "sky",
+                        "type" : "bool",
+                        "required" : false
+                    },
+                    {
+                        "name" : "health",
+                        "type" : "object",
+                        "free children names" : false,
+                        "required" : false,
+                        "children":
+                        [
+                            {
+                                "name" : "maximum health",
+                                "type" : "real",
+                                "required" : true
+                            },
+                            {
+                                "name" : "current health",
+                                "type" : "real",
+                                "required" : true
+                            }
+                        ]
+                    },
+                    {
+                        "name" : "stamina",
+                        "type" : "object",
+                        "free children names" : false,
+                        "required" : false,
+                        "children":
+                        [
+                            {
+                                "name" : "maximum stamina",
+                                "type" : "real",
+                                "required" : true
+                            },
+                            {
+                                "name" : "current stamina",
+                                "type" : "real",
+                                "required" : true
+                            }
+                        ]
+                    },
+                    {
+                        "name" : "bend",
+                        "type" : "object",
+                        "free children names" : false,
+                        "required" : false,
+                        "children":
+                        [
+                            {
+                                "name" : "maximum power",
+                                "type" : "real",
+                                "required" : true
+                            },
+                            {
+                                "name" : "power",
+                                "type" : "real",
+                                "required" : true
+                            },
+                            {
+                                "name" : "angle",
+                                "type" : "real",
+                                "required" : false,
+                                "default value" : 0
+                            }
+                        ]
+                    },
+                    {
+                        "name" : "fall",
+                        "type" : "object",
+                        "free children names" : false,
+                        "required" : false,
+                        "children":
+                        [
+                        ]
+                    },
+                    {
+                        "name" : "sprites",
+                        "type" : "object",
+                        "free children names" : true,
+                        "required" : false,
+                        "children":
+                        {
+                            "type" : "object",
+                            "free children names" : false,
+                            "children":
+                            [
+                                {
+                                    "name" : "identifier",
+                                    "type" : "string",
+                                    "required" : true,
+                                    "possible values" : ["archer", "bow", "bend"]
+                                },
+                                {
+                                    "name" : "position",
+                                    "type" : "object",
+                                    "free children names" : false,
+                                    "required" : false,
+                                    "children" :
+                                    [
+                                        {
+                                            "name" : "x",
+                                            "type" : "real",
+                                            "required" : true
+                                        },
+                                        {
+                                            "name" : "y",
+                                            "type" : "real",
+                                            "required" : true
+                                        },
+                                        {
+                                            "name" : "z",
+                                            "type" : "real",
+                                            "required" : true
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        "name" : "spritesheet animations",
+                        "type" : "object",
+                        "free children names" : true,
+                        "required" : false,
+                        "children":
+                        {
+                            "type" : "object",
+                            "free children names" : true,
+                            "children" : 
+                            {
+                                "type" : "object",
+                                "free children names" : false,
+                                "children":
+                                [
+                                    {
+                                        "name" : "duration",
+                                        "type" : "real",
+                                        "required" : true
+                                    },
+                                    {
+                                        "name" : "progress",
+                                        "type" : "real",
+                                        "required" : false,
+                                        "default value" : 0
+                                    },
+                                    {
+                                        "name" : "importance",
+                                        "type" : "int",
+                                        "required" : false,
+                                        "default value" : 0
+                                    },
+                                    {
+                                        "name" : "is active",
+                                        "type" : "bool",
+                                        "required" : false,
+                                        "default value" : false
+                                    },
+                                    {
+                                        "name" : "is paused",
+                                        "type" : "bool",
+                                        "required" : false,
+                                        "default value" : true
+                                    },
+                                    {
+                                        "name" : "loops",
+                                        "type" : "bool",
+                                        "required" : false,
+                                        "default value" : false
+                                    },
+                                    {
+                                        "name" : "data",
+                                        "type" : "array",
+                                        "required" : true,
+                                        "children" :
+                                        {
+                                            "type" : "object",
+                                            "free children names" : false,
+                                            "children" : 
+                                            [
+                                                {
+                                                    "name" : "x",
+                                                    "type" : "int",
+                                                    "required" : false,
+                                                    "default value" : 0
+                                                },
+                                                {
+                                                    "name" : "y",
+                                                    "type" : "int",
+                                                    "required" : false,
+                                                    "default value" : 0
+                                                },
+                                                {
+                                                    "name" : "w",
+                                                    "type" : "int",
+                                                    "required" : true
+                                                },
+                                                {
+                                                    "name" : "h",
+                                                    "type" : "int",
+                                                    "required" : true
+                                                },
+                                                {
+                                                    "name" : "relative duration",
+                                                    "type" : "real",
+                                                    "required" : true
+                                                }
+                                            ]
+                                        }
+                                    }
+                                ]
+                            }
+                        }
+                    },
+                    {
+                        "name" : "body",
+                        "type" : "object",
+                        "free children names" : true,
+                        "required" : false,
+                        "children":
+                        {
+                            "type" : "object",
+                            "free children names" : false,
+                            "children":
+                            [
+                                {
+                                    "name" : "active",
+                                    "type" : "bool",
+                                    "required" : false,
+                                    "default value" : true
+                                },
+                                {
+                                    "name" : "allow sleep",
+                                    "type" : "bool",
+                                    "required" : false,
+                                    "default value" : true
+                                },
+                                {
+                                    "name" : "angle",
+                                    "type" : "real",
+                                    "required" : false,
+                                    "default value" : 0
+                                },
+                                {
+                                    "name" : "angular damping",
+                                    "type" : "real",
+                                    "required" : false,
+                                    "default value" : 0
+                                },
+                                {
+                                    "name" : "angular velocity",
+                                    "type" : "real",
+                                    "required" : false,
+                                    "default value" : 0
+                                },
+                                {
+                                    "name" : "awake",
+                                    "type" : "bool",
+                                    "required" : false,
+                                    "default value" : true
+                                },
+                                {
+                                    "name" : "bullet",
+                                    "type" : "bool",
+                                    "required" : false,
+                                    "default value" : false
+                                },
+                                {
+                                    "name" : "fixed rotation",
+                                    "type" : "bool",
+                                    "required" : false,
+                                    "default value" : true
+                                },
+                                {
+                                    "name" : "polygon fixtures",
+                                    "type" : "array",
+                                    "required" : false,
+                                    "children":
+                                    {
+                                        "type" : "object",
+                                        "free children names" : false,
+                                        "children" :
+                                        [
+                                            {
+                                                "name" : "vertices",
+                                                "type" : "array",
+                                                "required" : true,
+                                                "children":
+                                                {
+                                                    "type" : "object",
+                                                    "free children names" : false,
+                                                    "children":
+                                                    [
+                                                        {
+                                                            "name" : "x",
+                                                            "type" : "real",
+                                                            "required" : true
+                                                        },
+                                                        {
+                                                            "name" : "y",
+                                                            "type" : "real",
+                                                            "required" : true
+                                                        }
+                                                    ]
+                                                }
+                                            },
+                                            {
+                                                "name" : "density",
+                                                "type" : "real",
+                                                "required" : false,
+                                                "default value" : 0
+                                            },
+                                            {
+                                                "name" : "friction",
+                                                "type" : "real",
+                                                "required" : false,
+                                                "default value" : 0.5
+                                            },
+                                            {
+                                                "name" : "restitution",
+                                                "type" : "real",
+                                                "required" : false,
+                                                "default value" : 0
+                                            },
+                                            {
+                                                "name" : "is sensor",
+                                                "type" : "bool",
+                                                "required" : false,
+                                                "default value" : false
+                                            }
+                                        ]
+                                    }
+                                },
+                                {
+                                    "name" : "chain fixtures",
+                                    "type" : "array",
+                                    "required" : false,
+                                    "children":
+                                    {
+                                        "type" : "object",
+                                        "free children names" : false,
+                                        "children" :
+                                        [
+                                            {
+                                                "name" : "vertices",
+                                                "type" : "array",
+                                                "required" : true,
+                                                "children":
+                                                {
+                                                    "type" : "object",
+                                                    "free children names" : false,
+                                                    "children":
+                                                    [
+                                                        {
+                                                            "name" : "x",
+                                                            "type" : "real",
+                                                            "required" : true
+                                                        },
+                                                        {
+                                                            "name" : "y",
+                                                            "type" : "real",
+                                                            "required" : true
+                                                        }
+                                                    ]
+                                                }
+                                            },
+                                            {
+                                                "name" : "previous vertex",
+                                                "type" : "object",
+                                                "required" : false,
+                                                "free children names" : false,
+                                                "children":
+                                                [
+                                                    {
+                                                        "name" : "x",
+                                                        "type" : "real",
+                                                        "required" : true
+                                                    },
+                                                    {
+                                                        "name" : "y",
+                                                        "type" : "real",
+                                                        "required" : true
+                                                    }
+                                                ]
+                                            },
+                                            {
+                                                "name" : "next vertex",
+                                                "type" : "object",
+                                                "required" : false,
+                                                "free children names" : false,
+                                                "children":
+                                                [
+                                                    {
+                                                        "name" : "x",
+                                                        "type" : "real",
+                                                        "required" : true
+                                                    },
+                                                    {
+                                                        "name" : "y",
+                                                        "type" : "real",
+                                                        "required" : true
+                                                    }
+                                                ]
+                                            },
+                                            {
+                                                "name" : "density",
+                                                "type" : "real",
+                                                "required" : false,
+                                                "default value" : 0
+                                            },
+                                            {
+                                                "name" : "friction",
+                                                "type" : "real",
+                                                "required" : false,
+                                                "default value" : 0.5
+                                            },
+                                            {
+                                                "name" : "restitution",
+                                                "type" : "real",
+                                                "required" : false,
+                                                "default value" : 0
+                                            },
+                                            {
+                                                "name" : "is sensor",
+                                                "type" : "bool",
+                                                "required" : false,
+                                                "default value" : false
+                                            }
+                                        ]
+                                    }
+                                },
+                                {
+                                    "name" : "edge fixtures",
+                                    "type" : "array",
+                                    "required" : false,
+                                    "children":
+                                    {
+                                        "type" : "object",
+                                        "free children names" : false,
+                                        "children" :
+                                        [
+                                                {
+                                                "name" : "1",
+                                                "type" : "object",
+                                                "required" : true,
+                                                "free children names" : false,
+                                                "children":
+                                                [
+                                                    {
+                                                        "name" : "x",
+                                                        "type" : "real",
+                                                        "required" : true
+                                                    },
+                                                    {
+                                                        "name" : "y",
+                                                        "type" : "real",
+                                                        "required" : true
+                                                    }
+                                                ]
+                                            },
+                                            {
+                                                "name" : "2",
+                                                "type" : "object",
+                                                "required" : true,
+                                                "free children names" : false,
+                                                "children":
+                                                [
+                                                    {
+                                                        "name" : "x",
+                                                        "type" : "real",
+                                                        "required" : true
+                                                    },
+                                                    {
+                                                        "name" : "y",
+                                                        "type" : "real",
+                                                        "required" : true
+                                                    }
+                                                ]
+                                            },
+                                            {
+                                                "name" : "previous vertex",
+                                                "type" : "object",
+                                                "required" : false,
+                                                "free children names" : false,
+                                                "children":
+                                                [
+                                                    {
+                                                        "name" : "x",
+                                                        "type" : "real",
+                                                        "required" : true
+                                                    },
+                                                    {
+                                                        "name" : "y",
+                                                        "type" : "real",
+                                                        "required" : true
+                                                    }
+                                                ]
+                                            },
+                                            {
+                                                "name" : "next vertex",
+                                                "type" : "object",
+                                                "required" : false,
+                                                "free children names" : false,
+                                                "children":
+                                                [
+                                                    {
+                                                        "name" : "x",
+                                                        "type" : "real",
+                                                        "required" : true
+                                                    },
+                                                    {
+                                                        "name" : "y",
+                                                        "type" : "real",
+                                                        "required" : true
+                                                    }
+                                                ]
+                                            },
+                                            {
+                                                "name" : "density",
+                                                "type" : "real",
+                                                "required" : false,
+                                                "default value" : 0
+                                            },
+                                            {
+                                                "name" : "friction",
+                                                "type" : "real",
+                                                "required" : false,
+                                                "default value" : 0.5
+                                            },
+                                            {
+                                                "name" : "restitution",
+                                                "type" : "real",
+                                                "required" : false,
+                                                "default value" : 0
+                                            },
+                                            {
+                                                "name" : "is sensor",
+                                                "type" : "bool",
+                                                "required" : false,
+                                                "default value" : false
+                                            }
+                                        ]
+                                    }
+                                },
+                                {
+                                    "name" : "circle fixtures",
+                                    "type" : "array",
+                                    "required" : false,
+                                    "children":
+                                    {
+                                        "type" : "object",
+                                        "free children names" : false,
+                                        "children" :
+                                        [
+                                                {
+                                                "name" : "position",
+                                                "type" : "object",
+                                                "required" : true,
+                                                "free children names" : false,
+                                                "children":
+                                                [
+                                                    {
+                                                        "name" : "x",
+                                                        "type" : "real",
+                                                        "required" : true
+                                                    },
+                                                    {
+                                                        "name" : "y",
+                                                        "type" : "real",
+                                                        "required" : true
+                                                    }
+                                                ]
+                                            },
+                                            {
+                                                "name" : "radius",
+                                                "type" : "real",
+                                                "required" : true
+                                            },
+                                            {
+                                                "name" : "density",
+                                                "type" : "real",
+                                                "required" : false,
+                                                "default value" : 0
+                                            },
+                                            {
+                                                "name" : "friction",
+                                                "type" : "real",
+                                                "required" : false,
+                                                "default value" : 0.5
+                                            },
+                                            {
+                                                "name" : "restitution",
+                                                "type" : "real",
+                                                "required" : false,
+                                                "default value" : 0
+                                            },
+                                            {
+                                                "name" : "is sensor",
+                                                "type" : "bool",
+                                                "required" : false,
+                                                "default value" : false
+                                            }
+                                        ]
+                                    }
+                                },
+                                {
+                                    "name" : "gravity scale",
+                                    "type" : "real",
+                                    "required" : false,
+                                    "default value" : 1
+                                },
+                                {
+                                    "name" : "linear damping",
+                                    "type" : "real",
+                                    "required" : false,
+                                    "default value" : 0
+                                },
+                                {
+                                    "name" : "linear velocity",
+                                    "type" : "object",
+                                    "required" : false,
+                                    "free children names" : false,
+                                    "children" :
+                                    [
+                                        {
+                                            "name" : "x",
+                                            "type" : "real",
+                                            "required" : true
+                                        },
+                                        {
+                                            "name" : "y",
+                                            "type" : "real",
+                                            "required" : true
+                                        }
+                                    ]
+                                },
+                                {
+                                    "name" : "position",
+                                    "type" : "object",
+                                    "required" : false,
+                                    "free children names" : false,
+                                    "children" :
+                                    [
+                                        {
+                                            "name" : "x",
+                                            "type" : "real",
+                                            "required" : true
+                                        },
+                                        {
+                                            "name" : "y",
+                                            "type" : "real",
+                                            "required" : true
+                                        }
+                                    ]
+                                },
+                                {
+                                    "name" : "type",
+                                    "type" : "string",
+                                    "required" : true,
+                                    "possible values" : ["static", "kinematic", "dynamic"]
+                                }
+                            ]
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            "name" : "joints",
+            "type" : "object",
+            "required" : false,
+            "free children names" : false,
+            "children" :
+            [
+                {
+                    "name" : "revolute joints",
+                    "type" : "array",
+                    "required" : false,
+                    "children" :
+                    {
+                        "type" : "object",
+                        "free children names" : false,
+                        "children" :
+                        [
+                            {
+                                "name" : "entity A",
+                                "type" : "string",
+                                "required" : true
+                            },
+                            {
+                                "name" : "entity B",
+                                "type" : "string",
+                                "required" : true
+                            },
+                            {
+                                "name" : "part A",
+                                "type" : "string",
+                                "required" : true
+                            },
+                            {
+                                "name" : "part B",
+                                "type" : "string",
+                                "required" : true
+                            },
+                            {
+                                "name" : "local anchor A",
+                                "type" : "object",
+                                "required" : true,
+                                "free children names" : false,
+                                "children" :
+                                [
+                                    {
+                                        "name" : "x",
+                                        "type" : "real",
+                                        "required" : true
+                                    },
+                                    {
+                                        "name" : "y",
+                                        "type" : "real",
+                                        "required" : true
+                                    }
+                                ]
+                                
+                            },
+                            {
+                                "name" : "local anchor B",
+                                "type" : "object",
+                                "required" : true,
+                                "free children names" : false,
+                                "children" :
+                                [
+                                    {
+                                        "name" : "x",
+                                        "type" : "real",
+                                        "required" : true
+                                    },
+                                    {
+                                        "name" : "y",
+                                        "type" : "real",
+                                        "required" : true
+                                    }
+                                ]
+                                
+                            },
+                            {
+                                "name" : "enable limit",
+                                "type" : "bool",
+                                "required" : false,
+                                "default value" : false
+                            },
+                            {
+                                "name" : "enable motor",
+                                "type" : "bool",
+                                "required" : false,
+                                "default value" : false
+                            },
+                            {
+                                "name" : "upper angle",
+                                "type" : "real",
+                                "required" : false,
+                                "default value" : 0
+                            },
+                            {
+                                "name" : "lower angle",
+                                "type" : "real",
+                                "required" : false,
+                                "default value" : 0
+                            },
+                            {
+                                "name" : "max motor torque",
+                                "type" : "real",
+                                "required" : false,
+                                "default value" : 0
+                            }
+                        ]
+                    }
+                },
+                {
+                    "name" : "prismatic joints",
+                    "type" : "array",
+                    "required" : false,
+                    "children" :
+                    {
+                        "type" : "object",
+                        "free children names" : false,
+                        "children" :
+                        [
+                        ]
+                    }
+                },
+                {
+                    "name" : "distance joints",
+                    "type" : "array",
+                    "required" : false,
+                    "children" :
+                    {
+                        "type" : "object",
+                        "free children names" : false,
+                        "children" :
+                        [
+                        ]
+                    }
+                },
+                {
+                    "name" : "pulley joints",
+                    "type" : "array",
+                    "required" : false,
+                    "children" :
+                    {
+                        "type" : "object",
+                        "children" :
+                        [
+                        ]
+                    }
+                },
+                {
+                    "name" : "mouse joints",
+                    "type" : "array",
+                    "required" : false,
+                    "children" :
+                    {
+                        "type" : "object",
+                        "children" :
+                        [
+                        ]
+                    }
+                },
+                {
+                    "name" : "gear joints",
+                    "type" : "array",
+                    "required" : false,
+                    "children" :
+                    {
+                        "type" : "object",
+                        "free children names" : false,
+                        "children" :
+                        [
+                        ]
+                    }
+                },
+                {
+                    "name" : "wheel joints",
+                    "type" : "array",
+                    "required" : false,
+                    "children" :
+                    {
+                        "type" : "object",
+                        "free children names" : false,
+                        "children" :
+                        [
+                        ]
+                    }
+                },
+                {
+                    "name" : "weld joints",
+                    "type" : "array",
+                    "required" : false,
+                    "children" :
+                    {
+                        "type" : "object",
+                        "free children names" : false,
+                        "children" :
+                        [
+                        ]
+                    }
+                },
+                {
+                    "name" : "rope joints",
+                    "type" : "array",
+                    "required" : false,
+                    "children" :
+                    {
+                        "type" : "object",
+                        "free children names" : false,
+                        "children" :
+                        [
+                        ]
+                    }
+                },
+                {
+                    "name" : "motor joints",
+                    "type" : "array",
+                    "required" : false,
+                    "children" :
+                    {
+                        "type" : "object",
+                        "free children names" : false,
+                        "children" :
+                        [
+                        ]
+                    }
+                },
+                {
+                    "name" : "friction joints",
+                    "type" : "array",
+                    "required" : false,
+                    "children" :
+                    {
+                        "type" : "object",
+                        "free children names" : false,
+                        "children" :
+                        [
+                        ]
+                    }
+                }
+            ]
+        }
+    ]
+}
