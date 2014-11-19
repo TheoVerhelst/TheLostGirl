@@ -186,6 +186,13 @@
                                 "name" : "speed",
                                 "type" : "real",
                                 "required" : true
+                            },
+                            {
+                                "name" : "effective movement",
+                                "type" : "string",
+                                "required" : false,
+                                "possible values" : ["left", "right", "top", "bottom", "none"],
+                                "default value" : "none"
                             }
                         ]
                     },
@@ -315,6 +322,12 @@
                         "required" : false,
                         "children":
                         [
+                            {
+                                "name" : "falling resistance",
+                                "type" : "real",
+                                "required" : false,
+                                "default" : 0
+                            },
                         ]
                     },
                     {
@@ -332,7 +345,7 @@
                                     "name" : "identifier",
                                     "type" : "string",
                                     "required" : true,
-                                    "possible values" : ["archer", "bow", "bend"]
+                                    "possible values" : ["archer", "bow", "arms"]
                                 },
                                 {
                                     "name" : "position",
@@ -570,6 +583,12 @@
                                                 "type" : "bool",
                                                 "required" : false,
                                                 "default value" : false
+                                            },
+                                            {
+                                                "name" : "is foot sensor",
+                                                "type" : "bool",
+                                                "required" : false,
+                                                "default value" : false
                                             }
                                         ]
                                     }
@@ -665,6 +684,12 @@
                                             },
                                             {
                                                 "name" : "is sensor",
+                                                "type" : "bool",
+                                                "required" : false,
+                                                "default value" : false
+                                            },
+                                            {
+                                                "name" : "is foot sensor",
                                                 "type" : "bool",
                                                 "required" : false,
                                                 "default value" : false
@@ -781,6 +806,12 @@
                                                 "type" : "bool",
                                                 "required" : false,
                                                 "default value" : false
+                                            },
+                                            {
+                                                "name" : "is foot sensor",
+                                                "type" : "bool",
+                                                "required" : false,
+                                                "default value" : false
                                             }
                                         ]
                                     }
@@ -839,6 +870,12 @@
                                             },
                                             {
                                                 "name" : "is sensor",
+                                                "type" : "bool",
+                                                "required" : false,
+                                                "default value" : false
+                                            },
+                                            {
+                                                "name" : "is foot sensor",
                                                 "type" : "bool",
                                                 "required" : false,
                                                 "default value" : false

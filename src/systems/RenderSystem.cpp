@@ -17,24 +17,13 @@ void RenderSystem::update(entityx::EntityManager& entityManager, entityx::EventM
 	std::map<float, std::deque<sf::Sprite*>> orderedEntities;
 	//Add the sprites in the map
 	for(entityx::Entity entity : entityManager.entities_with_components(spriteComponent))
-	{
 		//If this is a scene entity, add them sprites beyond the others entities in this plan
 		if(entity.has_component<CategoryComponent>() and entity.component<CategoryComponent>()->category & Category::Scene)
-		{
 			for(auto& spritePair : spriteComponent->sprites)
-			{
 				orderedEntities[spriteComponent->worldPositions[spritePair.first].z].push_front(&spritePair.second);
-			}
-		}
 		else
-		{
 			for(auto& spritePair : spriteComponent->sprites)
-			{
 				orderedEntities[spriteComponent->worldPositions[spritePair.first].z].push_back(&spritePair.second);
-				std::cout << spriteComponent->worldPositions[spritePair.first].z << std::endl;
-			}
-		}
-	}
 	//For each plan, in the reverse order
 	for(std::multimap<float, std::deque<sf::Sprite*>>::const_reverse_iterator it{orderedEntities.crbegin()}; it != orderedEntities.crend(); it++)
 		//Draw the entities of this plan

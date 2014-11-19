@@ -57,7 +57,11 @@ void ScrollingSystem::update(entityx::EntityManager& entityManager, entityx::Eve
 			playerPosition.x = cap(playerPosition.x, xmin, xmax);
 			playerPosition.y = cap(playerPosition.y, ymin, ymax);
 			
-			//Assign position on every entity Sprite
+			//Assign the position to the view
+			view.setCenter(playerPosition);
+			m_window.setView(view);
+			
+			//Assign position on every sprite
 			for(auto entity : entityManager.entities_with_components(spriteComponent))
 			{
 				//The x-ordinate of the left border of the screen.
@@ -76,10 +80,6 @@ void ScrollingSystem::update(entityx::EntityManager& entityManager, entityx::Eve
 					}
 				}
 			}
-			
-			//Assign the position to the view
-			view.setCenter(playerPosition);
-			m_window.setView(view);
 		}
 	}
 }

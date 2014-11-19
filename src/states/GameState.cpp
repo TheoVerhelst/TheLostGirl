@@ -109,7 +109,7 @@ void GameState::saveWorld(const std::string& file)
 				root["entities"][entity.first]["body"] = serialize(entity.second.component<BodyComponent>(), uniqScale);
 			
 			if(entity.second.has_component<SpriteComponent>())
-				root["entities"][entity.first]["sprite"] = serialize(entity.second.component<SpriteComponent>(), getContext().textureManager, scale);
+				root["entities"][entity.first]["sprites"] = serialize(entity.second.component<SpriteComponent>(), getContext().textureManager, scale);
 			
 			if(entity.second.has_component<AnimationsComponent<SpriteSheetAnimation>>())
 				root["entities"][entity.first]["spritesheet animations"] = serialize(entity.second.component<AnimationsComponent<SpriteSheetAnimation>>());
@@ -163,15 +163,15 @@ void GameState::saveWorld(const std::string& file)
 		{
 			for(size_t i{0}; i < planData.second.size(); ++i)
 			{
-				root["level"][planData.first][i]["origin"]["x"] = planData.second[i].origin.left/scale;
-				root["level"][planData.first][i]["origin"]["y"] = planData.second[i].origin.top/scale;
-				root["level"][planData.first][i]["origin"]["w"] = planData.second[i].origin.width/scale;
-				root["level"][planData.first][i]["origin"]["h"] = planData.second[i].origin.height/scale;
+				root["level"]["replaces"][planData.first][i]["origin"]["x"] = planData.second[i].origin.left/scale;
+				root["level"]["replaces"][planData.first][i]["origin"]["y"] = planData.second[i].origin.top/scale;
+				root["level"]["replaces"][planData.first][i]["origin"]["w"] = planData.second[i].origin.width/scale;
+				root["level"]["replaces"][planData.first][i]["origin"]["h"] = planData.second[i].origin.height/scale;
 				for(Json::ArrayIndex j{0}; j < planData.second[i].replaces.size(); ++j)
 				{
-					root["level"][planData.first][i]["replaces"][j]["x"] = planData.second[i].replaces[j].x/scale;
-					root["level"][planData.first][i]["replaces"][j]["y"] = planData.second[i].replaces[j].y/scale;
-					root["level"][planData.first][i]["replaces"][j]["z"] = planData.second[i].replaces[j].z/scale;
+					root["level"]["replaces"][planData.first][i]["replaces"][j]["x"] = planData.second[i].replaces[j].x/scale;
+					root["level"]["replaces"][planData.first][i]["replaces"][j]["y"] = planData.second[i].replaces[j].y/scale;
+					root["level"]["replaces"][planData.first][i]["replaces"][j]["z"] = planData.second[i].replaces[j].z/scale;
 				}
 			}
 		}
@@ -359,14 +359,14 @@ void GameState::initWorld(const std::string& file)
 					
 					//Load the texture
 					//Identifier of the texture, in format "level_plan_texture"
-					std::string textureIdentifier{fileTexture + "_" + groupOfReplacesName};
+					std::string textureIdentifier{fileTexture + "_" + groupOfReplacesName + "_" + std::to_string(i)};
 					//If the texture is not alreday loaded (first loading of the level)
 					if(not texManager.isLoaded(textureIdentifier))
 					{
 						getContext().eventManager.emit<LoadingStateChange>(float(1*100)/float(m_numberOfPlans+1) + (float(i*100)/float(groupOfReplaces.size()*(m_numberOfPlans+1))), LangManager::tr("Loading plan") + L" " + std::wstring(groupOfReplacesName.begin(), groupOfReplacesName.end()));
 						texManager.load<sf::IntRect>(textureIdentifier, path, originRect);
 					}
-					
+					std::cout << "load replace " << textureIdentifier << std::endl;
 					//Replaces
 					const Json::Value replaces = image["replaces"];
 					//For each replacing of the image
@@ -407,11 +407,10 @@ void GameState::initWorld(const std::string& file)
 				std::string fileTexture{m_levelIdentifier + "_" + std::to_string(i)};
 				std::string path{paths[getContext().parameters.scaleIndex] + "levels/" + m_levelIdentifier + "/" + fileTexture + ".png"};
 				unsigned int chunkSize{sf::Texture::getMaximumSize()};
-				//The length of the plan, relatively to the second.
+				//The length of the plan, relatively to the reference.
 				unsigned int planLength = (m_levelRect.width * pow(1.5, m_referencePlan - i))*getContext().parameters.scale;
 				//Number of chunks to load in this plan
 				unsigned int numberOfChunks{(planLength/chunkSize)+1};
-				//Path to the image to load
 				
 				for(unsigned int j{0}; j < numberOfChunks; ++j)
 				{
@@ -454,8 +453,8 @@ void GameState::initWorld(const std::string& file)
 				m_entities.emplace(entityName, getContext().entityManager.create());
 				
 				//sprite
-				if(entity.isMember("sprite"))
-					deserialize(entity["sprite"], m_entities[entityName].assign<SpriteComponent>(), texManager, scale);
+				if(entity.isMember("sprites"))
+					deserialize(entity["sprites"], m_entities[entityName].assign<SpriteComponent>(), texManager, scale);
 					
 				//body
 				if(entity.isMember("body"))

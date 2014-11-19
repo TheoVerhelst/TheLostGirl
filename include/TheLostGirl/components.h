@@ -90,6 +90,7 @@ struct FallComponent : public entityx::Component<FallComponent>
 {
 	bool inAir;                     ///< True when the entity falls, false otherwise.
 	unsigned short int contactCount;///< Number of contacts between the actor and the ground.
+	float fallingResistance;        ///< Resistance to falling.
 };
 
 /// The walk component.

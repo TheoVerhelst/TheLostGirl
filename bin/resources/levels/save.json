@@ -117,7 +117,6 @@
                      "friction" : 0,
                      "is sensor" : false,
                      "restitution" : 0,
-                     "type" : "polygon",
                      "vertices" : [
                         {
                            "x" : 99.99999955296519,
@@ -143,7 +142,6 @@
                      "is foot sensor" : true,
                      "is sensor" : true,
                      "restitution" : 0,
-                     "type" : "polygon",
                      "vertices" : [
                         {
                            "x" : 97.49999491497901,
@@ -184,9 +182,8 @@
             "move to right" : false
          },
          "fall" : {
-            "contact count" : 4,
-            "in air" : false
-         },
+            "falling resistance" : 0
+        },
          "health" : {
             "current health" : -6.58854866027832,
             "maximum health" : 100
@@ -194,7 +191,7 @@
          "jump" : {
             "strength" : 3
          },
-         "sprite" : {
+         "sprites" : {
             "arms" : {
                "identifier" : "arms",
                "position" : {
@@ -777,7 +774,7 @@
    },
    "level" : {
       "replaces" : {
-          "0" : [
+          "a" : [
              {
                 "origin" : {
                    "h" : 1074.37494396698,

@@ -209,6 +209,7 @@ void parse(Json::Value& value, const Json::Value& model, const std::string& valu
 			requireValues(model, modelName, {{"children", Json::arrayValue}});
 			parseArray(model["children"], modelName, Json::objectValue);
 			std::map<std::string, Json::ValueType> requiredChildren;
+			std::map<std::string, Json::ValueType> possibleChildren;
 			for(unsigned int i{0}; i < model["children"].size(); ++i)
 			{
 				Json::Value modelChild = model["children"][i];
@@ -222,11 +223,13 @@ void parse(Json::Value& value, const Json::Value& model, const std::string& valu
 				if(modelChild["required"].asBool())
 					//Add it to the required children map
 					requiredChildren.emplace(childName, strToType(modelChild["type"].asString()));
+				//In all case, add the child to the possible children map
+				possibleChildren.emplace(childName, strToType(modelChild["type"].asString()));
 				if(value.isMember(childName))
 					parse(value[childName], modelChild, valueName + "." + childName, modelName + "." + childName);
 			}
-			//Assert that all required children are defined in value
 			requireValues(value, valueName, requiredChildren);
+			parseObject(value, valueName, possibleChildren);
 		}
 	}
 	else if(model["type"].asString() == "array")

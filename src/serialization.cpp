@@ -231,8 +231,7 @@ Json::Value serialize(entityx::ComponentHandle<SkyComponent> component)
 Json::Value serialize(entityx::ComponentHandle<FallComponent> component)
 {
 	Json::Value ret;
-	ret["in air"] = component->inAir;
-	ret["contact count"] = component->contactCount;
+	ret["falling resistance"] = component->fallingResistance;
 	return ret;
 }
 
@@ -673,10 +672,7 @@ void deserialize(const Json::Value& value, entityx::ComponentHandle<SkyComponent
 
 void deserialize(const Json::Value& value, entityx::ComponentHandle<FallComponent> component)
 {
-	if(value.isMember("in air"))
-		component->inAir = value["in air"].asBool();
-	if(value.isMember("contact count"))
-		component->contactCount = value["contact count"].asUInt();
+	component->fallingResistance = value["falling resistance"].asFloat();
 }
 
 void deserialize(const Json::Value& value, entityx::ComponentHandle<WalkComponent> component)
