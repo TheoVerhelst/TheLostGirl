@@ -5,3 +5,4 @@ TheLostGirl.layout
 doxygen/
 bin/TheLostGirl
 bin/TheLostGirl-d
+bin/resources/levels/save.json
