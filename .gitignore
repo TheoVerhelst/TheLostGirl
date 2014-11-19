@@ -3,6 +3,4 @@ TheLostGirl.cbp
 TheLostGirl.depend
 TheLostGirl.layout
 doxygen/
-bin/TheLostGirl
-bin/TheLostGirl-d
-bin/resources/levels/save.json
+bin/resources/levels/

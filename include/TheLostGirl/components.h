@@ -76,6 +76,14 @@ struct ActorIDComponent : public entityx::Component<ActorIDComponent>
 	unsigned int ID;///< Identifier of the actor.
 };
 
+/// The ItemID component.
+/// Every items with the same ID will have the same skin,
+/// but can have differents stats.
+struct ItemIDComponent : public entityx::Component<ItemIDComponent>
+{
+	unsigned int ID;///< Identifier of the item.
+};
+
 /// The sky component
 /// It indicates that the entity represents the sky,
 /// and if it represent rather the day or the night.

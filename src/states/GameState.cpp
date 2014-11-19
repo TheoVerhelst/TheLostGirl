@@ -359,7 +359,7 @@ void GameState::initWorld(const std::string& file)
 					
 					//Load the texture
 					//Identifier of the texture, in format "level_plan_texture"
-					std::string textureIdentifier{fileTexture + "_" + groupOfReplacesName + "_" + std::to_string(i)};
+					std::string textureIdentifier{fileTexture + "_" + std::to_string(i)};
 					//If the texture is not alreday loaded (first loading of the level)
 					if(not texManager.isLoaded(textureIdentifier))
 					{

@@ -3,7 +3,6 @@
 
 #include <Box2D/Dynamics/b2WorldCallbacks.h>
 
-#include <TheLostGirl/contactListeners/ActorIDListener.h>
 #include <TheLostGirl/contactListeners/FallingListener.h>
 #include <TheLostGirl/State.h>
 
@@ -42,9 +41,8 @@ class ContactListener : public b2ContactListener
 		void PostSolve(b2Contact* contact, const b2ContactImpulse* impulse);
 	
 	private:
-		State::Context m_context;                ///< Current context of the application.
+		State::Context m_context;         ///< Current context of the application.
 		FallingListener m_fallingListener;///< The falling collision listener.
-		ActorIDListener m_actorIDListener;///< The actor ID collision listener.
 };
 
 #endif // CONTACTLISTENER_H
