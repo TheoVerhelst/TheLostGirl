@@ -11,6 +11,7 @@
 #include <SFML/Graphics/Sprite.hpp>
 #include <TheLostGirl/AnimationsManager.h>
 #include <TheLostGirl/ContactListener.h>
+#include <TheLostGirl/ContactFilter.h>
 
 //Forward declarations
 namespace sf
@@ -25,6 +26,7 @@ namespace entityx
 class State;
 class Context;
 class StateStack;
+struct Transform;
 
 /// State that effectively play the game.
 /// The game become really interesting here.
@@ -71,7 +73,7 @@ class GameState : public State
 		struct SceneReplaces
 		{
 			sf::IntRect origin;
-			std::vector<sf::Vector3f> replaces;
+			std::vector<Transform> replaces;
 		};
 		
 		/// Initialize the physic world.
@@ -87,7 +89,8 @@ class GameState : public State
 		std::unordered_map<std::string, entityx::Entity> m_sceneEntities;     ///< All scene entities.
 		std::map<std::string, std::vector<SceneReplaces>> m_sceneEntitiesData;///< A map containing data about scene entities.
 		std::vector<Joint> m_joints;                                          ///< A vector containing all informations about joints.
-		ContactListener m_contactListener;                                    ///< The falling listener.
+		ContactListener m_contactListener;                                    ///< The contact listener.
+		ContactFilter m_contactFilter;                                        ///< The contact filter.
 		float m_timeSpeed;                                                    ///< The speed of the time (usually 1.f). This influes only on the TimeSystem, not on physics!
 		bool m_loadingFinished;                                               ///< Indicate if the level loading is finished.
 		std::thread m_threadLoad;                                             ///< Thread launched when loading the level.

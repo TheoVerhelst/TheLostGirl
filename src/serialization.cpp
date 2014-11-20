@@ -145,7 +145,7 @@ Json::Value serialize(entityx::ComponentHandle<BodyComponent> component, float s
 	return ret;
 }
 
-Json::Value serialize(entityx::ComponentHandle<SpriteComponent> component, TextureManager& textureManager, float scale)
+Json::Value serialize(entityx::ComponentHandle<SpriteComponent> component, TextureManager& textureManager)
 {
 	Json::Value ret;
 	for(auto& spritePair : component->sprites)
@@ -160,12 +160,19 @@ Json::Value serialize(entityx::ComponentHandle<SpriteComponent> component, Textu
 		else if(tex == &textureManager.get("bow"))
 			ret[partName]["identifier"] = "bow";
 	}
-	for(auto& positionPair : component->worldPositions)
+	return ret;
+}
+
+Json::Value serialize(entityx::ComponentHandle<TransformComponent> component, float scale)
+{
+	Json::Value ret;
+	for(auto& transformPair : component->transforms)
 	{
-		const std::string partName{positionPair.first};
-		ret[partName]["position"]["x"] = positionPair.second.x/scale;
-		ret[partName]["position"]["y"] = positionPair.second.y/scale;
-		ret[partName]["position"]["z"] = positionPair.second.z;
+		const std::string partName{transformPair.first};
+		ret[partName]["transform"]["x"] = transformPair.second.x/scale;
+		ret[partName]["transform"]["y"] = transformPair.second.y/scale;
+		ret[partName]["transform"]["z"] = transformPair.second.z;
+		ret[partName]["transform"]["angle"] = transformPair.second.angle;
 	}
 	return ret;
 }
@@ -596,19 +603,25 @@ void deserialize(const Json::Value& value, entityx::ComponentHandle<BodyComponen
 	}
 }
 
-void deserialize(const Json::Value& value, entityx::ComponentHandle<SpriteComponent> component, TextureManager& textureManager, float scale)
+void deserialize(const Json::Value& value, entityx::ComponentHandle<SpriteComponent> component, TextureManager& textureManager)
 {
 	component->sprites.clear();
-	component->worldPositions.clear();
+	for(std::string& partName : value.getMemberNames())
+		component->sprites.emplace(partName, sf::Sprite(textureManager.get(value[partName]["identifier"].asString())));
+}
+
+void deserialize(const Json::Value& value, entityx::ComponentHandle<TransformComponent> component, float scale)
+{
+	component->transforms.clear();
 	for(std::string& partName : value.getMemberNames())
 	{
 		Json::Value part = value[partName];
-		component->sprites.emplace(partName, sf::Sprite(textureManager.get(part["identifier"].asString())));
-		sf::Vector3f position;
-		position.x = part["position"]["x"].asFloat()*scale;
-		position.y = part["position"]["y"].asFloat()*scale;
-		position.z = part["position"]["z"].asFloat();
-		component->worldPositions.emplace(partName, position);
+		Transform transform;
+		transform.x = part["transform"]["x"].asFloat()*scale;
+		transform.y = part["transform"]["y"].asFloat()*scale;
+		transform.z = part["transform"]["z"].asFloat();
+		transform.angle = part["transform"]["angle"].asFloat();
+		component->transforms.emplace(partName, transform);
 	}
 }
 

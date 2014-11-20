@@ -17,7 +17,7 @@ void PhysicsSystem::update(entityx::EntityManager& entityManager, entityx::Event
 	int32 positionIterations = 8;
 	m_world.Step(dt, velocityIterations, positionIterations);
 	BodyComponent::Handle bodyComponent;
-	SpriteComponent::Handle spriteComponent;
+	TransformComponent::Handle transformComponent;
 	WalkComponent::Handle walkComponent;
 	BendComponent::Handle bendComponent;
 	//Update the walkers
@@ -49,23 +49,21 @@ void PhysicsSystem::update(entityx::EntityManager& entityManager, entityx::Event
 		angleError = jointBow->GetJointAngle() - angleTarget;
 		jointBow->SetMotorSpeed(-gain * angleError);
 	}
-	//Update the sprite transformation according to the one of the b2Body.
-	for(auto entity : entityManager.entities_with_components(bodyComponent, spriteComponent))
+	//Update the transformations according to the one of the b2Body.
+	for(auto entity : entityManager.entities_with_components(bodyComponent, transformComponent))
 	{
-		std::map<std::string, sf::Sprite>& sprites(spriteComponent->sprites);
-		std::map<std::string, sf::Vector3f>& worldPositions(spriteComponent->worldPositions);
+		std::map<std::string, Transform>& transforms(transformComponent->transforms);
 		std::map<std::string, b2Body*>& bodies(bodyComponent->bodies);
 		for(auto& bodyPair : bodies)
 		{
-			//If the body exists in sprites and positions maps
-			if(sprites.find(bodyPair.first) != sprites.end()
-				and worldPositions.find(bodyPair.first) != worldPositions.end())
+			//If the name of the body exists in the transforms maps
+			if(transforms.find(bodyPair.first) != transforms.end())
 			{
 				b2Vec2 pos = bodyPair.second->GetPosition();
 				float32 angle = bodyPair.second->GetAngle();
-				worldPositions[bodyPair.first].x = pos.x * m_parameters.pixelScale;
-				worldPositions[bodyPair.first].y = pos.y * m_parameters.pixelScale;
-				sprites[bodyPair.first].setRotation(angle*180/b2_pi);
+				transforms[bodyPair.first].x = pos.x * m_parameters.pixelScale;
+				transforms[bodyPair.first].y = pos.y * m_parameters.pixelScale;
+				transforms[bodyPair.first].angle = angle*180/b2_pi;
 			}
 		}
 	}

@@ -32,8 +32,24 @@ struct BodyComponent : public entityx::Component<BodyComponent>
 /// For more information about sprites, see the SFML doc.
 struct SpriteComponent : public entityx::Component<SpriteComponent>
 {
-	std::map<std::string, sf::Sprite> sprites;        ///< Sprites to draw.
-	std::map<std::string, sf::Vector3f> worldPositions;///< Indicates the target position in the world, and the layer the sprite should be drawn.
+	std::map<std::string, sf::Sprite> sprites;///< Sprites to draw.
+};
+
+struct Transform
+{
+	float x;
+	float y;
+	float z;
+	float angle;
+};
+
+/// World transform component.
+/// It indicates where the entity should be located in the world, for each part of the entity,
+/// and the angle of the entity.
+/// The real position of the sprite is computed by the ScrollingSystem.
+struct TransformComponent : public entityx::Component<TransformComponent>
+{
+	std::map<std::string, Transform> transforms;///< Indicates the target position in the world, the layer the sprite should be drawn and the angle.
 };
 
 /// AnimationsManager component.

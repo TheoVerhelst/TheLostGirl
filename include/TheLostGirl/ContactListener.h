@@ -9,7 +9,6 @@
 /// Collision listener.
 /// - Handle collisions between falling actors and others entities 
 /// to set the right animation and update the FallComponent.
-/// - Disable collision between multiples body of the same actor.
 class ContactListener : public b2ContactListener
 {
 	public:

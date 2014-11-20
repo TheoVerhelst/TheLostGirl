@@ -11,13 +11,13 @@ void SkySystem::update(entityx::EntityManager& entityManager, entityx::EventMana
 {
 	SkyComponent::Handle skyComponent;
 	SpriteComponent::Handle spriteComponent;
+	TransformComponent::Handle transformComponent;
 	spentTime = remainder(spentTime, 600.f);//Get elapsed time since midnight
 	
-	for(auto entity : entityManager.entities_with_components(skyComponent, spriteComponent))
+	for(auto entity : entityManager.entities_with_components(skyComponent, spriteComponent, transformComponent))
 	{
 		for(auto& spritePair : spriteComponent->sprites)
 		{
-			spritePair.second.setRotation(spentTime*0.6f);
 			if(skyComponent->day)
 			{
 				if(spentTime < 112.5 or spentTime >= 487.5)//Night
@@ -41,5 +41,7 @@ void SkySystem::update(entityx::EntityManager& entityManager, entityx::EventMana
 					spritePair.second.setColor(sf::Color(255, 255, 255, ((spentTime - 412.5) / 75) * 255));
 			}
 		}
+		for(auto& transformPair : transformComponent->transforms)
+			transformPair.second.z = spentTime*0.6f;
 	}
 }

@@ -4,6 +4,7 @@
 #include <Box2D/Dynamics/b2Body.h>
 #include <Box2D/Dynamics/Contacts/b2Contact.h>
 #include <entityx/Entity.h>
+
 #include <TheLostGirl/components.h>
 #include <TheLostGirl/AnimationsManager.h>
 #include <TheLostGirl/events.h>

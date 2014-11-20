@@ -32,6 +32,7 @@ GameState::GameState(StateStack& stack, Context context) :
 	m_sceneEntities(),
 	m_sceneEntitiesData(),
 	m_contactListener(getContext()),
+	m_contactFilter(),
 	m_timeSpeed{1.f},
 	m_threadLoad(),
 	m_levelIdentifier{""},
@@ -109,7 +110,10 @@ void GameState::saveWorld(const std::string& file)
 				root["entities"][entity.first]["body"] = serialize(entity.second.component<BodyComponent>(), uniqScale);
 			
 			if(entity.second.has_component<SpriteComponent>())
-				root["entities"][entity.first]["sprites"] = serialize(entity.second.component<SpriteComponent>(), getContext().textureManager, scale);
+				root["entities"][entity.first]["sprites"] = serialize(entity.second.component<SpriteComponent>(), getContext().textureManager);
+			
+			if(entity.second.has_component<TransformComponent>())
+				root["entities"][entity.first]["transforms"] = serialize(entity.second.component<TransformComponent>(), scale);
 			
 			if(entity.second.has_component<AnimationsComponent<SpriteSheetAnimation>>())
 				root["entities"][entity.first]["spritesheet animations"] = serialize(entity.second.component<AnimationsComponent<SpriteSheetAnimation>>());
@@ -376,24 +380,27 @@ void GameState::initWorld(const std::string& file)
 						//Identifier of the entity, in format "level_plan_texture_replace"
 						std::string replaceIdentifier{textureIdentifier + "_" + std::to_string(j)};
 						//Position where the frame should be replaced
-						sf::Vector3f replacePosition;
-						replacePosition.x = replace["x"].asFloat()*getContext().parameters.scale;
-						replacePosition.y = replace["y"].asFloat()*getContext().parameters.scale;
-						replacePosition.z = replace["z"].asFloat()*getContext().parameters.scale;
+						Transform replaceTransform;
+						replaceTransform.x = replace["x"].asFloat()*getContext().parameters.scale;
+						replaceTransform.y = replace["y"].asFloat()*getContext().parameters.scale;
+						replaceTransform.z = replace["z"].asFloat();
+						replaceTransform.angle = replace["angle"].asFloat();
 						
-						replacesData.replaces.push_back(replacePosition);
+						replacesData.replaces.push_back(replaceTransform);
 						
 						//Create an entity
 						m_sceneEntities.emplace(replaceIdentifier, getContext().entityManager.create());
 						//Create a sprite with the loaded texture
 						//Assign the sprite to the entity
 						sf::Sprite replaceSpr(texManager.get(textureIdentifier));
-						replaceSpr.setPosition(replacePosition.x, replacePosition.y);
+						replaceSpr.setPosition(replaceTransform.x, replaceTransform.y);
+						replaceSpr.setRotation(replaceTransform.angle);
 						std::map<std::string, sf::Sprite> sprites{{"main", replaceSpr}};
-						std::map<std::string, sf::Vector3f> worldPositions{{"main", replacePosition}};
+						std::map<std::string, Transform> transforms{{"main", replaceTransform}};
 						SpriteComponent::Handle sprComp = m_sceneEntities[replaceIdentifier].assign<SpriteComponent>();
 						sprComp->sprites = sprites;
-						sprComp->worldPositions = worldPositions;
+						TransformComponent::Handle trsfComp = m_sceneEntities[replaceIdentifier].assign<TransformComponent>();
+						trsfComp->transforms = transforms;
 						CategoryComponent::Handle catComp = m_sceneEntities[replaceIdentifier].assign<CategoryComponent>();
 						catComp->category = Category::Scene;
 					}
@@ -433,10 +440,11 @@ void GameState::initWorld(const std::string& file)
 					sf::Sprite chunkSpr(texManager.get(textureIdentifier));
 					chunkSpr.setPosition(j*chunkSize, 0);
 					std::map<std::string, sf::Sprite> sprites{{"main", chunkSpr}};
-					std::map<std::string, sf::Vector3f> worldPositions{{"main", {static_cast<float>(j*chunkSize), 0, static_cast<float>(i)}}};
+					std::map<std::string, Transform> transforms{{"main", {static_cast<float>(j*chunkSize), 0, static_cast<float>(i), 0}}};
 					SpriteComponent::Handle sprComp = m_sceneEntities[textureIdentifier].assign<SpriteComponent>();
 					sprComp->sprites = sprites;
-					sprComp->worldPositions = worldPositions;
+					TransformComponent::Handle trsfComp = m_sceneEntities[textureIdentifier].assign<TransformComponent>();
+					trsfComp->transforms = transforms;
 					CategoryComponent::Handle catComp = m_sceneEntities[textureIdentifier].assign<CategoryComponent>();
 					catComp->category = Category::Scene;
 				}
@@ -454,7 +462,11 @@ void GameState::initWorld(const std::string& file)
 				
 				//sprite
 				if(entity.isMember("sprites"))
-					deserialize(entity["sprites"], m_entities[entityName].assign<SpriteComponent>(), texManager, scale);
+					deserialize(entity["sprites"], m_entities[entityName].assign<SpriteComponent>(), texManager);
+				
+				//tranforms
+				if(entity.isMember("transforms"))
+					deserialize(entity["transforms"], m_entities[entityName].assign<TransformComponent>(), scale);
 					
 				//body
 				if(entity.isMember("body"))
@@ -684,10 +696,11 @@ void GameState::initWorld(const std::string& file)
 		daySpr.setOrigin(origin);
 		//Assign the sprite to the entity, and set its z-ordinate to positive infinity
 		std::map<std::string, sf::Sprite> daySprites{{"main", daySpr}};
-		std::map<std::string, sf::Vector3f> dayWorldPositions{{"main", {position.x, position.y, std::numeric_limits<float>::infinity()}}};
+		std::map<std::string, Transform> dayTransforms{{"main", {position.x, position.y, std::numeric_limits<float>::infinity(), 0}}};
 		SpriteComponent::Handle sprComp = m_sceneEntities[dayIdentifier].assign<SpriteComponent>();
 		sprComp->sprites = daySprites;
-		sprComp->worldPositions = dayWorldPositions;
+		TransformComponent::Handle trsfComp = m_sceneEntities[dayIdentifier].assign<TransformComponent>();
+		trsfComp->transforms = dayTransforms;
 		CategoryComponent::Handle catComp = m_sceneEntities[dayIdentifier].assign<CategoryComponent>();
 		catComp->category = Category::Scene;
 		SkyComponent::Handle skyComp = m_sceneEntities[dayIdentifier].assign<SkyComponent>();
@@ -708,10 +721,11 @@ void GameState::initWorld(const std::string& file)
 		nightSpr.setOrigin(origin);
 		//Assign the sprite to the entity, and set its z-ordinate to positive infinity
 		std::map<std::string, sf::Sprite> nightSprites{{"main", nightSpr}};
-		std::map<std::string, sf::Vector3f> nightWorldPositions{{"main", {position.x, position.y, std::numeric_limits<float>::infinity()}}};
+		std::map<std::string, Transform> nightTransforms{{"main", {position.x, position.y, std::numeric_limits<float>::infinity(), 0}}};
 		sprComp = m_sceneEntities[nightIdentifier].assign<SpriteComponent>();
 		sprComp->sprites = nightSprites;
-		sprComp->worldPositions = nightWorldPositions;
+		trsfComp = m_sceneEntities[nightIdentifier].assign<TransformComponent>();
+		trsfComp->transforms = nightTransforms;
 		catComp = m_sceneEntities[nightIdentifier].assign<CategoryComponent>();
 		catComp->category = Category::Scene;
 		skyComp = m_sceneEntities[nightIdentifier].assign<SkyComponent>();
@@ -736,6 +750,7 @@ void GameState::initWorld(const std::string& file)
 	}
 	getContext().player.handleInitialInputState(getContext().commandQueue);
 	getContext().world.SetContactListener(&m_contactListener);
+	getContext().world.SetContactFilter(&m_contactFilter);
 	getContext().systemManager.system<ScrollingSystem>()->setLevelData(m_levelRect, m_referencePlan);
 	requestStackPop();
 	requestStackPush(States::HUD);

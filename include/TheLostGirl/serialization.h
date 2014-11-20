@@ -22,7 +22,12 @@ Json::Value serialize(entityx::ComponentHandle<BodyComponent> component, float s
 /// Serialize the given component.
 /// \param component Component to serialize
 /// \return A Json value.
-Json::Value serialize(entityx::ComponentHandle<SpriteComponent> component, TextureManager& textureManager, float scale);
+Json::Value serialize(entityx::ComponentHandle<SpriteComponent> component, TextureManager& textureManager);
+
+/// Serialize the given component.
+/// \param component Component to serialize
+/// \return A Json value.
+Json::Value serialize(entityx::ComponentHandle<TransformComponent> component, float scale);
 
 /// Serialize the given component.
 /// \param component Component to serialize
@@ -87,7 +92,12 @@ void deserialize(const Json::Value& value, entityx::ComponentHandle<BodyComponen
 /// Deserialize the given \a value in the given \a component.
 /// \param component Component in wich deserialize the data
 /// \param The Json value containing the data.
-void deserialize(const Json::Value& value, entityx::ComponentHandle<SpriteComponent> component, TextureManager& textureManager, float scale);
+void deserialize(const Json::Value& value, entityx::ComponentHandle<SpriteComponent> component, TextureManager& textureManager);
+
+/// Deserialize the given \a value in the given \a component.
+/// \param component Component in wich deserialize the data
+/// \param The Json value containing the data.
+void deserialize(const Json::Value& value, entityx::ComponentHandle<TransformComponent> component, float scale);
 
 /// Deserialize the given \a value in the given \a component.
 /// \param component Component in wich deserialize the data

@@ -137,18 +137,24 @@
                                         [
                                             {
                                                 "name" : "x",
-                                                "type" : "int",
+                                                "type" : "real",
                                                 "required" : true
                                             },
                                             {
                                                 "name" : "y",
-                                                "type" : "int",
+                                                "type" : "real",
                                                 "required" : true
                                             },
                                             {
                                                 "name" : "z",
-                                                "type" : "int",
+                                                "type" : "real",
                                                 "required" : true
+                                            },
+                                            {
+                                                "name" : "angle",
+                                                "type" : "real",
+                                                "required" : false,
+                                                "default value" : 0
                                             }
                                         ]
                                     }
@@ -346,9 +352,23 @@
                                     "type" : "string",
                                     "required" : true,
                                     "possible values" : ["archer", "bow", "arms"]
-                                },
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        "name" : "transforms",
+                        "type" : "object",
+                        "free children names" : true,
+                        "required" : false,
+                        "children":
+                        {
+                            "type" : "object",
+                            "free children names" : false,
+                            "children":
+                            [
                                 {
-                                    "name" : "position",
+                                    "name" : "transform",
                                     "type" : "object",
                                     "free children names" : false,
                                     "required" : false,
@@ -368,6 +388,12 @@
                                             "name" : "z",
                                             "type" : "real",
                                             "required" : true
+                                        },
+                                        {
+                                            "name" : "angle",
+                                            "type" : "real",
+                                            "required" : false,
+                                            "default value" : 0
                                         }
                                     ]
                                 }

@@ -20,6 +20,7 @@ void ScrollingSystem::update(entityx::EntityManager& entityManager, entityx::Eve
 		CategoryComponent::Handle categoryComponent;
 		WalkComponent::Handle walkComponent;
 		SpriteComponent::Handle spriteComponent;
+		TransformComponent::Handle transformComponent;
 		sf::Vector2f playerPosition;
 		bool found{false};
 		for(auto entity : entityManager.entities_with_components(bodyComponent,
@@ -61,22 +62,23 @@ void ScrollingSystem::update(entityx::EntityManager& entityManager, entityx::Eve
 			view.setCenter(playerPosition);
 			m_window.setView(view);
 			
-			//Assign position on every sprite
-			for(auto entity : entityManager.entities_with_components(spriteComponent))
+			//Assign transform on every sprite
+			for(auto entity : entityManager.entities_with_components(spriteComponent, transformComponent))
 			{
 				//The x-ordinate of the left border of the screen.
 				float xScreen = playerPosition.x - xmin;
 				std::map<std::string, sf::Sprite>& sprites(spriteComponent->sprites);
-				std::map<std::string, sf::Vector3f>& worldPositions(spriteComponent->worldPositions);
-				//For each position in the map
-				for(auto& positionPair : worldPositions)
+				std::map<std::string, Transform>& transforms(transformComponent->transforms);
+				//For each transform in the map
+				for(auto& transformPair : transforms)
 				{
 					//If the associated sprite exists
-					if(sprites.find(positionPair.first) != sprites.end())
+					if(sprites.find(transformPair.first) != sprites.end())
 					{
 						//The abscissa of the entity on the screen, relatively to the reference plan and the position of the player
-						float xScaled = positionPair.second.x + xScreen - (xScreen * pow(1.5, m_referencePlan - positionPair.second.z));
-						sprites[positionPair.first].setPosition(xScaled, positionPair.second.y);
+						float xScaled = transformPair.second.x + xScreen - (xScreen * pow(1.5, m_referencePlan - transformPair.second.z));
+						sprites[transformPair.first].setPosition(xScaled, transformPair.second.y);
+						sprites[transformPair.first].setRotation(transformPair.second.angle);
 					}
 				}
 			}
