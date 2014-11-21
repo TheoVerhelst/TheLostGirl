@@ -26,7 +26,7 @@ struct Mover : public Action
 	/// Overload of the () operator.
 	/// \param entity Entity to move.
 	/// \param dt Elapsed time in the last game frame.
-	virtual void operator()(entityx::Entity& entity, double dt) const;
+	virtual void operator()(entityx::Entity entity, double dt) const;
 	
 	Direction direction;///< Indicates the direction of the movement.
 	bool start;         ///< True if the movement starts, false if it stops.
@@ -44,7 +44,7 @@ struct Jumper : public Action
 	/// Overload of the () operator.
 	/// \param entity Entity to move.
 	/// \param dt Elapsed time in the last game frame.
-	virtual void operator()(entityx::Entity& entity, double dt) const;
+	virtual void operator()(entityx::Entity entity, double dt) const;
 };
 
 /// Structure that bend the given bow.
@@ -64,7 +64,7 @@ struct BowBender : public Action
 	/// Overload of the () operator.
 	/// \param entity Entity to move.
 	/// \param dt Elapsed time in the last game frame.
-	virtual void operator()(entityx::Entity& entity, double dt) const;
+	virtual void operator()(entityx::Entity entity, double dt) const;
 	
 	float angle;///< The angle of the bending.
 	float power;///< The power of the bending.

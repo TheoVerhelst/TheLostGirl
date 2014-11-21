@@ -14,10 +14,6 @@ namespace sf
 	class Rect;
 	typedef Rect<int> IntRect;
 }
-namespace entityx
-{
-	class Entity;
-}
 namespace Json
 {
 	class Value;
@@ -56,7 +52,7 @@ class SpriteSheetAnimation
 		};
 		
 		/// Constructor.
-		/// \param object Object to animate.
+		/// \param sprite Sprite to animate.
 		SpriteSheetAnimation(sf::Sprite& sprite, State::Context context);
 		
 		/// Registers a new frame.
@@ -69,9 +65,8 @@ class SpriteSheetAnimation
 		/// \param duration Relative duration of the frame.
 		void addFrame(const sf::IntRect& rect, float duration);
 		
-		/// Overload of the () operator.
-		/// Call this operator apply the animation to the given sprite.
-		/// In fact, it just search wich rect to apply the the texture of the sprite.
+		/// Apply the animation to the sprite passed as argument in the constructor.
+		/// In fact, it just search wich rect to apply to the texture of the sprite.
 		/// \param sprite Sprite on wich to apply the animation.
 		/// \param progress Progress of the animation to apply.
 		void animate(float progress);

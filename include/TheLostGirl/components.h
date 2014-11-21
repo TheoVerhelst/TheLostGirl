@@ -47,6 +47,9 @@ struct Transform
 /// It indicates where the entity should be located in the world, for each part of the entity,
 /// and the angle of the entity.
 /// The real position of the sprite is computed by the ScrollingSystem.
+/// This bind position and angle between sprites and b2Body, but an entity can have only one of them.
+/// In all case, if an entity have a SpriteComponent or a BodyComponent, it must have a TransformComponent,
+/// and a transform must exists in the transforms map for every body/sprite of the entity.
 struct TransformComponent : public entityx::Component<TransformComponent>
 {
 	std::map<std::string, Transform> transforms;///< Indicates the target position in the world, the layer the sprite should be drawn and the angle.

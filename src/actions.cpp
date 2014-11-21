@@ -15,7 +15,7 @@ Mover::Mover(Direction _direction, bool _start):
 Mover::~Mover()
 {}
 		
-void Mover::operator()(entityx::Entity& entity, double) const
+void Mover::operator()(entityx::Entity entity, double) const
 {
 	std::string directionStr;
 	std::string oppDirectionStr;
@@ -245,7 +245,7 @@ Jumper::Jumper()
 Jumper::~Jumper()
 {}
 
-void Jumper::operator()(entityx::Entity& entity, double) const
+void Jumper::operator()(entityx::Entity entity, double) const
 {
 	if(entity.has_component<AnimationsComponent<SpriteSheetAnimation>>()
 		and entity.has_component<BodyComponent>()
@@ -292,7 +292,7 @@ BowBender::BowBender(float _angle, float _power):
 BowBender::~BowBender()
 {}
 
-void BowBender::operator()(entityx::Entity& entity, double) const
+void BowBender::operator()(entityx::Entity entity, double) const
 {
 	if(entity.has_component<BendComponent>()
 		and entity.has_component<AnimationsComponent<SpriteSheetAnimation>>()
