@@ -87,7 +87,7 @@ Json::Value serialize(entityx::ComponentHandle<StaminaComponent> component);
 /// Deserialize the given \a value in the given \a component.
 /// \param component Component in wich deserialize the data
 /// \param The Json value containing the data.
-void deserialize(const Json::Value& value, entityx::ComponentHandle<BodyComponent> component, b2World& world, float scale);
+void deserialize(const Json::Value& value, entityx::ComponentHandle<BodyComponent> component, entityx::ComponentHandle<TransformComponent> transformComponent, b2World& world, float scale);
 
 /// Deserialize the given \a value in the given \a component.
 /// \param component Component in wich deserialize the data

@@ -42,6 +42,6 @@ void SkySystem::update(entityx::EntityManager& entityManager, entityx::EventMana
 			}
 		}
 		for(auto& transformPair : transformComponent->transforms)
-			transformPair.second.z = spentTime*0.6f;
+			transformPair.second.angle = spentTime*0.6f;
 	}
 }

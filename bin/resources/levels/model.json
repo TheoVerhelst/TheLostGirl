@@ -518,12 +518,6 @@
                                     "default value" : true
                                 },
                                 {
-                                    "name" : "angle",
-                                    "type" : "real",
-                                    "required" : false,
-                                    "default value" : 0
-                                },
-                                {
                                     "name" : "angular damping",
                                     "type" : "real",
                                     "required" : false,
@@ -931,31 +925,14 @@
                                         {
                                             "name" : "x",
                                             "type" : "real",
-                                            "required" : true
+                                            "required" : false,
+                                            "default value" : 0
                                         },
                                         {
                                             "name" : "y",
                                             "type" : "real",
-                                            "required" : true
-                                        }
-                                    ]
-                                },
-                                {
-                                    "name" : "position",
-                                    "type" : "object",
-                                    "required" : false,
-                                    "free children names" : false,
-                                    "children" :
-                                    [
-                                        {
-                                            "name" : "x",
-                                            "type" : "real",
-                                            "required" : true
-                                        },
-                                        {
-                                            "name" : "y",
-                                            "type" : "real",
-                                            "required" : true
+                                            "required" : false,
+                                            "default value" : 0
                                         }
                                     ]
                                 },
