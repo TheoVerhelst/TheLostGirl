@@ -18,6 +18,7 @@
 #include <TheLostGirl/ResourceManager.h>
 #include <TheLostGirl/Player.h>
 #include <TheLostGirl/SpriteSheetAnimation.h>
+#include <TheLostGirl/SkyAnimation.h>
 #include <TheLostGirl/Parameters.h>
 #include <TheLostGirl/functions.h>
 #include <TheLostGirl/events.h>
@@ -476,7 +477,6 @@ void GameState::initWorld(const std::string& file)
 					getContext().eventManager.emit<LoadingStateChange>(float(1*100)/float(m_numberOfPlans+1) + (float(i*100)/float(groupOfReplaces.size()*(m_numberOfPlans+1))), LangManager::tr("Loading plan") + L" " + std::wstring(groupOfReplacesName.begin(), groupOfReplacesName.end()));
 					texManager.load<sf::IntRect>(textureIdentifier, path, originRect);
 				}
-				std::cout << "load replace " << textureIdentifier << std::endl;
 				//Replaces
 				const Json::Value replaces = image["replaces"];
 				//For each replacing of the image
@@ -731,24 +731,11 @@ void GameState::initWorld(const std::string& file)
 			getContext().eventManager.emit<LoadingStateChange>(float(m_numberOfPlans*100)/float(m_numberOfPlans+1), LangManager::tr("Loading day sky"));
 			texManager.load(dayIdentifier, paths[getContext().parameters.scaleIndex] + "day.png");
 		}
-		//Create an entity
-		m_sceneEntities.emplace(dayIdentifier, getContext().entityManager.create());
 		//Create a sprite with the loaded texture
 		sf::Sprite daySpr(texManager.get(dayIdentifier));
 		//Assign origin of the sprite to the center of the day image
 		daySpr.setOrigin(origin);
-		//Assign the sprite to the entity, and set its z-ordinate to positive infinity
-		std::map<std::string, sf::Sprite> daySprites{{"main", daySpr}};
-		std::map<std::string, Transform> dayTransforms{{"main", {position.x, position.y, std::numeric_limits<float>::infinity(), 0}}};
-		SpriteComponent::Handle sprComp = m_sceneEntities[dayIdentifier].assign<SpriteComponent>();
-		sprComp->sprites = daySprites;
-		TransformComponent::Handle trsfComp = m_sceneEntities[dayIdentifier].assign<TransformComponent>();
-		trsfComp->transforms = dayTransforms;
-		CategoryComponent::Handle catComp = m_sceneEntities[dayIdentifier].assign<CategoryComponent>();
-		catComp->category = Category::Scene;
-		SkyComponent::Handle skyComp = m_sceneEntities[dayIdentifier].assign<SkyComponent>();
-		skyComp->day = true;
-	
+		
 		//Load the night sky
 		const std::string nightIdentifier{"night sky"};
 		if(not texManager.isLoaded(nightIdentifier))
@@ -756,23 +743,28 @@ void GameState::initWorld(const std::string& file)
 			getContext().eventManager.emit<LoadingStateChange>(float(m_numberOfPlans*100 + 50)/float(m_numberOfPlans+1), LangManager::tr("Loading night sky"));
 			texManager.load(nightIdentifier, paths[getContext().parameters.scaleIndex] + "night.png");
 		}
-		//Create an entity
-		m_sceneEntities.emplace(nightIdentifier, getContext().entityManager.create());
 		//Create a sprite with the loaded texture
 		sf::Sprite nightSpr(texManager.get(nightIdentifier));
 		//Assign origin of the sprite to the center of the night image
 		nightSpr.setOrigin(origin);
+		
+		//Create an entity
+		m_sceneEntities.emplace("sky", getContext().entityManager.create());
 		//Assign the sprite to the entity, and set its z-ordinate to positive infinity
-		std::map<std::string, sf::Sprite> nightSprites{{"main", nightSpr}};
-		std::map<std::string, Transform> nightTransforms{{"main", {position.x, position.y, std::numeric_limits<float>::infinity(), 0}}};
-		sprComp = m_sceneEntities[nightIdentifier].assign<SpriteComponent>();
-		sprComp->sprites = nightSprites;
-		trsfComp = m_sceneEntities[nightIdentifier].assign<TransformComponent>();
-		trsfComp->transforms = nightTransforms;
-		catComp = m_sceneEntities[nightIdentifier].assign<CategoryComponent>();
+		std::map<std::string, sf::Sprite> skySprites{{"day", daySpr}, {"night", nightSpr}};
+		std::map<std::string, Transform> skyTransforms{{"day", {position.x, position.y, std::numeric_limits<float>::infinity(), 0}},
+														{"night", {position.x, position.y, std::numeric_limits<float>::infinity(), 0}}};
+		SpriteComponent::Handle sprComp = m_sceneEntities["sky"].assign<SpriteComponent>();
+		sprComp->sprites = skySprites;
+		TransformComponent::Handle trsfComp = m_sceneEntities["sky"].assign<TransformComponent>();
+		trsfComp->transforms = skyTransforms;
+		CategoryComponent::Handle catComp = m_sceneEntities["sky"].assign<CategoryComponent>();
 		catComp->category = Category::Scene;
-		skyComp = m_sceneEntities[nightIdentifier].assign<SkyComponent>();
-		skyComp->day = false;
+		AnimationsComponent<SkyAnimation>::Handle skyAnimationsComp = m_sceneEntities["sky"].assign<AnimationsComponent<SkyAnimation>>();
+		skyAnimationsComp->animationsManagers.emplace("main", AnimationsManager<SkyAnimation>());
+		//Add the animation, this is a sky animation, the duration is 600 seconds (1 day), and it loops.
+		skyAnimationsComp->animationsManagers["main"].addAnimation("day/night cycle", SkyAnimation(m_sceneEntities["sky"]), 0, sf::seconds(600), true);
+		skyAnimationsComp->animationsManagers["main"].play("day/night cycle");
 	}
 	catch(std::runtime_error& e)
 	{

@@ -18,14 +18,10 @@ void ActionsSystem::update(entityx::EntityManager& entityManager, entityx::Event
 		if(command.targetIsSpecific)
 			command.action(*(command.entity), dt);
 		else
-		{
 			for(auto entity : entityManager.entities_with_components(categoryComponent))
-			{
 				//On vérifie si l'entité correspond à la commande, si oui on fait l'action
 				if(categoryComponent->category & command.category)
 					command.action(entity, dt);
-			}
-		}
 		m_commandQueue.pop();
 	}
 }

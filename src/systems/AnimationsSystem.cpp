@@ -6,12 +6,14 @@
 
 #include <TheLostGirl/components.h>
 #include <TheLostGirl/AnimationsManager.h>
+#include <TheLostGirl/SkyAnimation.h>
 
 #include <TheLostGirl/systems/AnimationsSystem.h>
 
 void AnimationsSystem::update(entityx::EntityManager& entityManager, entityx::EventManager&, double dt)
 {
 	AnimationsComponent<SpriteSheetAnimation>::Handle animationsComponent;
+	AnimationsComponent<SkyAnimation>::Handle skyAnimationsComponent;
 	SpriteComponent::Handle spriteComponent;
 	FallComponent::Handle fallComponent;
 	BodyComponent::Handle bodyComponent;
@@ -47,5 +49,11 @@ void AnimationsSystem::update(entityx::EntityManager& entityManager, entityx::Ev
 	for(auto entity : entityManager.entities_with_components(animationsComponent))
 		//For each animations manager of the entity
 		for(auto& animationsPair : animationsComponent->animationsManagers)
+			animationsPair.second.update(sf::seconds(dt));
+	
+	//Update the AnimationsManager components
+	for(auto entity : entityManager.entities_with_components(skyAnimationsComponent))
+		//For each animations manager of the entity
+		for(auto& animationsPair : skyAnimationsComponent->animationsManagers)
 			animationsPair.second.update(sf::seconds(dt));
 }
