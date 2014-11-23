@@ -7,7 +7,6 @@
 #include <TheLostGirl/systems/PhysicsSystem.h>
 #include <TheLostGirl/systems/RenderSystem.h>
 #include <TheLostGirl/systems/ScrollingSystem.h>
-#include <TheLostGirl/systems/SkySystem.h>
 #include <TheLostGirl/systems/TimeSystem.h>
 
 #endif // SYSTEMS_H

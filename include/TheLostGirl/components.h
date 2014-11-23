@@ -35,12 +35,14 @@ struct SpriteComponent : public entityx::Component<SpriteComponent>
 	std::map<std::string, sf::Sprite> sprites;///< Sprites to draw.
 };
 
+/// Data about the world position of an entity.
+/// This is intented to be used both by b2Body and sf::Sprite.
 struct Transform
 {
-	float x;
-	float y;
-	float z;
-	float angle;
+	float x;///< X-ordinate.
+	float y;///< Y-ordinate.
+	float z;///< Number of the plan.
+	float angle;///< Angle of the entity.
 };
 
 /// World transform component.
@@ -95,20 +97,14 @@ struct ActorIDComponent : public entityx::Component<ActorIDComponent>
 	unsigned int ID;///< Identifier of the actor.
 };
 
-/// The ItemID component.
-/// Every items with the same ID will have the same skin,
-/// but can have differents stats.
-struct ItemIDComponent : public entityx::Component<ItemIDComponent>
+/// The Item component.
+/// Two items with the same ID are the same item.
+/// The type represents what kind of item it is.
+/// The icon of the item must have a name like xxx.png if the type of the item is xxx.
+struct ItemComponent : public entityx::Component<ItemComponent>
 {
-	unsigned int ID;///< Identifier of the item.
-};
-
-/// The sky component
-/// It indicates that the entity represents the sky,
-/// and if it represent rather the day or the night.
-struct SkyComponent : public entityx::Component<SkyComponent>
-{
-	bool day;///< True if it represent the day, false if it represents the night.
+	unsigned int ID; ///< Identifier of the item.
+	std::string type;///< Type of item (dark bow, simple wood arrow, ...)
 };
 
 /// Falling component.

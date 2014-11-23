@@ -223,11 +223,6 @@ Json::Value serialize(entityx::ComponentHandle<ActorIDComponent> component)
 	return component->ID;
 }
 
-Json::Value serialize(entityx::ComponentHandle<SkyComponent> component)
-{
-	return component->day;
-}
-
 Json::Value serialize(entityx::ComponentHandle<FallComponent> component)
 {
 	Json::Value ret;
@@ -652,11 +647,6 @@ void deserialize(const Json::Value& value, entityx::ComponentHandle<CategoryComp
 void deserialize(const Json::Value& value, entityx::ComponentHandle<ActorIDComponent> component)
 {
 	component->ID = value.asUInt();
-}
-
-void deserialize(const Json::Value& value, entityx::ComponentHandle<SkyComponent> component)
-{
-	component->day = value.asBool();
 }
 
 void deserialize(const Json::Value& value, entityx::ComponentHandle<FallComponent> component)

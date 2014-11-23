@@ -156,7 +156,6 @@ void Application::registerSystems()
 	m_systemManager.add<DragAndDropSystem>(m_window, m_commandQueue);
 	m_systemManager.add<ScrollingSystem>(m_window, m_parameters);
 	m_systemManager.add<TimeSystem>();
-	m_systemManager.add<SkySystem>();
 }
 
 void Application::loadTextures()
