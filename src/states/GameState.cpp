@@ -258,7 +258,6 @@ void GameState::saveWorld(const std::string& file)
 					break;
 				}
 			}
-			
 		}
 		
 		saveFileStream << writer.write(root);
@@ -297,6 +296,7 @@ void GameState::initWorld(const std::string& file)
 			//speed
 			m_timeSpeed = time["speed"].asFloat();
 		}
+		
 		//level
 		const Json::Value level = root["level"];
 		
@@ -350,7 +350,7 @@ void GameState::initWorld(const std::string& file)
 				
 				//sprite
 				if(entity.isMember("sprites"))
-					deserialize(entity["sprites"], m_entities[entityName].assign<SpriteComponent>(), texManager);
+					deserialize(entity["sprites"], m_entities[entityName].assign<SpriteComponent>(), texManager, paths[getContext().parameters.scaleIndex]);
 				//Update the ScrollingSystem in order to directly display the sprite at the right position
 				getContext().systemManager.update<ScrollingSystem>(sf::Time::Zero.asSeconds());
 					

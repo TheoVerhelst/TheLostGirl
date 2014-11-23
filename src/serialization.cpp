@@ -1,6 +1,7 @@
 #include <dist/json/json.h>
 #include <entityx/Entity.h>
 #include <Box2D/Box2D.h>
+#include <SFML/Graphics/Texture.hpp>
 
 #include <TheLostGirl/components.h>
 #include <TheLostGirl/ResourceManager.h>
@@ -576,11 +577,16 @@ void deserialize(const Json::Value& value, entityx::ComponentHandle<BodyComponen
 	}
 }
 
-void deserialize(const Json::Value& value, entityx::ComponentHandle<SpriteComponent> component, TextureManager& textureManager)
+void deserialize(const Json::Value& value, entityx::ComponentHandle<SpriteComponent> component, TextureManager& textureManager, const std::string& path)
 {
 	component->sprites.clear();
 	for(std::string& partName : value.getMemberNames())
-		component->sprites.emplace(partName, sf::Sprite(textureManager.get(value[partName]["identifier"].asString())));
+	{
+		const std::string identifier{value[partName]["identifier"].asString()};
+		if(not textureManager.isLoaded(identifier))
+			textureManager.load(identifier, path + "/" + identifier + ".png");
+		component->sprites.emplace(partName, sf::Sprite(textureManager.get(identifier)));
+	}
 }
 
 void deserialize(const Json::Value& value, entityx::ComponentHandle<TransformComponent> component, float scale)

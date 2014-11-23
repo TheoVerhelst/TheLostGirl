@@ -87,7 +87,7 @@ void deserialize(const Json::Value& value, entityx::ComponentHandle<BodyComponen
 /// Deserialize the given \a value in the given \a component.
 /// \param component Component in wich deserialize the data
 /// \param The Json value containing the data.
-void deserialize(const Json::Value& value, entityx::ComponentHandle<SpriteComponent> component, TextureManager& textureManager);
+void deserialize(const Json::Value& value, entityx::ComponentHandle<SpriteComponent> component, TextureManager& textureManager, const std::string& path);
 
 /// Deserialize the given \a value in the given \a component.
 /// \param component Component in wich deserialize the data

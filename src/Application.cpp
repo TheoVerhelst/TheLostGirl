@@ -55,7 +55,6 @@ int Application::init()
 	try
 	{
 		srand(static_cast<unsigned int>(time(nullptr)));//Init random numbers
-		loadTextures();
 		registerStates();
 		registerSystems();
 		m_window.setKeyRepeatEnabled(false);//Desactive the key repeating
@@ -156,11 +155,4 @@ void Application::registerSystems()
 	m_systemManager.add<DragAndDropSystem>(m_window, m_commandQueue);
 	m_systemManager.add<ScrollingSystem>(m_window, m_parameters);
 	m_systemManager.add<TimeSystem>();
-}
-
-void Application::loadTextures()
-{
-	m_textureManager.load("archer", paths[m_parameters.scaleIndex] + "charac.png");
-	m_textureManager.load("arms", paths[m_parameters.scaleIndex] + "arm1.png");
-	m_textureManager.load("bow", paths[m_parameters.scaleIndex] + "bow1.png");
 }
