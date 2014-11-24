@@ -61,8 +61,8 @@ void PhysicsSystem::update(entityx::EntityManager& entityManager, entityx::Event
 			{
 				b2Vec2 pos = bodyPair.second->GetPosition();
 				float32 angle = bodyPair.second->GetAngle();
-				transforms[bodyPair.first].x = pos.x * m_parameters.pixelScale;
-				transforms[bodyPair.first].y = pos.y * m_parameters.pixelScale;
+				transforms[bodyPair.first].x = pos.x * m_parameters.scaledPixelByMeter;
+				transforms[bodyPair.first].y = pos.y * m_parameters.scaledPixelByMeter;
 				transforms[bodyPair.first].angle = angle*180/b2_pi;
 			}
 		}

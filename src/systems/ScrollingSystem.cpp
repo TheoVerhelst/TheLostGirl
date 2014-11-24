@@ -47,7 +47,7 @@ void ScrollingSystem::update(entityx::EntityManager& entityManager, entityx::Eve
 		}
 		if(found)
 		{
-			playerPosition *= m_parameters.pixelScale;
+			playerPosition *= m_parameters.scaledPixelByMeter;
 			sf::View view{m_window.getView()};
 			//Compute the maximum and minimum coordinates that the view can have
 			float xmin{m_levelRect.left*m_parameters.scale + (view.getSize().x / 2)};

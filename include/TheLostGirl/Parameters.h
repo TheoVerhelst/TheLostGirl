@@ -22,13 +22,14 @@ const std::string paths[5] = {"resources/images/360p/",
 /// Structure that hold various informations about the application.
 struct Parameters
 {
-	Lang lang;               ///< The current language.
-	bool debugMode;          ///< True if the DebugDrawing must be activated.
-	unsigned short int scaleIndex;///< The index of the current scale, in the range [0, 4]
-	float scale;             ///< Current scale.
-	float pixelScale;        ///< Pixels/meter scale.
-	b2Vec2 gravity;          ///< The gravity vector.
-	std::string textFont;    ///< Path of the main font.
+	Lang lang;                    ///< The current language.
+	bool debugMode;               ///< True if the DebugDrawing must be activated.
+	unsigned short int scaleIndex;///< The index of the current scale, in the range [0, 5[
+	float scale;                  ///< Current scale.
+	float pixelByMeter;           ///< Original pixels/meter scale.
+	float scaledPixelByMeter;     ///< Scaled pixels/meter scale, equal to scale*fullPixelScale
+	b2Vec2 gravity;               ///< The gravity vector.
+	std::string textFont;         ///< Path of the main font.
 };
 
 #endif // PARAMETERS_H

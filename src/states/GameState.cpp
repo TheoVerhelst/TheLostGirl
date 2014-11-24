@@ -98,15 +98,14 @@ bool GameState::handleEvent(const sf::Event& event)
 void GameState::saveWorld(const std::string& file)
 {
 		const float scale = getContext().parameters.scale;
-		const float pixelScale = getContext().parameters.pixelScale;
-		const float uniqScale = scale / pixelScale;//The pixel/meters scale at the maximum resolution, about 1.f/120.f
+		const float pixelByMeter = getContext().parameters.pixelByMeter;//The pixel/meters scale at the maximum resolution, about 1.f/120.f
 		Json::Value root;//Will contains the root value after serializing.
 		Json::StyledWriter writer;
 		std::ofstream saveFileStream(file, std::ofstream::binary);
 		for(auto& entity : m_entities)
 		{
 			if(entity.second.has_component<BodyComponent>())
-				root["entities"][entity.first]["body"] = serialize(entity.second.component<BodyComponent>(), uniqScale);
+				root["entities"][entity.first]["body"] = serialize(entity.second.component<BodyComponent>(), pixelByMeter);
 			
 			if(entity.second.has_component<SpriteComponent>())
 				root["entities"][entity.first]["sprites"] = serialize(entity.second.component<SpriteComponent>(), getContext().textureManager);
@@ -183,19 +182,20 @@ void GameState::saveWorld(const std::string& file)
 				{
 					b2RevoluteJointDef* castedJointDef = static_cast<b2RevoluteJointDef*>(joint.definition);
 					root["joints"]["revolute joints"].append(Json::objectValue);
-					root["joints"]["revolute joints"][root["joints"]["revolute joints"].size()-1]["entity A"] = joint.entityA;
-					root["joints"]["revolute joints"][root["joints"]["revolute joints"].size()-1]["entity B"] = joint.entityB;
-					root["joints"]["revolute joints"][root["joints"]["revolute joints"].size()-1]["part A"] = joint.partA;
-					root["joints"]["revolute joints"][root["joints"]["revolute joints"].size()-1]["part B"] = joint.partB;
-					root["joints"]["revolute joints"][root["joints"]["revolute joints"].size()-1]["local anchor A"]["x"] = castedJointDef->localAnchorA.x/uniqScale;
-					root["joints"]["revolute joints"][root["joints"]["revolute joints"].size()-1]["local anchor A"]["y"] = castedJointDef->localAnchorA.y/uniqScale;
-					root["joints"]["revolute joints"][root["joints"]["revolute joints"].size()-1]["local anchor B"]["x"] = castedJointDef->localAnchorB.x/uniqScale;
-					root["joints"]["revolute joints"][root["joints"]["revolute joints"].size()-1]["local anchor B"]["y"] = castedJointDef->localAnchorB.y/uniqScale;
-					root["joints"]["revolute joints"][root["joints"]["revolute joints"].size()-1]["lower angle"] = (castedJointDef->lowerAngle / b2_pi) * 180.f;
-					root["joints"]["revolute joints"][root["joints"]["revolute joints"].size()-1]["upper angle"] = (castedJointDef->upperAngle / b2_pi) * 180.f;
-					root["joints"]["revolute joints"][root["joints"]["revolute joints"].size()-1]["enable limit"] = castedJointDef->enableLimit;
-					root["joints"]["revolute joints"][root["joints"]["revolute joints"].size()-1]["max motor torque"] = castedJointDef->maxMotorTorque;
-					root["joints"]["revolute joints"][root["joints"]["revolute joints"].size()-1]["enable motor"] = castedJointDef->enableMotor;
+					Json::ArrayIndex last{root["joints"]["revolute joints"].size()-1};
+					root["joints"]["revolute joints"][last]["entity A"] = joint.entityA;
+					root["joints"]["revolute joints"][last]["entity B"] = joint.entityB;
+					root["joints"]["revolute joints"][last]["part A"] = joint.partA;
+					root["joints"]["revolute joints"][last]["part B"] = joint.partB;
+					root["joints"]["revolute joints"][last]["local anchor A"]["x"] = castedJointDef->localAnchorA.x/pixelByMeter;
+					root["joints"]["revolute joints"][last]["local anchor A"]["y"] = castedJointDef->localAnchorA.y/pixelByMeter;
+					root["joints"]["revolute joints"][last]["local anchor B"]["x"] = castedJointDef->localAnchorB.x/pixelByMeter;
+					root["joints"]["revolute joints"][last]["local anchor B"]["y"] = castedJointDef->localAnchorB.y/pixelByMeter;
+					root["joints"]["revolute joints"][last]["lower angle"] = (castedJointDef->lowerAngle / b2_pi) * 180.f;
+					root["joints"]["revolute joints"][last]["upper angle"] = (castedJointDef->upperAngle / b2_pi) * 180.f;
+					root["joints"]["revolute joints"][last]["enable limit"] = castedJointDef->enableLimit;
+					root["joints"]["revolute joints"][last]["max motor torque"] = castedJointDef->maxMotorTorque;
+					root["joints"]["revolute joints"][last]["enable motor"] = castedJointDef->enableMotor;
 					break;
 				}
 				
@@ -264,8 +264,8 @@ void GameState::saveWorld(const std::string& file)
 void GameState::initWorld(const std::string& file)
 {
 	const float scale = getContext().parameters.scale;
-	const float pixelScale = getContext().parameters.pixelScale;
-	const float uniqScale = scale / pixelScale;//The pixel/meters scale at the maximum resolution, about 1.f/120.f
+	const float scaledPixelByMeter = getContext().parameters.scaledPixelByMeter;
+	const float pixelByMeter = getContext().parameters.pixelByMeter;//The pixel/meters scale at the maximum resolution, about 1.f/120.f
 	TextureManager& texManager = getContext().textureManager;
 	getContext().eventManager.emit<LoadingStateChange>(0, LangManager::tr("Loading save file"));
 	try
@@ -360,7 +360,7 @@ void GameState::initWorld(const std::string& file)
 					{
 						try
 						{
-							deserialize(entity["body"], m_entities[entityName].assign<BodyComponent>(), m_entities[entityName].component<TransformComponent>(), getContext().world, pixelScale);
+							deserialize(entity["body"], m_entities[entityName].assign<BodyComponent>(), m_entities[entityName].component<TransformComponent>(), getContext().world, pixelByMeter, scaledPixelByMeter);
 							//Assign user data to every body of the entity
 							for(auto& bodyPair : m_entities[entityName].component<BodyComponent>()->bodies)
 								bodyPair.second->SetUserData(&m_entities[entityName]);
@@ -596,7 +596,7 @@ void GameState::initWorld(const std::string& file)
 						//y
 						yA = firstAnchor["y"].asFloat();
 					}
-					castedJointDef->localAnchorA = {(xA*uniqScale), (yA*uniqScale)};
+					castedJointDef->localAnchorA = {(xA/pixelByMeter), (yA/pixelByMeter)};
 					
 					//local anchor B
 					if(joint.isMember("local anchor B"))
@@ -611,7 +611,7 @@ void GameState::initWorld(const std::string& file)
 						if(secondAnchor.isMember("y"))
 							yB = secondAnchor["y"].asFloat();
 					}
-					castedJointDef->localAnchorB = {(xB*uniqScale), (yB*uniqScale)};
+					castedJointDef->localAnchorB = {(xB/pixelByMeter), (yB/pixelByMeter)};
 					
 					//lower angle
 					if(joint.isMember("lower angle"))

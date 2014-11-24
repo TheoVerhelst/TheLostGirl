@@ -20,7 +20,7 @@ void DebugDraw::DrawPolygon(const b2Vec2* vertices, int32 vertexCount, const b2C
 {
 	sf::ConvexShape polygon(vertexCount);
 	for(int32 i{0}; i < vertexCount; ++i)
-		polygon.setPoint(i, sf::Vector2f(vertices[i].x, vertices[i].y)*m_context.parameters.pixelScale);
+		polygon.setPoint(i, sf::Vector2f(vertices[i].x, vertices[i].y)*m_context.parameters.scaledPixelByMeter);
 	polygon.setOutlineColor(sf::Color(color.r*255.f, color.g*255.f, color.b*255.f, color.a*127.f));
 	polygon.setOutlineThickness(-1.f);
 	polygon.setFillColor(sf::Color::Transparent);
@@ -31,7 +31,7 @@ void DebugDraw::DrawSolidPolygon(const b2Vec2* vertices, int32 vertexCount, cons
 {
 	sf::ConvexShape polygon(vertexCount);
 	for(int32 i{0}; i < vertexCount; ++i)
-		polygon.setPoint(i, sf::Vector2f(vertices[i].x, vertices[i].y)*m_context.parameters.pixelScale);
+		polygon.setPoint(i, sf::Vector2f(vertices[i].x, vertices[i].y)*m_context.parameters.scaledPixelByMeter);
 	polygon.setOutlineColor(sf::Color(color.r*255.f, color.g*255.f, color.b*255.f, color.a*255.f));
 	polygon.setOutlineThickness(-1.f);
 	polygon.setFillColor(sf::Color(color.r*127.f, color.g*127.f, color.b*127.f, color.a*127.f));
@@ -40,9 +40,9 @@ void DebugDraw::DrawSolidPolygon(const b2Vec2* vertices, int32 vertexCount, cons
 
 void DebugDraw::DrawCircle(const b2Vec2& center, float32 radius, const b2Color& color)
 {
-	sf::CircleShape circle(radius * m_context.parameters.pixelScale);
-	circle.setOrigin(radius * m_context.parameters.pixelScale, radius * m_context.parameters.pixelScale);
-	circle.setPosition(center.x* m_context.parameters.pixelScale, center.y* m_context.parameters.pixelScale);
+	sf::CircleShape circle(radius * m_context.parameters.scaledPixelByMeter);
+	circle.setOrigin(radius * m_context.parameters.scaledPixelByMeter, radius * m_context.parameters.scaledPixelByMeter);
+	circle.setPosition(center.x* m_context.parameters.scaledPixelByMeter, center.y* m_context.parameters.scaledPixelByMeter);
 	circle.setOutlineColor(sf::Color(color.r*255.f, color.g*255.f, color.b*255.f, color.a*255.f));
 	circle.setOutlineThickness(-1.f);
 	circle.setFillColor(sf::Color::Transparent);
@@ -51,9 +51,9 @@ void DebugDraw::DrawCircle(const b2Vec2& center, float32 radius, const b2Color& 
 
 void DebugDraw::DrawSolidCircle(const b2Vec2& center, float32 radius, const b2Vec2& axis, const b2Color& color)
 {
-	sf::CircleShape circle(radius * m_context.parameters.pixelScale);
-	circle.setOrigin(radius * m_context.parameters.pixelScale, radius * m_context.parameters.pixelScale);
-	circle.setPosition(center.x* m_context.parameters.pixelScale, center.y* m_context.parameters.pixelScale);
+	sf::CircleShape circle(radius * m_context.parameters.scaledPixelByMeter);
+	circle.setOrigin(radius * m_context.parameters.scaledPixelByMeter, radius * m_context.parameters.scaledPixelByMeter);
+	circle.setPosition(center.x* m_context.parameters.scaledPixelByMeter, center.y* m_context.parameters.scaledPixelByMeter);
 	circle.setOutlineColor(sf::Color(color.r*255.f, color.g*255.f, color.b*255.f, color.a*255.f));
 	circle.setOutlineThickness(-1.f);
 	circle.setFillColor(sf::Color(color.r*127.f, color.g*127.f, color.b*127.f, color.a*127.f));
@@ -61,8 +61,8 @@ void DebugDraw::DrawSolidCircle(const b2Vec2& center, float32 radius, const b2Ve
 	
 	sf::Vertex line[2];
 	b2Vec2 axisPoint = center + radius * axis;
-	line[0].position = sf::Vector2f(center.x, center.y)*m_context.parameters.pixelScale;
-	line[1].position = sf::Vector2f(axisPoint.x, axisPoint.y)*m_context.parameters.pixelScale;
+	line[0].position = sf::Vector2f(center.x, center.y)*m_context.parameters.scaledPixelByMeter;
+	line[1].position = sf::Vector2f(axisPoint.x, axisPoint.y)*m_context.parameters.scaledPixelByMeter;
 	line[0].color = sf::Color(color.r*255.f, color.g*255.f, color.b*255.f, color.a*255.f);
 	line[1].color = sf::Color(color.r*255.f, color.g*255.f, color.b*255.f, color.a*255.f);
 	m_context.window.draw(line, 2, sf::Lines);
@@ -71,8 +71,8 @@ void DebugDraw::DrawSolidCircle(const b2Vec2& center, float32 radius, const b2Ve
 void DebugDraw::DrawSegment(const b2Vec2& p1, const b2Vec2& p2, const b2Color& color)
 {
 	sf::Vertex line[2];
-	line[0].position = sf::Vector2f(p1.x, p1.y)*m_context.parameters.pixelScale;
-	line[1].position = sf::Vector2f(p2.x, p2.y)*m_context.parameters.pixelScale;
+	line[0].position = sf::Vector2f(p1.x, p1.y)*m_context.parameters.scaledPixelByMeter;
+	line[1].position = sf::Vector2f(p2.x, p2.y)*m_context.parameters.scaledPixelByMeter;
 	line[0].color = sf::Color(color.r*255.f, color.g*255.f, color.b*255.f, color.a*255.f);
 	line[1].color = sf::Color(color.r*255.f, color.g*255.f, color.b*255.f, color.a*255.f);
 	m_context.window.draw(line, 2, sf::Lines);
@@ -82,11 +82,11 @@ void DebugDraw::DrawTransform(const b2Transform& xf)
 {
 	const float axisScale = 0.4f;
 	sf::Vector2f xAxis{xf.q.GetXAxis().x, xf.q.GetXAxis().y};
-	xAxis *= m_context.parameters.pixelScale;
+	xAxis *= m_context.parameters.scaledPixelByMeter;
 	sf::Vector2f yAxis{xf.q.GetYAxis().x, xf.q.GetYAxis().y};
-	yAxis *= m_context.parameters.pixelScale;
+	yAxis *= m_context.parameters.scaledPixelByMeter;
 	sf::Vector2f p1{xf.p.x, xf.p.y};
-	p1 *= m_context.parameters.pixelScale;
+	p1 *= m_context.parameters.scaledPixelByMeter;
 	sf::Vector2f p2;
 
 	sf::Vertex line1[2];
@@ -154,7 +154,7 @@ void DebugDraw::drawDebugAth()
 			positionLabel->setTextFont(std::make_shared<sf::Font>(m_context.fontManager.get("debug")));
 			m_context.gui.add(positionLabel, "positionLabel");
 		}
-		b2Vec2 positionPixels =  (m_context.parameters.pixelScale / m_context.parameters.scale) * position;
+		b2Vec2 positionPixels =  m_context.parameters.pixelByMeter * position;
 		positionLabel->setText("Meters (" + roundOutput(position.x) + ", " + roundOutput(position.y) + ")\n" + 
 							   "Pixels (" + roundOutput(positionPixels.x) + ", " + roundOutput(positionPixels.y) + ")");
 		

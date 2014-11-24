@@ -9,7 +9,7 @@
 
 #include <TheLostGirl/serialization.h>
 
-Json::Value serialize(entityx::ComponentHandle<BodyComponent> component, float scale)
+Json::Value serialize(entityx::ComponentHandle<BodyComponent> component, float pixelByMeter)
 {
 	Json::Value ret;
 	for(auto& bodyPair : component->bodies)
@@ -30,8 +30,8 @@ Json::Value serialize(entityx::ComponentHandle<BodyComponent> component, float s
 				break;
 		}
 		
-		ret[partName]["linear velocity"]["x"] = body->GetLinearVelocity().x/scale;
-		ret[partName]["linear velocity"]["y"] = body->GetLinearVelocity().y/scale;
+		ret[partName]["linear velocity"]["x"] = body->GetLinearVelocity().x*pixelByMeter;
+		ret[partName]["linear velocity"]["y"] = body->GetLinearVelocity().y*pixelByMeter;
 		ret[partName]["angular velocity"] = body->GetAngularVelocity();
 		ret[partName]["linear damping"] = body->GetLinearDamping();
 		ret[partName]["angular damping"] = body->GetAngularDamping();
@@ -52,9 +52,9 @@ Json::Value serialize(entityx::ComponentHandle<BodyComponent> component, float s
 				case b2Shape::e_circle:
 				{
 					b2CircleShape* shape = static_cast<b2CircleShape*>(fix->GetShape());
-					fixtureObj["position"]["x"] = shape->m_p.x/scale;
-					fixtureObj["position"]["y"] = shape->m_p.y/scale;
-					fixtureObj["radius"] = shape->m_radius/scale;
+					fixtureObj["position"]["x"] = shape->m_p.x*pixelByMeter;
+					fixtureObj["position"]["y"] = shape->m_p.y*pixelByMeter;
+					fixtureObj["radius"] = shape->m_radius*pixelByMeter;
 					break;
 				}
 				case b2Shape::e_edge:
@@ -63,17 +63,17 @@ Json::Value serialize(entityx::ComponentHandle<BodyComponent> component, float s
 					//Copy all vertices
 					if(shape->m_hasVertex0)
 					{
-						fixtureObj["0"]["x"] = shape->m_vertex0.x/scale;
-						fixtureObj["0"]["y"] = shape->m_vertex0.y/scale;
+						fixtureObj["0"]["x"] = shape->m_vertex0.x*pixelByMeter;
+						fixtureObj["0"]["y"] = shape->m_vertex0.y*pixelByMeter;
 					}
-					fixtureObj["1"]["x"] = shape->m_vertex1.x/scale;
-					fixtureObj["1"]["y"] = shape->m_vertex1.y/scale;
-					fixtureObj["2"]["x"] = shape->m_vertex2.x/scale;
-					fixtureObj["2"]["y"] = shape->m_vertex2.y/scale;
+					fixtureObj["1"]["x"] = shape->m_vertex1.x*pixelByMeter;
+					fixtureObj["1"]["y"] = shape->m_vertex1.y*pixelByMeter;
+					fixtureObj["2"]["x"] = shape->m_vertex2.x*pixelByMeter;
+					fixtureObj["2"]["y"] = shape->m_vertex2.y*pixelByMeter;
 					if(shape->m_hasVertex3)
 					{
-						fixtureObj["3"]["x"] = shape->m_vertex3.x/scale;
-						fixtureObj["3"]["y"] = shape->m_vertex3.y/scale;
+						fixtureObj["3"]["x"] = shape->m_vertex3.x*pixelByMeter;
+						fixtureObj["3"]["y"] = shape->m_vertex3.y*pixelByMeter;
 					}
 					break;
 				}
@@ -83,8 +83,8 @@ Json::Value serialize(entityx::ComponentHandle<BodyComponent> component, float s
 					//Copy all vertices
 					for(int32 j{0}; j < shape->GetVertexCount(); ++j)
 					{
-						fixtureObj["vertices"][j]["x"] = shape->m_vertices[j].x/scale;
-						fixtureObj["vertices"][j]["y"] = shape->m_vertices[j].y/scale;
+						fixtureObj["vertices"][j]["x"] = shape->m_vertices[j].x*pixelByMeter;
+						fixtureObj["vertices"][j]["y"] = shape->m_vertices[j].y*pixelByMeter;
 					}
 					break;
 				}
@@ -95,18 +95,18 @@ Json::Value serialize(entityx::ComponentHandle<BodyComponent> component, float s
 					//Copy all vertices
 					if(shape->m_hasPrevVertex)
 					{
-						fixtureObj["previous vertex"]["x"] = shape->m_prevVertex.x/scale;
-						fixtureObj["previous vertex"]["y"] = shape->m_prevVertex.y/scale;
+						fixtureObj["previous vertex"]["x"] = shape->m_prevVertex.x*pixelByMeter;
+						fixtureObj["previous vertex"]["y"] = shape->m_prevVertex.y*pixelByMeter;
 					}
 					for(int32 j{0}; j < shape->m_count; ++j)
 					{
-						fixtureObj["vertices"][j]["x"] = shape->m_vertices[j].x/scale;
-						fixtureObj["vertices"][j]["y"] = shape->m_vertices[j].y/scale;
+						fixtureObj["vertices"][j]["x"] = shape->m_vertices[j].x*pixelByMeter;
+						fixtureObj["vertices"][j]["y"] = shape->m_vertices[j].y*pixelByMeter;
 					}
 					if(shape->m_hasNextVertex)
 					{
-						fixtureObj["next vertex"]["x"] = shape->m_nextVertex.x/scale;
-						fixtureObj["next vertex"]["y"] = shape->m_nextVertex.y/scale;
+						fixtureObj["next vertex"]["x"] = shape->m_nextVertex.x*pixelByMeter;
+						fixtureObj["next vertex"]["y"] = shape->m_nextVertex.y*pixelByMeter;
 					}
 					break;
 				}
@@ -283,7 +283,7 @@ Json::Value serialize(entityx::ComponentHandle<StaminaComponent> component)
 	return ret;
 }
 
-void deserialize(const Json::Value& value, entityx::ComponentHandle<BodyComponent> component, entityx::ComponentHandle<TransformComponent> transformComponent, b2World& world, float scale)
+void deserialize(const Json::Value& value, entityx::ComponentHandle<BodyComponent> component, entityx::ComponentHandle<TransformComponent> transformComponent, b2World& world, float pixelByMeter, float scaledPixelByMeter)
 {
 	component->bodies.clear();
 	for(std::string& partName : value.getMemberNames())
@@ -305,16 +305,16 @@ void deserialize(const Json::Value& value, entityx::ComponentHandle<BodyComponen
 				entityBodyComponentDef.type = b2_dynamicBody;
 			
 			//position
-			entityBodyComponentDef.position.x = transformComponent->transforms[partName].x/scale;
-			entityBodyComponentDef.position.y = transformComponent->transforms[partName].y/scale;
+			entityBodyComponentDef.position.x = transformComponent->transforms[partName].x/scaledPixelByMeter;
+			entityBodyComponentDef.position.y = transformComponent->transforms[partName].y/scaledPixelByMeter;
 			
 			//angle
 			entityBodyComponentDef.angle = transformComponent->transforms[partName].angle*b2_pi/180;
 			
 			//linear velocity
 			const Json::Value linearVelocity = body["linear velocity"];
-			entityBodyComponentDef.linearVelocity.x = linearVelocity["x"].asFloat()/120.f;
-			entityBodyComponentDef.linearVelocity.y = linearVelocity["y"].asFloat()/120.f;
+			entityBodyComponentDef.linearVelocity.x = linearVelocity["x"].asFloat()/pixelByMeter;
+			entityBodyComponentDef.linearVelocity.y = linearVelocity["y"].asFloat()/pixelByMeter;
 			
 			//angular velocity
 			entityBodyComponentDef.angularVelocity = body["angular velocity"].asFloat();
@@ -364,10 +364,10 @@ void deserialize(const Json::Value& value, entityx::ComponentHandle<BodyComponen
 						const Json::Value vertice = vertices[j];
 					
 						//x
-						verticesVec[j].x = vertice["x"].asFloat()/120.f;
+						verticesVec[j].x = vertice["x"].asFloat()/pixelByMeter;
 						
 						//y
-						verticesVec[j].y = vertice["y"].asFloat()/120.f;
+						verticesVec[j].y = vertice["y"].asFloat()/pixelByMeter;
 					}
 					polygonShape.Set(verticesVec.data(), verticesVec.size());
 					entityFixtureDef.shape = &polygonShape;
@@ -415,7 +415,7 @@ void deserialize(const Json::Value& value, entityx::ComponentHandle<BodyComponen
 					//y 2
 					two.y = fixtures[i]["2"]["y"].asFloat();
 					
-					edgeShape.Set(scale*one, scale*two);
+					edgeShape.Set((1.f/pixelByMeter)*one, (1.f/pixelByMeter)*two);
 					
 					//0
 					if(fixture.isMember("0"))
@@ -423,10 +423,10 @@ void deserialize(const Json::Value& value, entityx::ComponentHandle<BodyComponen
 						edgeShape.m_hasVertex0 = true;
 						
 						//x
-						edgeShape.m_vertex0.x = fixtures[i]["0"]["x"].asFloat()/120.f;
+						edgeShape.m_vertex0.x = fixtures[i]["0"]["x"].asFloat()/pixelByMeter;
 						
 						//y
-						edgeShape.m_vertex0.y = fixtures[i]["0"]["y"].asFloat()/120.f;
+						edgeShape.m_vertex0.y = fixtures[i]["0"]["y"].asFloat()/pixelByMeter;
 					}
 					
 					//3
@@ -435,10 +435,10 @@ void deserialize(const Json::Value& value, entityx::ComponentHandle<BodyComponen
 						edgeShape.m_hasVertex3 = true;
 						
 						//x
-						edgeShape.m_vertex3.x = fixtures[i]["3"]["x"].asFloat()/120.f;
+						edgeShape.m_vertex3.x = fixtures[i]["3"]["x"].asFloat()/pixelByMeter;
 						
 						//y
-						edgeShape.m_vertex3.y = fixtures[i]["3"]["y"].asFloat()/120.f;
+						edgeShape.m_vertex3.y = fixtures[i]["3"]["y"].asFloat()/pixelByMeter;
 					}
 					entityFixtureDef.shape = &edgeShape;
 					
@@ -478,10 +478,10 @@ void deserialize(const Json::Value& value, entityx::ComponentHandle<BodyComponen
 						const Json::Value vertice = vertices[j];
 						verticesArray.push_back(b2Vec2(0, 0));
 						//x
-						verticesArray[j].x = vertice["x"].asFloat()/120.f;
+						verticesArray[j].x = vertice["x"].asFloat()/pixelByMeter;
 						
 						//y
-						verticesArray[j].y = vertice["y"].asFloat()/120.f;
+						verticesArray[j].y = vertice["y"].asFloat()/pixelByMeter;
 					}
 					chainShape.CreateChain(verticesArray.data(), verticesArray.size());
 					
@@ -491,10 +491,10 @@ void deserialize(const Json::Value& value, entityx::ComponentHandle<BodyComponen
 						chainShape.m_hasPrevVertex = true;
 						
 						//x
-						chainShape.m_prevVertex.x = fixtures[i]["previous vertex"]["x"].asFloat()/120.f;
+						chainShape.m_prevVertex.x = fixtures[i]["previous vertex"]["x"].asFloat()/pixelByMeter;
 						
 						//y
-						chainShape.m_prevVertex.y = fixtures[i]["previous vertex"]["y"].asFloat()/120.f;
+						chainShape.m_prevVertex.y = fixtures[i]["previous vertex"]["y"].asFloat()/pixelByMeter;
 					}
 					
 					//next vertex
@@ -503,10 +503,10 @@ void deserialize(const Json::Value& value, entityx::ComponentHandle<BodyComponen
 						chainShape.m_hasNextVertex = true;
 						
 						//x
-						chainShape.m_nextVertex.x = fixtures[i]["next vertex"]["x"].asFloat()/120.f;
+						chainShape.m_nextVertex.x = fixtures[i]["next vertex"]["x"].asFloat()/pixelByMeter;
 						
 						//y
-						chainShape.m_nextVertex.y = fixtures[i]["next vertex"]["y"].asFloat()/120.f;
+						chainShape.m_nextVertex.y = fixtures[i]["next vertex"]["y"].asFloat()/pixelByMeter;
 					}
 					entityFixtureDef.shape = &chainShape;
 					
@@ -541,13 +541,13 @@ void deserialize(const Json::Value& value, entityx::ComponentHandle<BodyComponen
 					b2CircleShape circleShape;
 					
 					//x
-					circleShape.m_p.x = fixtures[i]["position"]["x"].asFloat()/120.f;
+					circleShape.m_p.x = fixtures[i]["position"]["x"].asFloat()/pixelByMeter;
 					
 					//y
-					circleShape.m_p.y = fixtures[i]["position"]["y"].asFloat()/120.f;
+					circleShape.m_p.y = fixtures[i]["position"]["y"].asFloat()/pixelByMeter;
 					
 					//radius
-					circleShape.m_radius = fixtures[i]["radius"].asFloat()/120.f;
+					circleShape.m_radius = fixtures[i]["radius"].asFloat()/pixelByMeter;
 					entityFixtureDef.shape = &circleShape;
 					
 					//density
