@@ -123,9 +123,6 @@ void GameState::saveWorld(const std::string& file)
 			if(entity.second.has_component<CategoryComponent>())
 				root["entities"][entity.first]["categories"] = serialize(entity.second.component<CategoryComponent>());
 			
-			if(entity.second.has_component<ActorIDComponent>())
-				root["entities"][entity.first]["actor ID"] = serialize(entity.second.component<ActorIDComponent>());
-			
 			if(entity.second.has_component<FallComponent>())
 				root["entities"][entity.first]["fall"] = serialize(entity.second.component<FallComponent>());
 			
@@ -400,10 +397,6 @@ void GameState::initWorld(const std::string& file)
 				//categories
 				if(entity.isMember("categories"))
 					deserialize(entity["categories"], m_entities[entityName].assign<CategoryComponent>());
-				
-				//actor ID
-				if(entity.isMember("actor ID"))
-					deserialize(entity["actor ID"], m_entities[entityName].assign<ActorIDComponent>());
 				
 				//walk
 				if(entity.isMember("walk"))

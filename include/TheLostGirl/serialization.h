@@ -47,11 +47,6 @@ Json::Value serialize(entityx::ComponentHandle<CategoryComponent> component);
 /// Serialize the given component.
 /// \param component Component to serialize
 /// \return A Json value.
-Json::Value serialize(entityx::ComponentHandle<ActorIDComponent> component);
-
-/// Serialize the given component.
-/// \param component Component to serialize
-/// \return A Json value.
 Json::Value serialize(entityx::ComponentHandle<FallComponent> component);
 
 /// Serialize the given component.
@@ -108,11 +103,6 @@ void deserialize(const Json::Value& value, entityx::ComponentHandle<DirectionCom
 /// \param component Component in wich deserialize the data
 /// \param The Json value containing the data.
 void deserialize(const Json::Value& value, entityx::ComponentHandle<CategoryComponent> component);
-
-/// Deserialize the given \a value in the given \a component.
-/// \param component Component in wich deserialize the data
-/// \param The Json value containing the data.
-void deserialize(const Json::Value& value, entityx::ComponentHandle<ActorIDComponent> component);
 
 /// Deserialize the given \a value in the given \a component.
 /// \param component Component in wich deserialize the data

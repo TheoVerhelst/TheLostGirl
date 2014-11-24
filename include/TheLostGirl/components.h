@@ -90,23 +90,14 @@ struct CategoryComponent : public entityx::Component<CategoryComponent>
 	unsigned int category;///< Category of the entity.
 };
 
-/// The ActorID component.
-/// Every entities with the same ActorID won't collide.
-struct ActorIDComponent : public entityx::Component<ActorIDComponent>
-{
-	unsigned int ID;///< Identifier of the actor.
-};
-
 /// The Item component.
 /// An item is just an entity with this component.
-/// Two items with the same ID are the same item.
 /// The category represents what class of item it is.
 /// The type represents what model of item it is.
 /// The icon of the item must have a path like resources/images/(resolution)/items/xxx/yyy.png,
 /// where the type of the item is yyy and the category is xxx.
 struct ItemComponent : public entityx::Component<ItemComponent>
 {
-	unsigned int ID;     ///< Identifier of the item.
 	std::string category;///< Category of item (bow, knife, helmet, ...).
 	std::string type;    ///< Type of item (dark bow, simple wood arrow, ...).
 };

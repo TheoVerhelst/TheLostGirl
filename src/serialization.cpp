@@ -219,11 +219,6 @@ Json::Value serialize(entityx::ComponentHandle<CategoryComponent> component)
 	return ret;
 }
 
-Json::Value serialize(entityx::ComponentHandle<ActorIDComponent> component)
-{
-	return component->ID;
-}
-
 Json::Value serialize(entityx::ComponentHandle<FallComponent> component)
 {
 	Json::Value ret;
@@ -648,11 +643,6 @@ void deserialize(const Json::Value& value, entityx::ComponentHandle<CategoryComp
 			category |= Category::Scene;
 	}
 	component->category = category;
-}
-
-void deserialize(const Json::Value& value, entityx::ComponentHandle<ActorIDComponent> component)
-{
-	component->ID = value.asUInt();
 }
 
 void deserialize(const Json::Value& value, entityx::ComponentHandle<FallComponent> component)

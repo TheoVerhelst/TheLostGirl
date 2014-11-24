@@ -18,7 +18,7 @@ class ContactListener : public b2ContactListener
 		
 		/// This is called after a contact is updated.
 		/// This allows to inspect a contact before it goes to the solver.
-		/// It prevent the collision between entities with the same actor ID.
+		/// It prevent the collision between entities with the same entity Id.
 		/// \param contact Structure containing data about the contact.
 		/// \param oldManifold Old manifold.
 		void PreSolve(b2Contact* contact, const b2Manifold* oldManifold);
