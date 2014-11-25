@@ -60,19 +60,6 @@ class GameState : public State
 		virtual bool handleEvent(const sf::Event& event);
 
 	private:
-		
-		/// Structure that hold data about joints.
-		/// The role of this texture is to hold data that cannot easily be retrieved in the b2World instance.
-		struct Joint
-		{
-			b2JointDef* definition;///< Pointer to the definition of the joint.
-			b2JointType type;      ///< Type of joint.
-			std::string entityA;   ///< Entity A.
-			std::string entityB;   ///< Entity B.
-			std::string partA;     ///< Part of the entity A.
-			std::string partB;     ///< Part of the entity B.
-		};
-		
 		/// Structure that hold data about scene entities.
 		/// The role of this texture is to hold data that cannot easily be retrieved in the EntityManager instance.
 		struct SceneReplaces
@@ -93,14 +80,13 @@ class GameState : public State
 		std::unordered_map<std::string, entityx::Entity> m_entities;          ///< All game entities.
 		std::unordered_map<std::string, entityx::Entity> m_sceneEntities;     ///< All scene entities.
 		std::map<std::string, std::vector<SceneReplaces>> m_sceneEntitiesData;///< A map containing data about scene entities.
-		std::vector<Joint> m_joints;                                          ///< A vector containing all informations about joints.
 		ContactListener m_contactListener;                                    ///< The contact listener.
 		ContactFilter m_contactFilter;                                        ///< The contact filter.
 		float m_timeSpeed;                                                    ///< The speed of the time (usually 1.f). This influes only on the TimeSystem, not on physics!
 		bool m_loadingFinished;                                               ///< Indicate if the level loading is finished.
 		std::thread m_threadLoad;                                             ///< Thread launched when loading the level.
 		
-		                                                                     //Level informations
+		//Level informations
 		std::string m_levelIdentifier;                                        ///< Identifer of the level, must be a non-spaced name.
 		unsigned short int m_numberOfPlans;                                   ///< Number of plans in the background.
 		float m_referencePlan;                                                ///< Number of the plan where actors evolute.

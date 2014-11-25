@@ -60,8 +60,6 @@ GameState::~GameState()
 	}
 	for(auto& sceneEntity : m_sceneEntities)
 		sceneEntity.second.destroy();
-	for(auto& joint : m_joints)
-		delete joint.definition;
 	if(m_threadLoad.joinable())
 		m_threadLoad.join();
 }
@@ -172,31 +170,46 @@ void GameState::saveWorld(const std::string& file)
 				}
 			}
 		}
-		
-		//joints
-		for(auto& joint : m_joints)
+		//Serializing the joints
+		for(b2Joint* joint{getContext().world.GetJointList()}; joint; joint = joint->GetNext())
 		{
-			switch(joint.type)
+			switch(joint->GetType())
 			{
 				case e_revoluteJoint:
 				{
-					b2RevoluteJointDef* castedJointDef = static_cast<b2RevoluteJointDef*>(joint.definition);
+					b2RevoluteJoint* castedJoint = static_cast<b2RevoluteJoint*>(joint);
 					root["joints"]["revolute joints"].append(Json::objectValue);
 					Json::ArrayIndex last{root["joints"]["revolute joints"].size()-1};
-					root["joints"]["revolute joints"][last]["entity A"] = joint.entityA;
-					root["joints"]["revolute joints"][last]["entity B"] = joint.entityB;
-					root["joints"]["revolute joints"][last]["part A"] = joint.partA;
-					root["joints"]["revolute joints"][last]["part B"] = joint.partB;
-					root["joints"]["revolute joints"][last]["local anchor A"]["x"] = castedJointDef->localAnchorA.x*pixelByMeter;
-					root["joints"]["revolute joints"][last]["local anchor A"]["y"] = castedJointDef->localAnchorA.y*pixelByMeter;
-					root["joints"]["revolute joints"][last]["local anchor B"]["x"] = castedJointDef->localAnchorB.x*pixelByMeter;
-					root["joints"]["revolute joints"][last]["local anchor B"]["y"] = castedJointDef->localAnchorB.y*pixelByMeter;
-					root["joints"]["revolute joints"][last]["lower angle"] = (castedJointDef->lowerAngle / b2_pi) * 180.f;
-					root["joints"]["revolute joints"][last]["upper angle"] = (castedJointDef->upperAngle / b2_pi) * 180.f;
-					root["joints"]["revolute joints"][last]["enable limit"] = castedJointDef->enableLimit;
-					root["joints"]["revolute joints"][last]["max motor torque"] = castedJointDef->maxMotorTorque;
-					root["joints"]["revolute joints"][last]["enable motor"] = castedJointDef->enableMotor;
-					if(jointDefHasRole(joint.definition, JointRole::BendingAngle))
+					
+					
+					b2Body* bodyB{castedJoint->GetBodyB()};//Get the body B
+					entityx::Entity entityB = *static_cast<entityx::Entity*>(bodyB->GetUserData());//Get the entity B from the user data
+					assert(isMember(m_entities, entityB));
+					std::string entityBName = getKey(m_entities, entityB);//Get the name of the entity B
+					assert(isMember(entityB.component<BodyComponent>()->bodies, bodyB));//Assert that the body B is in the body component of entity B
+					std::string partBName = getKey(entityB.component<BodyComponent>()->bodies, bodyB);//Get the name of the part B
+					
+					b2Body* bodyA{castedJoint->GetBodyA()};//Get the body A
+					entityx::Entity entityA = *static_cast<entityx::Entity*>(bodyA->GetUserData());//Get the entity A from the user data
+					assert(isMember(m_entities, entityA));
+					std::string entityAName = getKey(m_entities, entityA);//Get the name of the entity A
+					assert(isMember(entityA.component<BodyComponent>()->bodies, bodyA));//Assert that the body A is in the body component of the entity A
+					std::string partAName = getKey(entityA.component<BodyComponent>()->bodies, bodyA);//Get the name of the part A
+					
+					root["joints"]["revolute joints"][last]["entity A"] = entityAName;
+					root["joints"]["revolute joints"][last]["entity B"] = entityBName;
+					root["joints"]["revolute joints"][last]["part A"] = partAName;
+					root["joints"]["revolute joints"][last]["part B"] = partBName;
+					root["joints"]["revolute joints"][last]["local anchor A"]["x"] = castedJoint->GetLocalAnchorA().x*pixelByMeter;
+					root["joints"]["revolute joints"][last]["local anchor A"]["y"] = castedJoint->GetLocalAnchorA().y*pixelByMeter;
+					root["joints"]["revolute joints"][last]["local anchor B"]["x"] = castedJoint->GetLocalAnchorB().x*pixelByMeter;
+					root["joints"]["revolute joints"][last]["local anchor B"]["y"] = castedJoint->GetLocalAnchorB().y*pixelByMeter;
+					root["joints"]["revolute joints"][last]["lower angle"] = (castedJoint->GetLowerLimit() / b2_pi) * 180.f;
+					root["joints"]["revolute joints"][last]["upper angle"] = (castedJoint->GetUpperLimit() / b2_pi) * 180.f;
+					root["joints"]["revolute joints"][last]["enable limit"] = castedJoint->IsLimitEnabled();
+					root["joints"]["revolute joints"][last]["max motor torque"] = castedJoint->GetMaxMotorTorque();
+					root["joints"]["revolute joints"][last]["enable motor"] = castedJoint->IsMotorEnabled();
+					if(jointHasRole(joint, JointRole::BendingAngle))
 						root["joints"]["revolute joints"][last]["roles"].append("bending angle");
 					break;
 				}
@@ -258,7 +271,6 @@ void GameState::saveWorld(const std::string& file)
 				}
 			}
 		}
-		
 		saveFileStream << writer.write(root);
 		saveFileStream.close();
 }
@@ -526,30 +538,27 @@ void GameState::initWorld(const std::string& file)
 				for(Json::ArrayIndex i{0}; i < revoluteJoints.size(); ++i)
 				{
 					const Json::Value joint = revoluteJoints[i];
-					Joint jointData;
-					jointData.entityA = joint["entity A"].asString();
-					jointData.entityB = joint["entity B"].asString();
-					jointData.partA = joint["part A"].asString();
-					jointData.partB = joint["part B"].asString();
+					std::string entityA = joint["entity A"].asString();
+					std::string entityB = joint["entity B"].asString();
+					std::string partA = joint["part A"].asString();
+					std::string partB = joint["part B"].asString();
 					//Assert that somes entities exists
 					requireValues(root, "root", {{"entities", Json::objectValue}});
 					//Assert that the given entities exist
-					requireValues(root["entities"], "entities", {{jointData.entityA, Json::objectValue}, {jointData.entityB, Json::objectValue}});
+					requireValues(root["entities"], "entities", {{entityA, Json::objectValue}, {entityB, Json::objectValue}});
 					//Assert that that entities have some bodies
-					requireValues(root["entities"][jointData.entityA], "entities." + jointData.entityA, {{"body", Json::objectValue}});
-					requireValues(root["entities"][jointData.entityB], "entities." + jointData.entityB, {{"body", Json::objectValue}});
+					requireValues(root["entities"][entityA], "entities." + entityA, {{"body", Json::objectValue}});
+					requireValues(root["entities"][entityB], "entities." + entityB, {{"body", Json::objectValue}});
 					//Assert that that entities have the givens parts
-					requireValues(root["entities"][jointData.entityA]["body"], "entities." + jointData.entityA + ".body", {{jointData.partA, Json::objectValue}});
-					requireValues(root["entities"][jointData.entityB]["body"], "entities." + jointData.entityB + ".body", {{jointData.partB, Json::objectValue}});
-					b2Body * bodyA{m_entities[jointData.entityA].component<BodyComponent>()->bodies[jointData.partA]};
-					b2Body * bodyB{m_entities[jointData.entityB].component<BodyComponent>()->bodies[jointData.partB]};
+					requireValues(root["entities"][entityA]["body"], "entities." + entityA + ".body", {{partA, Json::objectValue}});
+					requireValues(root["entities"][entityB]["body"], "entities." + entityB + ".body", {{partB, Json::objectValue}});
+					b2Body * bodyA{m_entities[entityA].component<BodyComponent>()->bodies[partA]};
+					b2Body * bodyB{m_entities[entityB].component<BodyComponent>()->bodies[partB]};
 
-					jointData.type = e_revoluteJoint;
-					jointData.definition = new b2RevoluteJointDef();
-					b2RevoluteJointDef* castedJointDef = static_cast<b2RevoluteJointDef*>(jointData.definition);
+					b2RevoluteJointDef jointDef;
 					float xA{0}, yA{0}, xB{0}, yB{0};
-					castedJointDef->bodyA = bodyA;
-					castedJointDef->bodyB = bodyB;
+					jointDef.bodyA = bodyA;
+					jointDef.bodyB = bodyB;
 					
 					//local anchor A
 					if(joint.isMember("local anchor A"))
@@ -558,7 +567,7 @@ void GameState::initWorld(const std::string& file)
 						xA = firstAnchor["x"].asFloat();
 						yA = firstAnchor["y"].asFloat();
 					}
-					castedJointDef->localAnchorA = {(xA/pixelByMeter), (yA/pixelByMeter)};
+					jointDef.localAnchorA = {(xA/pixelByMeter), (yA/pixelByMeter)};
 					
 					//local anchor B
 					if(joint.isMember("local anchor B"))
@@ -567,22 +576,21 @@ void GameState::initWorld(const std::string& file)
 						xB = secondAnchor["x"].asFloat();
 						yB = secondAnchor["y"].asFloat();
 					}
-					castedJointDef->localAnchorB = {(xB/pixelByMeter), (yB/pixelByMeter)};
-					castedJointDef->lowerAngle = (joint["lower angle"].asFloat() * b2_pi) / 180.f;
-					castedJointDef->upperAngle = (joint["upper angle"].asFloat() * b2_pi) / 180.f;
-					castedJointDef->enableLimit = joint["enable limit"].asBool();
-					castedJointDef->maxMotorTorque = joint["max motor torque"].asFloat();
-					castedJointDef->enableMotor = joint["enable motor"].asBool();
+					jointDef.localAnchorB = {(xB/pixelByMeter), (yB/pixelByMeter)};
+					jointDef.lowerAngle = (joint["lower angle"].asFloat() * b2_pi) / 180.f;
+					jointDef.upperAngle = (joint["upper angle"].asFloat() * b2_pi) / 180.f;
+					jointDef.enableLimit = joint["enable limit"].asBool();
+					jointDef.maxMotorTorque = joint["max motor torque"].asFloat();
+					jointDef.enableMotor = joint["enable motor"].asBool();
 					
 					//roles
 					const Json::Value roles = joint["roles"];
 					for(Json::ArrayIndex j{0}; j < roles.size(); ++j)
 						if(roles[j].asString() == "bending angle")
 							//Add the role to the definition
-							castedJointDef->userData = add<unsigned int>(castedJointDef->userData, static_cast<unsigned int>(JointRole::BendingAngle));
+							jointDef.userData = add<unsigned int>(jointDef.userData, static_cast<unsigned int>(JointRole::BendingAngle));
 					
-					getContext().world.CreateJoint(castedJointDef);
-					m_joints.push_back(jointData);
+					getContext().world.CreateJoint(&jointDef);
 				}
 			}
 			if(joints.isMember("distance joints"))
@@ -704,6 +712,12 @@ void GameState::initWorld(const std::string& file)
 		double daySeconds{remainder(getContext().systemManager.system<TimeSystem>()->getRealTime().asSeconds(), 600)};
 		skyAnimationsComp->animationsManagers["main"].setProgress("day/night cycle", daySeconds/600.f);
 		skyAnimationsComp->animationsManagers["main"].play("day/night cycle");
+		
+		getContext().player.handleInitialInputState(getContext().commandQueue);
+		getContext().world.SetContactListener(&m_contactListener);
+		getContext().world.SetContactFilter(&m_contactFilter);
+		requestStackPop();
+		requestStackPush(States::HUD);
 	}
 	catch(std::runtime_error& e)
 	{
@@ -720,10 +734,6 @@ void GameState::initWorld(const std::string& file)
 			entity.second.destroy();
 		}
 		m_entities.clear();
+		requestStackPop();
 	}
-	getContext().player.handleInitialInputState(getContext().commandQueue);
-	getContext().world.SetContactListener(&m_contactListener);
-	getContext().world.SetContactFilter(&m_contactFilter);
-	requestStackPop();
-	requestStackPush(States::HUD);
 }
