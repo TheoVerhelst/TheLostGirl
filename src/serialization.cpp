@@ -116,7 +116,7 @@ Json::Value serialize(entityx::ComponentHandle<BodyComponent> component, float p
 			fixtureObj["restitution"] = fix->GetRestitution();
 			fixtureObj["is sensor"] = fix->IsSensor();
 			//If the fixture is a foot sensor
-			if(fix->GetUserData() and (unsigned int)(fix->GetUserData()) & FixtureRole::Foot)
+			if(fix->GetUserData() and reinterpret_cast<unsigned int>(fix->GetUserData()) & static_cast<unsigned int>(FixtureRole::Foot))
 				fixtureObj["is foot sensor"] = true;
 			//Add the fixture in the right array
 			switch(type)
@@ -150,7 +150,7 @@ Json::Value serialize(entityx::ComponentHandle<SpriteComponent> component, Textu
 	{
 		const std::string partName{spritePair.first};//Get the name of the entity's part
 		const sf::Texture* tex = spritePair.second.getTexture();//Get the associated texture
-		ret[partName]["identifier"] = textureManager.getIdentifier(*tex);//Get the identifier of the texture
+		ret[partName]["identifier"] = textureManager.getIdentifier(*tex);//Get the identifier of the texture and put it in Json
 	}
 	return ret;
 }
