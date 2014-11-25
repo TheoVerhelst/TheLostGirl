@@ -1,9 +1,12 @@
 #include <Box2D/Dynamics/b2Body.h>
+#include <Box2D/Dynamics/Joints/b2PrismaticJoint.h>
+#include <Box2D/Dynamics/Joints/b2RevoluteJoint.h>
 #include <entityx/Entity.h>
 
 #include <TheLostGirl/components.h>
 #include <TheLostGirl/AnimationsManager.h>
 #include <TheLostGirl/functions.h>
+#include <TheLostGirl/JointRoles.h>
 
 #include <TheLostGirl/actions.h>
 
@@ -324,6 +327,37 @@ void BowBender::operator()(entityx::Entity entity, double) const
 				//If the animations manager have the required animation
 				if(animations.isRegistred("bend"+directionStr))
 					animations.setProgress("bend"+directionStr, animationPower);
+			}
+		}
+		//If the entity has a quiver
+		if(entity.has_component<QuiverComponent>())
+		{
+			QuiverComponent::Handle quiverComponent = entity.component<QuiverComponent>();
+			//If there is a notched arrow
+			if(quiverComponent->notchedArrow != entityx::Entity())
+			{
+				entityx::Entity notchedArrow = quiverComponent->notchedArrow;
+				//If the notched arrow has a b2Body
+				if(notchedArrow.valid() and notchedArrow.has_component<BodyComponent>())
+				{
+					//If the notched arrow has not a main body, the program will crash
+					assert(notchedArrow.component<BodyComponent>()->bodies.find("main") != notchedArrow.component<BodyComponent>()->bodies.end());
+					b2Body* arrowBody{notchedArrow.component<BodyComponent>()->bodies["main"]};
+					float translationTarget{-bendComponent->power};
+					float32 gain = 10.f;
+					float32 translationError;
+					//Iterate over all joints
+					for(b2JointEdge* jointEdge{arrowBody->GetJointList()}; jointEdge; jointEdge = jointEdge->next)
+					{
+						//If this is a bending translation joint
+						if(jointHasRole(jointEdge->joint, JointRole::BendingPower))
+						{
+							b2PrismaticJoint* joint = static_cast<b2PrismaticJoint*>(jointEdge->joint);
+							translationError = joint->GetJointTranslation() - translationTarget;
+							joint->SetMotorSpeed(-gain * translationError);
+						}
+					}
+				}
 			}
 		}
 	}

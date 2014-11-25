@@ -8,7 +8,7 @@
 #include <TheLostGirl/components.h>
 #include <TheLostGirl/Category.h>
 #include <TheLostGirl/Parameters.h>
-#include <TheLostGirl/JointRole.h>
+#include <TheLostGirl/JointRoles.h>
 
 #include <TheLostGirl/systems/PhysicsSystem.h>
 
@@ -24,6 +24,8 @@ void PhysicsSystem::update(entityx::EntityManager& entityManager, entityx::Event
 	//Update the walkers
 	for(auto entity : entityManager.entities_with_components(bodyComponent, walkComponent))
 	{
+		//If the walker has not a main body, the program will crash
+		assert(bodyComponent->bodies.find("main") != bodyComponent->bodies.end());
 		b2Body* body = bodyComponent->bodies["main"];
 		float targetVelocity = 0.f;
 		if(walkComponent->effectiveMovement ==  Direction::Left)
@@ -41,6 +43,8 @@ void PhysicsSystem::update(entityx::EntityManager& entityManager, entityx::Event
 		float angleTarget{-bendComponent->angle};
 		float32 gain = 10.f;
 		float32 angleError;
+		//If the archer has not a arms body, the program will crash
+		assert(bodyComponent->bodies.find("arms") != bodyComponent->bodies.end());
 		b2Body* bodyArms = bodyComponent->bodies["arms"];
 		//Iterate over all joints
 		for(b2JointEdge* jointEdge{bodyArms->GetJointList()}; jointEdge; jointEdge = jointEdge->next)
@@ -54,6 +58,8 @@ void PhysicsSystem::update(entityx::EntityManager& entityManager, entityx::Event
 			}
 		}
 		
+		//If the archer has not a bow body, the program will crash
+		assert(bodyComponent->bodies.find("bow") != bodyComponent->bodies.end());
 		b2Body* bodyBow = bodyComponent->bodies["bow"];
 		//Iterate over all joints
 		for(b2JointEdge* jointEdge{bodyBow->GetJointList()}; jointEdge; jointEdge = jointEdge->next)
