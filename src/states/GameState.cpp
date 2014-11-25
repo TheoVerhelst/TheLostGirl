@@ -62,7 +62,6 @@ GameState::~GameState()
 		sceneEntity.second.destroy();
 	for(auto& joint : m_joints)
 		delete joint.definition;
-	getContext().world.ClearForces();
 	if(m_threadLoad.joinable())
 		m_threadLoad.join();
 }
@@ -721,12 +720,10 @@ void GameState::initWorld(const std::string& file)
 			entity.second.destroy();
 		}
 		m_entities.clear();
-		getContext().world.ClearForces();
 	}
 	getContext().player.handleInitialInputState(getContext().commandQueue);
 	getContext().world.SetContactListener(&m_contactListener);
 	getContext().world.SetContactFilter(&m_contactFilter);
 	requestStackPop();
 	requestStackPush(States::HUD);
-	CategoryComponent::Handle categoryComponent;
 }

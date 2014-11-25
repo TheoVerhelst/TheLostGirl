@@ -297,7 +297,7 @@ BowBender::~BowBender()
 
 void BowBender::operator()(entityx::Entity entity, double) const
 {
-	if(entity.has_component<BendComponent>() and entity.has_component<DirectionComponent>())
+	if(entity.has_component<BendComponent>() and entity.has_component<DirectionComponent>() and entity.has_component<BodyComponent>())
 	{
 		BendComponent::Handle bendComponent = entity.component<BendComponent>();
 		DirectionComponent::Handle directionComponent = entity.component<DirectionComponent>();
@@ -333,29 +333,64 @@ void BowBender::operator()(entityx::Entity entity, double) const
 		if(entity.has_component<QuiverComponent>())
 		{
 			QuiverComponent::Handle quiverComponent = entity.component<QuiverComponent>();
-			//If there is a notched arrow
-			if(quiverComponent->notchedArrow != entityx::Entity())
+			entityx::Entity notchedArrow = quiverComponent->notchedArrow;
+			//If there is not a notched arrow
+			if(not notchedArrow.valid())
 			{
-				entityx::Entity notchedArrow = quiverComponent->notchedArrow;
-				//If the notched arrow has a b2Body
-				if(notchedArrow.valid() and notchedArrow.has_component<BodyComponent>())
+				//Find the first valid arrow in the quiver
+				auto found = std::find_if(quiverComponent->arrows.begin(), quiverComponent->arrows.end(), [](const entityx::Entity& e)
+												{return e.valid();});
+				if(found != quiverComponent->arrows.end())
 				{
+					quiverComponent->notchedArrow = *found;
+					notchedArrow = *found;
+					
 					//If the notched arrow has not a main body, the program will crash
 					assert(notchedArrow.component<BodyComponent>()->bodies.find("main") != notchedArrow.component<BodyComponent>()->bodies.end());
 					b2Body* arrowBody{notchedArrow.component<BodyComponent>()->bodies["main"]};
-					float translationTarget{-bendComponent->power};
-					float32 gain = 10.f;
-					float32 translationError;
-					//Iterate over all joints
-					for(b2JointEdge* jointEdge{arrowBody->GetJointList()}; jointEdge; jointEdge = jointEdge->next)
+					//If the entity has not a bow, the program will crash
+					assert(entity.component<BodyComponent>()->bodies.find("bow") != entity.component<BodyComponent>()->bodies.end());
+					b2Body* bowBody{entity.component<BodyComponent>()->bodies["bow"]};
+					
+					//Replace the arrow
+					arrowBody->SetTransform(bowBody->GetWorldPoint({76.f, 93.f}), bowBody->GetAngle());
+					//Set the joint
+					b2PrismaticJointDef jointDef;
+					jointDef.bodyA = bowBody;
+					jointDef.bodyB = arrowBody;
+					jointDef.localAnchorA = {76.f, 93.f};
+					jointDef.localAnchorB = {0.f, 6.f};
+					jointDef.localAxisA = {1.f, 0.f};
+					jointDef.enableLimit = true;
+					jointDef.upperTranslation = 0.f;
+					jointDef.lowerTranslation = -1.f;
+					jointDef.enableMotor = true;
+					jointDef.maxMotorForce = 10.f;
+					jointDef.referenceAngle = 0.f;
+					jointDef.userData = add<unsigned int>(jointDef.userData, static_cast<unsigned int>(JointRole::BendingPower));
+				}
+			}
+			
+			//If the notched arrow has a b2Body,
+			//Set the translation of the joint between bow and arrow
+			if(notchedArrow.valid() and notchedArrow.has_component<BodyComponent>())
+			{
+				//If the notched arrow has not a main body, the program will crash
+				assert(notchedArrow.component<BodyComponent>()->bodies.find("main") != notchedArrow.component<BodyComponent>()->bodies.end());
+				b2Body* arrowBody{notchedArrow.component<BodyComponent>()->bodies["main"]};
+				float translationTarget{bendComponent->power/bendComponent->maxPower};//Power of the bending, in range [0, 1]
+				float32 gain = 10.f;
+				float32 translationError;
+				//Iterate over all joints
+				for(b2JointEdge* jointEdge{arrowBody->GetJointList()}; jointEdge; jointEdge = jointEdge->next)
+				{
+					//If this is a bending translation joint
+					if(jointHasRole(jointEdge->joint, JointRole::BendingPower))
 					{
-						//If this is a bending translation joint
-						if(jointHasRole(jointEdge->joint, JointRole::BendingPower))
-						{
-							b2PrismaticJoint* joint = static_cast<b2PrismaticJoint*>(jointEdge->joint);
-							translationError = joint->GetJointTranslation() - translationTarget;
-							joint->SetMotorSpeed(-gain * translationError);
-						}
+						b2PrismaticJoint* joint = static_cast<b2PrismaticJoint*>(jointEdge->joint);
+						//The final target is equal to the joint's lower limit when the translationTarget is equal to 1.
+						translationError = joint->GetJointTranslation() - (translationTarget*joint->GetLowerLimit());
+						joint->SetMotorSpeed(-gain * translationError);
 					}
 				}
 			}

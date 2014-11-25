@@ -29,7 +29,6 @@ void FallingListener::BeginContact(b2Contact* contact)
 	entityx::Entity* entityB = static_cast<entityx::Entity*>(bodyB->GetUserData());
 	if(entityA != entityB)
 	{
-			std::cout << static_cast<unsigned int>(FixtureRole::Foot) << " " << fixtureA->GetUserData() << std::endl;
 		//If B is an actor that fall on the ground A
 		if(fixtureHasRole(fixtureB, FixtureRole::Foot) and entityB->has_component<FallComponent>())
 		{
@@ -79,7 +78,6 @@ void FallingListener::EndContact(b2Contact* contact)
 	entityx::Entity* entityB = static_cast<entityx::Entity*>(bodyB->GetUserData());
 	if(entityA != entityB)
 	{
-			std::cout << static_cast<unsigned int>(FixtureRole::Foot) << " " << fixtureA->GetUserData() << std::endl;
 		//If an actor A fall from the ground B, or if an actor B fall from the ground A
 		if(fixtureHasRole(fixtureB, FixtureRole::Foot) and entityB->has_component<FallComponent>())
 		{

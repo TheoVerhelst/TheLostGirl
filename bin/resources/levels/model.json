@@ -1148,6 +1148,138 @@
                         "free children names" : false,
                         "children" :
                         [
+                            {
+                                "name" : "entity A",
+                                "type" : "string",
+                                "required" : true
+                            },
+                            {
+                                "name" : "entity B",
+                                "type" : "string",
+                                "required" : true
+                            },
+                            {
+                                "name" : "part A",
+                                "type" : "string",
+                                "required" : true
+                            },
+                            {
+                                "name" : "part B",
+                                "type" : "string",
+                                "required" : true
+                            },
+                            {
+                                "name" : "local anchor A",
+                                "type" : "object",
+                                "required" : true,
+                                "free children names" : false,
+                                "children" :
+                                [
+                                    {
+                                        "name" : "x",
+                                        "type" : "real",
+                                        "required" : true
+                                    },
+                                    {
+                                        "name" : "y",
+                                        "type" : "real",
+                                        "required" : true
+                                    }
+                                ]
+                                
+                            },
+                            {
+                                "name" : "local anchor B",
+                                "type" : "object",
+                                "required" : true,
+                                "free children names" : false,
+                                "children" :
+                                [
+                                    {
+                                        "name" : "x",
+                                        "type" : "real",
+                                        "required" : true
+                                    },
+                                    {
+                                        "name" : "y",
+                                        "type" : "real",
+                                        "required" : true
+                                    }
+                                ]
+                                
+                            },
+                            {
+                                "name" : "local axis A",
+                                "type" : "object",
+                                "required" : true,
+                                "free children names" : false,
+                                "children" :
+                                [
+                                    {
+                                        "name" : "x",
+                                        "type" : "real",
+                                        "required" : true
+                                    },
+                                    {
+                                        "name" : "y",
+                                        "type" : "real",
+                                        "required" : true
+                                    }
+                                ]
+                                
+                            },
+                            {
+                                "name" : "enable limit",
+                                "type" : "bool",
+                                "required" : false,
+                                "default value" : false
+                            },
+                            {
+                                "name" : "upper translation",
+                                "type" : "real",
+                                "required" : false,
+                                "default value" : 0
+                            },
+                            {
+                                "name" : "lower translation",
+                                "type" : "real",
+                                "required" : false,
+                                "default value" : 0
+                            },
+                            {
+                                "name" : "enable motor",
+                                "type" : "bool",
+                                "required" : false,
+                                "default value" : false
+                            },
+                            {
+                                "name" : "max motor force",
+                                "type" : "real",
+                                "required" : false,
+                                "default value" : 0
+                            },
+                            {
+                                "name" : "motor speed",
+                                "type" : "real",
+                                "required" : false,
+                                "default value" : 0
+                            },
+                            {
+                                "name" : "reference angle",
+                                "type" : "real",
+                                "required" : false,
+                                "default value" : 0
+                            },
+                            {
+                                "name" : "roles",
+                                "type" : "array",
+                                "required" : false,
+                                "children":
+                                {
+                                    "type" : "string",
+                                    "possible values" : ["bending power"]
+                                }
+                            }
                         ]
                     }
                 },
