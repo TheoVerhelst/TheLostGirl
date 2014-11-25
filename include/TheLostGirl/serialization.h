@@ -22,11 +22,13 @@ Json::Value serialize(entityx::ComponentHandle<BodyComponent> component, float p
 
 /// Serialize the given component.
 /// \param component Component to serialize.
+/// \param textureManager The texture manager.
 /// \return A Json value.
 Json::Value serialize(entityx::ComponentHandle<SpriteComponent> component, TextureManager& textureManager);
 
 /// Serialize the given component.
 /// \param component Component to serialize.
+/// \param scale Current resolution scale.
 /// \return A Json value.
 Json::Value serialize(entityx::ComponentHandle<TransformComponent> component, float scale);
 
@@ -78,62 +80,70 @@ Json::Value serialize(entityx::ComponentHandle<StaminaComponent> component);
 /// Deserialize the given \a value in the given \a component.
 /// \param component Component in wich deserialize the data.
 /// \param pixelByMeter Number of pixel by meter.
-/// \param The Json value containing the data.
+/// \param world Current intance of physic world.
+/// \param scaledPixelByMeter Number of pixel by meter multiplied by the current resolution scale.
+/// \param transformComponent Transform component of the entity.
+/// \param value The Json value containing the data.
 void deserialize(const Json::Value& value, entityx::ComponentHandle<BodyComponent> component, entityx::ComponentHandle<TransformComponent> transformComponent, b2World& world, float pixelByMeter, float scaledPixelByMeter);
 
 /// Deserialize the given \a value in the given \a component.
 /// \param component Component in wich deserialize the data.
-/// \param The Json value containing the data.
+/// \param textureManager The texture manager.
+/// \param path File path to the current image directory.
+/// \param value The Json value containing the data.
 void deserialize(const Json::Value& value, entityx::ComponentHandle<SpriteComponent> component, TextureManager& textureManager, const std::string& path);
 
 /// Deserialize the given \a value in the given \a component.
 /// \param component Component in wich deserialize the data.
-/// \param The Json value containing the data.
+/// \param scale Current resolution scale.
+/// \param value The Json value containing the data.
 void deserialize(const Json::Value& value, entityx::ComponentHandle<TransformComponent> component, float scale);
 
 /// Deserialize the given \a value in the given \a component.
 /// \param component Component in wich deserialize the data.
-/// \param The Json value containing the data.
+/// \param spriteComponent Sprite component of the entity.
+/// \param context Current context of the application.
+/// \param value The Json value containing the data.
 void deserialize(const Json::Value& value, entityx::ComponentHandle<AnimationsComponent<SpriteSheetAnimation>> component, entityx::ComponentHandle<SpriteComponent> spriteComponent, State::Context context);
 
 /// Deserialize the given \a value in the given \a component.
 /// \param component Component in wich deserialize the data.
-/// \param The Json value containing the data.
+/// \param value The Json value containing the data.
 void deserialize(const Json::Value& value, entityx::ComponentHandle<DirectionComponent> component);
 
 /// Deserialize the given \a value in the given \a component.
 /// \param component Component in wich deserialize the data.
-/// \param The Json value containing the data.
+/// \param value The Json value containing the data.
 void deserialize(const Json::Value& value, entityx::ComponentHandle<CategoryComponent> component);
 
 /// Deserialize the given \a value in the given \a component.
 /// \param component Component in wich deserialize the data.
-/// \param The Json value containing the data.
+/// \param value The Json value containing the data.
 void deserialize(const Json::Value& value, entityx::ComponentHandle<FallComponent> component);
 
 /// Deserialize the given \a value in the given \a component.
 /// \param component Component in wich deserialize the data.
-/// \param The Json value containing the data.
+/// \param value The Json value containing the data.
 void deserialize(const Json::Value& value, entityx::ComponentHandle<WalkComponent> component);
 
 /// Deserialize the given \a value in the given \a component.
 /// \param component Component in wich deserialize the data.
-/// \param The Json value containing the data.
+/// \param value The Json value containing the data.
 void deserialize(const Json::Value& value, entityx::ComponentHandle<JumpComponent> component);
 
 /// Deserialize the given \a value in the given \a component.
 /// \param component Component in wich deserialize the data.
-/// \param The Json value containing the data.
+/// \param value The Json value containing the data.
 void deserialize(const Json::Value& value, entityx::ComponentHandle<BendComponent> component);
 
 /// Deserialize the given \a value in the given \a component.
 /// \param component Component in wich deserialize the data.
-/// \param The Json value containing the data.
+/// \param value The Json value containing the data.
 void deserialize(const Json::Value& value, entityx::ComponentHandle<HealthComponent> component);
 
 /// Deserialize the given \a value in the given \a component.
 /// \param component Component in wich deserialize the data.
-/// \param The Json value containing the data.
+/// \param value The Json value containing the data.
 void deserialize(const Json::Value& value, entityx::ComponentHandle<StaminaComponent> component);
 
 #endif // SERIALIZATION_H

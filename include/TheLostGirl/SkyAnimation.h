@@ -22,7 +22,7 @@ class SkyAnimation
 		void animate(float progress);
 		
 	private:
-		entityx::Entity m_entity;
+		entityx::Entity m_entity;///< The entity to animate.
 };
 
 #endif // SKYANIMATION_H

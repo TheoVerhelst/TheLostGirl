@@ -148,15 +148,9 @@ Json::Value serialize(entityx::ComponentHandle<SpriteComponent> component, Textu
 	Json::Value ret;
 	for(auto& spritePair : component->sprites)
 	{
-		const std::string partName{spritePair.first};
-		const sf::Texture* tex = spritePair.second.getTexture();
-		//Compare the pointer to the texture
-		if(tex == &textureManager.get("archer"))
-			ret[partName]["identifier"] = "archer";
-		else if(tex == &textureManager.get("arms"))
-			ret[partName]["identifier"] = "arms";
-		else if(tex == &textureManager.get("bow"))
-			ret[partName]["identifier"] = "bow";
+		const std::string partName{spritePair.first};//Get the name of the entity's part
+		const sf::Texture* tex = spritePair.second.getTexture();//Get the associated texture
+		ret[partName]["identifier"] = textureManager.getIdentifier(*tex);//Get the identifier of the texture
 	}
 	return ret;
 }

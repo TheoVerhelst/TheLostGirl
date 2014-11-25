@@ -53,6 +53,7 @@ class SpriteSheetAnimation
 		
 		/// Constructor.
 		/// \param sprite Sprite to animate.
+		/// \param context Current context of the application.
 		SpriteSheetAnimation(sf::Sprite& sprite, State::Context context);
 		
 		/// Registers a new frame.
@@ -67,7 +68,6 @@ class SpriteSheetAnimation
 		
 		/// Apply the animation to the sprite passed as argument in the constructor.
 		/// In fact, it just search wich rect to apply to the texture of the sprite.
-		/// \param sprite Sprite on wich to apply the animation.
 		/// \param progress Progress of the animation to apply.
 		void animate(float progress);
 		
@@ -80,6 +80,9 @@ class SpriteSheetAnimation
 		void deserialize(const Json::Value& value);
 		
 	private:
+		/// Scale the given rectangle with the scale indicated in m_context.
+		/// \param rect Rectangle to scale.
+		/// \return A scaled rectangle.
 		template<typename T>
 		sf::Rect<T> scale(sf::Rect<T> rect)
 		{
@@ -92,8 +95,8 @@ class SpriteSheetAnimation
 			return res;
 		}
 		std::vector<Frame> m_frames;///< Array of all registred frames.
-		sf::Sprite& m_sprite;
-		State::Context m_context;
+		sf::Sprite& m_sprite;       ///< Sprite to animate.
+		State::Context m_context;   ///< Current context of the application.
 };
 
 #endif // SPRITESHEETANIMATION_H

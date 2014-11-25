@@ -187,10 +187,10 @@ void GameState::saveWorld(const std::string& file)
 					root["joints"]["revolute joints"][last]["entity B"] = joint.entityB;
 					root["joints"]["revolute joints"][last]["part A"] = joint.partA;
 					root["joints"]["revolute joints"][last]["part B"] = joint.partB;
-					root["joints"]["revolute joints"][last]["local anchor A"]["x"] = castedJointDef->localAnchorA.x/pixelByMeter;
-					root["joints"]["revolute joints"][last]["local anchor A"]["y"] = castedJointDef->localAnchorA.y/pixelByMeter;
-					root["joints"]["revolute joints"][last]["local anchor B"]["x"] = castedJointDef->localAnchorB.x/pixelByMeter;
-					root["joints"]["revolute joints"][last]["local anchor B"]["y"] = castedJointDef->localAnchorB.y/pixelByMeter;
+					root["joints"]["revolute joints"][last]["local anchor A"]["x"] = castedJointDef->localAnchorA.x*pixelByMeter;
+					root["joints"]["revolute joints"][last]["local anchor A"]["y"] = castedJointDef->localAnchorA.y*pixelByMeter;
+					root["joints"]["revolute joints"][last]["local anchor B"]["x"] = castedJointDef->localAnchorB.x*pixelByMeter;
+					root["joints"]["revolute joints"][last]["local anchor B"]["y"] = castedJointDef->localAnchorB.y*pixelByMeter;
 					root["joints"]["revolute joints"][last]["lower angle"] = (castedJointDef->lowerAngle / b2_pi) * 180.f;
 					root["joints"]["revolute joints"][last]["upper angle"] = (castedJointDef->upperAngle / b2_pi) * 180.f;
 					root["joints"]["revolute joints"][last]["enable limit"] = castedJointDef->enableLimit;

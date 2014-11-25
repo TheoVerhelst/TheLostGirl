@@ -45,11 +45,11 @@ class HUDState     : public State, public entityx::Receiver<HUDState>
 		virtual bool handleEvent(const sf::Event& event);
 		
 		/// Receive an event indicating that the health of the player changed.
-		/// \param playerStatsChange Structure containing data about the change. 
+		/// \param playerHealthChange Structure containing data about the change. 
 		void receive(const PlayerHealthChange& playerHealthChange);
 		
 		/// Receive an event indicating that the health of the player changed.
-		/// \param playerStatsChange Structure containing data about the change. 
+		/// \param playerStaminaChange Structure containing data about the change. 
 		void receive(const PlayerStaminaChange& playerStaminaChange);
 
 	private:

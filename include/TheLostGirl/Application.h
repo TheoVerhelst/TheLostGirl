@@ -54,7 +54,11 @@ class Application
 
 	private:
 		void processInput();     ///< Various input handling.
-		void update(sf::Time dt);///< Updates logics, systems, and so on.
+		
+		/// Updates logics, systems, and so on.
+        /// \param dt Elapsed time in the last game frame.
+		void update(sf::Time dt);
+		
 		void render();           ///< Render all that need to be displayed on the screen.
 		void registerStates();   ///< Registers all the game states.
 		void registerSystems();  ///< Registers all the logic systems.

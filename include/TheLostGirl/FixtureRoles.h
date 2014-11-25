@@ -5,6 +5,7 @@
 
 namespace FixtureRole
 {
+	/// Enumeration of role of some fixture (foot, head, ...).
 	enum Roles
 	{
 		None  = 0,      ///< Role that correspond to none role.

@@ -110,6 +110,14 @@ struct InventoryComponent : public entityx::Component<InventoryComponent>
 	float maxWeight;                   ///< Maximum weight that that inventory can carry.
 };
 
+/// The quiver component.
+struct QuiverComponent : public entityx::Component<QuiverComponent>
+{
+	std::vector<entityx::Entity> arrows;///< List of all stocked arrows.
+	entityx::Entity notchedArrow;       ///< Current arrow notched in the bow.
+	unsigned short int capacity;        ///< Maximum number of arrows in the quiver.
+};
+
 /// Falling component.
 /// The fall component must be added to every entity that can fall.
 struct FallComponent : public entityx::Component<FallComponent>

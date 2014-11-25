@@ -61,6 +61,9 @@ class AnimationsManager
 			/// \param _importance Indicates the importance of the animation, relatively to the others.
 			/// \param _duration Duration of the animation.
 			/// \param _loops Indicates if the animation must loops or not.
+			/// \param _progress Current progress of the animation, in the range [0,1].
+			/// \param _isPaused Indicates if the animations is paused.
+			/// \param _isActive Indicates if the animations is active.
 			TimeAnimation(A _animation,
 							unsigned short int _importance = 0,
 							sf::Time _duration = sf::seconds(1.f),
@@ -165,6 +168,8 @@ class AnimationsManager
 		/// Serialize the animations manager.
 		/// That copy all data in value and construct them in this instance of animations manager.
 		/// \param value A Json value containing all the data.
+		/// \param object The object to pass to animations constructors.
+		/// \param context The current context of the application.
 		template <typename T>
 		void deserialize(const Json::Value& value, T& object, State::Context context);
 

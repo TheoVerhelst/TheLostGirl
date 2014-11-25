@@ -109,7 +109,7 @@ void parseValue(const Json::Value& value, const std::string name, std::vector<Js
 
 /// Check if \a value have the type \a type.
 /// If value don't have the right type, an exception is raised.
-/// \param object A Json value.
+/// \param value A Json value.
 /// \param name The name of the value.
 /// \param type The expected type of \a value.
 void parseValue(const Json::Value& value, const std::string name, Json::ValueType type);

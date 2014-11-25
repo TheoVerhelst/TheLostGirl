@@ -60,20 +60,25 @@ class GameState : public State
 		virtual bool handleEvent(const sf::Event& event);
 
 	private:
+		
+		/// Structure that hold data about joints.
+		/// The role of this texture is to hold data that cannot easily be retrieved in the b2World instance.
 		struct Joint
 		{
-			b2JointDef* definition;
-			b2JointType type;
-			std::string entityA;
-			std::string entityB;
-			std::string partA;
-			std::string partB;
+			b2JointDef* definition;///< Pointer to the definition of the joint.
+			b2JointType type;      ///< Type of joint.
+			std::string entityA;   ///< Entity A.
+			std::string entityB;   ///< Entity B.
+			std::string partA;     ///< Part of the entity A.
+			std::string partB;     ///< Part of the entity B.
 		};
 		
+		/// Structure that hold data about scene entities.
+		/// The role of this texture is to hold data that cannot easily be retrieved in the EntityManager instance.
 		struct SceneReplaces
 		{
-			sf::IntRect origin;
-			std::vector<Transform> replaces;
+			sf::IntRect origin;             ///< Coordinate of the texture to place in the world.
+			std::vector<Transform> replaces;///< List of places where the texture should be displayed.
 		};
 		
 		/// Initialize the physic world.

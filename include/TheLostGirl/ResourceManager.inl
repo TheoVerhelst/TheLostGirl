@@ -48,9 +48,17 @@ const Resource& ResourceManager<Resource, Identifier>::get(Identifier id) const
 }
 
 template <typename Resource, typename Identifier>
+Identifier ResourceManager<Resource, Identifier>::getIdentifier(const Resource& resource) const
+{
+	auto found = m_resourceMap.begin();
+	for(; found != m_resourceMap.end() and found->second.get() != &resource; ++found);
+	return found == m_resourceMap.end() ? Identifier() : found->first;
+}
+
+template <typename Resource, typename Identifier>
 void ResourceManager<Resource, Identifier>::insertResource(Identifier id, std::unique_ptr<Resource> resource)
 {
-	// Insert and check success
+	//Insert and check success
 	auto inserted = m_resourceMap.insert(std::make_pair(id, std::move(resource)));
 	assert(inserted.second);
 }

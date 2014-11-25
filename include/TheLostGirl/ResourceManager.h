@@ -55,6 +55,12 @@ class ResourceManager
         /// \param id Identifier of the resource to get.
         /// \return Const reference to the resource.
 		const Resource& get(Identifier id) const;
+		
+		/// Return the identifier of the given resource.
+		/// \warning In order to use this function, the Resource must have a == operator.
+		/// \param resource The resource to get the identifier.
+		/// \return Identifier identifier of the resource.
+		Identifier getIdentifier(const Resource& resource) const;
 
 	private:
 		/// Insert the given resource to the resource map.
