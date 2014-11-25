@@ -8,6 +8,7 @@
 #include <TheLostGirl/components.h>
 #include <TheLostGirl/Category.h>
 #include <TheLostGirl/Parameters.h>
+#include <TheLostGirl/JointRole.h>
 
 #include <TheLostGirl/systems/PhysicsSystem.h>
 
@@ -39,15 +40,32 @@ void PhysicsSystem::update(entityx::EntityManager& entityManager, entityx::Event
 	{
 		float angleTarget{-bendComponent->angle};
 		float32 gain = 10.f;
+		float32 angleError;
 		b2Body* bodyArms = bodyComponent->bodies["arms"];
-		b2RevoluteJoint* jointArms = static_cast<b2RevoluteJoint*>(bodyArms->GetJointList()->joint);
-		float32 angleError = jointArms->GetJointAngle() - angleTarget;
-		jointArms->SetMotorSpeed(-gain * angleError);
+		//Iterate over all joints
+		for(b2JointEdge* jointEdge{bodyArms->GetJointList()}; jointEdge; jointEdge = jointEdge->next)
+		{
+			//If this is a bending joint
+			if(jointHasRole(jointEdge->joint, JointRole::BendingAngle))
+			{
+				b2RevoluteJoint* jointArms = static_cast<b2RevoluteJoint*>(jointEdge->joint);
+				angleError = jointArms->GetJointAngle() - angleTarget;
+				jointArms->SetMotorSpeed(-gain * angleError);
+			}
+		}
 		
 		b2Body* bodyBow = bodyComponent->bodies["bow"];
-		b2RevoluteJoint* jointBow = static_cast<b2RevoluteJoint*>(bodyBow->GetJointList()->joint);
-		angleError = jointBow->GetJointAngle() - angleTarget;
-		jointBow->SetMotorSpeed(-gain * angleError);
+		//Iterate over all joints
+		for(b2JointEdge* jointEdge{bodyBow->GetJointList()}; jointEdge; jointEdge = jointEdge->next)
+		{
+			//If this is a bending joint
+			if(jointHasRole(jointEdge->joint, JointRole::BendingAngle))
+			{
+				b2RevoluteJoint* jointBow = static_cast<b2RevoluteJoint*>(jointEdge->joint);
+				angleError = jointBow->GetJointAngle() - angleTarget;
+				jointBow->SetMotorSpeed(-gain * angleError);
+			}
+		}
 	}
 	//Update the transformations according to the one of the b2Body.
 	for(auto entity : entityManager.entities_with_components(bodyComponent, transformComponent))

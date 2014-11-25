@@ -150,4 +150,15 @@ sf::Vector2f b2tosf(const b2Vec2& vec);
 /// \return A Box2D vector.
 b2Vec2 sftob2(const sf::Vector2f& vec);
 
+/// Add \a value to ptr with the operator |, it is useful for storing data in Box2D userData.
+/// \note So the ptr is not really a ptr, just a 32 or 64 bits value contained in a void pointer.
+/// \param ptr A void pointer.
+/// \param value Value to add to the pointer.
+/// \return The logical operation ptr OR value.
+template <typename T>
+inline void* add(void* ptr, T value)
+{
+	return reinterpret_cast<void*>(reinterpret_cast<T>(ptr) | value);
+}
+
 #endif // FUNCTIONS_H

@@ -6,6 +6,7 @@
 #include <TheLostGirl/components.h>
 #include <TheLostGirl/ResourceManager.h>
 #include <TheLostGirl/FixtureRoles.h>
+#include <TheLostGirl/functions.h>
 
 #include <TheLostGirl/serialization.h>
 
@@ -116,8 +117,8 @@ Json::Value serialize(entityx::ComponentHandle<BodyComponent> component, float p
 			fixtureObj["restitution"] = fix->GetRestitution();
 			fixtureObj["is sensor"] = fix->IsSensor();
 			//If the fixture is a foot sensor
-			if(fix->GetUserData() and reinterpret_cast<unsigned int>(fix->GetUserData()) & static_cast<unsigned int>(FixtureRole::Foot))
-				fixtureObj["is foot sensor"] = true;
+			if(fixtureHasRole(fix, FixtureRole::Foot))
+				fixtureObj["roles"].append("foot sensor");
 			//Add the fixture in the right array
 			switch(type)
 			{
@@ -378,8 +379,12 @@ void deserialize(const Json::Value& value, entityx::ComponentHandle<BodyComponen
 					//is sensor
 					entityFixtureDef.isSensor = fixture["is sensor"].asBool();
 					
-					//is foot sensor
-					entityFixtureDef.userData = (void*)FixtureRole::Foot;
+					//roles
+					const Json::Value roles = fixture["roles"];
+					for(Json::ArrayIndex j{0}; j < roles.size(); ++j)
+						if(roles[j].asString() == "foot sensor")
+							//Add the role to the data
+							entityFixtureDef.userData = add<unsigned int>(entityFixtureDef.userData, static_cast<unsigned int>(FixtureRole::Foot));
 						
 					entityBodyComponent->CreateFixture(&entityFixtureDef);
 				}
@@ -448,8 +453,12 @@ void deserialize(const Json::Value& value, entityx::ComponentHandle<BodyComponen
 					//is sensor
 					entityFixtureDef.isSensor = fixture["is sensor"].asBool();
 					
-					//is foot sensor
-					entityFixtureDef.userData = (void*)FixtureRole::Foot;
+					//roles
+					const Json::Value roles = body["roles"];
+					for(Json::ArrayIndex j{0}; j < roles.size(); ++j)
+						if(roles[j].asString() == "foot sensor")
+							//Add the role to the data
+							entityFixtureDef.userData = add<unsigned int>(entityFixtureDef.userData, static_cast<unsigned int>(FixtureRole::Foot));
 						
 					entityBodyComponent->CreateFixture(&entityFixtureDef);
 				}
@@ -516,8 +525,12 @@ void deserialize(const Json::Value& value, entityx::ComponentHandle<BodyComponen
 					//is sensor
 					entityFixtureDef.isSensor = fixture["is sensor"].asBool();
 					
-					//is foot sensor
-					entityFixtureDef.userData = (void*)FixtureRole::Foot;
+					//roles
+					const Json::Value roles = body["roles"];
+					for(Json::ArrayIndex j{0}; j < roles.size(); ++j)
+						if(roles[j].asString() == "foot sensor")
+							//Add the role to the data
+							entityFixtureDef.userData = add<unsigned int>(entityFixtureDef.userData, static_cast<unsigned int>(FixtureRole::Foot));
 						
 					entityBodyComponent->CreateFixture(&entityFixtureDef);
 				}
@@ -556,8 +569,12 @@ void deserialize(const Json::Value& value, entityx::ComponentHandle<BodyComponen
 					//is sensor
 					entityFixtureDef.isSensor = fixture["is sensor"].asBool();
 					
-					//is foot sensor
-					entityFixtureDef.userData = (void*)FixtureRole::Foot;
+					//roles
+					const Json::Value roles = body["roles"];
+					for(Json::ArrayIndex j{0}; j < roles.size(); ++j)
+						if(roles[j].asString() == "foot sensor")
+							//Add the role to the data
+							entityFixtureDef.userData = add<unsigned int>(entityFixtureDef.userData, static_cast<unsigned int>(FixtureRole::Foot));
 						
 					entityBodyComponent->CreateFixture(&entityFixtureDef);
 				}

@@ -337,6 +337,60 @@
                         ]
                     },
                     {
+                        "name" : "inventory",
+                        "type" : "object",
+                        "free children names" : false,
+                        "required" : false,
+                        "children":
+                        [
+                            {
+                                "name" : "maximum weight",
+                                "type" : "real",
+                                "required" : true
+                            },
+                            {
+                                "name" : "items",
+                                "type" : "object",
+                                "required" : true,
+                                "free children names" : true,
+                                "children" :
+                                {
+                                    "type" : "string"
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "name" : "quiver",
+                        "type" : "object",
+                        "free children names" : false,
+                        "required" : false,
+                        "children":
+                        [
+                            {
+                                "name" : "capacity",
+                                "type" : "int",
+                                "required" : true
+                            },
+                            {
+                                "name" : "arrows",
+                                "type" : "object",
+                                "required" : true,
+                                "free children names" : true,
+                                "children" :
+                                {
+                                    "type" : "string"
+                                }
+                            },
+                            {
+                                "name" : "notched arrow",
+                                "type" : "string",
+                                "required" : false,
+                                "default value" : ""
+                            }
+                        ]
+                    },
+                    {
                         "name" : "sprites",
                         "type" : "object",
                         "free children names" : true,
@@ -605,10 +659,14 @@
                                                 "default value" : false
                                             },
                                             {
-                                                "name" : "is foot sensor",
-                                                "type" : "bool",
+                                                "name" : "roles",
+                                                "type" : "array",
                                                 "required" : false,
-                                                "default value" : false
+                                                "children":
+                                                {
+                                                    "type" : "string",
+                                                    "possible values" : ["foot sensor"]
+                                                }
                                             }
                                         ]
                                     }
@@ -709,10 +767,14 @@
                                                 "default value" : false
                                             },
                                             {
-                                                "name" : "is foot sensor",
-                                                "type" : "bool",
+                                                "name" : "roles",
+                                                "type" : "array",
                                                 "required" : false,
-                                                "default value" : false
+                                                "children":
+                                                {
+                                                    "type" : "string",
+                                                    "possible values" : ["foot sensor"]
+                                                }
                                             }
                                         ]
                                     }
@@ -828,10 +890,14 @@
                                                 "default value" : false
                                             },
                                             {
-                                                "name" : "is foot sensor",
-                                                "type" : "bool",
+                                                "name" : "roles",
+                                                "type" : "array",
                                                 "required" : false,
-                                                "default value" : false
+                                                "children":
+                                                {
+                                                    "type" : "string",
+                                                    "possible values" : ["foot sensor"]
+                                                }
                                             }
                                         ]
                                     }
@@ -895,10 +961,14 @@
                                                 "default value" : false
                                             },
                                             {
-                                                "name" : "is foot sensor",
-                                                "type" : "bool",
+                                                "name" : "roles",
+                                                "type" : "array",
                                                 "required" : false,
-                                                "default value" : false
+                                                "children":
+                                                {
+                                                    "type" : "string",
+                                                    "possible values" : ["foot sensor"]
+                                                }
                                             }
                                         ]
                                     }
@@ -1054,6 +1124,16 @@
                                 "type" : "real",
                                 "required" : false,
                                 "default value" : 0
+                            },
+                            {
+                                "name" : "roles",
+                                "type" : "array",
+                                "required" : false,
+                                "children":
+                                {
+                                    "type" : "string",
+                                    "possible values" : ["bending angle"]
+                                }
                             }
                         ]
                     }

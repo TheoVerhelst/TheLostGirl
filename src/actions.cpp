@@ -294,34 +294,37 @@ BowBender::~BowBender()
 
 void BowBender::operator()(entityx::Entity entity, double) const
 {
-	if(entity.has_component<BendComponent>()
-		and entity.has_component<AnimationsComponent<SpriteSheetAnimation>>()
-		and entity.has_component<DirectionComponent>())
+	if(entity.has_component<BendComponent>() and entity.has_component<DirectionComponent>())
 	{
 		BendComponent::Handle bendComponent = entity.component<BendComponent>();
 		DirectionComponent::Handle directionComponent = entity.component<DirectionComponent>();
-		std::string directionStr;//Find the right animation string, and set the angle
+		//Set the bending angle
 		if(directionComponent->direction == Direction::Left)
-		{
-			directionStr = " left";
 			bendComponent->angle = cap(angle - b2_pi, -b2_pi, b2_pi/2);
-		}
 		else if(directionComponent->direction == Direction::Right)
-		{
-			directionStr = " right";
 			bendComponent->angle = cap(angle, -b2_pi/2, b2_pi);
-		}
-		bendComponent->power = cap(power, 0.f, bendComponent->maxPower);//Cap the power
-		float animationPower = bendComponent->power / bendComponent->maxPower;//The progress of the bending, in the range [0, 1]
-		//Get all the animations managers of the entity
-		auto& animationsManagers(entity.component<AnimationsComponent<SpriteSheetAnimation>>()->animationsManagers);
-		//For each animations manager of the entity
-		for(auto& animationsPair : animationsManagers)
+		//Set the bending power
+		bendComponent->power = cap(power, 0.f, bendComponent->maxPower);
+		
+		//If the entity has animation, set the right animation and play it accoring to the bending state
+		if(entity.has_component<AnimationsComponent<SpriteSheetAnimation>>())
 		{
-			AnimationsManager<SpriteSheetAnimation>& animations = animationsPair.second;
-			//If the animations manager have the required animation
-			if(animations.isRegistred("bend"+directionStr))
-				animations.setProgress("bend"+directionStr, animationPower);
+			std::string directionStr;//Find the right animation string, and set the angle
+			if(directionComponent->direction == Direction::Left)
+				directionStr = " left";
+			else if(directionComponent->direction == Direction::Right)
+				directionStr = " right";
+			float animationPower = bendComponent->power / bendComponent->maxPower;//The progress of the bending, in the range [0, 1]
+			//Get all the animations managers of the entity
+			auto& animationsManagers(entity.component<AnimationsComponent<SpriteSheetAnimation>>()->animationsManagers);
+			//For each animations manager of the entity
+			for(auto& animationsPair : animationsManagers)
+			{
+				AnimationsManager<SpriteSheetAnimation>& animations = animationsPair.second;
+				//If the animations manager have the required animation
+				if(animations.isRegistred("bend"+directionStr))
+					animations.setProgress("bend"+directionStr, animationPower);
+			}
 		}
 	}
 }

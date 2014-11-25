@@ -29,8 +29,9 @@ void FallingListener::BeginContact(b2Contact* contact)
 	entityx::Entity* entityB = static_cast<entityx::Entity*>(bodyB->GetUserData());
 	if(entityA != entityB)
 	{
+			std::cout << static_cast<unsigned int>(FixtureRole::Foot) << " " << fixtureA->GetUserData() << std::endl;
 		//If B is an actor that fall on the ground A
-		if(fixtureB->GetUserData() and reinterpret_cast<unsigned int>(fixtureB->GetUserData()) & static_cast<unsigned int>(FixtureRole::Foot) and entityB->has_component<FallComponent>())
+		if(fixtureHasRole(fixtureB, FixtureRole::Foot) and entityB->has_component<FallComponent>())
 		{
 			//Swap the pointers
 			std::swap(fixtureA, fixtureB);
@@ -38,7 +39,7 @@ void FallingListener::BeginContact(b2Contact* contact)
 			std::swap(entityA, entityB);
 		}
 		//Now we are sure that A is an actor that fall on the ground B
-		if(fixtureA->GetUserData() and reinterpret_cast<unsigned int>(fixtureB->GetUserData()) & static_cast<unsigned int>(FixtureRole::Foot) and entityA->has_component<FallComponent>())
+		if(fixtureHasRole(fixtureA, FixtureRole::Foot) and entityA->has_component<FallComponent>())
 		{
 			if(entityA->has_component<AnimationsComponent<SpriteSheetAnimation>>() and entityA->has_component<DirectionComponent>())
 			{
@@ -78,16 +79,17 @@ void FallingListener::EndContact(b2Contact* contact)
 	entityx::Entity* entityB = static_cast<entityx::Entity*>(bodyB->GetUserData());
 	if(entityA != entityB)
 	{
+			std::cout << static_cast<unsigned int>(FixtureRole::Foot) << " " << fixtureA->GetUserData() << std::endl;
 		//If an actor A fall from the ground B, or if an actor B fall from the ground A
-		if(fixtureB->GetUserData() and reinterpret_cast<unsigned int>(fixtureB->GetUserData()) & static_cast<unsigned int>(FixtureRole::Foot) and entityB->has_component<FallComponent>())
+		if(fixtureHasRole(fixtureB, FixtureRole::Foot) and entityB->has_component<FallComponent>())
 		{
 			//Swap the pointers
 			std::swap(fixtureA, fixtureB);
 			std::swap(bodyA, bodyB);
 			std::swap(entityA, entityB);
 		}
-		//Now we are sure that A is an actor that fall on the ground B
-		if(fixtureA->GetUserData() and reinterpret_cast<unsigned int>(fixtureB->GetUserData()) & static_cast<unsigned int>(FixtureRole::Foot) and entityA->has_component<FallComponent>())
+		//Now we are sure that A is an actor that fall from the ground B
+		if(fixtureHasRole(fixtureA, FixtureRole::Foot) and entityA->has_component<FallComponent>())
 		{
 			if(entityA->has_component<AnimationsComponent<SpriteSheetAnimation>>() and
 				entityA->has_component<DirectionComponent>() and

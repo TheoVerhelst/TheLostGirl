@@ -23,6 +23,7 @@
 #include <TheLostGirl/functions.h>
 #include <TheLostGirl/events.h>
 #include <TheLostGirl/FixtureRoles.h>
+#include <TheLostGirl/JointRole.h>
 #include <TheLostGirl/serialization.h>
 
 #include <TheLostGirl/states/GameState.h>
@@ -196,6 +197,8 @@ void GameState::saveWorld(const std::string& file)
 					root["joints"]["revolute joints"][last]["enable limit"] = castedJointDef->enableLimit;
 					root["joints"]["revolute joints"][last]["max motor torque"] = castedJointDef->maxMotorTorque;
 					root["joints"]["revolute joints"][last]["enable motor"] = castedJointDef->enableMotor;
+					if(jointDefHasRole(joint.definition, JointRole::BendingAngle))
+						root["joints"]["revolute joints"][last]["roles"].append("bending angle");
 					break;
 				}
 				
@@ -281,49 +284,31 @@ void GameState::initWorld(const std::string& file)
 		if(!reader.parse(modelSaveFile, model))
 			throw std::runtime_error("\"resources/levels/model.json\" : " + reader.getFormattedErrorMessages());
 		
+		//SuperMegaMagic parsing of the save file from the model file
 		parse(root, model, "root", "root");
 		
-		//time
 		{
 			const Json::Value time = root["time"];
-			
-			//date
 			getContext().systemManager.system<TimeSystem>()->setTotalTime(sf::seconds(time["date"].asFloat()));
-			
-			//speed
 			m_timeSpeed = time["speed"].asFloat();
 		}
-		
-		//level
 		const Json::Value level = root["level"];
 		
 		//number of plans
 		//must load it now in order to know how much plans can be defined
 		m_numberOfPlans = level["number of plans"].asUInt();
-		
-		//identifier
 		std::string identifier = level["identifier"].asString();
 		if(hasWhiteSpace(identifier))
 			throw std::runtime_error("\"level.identifier\" value contains whitespaces.");
 		m_levelIdentifier = identifier;
-		
-		//reference plan
 		m_referencePlan = level["reference plan"].asFloat();
 		
 		//box
 		{
 			const Json::Value levelBox = level["box"];
-			
-			//width
 			m_levelRect.width = levelBox["w"].asInt();
-			
-			//height
 			m_levelRect.height = levelBox["h"].asInt();
-			
-			//x
 			m_levelRect.top = levelBox["x"].asInt();
-			
-			//y
 			m_levelRect.left = levelBox["y"].asInt();
 		}
 		
@@ -341,11 +326,8 @@ void GameState::initWorld(const std::string& file)
 				const Json::Value entity = entities[entityName];
 				m_entities.emplace(entityName, getContext().entityManager.create());
 				
-				//tranforms
 				if(entity.isMember("transforms"))
 					deserialize(entity["transforms"], m_entities[entityName].assign<TransformComponent>(), scale);
-				
-				//sprite
 				if(entity.isMember("sprites"))
 					deserialize(entity["sprites"], m_entities[entityName].assign<SpriteComponent>(), texManager, paths[getContext().parameters.scaleIndex]);
 				//Update the ScrollingSystem in order to directly display the sprite at the right position
@@ -394,35 +376,20 @@ void GameState::initWorld(const std::string& file)
 				//Update the AnimationSystem in order to don't show the whole tileset of every entity on the screen when loading the level
 				getContext().systemManager.update<AnimationsSystem>(sf::Time::Zero.asSeconds());
 				
-				//categories
 				if(entity.isMember("categories"))
 					deserialize(entity["categories"], m_entities[entityName].assign<CategoryComponent>());
-				
-				//walk
 				if(entity.isMember("walk"))
 					deserialize(entity["walk"], m_entities[entityName].assign<WalkComponent>());
-				
-				//jump
 				if(entity.isMember("jump"))
 					deserialize(entity["jump"], m_entities[entityName].assign<JumpComponent>());
-				
-				//bend
 				if(entity.isMember("bend"))
 					deserialize(entity["bend"], m_entities[entityName].assign<BendComponent>());
-				
-				//health
 				if(entity.isMember("health"))
 					deserialize(entity["health"], m_entities[entityName].assign<HealthComponent>());
-				
-				//stamina
 				if(entity.isMember("stamina"))
 					deserialize(entity["stamina"], m_entities[entityName].assign<StaminaComponent>());
-				
-				//direction
 				if(entity.isMember("direction"))
 					deserialize(entity["direction"], m_entities[entityName].assign<DirectionComponent>());
-				
-				//fall
 				if(entity.isMember("fall"))
 					deserialize(entity["fall"], m_entities[entityName].assign<FallComponent>());
 			}
@@ -589,11 +556,7 @@ void GameState::initWorld(const std::string& file)
 					if(joint.isMember("local anchor A"))
 					{
 						const Json::Value firstAnchor = joint["local anchor A"];
-						
-						//x
 						xA = firstAnchor["x"].asFloat();
-						
-						//y
 						yA = firstAnchor["y"].asFloat();
 					}
 					castedJointDef->localAnchorA = {(xA/pixelByMeter), (yA/pixelByMeter)};
@@ -602,36 +565,22 @@ void GameState::initWorld(const std::string& file)
 					if(joint.isMember("local anchor B"))
 					{
 						const Json::Value secondAnchor = joint["local anchor B"];
-						
-						//x
-						if(secondAnchor.isMember("x"))
-							xB = secondAnchor["x"].asFloat();
-						
-						//y
-						if(secondAnchor.isMember("y"))
-							yB = secondAnchor["y"].asFloat();
+						xB = secondAnchor["x"].asFloat();
+						yB = secondAnchor["y"].asFloat();
 					}
 					castedJointDef->localAnchorB = {(xB/pixelByMeter), (yB/pixelByMeter)};
+					castedJointDef->lowerAngle = (joint["lower angle"].asFloat() * b2_pi) / 180.f;
+					castedJointDef->upperAngle = (joint["upper angle"].asFloat() * b2_pi) / 180.f;
+					castedJointDef->enableLimit = joint["enable limit"].asBool();
+					castedJointDef->maxMotorTorque = joint["max motor torque"].asFloat();
+					castedJointDef->enableMotor = joint["enable motor"].asBool();
 					
-					//lower angle
-					if(joint.isMember("lower angle"))
-						castedJointDef->lowerAngle = (joint["lower angle"].asFloat() * b2_pi) / 180.f;
-					
-					//upper angle
-					if(joint.isMember("upper angle"))
-						castedJointDef->upperAngle = (joint["upper angle"].asFloat() * b2_pi) / 180.f;
-					
-					//enable limit
-					if(joint.isMember("enable limit"))
-						castedJointDef->enableLimit = joint["enable limit"].asBool();
-					
-					//max motor torque
-					if(joint.isMember("max motor torque"))
-						castedJointDef->maxMotorTorque = joint["max motor torque"].asFloat();
-					
-					//enable motor
-					if(joint.isMember("enable motor"))
-						castedJointDef->enableMotor = joint["enable motor"].asBool();
+					//roles
+					const Json::Value roles = joint["roles"];
+					for(Json::ArrayIndex j{0}; j < roles.size(); ++j)
+						if(roles[j].asString() == "bending angle")
+							//Add the role to the definition
+							castedJointDef->userData = add<unsigned int>(castedJointDef->userData, static_cast<unsigned int>(JointRole::BendingAngle));
 					
 					getContext().world.CreateJoint(castedJointDef);
 					m_joints.push_back(jointData);
