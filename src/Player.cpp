@@ -253,10 +253,10 @@ std::vector<sf::Joystick::Axis> Player::getAssignedJoystickAxis(Action action) c
 
 bool Player::isActived(Action action) const
 {
-	std::vector<sf::Keyboard::Key> keyBindings = getAssignedKeys(action);
-	std::vector<sf::Mouse::Button> mouseButtonsBindings = getAssignedMouseButtons(action);
-	std::vector<unsigned int> joystickButtonsBindings = getAssignedJoystickButtons(action);
-	std::vector<sf::Joystick::Axis> joystickAxisBindings = getAssignedJoystickAxis(action);
+	std::vector<sf::Keyboard::Key> keyBindings{getAssignedKeys(action)};
+	std::vector<sf::Mouse::Button> mouseButtonsBindings{getAssignedMouseButtons(action)};
+	std::vector<unsigned int> joystickButtonsBindings{getAssignedJoystickButtons(action)};
+	std::vector<sf::Joystick::Axis> joystickAxisBindings{getAssignedJoystickAxis(action)};
 	for(auto& key : keyBindings)
 	{
 		if(sf::Keyboard::isKeyPressed(key))

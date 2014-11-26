@@ -42,18 +42,18 @@ void PhysicsSystem::update(entityx::EntityManager& entityManager, entityx::Event
 	for(auto entity : entityManager.entities_with_components(bodyComponent, bendComponent))
 	{
 		float angleTarget{-bendComponent->angle};
-		float32 gain = 10.f;
+		float32 gain{10.f};
 		float32 angleError;
 		//If the archer has not a arms body, the program will crash
 		assert(bodyComponent->bodies.find("arms") != bodyComponent->bodies.end());
-		b2Body* bodyArms = bodyComponent->bodies["arms"];
+		b2Body* bodyArms{bodyComponent->bodies["arms"]};
 		//Iterate over all joints
 		for(b2JointEdge* jointEdge{bodyArms->GetJointList()}; jointEdge; jointEdge = jointEdge->next)
 		{
 			//If this is a bending joint
 			if(jointHasRole(jointEdge->joint, JointRole::BendingAngle))
 			{
-				b2RevoluteJoint* jointArms = static_cast<b2RevoluteJoint*>(jointEdge->joint);
+				b2RevoluteJoint* jointArms{static_cast<b2RevoluteJoint*>(jointEdge->joint)};
 				angleError = jointArms->GetJointAngle() - angleTarget;
 				jointArms->SetMotorSpeed(-gain * angleError);
 			}
@@ -61,14 +61,14 @@ void PhysicsSystem::update(entityx::EntityManager& entityManager, entityx::Event
 		
 		//If the archer has not a bow body, the program will crash
 		assert(bodyComponent->bodies.find("bow") != bodyComponent->bodies.end());
-		b2Body* bodyBow = bodyComponent->bodies["bow"];
+		b2Body* bodyBow{bodyComponent->bodies["bow"]};
 		//Iterate over all joints
 		for(b2JointEdge* jointEdge{bodyBow->GetJointList()}; jointEdge; jointEdge = jointEdge->next)
 		{
 			//If this is a bending joint
 			if(jointHasRole(jointEdge->joint, JointRole::BendingAngle))
 			{
-				b2RevoluteJoint* jointBow = static_cast<b2RevoluteJoint*>(jointEdge->joint);
+				b2RevoluteJoint* jointBow{static_cast<b2RevoluteJoint*>(jointEdge->joint)};
 				angleError = jointBow->GetJointAngle() - angleTarget;
 				jointBow->SetMotorSpeed(-gain * angleError);
 			}
@@ -84,8 +84,8 @@ void PhysicsSystem::update(entityx::EntityManager& entityManager, entityx::Event
 			//If the name of the body exists in the transforms maps
 			if(transforms.find(bodyPair.first) != transforms.end())
 			{
-				b2Vec2 pos = bodyPair.second->GetPosition();
-				float32 angle = bodyPair.second->GetAngle();
+				b2Vec2 pos{bodyPair.second->GetPosition()};
+				float32 angle{bodyPair.second->GetAngle()};
 				transforms[bodyPair.first].x = pos.x * m_parameters.pixelByMeter;
 				transforms[bodyPair.first].y = pos.y * m_parameters.pixelByMeter;
 				transforms[bodyPair.first].angle = angle*180/b2_pi;

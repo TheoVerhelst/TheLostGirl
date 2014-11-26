@@ -13,12 +13,11 @@ int main()
 	//For multithreadings on linux, must be called before the initialisation
 	//of the StateStack, so before the Application initialization
 	XInitThreads();
+	bool debugMode{false};
 	#ifdef DEBUG_MODE
-	bool debugMode = true;
-	#else
-	bool debugMode = false;
+	debugMode = true;
 	#endif
 	Application application(debugMode);
-	int returnValue = application.init();
+	int returnValue{application.init()};
 	return returnValue == 0 ? application.run() : returnValue;
 }

@@ -18,7 +18,7 @@ HUDState::HUDState(StateStack& stack, Context context):
 	
 	using tgui::bindWidth;
 	using tgui::bindHeight;
-	tgui::Gui& gui = getContext().gui;
+	tgui::Gui& gui(getContext().gui);
 	
 	m_healthLabel = tgui::Label::create();
 	m_healthLabel->setTextSize(20);
@@ -56,12 +56,12 @@ bool HUDState::handleEvent(const sf::Event&)
 
 void HUDState::receive(const PlayerHealthChange& playerHealthChange)
 {
-	std::string healthStr = std::to_string(playerHealthChange.newHealth);
+	std::string healthStr{std::to_string(playerHealthChange.newHealth)};
 	m_healthLabel->setText(healthStr.substr(0, healthStr.find(".")));
 }
 
 void HUDState::receive(const PlayerStaminaChange& playerStaminaChange)
 {
-	std::string staminaStr = std::to_string(playerStaminaChange.newStamina);
+	std::string staminaStr{std::to_string(playerStaminaChange.newStamina)};
 	m_staminaLabel->setText(staminaStr.substr(0, staminaStr.find(".")));
 }

@@ -16,8 +16,8 @@ using std::endl;
 
 FloatRect handleResize(Event::SizeEvent size)
 {
-	unsigned int iw = size.width;
-	unsigned int ih = size.height;
+	unsigned int iw{size.width};
+	unsigned int ih{size.height};
 	float fh(ih), fw(iw);//If size is in a 16:9 ratio, it won't change.
 
 	if(iw / 16 < ih / 9) //Taller than a 16:9 ratio
@@ -31,14 +31,14 @@ FloatRect handleResize(Event::SizeEvent size)
 		fh = ih;
 	}
 
-	float scalex = fw / iw;
-	float scaley = fh / ih;
+	float scalex{fw / iw};
+	float scaley{fh / ih};
 	return FloatRect((1 - scalex) / 2.0f, (1 - scaley) / 2.0f, scalex, scaley);
 }
 
 Color fadingColor(Time dt, Time fadingLength, bool in)
 {
-	float alpha = cap((dt / fadingLength) * 255, 0, 255);
+	float alpha{cap((dt / fadingLength) * 255, 0, 255)};
 	alpha = in ? alpha : 255 - alpha;//Invert the fading if in is false, so if it is a fade out
 	return Color(255, 255, 255, alpha);
 }
@@ -212,11 +212,11 @@ void parse(Json::Value& value, const Json::Value& model, const std::string& valu
 			std::map<std::string, Json::ValueType> possibleChildren;
 			for(unsigned int i{0}; i < model["children"].size(); ++i)
 			{
-				Json::Value modelChild = model["children"][i];
+				Json::Value modelChild{model["children"][i]};
 				//A not-free-name child must have these three members defined
 				//Require name before, and if the name is defined we can require the others member with a fancier exception than ".children.i"
 				requireValues(modelChild, modelName + ".children." + std::to_string(i), {{"name", Json::stringValue}});
-				const std::string childName = modelChild["name"].asString();
+				const std::string childName{modelChild["name"].asString()};
 				requireValues(modelChild, modelName + "." + childName, {{"required", Json::booleanValue},
 																		{"type", Json::stringValue}});
 				//If the current child is required

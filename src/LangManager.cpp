@@ -65,11 +65,11 @@ void LangManager::loadLang(Lang langToLoad)
 		{
 			std::wstring line;
 			getline(fileStream, line);//fill line with the next line of filestream
-			std::size_t barPos = line.find(L"|");
+			std::size_t barPos{line.find(L"|")};
 			std::string entryNameString;
-			std::wstring entryNameWString = line.substr(0, barPos);//All before the |
+			std::wstring entryNameWString{line.substr(0, barPos)};//All before the |
 			entryNameString.assign(entryNameWString.begin(), entryNameWString.end());//Convert wstring to string
-			std::wstring value = line.substr(barPos + 1); //All after the |
+			std::wstring value{line.substr(barPos + 1)}; //All after the |
 			m_entries.emplace(entryNameString, value);
 		}
 	}

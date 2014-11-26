@@ -45,7 +45,7 @@ LoadingState::LoadingState(StateStack& stack, Context context):
         
 		using tgui::bindWidth;
 		using tgui::bindHeight;
-		tgui::Gui& gui = getContext().gui;
+		tgui::Gui& gui(getContext().gui);
 		
 		m_background = tgui::Panel::create();
 		m_background->setPosition(bindWidth(gui, 0.f), bindHeight(gui, 0.3f));

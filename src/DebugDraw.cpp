@@ -60,7 +60,7 @@ void DebugDraw::DrawSolidCircle(const b2Vec2& center, float32 radius, const b2Ve
 	m_context.window.draw(circle);
 	
 	sf::Vertex line[2];
-	b2Vec2 axisPoint = center + radius * axis;
+	b2Vec2 axisPoint{center + radius * axis};
 	line[0].position = sf::Vector2f(center.x, center.y)*m_context.parameters.scaledPixelByMeter;
 	line[1].position = sf::Vector2f(axisPoint.x, axisPoint.y)*m_context.parameters.scaledPixelByMeter;
 	line[0].color = sf::Color(color.r*255.f, color.g*255.f, color.b*255.f, color.a*255.f);
@@ -80,7 +80,7 @@ void DebugDraw::DrawSegment(const b2Vec2& p1, const b2Vec2& p2, const b2Color& c
 
 void DebugDraw::DrawTransform(const b2Transform& xf)
 {
-	const float axisScale = 0.4f;
+	const float axisScale{0.4f};
 	sf::Vector2f xAxis{xf.q.GetXAxis().x, xf.q.GetXAxis().y};
 	xAxis *= m_context.parameters.scaledPixelByMeter;
 	sf::Vector2f yAxis{xf.q.GetYAxis().x, xf.q.GetYAxis().y};
@@ -154,7 +154,7 @@ void DebugDraw::drawDebugAth()
 			positionLabel->setTextFont(std::make_shared<sf::Font>(m_context.fontManager.get("debug")));
 			m_context.gui.add(positionLabel, "positionLabel");
 		}
-		b2Vec2 positionPixels =  m_context.parameters.pixelByMeter * position;
+		b2Vec2 positionPixels{m_context.parameters.pixelByMeter * position};
 		positionLabel->setText("Meters (" + roundOutput(position.x) + ", " + roundOutput(position.y) + ")\n" + 
 							   "Pixels (" + roundOutput(positionPixels.x) + ", " + roundOutput(positionPixels.y) + ")");
 		
@@ -187,7 +187,7 @@ void DebugDraw::drawDebugAth()
 
 std::string DebugDraw::roundOutput(float x)
 {
-	std::string output = std::to_string(x);
+	std::string output{std::to_string(x)};
 	std::size_t pointPosition{output.find(".")};
 	if(pointPosition < output.size()-3)
 		output = output.substr(0, pointPosition+3);

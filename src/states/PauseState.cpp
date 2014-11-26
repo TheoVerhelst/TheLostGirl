@@ -17,7 +17,7 @@ PauseState::PauseState(StateStack& stack, Context context) :
 {
 	using tgui::bindWidth;
 	using tgui::bindHeight;
-	tgui::Gui& gui = getContext().gui;
+	tgui::Gui& gui(getContext().gui);
 	
 	m_background = tgui::Panel::create();
 	m_background->setPosition(bindWidth(gui, 0.25f), bindHeight(gui, 0.f));
@@ -48,7 +48,7 @@ PauseState::PauseState(StateStack& stack, Context context) :
 	m_backToGameButton->getRenderer()->setProperty("backgroundcolorhover", "(255, 255, 255, 55)");
 	m_backToGameButton->getRenderer()->setProperty("backgroundcolordown", "(255, 255, 255, 90)");
 	m_backToGameButton->getRenderer()->setProperty("textcolornormal", "(0, 0, 0)");
-	unsigned int backToGameSignal = m_backToGameButton->connect("pressed", &PauseState::backToGame, this);
+	unsigned int backToGameSignal{m_backToGameButton->connect("pressed", &PauseState::backToGame, this)};
 	gui.add(m_backToGameButton);
 
 	// Left:   25% of window width
@@ -72,7 +72,7 @@ PauseState::PauseState(StateStack& stack, Context context) :
 
 PauseState::~PauseState()
 {
-	tgui::Gui& gui = getContext().gui;
+	tgui::Gui& gui(getContext().gui);
 	gui.remove(m_background);
 	gui.remove(m_pauseLabel);
 	gui.remove(m_backToGameButton);

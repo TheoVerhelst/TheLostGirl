@@ -26,13 +26,13 @@ void AnimationsSystem::update(entityx::EntityManager& entityManager, entityx::Ev
 															directionComponent,
 															fallComponent))
 	{
-		std::map<std::string, b2Body*>& bodies = bodyComponent->bodies;
+		std::map<std::string, b2Body*>& bodies(bodyComponent->bodies);
 		for(auto& animationsPair : animationsComponent->animationsManagers)
 		{
-			AnimationsManager<SpriteSheetAnimation>& animations = animationsPair.second;
+			AnimationsManager<SpriteSheetAnimation>& animations(animationsPair.second);
 			if(bodies.find(animationsPair.first) != bodies.end())
 			{
-				b2Body* body = bodies[animationsPair.first];
+				b2Body* body{bodies[animationsPair.first]};
 				if(fallComponent->inAir and body->GetLinearVelocity().y > 2.f
 					and animations.isRegistred("fall left") and animations.isRegistred("fall right"))
 				{

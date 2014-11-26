@@ -10,17 +10,17 @@
 
 bool ContactFilter::ShouldCollide(b2Fixture* fixtureA, b2Fixture* fixtureB)
 {
-	b2Body* bodyA = fixtureA->GetBody();
-	entityx::Entity* entityA = static_cast<entityx::Entity*>(bodyA->GetUserData());
-	b2Body* bodyB = fixtureB->GetBody();
-	entityx::Entity* entityB = static_cast<entityx::Entity*>(bodyB->GetUserData());
+	b2Body* bodyA{fixtureA->GetBody()};
+	entityx::Entity* entityA{static_cast<entityx::Entity*>(bodyA->GetUserData())};
+	b2Body* bodyB{fixtureB->GetBody()};
+	entityx::Entity* entityB{static_cast<entityx::Entity*>(bodyB->GetUserData())};
 	bool ret;
 	if(entityA == entityB)
 		ret =  false;
 	else if(entityA->has_component<TransformComponent>() and entityB->has_component<TransformComponent>())
 	{
-		BodyComponent::Handle bodiesA = entityA->component<BodyComponent>();
-		TransformComponent::Handle trsfA = entityA->component<TransformComponent>();
+		BodyComponent::Handle bodiesA{entityA->component<BodyComponent>()};
+		TransformComponent::Handle trsfA{entityA->component<TransformComponent>()};
 		auto it = bodiesA->bodies.begin();
 		while(it != bodiesA->bodies.end() and it->second != bodyA)
 			++it;
@@ -31,8 +31,8 @@ bool ContactFilter::ShouldCollide(b2Fixture* fixtureA, b2Fixture* fixtureB)
 		if(trsfA->transforms.find(bodyNameA) != trsfA->transforms.end())
 			zA = lround(trsfA->transforms[bodyNameA].z);//Nearest rounding
 		
-		BodyComponent::Handle bodiesB = entityB->component<BodyComponent>();
-		TransformComponent::Handle trsfB = entityB->component<TransformComponent>();
+		BodyComponent::Handle bodiesB{entityB->component<BodyComponent>()};
+		TransformComponent::Handle trsfB{entityB->component<TransformComponent>()};
 		it = bodiesB->bodies.begin();
 		while(it != bodiesB->bodies.end() and it->second != bodyB)
 			++it;

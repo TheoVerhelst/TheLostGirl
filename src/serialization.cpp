@@ -52,7 +52,7 @@ Json::Value serialize(entityx::ComponentHandle<BodyComponent> component, float p
 			{
 				case b2Shape::e_circle:
 				{
-					b2CircleShape* shape = static_cast<b2CircleShape*>(fix->GetShape());
+					b2CircleShape* shape{static_cast<b2CircleShape*>(fix->GetShape())};
 					fixtureObj["position"]["x"] = shape->m_p.x*pixelByMeter;
 					fixtureObj["position"]["y"] = shape->m_p.y*pixelByMeter;
 					fixtureObj["radius"] = shape->m_radius*pixelByMeter;
@@ -60,7 +60,7 @@ Json::Value serialize(entityx::ComponentHandle<BodyComponent> component, float p
 				}
 				case b2Shape::e_edge:
 				{
-					b2EdgeShape* shape = static_cast<b2EdgeShape*>(fix->GetShape());
+					b2EdgeShape* shape{static_cast<b2EdgeShape*>(fix->GetShape())};
 					//Copy all vertices
 					if(shape->m_hasVertex0)
 					{
@@ -80,7 +80,7 @@ Json::Value serialize(entityx::ComponentHandle<BodyComponent> component, float p
 				}
 				case b2Shape::e_polygon:
 				{
-					b2PolygonShape* shape = static_cast<b2PolygonShape*>(fix->GetShape());
+					b2PolygonShape* shape{static_cast<b2PolygonShape*>(fix->GetShape())};
 					//Copy all vertices
 					for(int32 j{0}; j < shape->GetVertexCount(); ++j)
 					{
@@ -92,7 +92,7 @@ Json::Value serialize(entityx::ComponentHandle<BodyComponent> component, float p
 				default:
 				case b2Shape::e_chain:
 				{
-					b2ChainShape* shape = static_cast<b2ChainShape*>(fix->GetShape());
+					b2ChainShape* shape{static_cast<b2ChainShape*>(fix->GetShape())};
 					//Copy all vertices
 					if(shape->m_hasPrevVertex)
 					{
@@ -150,7 +150,7 @@ Json::Value serialize(entityx::ComponentHandle<SpriteComponent> component, Textu
 	for(auto& spritePair : component->sprites)
 	{
 		const std::string partName{spritePair.first};//Get the name of the entity's part
-		const sf::Texture* tex = spritePair.second.getTexture();//Get the associated texture
+		const sf::Texture* tex{spritePair.second.getTexture()};//Get the associated texture
 		ret[partName]["identifier"] = textureManager.getIdentifier(*tex);//Get the identifier of the texture and put it in Json
 	}
 	return ret;
@@ -287,11 +287,11 @@ void deserialize(const Json::Value& value, entityx::ComponentHandle<BodyComponen
 			throw std::runtime_error(partName + " part is defined in body component but not in transorms component.");
 		else
 		{
-			Json::Value body = value[partName];
+			Json::Value body{value[partName]};
 			b2BodyDef entityBodyComponentDef;
 			
 			//type
-			const Json::Value type = body["type"];
+			const Json::Value type{body["type"]};
 			if(type == "static")
 				entityBodyComponentDef.type = b2_staticBody;
 			else if(type == "kinematic")
@@ -307,7 +307,7 @@ void deserialize(const Json::Value& value, entityx::ComponentHandle<BodyComponen
 			entityBodyComponentDef.angle = transformComponent->transforms[partName].angle*b2_pi/180;
 			
 			//linear velocity
-			const Json::Value linearVelocity = body["linear velocity"];
+			const Json::Value linearVelocity{body["linear velocity"]};
 			entityBodyComponentDef.linearVelocity.x = linearVelocity["x"].asFloat()/pixelByMeter;
 			entityBodyComponentDef.linearVelocity.y = linearVelocity["y"].asFloat()/pixelByMeter;
 			
@@ -338,25 +338,25 @@ void deserialize(const Json::Value& value, entityx::ComponentHandle<BodyComponen
 			//gravity scale
 			entityBodyComponentDef.gravityScale = body["gravity scale"].asFloat();
 			
-			b2Body* entityBodyComponent = world.CreateBody(&entityBodyComponentDef);
+			b2Body* entityBodyComponent{world.CreateBody(&entityBodyComponentDef)};
 			component->bodies.emplace(partName, entityBodyComponent);
 			
 			//polygon fixtures
 			if(body.isMember("polygon fixtures"))
 			{
-				const Json::Value fixtures = body["polygon fixtures"];
+				const Json::Value fixtures{body["polygon fixtures"]};
 				for(Json::ArrayIndex i{0}; i < fixtures.size(); ++i)
 				{
-					const Json::Value fixture = fixtures[i];
+					const Json::Value fixture{fixtures[i]};
 					b2FixtureDef entityFixtureDef;
 					b2PolygonShape polygonShape;
 					
 					//vertices
-					const Json::Value vertices = fixtures[i]["vertices"];
+					const Json::Value vertices{fixtures[i]["vertices"]};
 					std::vector<b2Vec2> verticesVec(vertices.size());
 					for(Json::ArrayIndex j{0}; j < vertices.size(); ++j)
 					{
-						const Json::Value vertice = vertices[j];
+						const Json::Value vertice{vertices[j]};
 					
 						//x
 						verticesVec[j].x = vertice["x"].asFloat()/pixelByMeter;
@@ -380,7 +380,7 @@ void deserialize(const Json::Value& value, entityx::ComponentHandle<BodyComponen
 					entityFixtureDef.isSensor = fixture["is sensor"].asBool();
 					
 					//roles
-					const Json::Value roles = fixture["roles"];
+					const Json::Value roles{fixture["roles"]};
 					for(Json::ArrayIndex j{0}; j < roles.size(); ++j)
 						if(roles[j].asString() == "foot sensor")
 							//Add the role to the data
@@ -393,10 +393,10 @@ void deserialize(const Json::Value& value, entityx::ComponentHandle<BodyComponen
 			//edge fixtures
 			if(body.isMember("edge fixtures"))
 			{
-				const Json::Value fixtures = body["edge fixtures"];
+				const Json::Value fixtures{body["edge fixtures"]};
 				for(Json::ArrayIndex i{0}; i < fixtures.size(); ++i)
 				{
-					const Json::Value fixture = fixtures[i];
+					const Json::Value fixture{fixtures[i]};
 									
 					b2FixtureDef entityFixtureDef;
 					b2EdgeShape edgeShape;
@@ -454,7 +454,7 @@ void deserialize(const Json::Value& value, entityx::ComponentHandle<BodyComponen
 					entityFixtureDef.isSensor = fixture["is sensor"].asBool();
 					
 					//roles
-					const Json::Value roles = body["roles"];
+					const Json::Value roles{body["roles"]};
 					for(Json::ArrayIndex j{0}; j < roles.size(); ++j)
 						if(roles[j].asString() == "foot sensor")
 							//Add the role to the data
@@ -467,18 +467,18 @@ void deserialize(const Json::Value& value, entityx::ComponentHandle<BodyComponen
 			//chain fixtures
 			if(body.isMember("chain fixtures"))
 			{
-				const Json::Value fixtures = body["chain fixtures"];
+				const Json::Value fixtures{body["chain fixtures"]};
 				for(Json::ArrayIndex i{0}; i < fixtures.size(); ++i)
 				{
-					const Json::Value fixture = fixtures[i];
+					const Json::Value fixture{fixtures[i]};
 					b2FixtureDef entityFixtureDef;
 					b2ChainShape chainShape;
 					std::vector<b2Vec2> verticesArray;
-					const Json::Value vertices = fixtures[i]["vertices"];
+					const Json::Value vertices{fixtures[i]["vertices"]};
 					//For each vertex of the chain shape
 					for(Json::ArrayIndex j{0}; j < vertices.size(); ++j)
 					{
-						const Json::Value vertice = vertices[j];
+						const Json::Value vertice{vertices[j]};
 						verticesArray.push_back(b2Vec2(0, 0));
 						//x
 						verticesArray[j].x = vertice["x"].asFloat()/pixelByMeter;
@@ -526,7 +526,7 @@ void deserialize(const Json::Value& value, entityx::ComponentHandle<BodyComponen
 					entityFixtureDef.isSensor = fixture["is sensor"].asBool();
 					
 					//roles
-					const Json::Value roles = body["roles"];
+					const Json::Value roles{body["roles"]};
 					for(Json::ArrayIndex j{0}; j < roles.size(); ++j)
 						if(roles[j].asString() == "foot sensor")
 							//Add the role to the data
@@ -539,10 +539,10 @@ void deserialize(const Json::Value& value, entityx::ComponentHandle<BodyComponen
 			//circle fixtures
 			if(body.isMember("circle fixtures"))
 			{
-				const Json::Value fixtures = body["circle fixtures"];
+				const Json::Value fixtures{body["circle fixtures"]};
 				for(Json::ArrayIndex i{0}; i < fixtures.size(); ++i)
 				{
-					const Json::Value fixture = fixtures[i];
+					const Json::Value fixture{fixtures[i]};
 									
 					b2FixtureDef entityFixtureDef;
 					b2CircleShape circleShape;
@@ -570,7 +570,7 @@ void deserialize(const Json::Value& value, entityx::ComponentHandle<BodyComponen
 					entityFixtureDef.isSensor = fixture["is sensor"].asBool();
 					
 					//roles
-					const Json::Value roles = body["roles"];
+					const Json::Value roles{body["roles"]};
 					for(Json::ArrayIndex j{0}; j < roles.size(); ++j)
 						if(roles[j].asString() == "foot sensor")
 							//Add the role to the data
@@ -600,7 +600,7 @@ void deserialize(const Json::Value& value, entityx::ComponentHandle<TransformCom
 	component->transforms.clear();
 	for(std::string& partName : value.getMemberNames())
 	{
-		Json::Value part = value[partName];
+		Json::Value part{value[partName]};
 		Transform transform;
 		transform.x = part["transform"]["x"].asFloat();
 		transform.y = part["transform"]["y"].asFloat();

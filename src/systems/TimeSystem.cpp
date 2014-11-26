@@ -11,7 +11,7 @@
 void TimeSystem::update(entityx::EntityManager&, entityx::EventManager&, double dt)
 {
 	m_totalTime += dt;
-	float seasonFactor = sin((m_totalTime / 24000.f) * 360.f); //Vary between -1  and 1, maximum in the spring and the automn
+	float seasonFactor{sin((m_totalTime / 24000.f) * 360.f)}; //Vary between -1  and 1, maximum in the spring and the automn
 	seasonFactor = (seasonFactor + 1.f) / 2.f; //Now between 0 and 1
 
 	/*
@@ -34,8 +34,8 @@ void TimeSystem::update(entityx::EntityManager&, entityx::EventManager&, double 
 		m_nextWindStrength = strengthDis(gen);//Another random number, between -10 and 10
 	}
 
-	float deltaStrength = m_nextWindStrength - m_initialWindStrength;
-	float elapsedTimeSincePeriodBeginning = m_totalTime - m_periodBeginning;
+	float deltaStrength{m_nextWindStrength - m_initialWindStrength};
+	float elapsedTimeSincePeriodBeginning{m_totalTime - m_periodBeginning};
 	m_windStrength = m_initialWindStrength + (deltaStrength * elapsedTimeSincePeriodBeginning / m_windTransitionLength);
 
 	if(m_totalTime >= m_microPeriodBeginning + m_microWindTransitionLength)//End of a period

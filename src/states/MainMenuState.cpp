@@ -19,7 +19,7 @@ MainMenuState::MainMenuState(StateStack& stack, Context context):
 {
 	using tgui::bindWidth;
 	using tgui::bindHeight;
-	tgui::Gui& gui = getContext().gui;
+	tgui::Gui& gui(getContext().gui);
 	
 	m_background = tgui::Panel::create();
 	m_background->setPosition(bindWidth(gui, 0.25f), bindHeight(gui, 0.f));
@@ -44,7 +44,7 @@ MainMenuState::MainMenuState(StateStack& stack, Context context):
 	m_newButton->getRenderer()->setProperty("backgroundcolorhover", "(255, 255, 255, 55)");
 	m_newButton->getRenderer()->setProperty("backgroundcolordown", "(255, 255, 255, 90)");
 	m_newButton->getRenderer()->setProperty("textcolornormal", "(0, 0, 0)");
-	unsigned int playGameSignal = m_newButton->connect("pressed", &MainMenuState::playGame, this);
+	unsigned int playGameSignal{m_newButton->connect("pressed", &MainMenuState::playGame, this)};
 	gui.add(m_newButton);
 
 	// Left:   0% of window width
@@ -66,7 +66,7 @@ MainMenuState::MainMenuState(StateStack& stack, Context context):
 
 MainMenuState::~MainMenuState()
 {
-	tgui::Gui& gui = getContext().gui;
+	tgui::Gui& gui(getContext().gui);
 	gui.remove(m_background);
 	gui.remove(m_logo);
 	gui.remove(m_newButton);

@@ -21,12 +21,12 @@ void FallingListener::PreSolve(b2Contact *, const b2Manifold*)
 
 void FallingListener::BeginContact(b2Contact* contact)
 {
-	b2Fixture* fixtureA = contact->GetFixtureA();
-	b2Body* bodyA = fixtureA->GetBody();
-	entityx::Entity* entityA = static_cast<entityx::Entity*>(bodyA->GetUserData());
-	b2Fixture* fixtureB = contact->GetFixtureB();
-	b2Body* bodyB = fixtureB->GetBody();
-	entityx::Entity* entityB = static_cast<entityx::Entity*>(bodyB->GetUserData());
+	b2Fixture* fixtureA{contact->GetFixtureA()};
+	b2Body* bodyA{fixtureA->GetBody()};
+	entityx::Entity* entityA{static_cast<entityx::Entity*>(bodyA->GetUserData())};
+	b2Fixture* fixtureB{contact->GetFixtureB()};
+	b2Body* bodyB{fixtureB->GetBody()};
+	entityx::Entity* entityB{static_cast<entityx::Entity*>(bodyB->GetUserData())};
 	if(entityA != entityB)
 	{
 		//If B is an actor that fall on the ground A
@@ -47,7 +47,7 @@ void FallingListener::BeginContact(b2Contact* contact)
 				//For each animations manager of the entity
 				for(auto& animationsPair : animationsManagers)
 				{
-					AnimationsManager<SpriteSheetAnimation>& animations = animationsPair.second;
+					AnimationsManager<SpriteSheetAnimation>& animations(animationsPair.second);
 					//If the animations manager have the required animation
 					if(animations.isRegistred("fall left") and animations.isRegistred("fall right"))
 					{
@@ -70,12 +70,12 @@ void FallingListener::BeginContact(b2Contact* contact)
 
 void FallingListener::EndContact(b2Contact* contact)
 {
-	b2Fixture* fixtureA = contact->GetFixtureA();
-	b2Body* bodyA = fixtureA->GetBody();
-	entityx::Entity* entityA = static_cast<entityx::Entity*>(bodyA->GetUserData());
-	b2Fixture* fixtureB = contact->GetFixtureB();
-	b2Body* bodyB = fixtureB->GetBody();
-	entityx::Entity* entityB = static_cast<entityx::Entity*>(bodyB->GetUserData());
+	b2Fixture* fixtureA{contact->GetFixtureA()};
+	b2Body* bodyA{fixtureA->GetBody()};
+	entityx::Entity* entityA{static_cast<entityx::Entity*>(bodyA->GetUserData())};
+	b2Fixture* fixtureB{contact->GetFixtureB()};
+	b2Body* bodyB{fixtureB->GetBody()};
+	entityx::Entity* entityB{static_cast<entityx::Entity*>(bodyB->GetUserData())};
 	if(entityA != entityB)
 	{
 		//If an actor A fall from the ground B, or if an actor B fall from the ground A
@@ -93,13 +93,13 @@ void FallingListener::EndContact(b2Contact* contact)
 				entityA->has_component<DirectionComponent>() and
 				not entityA->has_component<JumpComponent>())
 			{
-				DirectionComponent::Handle directionComponent = entityA->component<DirectionComponent>();
+				DirectionComponent::Handle directionComponent{entityA->component<DirectionComponent>()};
 				//Get all the animations managers of the entity
 				auto& animationsManagers(entityA->component<AnimationsComponent<SpriteSheetAnimation>>()->animationsManagers);
 				//For each animations manager of the entity
 				for(auto& animationsPair : animationsManagers)
 				{
-					AnimationsManager<SpriteSheetAnimation>& animations = animationsPair.second;
+					AnimationsManager<SpriteSheetAnimation>& animations(animationsPair.second);
 					//If the animations manager have the required animation
 					if(animations.isRegistred("fall left") and animations.isRegistred("fall right"))
 					{
@@ -122,9 +122,9 @@ void FallingListener::PostSolve(b2Contact* contact, const b2ContactImpulse* impu
 	//Pretty basic falling damage
 	if(impulse->normalImpulses[0] > 10.f)
 	{
-		float impact = impulse->normalImpulses[0];
-		entityx::Entity* entityA = static_cast<entityx::Entity*>(contact->GetFixtureA()->GetBody()->GetUserData());
-		entityx::Entity* entityB = static_cast<entityx::Entity*>(contact->GetFixtureB()->GetBody()->GetUserData());
+		float impact{impulse->normalImpulses[0]};
+		entityx::Entity* entityA{static_cast<entityx::Entity*>(contact->GetFixtureA()->GetBody()->GetUserData())};
+		entityx::Entity* entityB{static_cast<entityx::Entity*>(contact->GetFixtureB()->GetBody()->GetUserData())};
 		if(entityA->has_component<HealthComponent>())
 		{
 			entityA->component<HealthComponent>()->health -= impact - 10;

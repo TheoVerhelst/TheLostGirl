@@ -63,10 +63,10 @@ void Mover::operator()(entityx::Entity entity, double) const
 		//For all entities
 		if(entity.has_component<DirectionComponent>())
 		{
-			DirectionComponent::Handle directionComponent = entity.component<DirectionComponent>();
+			DirectionComponent::Handle directionComponent{entity.component<DirectionComponent>()};
 			//References to the moveToLeft and moveToRight data in directionComponent
-			bool& moveToDirection = (direction == Direction::Left ? directionComponent->moveToLeft : directionComponent->moveToRight);
-			bool& moveToOppDirection = (direction == Direction::Right ? directionComponent->moveToLeft : directionComponent->moveToRight);
+			bool& moveToDirection(direction == Direction::Left ? directionComponent->moveToLeft : directionComponent->moveToRight);
+			bool& moveToOppDirection(direction == Direction::Right ? directionComponent->moveToLeft : directionComponent->moveToRight);
 			if(start)
 			{
 				moveToDirection = true;
@@ -87,14 +87,14 @@ void Mover::operator()(entityx::Entity entity, double) const
 		{
 			//Get all the animations managers of the entity
 			auto& animationsManagers(entity.component<AnimationsComponent<SpriteSheetAnimation>>()->animationsManagers);
-			DirectionComponent::Handle directionComponent = entity.component<DirectionComponent>();
-			WalkComponent::Handle walkComponent = entity.component<WalkComponent>();
+			DirectionComponent::Handle directionComponent{entity.component<DirectionComponent>()};
+			WalkComponent::Handle walkComponent{entity.component<WalkComponent>()};
 			//References to the moveToLeft and moveToRight data in directionComponent
-			bool moveToOppDirection = (direction == Direction::Right ? directionComponent->moveToLeft : directionComponent->moveToRight);
+			bool moveToOppDirection{direction == Direction::Right ? directionComponent->moveToLeft : directionComponent->moveToRight};
 			//For each animations manager of the entity
 			for(auto& animationsPair : animationsManagers)
 			{
-				AnimationsManager<SpriteSheetAnimation>& animations = animationsPair.second;
+				AnimationsManager<SpriteSheetAnimation>& animations(animationsPair.second);
 				//If the animations manager have the required animations
 				if(animations.isRegistred("stay" + directionStr)
 					and animations.isRegistred("stay" + oppDirectionStr)
@@ -145,7 +145,7 @@ void Mover::operator()(entityx::Entity entity, double) const
 			//For each animations manager of the entity
 			for(auto& animationsPair : animationsManagers)
 			{
-				AnimationsManager<SpriteSheetAnimation>& animations = animationsPair.second;
+				AnimationsManager<SpriteSheetAnimation>& animations(animationsPair.second);
 				//If the animations manager have the required animations
 				if(animations.isRegistred("jump" + directionStr)
 					and animations.isRegistred("jump" + oppDirectionStr))
@@ -171,7 +171,7 @@ void Mover::operator()(entityx::Entity entity, double) const
 			//For each animations manager of the entity
 			for(auto& animationsPair : animationsManagers)
 			{
-				AnimationsManager<SpriteSheetAnimation>& animations = animationsPair.second;
+				AnimationsManager<SpriteSheetAnimation>& animations(animationsPair.second);
 				//If the animations manager have the required animations
 				if(animations.isRegistred("fall" + directionStr)
 					and animations.isRegistred("fall" + oppDirectionStr))
@@ -179,7 +179,7 @@ void Mover::operator()(entityx::Entity entity, double) const
 					//If falling and diriged to the opposite side
 					if(animations.isActive("fall" + oppDirectionStr))
 					{
-						float progress = animations.getProgress("fall" + oppDirectionStr);
+						float progress{animations.getProgress("fall" + oppDirectionStr)};
 						animations.stop("fall" + oppDirectionStr);
 						animations.play("fall" + directionStr);
 						animations.setProgress("fall" + directionStr, progress);
@@ -192,14 +192,14 @@ void Mover::operator()(entityx::Entity entity, double) const
 			and entity.has_component<BendComponent>()
 			and entity.has_component<DirectionComponent>())
 		{
-			DirectionComponent::Handle directionComponent = entity.component<DirectionComponent>();
-			bool moveToOppDirection = (direction == Direction::Right ? directionComponent->moveToLeft : directionComponent->moveToRight);
+			DirectionComponent::Handle directionComponent{entity.component<DirectionComponent>()};
+			bool moveToOppDirection{direction == Direction::Right ? directionComponent->moveToLeft : directionComponent->moveToRight};
 			//Get all the animations managers of the entity
 			auto& animationsManagers(entity.component<AnimationsComponent<SpriteSheetAnimation>>()->animationsManagers);
 			//For each animations manager of the entity
 			for(auto& animationsPair : animationsManagers)
 			{
-				AnimationsManager<SpriteSheetAnimation>& animations = animationsPair.second;
+				AnimationsManager<SpriteSheetAnimation>& animations(animationsPair.second);
 				//If the animations manager have the required animations
 				if(animations.isRegistred("bend" + directionStr)
 					and animations.isRegistred("bend" + oppDirectionStr))
@@ -215,14 +215,14 @@ void Mover::operator()(entityx::Entity entity, double) const
 							else if(direction == Direction::Right)
 								entity.component<BendComponent>()->angle = cap(entity.component<BendComponent>()->angle - b2_pi, -b2_pi/2, b2_pi, 2*b2_pi);
 						}
-						float progress = animations.getProgress("bend" + oppDirectionStr);
+						float progress{animations.getProgress("bend" + oppDirectionStr)};
 						animations.stop("bend" + oppDirectionStr);
 						animations.activate("bend" + directionStr);
 						animations.setProgress("bend" + directionStr, progress);
 					}
 					else if(moveToOppDirection)
 					{
-						float progress = animations.getProgress("bend" + directionStr);
+						float progress{animations.getProgress("bend" + directionStr)};
 						//If the bending is currently actived
 						if(entity.component<BendComponent>()->power > 0.f)
 						{
@@ -256,9 +256,9 @@ void Jumper::operator()(entityx::Entity entity, double) const
 		and entity.has_component<FallComponent>()
 		and entity.has_component<DirectionComponent>())
 	{
-		JumpComponent::Handle jumpComponent = entity.component<JumpComponent>();
-		FallComponent::Handle fallComponent = entity.component<FallComponent>();
-		DirectionComponent::Handle directionComponent = entity.component<DirectionComponent>();
+		JumpComponent::Handle jumpComponent{entity.component<JumpComponent>()};
+		FallComponent::Handle fallComponent{entity.component<FallComponent>()};
+		DirectionComponent::Handle directionComponent{entity.component<DirectionComponent>()};
 		//Get all the animations managers of the entity
 		auto& animationsManagers(entity.component<AnimationsComponent<SpriteSheetAnimation>>()->animationsManagers);
 		//Get all the bodies of the entity
@@ -266,7 +266,7 @@ void Jumper::operator()(entityx::Entity entity, double) const
 		//For each animations manager of the entity
 		for(auto& animationsPair : animationsManagers)
 		{
-			AnimationsManager<SpriteSheetAnimation>& animations = animationsPair.second;
+			AnimationsManager<SpriteSheetAnimation>& animations(animationsPair.second);
 			//If the animations manager have the required animations
 			if(animations.isRegistred("jump left") and animations.isRegistred("jump right")
 				and bodies.find(animationsPair.first) != bodies.end())
@@ -299,8 +299,8 @@ void BowBender::operator()(entityx::Entity entity, double) const
 {
 	if(entity.has_component<BendComponent>() and entity.has_component<DirectionComponent>() and entity.has_component<BodyComponent>())
 	{
-		BendComponent::Handle bendComponent = entity.component<BendComponent>();
-		DirectionComponent::Handle directionComponent = entity.component<DirectionComponent>();
+		BendComponent::Handle bendComponent{entity.component<BendComponent>()};
+		DirectionComponent::Handle directionComponent{entity.component<DirectionComponent>()};
 		//Set the bending angle
 		if(directionComponent->direction == Direction::Left)
 			bendComponent->angle = cap(angle - b2_pi, -b2_pi, b2_pi/2);
@@ -317,13 +317,13 @@ void BowBender::operator()(entityx::Entity entity, double) const
 				directionStr = " left";
 			else if(directionComponent->direction == Direction::Right)
 				directionStr = " right";
-			float animationPower = bendComponent->power / bendComponent->maxPower;//The progress of the bending, in the range [0, 1]
+			float animationPower{bendComponent->power / bendComponent->maxPower};//The progress of the bending, in the range [0, 1]
 			//Get all the animations managers of the entity
 			auto& animationsManagers(entity.component<AnimationsComponent<SpriteSheetAnimation>>()->animationsManagers);
 			//For each animations manager of the entity
 			for(auto& animationsPair : animationsManagers)
 			{
-				AnimationsManager<SpriteSheetAnimation>& animations = animationsPair.second;
+				AnimationsManager<SpriteSheetAnimation>& animations(animationsPair.second);
 				//If the animations manager have the required animation
 				if(animations.isRegistred("bend"+directionStr))
 					animations.setProgress("bend"+directionStr, animationPower);
@@ -332,8 +332,8 @@ void BowBender::operator()(entityx::Entity entity, double) const
 		//If the entity has a quiver
 		if(entity.has_component<QuiverComponent>())
 		{
-			QuiverComponent::Handle quiverComponent = entity.component<QuiverComponent>();
-			entityx::Entity notchedArrow = quiverComponent->notchedArrow;
+			QuiverComponent::Handle quiverComponent{entity.component<QuiverComponent>()};
+			entityx::Entity notchedArrow{quiverComponent->notchedArrow};
 			//If there is not a notched arrow
 			if(not notchedArrow.valid())
 			{
@@ -379,7 +379,7 @@ void BowBender::operator()(entityx::Entity entity, double) const
 				assert(notchedArrow.component<BodyComponent>()->bodies.find("main") != notchedArrow.component<BodyComponent>()->bodies.end());
 				b2Body* arrowBody{notchedArrow.component<BodyComponent>()->bodies["main"]};
 				float translationTarget{bendComponent->power/bendComponent->maxPower};//Power of the bending, in range [0, 1]
-				float32 gain = 10.f;
+				float32 gain{10.f};
 				float32 translationError;
 				//Iterate over all joints
 				for(b2JointEdge* jointEdge{arrowBody->GetJointList()}; jointEdge; jointEdge = jointEdge->next)
@@ -387,7 +387,7 @@ void BowBender::operator()(entityx::Entity entity, double) const
 					//If this is a bending translation joint
 					if(jointHasRole(jointEdge->joint, JointRole::BendingPower))
 					{
-						b2PrismaticJoint* joint = static_cast<b2PrismaticJoint*>(jointEdge->joint);
+						b2PrismaticJoint* joint{static_cast<b2PrismaticJoint*>(jointEdge->joint)};
 						//The final target is equal to the joint's lower limit when the translationTarget is equal to 1.
 						translationError = joint->GetJointTranslation() - (translationTarget*joint->GetLowerLimit());
 						joint->SetMotorSpeed(-gain * translationError);

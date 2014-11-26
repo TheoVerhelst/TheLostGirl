@@ -13,7 +13,7 @@ void ActionsSystem::update(entityx::EntityManager& entityManager, entityx::Event
 {
 	while(not m_commandQueue.empty())
 	{
-		Command& command = m_commandQueue.front();
+		Command& command(m_commandQueue.front());
 		CategoryComponent::Handle categoryComponent;
 		if(command.targetIsSpecific)
 			command.action(*(command.entity), dt);
