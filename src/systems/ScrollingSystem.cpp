@@ -64,7 +64,7 @@ void ScrollingSystem::update(entityx::EntityManager& entityManager, entityx::Eve
 			for(auto entity : entityManager.entities_with_components(spriteComponent, transformComponent))
 			{
 				//The x-ordinate of the left border of the screen.
-				float xScreen = playerPosition.x - xmin;
+				float xScreen{playerPosition.x - xmin};
 				std::map<std::string, sf::Sprite>& sprites(spriteComponent->sprites);
 				std::map<std::string, Transform>& transforms(transformComponent->transforms);
 				//For each transform in the map
@@ -74,7 +74,7 @@ void ScrollingSystem::update(entityx::EntityManager& entityManager, entityx::Eve
 					if(sprites.find(transformPair.first) != sprites.end())
 					{
 						//The abscissa of the entity on the screen, relatively to the reference plan and the position of the player
-						float xScaled = transformPair.second.x + xScreen - (xScreen * pow(1.5, m_referencePlan - transformPair.second.z));
+						double xScaled{transformPair.second.x + xScreen - (xScreen * pow(1.5, m_referencePlan - transformPair.second.z))};
 						sprites[transformPair.first].setPosition(xScaled*m_parameters.scale, transformPair.second.y*m_parameters.scale);
 						sprites[transformPair.first].setRotation(transformPair.second.angle);
 					}

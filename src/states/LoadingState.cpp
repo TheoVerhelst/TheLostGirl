@@ -35,7 +35,7 @@ LoadingState::LoadingState(StateStack& stack, Context context):
 		}
 		
 		std::random_device rd;
-		std::mt19937 gen(rd());
+		std::mt19937 gen{rd()};
 		std::uniform_int_distribution<long unsigned int> dis(0, numberOfHints-1);
 		long unsigned int hintToDisplay{dis(gen)};
 		

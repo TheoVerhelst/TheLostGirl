@@ -170,6 +170,37 @@ Json::Value serialize(entityx::ComponentHandle<TransformComponent> component)
 	return ret;
 }
 
+Json::Value serialize(entityx::ComponentHandle<InventoryComponent> component, const std::map<std::string, entityx::Entity>& entitiesMap)
+{
+	Json::Value ret;
+	ret["weight"] = component->weight;
+	ret["maximum weight"] = component->maxWeight;
+	ret["items"] = Json::Value(Json::arrayValue);
+	//For each item of the inventory
+	for(entityx::Entity item : component->items)
+		//If the item is in the entity list
+		if(isMember(entitiesMap, item) and item.valid())
+			//Add it to the value
+			ret["items"].append(getKey(entitiesMap, item));
+	return ret;
+}
+
+Json::Value serialize(entityx::ComponentHandle<QuiverComponent> component, const std::map<std::string, entityx::Entity>& entitiesMap)
+{
+	Json::Value ret;
+	ret["capacity"] = component->capacity;
+	if(isMember(entitiesMap, component->notchedArrow) and component->notchedArrow.valid())
+		ret["notched arrow"] = getKey(entitiesMap, component->notchedArrow);
+	ret["arrows"] = Json::Value(Json::arrayValue);
+	//For each arrow of the inventory
+	for(entityx::Entity arrow : component->arrows)
+		//If the arrow is in the entity list
+		if(isMember(entitiesMap, arrow) and arrow.valid())
+			//Add it to the value
+			ret["arrows"].append(getKey(entitiesMap, arrow));
+	return ret;
+}
+
 Json::Value serialize(entityx::ComponentHandle<AnimationsComponent<SpriteSheetAnimation>> component)
 {
 	Json::Value ret;
@@ -608,6 +639,26 @@ void deserialize(const Json::Value& value, entityx::ComponentHandle<TransformCom
 		transform.angle = part["transform"]["angle"].asFloat();
 		component->transforms.emplace(partName, transform);
 	}
+}
+
+void deserialize(const Json::Value& value, entityx::ComponentHandle<InventoryComponent> component, const std::map<std::string, entityx::Entity>& entitiesMap)
+{
+	component->items.clear();
+	for(std::string& itemName : value["items"].getMemberNames())
+		if(entitiesMap.find(itemName) != entitiesMap.end())
+			component->items.push_back(entitiesMap.at(itemName));
+	component->maxWeight = value["maximum weight"].asFloat();
+}
+
+void deserialize(const Json::Value& value, entityx::ComponentHandle<QuiverComponent> component, const std::map<std::string, entityx::Entity>& entitiesMap)
+{
+	component->arrows.clear();
+	for(std::string& arrowName : value["arrows"].getMemberNames())
+		if(entitiesMap.find(arrowName) != entitiesMap.end())
+			component->arrows.push_back(entitiesMap.at(arrowName));
+	if(entitiesMap.find(value["notched arrow"].asString()) != entitiesMap.end())
+		component->notchedArrow = entitiesMap.at(value["notched arrow"].asString());
+	component->capacity = value["capacity"].asUInt();
 }
 
 void deserialize(const Json::Value& value, entityx::ComponentHandle<AnimationsComponent<SpriteSheetAnimation>> component, entityx::ComponentHandle<SpriteComponent> spriteComponent, State::Context context)

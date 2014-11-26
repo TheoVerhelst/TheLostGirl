@@ -385,8 +385,7 @@
                             {
                                 "name" : "notched arrow",
                                 "type" : "string",
-                                "required" : false,
-                                "default value" : ""
+                                "required" : false
                             }
                         ]
                     },

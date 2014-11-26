@@ -153,7 +153,7 @@ void Mover::operator()(entityx::Entity entity, double) const
 					//If jumping and diriged to the opposite side
 					if(animations.isActive("jump" + oppDirectionStr))
 					{
-						float progress = animations.getProgress("jump" + oppDirectionStr);
+						float progress{animations.getProgress("jump" + oppDirectionStr)};
 						animations.stop("jump" + oppDirectionStr);
 						animations.play("jump" + directionStr);
 						animations.setProgress("jump" + directionStr, progress);

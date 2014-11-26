@@ -33,6 +33,18 @@ Json::Value serialize(entityx::ComponentHandle<TransformComponent> component);
 
 /// Serialize the given component.
 /// \param component Component to serialize.
+/// \param entitiesMap The map containing all entities (to find name - entity correspondance).
+/// \return A Json value.
+Json::Value serialize(entityx::ComponentHandle<InventoryComponent> component, const std::map<std::string, entityx::Entity>& entitiesMap);
+
+/// Serialize the given component.
+/// \param component Component to serialize.
+/// \param entitiesMap The map containing all entities (to find name - entity correspondance).
+/// \return A Json value.
+Json::Value serialize(entityx::ComponentHandle<QuiverComponent> component, const std::map<std::string, entityx::Entity>& entitiesMap);
+
+/// Serialize the given component.
+/// \param component Component to serialize.
 /// \return A Json value.
 Json::Value serialize(entityx::ComponentHandle<AnimationsComponent<SpriteSheetAnimation>> component);
 
@@ -95,6 +107,18 @@ void deserialize(const Json::Value& value, entityx::ComponentHandle<SpriteCompon
 /// \param component Component in wich deserialize the data.
 /// \param value The Json value containing the data.
 void deserialize(const Json::Value& value, entityx::ComponentHandle<TransformComponent> component);
+
+/// Deserialize the given \a value in the given \a component.
+/// \param component Component in wich deserialize the data.
+/// \param entitiesMap The map containing all entities (to find name - entity correspondance).
+/// \param value The Json value containing the data.
+void deserialize(const Json::Value& value, entityx::ComponentHandle<InventoryComponent> component, const std::map<std::string, entityx::Entity>& entitiesMap);
+
+/// Deserialize the given \a value in the given \a component.
+/// \param component Component in wich deserialize the data.
+/// \param entitiesMap The map containing all entities (to find name - entity correspondance).
+/// \param value The Json value containing the data.
+void deserialize(const Json::Value& value, entityx::ComponentHandle<QuiverComponent> component, const std::map<std::string, entityx::Entity>& entitiesMap);
 
 /// Deserialize the given \a value in the given \a component.
 /// \param component Component in wich deserialize the data.

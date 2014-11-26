@@ -350,7 +350,7 @@ void GameState::initWorld(const std::string& file)
 		//and the scrolling system replace sprite according to the player position.
 		if(root.isMember("entities"))
 		{
-			const Json::Value entities = root["entities"];
+			const Json::Value entities{root["entities"]};
 			for(std::string& entityName : entities.getMemberNames())
 			{
 				const Json::Value entity{entities[entityName]};
@@ -510,7 +510,7 @@ void GameState::initWorld(const std::string& file)
 			std::string path{paths[getContext().parameters.scaleIndex] + "levels/" + m_levelIdentifier + "/" + fileTexture + ".png"};
 			unsigned int chunkSize{sf::Texture::getMaximumSize()};
 			//The length of the plan, relatively to the reference.
-			unsigned int planLength{(m_levelRect.width * pow(1.5, m_referencePlan - i))*getContext().parameters.scale};
+			unsigned int planLength{static_cast<unsigned int>((m_levelRect.width * pow(1.5, m_referencePlan - i))*getContext().parameters.scale)};
 			//Number of chunks to load in this plan
 			unsigned int numberOfChunks{(planLength/chunkSize)+1};
 			
