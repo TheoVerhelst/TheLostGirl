@@ -170,9 +170,23 @@ void GameState::saveWorld(const std::string& file)
 				}
 			}
 		}
-		//Serializing the joints
+		
+		//joints
 		for(b2Joint* joint{getContext().world.GetJointList()}; joint; joint = joint->GetNext())
 		{
+			b2Body* bodyA{joint->GetBodyA()};//Get the body A
+			entityx::Entity entityA = *static_cast<entityx::Entity*>(bodyA->GetUserData());//Get the entity A from the user data
+			assert(isMember(m_entities, entityA));
+			std::string entityAName = getKey(m_entities, entityA);//Get the name of the entity A
+			assert(isMember(entityA.component<BodyComponent>()->bodies, bodyA));//Assert that the body A is in the body component of the entity A
+			std::string partAName = getKey(entityA.component<BodyComponent>()->bodies, bodyA);//Get the name of the part A
+			
+			b2Body* bodyB{joint->GetBodyB()};//Get the body B
+			entityx::Entity entityB = *static_cast<entityx::Entity*>(bodyB->GetUserData());//Get the entity B from the user data
+			assert(isMember(m_entities, entityB));
+			std::string entityBName = getKey(m_entities, entityB);//Get the name of the entity B
+			assert(isMember(entityB.component<BodyComponent>()->bodies, bodyB));//Assert that the body B is in the body component of entity B
+			std::string partBName = getKey(entityB.component<BodyComponent>()->bodies, bodyB);//Get the name of the part B
 			switch(joint->GetType())
 			{
 				case e_revoluteJoint:
@@ -180,22 +194,6 @@ void GameState::saveWorld(const std::string& file)
 					b2RevoluteJoint* castedJoint = static_cast<b2RevoluteJoint*>(joint);
 					root["joints"]["revolute joints"].append(Json::objectValue);
 					Json::ArrayIndex last{root["joints"]["revolute joints"].size()-1};
-					
-					
-					b2Body* bodyB{castedJoint->GetBodyB()};//Get the body B
-					entityx::Entity entityB = *static_cast<entityx::Entity*>(bodyB->GetUserData());//Get the entity B from the user data
-					assert(isMember(m_entities, entityB));
-					std::string entityBName = getKey(m_entities, entityB);//Get the name of the entity B
-					assert(isMember(entityB.component<BodyComponent>()->bodies, bodyB));//Assert that the body B is in the body component of entity B
-					std::string partBName = getKey(entityB.component<BodyComponent>()->bodies, bodyB);//Get the name of the part B
-					
-					b2Body* bodyA{castedJoint->GetBodyA()};//Get the body A
-					entityx::Entity entityA = *static_cast<entityx::Entity*>(bodyA->GetUserData());//Get the entity A from the user data
-					assert(isMember(m_entities, entityA));
-					std::string entityAName = getKey(m_entities, entityA);//Get the name of the entity A
-					assert(isMember(entityA.component<BodyComponent>()->bodies, bodyA));//Assert that the body A is in the body component of the entity A
-					std::string partAName = getKey(entityA.component<BodyComponent>()->bodies, bodyA);//Get the name of the part A
-					
 					root["joints"]["revolute joints"][last]["entity A"] = entityAName;
 					root["joints"]["revolute joints"][last]["entity B"] = entityBName;
 					root["joints"]["revolute joints"][last]["part A"] = partAName;
@@ -216,6 +214,28 @@ void GameState::saveWorld(const std::string& file)
 				
 				case e_prismaticJoint:
 				{
+					b2PrismaticJoint* castedJoint = static_cast<b2PrismaticJoint*>(joint);
+					root["joints"]["prismatic joints"].append(Json::objectValue);
+					Json::ArrayIndex last{root["joints"]["prismatic joints"].size()-1};
+					root["joints"]["prismatic joints"][last]["entity A"] = entityAName;
+					root["joints"]["prismatic joints"][last]["entity B"] = entityBName;
+					root["joints"]["prismatic joints"][last]["part A"] = partAName;
+					root["joints"]["prismatic joints"][last]["part B"] = partBName;
+					root["joints"]["prismatic joints"][last]["local anchor A"]["x"] = castedJoint->GetLocalAnchorA().x*pixelByMeter;
+					root["joints"]["prismatic joints"][last]["local anchor A"]["y"] = castedJoint->GetLocalAnchorA().y*pixelByMeter;
+					root["joints"]["prismatic joints"][last]["local anchor B"]["x"] = castedJoint->GetLocalAnchorB().x*pixelByMeter;
+					root["joints"]["prismatic joints"][last]["local anchor B"]["y"] = castedJoint->GetLocalAnchorB().y*pixelByMeter;
+					root["joints"]["prismatic joints"][last]["local axis A"]["x"] = castedJoint->GetLocalAxisA().x;
+					root["joints"]["prismatic joints"][last]["local axis A"]["y"] = castedJoint->GetLocalAxisA().y;
+					root["joints"]["prismatic joints"][last]["enable limit"] = castedJoint->IsLimitEnabled();
+					root["joints"]["prismatic joints"][last]["lower translation"] = castedJoint->GetLowerLimit()*pixelByMeter;
+					root["joints"]["prismatic joints"][last]["upper translation"] = castedJoint->GetUpperLimit()*pixelByMeter;
+					root["joints"]["prismatic joints"][last]["enable motor"] = castedJoint->IsMotorEnabled();
+					root["joints"]["prismatic joints"][last]["max motor force"] = castedJoint->GetMaxMotorForce();
+					root["joints"]["prismatic joints"][last]["motor speed"] = castedJoint->GetMotorSpeed();
+					root["joints"]["prismatic joints"][last]["reference angle"] = castedJoint->IsMotorEnabled();
+					if(jointHasRole(joint, JointRole::BendingPower))
+						root["joints"]["prismatic joints"][last]["roles"].append("bending power");
 					break;
 				}
 					
@@ -552,31 +572,14 @@ void GameState::initWorld(const std::string& file)
 					//Assert that that entities have the givens parts
 					requireValues(root["entities"][entityA]["body"], "entities." + entityA + ".body", {{partA, Json::objectValue}});
 					requireValues(root["entities"][entityB]["body"], "entities." + entityB + ".body", {{partB, Json::objectValue}});
-					b2Body * bodyA{m_entities[entityA].component<BodyComponent>()->bodies[partA]};
-					b2Body * bodyB{m_entities[entityB].component<BodyComponent>()->bodies[partB]};
 
 					b2RevoluteJointDef jointDef;
-					float xA{0}, yA{0}, xB{0}, yB{0};
-					jointDef.bodyA = bodyA;
-					jointDef.bodyB = bodyB;
-					
-					//local anchor A
-					if(joint.isMember("local anchor A"))
-					{
-						const Json::Value firstAnchor = joint["local anchor A"];
-						xA = firstAnchor["x"].asFloat();
-						yA = firstAnchor["y"].asFloat();
-					}
-					jointDef.localAnchorA = {(xA/pixelByMeter), (yA/pixelByMeter)};
-					
-					//local anchor B
-					if(joint.isMember("local anchor B"))
-					{
-						const Json::Value secondAnchor = joint["local anchor B"];
-						xB = secondAnchor["x"].asFloat();
-						yB = secondAnchor["y"].asFloat();
-					}
-					jointDef.localAnchorB = {(xB/pixelByMeter), (yB/pixelByMeter)};
+					jointDef.bodyA = m_entities[entityA].component<BodyComponent>()->bodies[partA];
+					jointDef.bodyB = m_entities[entityB].component<BodyComponent>()->bodies[partB];
+					jointDef.localAnchorA.x = joint["local anchor A"]["x"].asFloat()/pixelByMeter;
+					jointDef.localAnchorA.y = joint["local anchor A"]["y"].asFloat()/pixelByMeter;
+					jointDef.localAnchorB.x = joint["local anchor B"]["x"].asFloat()/pixelByMeter;
+					jointDef.localAnchorB.y = joint["local anchor B"]["y"].asFloat()/pixelByMeter;
 					jointDef.lowerAngle = (joint["lower angle"].asFloat() * b2_pi) / 180.f;
 					jointDef.upperAngle = (joint["upper angle"].asFloat() * b2_pi) / 180.f;
 					jointDef.enableLimit = joint["enable limit"].asBool();
@@ -631,6 +634,44 @@ void GameState::initWorld(const std::string& file)
 				for(Json::ArrayIndex i{0}; i < prismaticJoints.size(); ++i)
 				{
 					const Json::Value joint = prismaticJoints[i];
+					std::string entityA = joint["entity A"].asString();
+					std::string entityB = joint["entity B"].asString();
+					std::string partA = joint["part A"].asString();
+					std::string partB = joint["part B"].asString();
+					//Assert that somes entities exists
+					requireValues(root, "root", {{"entities", Json::objectValue}});
+					//Assert that the given entities exist
+					requireValues(root["entities"], "entities", {{entityA, Json::objectValue}, {entityB, Json::objectValue}});
+					//Assert that that entities have some bodies
+					requireValues(root["entities"][entityA], "entities." + entityA, {{"body", Json::objectValue}});
+					requireValues(root["entities"][entityB], "entities." + entityB, {{"body", Json::objectValue}});
+					//Assert that that entities have the givens parts
+					requireValues(root["entities"][entityA]["body"], "entities." + entityA + ".body", {{partA, Json::objectValue}});
+					requireValues(root["entities"][entityB]["body"], "entities." + entityB + ".body", {{partB, Json::objectValue}});
+
+					b2PrismaticJointDef jointDef;
+					jointDef.bodyA = m_entities[entityA].component<BodyComponent>()->bodies[partA];
+					jointDef.bodyB = m_entities[entityB].component<BodyComponent>()->bodies[partB];
+					jointDef.localAnchorA.x = joint["local anchor A"]["x"].asFloat()/pixelByMeter;
+					jointDef.localAnchorA.y = joint["local anchor A"]["y"].asFloat()/pixelByMeter;
+					jointDef.localAnchorB.x = joint["local anchor B"]["x"].asFloat()/pixelByMeter;
+					jointDef.localAnchorB.y = joint["local anchor B"]["y"].asFloat()/pixelByMeter;
+					jointDef.localAxisA.x = joint["local axis A"]["x"].asFloat();
+					jointDef.localAxisA.y = joint["local axis A"]["y"].asFloat();
+					jointDef.lowerTranslation = joint["lower translation"].asFloat()/pixelByMeter;
+					jointDef.upperTranslation = joint["upper translation"].asFloat()/pixelByMeter;
+					jointDef.enableLimit = joint["enable limit"].asBool();
+					jointDef.maxMotorForce = joint["max motor force"].asFloat();
+					jointDef.motorSpeed = joint["motor speed"].asFloat()/pixelByMeter;
+					jointDef.enableMotor = joint["enable motor"].asBool();
+					jointDef.referenceAngle = (joint["reference angle"].asFloat() * b2_pi) / 180.f;
+					
+					//roles
+					const Json::Value roles = joint["roles"];
+					for(Json::ArrayIndex j{0}; j < roles.size(); ++j)
+						if(roles[j].asString() == "bending power")
+							//Add the role to the definition
+							jointDef.userData = add<unsigned int>(jointDef.userData, static_cast<unsigned int>(JointRole::BendingPower));
 				}
 			}
 			if(joints.isMember("pulley joints"))
