@@ -110,6 +110,12 @@ void GameState::saveWorld(const std::string& file)
 			if(entity.second.has_component<TransformComponent>())
 				root["entities"][entity.first]["transforms"] = serialize(entity.second.component<TransformComponent>());
 			
+			if(entity.second.has_component<InventoryComponent>())
+				root["entities"][entity.first]["inventory"] = serialize(entity.second.component<InventoryComponent>(), m_entities);
+			
+			if(entity.second.has_component<QuiverComponent>())
+				root["entities"][entity.first]["quiver"] = serialize(entity.second.component<QuiverComponent>(), m_entities);
+			
 			if(entity.second.has_component<AnimationsComponent<SpriteSheetAnimation>>())
 				root["entities"][entity.first]["spritesheet animations"] = serialize(entity.second.component<AnimationsComponent<SpriteSheetAnimation>>());
 			
@@ -351,10 +357,14 @@ void GameState::initWorld(const std::string& file)
 		if(root.isMember("entities"))
 		{
 			const Json::Value entities{root["entities"]};
+			//First add all entities without add components, that's for component that need
+			//that m_entities is complete to be assigned (such as InventoryComponent).
+			for(std::string& entityName : entities.getMemberNames())
+				m_entities.emplace(entityName, getContext().entityManager.create());
+			
 			for(std::string& entityName : entities.getMemberNames())
 			{
 				const Json::Value entity{entities[entityName]};
-				m_entities.emplace(entityName, getContext().entityManager.create());
 				
 				if(entity.isMember("transforms"))
 					deserialize(entity["transforms"], m_entities[entityName].assign<TransformComponent>());
@@ -406,6 +416,10 @@ void GameState::initWorld(const std::string& file)
 				//Update the AnimationSystem in order to don't show the whole tileset of every entity on the screen when loading the level
 				getContext().systemManager.update<AnimationsSystem>(sf::Time::Zero.asSeconds());
 				
+				if(entity.isMember("inventory"))
+					deserialize(entity["inventory"], m_entities[entityName].assign<InventoryComponent>(), m_entities);
+				if(entity.isMember("quiver"))
+					deserialize(entity["quiver"], m_entities[entityName].assign<QuiverComponent>(), m_entities);
 				if(entity.isMember("categories"))
 					deserialize(entity["categories"], m_entities[entityName].assign<CategoryComponent>());
 				if(entity.isMember("walk"))

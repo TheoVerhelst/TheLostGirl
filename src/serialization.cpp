@@ -173,7 +173,6 @@ Json::Value serialize(entityx::ComponentHandle<TransformComponent> component)
 Json::Value serialize(entityx::ComponentHandle<InventoryComponent> component, const std::map<std::string, entityx::Entity>& entitiesMap)
 {
 	Json::Value ret;
-	ret["weight"] = component->weight;
 	ret["maximum weight"] = component->maxWeight;
 	ret["items"] = Json::Value(Json::arrayValue);
 	//For each item of the inventory
@@ -644,18 +643,18 @@ void deserialize(const Json::Value& value, entityx::ComponentHandle<TransformCom
 void deserialize(const Json::Value& value, entityx::ComponentHandle<InventoryComponent> component, const std::map<std::string, entityx::Entity>& entitiesMap)
 {
 	component->items.clear();
-	for(std::string& itemName : value["items"].getMemberNames())
-		if(entitiesMap.find(itemName) != entitiesMap.end())
-			component->items.push_back(entitiesMap.at(itemName));
+	for(Json::ArrayIndex i{0}; i < value["items"].size(); ++i)
+		if(entitiesMap.find(value["items"][i].asString()) != entitiesMap.end())
+			component->items.push_back(entitiesMap.at(value["items"][i].asString()));
 	component->maxWeight = value["maximum weight"].asFloat();
 }
 
 void deserialize(const Json::Value& value, entityx::ComponentHandle<QuiverComponent> component, const std::map<std::string, entityx::Entity>& entitiesMap)
 {
 	component->arrows.clear();
-	for(std::string& arrowName : value["arrows"].getMemberNames())
-		if(entitiesMap.find(arrowName) != entitiesMap.end())
-			component->arrows.push_back(entitiesMap.at(arrowName));
+	for(Json::ArrayIndex i{0}; i < value["arrows"].size(); ++i)
+		if(entitiesMap.find(value["arrows"][i].asString()) != entitiesMap.end())
+			component->arrows.push_back(entitiesMap.at(value["arrows"][i].asString()));
 	if(entitiesMap.find(value["notched arrow"].asString()) != entitiesMap.end())
 		component->notchedArrow = entitiesMap.at(value["notched arrow"].asString());
 	component->capacity = value["capacity"].asUInt();

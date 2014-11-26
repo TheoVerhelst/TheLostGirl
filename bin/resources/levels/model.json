@@ -350,9 +350,8 @@
                             },
                             {
                                 "name" : "items",
-                                "type" : "object",
+                                "type" : "array",
                                 "required" : true,
-                                "free children names" : true,
                                 "children" :
                                 {
                                     "type" : "string"
@@ -374,9 +373,8 @@
                             },
                             {
                                 "name" : "arrows",
-                                "type" : "object",
+                                "type" : "array",
                                 "required" : true,
-                                "free children names" : true,
                                 "children" :
                                 {
                                     "type" : "string"
