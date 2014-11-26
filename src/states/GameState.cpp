@@ -320,6 +320,7 @@ void GameState::initWorld(const std::string& file)
 			const Json::Value time = root["time"];
 			getContext().systemManager.system<TimeSystem>()->setTotalTime(sf::seconds(time["date"].asFloat()));
 			m_timeSpeed = time["speed"].asFloat();
+			getContext().systemManager.system<AnimationsSystem>()->setTimeSpeed(m_timeSpeed);
 		}
 		const Json::Value level = root["level"];
 		
@@ -708,8 +709,8 @@ void GameState::initWorld(const std::string& file)
 		
 		//Load the day sky
 		const std::string dayIdentifier{"day sky"};
-		sf::Vector2f position{(1920.f/2.f) * scale, 1080.f * scale};
-		sf::Vector2f origin{(2900.f/2.f) * scale, (2900.f/2.f) * scale};
+		sf::Vector2f position{1920.f/2.f, 1080.f};
+		sf::Vector2f origin{2900.f/2.f, 2900.f/2.f};
 		if(not texManager.isLoaded(dayIdentifier))
 		{
 			getContext().eventManager.emit<LoadingStateChange>(LangManager::tr("Loading day sky"));
@@ -718,7 +719,7 @@ void GameState::initWorld(const std::string& file)
 		//Create a sprite with the loaded texture
 		sf::Sprite daySpr(texManager.get(dayIdentifier));
 		//Assign origin of the sprite to the center of the day image
-		daySpr.setOrigin(origin);
+		daySpr.setOrigin(origin*scale);
 		
 		//Load the night sky
 		const std::string nightIdentifier{"night sky"};
@@ -730,7 +731,7 @@ void GameState::initWorld(const std::string& file)
 		//Create a sprite with the loaded texture
 		sf::Sprite nightSpr(texManager.get(nightIdentifier));
 		//Assign origin of the sprite to the center of the night image
-		nightSpr.setOrigin(origin);
+		nightSpr.setOrigin(origin*scale);
 		
 		//Create an entity
 		m_sceneEntities.emplace("sky", getContext().entityManager.create());
@@ -747,7 +748,7 @@ void GameState::initWorld(const std::string& file)
 		AnimationsComponent<SkyAnimation>::Handle skyAnimationsComp = m_sceneEntities["sky"].assign<AnimationsComponent<SkyAnimation>>();
 		skyAnimationsComp->animationsManagers.emplace("main", AnimationsManager<SkyAnimation>());
 		//Add the animation, this is a sky animation, the importance is equal to zero, the duration is 600 seconds (1 day), and it loops.
-		skyAnimationsComp->animationsManagers["main"].addAnimation("day/night cycle", SkyAnimation(m_sceneEntities["sky"], m_timeSpeed), 0, sf::seconds(600), true);
+		skyAnimationsComp->animationsManagers["main"].addAnimation("day/night cycle", SkyAnimation(m_sceneEntities["sky"]), 0, sf::seconds(600), true);
 		double daySeconds{remainder(getContext().systemManager.system<TimeSystem>()->getRealTime().asSeconds(), 600)};
 		skyAnimationsComp->animationsManagers["main"].setProgress("day/night cycle", daySeconds/600.f);
 		skyAnimationsComp->animationsManagers["main"].play("day/night cycle");

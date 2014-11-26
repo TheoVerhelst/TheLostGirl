@@ -55,5 +55,10 @@ void AnimationsSystem::update(entityx::EntityManager& entityManager, entityx::Ev
 	for(auto entity : entityManager.entities_with_components(skyAnimationsComponent))
 		//For each animations manager of the entity
 		for(auto& animationsPair : skyAnimationsComponent->animationsManagers)
-			animationsPair.second.update(sf::seconds(dt));
+			animationsPair.second.update(sf::seconds(dt*m_timeSpeed));
+}
+
+void AnimationsSystem::setTimeSpeed(float timeSpeed)
+{
+	m_timeSpeed = timeSpeed;
 }

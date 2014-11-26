@@ -31,6 +31,11 @@ class AnimationsSystem : public entityx::System<AnimationsSystem>
 		/// \param events Event manager.
 		/// \param dt Elapsed time in the last game frame.
 		void update(entityx::EntityManager &es, entityx::EventManager &events, double dt) override;
+		
+		void setTimeSpeed(float timeSpeed);
+	
+	private:
+		float m_timeSpeed;
 };
 
 #endif // ANIMATIONSSYSTEM_H

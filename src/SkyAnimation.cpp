@@ -7,9 +7,8 @@
 
 #include <TheLostGirl/SkyAnimation.h>
 
-SkyAnimation::SkyAnimation(entityx::Entity entity, float timeSpeed):
-	m_entity(entity),
-	m_timeSpeed(timeSpeed)
+SkyAnimation::SkyAnimation(entityx::Entity entity):
+	m_entity(entity)
 {}
 
 void SkyAnimation::animate(float progress)
@@ -23,8 +22,6 @@ void SkyAnimation::animate(float progress)
 			and transformComponent->transforms.find("day") != transformComponent->transforms.end()
 			and transformComponent->transforms.find("night") != transformComponent->transforms.end())
 		{
-			progress *= m_timeSpeed;
-			
 			sf::Sprite& daySpr = spriteComponent->sprites["day"];
 			sf::Sprite& nightSpr = spriteComponent->sprites["night"];
 			Transform& dayTrsf = transformComponent->transforms["day"];
@@ -34,22 +31,22 @@ void SkyAnimation::animate(float progress)
 			if(progress < 0.1875 or progress >= 0.8125)//Night
 				daySpr.setColor(sf::Color(255, 255, 255, 0));
 			else if(progress >= 0.1875 and progress < 0.3125)//Dawn
-				daySpr.setColor(sf::Color(255, 255, 255, ((progress - 0.1875) / 75) * 255));
+				daySpr.setColor(sf::Color(255, 255, 255, (progress - 0.1875) * 8 * 255));
 			else if(progress >= 0.3125 and progress < 0.6875)//Day
 				daySpr.setColor(sf::Color(255, 255, 255, 255));
 			else if(progress >= 0.6875 and progress < 0.8125)//Twilight
-				daySpr.setColor(sf::Color(255, 255, 255, (1 - ((progress - 0.6875) / 75)) * 255));
+				daySpr.setColor(sf::Color(255, 255, 255, (1 - (progress - 0.6875) * 8 * 255)));
 			dayTrsf.angle = progress*360.f;
 				
 			//night sprite
 			if(progress < 0.1875 or progress >= 0.8125)//Night
 				nightSpr.setColor(sf::Color(255, 255, 255, 255));
 			else if(progress >= 0.1875 and progress < 0.3125)//Dawn
-				nightSpr.setColor(sf::Color(255, 255, 255, (1 - ((progress - 0.1875) / 75)) * 255));
+				nightSpr.setColor(sf::Color(255, 255, 255, (1 - (progress - 0.1875) * 8 * 255)));
 			else if(progress >= 0.3125 and progress < 0.6875)//Day
 				nightSpr.setColor(sf::Color(255, 255, 255, 0));
 			else if(progress >= 0.6875 and progress < 0.8125)//Twilight
-				nightSpr.setColor(sf::Color(255, 255, 255, ((progress - 0.6875) / 75) * 255));
+				nightSpr.setColor(sf::Color(255, 255, 255, (progress - 0.6875) * 8 * 255));
 			nightTrsf.angle = progress*360.f;
 		}
 	}
