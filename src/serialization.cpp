@@ -156,14 +156,14 @@ Json::Value serialize(entityx::ComponentHandle<SpriteComponent> component, Textu
 	return ret;
 }
 
-Json::Value serialize(entityx::ComponentHandle<TransformComponent> component, float scale)
+Json::Value serialize(entityx::ComponentHandle<TransformComponent> component)
 {
 	Json::Value ret;
 	for(auto& transformPair : component->transforms)
 	{
 		const std::string partName{transformPair.first};
-		ret[partName]["transform"]["x"] = transformPair.second.x/scale;
-		ret[partName]["transform"]["y"] = transformPair.second.y/scale;
+		ret[partName]["transform"]["x"] = transformPair.second.x;
+		ret[partName]["transform"]["y"] = transformPair.second.y;
 		ret[partName]["transform"]["z"] = transformPair.second.z;
 		ret[partName]["transform"]["angle"] = transformPair.second.angle;
 	}
@@ -278,7 +278,7 @@ Json::Value serialize(entityx::ComponentHandle<StaminaComponent> component)
 	return ret;
 }
 
-void deserialize(const Json::Value& value, entityx::ComponentHandle<BodyComponent> component, entityx::ComponentHandle<TransformComponent> transformComponent, b2World& world, float pixelByMeter, float scaledPixelByMeter)
+void deserialize(const Json::Value& value, entityx::ComponentHandle<BodyComponent> component, entityx::ComponentHandle<TransformComponent> transformComponent, b2World& world, float pixelByMeter)
 {
 	component->bodies.clear();
 	for(std::string& partName : value.getMemberNames())
@@ -300,8 +300,8 @@ void deserialize(const Json::Value& value, entityx::ComponentHandle<BodyComponen
 				entityBodyComponentDef.type = b2_dynamicBody;
 			
 			//position
-			entityBodyComponentDef.position.x = transformComponent->transforms[partName].x/scaledPixelByMeter;
-			entityBodyComponentDef.position.y = transformComponent->transforms[partName].y/scaledPixelByMeter;
+			entityBodyComponentDef.position.x = transformComponent->transforms[partName].x/pixelByMeter;
+			entityBodyComponentDef.position.y = transformComponent->transforms[partName].y/pixelByMeter;
 			
 			//angle
 			entityBodyComponentDef.angle = transformComponent->transforms[partName].angle*b2_pi/180;
@@ -595,15 +595,15 @@ void deserialize(const Json::Value& value, entityx::ComponentHandle<SpriteCompon
 	}
 }
 
-void deserialize(const Json::Value& value, entityx::ComponentHandle<TransformComponent> component, float scale)
+void deserialize(const Json::Value& value, entityx::ComponentHandle<TransformComponent> component)
 {
 	component->transforms.clear();
 	for(std::string& partName : value.getMemberNames())
 	{
 		Json::Value part = value[partName];
 		Transform transform;
-		transform.x = part["transform"]["x"].asFloat()*scale;
-		transform.y = part["transform"]["y"].asFloat()*scale;
+		transform.x = part["transform"]["x"].asFloat();
+		transform.y = part["transform"]["y"].asFloat();
 		transform.z = part["transform"]["z"].asFloat();
 		transform.angle = part["transform"]["angle"].asFloat();
 		component->transforms.emplace(partName, transform);

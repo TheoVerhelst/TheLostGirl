@@ -15,7 +15,8 @@ class SkyAnimation
 	public:
 		/// Constructor.
 		/// \param entity Entity that represents the sky.
-		SkyAnimation(entityx::Entity entity);
+		/// \param timeSpeed The speed of the time (default 1).
+		SkyAnimation(entityx::Entity entity, float timeSpeed = 1);
 		
 		/// Apply the animation to the entity passed as argument in the constructor.
 		/// \param progress Progress of the animation to apply.
@@ -23,6 +24,7 @@ class SkyAnimation
 		
 	private:
 		entityx::Entity m_entity;///< The entity to animate.
+		float m_timeSpeed;       ///< The speed of the time (default 1).
 };
 
 #endif // SKYANIMATION_H

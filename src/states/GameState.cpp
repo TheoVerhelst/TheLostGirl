@@ -95,7 +95,6 @@ bool GameState::handleEvent(const sf::Event& event)
 
 void GameState::saveWorld(const std::string& file)
 {
-		const float scale = getContext().parameters.scale;
 		const float pixelByMeter = getContext().parameters.pixelByMeter;//The pixel/meters scale at the maximum resolution, about 1.f/120.f
 		Json::Value root;//Will contains the root value after serializing.
 		Json::StyledWriter writer;
@@ -109,7 +108,7 @@ void GameState::saveWorld(const std::string& file)
 				root["entities"][entity.first]["sprites"] = serialize(entity.second.component<SpriteComponent>(), getContext().textureManager);
 			
 			if(entity.second.has_component<TransformComponent>())
-				root["entities"][entity.first]["transforms"] = serialize(entity.second.component<TransformComponent>(), scale);
+				root["entities"][entity.first]["transforms"] = serialize(entity.second.component<TransformComponent>());
 			
 			if(entity.second.has_component<AnimationsComponent<SpriteSheetAnimation>>())
 				root["entities"][entity.first]["spritesheet animations"] = serialize(entity.second.component<AnimationsComponent<SpriteSheetAnimation>>());
@@ -298,8 +297,7 @@ void GameState::saveWorld(const std::string& file)
 void GameState::initWorld(const std::string& file)
 {
 	const float scale = getContext().parameters.scale;
-	const float scaledPixelByMeter = getContext().parameters.scaledPixelByMeter;
-	const float pixelByMeter = getContext().parameters.pixelByMeter;//The pixel/meters scale at the maximum resolution, about 1.f/120.f
+	const float pixelByMeter = getContext().parameters.pixelByMeter;//The pixel/meters scale at the maximum resolution, about 120.f
 	TextureManager& texManager = getContext().textureManager;
 	getContext().eventManager.emit<LoadingStateChange>(LangManager::tr("Loading save file"));
 	try
@@ -358,7 +356,7 @@ void GameState::initWorld(const std::string& file)
 				m_entities.emplace(entityName, getContext().entityManager.create());
 				
 				if(entity.isMember("transforms"))
-					deserialize(entity["transforms"], m_entities[entityName].assign<TransformComponent>(), scale);
+					deserialize(entity["transforms"], m_entities[entityName].assign<TransformComponent>());
 				if(entity.isMember("sprites"))
 					deserialize(entity["sprites"], m_entities[entityName].assign<SpriteComponent>(), texManager, paths[getContext().parameters.scaleIndex]);
 				//Update the ScrollingSystem in order to directly display the sprite at the right position
@@ -373,7 +371,7 @@ void GameState::initWorld(const std::string& file)
 					{
 						try
 						{
-							deserialize(entity["body"], m_entities[entityName].assign<BodyComponent>(), m_entities[entityName].component<TransformComponent>(), getContext().world, pixelByMeter, scaledPixelByMeter);
+							deserialize(entity["body"], m_entities[entityName].assign<BodyComponent>(), m_entities[entityName].component<TransformComponent>(), getContext().world, pixelByMeter);
 							//Assign user data to every body of the entity
 							for(auto& bodyPair : m_entities[entityName].component<BodyComponent>()->bodies)
 								bodyPair.second->SetUserData(&m_entities[entityName]);
@@ -749,7 +747,7 @@ void GameState::initWorld(const std::string& file)
 		AnimationsComponent<SkyAnimation>::Handle skyAnimationsComp = m_sceneEntities["sky"].assign<AnimationsComponent<SkyAnimation>>();
 		skyAnimationsComp->animationsManagers.emplace("main", AnimationsManager<SkyAnimation>());
 		//Add the animation, this is a sky animation, the importance is equal to zero, the duration is 600 seconds (1 day), and it loops.
-		skyAnimationsComp->animationsManagers["main"].addAnimation("day/night cycle", SkyAnimation(m_sceneEntities["sky"]), 0, sf::seconds(600), true);
+		skyAnimationsComp->animationsManagers["main"].addAnimation("day/night cycle", SkyAnimation(m_sceneEntities["sky"], m_timeSpeed), 0, sf::seconds(600), true);
 		double daySeconds{remainder(getContext().systemManager.system<TimeSystem>()->getRealTime().asSeconds(), 600)};
 		skyAnimationsComp->animationsManagers["main"].setProgress("day/night cycle", daySeconds/600.f);
 		skyAnimationsComp->animationsManagers["main"].play("day/night cycle");

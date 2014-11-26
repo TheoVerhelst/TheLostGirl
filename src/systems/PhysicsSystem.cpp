@@ -14,8 +14,8 @@
 
 void PhysicsSystem::update(entityx::EntityManager& entityManager, entityx::EventManager&, double dt)
 {
-	int32 velocityIterations = 8;
-	int32 positionIterations = 8;
+	int32 velocityIterations{8};
+	int32 positionIterations{8};
 	m_world.Step(dt, velocityIterations, positionIterations);
 	BodyComponent::Handle bodyComponent;
 	TransformComponent::Handle transformComponent;
@@ -26,12 +26,13 @@ void PhysicsSystem::update(entityx::EntityManager& entityManager, entityx::Event
 	{
 		//If the walker has not a main body, the program will crash
 		assert(bodyComponent->bodies.find("main") != bodyComponent->bodies.end());
-		b2Body* body = bodyComponent->bodies["main"];
-		float targetVelocity = 0.f;
+		b2Body* body{bodyComponent->bodies["main"]};
+		float targetVelocity{0.f};
+		float walkVelocity{walkComponent->walkSpeed/m_parameters.pixelByMeter};
 		if(walkComponent->effectiveMovement ==  Direction::Left)
-			targetVelocity = -walkComponent->walkSpeed - body->GetLinearVelocity().x;
+			targetVelocity = -walkVelocity - body->GetLinearVelocity().x;
 		else if(walkComponent->effectiveMovement ==  Direction::Right)
-			targetVelocity = walkComponent->walkSpeed - body->GetLinearVelocity().x;
+			targetVelocity = walkVelocity - body->GetLinearVelocity().x;
 		else if(walkComponent->effectiveMovement ==  Direction::None)
 			targetVelocity = -body->GetLinearVelocity().x;
 		//Apply an impulse relatively to the mass of the body
@@ -85,8 +86,8 @@ void PhysicsSystem::update(entityx::EntityManager& entityManager, entityx::Event
 			{
 				b2Vec2 pos = bodyPair.second->GetPosition();
 				float32 angle = bodyPair.second->GetAngle();
-				transforms[bodyPair.first].x = pos.x * m_parameters.scaledPixelByMeter;
-				transforms[bodyPair.first].y = pos.y * m_parameters.scaledPixelByMeter;
+				transforms[bodyPair.first].x = pos.x * m_parameters.pixelByMeter;
+				transforms[bodyPair.first].y = pos.y * m_parameters.pixelByMeter;
 				transforms[bodyPair.first].angle = angle*180/b2_pi;
 			}
 		}

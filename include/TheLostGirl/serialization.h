@@ -28,9 +28,8 @@ Json::Value serialize(entityx::ComponentHandle<SpriteComponent> component, Textu
 
 /// Serialize the given component.
 /// \param component Component to serialize.
-/// \param scale Current resolution scale.
 /// \return A Json value.
-Json::Value serialize(entityx::ComponentHandle<TransformComponent> component, float scale);
+Json::Value serialize(entityx::ComponentHandle<TransformComponent> component);
 
 /// Serialize the given component.
 /// \param component Component to serialize.
@@ -81,10 +80,9 @@ Json::Value serialize(entityx::ComponentHandle<StaminaComponent> component);
 /// \param component Component in wich deserialize the data.
 /// \param pixelByMeter Number of pixel by meter.
 /// \param world Current intance of physic world.
-/// \param scaledPixelByMeter Number of pixel by meter multiplied by the current resolution scale.
 /// \param transformComponent Transform component of the entity.
 /// \param value The Json value containing the data.
-void deserialize(const Json::Value& value, entityx::ComponentHandle<BodyComponent> component, entityx::ComponentHandle<TransformComponent> transformComponent, b2World& world, float pixelByMeter, float scaledPixelByMeter);
+void deserialize(const Json::Value& value, entityx::ComponentHandle<BodyComponent> component, entityx::ComponentHandle<TransformComponent> transformComponent, b2World& world, float pixelByMeter);
 
 /// Deserialize the given \a value in the given \a component.
 /// \param component Component in wich deserialize the data.
@@ -95,9 +93,8 @@ void deserialize(const Json::Value& value, entityx::ComponentHandle<SpriteCompon
 
 /// Deserialize the given \a value in the given \a component.
 /// \param component Component in wich deserialize the data.
-/// \param scale Current resolution scale.
 /// \param value The Json value containing the data.
-void deserialize(const Json::Value& value, entityx::ComponentHandle<TransformComponent> component, float scale);
+void deserialize(const Json::Value& value, entityx::ComponentHandle<TransformComponent> component);
 
 /// Deserialize the given \a value in the given \a component.
 /// \param component Component in wich deserialize the data.

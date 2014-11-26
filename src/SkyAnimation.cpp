@@ -7,8 +7,9 @@
 
 #include <TheLostGirl/SkyAnimation.h>
 
-SkyAnimation::SkyAnimation(entityx::Entity entity):
-	m_entity(entity)
+SkyAnimation::SkyAnimation(entityx::Entity entity, float timeSpeed):
+	m_entity(entity),
+	m_timeSpeed(timeSpeed)
 {}
 
 void SkyAnimation::animate(float progress)
@@ -22,6 +23,8 @@ void SkyAnimation::animate(float progress)
 			and transformComponent->transforms.find("day") != transformComponent->transforms.end()
 			and transformComponent->transforms.find("night") != transformComponent->transforms.end())
 		{
+			progress *= m_timeSpeed;
+			
 			sf::Sprite& daySpr = spriteComponent->sprites["day"];
 			sf::Sprite& nightSpr = spriteComponent->sprites["night"];
 			Transform& dayTrsf = transformComponent->transforms["day"];
