@@ -15,7 +15,7 @@
 #include <TheLostGirl/Application.h>
 
 Application::Application(bool debugMode):
-	m_parameters{EN,
+	m_parameters{FR,
 				debugMode,
 				1,
 				scales[m_parameters.scaleIndex],

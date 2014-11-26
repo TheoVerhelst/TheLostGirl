@@ -52,7 +52,7 @@ class LoadingState : public State, public entityx::Receiver<LoadingState>
 		tgui::Panel::Ptr m_background;   ///< The grey background.
 		tgui::Label::Ptr m_sentenceLabel;///< Label explaining the loading state.
 		std::wstring m_sentence;         ///< String explaining the loading state.
-		tgui::Label::Ptr m_percentLabel; ///< Label indicating the current loading state.
+		tgui::Label::Ptr m_hintLabel;    ///< Label indicating a random hint.
 };
 
 #endif // LOADINGSTATE_H

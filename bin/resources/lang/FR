@@ -1,7 +1,7 @@
 Loading save file|Chargement du fichier de sauvegarde
-Loading plan|Loading plan
-Loading night sky|Loading night sky
-Loading day sky|Loading day sky
+Loading plan|Chargement du plan 
+Loading night sky|Chargement du ciel nocturne
+Loading day sky|Chargement du ciel diurne
 Press any key to continue...|Appuyez sur une touche pour continuer...
 New game|Nouvelle partie
 Load game|Charger une partie
@@ -43,3 +43,9 @@ th year, |ème année,
 st day of the |er jour du  
 nd day of the |ème jour du 
 th day of the |ème jour du 
+I am a random hint.|Je suis une astuce aléatoire.
+Drag and drop your mouse to bend your bow.|Bougez votre souris pour bander votre arc.
+Fast travel to a place is allowed only once you discovered this one.|Le voyage rapide vers un lieu n'est autorisé qu'une fois que vous l'avez découvert.
+The death is very dangereous, beware of it!|La mort est très dangereuse, méfiez-vous en!
+God is philosophically the abstract concept representing the notion of absolute.|Dieu est philosophiquement le concept abstrait représentant la notion d'absolu.
+The weight of your inventory influences the height of your jumps.|Le poids de votre inventaire influence la hauteur de votre saut.

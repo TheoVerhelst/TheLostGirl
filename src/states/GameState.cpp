@@ -301,7 +301,7 @@ void GameState::initWorld(const std::string& file)
 	const float scaledPixelByMeter = getContext().parameters.scaledPixelByMeter;
 	const float pixelByMeter = getContext().parameters.pixelByMeter;//The pixel/meters scale at the maximum resolution, about 1.f/120.f
 	TextureManager& texManager = getContext().textureManager;
-	getContext().eventManager.emit<LoadingStateChange>(0, LangManager::tr("Loading save file"));
+	getContext().eventManager.emit<LoadingStateChange>(LangManager::tr("Loading save file"));
 	try
 	{
 		//Parse the level data
@@ -461,7 +461,7 @@ void GameState::initWorld(const std::string& file)
 				//If the texture is not alreday loaded (first loading of the level)
 				if(not texManager.isLoaded(textureIdentifier))
 				{
-					getContext().eventManager.emit<LoadingStateChange>(float(1*100)/float(m_numberOfPlans+1) + (float(i*100)/float(groupOfReplaces.size()*(m_numberOfPlans+1))), LangManager::tr("Loading plan") + L" " + std::wstring(groupOfReplacesName.begin(), groupOfReplacesName.end()));
+					getContext().eventManager.emit<LoadingStateChange>(LangManager::tr("Loading plan") + L" " + std::wstring(groupOfReplacesName.begin(), groupOfReplacesName.end()));
 					texManager.load<sf::IntRect>(textureIdentifier, path, originRect);
 				}
 				//Replaces
@@ -526,7 +526,7 @@ void GameState::initWorld(const std::string& file)
 				//If the texture is not alreday loaded (first loading of the level)
 				if(not texManager.isLoaded(textureIdentifier))
 				{
-					getContext().eventManager.emit<LoadingStateChange>((float(i*100)/float(m_numberOfPlans+1)) + (float(j*100)/float(numberOfChunks*(m_numberOfPlans+1))), LangManager::tr("Loading plan") + L" " + std::to_wstring(i));
+					getContext().eventManager.emit<LoadingStateChange>(LangManager::tr("Loading plan") + L" " + std::to_wstring(i+1));
 					texManager.load<sf::IntRect>(textureIdentifier, path, sf::IntRect(j*chunkSize, 0, currentChunkSize, m_levelRect.height*getContext().parameters.scale));
 				}
 				//Create an entity
@@ -714,7 +714,7 @@ void GameState::initWorld(const std::string& file)
 		sf::Vector2f origin{(2900.f/2.f) * scale, (2900.f/2.f) * scale};
 		if(not texManager.isLoaded(dayIdentifier))
 		{
-			getContext().eventManager.emit<LoadingStateChange>(float(m_numberOfPlans*100)/float(m_numberOfPlans+1), LangManager::tr("Loading day sky"));
+			getContext().eventManager.emit<LoadingStateChange>(LangManager::tr("Loading day sky"));
 			texManager.load(dayIdentifier, paths[getContext().parameters.scaleIndex] + "day.png");
 		}
 		//Create a sprite with the loaded texture
@@ -726,7 +726,7 @@ void GameState::initWorld(const std::string& file)
 		const std::string nightIdentifier{"night sky"};
 		if(not texManager.isLoaded(nightIdentifier))
 		{
-			getContext().eventManager.emit<LoadingStateChange>(float(m_numberOfPlans*100 + 50)/float(m_numberOfPlans+1), LangManager::tr("Loading night sky"));
+			getContext().eventManager.emit<LoadingStateChange>(LangManager::tr("Loading night sky"));
 			texManager.load(nightIdentifier, paths[getContext().parameters.scaleIndex] + "night.png");
 		}
 		//Create a sprite with the loaded texture

@@ -1,4 +1,5 @@
 #include <cmath>
+#include <random>
 #include <iostream>
 
 #include <SFML/System/Time.hpp>
@@ -25,8 +26,12 @@ void TimeSystem::update(entityx::EntityManager&, entityx::EventManager&, double 
 	{
 		m_periodBeginning = m_totalTime;
 		m_initialWindStrength = m_nextWindStrength;
-		m_windTransitionLength = static_cast<float>(rand() % 586000 + 15000) / 1000.f; //A random number between 15 and 600
-		m_nextWindStrength = static_cast<float>(rand() % 21000 - 10000) / 1000.f; //Another random number, between -10 and 10
+		std::random_device rd;
+		std::mt19937 gen(rd());
+		std::uniform_real_distribution<float> transitionLenghtDis(15, 600);
+		m_windTransitionLength = transitionLenghtDis(gen);//A random number between 15 and 600
+		std::uniform_real_distribution<float> strengthDis(-10, 10);
+		m_nextWindStrength = strengthDis(gen);//Another random number, between -10 and 10
 	}
 
 	float deltaStrength = m_nextWindStrength - m_initialWindStrength;
@@ -37,8 +42,12 @@ void TimeSystem::update(entityx::EntityManager&, entityx::EventManager&, double 
 	{
 		m_microPeriodBeginning = m_totalTime;
 		m_microInitialWindStrength = m_microNextWindStrength;
-		m_microWindTransitionLength = static_cast<float>(rand() % 1600 + 500) / 5000.f; //A random number between 0.5 and 2
-		m_microNextWindStrength = static_cast<float>(rand() % 1000 - 2000) / 1000.f; //Another random number, between -1 and 1
+		std::random_device rd;
+		std::mt19937 gen(rd());
+		std::uniform_real_distribution<float> transitionLenghtDis(0.5, 2);
+		m_microWindTransitionLength = transitionLenghtDis(gen);//A random number between 0.5 and 2
+		std::uniform_real_distribution<float> strengthDis(-1, 1);
+		m_microNextWindStrength = strengthDis(gen);//Another random number, between -1 and 1
 	}
 
 	deltaStrength = m_microNextWindStrength - m_microInitialWindStrength;
