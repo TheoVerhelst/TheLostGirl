@@ -1,7 +1,6 @@
 #ifndef GAMESTATE_H
 #define GAMESTATE_H
 
-#include <forward_list>
 #include <thread>
 
 #include <dist/json/json-forwards.h>
@@ -76,9 +75,8 @@ class GameState : public State
 		/// \param file Path of the save file to override.
 		void saveWorld(const std::string& file);
 		
-		//A unordered map allow to reference to elements of the list safely, and use those references outside the scope of the GameState class.
-		std::unordered_map<std::string, entityx::Entity> m_entities;          ///< All game entities.
-		std::unordered_map<std::string, entityx::Entity> m_sceneEntities;     ///< All scene entities.
+		std::map<std::string, entityx::Entity> m_entities;                    ///< All game entities.
+		std::map<std::string, entityx::Entity> m_sceneEntities;               ///< All scene entities.
 		std::map<std::string, std::vector<SceneReplaces>> m_sceneEntitiesData;///< A map containing data about scene entities.
 		ContactListener m_contactListener;                                    ///< The contact listener.
 		ContactFilter m_contactFilter;                                        ///< The contact filter.

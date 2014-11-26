@@ -188,30 +188,4 @@ Key getKey(const std::map<Key, Value>& map, const Value& value)
 	return it->first;
 }
 
-/// Check if the given \a value is registred in \a map.
-/// \param map Map to search in.
-/// \param value Value to search for.
-/// \return True if the given value is registred in map, false otherwise.
-template <typename Key, typename Value>
-bool isMember(const std::unordered_map<Key, Value>& map, const Value& value)
-{
-	auto it = map.begin();
-	for(;it != map.end() and it->second != value; ++it);
-	return it != map.end();
-}
-
-/// Get the key of the given \a value in \a map.
-/// \note If the given value is not registred in the map, the behavior is undefined.
-/// \param map Map to search in.
-/// \param value Value to search for.
-/// \return The key of \a value if found in the map, undefied behavior otherwise.
-/// \see isMember
-template <typename Key, typename Value>
-Key getKey(const std::unordered_map<Key, Value>& map, const Value& value)
-{
-	auto it = map.begin();
-	for(;it != map.end() and it->second != value; ++it);
-	return it->first;
-}
-
 #endif // FUNCTIONS_H
