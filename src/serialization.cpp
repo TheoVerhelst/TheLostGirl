@@ -695,7 +695,7 @@ void deserialize(const Json::Value& value, entityx::ComponentHandle<DirectionCom
 
 void deserialize(const Json::Value& value, entityx::ComponentHandle<CategoryComponent> component)
 {
-	unsigned int category;
+	unsigned int category{0};
 	for(Json::ArrayIndex i{0}; i < value.size(); ++i)
 	{
 		if(value[i] == "player")

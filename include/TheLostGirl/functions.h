@@ -74,12 +74,12 @@ sf::Color fadingColor(sf::Time dt = sf::seconds(0), sf::Time fadingLength = sf::
 /// Return a string depending of the given \a type.
 /// \param type Type to encode in a string.
 /// \return A formated string.
-inline std::string typeToStr(Json::ValueType type);
+std::string typeToStr(Json::ValueType type);
 
 /// Return a Json::ValueType from the the given \a string.
 /// \param str String to decode.
 /// \return A Json type.
-inline Json::ValueType strToType(std::string str);
+Json::ValueType strToType(std::string str);
 
 /// Check if every element in \a objects corresponds to one element in \a valuesTypes, throw an exception otherwise.
 /// If all elements in the object don't have the right type, an exception is raised.

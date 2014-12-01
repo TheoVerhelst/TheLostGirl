@@ -29,9 +29,7 @@ bool ContactFilter::ShouldCollide(b2Fixture* fixtureA, b2Fixture* fixtureB)
 		if(it == bodiesA->bodies.end())
 			throw std::runtime_error("An entity is referenced by the user data of a body, but the entity has not registred this body in BodyComponent");
 		std::string bodyNameA{it->first};
-		long int zA;//Plan of the body/sprite A
-		if(trsfA->transforms.find(bodyNameA) != trsfA->transforms.end())
-			zA = lround(trsfA->transforms[bodyNameA].z);//Nearest rounding
+		long int zA{lround(trsfA->transforms[bodyNameA].z)};//Nearest rounding of the plan of the body/sprite A
 		
 		BodyComponent::Handle bodiesB{entityB.component<BodyComponent>()};
 		TransformComponent::Handle trsfB{entityB.component<TransformComponent>()};
@@ -41,9 +39,7 @@ bool ContactFilter::ShouldCollide(b2Fixture* fixtureA, b2Fixture* fixtureB)
 		if(it == bodiesB->bodies.end())
 			throw std::runtime_error("An entity is referenced by the user data of a body, but the entity has not registred this body in BodyComponent");
 		std::string bodyNameB{it->first};
-		long int zB;//Plan of the body/sprite B
-		if(trsfB->transforms.find(bodyNameB) != trsfB->transforms.end())
-			zB = lround(trsfB->transforms[bodyNameB].z);//Nearest rounding
+		long int zB{lround(trsfB->transforms[bodyNameB].z)};//Nearest rounding of the plan of the body/sprite B
 		
 		ret = ret && zA == zB;//Collide only if in the same plan
 	}

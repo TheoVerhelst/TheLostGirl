@@ -37,6 +37,9 @@ class StateStack : private sf::NonCopyable
 		/// \see State::Context
 		explicit StateStack(State::Context context);
 		
+		/// Default destructor;
+		~StateStack();
+		
 		/// Register a new state.
 		/// Try to add a state that was not already registred makes undefined behavior.
 		/// \param stateID Identifier of the state to register.
