@@ -11,16 +11,18 @@
 bool ContactFilter::ShouldCollide(b2Fixture* fixtureA, b2Fixture* fixtureB)
 {
 	b2Body* bodyA{fixtureA->GetBody()};
-	entityx::Entity* entityA{static_cast<entityx::Entity*>(bodyA->GetUserData())};
+	entityx::Entity entityA{*static_cast<entityx::Entity*>(bodyA->GetUserData())};
 	b2Body* bodyB{fixtureB->GetBody()};
-	entityx::Entity* entityB{static_cast<entityx::Entity*>(bodyB->GetUserData())};
-	bool ret;
-	if(entityA == entityB)
-		ret =  false;
-	else if(entityA->has_component<TransformComponent>() and entityB->has_component<TransformComponent>())
+	entityx::Entity entityB{*static_cast<entityx::Entity*>(bodyB->GetUserData())};
+	bool ret{true};
+	//The &&=  assignement operator allow to specify that all operands right to the assignement must be true
+	//in order to enable the collision. So by default collision is enabled,
+	//and if at least one condition is false, the collision will not occurs.
+	ret = ret && entityA != entityB;
+	if(entityA.has_component<TransformComponent>() and entityB.has_component<TransformComponent>())
 	{
-		BodyComponent::Handle bodiesA{entityA->component<BodyComponent>()};
-		TransformComponent::Handle trsfA{entityA->component<TransformComponent>()};
+		BodyComponent::Handle bodiesA{entityA.component<BodyComponent>()};
+		TransformComponent::Handle trsfA{entityA.component<TransformComponent>()};
 		auto it = bodiesA->bodies.begin();
 		while(it != bodiesA->bodies.end() and it->second != bodyA)
 			++it;
@@ -31,8 +33,8 @@ bool ContactFilter::ShouldCollide(b2Fixture* fixtureA, b2Fixture* fixtureB)
 		if(trsfA->transforms.find(bodyNameA) != trsfA->transforms.end())
 			zA = lround(trsfA->transforms[bodyNameA].z);//Nearest rounding
 		
-		BodyComponent::Handle bodiesB{entityB->component<BodyComponent>()};
-		TransformComponent::Handle trsfB{entityB->component<TransformComponent>()};
+		BodyComponent::Handle bodiesB{entityB.component<BodyComponent>()};
+		TransformComponent::Handle trsfB{entityB.component<TransformComponent>()};
 		it = bodiesB->bodies.begin();
 		while(it != bodiesB->bodies.end() and it->second != bodyB)
 			++it;
@@ -43,9 +45,20 @@ bool ContactFilter::ShouldCollide(b2Fixture* fixtureA, b2Fixture* fixtureB)
 		if(trsfB->transforms.find(bodyNameB) != trsfB->transforms.end())
 			zB = lround(trsfB->transforms[bodyNameB].z);//Nearest rounding
 		
-		return zA == zB;//Collide only if in the same plan
+		ret = ret && zA == zB;//Collide only if in the same plan
 	}
-	else
-		ret = true;
+	if(entityA.has_component<QuiverComponent>() or entityB.has_component<QuiverComponent>())
+	{
+		if(entityA.has_component<QuiverComponent>())
+		{
+			//Swap the pointers
+			std::swap(bodyA, bodyB);
+			std::swap(entityA, entityB);
+		}
+		const std::vector<entityx::Entity>& arrows(entityB.component<QuiverComponent>()->arrows);
+		//Right operand is false the entity A is in the quiver of the entity B
+		ret = ret && std::find(arrows.begin(), arrows.end(), entityA) == arrows.end();
+		ret = ret && entityA != entityB.component<QuiverComponent>()->notchedArrow;
+	}
 	return ret;
 }

@@ -1,6 +1,7 @@
 #include <Box2D/Dynamics/b2Body.h>
 #include <Box2D/Dynamics/Joints/b2PrismaticJoint.h>
 #include <Box2D/Dynamics/Joints/b2RevoluteJoint.h>
+#include <Box2D/Dynamics/b2World.h>
 #include <entityx/Entity.h>
 
 #include <TheLostGirl/components.h>
@@ -344,6 +345,7 @@ void BowBender::operator()(entityx::Entity entity, double) const
 				{
 					quiverComponent->notchedArrow = *found;
 					notchedArrow = *found;
+					quiverComponent->arrows.erase(found);
 					
 					//If the notched arrow has not a main body, the program will crash
 					assert(notchedArrow.component<BodyComponent>()->bodies.find("main") != notchedArrow.component<BodyComponent>()->bodies.end());
@@ -352,22 +354,22 @@ void BowBender::operator()(entityx::Entity entity, double) const
 					assert(entity.component<BodyComponent>()->bodies.find("bow") != entity.component<BodyComponent>()->bodies.end());
 					b2Body* bowBody{entity.component<BodyComponent>()->bodies["bow"]};
 					
-					//Replace the arrow
-					arrowBody->SetTransform(bowBody->GetWorldPoint({76.f, 93.f}), bowBody->GetAngle());
 					//Set the joint
 					b2PrismaticJointDef jointDef;
 					jointDef.bodyA = bowBody;
 					jointDef.bodyB = arrowBody;
-					jointDef.localAnchorA = {76.f, 93.f};
-					jointDef.localAnchorB = {0.f, 6.f};
+					jointDef.localAnchorA = {0.625f, 0.41666667};
+					jointDef.localAnchorB = {0.025f, 0.05f};
 					jointDef.localAxisA = {1.f, 0.f};
-					jointDef.enableLimit = true;
+					jointDef.lowerTranslation = -0.30833333f;
 					jointDef.upperTranslation = 0.f;
-					jointDef.lowerTranslation = -1.f;
+					jointDef.enableLimit = true;
 					jointDef.enableMotor = true;
 					jointDef.maxMotorForce = 10.f;
 					jointDef.referenceAngle = 0.f;
 					jointDef.userData = add<unsigned int>(jointDef.userData, static_cast<unsigned int>(JointRole::BendingPower));
+					b2World* world{bowBody->GetWorld()};
+					world->CreateJoint(&jointDef);
 				}
 			}
 			
@@ -380,7 +382,7 @@ void BowBender::operator()(entityx::Entity entity, double) const
 				b2Body* arrowBody{notchedArrow.component<BodyComponent>()->bodies["main"]};
 				float translationTarget{bendComponent->power/bendComponent->maxPower};//Power of the bending, in range [0, 1]
 				float32 gain{10.f};
-				float32 translationError;
+				float32 differenceTranslation;
 				//Iterate over all joints
 				for(b2JointEdge* jointEdge{arrowBody->GetJointList()}; jointEdge; jointEdge = jointEdge->next)
 				{
@@ -389,8 +391,8 @@ void BowBender::operator()(entityx::Entity entity, double) const
 					{
 						b2PrismaticJoint* joint{static_cast<b2PrismaticJoint*>(jointEdge->joint)};
 						//The final target is equal to the joint's lower limit when the translationTarget is equal to 1.
-						translationError = joint->GetJointTranslation() - (translationTarget*joint->GetLowerLimit());
-						joint->SetMotorSpeed(-gain * translationError);
+						differenceTranslation = translationTarget*joint->GetLowerLimit() - joint->GetJointTranslation();
+						joint->SetMotorSpeed(gain * differenceTranslation);
 					}
 				}
 			}

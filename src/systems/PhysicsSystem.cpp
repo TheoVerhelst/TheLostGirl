@@ -43,7 +43,7 @@ void PhysicsSystem::update(entityx::EntityManager& entityManager, entityx::Event
 	{
 		float angleTarget{-bendComponent->angle};
 		float32 gain{10.f};
-		float32 angleError;
+		float32 differenceAngle;
 		//If the archer has not a arms body, the program will crash
 		assert(bodyComponent->bodies.find("arms") != bodyComponent->bodies.end());
 		b2Body* bodyArms{bodyComponent->bodies["arms"]};
@@ -54,8 +54,8 @@ void PhysicsSystem::update(entityx::EntityManager& entityManager, entityx::Event
 			if(jointHasRole(jointEdge->joint, JointRole::BendingAngle))
 			{
 				b2RevoluteJoint* jointArms{static_cast<b2RevoluteJoint*>(jointEdge->joint)};
-				angleError = jointArms->GetJointAngle() - angleTarget;
-				jointArms->SetMotorSpeed(-gain * angleError);
+				differenceAngle = angleTarget - jointArms->GetJointAngle();
+				jointArms->SetMotorSpeed(gain * differenceAngle);
 			}
 		}
 		
@@ -69,8 +69,8 @@ void PhysicsSystem::update(entityx::EntityManager& entityManager, entityx::Event
 			if(jointHasRole(jointEdge->joint, JointRole::BendingAngle))
 			{
 				b2RevoluteJoint* jointBow{static_cast<b2RevoluteJoint*>(jointEdge->joint)};
-				angleError = jointBow->GetJointAngle() - angleTarget;
-				jointBow->SetMotorSpeed(-gain * angleError);
+				differenceAngle = angleTarget - jointBow->GetJointAngle();
+				jointBow->SetMotorSpeed(gain * differenceAngle);
 			}
 		}
 	}

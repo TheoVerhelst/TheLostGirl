@@ -34,7 +34,7 @@ void DebugDraw::DrawSolidPolygon(const b2Vec2* vertices, int32 vertexCount, cons
 		polygon.setPoint(i, sf::Vector2f(vertices[i].x, vertices[i].y)*m_context.parameters.scaledPixelByMeter);
 	polygon.setOutlineColor(sf::Color(color.r*255.f, color.g*255.f, color.b*255.f, color.a*255.f));
 	polygon.setOutlineThickness(-1.f);
-	polygon.setFillColor(sf::Color(color.r*127.f, color.g*127.f, color.b*127.f, color.a*127.f));
+	polygon.setFillColor(sf::Color::Transparent);
 	m_context.window.draw(polygon);
 }
 
@@ -56,7 +56,7 @@ void DebugDraw::DrawSolidCircle(const b2Vec2& center, float32 radius, const b2Ve
 	circle.setPosition(center.x* m_context.parameters.scaledPixelByMeter, center.y* m_context.parameters.scaledPixelByMeter);
 	circle.setOutlineColor(sf::Color(color.r*255.f, color.g*255.f, color.b*255.f, color.a*255.f));
 	circle.setOutlineThickness(-1.f);
-	circle.setFillColor(sf::Color(color.r*127.f, color.g*127.f, color.b*127.f, color.a*127.f));
+	circle.setFillColor(sf::Color::Transparent);
 	m_context.window.draw(circle);
 	
 	sf::Vertex line[2];
