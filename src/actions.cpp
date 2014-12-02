@@ -81,7 +81,7 @@ void Mover::operator()(entityx::Entity entity, double) const
 				if(moveToOppDirection)
 					directionComponent->direction = oppDirection;
 			}
-			//Flip the bend componnent if there is one and the entity has flip
+			//Flip the bend componnent if there is one and if the entity has flip
 			if(entity.has_component<BendComponent>() and directionComponent->direction != initialDirection)
 			{
 				//Flip the angle

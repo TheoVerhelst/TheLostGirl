@@ -101,9 +101,7 @@ void Player::handleEvent(const sf::Event& event, CommandQueue& commands)
 	{
 		auto found = m_mouseButtonBinding.find(event.mouseButton.button);
 		if(found != m_mouseButtonBinding.end() and isRealtimeAction(found->second))
-		{
 			commands.push(m_stopActionBinding[found->second]);
-		}
 	}
 	else if(event.type == sf::Event::MouseMoved)
 	{
@@ -136,7 +134,7 @@ void Player::handleEvent(const sf::Event& event, CommandQueue& commands)
 //		if(found != m_joystickAxisBinding.end())
 //		{
 //			if(isRealtimeAction(found->second))
-//					commands.push(m_stopActionBinding[found->second]);
+//				commands.push(m_stopActionBinding[found->second]);
 //		}
 	}
 }
