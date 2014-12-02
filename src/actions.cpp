@@ -398,6 +398,11 @@ void ArrowShooter::operator()(entityx::Entity entity, double) const
 				if(jointHasRole(jointEdge->joint, JointRole::BendingPower))
 					//Destroy the joint
 					jointEdge->joint->GetBodyA()->GetWorld()->DestroyJoint(jointEdge->joint);
+			double shootForceX{bendComponent->power*cos(bendComponent->angle)};
+			double shootForceY{-bendComponent->power*sin(bendComponent->angle)};
+			b2Vec2 shootForce{static_cast<float32>(shootForceX), static_cast<float32>(shootForceY)};
+			arrowBody->ApplyLinearImpulse((arrowBody->GetMass()/20.f)*shootForce, arrowBody->GetWorldCenter(), true);
+			quiverComponent->notchedArrow = entityx::Entity();
 		}
 	}
 }
