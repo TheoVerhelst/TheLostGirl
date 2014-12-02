@@ -337,6 +337,39 @@
                         ]
                     },
                     {
+                        "name" : "wind friction",
+                        "type" : "object",
+                        "free children names" : false,
+                        "required" : false,
+                        "children":
+                        [
+                            {
+                                "name" : "amount",
+                                "type" : "real",
+                                "required" : true
+                            },
+                            {
+                                "name" : "local friction point",
+                                "type" : "object",
+                                "free children names" : false,
+                                "required" : true,
+                                "children" :
+                                [
+                                    {
+                                        "name" : "x",
+                                        "type" : "real",
+                                        "required" : true
+                                    },
+                                    {
+                                        "name" : "y",
+                                        "type" : "real",
+                                        "required" : true
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
                         "name" : "inventory",
                         "type" : "object",
                         "free children names" : false,

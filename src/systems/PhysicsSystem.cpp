@@ -8,6 +8,7 @@
 #include <TheLostGirl/components.h>
 #include <TheLostGirl/Category.h>
 #include <TheLostGirl/Parameters.h>
+#include <TheLostGirl/functions.h>
 #include <TheLostGirl/JointRoles.h>
 
 #include <TheLostGirl/systems/PhysicsSystem.h>
@@ -23,6 +24,7 @@ void PhysicsSystem::update(entityx::EntityManager& entityManager, entityx::Event
 	WalkComponent::Handle walkComponent;
 	BendComponent::Handle bendComponent;
 	JumpComponent::Handle jumpComponent;
+	WindFrictionComponent::Handle windFrictionComponent;
 	
 	//Update the walkers
 	for(auto entity : entityManager.entities_with_components(bodyComponent, walkComponent))
@@ -122,6 +124,25 @@ void PhysicsSystem::update(entityx::EntityManager& entityManager, entityx::Event
 				}
 			}
 		}
+	}
+	
+	//Update the arrows
+	for(auto entity : entityManager.entities_with_components(bodyComponent, windFrictionComponent))
+	{
+		//If the arrow has not a main body, the program will crash
+		assert(bodyComponent->bodies.find("main") != bodyComponent->bodies.end());
+		b2Body* body{bodyComponent->bodies["main"]};
+		b2Vec2 pointingDirection{body->GetWorldVector(b2Vec2(1, 0))};//Get the global direction of the arrow
+		b2Vec2 flightDirection{body->GetLinearVelocity()};//Get the effective flight direction of the arrow
+		float flightSpeed{flightDirection.Normalize()};//Normalizes (v in ([0, 1], [0, 1])) and returns length
+		float scalarProduct{b2Dot(flightDirection, pointingDirection)};
+		float dragConstant{windFrictionComponent->amount};
+		double dragForceMagnitude{(1 - fabs(scalarProduct)) * flightSpeed * flightSpeed * dragConstant * body->GetMass()};
+		
+		//Convert the local friction point to Box2D global coordinates
+		b2Vec2 localFrictionPoint{sftob2(windFrictionComponent->localFrictionPoint/m_parameters.pixelByMeter)};
+		b2Vec2 arrowTailPosition{body->GetWorldPoint(localFrictionPoint)};
+		body->ApplyForce(dragForceMagnitude*(-flightDirection), arrowTailPosition, true);
 	}
 	
 	//Update the transformations according to the one of the b2Body.
