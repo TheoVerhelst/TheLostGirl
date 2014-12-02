@@ -65,9 +65,10 @@ void Mover::operator()(entityx::Entity entity, double) const
 		if(entity.has_component<DirectionComponent>())
 		{
 			DirectionComponent::Handle directionComponent{entity.component<DirectionComponent>()};
-			//References to the moveToLeft and moveToRight data in directionComponent
+			//References to the moveToLeft or moveToRight data in directionComponent
 			bool& moveToDirection(direction == Direction::Left ? directionComponent->moveToLeft : directionComponent->moveToRight);
 			bool& moveToOppDirection(direction == Direction::Right ? directionComponent->moveToLeft : directionComponent->moveToRight);
+			Direction initialDirection{directionComponent->direction};
 			if(start)
 			{
 				moveToDirection = true;
@@ -80,28 +81,77 @@ void Mover::operator()(entityx::Entity entity, double) const
 				if(moveToOppDirection)
 					directionComponent->direction = oppDirection;
 			}
+			//Flip the bend componnent if there is one and the entity has flip
+			if(entity.has_component<BendComponent>() and directionComponent->direction != initialDirection)
+			{
+				//Flip the angle
+				if(direction == Direction::Left)
+					entity.component<BendComponent>()->angle = cap(entity.component<BendComponent>()->angle - b2_pi, -b2_pi/2, b2_pi, 2*b2_pi);
+				else if(direction == Direction::Right)
+					entity.component<BendComponent>()->angle = cap(entity.component<BendComponent>()->angle - b2_pi, -b2_pi, b2_pi/2, 2*b2_pi);
+			}
 		}
-		//If the entity can walk, set the right animation.
+		//If the entity have animations
 		if(entity.has_component<AnimationsComponent<SpriteSheetAnimation>>()
-			and entity.has_component<WalkComponent>()
 			and entity.has_component<DirectionComponent>())
 		{
-			//Get all the animations managers of the entity
-			auto& animationsManagers(entity.component<AnimationsComponent<SpriteSheetAnimation>>()->animationsManagers);
-			DirectionComponent::Handle directionComponent{entity.component<DirectionComponent>()};
-			WalkComponent::Handle walkComponent{entity.component<WalkComponent>()};
-			//References to the moveToLeft and moveToRight data in directionComponent
-			bool moveToOppDirection{direction == Direction::Right ? directionComponent->moveToLeft : directionComponent->moveToRight};
+			bool moveToOppDirection{direction == Direction::Right ? entity.component<DirectionComponent>()->moveToLeft : entity.component<DirectionComponent>()->moveToRight};
 			//For each animations manager of the entity
-			for(auto& animationsPair : animationsManagers)
+			for(auto& animationsPair : entity.component<AnimationsComponent<SpriteSheetAnimation>>()->animationsManagers)
 			{
 				AnimationsManager<SpriteSheetAnimation>& animations(animationsPair.second);
-				//If the animations manager have the required animations
+				//If the animations manager have bending animations
+				if(animations.isRegistred("bend" + directionStr)
+					and animations.isRegistred("bend" + oppDirectionStr))
+				{
+					if(start)
+					{
+						float progress{animations.getProgress("bend" + oppDirectionStr)};
+						animations.stop("bend" + oppDirectionStr);
+						animations.activate("bend" + directionStr);
+						animations.setProgress("bend" + directionStr, progress);
+					}
+					else if(moveToOppDirection)
+					{
+						float progress{animations.getProgress("bend" + directionStr)};
+						animations.stop("bend" + directionStr);
+						animations.activate("bend" + oppDirectionStr);
+						animations.setProgress("bend" + oppDirectionStr, progress);
+					}
+				}
+				//If the animations manager falling animations
+				if(animations.isRegistred("fall" + directionStr)
+					and animations.isRegistred("fall" + oppDirectionStr))
+				{
+					//If falling and diriged to the opposite side
+					if(animations.isActive("fall" + oppDirectionStr))
+					{
+						float progress{animations.getProgress("fall" + oppDirectionStr)};
+						animations.stop("fall" + oppDirectionStr);
+						animations.play("fall" + directionStr);
+						animations.setProgress("fall" + directionStr, progress);
+					}
+				}
+				//If the animations manager have jump animations
+				if(animations.isRegistred("jump" + directionStr)
+					and animations.isRegistred("jump" + oppDirectionStr))
+				{
+					//If jumping and diriged to the opposite side
+					if(animations.isActive("jump" + oppDirectionStr))
+					{
+						float progress{animations.getProgress("jump" + oppDirectionStr)};
+						animations.stop("jump" + oppDirectionStr);
+						animations.play("jump" + directionStr);
+						animations.setProgress("jump" + directionStr, progress);
+					}
+				}
+				//If the animations manager have walk animations
 				if(animations.isRegistred("stay" + directionStr)
 					and animations.isRegistred("stay" + oppDirectionStr)
 					and animations.isRegistred("move" + directionStr)
 					and animations.isRegistred("move" + oppDirectionStr))
 				{
+					WalkComponent::Handle walkComponent{entity.component<WalkComponent>()};
 					if(start)
 					{
 						//Force to set the right animations
@@ -131,111 +181,6 @@ void Mover::operator()(entityx::Entity entity, double) const
 						}
 						else
 							walkComponent->effectiveMovement = Direction::None;//Stop the player
-					}
-				}
-			}
-		}
-		//If the entity can jump, set the right animation if it jumps
-		if(entity.has_component<AnimationsComponent<SpriteSheetAnimation>>()
-			and entity.has_component<JumpComponent>()
-			and entity.has_component<FallComponent>()
-			and entity.has_component<DirectionComponent>())
-		{
-			//Get all the animations managers of the entity
-			auto& animationsManagers(entity.component<AnimationsComponent<SpriteSheetAnimation>>()->animationsManagers);
-			//For each animations manager of the entity
-			for(auto& animationsPair : animationsManagers)
-			{
-				AnimationsManager<SpriteSheetAnimation>& animations(animationsPair.second);
-				//If the animations manager have the required animations
-				if(animations.isRegistred("jump" + directionStr)
-					and animations.isRegistred("jump" + oppDirectionStr))
-				{
-					//If jumping and diriged to the opposite side
-					if(animations.isActive("jump" + oppDirectionStr))
-					{
-						float progress{animations.getProgress("jump" + oppDirectionStr)};
-						animations.stop("jump" + oppDirectionStr);
-						animations.play("jump" + directionStr);
-						animations.setProgress("jump" + directionStr, progress);
-					}
-				}
-			}
-		}
-		//If the entity can fall, set the right animation if it falls
-		if(entity.has_component<AnimationsComponent<SpriteSheetAnimation>>()
-			and entity.has_component<FallComponent>()
-			and entity.has_component<DirectionComponent>())
-		{
-			//Get all the animations managers of the entity
-			auto& animationsManagers(entity.component<AnimationsComponent<SpriteSheetAnimation>>()->animationsManagers);
-			//For each animations manager of the entity
-			for(auto& animationsPair : animationsManagers)
-			{
-				AnimationsManager<SpriteSheetAnimation>& animations(animationsPair.second);
-				//If the animations manager have the required animations
-				if(animations.isRegistred("fall" + directionStr)
-					and animations.isRegistred("fall" + oppDirectionStr))
-				{
-					//If falling and diriged to the opposite side
-					if(animations.isActive("fall" + oppDirectionStr))
-					{
-						float progress{animations.getProgress("fall" + oppDirectionStr)};
-						animations.stop("fall" + oppDirectionStr);
-						animations.play("fall" + directionStr);
-						animations.setProgress("fall" + directionStr, progress);
-					}
-				}
-			}
-		}
-		//If the entity can bend a bow, set the right animation if it bends
-		if(entity.has_component<AnimationsComponent<SpriteSheetAnimation>>()
-			and entity.has_component<BendComponent>()
-			and entity.has_component<DirectionComponent>())
-		{
-			DirectionComponent::Handle directionComponent{entity.component<DirectionComponent>()};
-			bool moveToOppDirection{direction == Direction::Right ? directionComponent->moveToLeft : directionComponent->moveToRight};
-			//Get all the animations managers of the entity
-			auto& animationsManagers(entity.component<AnimationsComponent<SpriteSheetAnimation>>()->animationsManagers);
-			//For each animations manager of the entity
-			for(auto& animationsPair : animationsManagers)
-			{
-				AnimationsManager<SpriteSheetAnimation>& animations(animationsPair.second);
-				//If the animations manager have the required animations
-				if(animations.isRegistred("bend" + directionStr)
-					and animations.isRegistred("bend" + oppDirectionStr))
-				{
-					if(start)
-					{
-						//If the player is diriged to the other side, and the bending is currently actived
-						if(animations.isActive("bend" + oppDirectionStr) and entity.component<BendComponent>()->power > 0.f)
-						{
-							//Flip the angle
-							if(direction == Direction::Left)
-								entity.component<BendComponent>()->angle = cap(entity.component<BendComponent>()->angle - b2_pi, -b2_pi, b2_pi/2, 2*b2_pi);
-							else if(direction == Direction::Right)
-								entity.component<BendComponent>()->angle = cap(entity.component<BendComponent>()->angle - b2_pi, -b2_pi/2, b2_pi, 2*b2_pi);
-						}
-						float progress{animations.getProgress("bend" + oppDirectionStr)};
-						animations.stop("bend" + oppDirectionStr);
-						animations.activate("bend" + directionStr);
-						animations.setProgress("bend" + directionStr, progress);
-					}
-					else if(moveToOppDirection)
-					{
-						float progress{animations.getProgress("bend" + directionStr)};
-						//If the bending is currently actived
-						if(entity.component<BendComponent>()->power > 0.f)
-						{
-							//Flip the angle
-							if(direction == Direction::Left)
-								entity.component<BendComponent>()->angle = cap(entity.component<BendComponent>()->angle - b2_pi, -b2_pi, b2_pi/2, 2*b2_pi);
-							else if(direction == Direction::Right)
-								entity.component<BendComponent>()->angle = cap(entity.component<BendComponent>()->angle - b2_pi, -b2_pi/2, b2_pi, 2*b2_pi);
-						}
-						animations.stop("bend" + directionStr);
-						animations.activate("bend" + oppDirectionStr);
-						animations.setProgress("bend" + oppDirectionStr, progress);
 					}
 				}
 			}
