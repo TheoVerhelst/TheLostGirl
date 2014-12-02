@@ -47,11 +47,20 @@ void DragAndDropSystem::setDragAndDropActivation(bool isActive)
 		float delta_x{m_line[1].position.x- m_line[0].position.x};
 		float delta_y{m_line[1].position.y- m_line[0].position.y};
 		double angle{atan2(delta_x, delta_y) + b2_pi/2.f};//Angle of the line with the horizontal axis
+		//Shoot the arrow
+		Command shootCommand;
+		shootCommand.targetIsSpecific = false;
+		shootCommand.category = Category::Player;
+		shootCommand.action = ArrowShooter();
+		m_commandQueue.push(shootCommand);
+		//Reset the bending power to 0
 		Command bendCommand;
 		bendCommand.targetIsSpecific = false;
 		bendCommand.category = Category::Player;
 		bendCommand.action = BowBender(angle, 0.f);//Reset the power of the bending
 		m_commandQueue.push(bendCommand);
+		//Do these two commands in this order will first shoot the arrow with the current angle/power
+		//in the BendComponent, and then reset the BendComponent's power to 0
 	}
 	m_isActive = isActive;
 }

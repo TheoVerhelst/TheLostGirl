@@ -326,6 +326,7 @@ void BowBender::operator()(entityx::Entity entity, double) const
 					animations.setProgress("bend"+directionStr, animationPower);
 			}
 		}
+		//Notch an arrow if there is no one
 		//If the entity has a quiver
 		if(entity.has_component<QuiverComponent>())
 		{
@@ -368,6 +369,35 @@ void BowBender::operator()(entityx::Entity entity, double) const
 					world->CreateJoint(&jointDef);
 				}
 			}
+		}
+	}
+}
+
+ArrowShooter::ArrowShooter()
+{}
+
+ArrowShooter::~ArrowShooter()
+{}
+
+void ArrowShooter::operator()(entityx::Entity entity, double) const
+{
+	if(entity.has_component<BendComponent>() and entity.has_component<QuiverComponent>())
+	{
+		BendComponent::Handle bendComponent{entity.component<BendComponent>()};
+		QuiverComponent::Handle quiverComponent{entity.component<QuiverComponent>()};
+		entityx::Entity notchedArrow{quiverComponent->notchedArrow};
+		//If the notched arrow has a b2Body
+		if(notchedArrow.valid() and notchedArrow.has_component<BodyComponent>())
+		{
+			//If the notched arrow has not a main body, the program will crash
+			assert(notchedArrow.component<BodyComponent>()->bodies.find("main") != notchedArrow.component<BodyComponent>()->bodies.end());
+			b2Body* arrowBody{notchedArrow.component<BodyComponent>()->bodies["main"]};
+			//Iterate over all joints
+			for(b2JointEdge* jointEdge{arrowBody->GetJointList()}; jointEdge; jointEdge = jointEdge->next)
+				//If this is a bending translation joint
+				if(jointHasRole(jointEdge->joint, JointRole::BendingPower))
+					//Destroy the joint
+					jointEdge->joint->GetBodyA()->GetWorld()->DestroyJoint(jointEdge->joint);
 		}
 	}
 }

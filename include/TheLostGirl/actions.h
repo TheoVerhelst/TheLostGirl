@@ -24,7 +24,7 @@ struct Mover : public Action
 	virtual ~Mover();
 	
 	/// Overload of the () operator.
-	/// \param entity Entity to move.
+	/// \param entity Entity who move.
 	/// \param dt Elapsed time in the last game frame.
 	virtual void operator()(entityx::Entity entity, double dt) const;
 	
@@ -42,12 +42,12 @@ struct Jumper : public Action
 	virtual ~Jumper();
 	
 	/// Overload of the () operator.
-	/// \param entity Entity to move.
+	/// \param entity Entity who jump.
 	/// \param dt Elapsed time in the last game frame.
 	virtual void operator()(entityx::Entity entity, double dt) const;
 };
 
-/// Structure that bend the given bow.
+/// Structure that bend the bow of the given entity.
 /// This action does not have a boolean parameter indicating if the action start or stops,
 /// but must be called at every frame when the bending is active,
 /// since the angle or the power can change.
@@ -62,12 +62,27 @@ struct BowBender : public Action
 	virtual ~BowBender();
 	
 	/// Overload of the () operator.
-	/// \param entity Entity to move.
+	/// \param entity Entity who bend.
 	/// \param dt Elapsed time in the last game frame.
 	virtual void operator()(entityx::Entity entity, double dt) const;
 	
 	float angle;///< The angle of the bending.
 	float power;///< The power of the bending.
+};
+
+/// Structure that shoot the arrow notched by the entity.
+struct ArrowShooter : public Action
+{
+	/// Default constructor.
+	ArrowShooter();
+	
+	/// Default destructor
+	virtual ~ArrowShooter();
+	
+	/// Overload of the () operator.
+	/// \param entity Entity who shoot.
+	/// \param dt Elapsed time in the last game frame.
+	virtual void operator()(entityx::Entity entity, double dt) const;
 };
 
 #endif // ACTIONS_H
