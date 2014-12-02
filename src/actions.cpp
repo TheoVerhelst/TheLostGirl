@@ -89,6 +89,48 @@ void Mover::operator()(entityx::Entity entity, double) const
 					entity.component<BendComponent>()->angle = cap(entity.component<BendComponent>()->angle - b2_pi, -b2_pi/2, b2_pi, 2*b2_pi);
 				else if(direction == Direction::Right)
 					entity.component<BendComponent>()->angle = cap(entity.component<BendComponent>()->angle - b2_pi, -b2_pi, b2_pi/2, 2*b2_pi);
+				
+				//If the entity has a quiver
+				if(entity.has_component<QuiverComponent>())
+				{
+					QuiverComponent::Handle quiverComponent{entity.component<QuiverComponent>()};
+					entityx::Entity notchedArrow{quiverComponent->notchedArrow};
+					//If the notched arrow has a b2Body
+					if(notchedArrow.valid() and notchedArrow.has_component<BodyComponent>())
+					{
+						//If the notched arrow has not a main body, the program will crash
+						assert(notchedArrow.component<BodyComponent>()->bodies.find("main") != notchedArrow.component<BodyComponent>()->bodies.end());
+						b2Body* arrowBody{notchedArrow.component<BodyComponent>()->bodies["main"]};
+						//Iterate over all joints
+						for(b2JointEdge* jointEdge{arrowBody->GetJointList()}; jointEdge; jointEdge = jointEdge->next)
+						{
+							//If this is a bending translation joint
+							if(jointHasRole(jointEdge->joint, JointRole::BendingPower))
+							{
+								//Copy the joint and create a new one
+								b2PrismaticJoint* joint{static_cast<b2PrismaticJoint*>(jointEdge->joint)};
+								b2PrismaticJointDef jointDef;
+								jointDef.bodyA = joint->GetBodyA();
+								jointDef.bodyB = joint->GetBodyB();
+								jointDef.localAnchorA = joint->GetLocalAnchorA();
+								jointDef.localAnchorB = joint->GetLocalAnchorB();
+								jointDef.localAxisA = joint->GetLocalAxisA();
+								jointDef.referenceAngle = cap(joint->GetReferenceAngle()+b2_pi, 0.f, 2*b2_pi);
+								jointDef.enableLimit = joint->IsLimitEnabled();
+								jointDef.lowerTranslation = joint->GetLowerLimit();
+								jointDef.upperTranslation = joint->GetUpperLimit();
+								jointDef.enableMotor = joint->IsMotorEnabled();
+								jointDef.maxMotorForce = joint->GetMaxMotorForce();
+								jointDef.motorSpeed = joint->GetMotorSpeed();
+								jointDef.userData = joint->GetUserData();
+								
+								b2World* world{jointEdge->joint->GetBodyA()->GetWorld()};
+								world->CreateJoint(&jointDef);
+								world->DestroyJoint(jointEdge->joint);
+							}
+						}
+					}
+				}
 			}
 		}
 		//If the entity have animations
@@ -306,12 +348,12 @@ void BowBender::operator()(entityx::Entity entity, double) const
 					jointDef.localAnchorA = {0.625f, 0.41666667};
 					jointDef.localAnchorB = {0.025f, 0.05f};
 					jointDef.localAxisA = {1.f, 0.f};
+					jointDef.referenceAngle = 0;
+					jointDef.enableLimit = true;
 					jointDef.lowerTranslation = -0.30833333f;
 					jointDef.upperTranslation = 0.f;
-					jointDef.enableLimit = true;
 					jointDef.enableMotor = true;
 					jointDef.maxMotorForce = 10.f;
-					jointDef.referenceAngle = 0.f;
 					jointDef.userData = add<unsigned int>(jointDef.userData, static_cast<unsigned int>(JointRole::BendingPower));
 					b2World* world{bowBody->GetWorld()};
 					world->CreateJoint(&jointDef);
