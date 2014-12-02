@@ -88,6 +88,11 @@ Json::Value serialize(entityx::ComponentHandle<HealthComponent> component);
 /// \return A Json value.
 Json::Value serialize(entityx::ComponentHandle<StaminaComponent> component);
 
+/// Serialize the given component.
+/// \param component Component to serialize.
+/// \return A Json value.
+Json::Value serialize(entityx::ComponentHandle<WindFrictionComponent> component);
+
 /// Deserialize the given \a value in the given \a component.
 /// \param component Component in wich deserialize the data.
 /// \param pixelByMeter Number of pixel by meter.
@@ -166,5 +171,10 @@ void deserialize(const Json::Value& value, entityx::ComponentHandle<HealthCompon
 /// \param component Component in wich deserialize the data.
 /// \param value The Json value containing the data.
 void deserialize(const Json::Value& value, entityx::ComponentHandle<StaminaComponent> component);
+
+/// Deserialize the given \a value in the given \a component.
+/// \param component Component in wich deserialize the data.
+/// \param value The Json value containing the data.
+void deserialize(const Json::Value& value, entityx::ComponentHandle<WindFrictionComponent> component);
 
 #endif // SERIALIZATION_H

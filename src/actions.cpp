@@ -248,32 +248,24 @@ Jumper::~Jumper()
 void Jumper::operator()(entityx::Entity entity, double) const
 {
 	if(entity.has_component<AnimationsComponent<SpriteSheetAnimation>>()
-		and entity.has_component<BodyComponent>()
 		and entity.has_component<JumpComponent>()
 		and entity.has_component<FallComponent>()
 		and entity.has_component<DirectionComponent>())
 	{
-		JumpComponent::Handle jumpComponent{entity.component<JumpComponent>()};
 		FallComponent::Handle fallComponent{entity.component<FallComponent>()};
 		DirectionComponent::Handle directionComponent{entity.component<DirectionComponent>()};
 		//Get all the animations managers of the entity
 		auto& animationsManagers(entity.component<AnimationsComponent<SpriteSheetAnimation>>()->animationsManagers);
-		//Get all the bodies of the entity
-		std::map<std::string, b2Body*>& bodies(entity.component<BodyComponent>()->bodies);
 		//For each animations manager of the entity
 		for(auto& animationsPair : animationsManagers)
 		{
 			AnimationsManager<SpriteSheetAnimation>& animations(animationsPair.second);
 			//If the animations manager have the required animations
-			if(animations.isRegistred("jump left") and animations.isRegistred("jump right")
-				and bodies.find(animationsPair.first) != bodies.end())
+			if(animations.isRegistred("jump left") and animations.isRegistred("jump right"))
 			{
 				if(not fallComponent->inAir)
 				{
-					float targetVelocity{-jumpComponent->jumpStrength};
-					b2Body* body{bodies[animationsPair.first]};
-					float mass{body->GetMass()};
-					body->ApplyLinearImpulse({0.f, targetVelocity*mass}, body->GetWorldCenter(), true);
+					entity.component<JumpComponent>()->mustJump = true;//The physics system will do the physic jump job
 					if(directionComponent->direction == Direction::Left)
 						animations.play("jump left");
 					else if(directionComponent->direction == Direction::Right)
@@ -381,11 +373,14 @@ ArrowShooter::~ArrowShooter()
 
 void ArrowShooter::operator()(entityx::Entity entity, double) const
 {
-	if(entity.has_component<BendComponent>() and entity.has_component<QuiverComponent>())
+	if(entity.has_component<BendComponent>()
+		and entity.has_component<QuiverComponent>()
+		and entity.has_component<DirectionComponent>())
 	{
 		BendComponent::Handle bendComponent{entity.component<BendComponent>()};
 		QuiverComponent::Handle quiverComponent{entity.component<QuiverComponent>()};
 		entityx::Entity notchedArrow{quiverComponent->notchedArrow};
+		DirectionComponent::Handle directionComponent{entity.component<DirectionComponent>()};
 		//If the notched arrow has a b2Body
 		if(notchedArrow.valid() and notchedArrow.has_component<BodyComponent>())
 		{
@@ -400,6 +395,11 @@ void ArrowShooter::operator()(entityx::Entity entity, double) const
 					jointEdge->joint->GetBodyA()->GetWorld()->DestroyJoint(jointEdge->joint);
 			double shootForceX{bendComponent->power*cos(bendComponent->angle)};
 			double shootForceY{-bendComponent->power*sin(bendComponent->angle)};
+			if(directionComponent->direction == Direction::Left)
+			{
+				shootForceX = bendComponent->power*cos(bendComponent->angle+b2_pi);
+				shootForceY = -bendComponent->power*sin(bendComponent->angle+b2_pi);
+			}
 			b2Vec2 shootForce{static_cast<float32>(shootForceX), static_cast<float32>(shootForceY)};
 			arrowBody->ApplyLinearImpulse((arrowBody->GetMass()/20.f)*shootForce, arrowBody->GetWorldCenter(), true);
 			quiverComponent->notchedArrow = entityx::Entity();

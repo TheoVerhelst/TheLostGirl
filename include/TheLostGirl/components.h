@@ -5,7 +5,6 @@
 #include <functional>
 #include <string>
 
-#include <SFML/System/Vector3.hpp>
 #include <SFML/Graphics/Sprite.hpp>
 #include <entityx/Entity.h>
 #include <dist/json/json-forwards.h>
@@ -142,6 +141,7 @@ struct WalkComponent : public entityx::Component<WalkComponent>
 struct JumpComponent : public entityx::Component<JumpComponent>
 {
 	float jumpStrength;///< The power of the entity's jump.
+	bool mustJump;     ///< Indicate if the entity have received a jump command, and the jump is not yet handled by the physic system. Similar to moveToLeft in directionComponent.
 };
 
 /// Bending component.
@@ -164,6 +164,14 @@ struct StaminaComponent : public entityx::Component<StaminaComponent>
 {
 	float maxStamina;///< The maximum stamina.
 	float stamina;///< The current stamina.
+};
+
+/// Wind friction component.
+/// This is usually applied on arrows, in order to set the angle of the body tangent to his trajectory.
+struct WindFrictionComponent : public entityx::Component<WindFrictionComponent>
+{
+	float amount;                   ///< The amplitude of the friction applied on the body.
+	sf::Vector2f localFrictionPoint;///< The point where the friction must be applied.
 };
 
 #endif //COMPONENTS_H

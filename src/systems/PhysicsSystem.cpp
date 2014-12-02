@@ -17,10 +17,13 @@ void PhysicsSystem::update(entityx::EntityManager& entityManager, entityx::Event
 	int32 velocityIterations{8};
 	int32 positionIterations{8};
 	m_world.Step(dt, velocityIterations, positionIterations);
+	
 	BodyComponent::Handle bodyComponent;
 	TransformComponent::Handle transformComponent;
 	WalkComponent::Handle walkComponent;
 	BendComponent::Handle bendComponent;
+	JumpComponent::Handle jumpComponent;
+	
 	//Update the walkers
 	for(auto entity : entityManager.entities_with_components(bodyComponent, walkComponent))
 	{
@@ -36,8 +39,23 @@ void PhysicsSystem::update(entityx::EntityManager& entityManager, entityx::Event
 		else if(walkComponent->effectiveMovement ==  Direction::None)
 			targetVelocity = -body->GetLinearVelocity().x;
 		//Apply an impulse relatively to the mass of the body
-		body->ApplyLinearImpulse({targetVelocity*body->GetMass()/4, 0.f}, body->GetWorldCenter(), true);
+		body->ApplyLinearImpulse({targetVelocity*body->GetMass(), 0.f}, body->GetWorldCenter(), true);
 	}
+	
+	//Update the jumpers
+	for(auto entity : entityManager.entities_with_components(bodyComponent, jumpComponent))
+	{
+		if(jumpComponent->mustJump)
+		{
+			//If the jumper has not a main body, the program will crash
+			assert(bodyComponent->bodies.find("main") != bodyComponent->bodies.end());
+			b2Body* body{bodyComponent->bodies["main"]};
+			float targetVelocity{-jumpComponent->jumpStrength/m_parameters.pixelByMeter};
+			body->ApplyLinearImpulse({0.f, targetVelocity*body->GetMass()}, body->GetWorldCenter(), true);
+			jumpComponent->mustJump = false;
+		}
+	}
+	
 	//Update the archers
 	for(auto entity : entityManager.entities_with_components(bodyComponent, bendComponent))
 	{
@@ -105,6 +123,7 @@ void PhysicsSystem::update(entityx::EntityManager& entityManager, entityx::Event
 			}
 		}
 	}
+	
 	//Update the transformations according to the one of the b2Body.
 	for(auto entity : entityManager.entities_with_components(bodyComponent, transformComponent))
 	{

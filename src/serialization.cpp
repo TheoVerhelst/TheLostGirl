@@ -308,6 +308,15 @@ Json::Value serialize(entityx::ComponentHandle<StaminaComponent> component)
 	return ret;
 }
 
+Json::Value serialize(entityx::ComponentHandle<WindFrictionComponent> component)
+{
+	Json::Value ret;
+	ret["amount"] = component->amount;
+	ret["local friction point"]["x"] = component->localFrictionPoint.x;
+	ret["local friction point"]["y"] = component->localFrictionPoint.y;
+	return ret;
+}
+
 void deserialize(const Json::Value& value, entityx::ComponentHandle<BodyComponent> component, entityx::ComponentHandle<TransformComponent> transformComponent, b2World& world, float pixelByMeter)
 {
 	component->bodies.clear();
@@ -732,6 +741,7 @@ void deserialize(const Json::Value& value, entityx::ComponentHandle<WalkComponen
 void deserialize(const Json::Value& value, entityx::ComponentHandle<JumpComponent> component)
 {
 	component->jumpStrength = value["strength"].asFloat();
+	component->mustJump = false;
 }
 
 void deserialize(const Json::Value& value, entityx::ComponentHandle<BendComponent> component)
@@ -755,4 +765,11 @@ void deserialize(const Json::Value& value, entityx::ComponentHandle<StaminaCompo
 	if(value.isMember("current stamina"))
 		component->stamina = value["current stamina"].asFloat();
 	component->maxStamina = value["maximum stamina"].asFloat();
+}
+
+void deserialize(const Json::Value& value, entityx::ComponentHandle<WindFrictionComponent> component)
+{
+	component->amount = value["amount"].asFloat();
+	component->localFrictionPoint.x = value["local friction point"]["x"].asFloat();
+	component->localFrictionPoint.y = value["local friction point"]["y"].asFloat();
 }

@@ -143,6 +143,9 @@ void GameState::saveWorld(const std::string& file)
 			
 			if(entity.second.has_component<StaminaComponent>())
 				root["entities"][entity.first]["stamina"] = serialize(entity.second.component<StaminaComponent>());
+			
+			if(entity.second.has_component<WindFrictionComponent>())
+				root["entities"][entity.first]["wind friction"] = serialize(entity.second.component<WindFrictionComponent>());
 		}
 		
 		//time
@@ -437,6 +440,8 @@ void GameState::initWorld(const std::string& file)
 					deserialize(entity["direction"], m_entities[entityName].assign<DirectionComponent>());
 				if(entity.isMember("fall"))
 					deserialize(entity["fall"], m_entities[entityName].assign<FallComponent>());
+				if(entity.isMember("wind friction"))
+					deserialize(entity["wind friction"], m_entities[entityName].assign<WindFrictionComponent>());
 			}
 		}
 		
