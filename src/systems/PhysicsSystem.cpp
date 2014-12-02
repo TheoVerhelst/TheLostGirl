@@ -42,7 +42,7 @@ void PhysicsSystem::update(entityx::EntityManager& entityManager, entityx::Event
 	for(auto entity : entityManager.entities_with_components(bodyComponent, bendComponent))
 	{
 		float angleTarget{-bendComponent->angle};
-		float32 gain{10.f};
+		float32 gain{40.f};
 		float32 differenceAngle;
 		//If the archer has not a arms body, the program will crash
 		assert(bodyComponent->bodies.find("arms") != bodyComponent->bodies.end());
@@ -71,6 +71,36 @@ void PhysicsSystem::update(entityx::EntityManager& entityManager, entityx::Event
 				b2RevoluteJoint* jointBow{static_cast<b2RevoluteJoint*>(jointEdge->joint)};
 				differenceAngle = angleTarget - jointBow->GetJointAngle();
 				jointBow->SetMotorSpeed(gain * differenceAngle);
+			}
+		}
+		if(entity.has_component<QuiverComponent>())
+			entity.has_component<DirectionComponent>())
+		{
+			Direction direction{entity.component<DirectionComponent>()->direction};
+			QuiverComponent::Handle quiverComponent{entity.component<QuiverComponent>()};
+			entityx::Entity notchedArrow{quiverComponent->notchedArrow};
+			//If the notched arrow has a b2Body,
+			//Set the translation of the joint between bow and arrow
+			if(notchedArrow.valid() and notchedArrow.has_component<BodyComponent>())
+			{
+				//If the notched arrow has not a main body, the program will crash
+				assert(notchedArrow.component<BodyComponent>()->bodies.find("main") != notchedArrow.component<BodyComponent>()->bodies.end());
+				b2Body* arrowBody{notchedArrow.component<BodyComponent>()->bodies["main"]};
+				float translationTarget{bendComponent->power/bendComponent->maxPower};//Power of the bending, in range [0, 1]
+				float32 gain{40.f};
+				float32 differenceTranslation;
+				//Iterate over all joints
+				for(b2JointEdge* jointEdge{arrowBody->GetJointList()}; jointEdge; jointEdge = jointEdge->next)
+				{
+					//If this is a bending translation joint
+					if(jointHasRole(jointEdge->joint, JointRole::BendingPower))
+					{
+						b2PrismaticJoint* joint{static_cast<b2PrismaticJoint*>(jointEdge->joint)};
+						//The final target is equal to the joint's lower limit when the translationTarget is equal to 1.
+						differenceTranslation = translationTarget*joint->GetLowerLimit() - joint->GetJointTranslation();
+						joint->SetMotorSpeed(gain * differenceTranslation);
+					}
+				}
 			}
 		}
 	}

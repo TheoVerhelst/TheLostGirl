@@ -85,10 +85,10 @@ void Mover::operator()(entityx::Entity entity, double) const
 			if(entity.has_component<BendComponent>() and directionComponent->direction != initialDirection)
 			{
 				//Flip the angle
-				if(direction == Direction::Left)
-					entity.component<BendComponent>()->angle = cap(entity.component<BendComponent>()->angle - b2_pi, -b2_pi/2, b2_pi, 2*b2_pi);
-				else if(direction == Direction::Right)
-					entity.component<BendComponent>()->angle = cap(entity.component<BendComponent>()->angle - b2_pi, -b2_pi, b2_pi/2, 2*b2_pi);
+				if(directionComponent->direction == Direction::Left)
+					entity.component<BendComponent>()->angle = cap(remainder(entity.component<BendComponent>()->angle - b2_pi, 2*b2_pi), -b2_pi, b2_pi/2);
+				else if(directionComponent->direction == Direction::Right)
+					entity.component<BendComponent>()->angle = cap(remainder(entity.component<BendComponent>()->angle - b2_pi, 2*b2_pi), -b2_pi/2, b2_pi);
 				
 				//If the entity has a quiver
 				if(entity.has_component<QuiverComponent>())
@@ -115,7 +115,7 @@ void Mover::operator()(entityx::Entity entity, double) const
 								jointDef.localAnchorA = joint->GetLocalAnchorA();
 								jointDef.localAnchorB = joint->GetLocalAnchorB();
 								jointDef.localAxisA = joint->GetLocalAxisA();
-								jointDef.referenceAngle = cap(joint->GetReferenceAngle()+b2_pi, 0.f, 2*b2_pi);
+								jointDef.referenceAngle = remainder(joint->GetReferenceAngle()+b2_pi, 2*b2_pi);
 								jointDef.enableLimit = joint->IsLimitEnabled();
 								jointDef.lowerTranslation = joint->GetLowerLimit();
 								jointDef.upperTranslation = joint->GetUpperLimit();
@@ -357,30 +357,6 @@ void BowBender::operator()(entityx::Entity entity, double) const
 					jointDef.userData = add<unsigned int>(jointDef.userData, static_cast<unsigned int>(JointRole::BendingPower));
 					b2World* world{bowBody->GetWorld()};
 					world->CreateJoint(&jointDef);
-				}
-			}
-			
-			//If the notched arrow has a b2Body,
-			//Set the translation of the joint between bow and arrow
-			if(notchedArrow.valid() and notchedArrow.has_component<BodyComponent>())
-			{
-				//If the notched arrow has not a main body, the program will crash
-				assert(notchedArrow.component<BodyComponent>()->bodies.find("main") != notchedArrow.component<BodyComponent>()->bodies.end());
-				b2Body* arrowBody{notchedArrow.component<BodyComponent>()->bodies["main"]};
-				float translationTarget{bendComponent->power/bendComponent->maxPower};//Power of the bending, in range [0, 1]
-				float32 gain{10.f};
-				float32 differenceTranslation;
-				//Iterate over all joints
-				for(b2JointEdge* jointEdge{arrowBody->GetJointList()}; jointEdge; jointEdge = jointEdge->next)
-				{
-					//If this is a bending translation joint
-					if(jointHasRole(jointEdge->joint, JointRole::BendingPower))
-					{
-						b2PrismaticJoint* joint{static_cast<b2PrismaticJoint*>(jointEdge->joint)};
-						//The final target is equal to the joint's lower limit when the translationTarget is equal to 1.
-						differenceTranslation = translationTarget*joint->GetLowerLimit() - joint->GetJointTranslation();
-						joint->SetMotorSpeed(gain * differenceTranslation);
-					}
 				}
 			}
 		}
