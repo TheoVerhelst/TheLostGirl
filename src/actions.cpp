@@ -112,10 +112,7 @@ void Mover::operator()(entityx::Entity entity, double) const
 								b2PrismaticJointDef jointDef;
 								jointDef.bodyA = joint->GetBodyA();
 								jointDef.bodyB = joint->GetBodyB();
-								jointDef.localAnchorA = joint->GetLocalAnchorA();
-								jointDef.localAnchorB = joint->GetLocalAnchorB();
 								jointDef.localAxisA = joint->GetLocalAxisA();
-								jointDef.referenceAngle = remainder(joint->GetReferenceAngle()+b2_pi, 2*b2_pi);
 								jointDef.enableLimit = joint->IsLimitEnabled();
 								jointDef.lowerTranslation = joint->GetLowerLimit();
 								jointDef.upperTranslation = joint->GetUpperLimit();
@@ -123,6 +120,18 @@ void Mover::operator()(entityx::Entity entity, double) const
 								jointDef.maxMotorForce = joint->GetMaxMotorForce();
 								jointDef.motorSpeed = joint->GetMotorSpeed();
 								jointDef.userData = joint->GetUserData();
+								if(directionComponent->direction == Direction::Left)
+								{
+									jointDef.referenceAngle = b2_pi;
+									jointDef.localAnchorA = {0.183333, 0.41666667};
+									jointDef.localAnchorB = {0.4f-0.025f, 0.05f};
+								}
+								else if(directionComponent->direction == Direction::Right)
+								{
+									jointDef.referenceAngle = 0.f;
+									jointDef.localAnchorA = {0.625f, 0.41666667};
+									jointDef.localAnchorB = {0.025f, 0.05f};
+								}
 								
 								b2World* world{jointEdge->joint->GetBodyA()->GetWorld()};
 								world->CreateJoint(&jointDef);

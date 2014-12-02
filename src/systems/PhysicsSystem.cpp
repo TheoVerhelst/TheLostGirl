@@ -42,7 +42,7 @@ void PhysicsSystem::update(entityx::EntityManager& entityManager, entityx::Event
 	for(auto entity : entityManager.entities_with_components(bodyComponent, bendComponent))
 	{
 		float angleTarget{-bendComponent->angle};
-		float32 gain{40.f};
+		float32 gain{20.f};
 		float32 differenceAngle;
 		//If the archer has not a arms body, the program will crash
 		assert(bodyComponent->bodies.find("arms") != bodyComponent->bodies.end());
@@ -73,8 +73,8 @@ void PhysicsSystem::update(entityx::EntityManager& entityManager, entityx::Event
 				jointBow->SetMotorSpeed(gain * differenceAngle);
 			}
 		}
-		if(entity.has_component<QuiverComponent>())
-			entity.has_component<DirectionComponent>())
+		if(entity.has_component<QuiverComponent>()
+			and entity.has_component<DirectionComponent>())
 		{
 			Direction direction{entity.component<DirectionComponent>()->direction};
 			QuiverComponent::Handle quiverComponent{entity.component<QuiverComponent>()};
@@ -87,7 +87,8 @@ void PhysicsSystem::update(entityx::EntityManager& entityManager, entityx::Event
 				assert(notchedArrow.component<BodyComponent>()->bodies.find("main") != notchedArrow.component<BodyComponent>()->bodies.end());
 				b2Body* arrowBody{notchedArrow.component<BodyComponent>()->bodies["main"]};
 				float translationTarget{bendComponent->power/bendComponent->maxPower};//Power of the bending, in range [0, 1]
-				float32 gain{40.f};
+				if(direction == Direction::Left)
+					translationTarget = 1 - translationTarget;
 				float32 differenceTranslation;
 				//Iterate over all joints
 				for(b2JointEdge* jointEdge{arrowBody->GetJointList()}; jointEdge; jointEdge = jointEdge->next)
