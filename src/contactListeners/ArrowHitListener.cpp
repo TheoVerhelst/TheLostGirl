@@ -68,6 +68,7 @@ void ArrowHitListener::PostSolve(b2Contact* contact, const b2ContactImpulse* imp
 				weldJointDef->localAnchorB = bodyB->GetLocalPoint(globalStickPoint);
 				weldJointDef->referenceAngle = bodyB->GetAngle() - bodyA->GetAngle();
 				m_context.pendingChanges.jointsToCreate.push(weldJointDef);
+				entityA.component<ArrowComponent>()->sticked = true;
 			}
 		}
 	}

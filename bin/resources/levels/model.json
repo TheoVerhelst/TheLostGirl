@@ -392,6 +392,12 @@
                                 "required" : true
                             },
                             {
+                                "name" : "sticked",
+                                "type" : "bool",
+                                "required" : false,
+                                "default value" : false
+                            },
+                            {
                                 "name" : "local friction point",
                                 "type" : "object",
                                 "free children names" : false,

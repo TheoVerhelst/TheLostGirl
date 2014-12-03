@@ -225,6 +225,8 @@ Json::Value serialize(entityx::ComponentHandle<CategoryComponent> component)
 		ret.append("player");
 	if(component->category & Category::Scene)
 		ret.append("scene");
+	if(component->category & Category::Actor)
+		ret.append("actor");
 	return ret;
 }
 
@@ -311,6 +313,7 @@ Json::Value serialize(entityx::ComponentHandle<ArrowComponent> component)
 	ret["local friction point"]["y"] = component->localFrictionPoint.y;
 	ret["local stick point"]["x"] = component->localStickPoint.x;
 	ret["local stick point"]["y"] = component->localStickPoint.y;
+	ret["sticked"] = component->sticked;
 	return ret;
 }
 
@@ -702,6 +705,8 @@ void deserialize(const Json::Value& value, entityx::ComponentHandle<CategoryComp
 			category |= Category::Player;
 		else if(value[i] == "scene")
 			category |= Category::Scene;
+		else if(value[i] == "actor")
+			category |= Category::Actor;
 	}
 	component->category = category;
 }
@@ -769,6 +774,7 @@ void deserialize(const Json::Value& value, entityx::ComponentHandle<ArrowCompone
 	component->localFrictionPoint.y = value["local friction point"]["y"].asFloat();
 	component->localStickPoint.x = value["local stick point"]["x"].asFloat();
 	component->localStickPoint.y = value["local stick point"]["y"].asFloat();
+	component->sticked = value["sticked"].asBool();
 }
 
 void deserialize(const Json::Value& value, entityx::ComponentHandle<HardnessComponent> component)

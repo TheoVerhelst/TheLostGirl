@@ -1,10 +1,11 @@
-#ifndef PENDINGCHANGES
-#define PENDINGCHANGES
+#ifndef PENDINGCHANGES_H
+#define PENDINGCHANGES_H
 
 #include <queue>
 
+#include <TheLostGirl/Command.h>
+
 //Forward declarations
-struct Command;
 struct b2BodyDef;
 class b2Body;
 struct b2JointDef;
@@ -12,6 +13,9 @@ class b2Joint;
 
 struct PendingChanges
 {
+	~PendingChanges()
+	{}
+	
 	std::queue<Command> commandQueue;
 	std::queue<b2BodyDef*> bodiesToCreate;
 	std::queue<b2Body*> bodiesToDestroy;
@@ -20,5 +24,5 @@ struct PendingChanges
 };
 
 
-#endif // PENDINGCHANGES
+#endif // PENDINGCHANGES_H
 

@@ -27,7 +27,6 @@ class b2World;
 class State;
 class StateStack;
 class Player;
-class Command;
 struct Parameters;
 struct PendingChanges;
 template <typename Resource, typename Identifier>
