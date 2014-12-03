@@ -30,7 +30,11 @@ Application::Application(bool debugMode):
 	m_eventManager{},
 	m_entityManager{m_eventManager},
 	m_systemManager{m_entityManager, m_eventManager},
-	m_commandQueue{},
+	m_pendingChanges{std::queue<Command>(),
+					std::queue<b2BodyDef*>(),
+					std::queue<b2Body*>(),
+					std::queue<b2JointDef*>(),
+					std::queue<b2Joint*>()},
 	m_world{m_parameters.gravity},
 	m_stateStack{State::Context{m_parameters,
 								m_window,
@@ -42,7 +46,7 @@ Application::Application(bool debugMode):
 								m_systemManager,
 								m_world,
 								m_player,
-								m_commandQueue}},			
+								m_pendingChanges}},			
 	m_debugDraw(m_stateStack.getContext())
 {
 }
@@ -150,10 +154,10 @@ void Application::registerStates()
 void Application::registerSystems()
 {
 	m_systemManager.add<PhysicsSystem>(m_world, m_parameters);
-	m_systemManager.add<ActionsSystem>(m_commandQueue);
+	m_systemManager.add<ActionsSystem>(m_pendingChanges.commandQueue);
 	m_systemManager.add<AnimationsSystem>();
 	m_systemManager.add<RenderSystem>(m_window);
-	m_systemManager.add<DragAndDropSystem>(m_window, m_commandQueue);
+	m_systemManager.add<DragAndDropSystem>(m_window, m_pendingChanges.commandQueue);
 	m_systemManager.add<ScrollingSystem>(m_window, m_parameters);
 	m_systemManager.add<TimeSystem>();
 }

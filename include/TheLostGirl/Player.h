@@ -2,6 +2,7 @@
 #define PLAYER_H
 
 #include <map>
+#include <queue>
 #include <SFML/Window/Event.hpp>
 
 //Forward declarations
@@ -106,7 +107,7 @@ class Player
 		/// That allow to check the real state of e.g. the keyboard at the beginnning
 		/// of the game and move the player if the move key is pressed while the construction of the game state.
 		/// \param commands Command queue wherein put commands to the player.
-		void handleInitialInputState(CommandQueue& commands);
+		void handleInitialInputState(std::queue<Command>& commands);
 
 	private:
 		/// Initialize all the player's actions.

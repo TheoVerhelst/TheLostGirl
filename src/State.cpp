@@ -25,7 +25,7 @@ State::Context::Context(Parameters& _parameters,
 						SystemManager& _systemManager,
 						b2World& _world,
 						Player& _player,
-						CommandQueue& _commandQueue
+						PendingChanges& _pendingChanges
 						):
 	parameters(_parameters),
 	window(_window),
@@ -37,7 +37,7 @@ State::Context::Context(Parameters& _parameters,
 	systemManager(_systemManager),
 	world(_world),
 	player(_player),
-	commandQueue(_commandQueue)
+	pendingChanges(_pendingChanges)
 {
 }
 

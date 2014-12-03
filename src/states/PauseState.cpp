@@ -4,6 +4,7 @@
 #include <TheLostGirl/StateStack.h>
 #include <TheLostGirl/LangManager.h>
 #include <TheLostGirl/Player.h>
+#include <TheLostGirl/PendingChanges.h>
 
 #include <TheLostGirl/states/PauseState.h>
 
@@ -98,7 +99,7 @@ bool PauseState::handleEvent(const sf::Event& event)
 void PauseState::backToGame()
 {
 	requestStackPop();
-	getContext().player.handleInitialInputState(getContext().commandQueue);
+	getContext().player.handleInitialInputState(getContext().pendingChanges.commandQueue);
 }
 
 void PauseState::goToOptions()

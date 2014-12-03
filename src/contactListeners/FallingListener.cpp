@@ -23,14 +23,14 @@ void FallingListener::BeginContact(b2Contact* contact)
 {
 	b2Fixture* fixtureA{contact->GetFixtureA()};
 	b2Body* bodyA{fixtureA->GetBody()};
-	entityx::Entity* entityA{static_cast<entityx::Entity*>(bodyA->GetUserData())};
+	entityx::Entity entityA{*static_cast<entityx::Entity*>(bodyA->GetUserData())};
 	b2Fixture* fixtureB{contact->GetFixtureB()};
 	b2Body* bodyB{fixtureB->GetBody()};
-	entityx::Entity* entityB{static_cast<entityx::Entity*>(bodyB->GetUserData())};
+	entityx::Entity entityB{*static_cast<entityx::Entity*>(bodyB->GetUserData())};
 	if(entityA != entityB)
 	{
 		//If B is an actor that fall on the ground A
-		if(fixtureHasRole(fixtureB, FixtureRole::Foot) and entityB->has_component<FallComponent>())
+		if(fixtureHasRole(fixtureB, FixtureRole::Foot) and entityB.has_component<FallComponent>())
 		{
 			//Swap the pointers
 			std::swap(fixtureA, fixtureB);
@@ -38,12 +38,12 @@ void FallingListener::BeginContact(b2Contact* contact)
 			std::swap(entityA, entityB);
 		}
 		//Now we are sure that A is an actor that fall on the ground B
-		if(fixtureHasRole(fixtureA, FixtureRole::Foot) and entityA->has_component<FallComponent>())
+		if(fixtureHasRole(fixtureA, FixtureRole::Foot) and entityA.has_component<FallComponent>())
 		{
-			if(entityA->has_component<AnimationsComponent<SpriteSheetAnimation>>() and entityA->has_component<DirectionComponent>())
+			if(entityA.has_component<AnimationsComponent<SpriteSheetAnimation>>() and entityA.has_component<DirectionComponent>())
 			{
 				//Get all the animations managers of the entity
-				auto& animationsManagers(entityA->component<AnimationsComponent<SpriteSheetAnimation>>()->animationsManagers);
+				auto& animationsManagers(entityA.component<AnimationsComponent<SpriteSheetAnimation>>()->animationsManagers);
 				//For each animations manager of the entity
 				for(auto& animationsPair : animationsManagers)
 				{
@@ -53,7 +53,7 @@ void FallingListener::BeginContact(b2Contact* contact)
 					{
 						animations.stop("fall left");
 						animations.stop("fall right");
-						if(entityA->has_component<JumpComponent>()
+						if(entityA.has_component<JumpComponent>()
 							and animations.isRegistred("jump left") and animations.isRegistred("jump right"))
 						{
 							animations.stop("jump left");
@@ -62,8 +62,8 @@ void FallingListener::BeginContact(b2Contact* contact)
 					}
 				}
 			}
-			entityA->component<FallComponent>()->contactCount++;
-			entityA->component<FallComponent>()->inAir = false;
+			entityA.component<FallComponent>()->contactCount++;
+			entityA.component<FallComponent>()->inAir = false;
 		}
 	}
 }
@@ -72,14 +72,14 @@ void FallingListener::EndContact(b2Contact* contact)
 {
 	b2Fixture* fixtureA{contact->GetFixtureA()};
 	b2Body* bodyA{fixtureA->GetBody()};
-	entityx::Entity* entityA{static_cast<entityx::Entity*>(bodyA->GetUserData())};
+	entityx::Entity entityA{*static_cast<entityx::Entity*>(bodyA->GetUserData())};
 	b2Fixture* fixtureB{contact->GetFixtureB()};
 	b2Body* bodyB{fixtureB->GetBody()};
-	entityx::Entity* entityB{static_cast<entityx::Entity*>(bodyB->GetUserData())};
+	entityx::Entity entityB{*static_cast<entityx::Entity*>(bodyB->GetUserData())};
 	if(entityA != entityB)
 	{
 		//If an actor A fall from the ground B, or if an actor B fall from the ground A
-		if(fixtureHasRole(fixtureB, FixtureRole::Foot) and entityB->has_component<FallComponent>())
+		if(fixtureHasRole(fixtureB, FixtureRole::Foot) and entityB.has_component<FallComponent>())
 		{
 			//Swap the pointers
 			std::swap(fixtureA, fixtureB);
@@ -87,15 +87,15 @@ void FallingListener::EndContact(b2Contact* contact)
 			std::swap(entityA, entityB);
 		}
 		//Now we are sure that A is an actor that fall from the ground B
-		if(fixtureHasRole(fixtureA, FixtureRole::Foot) and entityA->has_component<FallComponent>())
+		if(fixtureHasRole(fixtureA, FixtureRole::Foot) and entityA.has_component<FallComponent>())
 		{
-			if(entityA->has_component<AnimationsComponent<SpriteSheetAnimation>>() and
-				entityA->has_component<DirectionComponent>() and
-				not entityA->has_component<JumpComponent>())
+			if(entityA.has_component<AnimationsComponent<SpriteSheetAnimation>>() and
+				entityA.has_component<DirectionComponent>() and
+				not entityA.has_component<JumpComponent>())
 			{
-				DirectionComponent::Handle directionComponent{entityA->component<DirectionComponent>()};
+				DirectionComponent::Handle directionComponent{entityA.component<DirectionComponent>()};
 				//Get all the animations managers of the entity
-				auto& animationsManagers(entityA->component<AnimationsComponent<SpriteSheetAnimation>>()->animationsManagers);
+				auto& animationsManagers(entityA.component<AnimationsComponent<SpriteSheetAnimation>>()->animationsManagers);
 				//For each animations manager of the entity
 				for(auto& animationsPair : animationsManagers)
 				{
@@ -110,9 +110,9 @@ void FallingListener::EndContact(b2Contact* contact)
 					}
 				}
 			}
-			entityA->component<FallComponent>()->contactCount--;
-			if(entityA->component<FallComponent>()->contactCount <= 0)
-				entityA->component<FallComponent>()->inAir = true;
+			entityA.component<FallComponent>()->contactCount--;
+			if(entityA.component<FallComponent>()->contactCount <= 0)
+				entityA.component<FallComponent>()->inAir = true;
 		}
 	}
 }
@@ -123,19 +123,19 @@ void FallingListener::PostSolve(b2Contact* contact, const b2ContactImpulse* impu
 	if(impulse->normalImpulses[0] > 10.f)
 	{
 		float impact{impulse->normalImpulses[0]};
-		entityx::Entity* entityA{static_cast<entityx::Entity*>(contact->GetFixtureA()->GetBody()->GetUserData())};
-		entityx::Entity* entityB{static_cast<entityx::Entity*>(contact->GetFixtureB()->GetBody()->GetUserData())};
-		if(entityA->has_component<HealthComponent>())
+		entityx::Entity entityA{*static_cast<entityx::Entity*>(contact->GetFixtureA()->GetBody()->GetUserData())};
+		entityx::Entity entityB{*static_cast<entityx::Entity*>(contact->GetFixtureB()->GetBody()->GetUserData())};
+		if(entityA.has_component<HealthComponent>())
 		{
-			entityA->component<HealthComponent>()->health -= impact - 10;
-			std::cout << "New health : " << entityA->component<HealthComponent>()->health << std::endl;
-			m_context.eventManager.emit<PlayerHealthChange>(entityA->component<HealthComponent>()->health);
+			entityA.component<HealthComponent>()->health -= impact - 10;
+			std::cout << "New health : " << entityA.component<HealthComponent>()->health << std::endl;
+			m_context.eventManager.emit<PlayerHealthChange>(entityA.component<HealthComponent>()->health);
 		}
-		if(entityB->has_component<HealthComponent>())
+		if(entityB.has_component<HealthComponent>())
 		{
-			entityB->component<HealthComponent>()->health -= impact - 10;
-			std::cout << "New health : " << entityB->component<HealthComponent>()->health << std::endl;
-			m_context.eventManager.emit<PlayerHealthChange>(entityB->component<HealthComponent>()->health);
+			entityB.component<HealthComponent>()->health -= impact - 10;
+			std::cout << "New health : " << entityB.component<HealthComponent>()->health << std::endl;
+			m_context.eventManager.emit<PlayerHealthChange>(entityB.component<HealthComponent>()->health);
 		}
 	}
 }

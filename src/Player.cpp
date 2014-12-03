@@ -65,7 +65,7 @@ Player::Player()
 Player::~Player()
 {}
 
-void Player::handleEvent(const sf::Event& event, CommandQueue& commands)
+void Player::handleEvent(const sf::Event& event, std::queue<Command>& commands)
 {
 	if(event.type == sf::Event::KeyPressed)
 	{
@@ -284,7 +284,7 @@ bool Player::isActived(Action action) const
 	return false;
 }
 	
-void Player::handleInitialInputState(CommandQueue& commands)
+void Player::handleInitialInputState(std::queue<Command>& commands)
 {
 	for(auto& pair : m_startActionBinding)
 	{

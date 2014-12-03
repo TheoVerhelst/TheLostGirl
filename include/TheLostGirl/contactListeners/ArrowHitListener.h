@@ -1,21 +1,19 @@
-#ifndef CONTACTLISTENER_H
-#define CONTACTLISTENER_H
+#ifndef ARROWHITLISTENER_H
+#define ARROWHITLISTENER_H
 
 #include <Box2D/Dynamics/b2WorldCallbacks.h>
 
-#include <TheLostGirl/contactListeners/FallingListener.h>
-#include <TheLostGirl/contactListeners/ArrowHitListener.h>
 #include <TheLostGirl/State.h>
 
 /// Collision listener.
-/// - Handle collisions between falling actors and others entities 
-/// to set the right animation and update the FallComponent.
-class ContactListener : public b2ContactListener
+/// - Handle collisions of arrows to decide if the arrow should be sticked
+/// on the other fixture.
+class ArrowHitListener : public b2ContactListener
 {
 	public:
 		///Default constructor.
         /// \param context Current context of the application.
-		ContactListener(State::Context context);
+		ArrowHitListener(State::Context context);
 		
 		/// This is called after a contact is updated.
 		/// This allows to inspect a contact before it goes to the solver.
@@ -41,9 +39,7 @@ class ContactListener : public b2ContactListener
 		void PostSolve(b2Contact* contact, const b2ContactImpulse* impulse);
 	
 	private:
-		State::Context m_context;           ///< Current context of the application.
-		FallingListener m_fallingListener;  ///< The falling collision listener.
-		ArrowHitListener m_arrowHitListener;///< The arrow hit listener.
+		State::Context m_context;///< Current context of the application.
 };
 
-#endif // CONTACTLISTENER_H
+#endif // ARROWHITLISTENER_H

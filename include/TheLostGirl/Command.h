@@ -2,7 +2,6 @@
 #define COMMAND_H
 
 #include <functional>
-#include <queue>
 
 #include <TheLostGirl/Category.h>
 
@@ -39,8 +38,5 @@ struct Command
 		entityx::Entity* entity;
 	};
 };
-
-/// Convenient typedef of Command.
-typedef std::queue<Command> CommandQueue;
 
 #endif // COMMAND_H

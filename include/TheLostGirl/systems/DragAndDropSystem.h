@@ -1,6 +1,8 @@
 #ifndef DRAGANDDROPSYSTEM_H
 #define DRAGANDDROPSYSTEM_H
 
+#include <queue>
+
 #include <SFML/Graphics/Vertex.hpp>
 #include <entityx/System.h>
 
@@ -24,7 +26,7 @@ class DragAndDropSystem : public entityx::System<DragAndDropSystem>
 		/// Default constructor.
 		/// \param window SFML's window on wich to render the drag and drop line.
 		/// \param commandQueue Queue of command where the actions should be putted in.
-		DragAndDropSystem(sf::RenderWindow& window, CommandQueue& commandQueue):
+		DragAndDropSystem(sf::RenderWindow& window, std::queue<Command>& commandQueue):
 			m_window(window),
 			m_commandQueue(commandQueue),
 			m_origin{0, 0},
@@ -46,7 +48,7 @@ class DragAndDropSystem : public entityx::System<DragAndDropSystem>
 		
 	private:
 		sf::RenderWindow& m_window;  ///< SFML's window on wich to render the entities.
-		CommandQueue& m_commandQueue;///< Queue of command where the actions should be putted in.
+		std::queue<Command>& m_commandQueue;///< Queue of command where the actions should be putted in.
 		sf::Vector2i m_origin;       ///< Position of the mouse when the drag and drop started.
 		sf::Vertex m_line[2];        ///< The drag and drop line.
 		bool m_isActive;             ///< True when the drag and drop is actived.

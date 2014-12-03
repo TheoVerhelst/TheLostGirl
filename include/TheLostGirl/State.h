@@ -2,7 +2,6 @@
 #define STATE_H
 
 #include <memory>
-#include <queue>
 
 #include <TheLostGirl/StateIdentifiers.h>
 
@@ -30,7 +29,7 @@ class StateStack;
 class Player;
 class Command;
 struct Parameters;
-typedef std::queue<Command> CommandQueue;
+struct PendingChanges;
 template <typename Resource, typename Identifier>
 class ResourceManager;
 typedef ResourceManager<sf::Texture, std::string> TextureManager;
@@ -61,7 +60,7 @@ class State
 			/// \param _systemManager The system manager of the entity system.
 			/// \param _world The Box2D physic world.
 			/// \param _player The input manager.
-			/// \param _commandQueue The queue of commands.
+			/// \param _pendingChanges The set of all pending changes.
 			Context(Parameters& _parameters,
 					sf::RenderWindow& _window,
 					TextureManager& _textureManager,
@@ -72,7 +71,7 @@ class State
 					entityx::SystemManager& _systemManager,
 					b2World& _world,
 					Player& _player,
-					CommandQueue& _commandQueue
+					PendingChanges& _pendingChanges
 				);
 			Parameters& parameters;               ///< Structure containing all the game parameters.
 			sf::RenderWindow& window;             ///< The main window.
@@ -84,7 +83,7 @@ class State
 			entityx::SystemManager& systemManager;///< The system manager of the entity system
 			b2World& world;                       ///< The Box2D physic world.
 			Player& player;                       ///< The input manager.
-			CommandQueue& commandQueue;           ///< The queue of commands.
+			PendingChanges& pendingChanges;       ///< The set of all pending changes.
 		};
 
         /// Default constructor.
