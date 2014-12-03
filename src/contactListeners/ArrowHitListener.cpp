@@ -6,13 +6,14 @@
 #include <Box2D/Dynamics/Joints/b2WeldJoint.h>
 #include <Box2D/Dynamics/b2World.h>
 #include <entityx/Entity.h>
+#include <entityx/System.h>
 
 #include <TheLostGirl/components.h>
 #include <TheLostGirl/AnimationsManager.h>
 #include <TheLostGirl/events.h>
 #include <TheLostGirl/functions.h>
-#include <TheLostGirl/PendingChanges.h>
 #include <TheLostGirl/FixtureRoles.h>
+#include <TheLostGirl/systems/PendingChangesSystem.h>
 
 #include <TheLostGirl/contactListeners/ArrowHitListener.h>
 
@@ -67,7 +68,7 @@ void ArrowHitListener::PostSolve(b2Contact* contact, const b2ContactImpulse* imp
 				weldJointDef->localAnchorA = localStickPoint;
 				weldJointDef->localAnchorB = bodyB->GetLocalPoint(globalStickPoint);
 				weldJointDef->referenceAngle = bodyB->GetAngle() - bodyA->GetAngle();
-				m_context.pendingChanges.jointsToCreate.push(weldJointDef);
+				m_context.systemManager.system<PendingChangesSystem>()->jointsToCreate.push(weldJointDef);
 				entityA.component<ArrowComponent>()->sticked = true;
 			}
 		}

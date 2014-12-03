@@ -24,8 +24,7 @@ State::Context::Context(Parameters& _parameters,
 						EntityManager& _entityManager,
 						SystemManager& _systemManager,
 						b2World& _world,
-						Player& _player,
-						PendingChanges& _pendingChanges
+						Player& _player
 						):
 	parameters(_parameters),
 	window(_window),
@@ -36,8 +35,7 @@ State::Context::Context(Parameters& _parameters,
 	entityManager(_entityManager),
 	systemManager(_systemManager),
 	world(_world),
-	player(_player),
-	pendingChanges(_pendingChanges)
+	player(_player)
 {
 }
 

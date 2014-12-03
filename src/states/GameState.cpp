@@ -25,7 +25,7 @@
 #include <TheLostGirl/FixtureRoles.h>
 #include <TheLostGirl/JointRoles.h>
 #include <TheLostGirl/serialization.h>
-#include <TheLostGirl/PendingChanges.h>
+#include <TheLostGirl/serialization.h>
 
 #include <TheLostGirl/states/GameState.h>
 
@@ -88,7 +88,7 @@ bool GameState::handleEvent(const sf::Event& event)
 		or event.type == sf::Event::LostFocus)
 		requestStackPush(States::Pause);
 	
-	getContext().player.handleEvent(event, getContext().pendingChanges.commandQueue);
+	getContext().player.handleEvent(event, getContext().systemManager.system<PendingChangesSystem>()->commandQueue);
 	//Update the drag and drop state
 	bool isDragAndDropActive{getContext().player.isActived(Player::Action::Bend)};
 	getContext().systemManager.system<DragAndDropSystem>()->setDragAndDropActivation(isDragAndDropActive);
@@ -777,7 +777,7 @@ void GameState::initWorld(const std::string& file)
 		skyAnimationsComp->animationsManagers["main"].setProgress("day/night cycle", daySeconds/600.f);
 		skyAnimationsComp->animationsManagers["main"].play("day/night cycle");
 		
-		getContext().player.handleInitialInputState(getContext().pendingChanges.commandQueue);
+		getContext().player.handleInitialInputState(getContext().systemManager.system<PendingChangesSystem>()->commandQueue);
 		getContext().world.SetContactListener(&m_contactListener);
 		getContext().world.SetContactFilter(&m_contactFilter);
 		requestStackPop();

@@ -18,29 +18,35 @@ namespace entityx
 	class EntityManager;
 	class SystemManager;
 }
+struct b2BodyDef;
+class b2Body;
+struct b2JointDef;
+class b2Joint;
 class b2World;
-struct Parameters;
 
-/// System that do things in the pending list (create bodies, destroy joints, aply actions, ...)
+/// System that do things in the pending list (create bodies, destroy joints, apply actions, ...)
 class PendingChangesSystem : public entityx::System<PendingChangesSystem>
 {
 	public:
 		/// Default constructor.
-		/// \param pendingChanges The set of all pending changes.
-		PendingChangesSystem(PendingChanges& pendingChanges, b2World& world):
-			m_pendingChanges(pendingChanges),
+		/// \param world The Box2D world.
+		PendingChangesSystem(b2World& world):
 			m_world(world)
 		{}
 
 		/// System's update function.
-		/// \warning Every call to this function empties the std::queue<Command> passed as paramter in the constructor.
 		/// \param es Entity manager.
 		/// \param events Event manager.
 		/// \param dt Elapsed time in the last game frame.
 		void update(entityx::EntityManager &es, entityx::EventManager &events, double dt) override;
-
+		
+		std::queue<Command> commandQueue;
+		std::queue<b2BodyDef*> bodiesToCreate;
+		std::queue<b2Body*> bodiesToDestroy;
+		std::queue<b2JointDef*> jointsToCreate;
+		std::queue<b2Joint*> jointsToDestroy;
+	
 	private:
-		PendingChanges& m_pendingChanges;///< The set of all pending changes.
 		b2World& m_world;
 };
 

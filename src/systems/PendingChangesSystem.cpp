@@ -9,15 +9,14 @@
 
 #include <TheLostGirl/Category.h>
 #include <TheLostGirl/components.h>
-#include <TheLostGirl/PendingChanges.h>
 
 #include <TheLostGirl/systems/PendingChangesSystem.h>
 
 void PendingChangesSystem::update(entityx::EntityManager& entityManager, entityx::EventManager&, double dt)
 {
-	while(not m_pendingChanges.commandQueue.empty())
+	while(not commandQueue.empty())
 	{
-		Command& command(m_pendingChanges.commandQueue.front());
+		Command& command(commandQueue.front());
 		CategoryComponent::Handle categoryComponent;
 		if(command.targetIsSpecific)
 			command.action(*(command.entity), dt);
@@ -26,28 +25,28 @@ void PendingChangesSystem::update(entityx::EntityManager& entityManager, entityx
 				//On vérifie si l'entité correspond à la commande, si oui on fait l'action
 				if(categoryComponent->category & command.category)
 					command.action(entity, dt);
-		m_pendingChanges.commandQueue.pop();
+		commandQueue.pop();
 	}
-	while(not m_pendingChanges.bodiesToCreate.empty())
+	while(not bodiesToCreate.empty())
 	{
-		m_world.CreateBody(m_pendingChanges.bodiesToCreate.front());
-		delete m_pendingChanges.bodiesToCreate.front();//Delete the definition
-		m_pendingChanges.bodiesToCreate.pop();
+		m_world.CreateBody(bodiesToCreate.front());
+		delete bodiesToCreate.front();//Delete the definition
+		bodiesToCreate.pop();
 	}
-	while(not m_pendingChanges.bodiesToDestroy.empty())
+	while(not bodiesToDestroy.empty())
 	{
-		m_world.DestroyBody(m_pendingChanges.bodiesToDestroy.front());
-		m_pendingChanges.bodiesToDestroy.pop();
+		m_world.DestroyBody(bodiesToDestroy.front());
+		bodiesToDestroy.pop();
 	}
-	while(not m_pendingChanges.jointsToCreate.empty())
+	while(not jointsToCreate.empty())
 	{
-		m_world.CreateJoint(m_pendingChanges.jointsToCreate.front());
-		delete m_pendingChanges.jointsToCreate.front();//Delete the definition
-		m_pendingChanges.jointsToCreate.pop();
+		m_world.CreateJoint(jointsToCreate.front());
+		delete jointsToCreate.front();//Delete the definition
+		jointsToCreate.pop();
 	}
-	while(not m_pendingChanges.jointsToDestroy.empty())
+	while(not jointsToDestroy.empty())
 	{
-		m_world.DestroyJoint(m_pendingChanges.jointsToDestroy.front());
-		m_pendingChanges.jointsToDestroy.pop();
+		m_world.DestroyJoint(jointsToDestroy.front());
+		jointsToDestroy.pop();
 	}
 }

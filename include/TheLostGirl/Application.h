@@ -18,7 +18,6 @@
 #include <TheLostGirl/StateStack.h>
 #include <TheLostGirl/Player.h>
 #include <TheLostGirl/Parameters.h>
-#include <TheLostGirl/PendingChanges.h>
 #include <TheLostGirl/DebugDraw.h>
 
 //Forward declarations
@@ -71,7 +70,6 @@ class Application
 		entityx::EntityManager m_entityManager;///< The entity manager.
 		entityx::SystemManager m_systemManager;///< The entity systems manager.
 		Player m_player;                       ///< The input manager.
-		PendingChanges m_pendingChanges;       ///< The set of all pending changes.
 		b2World m_world;                       ///< The Box2D world.
 		StateStack m_stateStack;               ///< The game state manager.
 		DebugDraw m_debugDraw;                 ///< The debugging drawer.

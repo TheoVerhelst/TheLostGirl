@@ -28,7 +28,6 @@ class State;
 class StateStack;
 class Player;
 struct Parameters;
-struct PendingChanges;
 template <typename Resource, typename Identifier>
 class ResourceManager;
 typedef ResourceManager<sf::Texture, std::string> TextureManager;
@@ -69,8 +68,7 @@ class State
 					entityx::EntityManager& _entityManager,
 					entityx::SystemManager& _systemManager,
 					b2World& _world,
-					Player& _player,
-					PendingChanges& _pendingChanges
+					Player& _player
 				);
 			Parameters& parameters;               ///< Structure containing all the game parameters.
 			sf::RenderWindow& window;             ///< The main window.
@@ -82,7 +80,6 @@ class State
 			entityx::SystemManager& systemManager;///< The system manager of the entity system
 			b2World& world;                       ///< The Box2D physic world.
 			Player& player;                       ///< The input manager.
-			PendingChanges& pendingChanges;       ///< The set of all pending changes.
 		};
 
         /// Default constructor.

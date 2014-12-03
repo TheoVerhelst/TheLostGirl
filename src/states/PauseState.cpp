@@ -1,10 +1,11 @@
 #include <TGUI/Gui.hpp>
+#include <entityx/System.h>
 
 #include <TheLostGirl/State.h>
 #include <TheLostGirl/StateStack.h>
 #include <TheLostGirl/LangManager.h>
 #include <TheLostGirl/Player.h>
-#include <TheLostGirl/PendingChanges.h>
+#include <TheLostGirl/systems/PendingChangesSystem.h>
 
 #include <TheLostGirl/states/PauseState.h>
 
@@ -99,7 +100,7 @@ bool PauseState::handleEvent(const sf::Event& event)
 void PauseState::backToGame()
 {
 	requestStackPop();
-	getContext().player.handleInitialInputState(getContext().pendingChanges.commandQueue);
+	getContext().player.handleInitialInputState(getContext().systemManager.system<PendingChangesSystem>()->commandQueue);
 }
 
 void PauseState::goToOptions()
