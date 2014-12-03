@@ -22,9 +22,9 @@ void PhysicsSystem::update(entityx::EntityManager& entityManager, entityx::Event
 	BodyComponent::Handle bodyComponent;
 	TransformComponent::Handle transformComponent;
 	WalkComponent::Handle walkComponent;
-	BendComponent::Handle bendComponent;
+	BowComponent::Handle bowComponent;
 	JumpComponent::Handle jumpComponent;
-	WindFrictionComponent::Handle windFrictionComponent;
+	ArrowComponent::Handle arrowComponent;
 	
 	//Update the walkers
 	for(auto entity : entityManager.entities_with_components(bodyComponent, walkComponent))
@@ -59,9 +59,9 @@ void PhysicsSystem::update(entityx::EntityManager& entityManager, entityx::Event
 	}
 	
 	//Update the archers
-	for(auto entity : entityManager.entities_with_components(bodyComponent, bendComponent))
+	for(auto entity : entityManager.entities_with_components(bodyComponent, bowComponent))
 	{
-		float angleTarget{-bendComponent->angle};
+		float angleTarget{-bowComponent->angle};
 		float32 gain{20.f};
 		float32 differenceAngle;
 		//If the archer has not a arms body, the program will crash
@@ -93,12 +93,10 @@ void PhysicsSystem::update(entityx::EntityManager& entityManager, entityx::Event
 				jointBow->SetMotorSpeed(gain * differenceAngle);
 			}
 		}
-		if(entity.has_component<QuiverComponent>()
-			and entity.has_component<DirectionComponent>())
+		if(entity.has_component<DirectionComponent>())
 		{
 			Direction direction{entity.component<DirectionComponent>()->direction};
-			QuiverComponent::Handle quiverComponent{entity.component<QuiverComponent>()};
-			entityx::Entity notchedArrow{quiverComponent->notchedArrow};
+			entityx::Entity notchedArrow{bowComponent->notchedArrow};
 			//If the notched arrow has a b2Body,
 			//Set the translation of the joint between bow and arrow
 			if(notchedArrow.valid() and notchedArrow.has_component<BodyComponent>())
@@ -106,7 +104,7 @@ void PhysicsSystem::update(entityx::EntityManager& entityManager, entityx::Event
 				//If the notched arrow has not a main body, the program will crash
 				assert(notchedArrow.component<BodyComponent>()->bodies.find("main") != notchedArrow.component<BodyComponent>()->bodies.end());
 				b2Body* arrowBody{notchedArrow.component<BodyComponent>()->bodies["main"]};
-				float translationTarget{bendComponent->power/bendComponent->maxPower};//Power of the bending, in range [0, 1]
+				float translationTarget{bowComponent->power/bowComponent->maxPower};//Power of the bending, in range [0, 1]
 				if(direction == Direction::Left)
 					translationTarget = 1 - translationTarget;
 				float32 differenceTranslation;
@@ -127,7 +125,7 @@ void PhysicsSystem::update(entityx::EntityManager& entityManager, entityx::Event
 	}
 	
 	//Update the arrows
-	for(auto entity : entityManager.entities_with_components(bodyComponent, windFrictionComponent))
+	for(auto entity : entityManager.entities_with_components(bodyComponent, arrowComponent))
 	{
 		//If the arrow has not a main body, the program will crash
 		assert(bodyComponent->bodies.find("main") != bodyComponent->bodies.end());
@@ -136,11 +134,11 @@ void PhysicsSystem::update(entityx::EntityManager& entityManager, entityx::Event
 		b2Vec2 flightDirection{body->GetLinearVelocity()};//Get the effective flight direction of the arrow
 		float flightSpeed{flightDirection.Normalize()};//Normalizes (v in ([0, 1], [0, 1])) and returns length
 		float scalarProduct{b2Dot(flightDirection, pointingDirection)};
-		float dragConstant{windFrictionComponent->amount};
+		float dragConstant{arrowComponent->friction};
 		double dragForceMagnitude{(1 - fabs(scalarProduct)) * flightSpeed * flightSpeed * dragConstant * body->GetMass()};
 		
 		//Convert the local friction point to Box2D global coordinates
-		b2Vec2 localFrictionPoint{sftob2(windFrictionComponent->localFrictionPoint/m_parameters.pixelByMeter)};
+		b2Vec2 localFrictionPoint{sftob2(arrowComponent->localFrictionPoint/m_parameters.pixelByMeter)};
 		b2Vec2 arrowTailPosition{body->GetWorldPoint(localFrictionPoint)};
 		body->ApplyForce(dragForceMagnitude*(-flightDirection), arrowTailPosition, true);
 	}

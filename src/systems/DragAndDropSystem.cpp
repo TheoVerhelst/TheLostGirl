@@ -60,7 +60,7 @@ void DragAndDropSystem::setDragAndDropActivation(bool isActive)
 		bendCommand.action = BowBender(angle, 0.f);//Reset the power of the bending
 		m_commandQueue.push(bendCommand);
 		//Do these two commands in this order will first shoot the arrow with the current angle/power
-		//in the BendComponent, and then reset the BendComponent's power to 0
+		//in the BowComponent, and then reset the BowComponent's power to 0
 	}
 	m_isActive = isActive;
 }

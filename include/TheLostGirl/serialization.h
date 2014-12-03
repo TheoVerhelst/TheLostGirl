@@ -39,12 +39,6 @@ Json::Value serialize(entityx::ComponentHandle<InventoryComponent> component, co
 
 /// Serialize the given component.
 /// \param component Component to serialize.
-/// \param entitiesMap The map containing all entities (to find name - entity correspondance).
-/// \return A Json value.
-Json::Value serialize(entityx::ComponentHandle<QuiverComponent> component, const std::map<std::string, entityx::Entity>& entitiesMap);
-
-/// Serialize the given component.
-/// \param component Component to serialize.
 /// \return A Json value.
 Json::Value serialize(entityx::ComponentHandle<AnimationsComponent<SpriteSheetAnimation>> component);
 
@@ -75,8 +69,9 @@ Json::Value serialize(entityx::ComponentHandle<JumpComponent> component);
 
 /// Serialize the given component.
 /// \param component Component to serialize.
+/// \param entitiesMap The map containing all entities (to find name - entity correspondance).
 /// \return A Json value.
-Json::Value serialize(entityx::ComponentHandle<BendComponent> component);
+Json::Value serialize(entityx::ComponentHandle<BowComponent> component, const std::map<std::string, entityx::Entity>& entitiesMap);
 
 /// Serialize the given component.
 /// \param component Component to serialize.
@@ -91,7 +86,7 @@ Json::Value serialize(entityx::ComponentHandle<StaminaComponent> component);
 /// Serialize the given component.
 /// \param component Component to serialize.
 /// \return A Json value.
-Json::Value serialize(entityx::ComponentHandle<WindFrictionComponent> component);
+Json::Value serialize(entityx::ComponentHandle<ArrowComponent> component);
 
 /// Deserialize the given \a value in the given \a component.
 /// \param component Component in wich deserialize the data.
@@ -118,12 +113,6 @@ void deserialize(const Json::Value& value, entityx::ComponentHandle<TransformCom
 /// \param entitiesMap The map containing all entities (to find name - entity correspondance).
 /// \param value The Json value containing the data.
 void deserialize(const Json::Value& value, entityx::ComponentHandle<InventoryComponent> component, const std::map<std::string, entityx::Entity>& entitiesMap);
-
-/// Deserialize the given \a value in the given \a component.
-/// \param component Component in wich deserialize the data.
-/// \param entitiesMap The map containing all entities (to find name - entity correspondance).
-/// \param value The Json value containing the data.
-void deserialize(const Json::Value& value, entityx::ComponentHandle<QuiverComponent> component, const std::map<std::string, entityx::Entity>& entitiesMap);
 
 /// Deserialize the given \a value in the given \a component.
 /// \param component Component in wich deserialize the data.
@@ -159,8 +148,9 @@ void deserialize(const Json::Value& value, entityx::ComponentHandle<JumpComponen
 
 /// Deserialize the given \a value in the given \a component.
 /// \param component Component in wich deserialize the data.
+/// \param entitiesMap The map containing all entities (to find name - entity correspondance).
 /// \param value The Json value containing the data.
-void deserialize(const Json::Value& value, entityx::ComponentHandle<BendComponent> component);
+void deserialize(const Json::Value& value, entityx::ComponentHandle<BowComponent> component, const std::map<std::string, entityx::Entity>& entitiesMap);
 
 /// Deserialize the given \a value in the given \a component.
 /// \param component Component in wich deserialize the data.
@@ -175,6 +165,6 @@ void deserialize(const Json::Value& value, entityx::ComponentHandle<StaminaCompo
 /// Deserialize the given \a value in the given \a component.
 /// \param component Component in wich deserialize the data.
 /// \param value The Json value containing the data.
-void deserialize(const Json::Value& value, entityx::ComponentHandle<WindFrictionComponent> component);
+void deserialize(const Json::Value& value, entityx::ComponentHandle<ArrowComponent> component);
 
 #endif // SERIALIZATION_H

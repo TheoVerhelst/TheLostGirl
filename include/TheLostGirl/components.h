@@ -109,14 +109,6 @@ struct InventoryComponent : public entityx::Component<InventoryComponent>
 	float maxWeight;                   ///< Maximum weight that that inventory can carry.
 };
 
-/// The quiver component.
-struct QuiverComponent : public entityx::Component<QuiverComponent>
-{
-	std::vector<entityx::Entity> arrows;///< List of all stocked arrows.
-	entityx::Entity notchedArrow;       ///< Current arrow notched in the bow.
-	unsigned short int capacity;        ///< Maximum number of arrows in the quiver.
-};
-
 /// Falling component.
 /// The fall component must be added to every entity that can fall.
 struct FallComponent : public entityx::Component<FallComponent>
@@ -145,11 +137,14 @@ struct JumpComponent : public entityx::Component<JumpComponent>
 };
 
 /// Bending component.
-struct BendComponent : public entityx::Component<BendComponent>
+struct BowComponent : public entityx::Component<BowComponent>
 {
-	float maxPower;///< The maximum power of the bending of the bow.
-	float power;   ///< The current power of the bending of the bow.
-	float angle;   ///< The current angle of the bow, in radians.
+	float maxPower;                     ///< The maximum power of the bending of the bow.
+	float power;                        ///< The current power of the bending of the bow.
+	float angle;                        ///< The current angle of the bow, in radians.
+	std::vector<entityx::Entity> arrows;///< List of all stocked arrows.
+	entityx::Entity notchedArrow;       ///< Current arrow notched in the bow.
+	unsigned short int quiverCapacity;  ///< Maximum number of arrows in the quiver.
 };
 
 /// Health component.
@@ -167,11 +162,18 @@ struct StaminaComponent : public entityx::Component<StaminaComponent>
 };
 
 /// Wind friction component.
-/// This is usually applied on arrows, in order to set the angle of the body tangent to his trajectory.
-struct WindFrictionComponent : public entityx::Component<WindFrictionComponent>
+/// The friction is applied in order to set the angle of the body tangent to the arrow trajectory.
+/// The penetrance indicates how much the arrow can stick into hard targets, and so make damages.
+struct ArrowComponent : public entityx::Component<ArrowComponent>
 {
-	float amount;                   ///< The amplitude of the friction applied on the body.
+	float friction;                 ///< The amplitude of the friction applied on the body.
 	sf::Vector2f localFrictionPoint;///< The point where the friction must be applied.
+	float penetrance;               ///< Indicates how much the arrow can stick into hard targets.
+};
+
+struct HardnessComponent : public entityx::Component<HardnessComponent>
+{
+	float hardness;
 };
 
 #endif //COMPONENTS_H

@@ -297,7 +297,7 @@
                         ]
                     },
                     {
-                        "name" : "bend",
+                        "name" : "bow",
                         "type" : "object",
                         "free children names" : false,
                         "required" : false,
@@ -318,6 +318,25 @@
                                 "type" : "real",
                                 "required" : false,
                                 "default value" : 0
+                            },
+                            {
+                                "name" : "quiver capacity",
+                                "type" : "int",
+                                "required" : true
+                            },
+                            {
+                                "name" : "arrows",
+                                "type" : "array",
+                                "required" : true,
+                                "children" :
+                                {
+                                    "type" : "string"
+                                }
+                            },
+                            {
+                                "name" : "notched arrow",
+                                "type" : "string",
+                                "required" : false
                             }
                         ]
                     },
@@ -337,14 +356,14 @@
                         ]
                     },
                     {
-                        "name" : "wind friction",
+                        "name" : "arrow",
                         "type" : "object",
                         "free children names" : false,
                         "required" : false,
                         "children":
                         [
                             {
-                                "name" : "amount",
+                                "name" : "friction",
                                 "type" : "real",
                                 "required" : true
                             },
@@ -389,34 +408,6 @@
                                 {
                                     "type" : "string"
                                 }
-                            }
-                        ]
-                    },
-                    {
-                        "name" : "quiver",
-                        "type" : "object",
-                        "free children names" : false,
-                        "required" : false,
-                        "children":
-                        [
-                            {
-                                "name" : "capacity",
-                                "type" : "int",
-                                "required" : true
-                            },
-                            {
-                                "name" : "arrows",
-                                "type" : "array",
-                                "required" : true,
-                                "children" :
-                                {
-                                    "type" : "string"
-                                }
-                            },
-                            {
-                                "name" : "notched arrow",
-                                "type" : "string",
-                                "required" : false
                             }
                         ]
                     },

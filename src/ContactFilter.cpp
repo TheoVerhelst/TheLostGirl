@@ -43,18 +43,18 @@ bool ContactFilter::ShouldCollide(b2Fixture* fixtureA, b2Fixture* fixtureB)
 		
 		ret = ret && zA == zB;//Collide only if in the same plan
 	}
-	if(entityA.has_component<QuiverComponent>() or entityB.has_component<QuiverComponent>())
+	if(entityA.has_component<BowComponent>() or entityB.has_component<BowComponent>())
 	{
-		if(entityA.has_component<QuiverComponent>())
+		if(entityA.has_component<BowComponent>())
 		{
 			//Swap the pointers
 			std::swap(bodyA, bodyB);
 			std::swap(entityA, entityB);
 		}
-		const std::vector<entityx::Entity>& arrows(entityB.component<QuiverComponent>()->arrows);
+		const std::vector<entityx::Entity>& arrows(entityB.component<BowComponent>()->arrows);
 		//Right operand is false the entity A is in the quiver of the entity B
 		ret = ret && std::find(arrows.begin(), arrows.end(), entityA) == arrows.end();
-		ret = ret && entityA != entityB.component<QuiverComponent>()->notchedArrow;
+		ret = ret && entityA != entityB.component<BowComponent>()->notchedArrow;
 	}
 	return ret;
 }

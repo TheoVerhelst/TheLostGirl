@@ -38,18 +38,18 @@ void ArrowHitListener::PostSolve(b2Contact* contact, const b2ContactImpulse* imp
 	b2Fixture* fixtureB{contact->GetFixtureB()};
 	b2Body* bodyB{fixtureB->GetBody()};
 	entityx::Entity entityB{*static_cast<entityx::Entity*>(bodyB->GetUserData())};
-	if(entityA != entityB and impulse->normalImpulses[0] > 0.5f)
+	if(entityA != entityB and impulse->normalImpulses[0] > 0.1f)
 	{
-		if(entityB.has_component<WindFrictionComponent>())
+		if(entityB.has_component<ArrowComponent>())
 		{
 			//Swap the pointers
 			std::swap(fixtureA, fixtureB);
 			std::swap(bodyA, bodyB);
 			std::swap(entityA, entityB);
 		}
-		if(entityA.has_component<WindFrictionComponent>())
+		if(entityA.has_component<ArrowComponent>())
 		{
-			b2Vec2 worldAnchorPoint = bodyA->GetWorldPoint(b2Vec2(0.4f, 0.05416667));
+			b2Vec2 worldAnchorPoint = bodyA->GetWorldPoint({0.4f, 0.05416667});
 			b2WeldJointDef* weldJointDef = new b2WeldJointDef();
 			weldJointDef->bodyA = bodyA;
 			weldJointDef->bodyB = bodyB;

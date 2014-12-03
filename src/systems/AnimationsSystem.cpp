@@ -18,7 +18,6 @@ void AnimationsSystem::update(entityx::EntityManager& entityManager, entityx::Ev
 	FallComponent::Handle fallComponent;
 	BodyComponent::Handle bodyComponent;
 	DirectionComponent::Handle directionComponent;
-	BendComponent::Handle bendComponent;
 	
 	//For every entity that can fall, set the right animation
 	for(auto entity : entityManager.entities_with_components(animationsComponent,

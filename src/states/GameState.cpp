@@ -115,8 +115,8 @@ void GameState::saveWorld(const std::string& file)
 			if(entity.second.has_component<InventoryComponent>())
 				root["entities"][entity.first]["inventory"] = serialize(entity.second.component<InventoryComponent>(), m_entities);
 			
-			if(entity.second.has_component<QuiverComponent>())
-				root["entities"][entity.first]["quiver"] = serialize(entity.second.component<QuiverComponent>(), m_entities);
+			if(entity.second.has_component<BowComponent>())
+				root["entities"][entity.first]["bow"] = serialize(entity.second.component<BowComponent>(), m_entities);
 			
 			if(entity.second.has_component<AnimationsComponent<SpriteSheetAnimation>>())
 				root["entities"][entity.first]["spritesheet animations"] = serialize(entity.second.component<AnimationsComponent<SpriteSheetAnimation>>());
@@ -136,17 +136,14 @@ void GameState::saveWorld(const std::string& file)
 			if(entity.second.has_component<JumpComponent>())
 				root["entities"][entity.first]["jump"] = serialize(entity.second.component<JumpComponent>());
 			
-			if(entity.second.has_component<BendComponent>())
-				root["entities"][entity.first]["bend"] = serialize(entity.second.component<BendComponent>());
-			
 			if(entity.second.has_component<HealthComponent>())
 				root["entities"][entity.first]["health"] = serialize(entity.second.component<HealthComponent>());
 			
 			if(entity.second.has_component<StaminaComponent>())
 				root["entities"][entity.first]["stamina"] = serialize(entity.second.component<StaminaComponent>());
 			
-			if(entity.second.has_component<WindFrictionComponent>())
-				root["entities"][entity.first]["wind friction"] = serialize(entity.second.component<WindFrictionComponent>());
+			if(entity.second.has_component<ArrowComponent>())
+				root["entities"][entity.first]["arrow"] = serialize(entity.second.component<ArrowComponent>());
 		}
 		
 		//time
@@ -423,16 +420,14 @@ void GameState::initWorld(const std::string& file)
 				
 				if(entity.isMember("inventory"))
 					deserialize(entity["inventory"], m_entities[entityName].assign<InventoryComponent>(), m_entities);
-				if(entity.isMember("quiver"))
-					deserialize(entity["quiver"], m_entities[entityName].assign<QuiverComponent>(), m_entities);
+				if(entity.isMember("bow"))
+					deserialize(entity["bow"], m_entities[entityName].assign<BowComponent>(), m_entities);
 				if(entity.isMember("categories"))
 					deserialize(entity["categories"], m_entities[entityName].assign<CategoryComponent>());
 				if(entity.isMember("walk"))
 					deserialize(entity["walk"], m_entities[entityName].assign<WalkComponent>());
 				if(entity.isMember("jump"))
 					deserialize(entity["jump"], m_entities[entityName].assign<JumpComponent>());
-				if(entity.isMember("bend"))
-					deserialize(entity["bend"], m_entities[entityName].assign<BendComponent>());
 				if(entity.isMember("health"))
 					deserialize(entity["health"], m_entities[entityName].assign<HealthComponent>());
 				if(entity.isMember("stamina"))
@@ -441,8 +436,8 @@ void GameState::initWorld(const std::string& file)
 					deserialize(entity["direction"], m_entities[entityName].assign<DirectionComponent>());
 				if(entity.isMember("fall"))
 					deserialize(entity["fall"], m_entities[entityName].assign<FallComponent>());
-				if(entity.isMember("wind friction"))
-					deserialize(entity["wind friction"], m_entities[entityName].assign<WindFrictionComponent>());
+				if(entity.isMember("arrow"))
+					deserialize(entity["arrow"], m_entities[entityName].assign<ArrowComponent>());
 			}
 		}
 		

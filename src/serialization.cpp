@@ -184,22 +184,6 @@ Json::Value serialize(entityx::ComponentHandle<InventoryComponent> component, co
 	return ret;
 }
 
-Json::Value serialize(entityx::ComponentHandle<QuiverComponent> component, const std::map<std::string, entityx::Entity>& entitiesMap)
-{
-	Json::Value ret;
-	ret["capacity"] = component->capacity;
-	if(isMember(entitiesMap, component->notchedArrow) and component->notchedArrow.valid())
-		ret["notched arrow"] = getKey(entitiesMap, component->notchedArrow);
-	ret["arrows"] = Json::Value(Json::arrayValue);
-	//For each arrow of the inventory
-	for(entityx::Entity arrow : component->arrows)
-		//If the arrow is in the entity list
-		if(isMember(entitiesMap, arrow) and arrow.valid())
-			//Add it to the value
-			ret["arrows"].append(getKey(entitiesMap, arrow));
-	return ret;
-}
-
 Json::Value serialize(entityx::ComponentHandle<AnimationsComponent<SpriteSheetAnimation>> component)
 {
 	Json::Value ret;
@@ -283,12 +267,22 @@ Json::Value serialize(entityx::ComponentHandle<JumpComponent> component)
 	return ret;
 }
 
-Json::Value serialize(entityx::ComponentHandle<BendComponent> component)
+Json::Value serialize(entityx::ComponentHandle<BowComponent> component, const std::map<std::string, entityx::Entity>& entitiesMap)
 {
 	Json::Value ret;
 	ret["power"] = component->power;
 	ret["maximum power"] = component->maxPower;
 	ret["angle"] = component->angle;
+	ret["quiver capacity"] = component->quiverCapacity;
+	if(isMember(entitiesMap, component->notchedArrow) and component->notchedArrow.valid())
+		ret["notched arrow"] = getKey(entitiesMap, component->notchedArrow);
+	ret["arrows"] = Json::Value(Json::arrayValue);
+	//For each arrow of the quiver
+	for(entityx::Entity arrow : component->arrows)
+		//If the arrow is in the entity list
+		if(isMember(entitiesMap, arrow) and arrow.valid())
+			//Add it to the value
+			ret["arrows"].append(getKey(entitiesMap, arrow));
 	return ret;
 }
 
@@ -308,10 +302,10 @@ Json::Value serialize(entityx::ComponentHandle<StaminaComponent> component)
 	return ret;
 }
 
-Json::Value serialize(entityx::ComponentHandle<WindFrictionComponent> component)
+Json::Value serialize(entityx::ComponentHandle<ArrowComponent> component)
 {
 	Json::Value ret;
-	ret["amount"] = component->amount;
+	ret["friction"] = component->friction;
 	ret["local friction point"]["x"] = component->localFrictionPoint.x;
 	ret["local friction point"]["y"] = component->localFrictionPoint.y;
 	return ret;
@@ -658,17 +652,6 @@ void deserialize(const Json::Value& value, entityx::ComponentHandle<InventoryCom
 	component->maxWeight = value["maximum weight"].asFloat();
 }
 
-void deserialize(const Json::Value& value, entityx::ComponentHandle<QuiverComponent> component, const std::map<std::string, entityx::Entity>& entitiesMap)
-{
-	component->arrows.clear();
-	for(Json::ArrayIndex i{0}; i < value["arrows"].size(); ++i)
-		if(entitiesMap.find(value["arrows"][i].asString()) != entitiesMap.end())
-			component->arrows.push_back(entitiesMap.at(value["arrows"][i].asString()));
-	if(entitiesMap.find(value["notched arrow"].asString()) != entitiesMap.end())
-		component->notchedArrow = entitiesMap.at(value["notched arrow"].asString());
-	component->capacity = value["capacity"].asUInt();
-}
-
 void deserialize(const Json::Value& value, entityx::ComponentHandle<AnimationsComponent<SpriteSheetAnimation>> component, entityx::ComponentHandle<SpriteComponent> spriteComponent, State::Context context)
 {
 	component->animationsManagers.clear();
@@ -744,32 +727,35 @@ void deserialize(const Json::Value& value, entityx::ComponentHandle<JumpComponen
 	component->mustJump = false;
 }
 
-void deserialize(const Json::Value& value, entityx::ComponentHandle<BendComponent> component)
+void deserialize(const Json::Value& value, entityx::ComponentHandle<BowComponent> component, const std::map<std::string, entityx::Entity>& entitiesMap)
 {
-	if(value.isMember("power"))
-		component->power = value["power"].asFloat();
-	if(value.isMember("angle"))
-		component->angle = value["angle"].asFloat();
+	component->power = value["power"].asFloat();
+	component->angle = value["angle"].asFloat();
 	component->maxPower = value["maximum power"].asFloat();
+	component->arrows.clear();
+	for(Json::ArrayIndex i{0}; i < value["arrows"].size(); ++i)
+		if(entitiesMap.find(value["arrows"][i].asString()) != entitiesMap.end())
+			component->arrows.push_back(entitiesMap.at(value["arrows"][i].asString()));
+	if(entitiesMap.find(value["notched arrow"].asString()) != entitiesMap.end())
+		component->notchedArrow = entitiesMap.at(value["notched arrow"].asString());
+	component->quiverCapacity = value["quiver capacity"].asUInt();
 }
 
 void deserialize(const Json::Value& value, entityx::ComponentHandle<HealthComponent> component)
 {
-	if(value.isMember("current health"))
-		component->health = value["current health"].asFloat();
+	component->health = value["current health"].asFloat();
 	component->maxHealth = value["maximum health"].asFloat();
 }
 
 void deserialize(const Json::Value& value, entityx::ComponentHandle<StaminaComponent> component)
 {
-	if(value.isMember("current stamina"))
-		component->stamina = value["current stamina"].asFloat();
+	component->stamina = value["current stamina"].asFloat();
 	component->maxStamina = value["maximum stamina"].asFloat();
 }
 
-void deserialize(const Json::Value& value, entityx::ComponentHandle<WindFrictionComponent> component)
+void deserialize(const Json::Value& value, entityx::ComponentHandle<ArrowComponent> component)
 {
-	component->amount = value["amount"].asFloat();
+	component->friction = value["friction"].asFloat();
 	component->localFrictionPoint.x = value["local friction point"]["x"].asFloat();
 	component->localFrictionPoint.y = value["local friction point"]["y"].asFloat();
 }

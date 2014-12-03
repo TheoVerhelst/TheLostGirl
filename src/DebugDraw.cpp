@@ -133,10 +133,10 @@ void DebugDraw::drawDebugAth()
 							position = bodies.begin()->second->GetPosition();
 					}
 				}
-				if(entity.has_component<BendComponent>())
+				if(entity.has_component<BowComponent>())
 				{
-					bendPower = entity.component<BendComponent>()->power;
-					bendAngle = entity.component<BendComponent>()->angle;
+					bendPower = entity.component<BowComponent>()->power;
+					bendAngle = entity.component<BowComponent>()->angle;
 				}
 				break;
 			}

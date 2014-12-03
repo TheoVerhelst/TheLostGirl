@@ -82,19 +82,19 @@ void Mover::operator()(entityx::Entity entity, double) const
 					directionComponent->direction = oppDirection;
 			}
 			//Flip the bend componnent if there is one and if the entity has flip
-			if(entity.has_component<BendComponent>() and directionComponent->direction != initialDirection)
+			if(entity.has_component<BowComponent>() and directionComponent->direction != initialDirection)
 			{
 				//Flip the angle
 				if(directionComponent->direction == Direction::Left)
-					entity.component<BendComponent>()->angle = cap(remainder(entity.component<BendComponent>()->angle - b2_pi, 2*b2_pi), -b2_pi, b2_pi/2);
+					entity.component<BowComponent>()->angle = cap(remainder(entity.component<BowComponent>()->angle - b2_pi, 2*b2_pi), -b2_pi, b2_pi/2);
 				else if(directionComponent->direction == Direction::Right)
-					entity.component<BendComponent>()->angle = cap(remainder(entity.component<BendComponent>()->angle - b2_pi, 2*b2_pi), -b2_pi/2, b2_pi);
+					entity.component<BowComponent>()->angle = cap(remainder(entity.component<BowComponent>()->angle - b2_pi, 2*b2_pi), -b2_pi/2, b2_pi);
 				
 				//If the entity has a quiver
-				if(entity.has_component<QuiverComponent>())
+				if(entity.has_component<BowComponent>())
 				{
-					QuiverComponent::Handle quiverComponent{entity.component<QuiverComponent>()};
-					entityx::Entity notchedArrow{quiverComponent->notchedArrow};
+					BowComponent::Handle bowComponent{entity.component<BowComponent>()};
+					entityx::Entity notchedArrow{bowComponent->notchedArrow};
 					//If the notched arrow has a b2Body
 					if(notchedArrow.valid() and notchedArrow.has_component<BodyComponent>())
 					{
@@ -286,17 +286,17 @@ BowBender::~BowBender()
 
 void BowBender::operator()(entityx::Entity entity, double) const
 {
-	if(entity.has_component<BendComponent>() and entity.has_component<DirectionComponent>() and entity.has_component<BodyComponent>())
+	if(entity.has_component<BowComponent>() and entity.has_component<DirectionComponent>() and entity.has_component<BodyComponent>())
 	{
-		BendComponent::Handle bendComponent{entity.component<BendComponent>()};
+		BowComponent::Handle bowComponent{entity.component<BowComponent>()};
 		DirectionComponent::Handle directionComponent{entity.component<DirectionComponent>()};
 		//Set the bending angle
 		if(directionComponent->direction == Direction::Left)
-			bendComponent->angle = cap(angle - b2_pi, -b2_pi, b2_pi/2);
+			bowComponent->angle = cap(angle - b2_pi, -b2_pi, b2_pi/2);
 		else if(directionComponent->direction == Direction::Right)
-			bendComponent->angle = cap(angle, -b2_pi/2, b2_pi);
+			bowComponent->angle = cap(angle, -b2_pi/2, b2_pi);
 		//Set the bending power
-		bendComponent->power = cap(power, 0.f, bendComponent->maxPower);
+		bowComponent->power = cap(power, 0.f, bowComponent->maxPower);
 		
 		//If the entity has animation, set the right animation and play it accoring to the bending state
 		if(entity.has_component<AnimationsComponent<SpriteSheetAnimation>>())
@@ -306,7 +306,7 @@ void BowBender::operator()(entityx::Entity entity, double) const
 				directionStr = " left";
 			else if(directionComponent->direction == Direction::Right)
 				directionStr = " right";
-			float animationPower{bendComponent->power / bendComponent->maxPower};//The progress of the bending, in the range [0, 1]
+			float animationPower{bowComponent->power / bowComponent->maxPower};//The progress of the bending, in the range [0, 1]
 			//Get all the animations managers of the entity
 			auto& animationsManagers(entity.component<AnimationsComponent<SpriteSheetAnimation>>()->animationsManagers);
 			//For each animations manager of the entity
@@ -319,47 +319,42 @@ void BowBender::operator()(entityx::Entity entity, double) const
 			}
 		}
 		//Notch an arrow if there is no one
-		//If the entity has a quiver
-		if(entity.has_component<QuiverComponent>())
+		entityx::Entity notchedArrow{bowComponent->notchedArrow};
+		//If there is not a notched arrow
+		if(not notchedArrow.valid())
 		{
-			QuiverComponent::Handle quiverComponent{entity.component<QuiverComponent>()};
-			entityx::Entity notchedArrow{quiverComponent->notchedArrow};
-			//If there is not a notched arrow
-			if(not notchedArrow.valid())
+			//Find the first valid arrow in the quiver
+			auto found = std::find_if(bowComponent->arrows.begin(), bowComponent->arrows.end(),
+										[](const entityx::Entity& e){return e.valid();});
+			if(found != bowComponent->arrows.end())
 			{
-				//Find the first valid arrow in the quiver
-				auto found = std::find_if(quiverComponent->arrows.begin(), quiverComponent->arrows.end(), [](const entityx::Entity& e)
-												{return e.valid();});
-				if(found != quiverComponent->arrows.end())
-				{
-					quiverComponent->notchedArrow = *found;
-					notchedArrow = *found;
-					quiverComponent->arrows.erase(found);
-					
-					//If the notched arrow has not a main body, the program will crash
-					assert(notchedArrow.component<BodyComponent>()->bodies.find("main") != notchedArrow.component<BodyComponent>()->bodies.end());
-					b2Body* arrowBody{notchedArrow.component<BodyComponent>()->bodies["main"]};
-					//If the entity has not a bow, the program will crash
-					assert(entity.component<BodyComponent>()->bodies.find("bow") != entity.component<BodyComponent>()->bodies.end());
-					b2Body* bowBody{entity.component<BodyComponent>()->bodies["bow"]};
-					
-					//Set the joint
-					b2PrismaticJointDef jointDef;
-					jointDef.bodyA = bowBody;
-					jointDef.bodyB = arrowBody;
-					jointDef.localAnchorA = {0.625f, 0.41666667};
-					jointDef.localAnchorB = {0.025f, 0.05f};
-					jointDef.localAxisA = {1.f, 0.f};
-					jointDef.referenceAngle = 0;
-					jointDef.enableLimit = true;
-					jointDef.lowerTranslation = -0.30833333f;
-					jointDef.upperTranslation = 0.f;
-					jointDef.enableMotor = true;
-					jointDef.maxMotorForce = 10.f;
-					jointDef.userData = add<unsigned int>(jointDef.userData, static_cast<unsigned int>(JointRole::BendingPower));
-					b2World* world{bowBody->GetWorld()};
-					world->CreateJoint(&jointDef);
-				}
+				bowComponent->notchedArrow = *found;
+				notchedArrow = *found;
+				bowComponent->arrows.erase(found);
+				
+				//If the notched arrow has not a main body, the program will crash
+				assert(notchedArrow.component<BodyComponent>()->bodies.find("main") != notchedArrow.component<BodyComponent>()->bodies.end());
+				b2Body* arrowBody{notchedArrow.component<BodyComponent>()->bodies["main"]};
+				//If the entity has not a bow, the program will crash
+				assert(entity.component<BodyComponent>()->bodies.find("bow") != entity.component<BodyComponent>()->bodies.end());
+				b2Body* bowBody{entity.component<BodyComponent>()->bodies["bow"]};
+				
+				//Set the joint
+				b2PrismaticJointDef jointDef;
+				jointDef.bodyA = bowBody;
+				jointDef.bodyB = arrowBody;
+				jointDef.localAnchorA = {0.625f, 0.41666667};
+				jointDef.localAnchorB = {0.025f, 0.05f};
+				jointDef.localAxisA = {1.f, 0.f};
+				jointDef.referenceAngle = 0;
+				jointDef.enableLimit = true;
+				jointDef.lowerTranslation = -0.30833333f;
+				jointDef.upperTranslation = 0.f;
+				jointDef.enableMotor = true;
+				jointDef.maxMotorForce = 10.f;
+				jointDef.userData = add<unsigned int>(jointDef.userData, static_cast<unsigned int>(JointRole::BendingPower));
+				b2World* world{bowBody->GetWorld()};
+				world->CreateJoint(&jointDef);
 			}
 		}
 	}
@@ -373,13 +368,11 @@ ArrowShooter::~ArrowShooter()
 
 void ArrowShooter::operator()(entityx::Entity entity, double) const
 {
-	if(entity.has_component<BendComponent>()
-		and entity.has_component<QuiverComponent>()
+	if(entity.has_component<BowComponent>()
 		and entity.has_component<DirectionComponent>())
 	{
-		BendComponent::Handle bendComponent{entity.component<BendComponent>()};
-		QuiverComponent::Handle quiverComponent{entity.component<QuiverComponent>()};
-		entityx::Entity notchedArrow{quiverComponent->notchedArrow};
+		BowComponent::Handle bowComponent{entity.component<BowComponent>()};
+		entityx::Entity notchedArrow{bowComponent->notchedArrow};
 		DirectionComponent::Handle directionComponent{entity.component<DirectionComponent>()};
 		//If the notched arrow has a b2Body
 		if(notchedArrow.valid() and notchedArrow.has_component<BodyComponent>())
@@ -393,16 +386,16 @@ void ArrowShooter::operator()(entityx::Entity entity, double) const
 				if(jointHasRole(jointEdge->joint, JointRole::BendingPower))
 					//Destroy the joint
 					jointEdge->joint->GetBodyA()->GetWorld()->DestroyJoint(jointEdge->joint);
-			double shootForceX{bendComponent->power*cos(bendComponent->angle)};
-			double shootForceY{-bendComponent->power*sin(bendComponent->angle)};
+			double shootForceX{bowComponent->power*cos(bowComponent->angle)};
+			double shootForceY{-bowComponent->power*sin(bowComponent->angle)};
 			if(directionComponent->direction == Direction::Left)
 			{
-				shootForceX = bendComponent->power*cos(bendComponent->angle+b2_pi);
-				shootForceY = -bendComponent->power*sin(bendComponent->angle+b2_pi);
+				shootForceX = bowComponent->power*cos(bowComponent->angle+b2_pi);
+				shootForceY = -bowComponent->power*sin(bowComponent->angle+b2_pi);
 			}
 			b2Vec2 shootForce{static_cast<float32>(shootForceX), static_cast<float32>(shootForceY)};
 			arrowBody->ApplyLinearImpulse((arrowBody->GetMass()/20.f)*shootForce, arrowBody->GetWorldCenter(), true);
-			quiverComponent->notchedArrow = entityx::Entity();
+			bowComponent->notchedArrow = entityx::Entity();
 		}
 	}
 }
