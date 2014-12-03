@@ -306,6 +306,7 @@ Json::Value serialize(entityx::ComponentHandle<ArrowComponent> component)
 {
 	Json::Value ret;
 	ret["friction"] = component->friction;
+	ret["penetrance"] = component->penetrance;
 	ret["local friction point"]["x"] = component->localFrictionPoint.x;
 	ret["local friction point"]["y"] = component->localFrictionPoint.y;
 	return ret;
@@ -756,6 +757,7 @@ void deserialize(const Json::Value& value, entityx::ComponentHandle<StaminaCompo
 void deserialize(const Json::Value& value, entityx::ComponentHandle<ArrowComponent> component)
 {
 	component->friction = value["friction"].asFloat();
+	component->penetrance = value["penetrance"].asFloat();
 	component->localFrictionPoint.x = value["local friction point"]["x"].asFloat();
 	component->localFrictionPoint.y = value["local friction point"]["y"].asFloat();
 }

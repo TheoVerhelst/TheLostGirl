@@ -363,6 +363,11 @@
                         "children":
                         [
                             {
+                                "name" : "penetrance",
+                                "type" : "real",
+                                "required" : true
+                            },
+                            {
                                 "name" : "friction",
                                 "type" : "real",
                                 "required" : true
@@ -386,6 +391,7 @@
                                     }
                                 ]
                             }
+                            
                         ]
                     },
                     {

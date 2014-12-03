@@ -41,7 +41,7 @@ bool ContactFilter::ShouldCollide(b2Fixture* fixtureA, b2Fixture* fixtureB)
 		std::string bodyNameB{it->first};
 		long int zB{lround(trsfB->transforms[bodyNameB].z)};//Nearest rounding of the plan of the body/sprite B
 		
-		ret = ret && zA == zB;//Collide only if in the same plan
+		ret = ret && (zA == zB);//Collide only if in the same plan
 	}
 	if(entityA.has_component<BowComponent>() or entityB.has_component<BowComponent>())
 	{
@@ -56,5 +56,7 @@ bool ContactFilter::ShouldCollide(b2Fixture* fixtureA, b2Fixture* fixtureB)
 		ret = ret && std::find(arrows.begin(), arrows.end(), entityA) == arrows.end();
 		ret = ret && entityA != entityB.component<BowComponent>()->notchedArrow;
 	}
+	//If both entities are arrows, the left operand is false, so the collison do not occurs
+	ret = ret && (not (entityA.has_component<ArrowComponent>() and entityB.has_component<ArrowComponent>()));
 	return ret;
 }
