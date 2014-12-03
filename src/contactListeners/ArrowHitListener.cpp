@@ -10,6 +10,7 @@
 #include <TheLostGirl/components.h>
 #include <TheLostGirl/AnimationsManager.h>
 #include <TheLostGirl/events.h>
+#include <TheLostGirl/PendingChanges.h>
 #include <TheLostGirl/FixtureRoles.h>
 
 #include <TheLostGirl/contactListeners/ArrowHitListener.h>
@@ -37,7 +38,7 @@ void ArrowHitListener::PostSolve(b2Contact* contact, const b2ContactImpulse* imp
 	b2Fixture* fixtureB{contact->GetFixtureB()};
 	b2Body* bodyB{fixtureB->GetBody()};
 	entityx::Entity entityB{*static_cast<entityx::Entity*>(bodyB->GetUserData())};
-	if(entityA != entityB)
+	if(entityA != entityB and impulse->normalImpulses[0] > 0.5f)
 	{
 		if(entityB.has_component<WindFrictionComponent>())
 		{
@@ -49,13 +50,13 @@ void ArrowHitListener::PostSolve(b2Contact* contact, const b2ContactImpulse* imp
 		if(entityA.has_component<WindFrictionComponent>())
 		{
 			b2Vec2 worldAnchorPoint = bodyA->GetWorldPoint(b2Vec2(0.4f, 0.05416667));
-			b2WeldJointDef weldJointDef;
-			weldJointDef.bodyA = bodyA;
-			weldJointDef.bodyB = bodyB;
-			weldJointDef.localAnchorA = bodyA->GetLocalPoint(worldAnchorPoint);
-			weldJointDef.localAnchorB = bodyB->GetLocalPoint(worldAnchorPoint);
-			weldJointDef.referenceAngle = bodyB->GetAngle() - bodyA->GetAngle();
-//			m_context.world.CreateJoint(&weldJointDef);
+			b2WeldJointDef* weldJointDef = new b2WeldJointDef();
+			weldJointDef->bodyA = bodyA;
+			weldJointDef->bodyB = bodyB;
+			weldJointDef->localAnchorA = bodyA->GetLocalPoint(worldAnchorPoint);
+			weldJointDef->localAnchorB = bodyB->GetLocalPoint(worldAnchorPoint);
+			weldJointDef->referenceAngle = bodyB->GetAngle() - bodyA->GetAngle();
+			m_context.pendingChanges.jointsToCreate.push(weldJointDef);
 		}
 	}
 }

@@ -154,7 +154,7 @@ void Application::registerStates()
 void Application::registerSystems()
 {
 	m_systemManager.add<PhysicsSystem>(m_world, m_parameters);
-	m_systemManager.add<ActionsSystem>(m_pendingChanges.commandQueue);
+	m_systemManager.add<PendingChangesSystem>(m_pendingChanges, m_world);
 	m_systemManager.add<AnimationsSystem>();
 	m_systemManager.add<RenderSystem>(m_window);
 	m_systemManager.add<DragAndDropSystem>(m_window, m_pendingChanges.commandQueue);

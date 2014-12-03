@@ -1,7 +1,7 @@
 #ifndef SYSTEMS_H
 #define SYSTEMS_H
 
-#include <TheLostGirl/systems/ActionsSystem.h>
+#include <TheLostGirl/systems/PendingChangesSystem.h>
 #include <TheLostGirl/systems/AnimationsSystem.h>
 #include <TheLostGirl/systems/DragAndDropSystem.h>
 #include <TheLostGirl/systems/PhysicsSystem.h>

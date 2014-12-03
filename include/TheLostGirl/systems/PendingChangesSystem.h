@@ -1,5 +1,5 @@
-#ifndef ACTIONSSYSTEM_H
-#define ACTIONSSYSTEM_H
+#ifndef PENDINGCHANGESSYSTEM_H
+#define PENDINGCHANGESSYSTEM_H
 
 #include <queue>
 
@@ -21,14 +21,15 @@ namespace entityx
 class b2World;
 struct Parameters;
 
-/// System that applies actions on the players's entity.
-class ActionsSystem : public entityx::System<ActionsSystem>
+/// System that do things in the pending list (create bodies, destroy joints, aply actions, ...)
+class PendingChangesSystem : public entityx::System<PendingChangesSystem>
 {
 	public:
 		/// Default constructor.
-		/// \param commandQueue Queue of command where the actions should be putted in.
-		ActionsSystem(std::queue<Command>& commandQueue):
-			m_commandQueue(commandQueue)
+		/// \param pendingChanges The set of all pending changes.
+		PendingChangesSystem(PendingChanges& pendingChanges, b2World& world):
+			m_pendingChanges(pendingChanges),
+			m_world(world)
 		{}
 
 		/// System's update function.
@@ -39,7 +40,8 @@ class ActionsSystem : public entityx::System<ActionsSystem>
 		void update(entityx::EntityManager &es, entityx::EventManager &events, double dt) override;
 
 	private:
-		std::queue<Command>& m_commandQueue;///< Queue of command where the actions should be putted in.
+		PendingChanges& m_pendingChanges;///< The set of all pending changes.
+		b2World& m_world;
 };
 
-#endif // ACTIONSSYSTEM_H
+#endif // PENDINGCHANGESSYSTEM_H

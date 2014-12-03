@@ -75,7 +75,7 @@ void GameState::draw()
 bool GameState::update(sf::Time elapsedTime)
 {
 	getContext().systemManager.update<PhysicsSystem>(elapsedTime.asSeconds());
-	getContext().systemManager.update<ActionsSystem>(elapsedTime.asSeconds());
+	getContext().systemManager.update<PendingChangesSystem>(elapsedTime.asSeconds());
 	getContext().systemManager.update<AnimationsSystem>(elapsedTime.asSeconds());
 	getContext().systemManager.update<ScrollingSystem>(elapsedTime.asSeconds());
 	getContext().systemManager.update<TimeSystem>(elapsedTime.asSeconds()*m_timeSpeed);//Scale the time
