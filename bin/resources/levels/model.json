@@ -250,13 +250,8 @@
                         "children":
                         {
                             "type" : "string",
-                            "possible values" : ["player", "scene"]
+                            "possible values" : ["player", "scene", "actor"]
                         }
-                    },
-                    {
-                        "name" : "sky",
-                        "type" : "bool",
-                        "required" : false
                     },
                     {
                         "name" : "health",
@@ -356,6 +351,11 @@
                         ]
                     },
                     {
+                        "name" : "hardness",
+                        "type" : "real",
+                        "required" : false
+                    },
+                    {
                         "name" : "arrow",
                         "type" : "object",
                         "free children names" : false,
@@ -366,6 +366,25 @@
                                 "name" : "penetrance",
                                 "type" : "real",
                                 "required" : true
+                            },
+                            {
+                                "name" : "local stick point",
+                                "type" : "object",
+                                "free children names" : false,
+                                "required" : true,
+                                "children" :
+                                [
+                                    {
+                                        "name" : "x",
+                                        "type" : "real",
+                                        "required" : true
+                                    },
+                                    {
+                                        "name" : "y",
+                                        "type" : "real",
+                                        "required" : true
+                                    }
+                                ]
                             },
                             {
                                 "name" : "friction",

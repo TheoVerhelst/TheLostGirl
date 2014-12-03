@@ -309,7 +309,14 @@ Json::Value serialize(entityx::ComponentHandle<ArrowComponent> component)
 	ret["penetrance"] = component->penetrance;
 	ret["local friction point"]["x"] = component->localFrictionPoint.x;
 	ret["local friction point"]["y"] = component->localFrictionPoint.y;
+	ret["local stick point"]["x"] = component->localStickPoint.x;
+	ret["local stick point"]["y"] = component->localStickPoint.y;
 	return ret;
+}
+
+Json::Value serialize(entityx::ComponentHandle<HardnessComponent> component)
+{
+	return component->hardness;
 }
 
 void deserialize(const Json::Value& value, entityx::ComponentHandle<BodyComponent> component, entityx::ComponentHandle<TransformComponent> transformComponent, b2World& world, float pixelByMeter)
@@ -760,4 +767,11 @@ void deserialize(const Json::Value& value, entityx::ComponentHandle<ArrowCompone
 	component->penetrance = value["penetrance"].asFloat();
 	component->localFrictionPoint.x = value["local friction point"]["x"].asFloat();
 	component->localFrictionPoint.y = value["local friction point"]["y"].asFloat();
+	component->localStickPoint.x = value["local stick point"]["x"].asFloat();
+	component->localStickPoint.y = value["local stick point"]["y"].asFloat();
+}
+
+void deserialize(const Json::Value& value, entityx::ComponentHandle<HardnessComponent> component)
+{
+	component->hardness = value.asFloat();
 }

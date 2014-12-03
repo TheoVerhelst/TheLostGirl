@@ -168,6 +168,7 @@ struct ArrowComponent : public entityx::Component<ArrowComponent>
 {
 	float friction;                 ///< The amplitude of the friction applied on the body.
 	sf::Vector2f localFrictionPoint;///< The point where the friction must be applied.
+	sf::Vector2f localStickPoint;   ///< The point where the arrow will be sticked when touch a target.
 	float penetrance;               ///< Indicates how much the arrow can stick into hard targets.
 };
 

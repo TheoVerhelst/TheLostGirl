@@ -343,10 +343,19 @@ void BowBender::operator()(entityx::Entity entity, double) const
 				b2PrismaticJointDef jointDef;
 				jointDef.bodyA = bowBody;
 				jointDef.bodyB = arrowBody;
-				jointDef.localAnchorA = {0.625f, 0.41666667};
-				jointDef.localAnchorB = {0.025f, 0.05f};
+				if(directionComponent->direction == Direction::Left)
+				{
+					jointDef.referenceAngle = b2_pi;
+					jointDef.localAnchorA = {0.183333, 0.41666667};
+					jointDef.localAnchorB = {0.4f-0.025f, 0.05f};
+				}
+				else if(directionComponent->direction == Direction::Right)
+				{
+					jointDef.referenceAngle = 0.f;
+					jointDef.localAnchorA = {0.625f, 0.41666667};
+					jointDef.localAnchorB = {0.025f, 0.05f};
+				}
 				jointDef.localAxisA = {1.f, 0.f};
-				jointDef.referenceAngle = 0;
 				jointDef.enableLimit = true;
 				jointDef.lowerTranslation = -0.30833333f;
 				jointDef.upperTranslation = 0.f;

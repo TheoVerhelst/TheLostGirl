@@ -144,6 +144,9 @@ void GameState::saveWorld(const std::string& file)
 			
 			if(entity.second.has_component<ArrowComponent>())
 				root["entities"][entity.first]["arrow"] = serialize(entity.second.component<ArrowComponent>());
+			
+			if(entity.second.has_component<HardnessComponent>())
+				root["entities"][entity.first]["hardness"] = serialize(entity.second.component<HardnessComponent>());
 		}
 		
 		//time
@@ -438,6 +441,8 @@ void GameState::initWorld(const std::string& file)
 					deserialize(entity["fall"], m_entities[entityName].assign<FallComponent>());
 				if(entity.isMember("arrow"))
 					deserialize(entity["arrow"], m_entities[entityName].assign<ArrowComponent>());
+				if(entity.isMember("hardness"))
+					deserialize(entity["hardness"], m_entities[entityName].assign<HardnessComponent>());
 			}
 		}
 		

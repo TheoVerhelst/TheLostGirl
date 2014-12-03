@@ -10,6 +10,7 @@
 #include <TheLostGirl/components.h>
 #include <TheLostGirl/AnimationsManager.h>
 #include <TheLostGirl/events.h>
+#include <TheLostGirl/functions.h>
 #include <TheLostGirl/PendingChanges.h>
 #include <TheLostGirl/FixtureRoles.h>
 
@@ -38,25 +39,36 @@ void ArrowHitListener::PostSolve(b2Contact* contact, const b2ContactImpulse* imp
 	b2Fixture* fixtureB{contact->GetFixtureB()};
 	b2Body* bodyB{fixtureB->GetBody()};
 	entityx::Entity entityB{*static_cast<entityx::Entity*>(bodyB->GetUserData())};
-	if(entityA != entityB and impulse->normalImpulses[0] > 0.1f)
+	if(entityA != entityB)
 	{
-		if(entityB.has_component<ArrowComponent>())
+		if(entityB.has_component<ArrowComponent>() and entityA.has_component<HardnessComponent>())
 		{
 			//Swap the pointers
 			std::swap(fixtureA, fixtureB);
 			std::swap(bodyA, bodyB);
 			std::swap(entityA, entityB);
 		}
-		if(entityA.has_component<ArrowComponent>())
+		if(entityA.has_component<ArrowComponent>() and entityB.has_component<HardnessComponent>())
 		{
-			b2Vec2 worldAnchorPoint = bodyA->GetWorldPoint({0.4f, 0.05416667});
-			b2WeldJointDef* weldJointDef = new b2WeldJointDef();
-			weldJointDef->bodyA = bodyA;
-			weldJointDef->bodyB = bodyB;
-			weldJointDef->localAnchorA = bodyA->GetLocalPoint(worldAnchorPoint);
-			weldJointDef->localAnchorB = bodyB->GetLocalPoint(worldAnchorPoint);
-			weldJointDef->referenceAngle = bodyB->GetAngle() - bodyA->GetAngle();
-			m_context.pendingChanges.jointsToCreate.push(weldJointDef);
+			float totalImpact{0.f};
+			//Sum the impact
+			for(unsigned int i{0}; impulse->normalImpulses[i] > 0.f and i < b2_maxManifoldPoints; i++)
+				totalImpact += impulse->normalImpulses[i];
+			//Multiply by the penetrance of the arrow
+			totalImpact *= entityA.component<ArrowComponent>()->penetrance;
+			//If the impact is greater than the hardness of the other object
+			if(totalImpact > entityB.component<HardnessComponent>()->hardness)
+			{
+				b2Vec2 localStickPoint{sftob2(entityA.component<ArrowComponent>()->localStickPoint/m_context.parameters.pixelByMeter)};
+				b2Vec2 globalStickPoint{bodyA->GetWorldPoint(localStickPoint)};
+				b2WeldJointDef* weldJointDef = new b2WeldJointDef();
+				weldJointDef->bodyA = bodyA;
+				weldJointDef->bodyB = bodyB;
+				weldJointDef->localAnchorA = localStickPoint;
+				weldJointDef->localAnchorB = bodyB->GetLocalPoint(globalStickPoint);
+				weldJointDef->referenceAngle = bodyB->GetAngle() - bodyA->GetAngle();
+				m_context.pendingChanges.jointsToCreate.push(weldJointDef);
+			}
 		}
 	}
 }
