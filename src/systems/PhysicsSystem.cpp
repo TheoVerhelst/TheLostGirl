@@ -135,7 +135,10 @@ void PhysicsSystem::update(entityx::EntityManager& entityManager, entityx::Event
 		float flightSpeed{flightDirection.Normalize()};//Normalizes (v in ([0, 1], [0, 1])) and returns length
 		float scalarProduct{b2Dot(flightDirection, pointingDirection)};
 		float dragConstant{arrowComponent->friction};
-		double dragForceMagnitude{(1 - fabs(scalarProduct)) * flightSpeed * flightSpeed * dragConstant * body->GetMass()};
+		//The first commented line apply a lower force on the arrow when the arrow is diriged to the opposite side of its trajectory,
+		//So if the arrow is fired vertically, it will be decelered less than with the second line.
+//		double dragForceMagnitude{(1 - fabs(scalarProduct)) * flightSpeed * flightSpeed * dragConstant * body->GetMass()};
+		double dragForceMagnitude{(1 - scalarProduct) * flightSpeed * flightSpeed * dragConstant * body->GetMass()};
 		
 		//Convert the local friction point to Box2D global coordinates
 		b2Vec2 localFrictionPoint{sftob2(arrowComponent->localFrictionPoint/m_parameters.pixelByMeter)};

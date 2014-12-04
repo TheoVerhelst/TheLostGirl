@@ -78,6 +78,7 @@ bool GameState::update(sf::Time elapsedTime)
 	getContext().systemManager.update<PendingChangesSystem>(elapsedTime.asSeconds());
 	getContext().systemManager.update<AnimationsSystem>(elapsedTime.asSeconds());
 	getContext().systemManager.update<ScrollingSystem>(elapsedTime.asSeconds());
+	getContext().systemManager.update<StatsSystem>(elapsedTime.asSeconds());
 	getContext().systemManager.update<TimeSystem>(elapsedTime.asSeconds()*m_timeSpeed);//Scale the time
 	return false;
 }

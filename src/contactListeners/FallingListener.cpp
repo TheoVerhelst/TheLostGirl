@@ -119,23 +119,21 @@ void FallingListener::EndContact(b2Contact* contact)
 
 void FallingListener::PostSolve(b2Contact* contact, const b2ContactImpulse* impulse)
 {
-	//Pretty basic falling damage
-	if(impulse->normalImpulses[0] > 10.f)
-	{
-		float impact{impulse->normalImpulses[0]};
-		entityx::Entity entityA{*static_cast<entityx::Entity*>(contact->GetFixtureA()->GetBody()->GetUserData())};
-		entityx::Entity entityB{*static_cast<entityx::Entity*>(contact->GetFixtureB()->GetBody()->GetUserData())};
-		if(entityA.has_component<HealthComponent>())
-		{
-			entityA.component<HealthComponent>()->health -= impact - 10;
-			std::cout << "New health : " << entityA.component<HealthComponent>()->health << std::endl;
-			m_context.eventManager.emit<PlayerHealthChange>(entityA.component<HealthComponent>()->health);
-		}
-		if(entityB.has_component<HealthComponent>())
-		{
-			entityB.component<HealthComponent>()->health -= impact - 10;
-			std::cout << "New health : " << entityB.component<HealthComponent>()->health << std::endl;
-			m_context.eventManager.emit<PlayerHealthChange>(entityB.component<HealthComponent>()->health);
-		}
-	}
+	//Handle falling damage
+	entityx::Entity entityA{*static_cast<entityx::Entity*>(contact->GetFixtureA()->GetBody()->GetUserData())};
+	entityx::Entity entityB{*static_cast<entityx::Entity*>(contact->GetFixtureB()->GetBody()->GetUserData())};
+	float totalImpact{0.f};
+	//Sum the impact
+	for(unsigned int i{0}; impulse->normalImpulses[i] > 0.f and i < b2_maxManifoldPoints; i++)
+		totalImpact += impulse->normalImpulses[i];
+	
+	if(entityA.has_component<HealthComponent>()
+		and entityA.has_component<FallComponent>()
+		and totalImpact > entityA.component<FallComponent>()->fallingResistance)
+			entityA.component<HealthComponent>()->current -= totalImpact - entityA.component<FallComponent>()->fallingResistance;
+	
+	if(entityB.has_component<HealthComponent>()
+		and entityB.has_component<FallComponent>()
+		and totalImpact > entityB.component<FallComponent>()->fallingResistance)
+			entityB.component<HealthComponent>()->current -= totalImpact - entityB.component<FallComponent>()->fallingResistance;
 }

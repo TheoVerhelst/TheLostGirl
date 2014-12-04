@@ -8,5 +8,6 @@
 #include <TheLostGirl/systems/RenderSystem.h>
 #include <TheLostGirl/systems/ScrollingSystem.h>
 #include <TheLostGirl/systems/TimeSystem.h>
+#include <TheLostGirl/systems/StatsSystem.h>
 
 #endif // SYSTEMS_H

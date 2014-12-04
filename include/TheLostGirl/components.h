@@ -150,15 +150,17 @@ struct BowComponent : public entityx::Component<BowComponent>
 /// Health component.
 struct HealthComponent : public entityx::Component<HealthComponent>
 {
-	float maxHealth;///< The maximum health.
-	float health;///< The current health.
+	float maximum;     ///< The maximum health.
+	float current;     ///< The current health.
+	float regeneration;///< The regeneration of health (in units/s).
 };
 
 /// Stamina component.
 struct StaminaComponent : public entityx::Component<StaminaComponent>
 {
-	float maxStamina;///< The maximum stamina.
-	float stamina;///< The current stamina.
+	float maximum;     ///< The maximum stamina.
+	float current;     ///< The current stamina.
+	float regeneration;///< The regeneration of stamina (in units/s).
 };
 
 /// Wind friction component.
@@ -170,6 +172,7 @@ struct ArrowComponent : public entityx::Component<ArrowComponent>
 	sf::Vector2f localFrictionPoint;///< The point where the friction must be applied.
 	sf::Vector2f localStickPoint;   ///< The point where the arrow will be sticked when touch a target.
 	float penetrance;               ///< Indicates how much the arrow can stick into hard targets.
+	float damage;                   ///< Indicates the damage that the arrow can do on the target.
 	bool sticked;                   ///< Indicates if the arrow is sticked into a target.
 };
 

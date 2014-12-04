@@ -291,16 +291,18 @@ Json::Value serialize(entityx::ComponentHandle<BowComponent> component, const st
 Json::Value serialize(entityx::ComponentHandle<HealthComponent> component)
 {
 	Json::Value ret;
-	ret["current health"] = component->health;
-	ret["maximum health"] = component->maxHealth;
+	ret["current"] = component->current;
+	ret["maximum"] = component->maximum;
+	ret["regeneration"] = component->regeneration;
 	return ret;
 }
 
 Json::Value serialize(entityx::ComponentHandle<StaminaComponent> component)
 {
 	Json::Value ret;
-	ret["current stamina"] = component->stamina;
-	ret["maximum stamina"] = component->maxStamina;
+	ret["current"] = component->current;
+	ret["maximum"] = component->maximum;
+	ret["regeneration"] = component->regeneration;
 	return ret;
 }
 
@@ -309,6 +311,7 @@ Json::Value serialize(entityx::ComponentHandle<ArrowComponent> component)
 	Json::Value ret;
 	ret["friction"] = component->friction;
 	ret["penetrance"] = component->penetrance;
+	ret["damage"] = component->damage;
 	ret["local friction point"]["x"] = component->localFrictionPoint.x;
 	ret["local friction point"]["y"] = component->localFrictionPoint.y;
 	ret["local stick point"]["x"] = component->localStickPoint.x;
@@ -756,20 +759,23 @@ void deserialize(const Json::Value& value, entityx::ComponentHandle<BowComponent
 
 void deserialize(const Json::Value& value, entityx::ComponentHandle<HealthComponent> component)
 {
-	component->health = value["current health"].asFloat();
-	component->maxHealth = value["maximum health"].asFloat();
+	component->current = value["current"].asFloat();
+	component->maximum = value["maximum"].asFloat();
+	component->regeneration = value["regeneration"].asFloat();
 }
 
 void deserialize(const Json::Value& value, entityx::ComponentHandle<StaminaComponent> component)
 {
-	component->stamina = value["current stamina"].asFloat();
-	component->maxStamina = value["maximum stamina"].asFloat();
+	component->current = value["current"].asFloat();
+	component->maximum = value["maximum"].asFloat();
+	component->regeneration = value["regeneration"].asFloat();
 }
 
 void deserialize(const Json::Value& value, entityx::ComponentHandle<ArrowComponent> component)
 {
 	component->friction = value["friction"].asFloat();
 	component->penetrance = value["penetrance"].asFloat();
+	component->damage = value["damage"].asFloat();
 	component->localFrictionPoint.x = value["local friction point"]["x"].asFloat();
 	component->localFrictionPoint.y = value["local friction point"]["y"].asFloat();
 	component->localStickPoint.x = value["local stick point"]["x"].asFloat();

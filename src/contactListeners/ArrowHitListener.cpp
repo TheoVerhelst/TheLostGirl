@@ -55,10 +55,8 @@ void ArrowHitListener::PostSolve(b2Contact* contact, const b2ContactImpulse* imp
 			//Sum the impact
 			for(unsigned int i{0}; impulse->normalImpulses[i] > 0.f and i < b2_maxManifoldPoints; i++)
 				totalImpact += impulse->normalImpulses[i];
-			//Multiply by the penetrance of the arrow
-			totalImpact *= entityA.component<ArrowComponent>()->penetrance;
-			//If the impact is greater than the hardness of the other object
-			if(totalImpact > entityB.component<HardnessComponent>()->hardness)
+			//If the impact multiplied by the penetrance of the arrow is greater than the hardness of the other object
+			if(totalImpact*entityA.component<ArrowComponent>()->penetrance > entityB.component<HardnessComponent>()->hardness)
 			{
 				b2Vec2 localStickPoint{sftob2(entityA.component<ArrowComponent>()->localStickPoint/m_context.parameters.pixelByMeter)};
 				b2Vec2 globalStickPoint{bodyA->GetWorldPoint(localStickPoint)};
@@ -71,6 +69,8 @@ void ArrowHitListener::PostSolve(b2Contact* contact, const b2ContactImpulse* imp
 				m_context.systemManager.system<PendingChangesSystem>()->jointsToCreate.push(weldJointDef);
 				entityA.component<ArrowComponent>()->sticked = true;
 			}
+			if(entityB.has_component<HealthComponent>())
+				entityB.component<HealthComponent>()->current -= totalImpact*entityA.component<ArrowComponent>()->damage;
 		}
 	}
 }
