@@ -101,4 +101,4 @@ class TimeSystem : public entityx::System<TimeSystem>
 		float m_microWindTransitionLength;///< Same as higher, but in smaller proportions.
 };
 
-#endif // TIMESYSTEM_H
+#endif//TIMESYSTEM_H

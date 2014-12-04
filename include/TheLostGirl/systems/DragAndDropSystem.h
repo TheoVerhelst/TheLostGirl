@@ -54,4 +54,4 @@ class DragAndDropSystem : public entityx::System<DragAndDropSystem>
 		bool m_isActive;             ///< True when the drag and drop is actived.
 };
 
-#endif // DRAGANDDROPSYSTEM_H
+#endif//DRAGANDDROPSYSTEM_H

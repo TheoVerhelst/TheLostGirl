@@ -91,4 +91,4 @@ class GameState : public State
 		sf::IntRect m_levelRect;                                              ///< The dimensions of the level, in pixels.
 };
 
-#endif // GAMESTATE_H
+#endif//GAMESTATE_H

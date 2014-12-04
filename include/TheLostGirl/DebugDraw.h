@@ -70,4 +70,4 @@ class DebugDraw : public b2Draw
 		State::Context m_context;///< Current context of the application.
 };
 
-#endif // DEBUGDRAW_H
+#endif//DEBUGDRAW_H

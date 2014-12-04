@@ -14,4 +14,4 @@ enum class States
 	HUD      ///< The HUD state, on top of the Game state.
 };
 
-#endif // STATEIDENTIFIERS_H
+#endif//STATEIDENTIFIERS_H

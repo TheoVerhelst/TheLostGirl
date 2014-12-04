@@ -166,7 +166,7 @@ static inline void fixNumericLocale(char* begin, char* end) {
 
 } // namespace Json {
 
-#endif // LIB_JSONCPP_JSON_TOOL_H_INCLUDED
+#endif//LIB_JSONCPP_JSON_TOOL_H_INCLUDED
 
 // //////////////////////////////////////////////////////////////////////
 // End of content of file: src/lib_json/json_tool.h
@@ -191,7 +191,7 @@ static inline void fixNumericLocale(char* begin, char* end) {
 #include <json/reader.h>
 #include <json/value.h>
 #include "json_tool.h"
-#endif // if !defined(JSON_IS_AMALGAMATION)
+#endif//if !defined(JSON_IS_AMALGAMATION)
 #include <utility>
 #include <cstdio>
 #include <cassert>
@@ -300,8 +300,8 @@ bool Reader::parse(const char* beginDoc,
   end_ = endDoc;
   collectComments_ = collectComments;
   current_ = begin_;
-  lastValueEnd_ = 0;
-  lastValue_ = 0;
+  lastValueEnd_ = nullptr;
+  lastValue_ = nullptr;
   commentsBefore_ = "";
   errors_.clear();
   while (!nodes_.empty())
@@ -538,7 +538,7 @@ void
 Reader::addComment(Location begin, Location end, CommentPlacement placement) {
   assert(collectComments_);
   if (placement == commentAfterOnSameLine) {
-    assert(lastValue_ != 0);
+    assert(lastValue_ != nullptr);
     lastValue_->setComment(std::string(begin, end), placement);
   } else {
     commentsBefore_ += std::string(begin, end);
@@ -1024,7 +1024,7 @@ bool Reader::pushError(const Value& value, const std::string& message) {
   ErrorInfo info;
   info.token_ = token;
   info.message_ = message;
-  info.extra_ = 0;
+  info.extra_ = nullptr;
   errors_.push_back(info);
   return true;
 }
@@ -1196,9 +1196,9 @@ private:
 
 } // namespace Json
 
-#endif // ifndef JSONCPP_DOC_INCLUDE_IMPLEMENTATION
+#endif//ifndef JSONCPP_DOC_INCLUDE_IMPLEMENTATION
 
-#endif // JSONCPP_BATCHALLOCATOR_H_INCLUDED
+#endif//JSONCPP_BATCHALLOCATOR_H_INCLUDED
 
 // //////////////////////////////////////////////////////////////////////
 // End of content of file: src/lib_json/json_batchallocator.h
@@ -1479,8 +1479,8 @@ ValueIterator& ValueIterator::operator=(const SelfType& other) {
 #include <json/writer.h>
 #ifndef JSON_USE_SIMPLE_INTERNAL_ALLOCATOR
 #include "json_batchallocator.h"
-#endif // #ifndef JSON_USE_SIMPLE_INTERNAL_ALLOCATOR
-#endif // if !defined(JSON_IS_AMALGAMATION)
+#endif//#ifndef JSON_USE_SIMPLE_INTERNAL_ALLOCATOR
+#endif//if !defined(JSON_IS_AMALGAMATION)
 #include <math.h>
 #include <sstream>
 #include <utility>
@@ -1518,7 +1518,7 @@ const UInt64 Value::maxUInt64 = UInt64(-1);
 // converting Value::maxUInt64 to a double correctly (AIX/xlC).
 // Assumes that UInt64 is a 64 bits integer.
 static const double maxUInt64AsDouble = 18446744073709551615.0;
-#endif // defined(JSON_HAS_INT64)
+#endif//defined(JSON_HAS_INT64)
 const LargestInt Value::minLargestInt = LargestInt(~(LargestUInt(-1) / 2));
 const LargestInt Value::maxLargestInt = LargestInt(LargestUInt(-1) / 2);
 const LargestUInt Value::maxLargestUInt = LargestUInt(-1);
@@ -1544,7 +1544,7 @@ template <typename T, typename U>
 static inline bool InRange(double d, T min, U max) {
   return d >= integerToDouble(min) && d <= integerToDouble(max);
 }
-#endif // if !defined(JSON_USE_INT64_DOUBLE_CONVERSION)
+#endif//if !defined(JSON_USE_INT64_DOUBLE_CONVERSION)
 
 /** Duplicates the specified string value.
  * @param value Pointer to the string to duplicate. Must be zero-terminated if
@@ -1564,7 +1564,7 @@ static inline char* duplicateStringValue(const char* value,
     length = Value::maxInt - 1;
 
   char* newString = static_cast<char*>(malloc(length + 1));
-  JSON_ASSERT_MESSAGE(newString != 0,
+  JSON_ASSERT_MESSAGE(newString != nullptr,
                       "in Json::Value::duplicateStringValue(): "
                       "Failed to allocate string value buffer");
   memcpy(newString, value, length);
@@ -1589,10 +1589,10 @@ static inline void releaseStringValue(char* value) { free(value); }
 #ifdef JSON_VALUE_USE_INTERNAL_MAP
 #include "json_internalarray.inl"
 #include "json_internalmap.inl"
-#endif // JSON_VALUE_USE_INTERNAL_MAP
+#endif//JSON_VALUE_USE_INTERNAL_MAP
 
 #include "json_valueiterator.inl"
-#endif // if !defined(JSON_IS_AMALGAMATION)
+#endif//if !defined(JSON_IS_AMALGAMATION)
 
 namespace Json {
 
@@ -1604,7 +1604,7 @@ namespace Json {
 // //////////////////////////////////////////////////////////////////
 // //////////////////////////////////////////////////////////////////
 
-Value::CommentInfo::CommentInfo() : comment_(0) {}
+Value::CommentInfo::CommentInfo() : comment_(nullptr) {}
 
 Value::CommentInfo::~CommentInfo() {
   if (comment_)
@@ -1614,7 +1614,7 @@ Value::CommentInfo::~CommentInfo() {
 void Value::CommentInfo::setComment(const char* text) {
   if (comment_)
     releaseStringValue(comment_);
-  JSON_ASSERT(text != 0);
+  JSON_ASSERT(text != nullptr);
   JSON_ASSERT_MESSAGE(
       text[0] == '\0' || text[0] == '/',
       "in Json::Value::setComment(): Comments must start with /");
@@ -1634,14 +1634,14 @@ void Value::CommentInfo::setComment(const char* text) {
 // Notes: index_ indicates if the string was allocated when
 // a string is stored.
 
-Value::CZString::CZString(ArrayIndex index) : cstr_(0), index_(index) {}
+Value::CZString::CZString(ArrayIndex index) : cstr_(nullptr), index_(index) {}
 
 Value::CZString::CZString(const char* cstr, DuplicationPolicy allocate)
     : cstr_(allocate == duplicate ? duplicateStringValue(cstr) : cstr),
       index_(allocate) {}
 
 Value::CZString::CZString(const CZString& other)
-    : cstr_(other.index_ != noDuplication && other.cstr_ != 0
+    : cstr_(other.index_ != noDuplication && other.cstr_ != nullptr
                 ? duplicateStringValue(other.cstr_)
                 : other.cstr_),
       index_(other.cstr_
@@ -1681,7 +1681,7 @@ const char* Value::CZString::c_str() const { return cstr_; }
 
 bool Value::CZString::isStaticString() const { return index_ == noDuplication; }
 
-#endif // ifndef JSON_VALUE_USE_INTERNAL_MAP
+#endif//ifndef JSON_VALUE_USE_INTERNAL_MAP
 
 // //////////////////////////////////////////////////////////////////
 // //////////////////////////////////////////////////////////////////
@@ -1702,7 +1702,7 @@ Value::Value(ValueType type)
       itemIsUsed_(0)
 #endif
       ,
-      comments_(0), start_(0), limit_(0) {
+      comments_(nullptr), start_(0), limit_(0) {
   switch (type) {
   case nullValue:
     break;
@@ -1714,7 +1714,7 @@ Value::Value(ValueType type)
     value_.real_ = 0.0;
     break;
   case stringValue:
-    value_.string_ = 0;
+    value_.string_ = nullptr;
     break;
 #ifndef JSON_VALUE_USE_INTERNAL_MAP
   case arrayValue:
@@ -1744,7 +1744,7 @@ Value::Value(UInt value)
       itemIsUsed_(0)
 #endif
       ,
-      comments_(0), start_(0), limit_(0) {
+      comments_(nullptr), start_(0), limit_(0) {
   value_.uint_ = value;
 }
 
@@ -1755,7 +1755,7 @@ Value::Value(Int value)
       itemIsUsed_(0)
 #endif
       ,
-      comments_(0), start_(0), limit_(0) {
+      comments_(nullptr), start_(0), limit_(0) {
   value_.int_ = value;
 }
 
@@ -1767,7 +1767,7 @@ Value::Value(Int64 value)
       itemIsUsed_(0)
 #endif
       ,
-      comments_(0), start_(0), limit_(0) {
+      comments_(nullptr), start_(0), limit_(0) {
   value_.int_ = value;
 }
 
@@ -1778,10 +1778,10 @@ Value::Value(UInt64 value)
       itemIsUsed_(0)
 #endif
       ,
-      comments_(0), start_(0), limit_(0) {
+      comments_(nullptr), start_(0), limit_(0) {
   value_.uint_ = value;
 }
-#endif // defined(JSON_HAS_INT64)
+#endif//defined(JSON_HAS_INT64)
 
 Value::Value(double value)
     : type_(realValue), allocated_(false)
@@ -1790,7 +1790,7 @@ Value::Value(double value)
       itemIsUsed_(0)
 #endif
       ,
-      comments_(0), start_(0), limit_(0) {
+      comments_(nullptr), start_(0), limit_(0) {
   value_.real_ = value;
 }
 
@@ -1801,7 +1801,7 @@ Value::Value(const char* value)
       itemIsUsed_(0)
 #endif
       ,
-      comments_(0), start_(0), limit_(0) {
+      comments_(nullptr), start_(0), limit_(0) {
   value_.string_ = duplicateStringValue(value);
 }
 
@@ -1812,7 +1812,7 @@ Value::Value(const char* beginValue, const char* endValue)
       itemIsUsed_(0)
 #endif
       ,
-      comments_(0), start_(0), limit_(0) {
+      comments_(nullptr), start_(0), limit_(0) {
   value_.string_ =
       duplicateStringValue(beginValue, (unsigned int)(endValue - beginValue));
 }
@@ -1824,7 +1824,7 @@ Value::Value(const std::string& value)
       itemIsUsed_(0)
 #endif
       ,
-      comments_(0), start_(0), limit_(0) {
+      comments_(nullptr), start_(0), limit_(0) {
   value_.string_ =
       duplicateStringValue(value.c_str(), (unsigned int)value.length());
 }
@@ -1836,7 +1836,7 @@ Value::Value(const StaticString& value)
       itemIsUsed_(0)
 #endif
       ,
-      comments_(0), start_(0), limit_(0) {
+      comments_(nullptr), start_(0), limit_(0) {
   value_.string_ = const_cast<char*>(value.c_str());
 }
 
@@ -1848,7 +1848,7 @@ Value::Value(const CppTL::ConstString& value)
       itemIsUsed_(0)
 #endif
       ,
-      comments_(0), start_(0), limit_(0) {
+      comments_(nullptr), start_(0), limit_(0) {
   value_.string_ = duplicateStringValue(value, value.length());
 }
 #endif
@@ -1860,7 +1860,7 @@ Value::Value(bool value)
       itemIsUsed_(0)
 #endif
       ,
-      comments_(0), start_(0), limit_(0) {
+      comments_(nullptr), start_(0), limit_(0) {
   value_.bool_ = value;
 }
 
@@ -1871,7 +1871,7 @@ Value::Value(const Value& other)
       itemIsUsed_(0)
 #endif
       ,
-      comments_(0), start_(other.start_), limit_(other.limit_) {
+      comments_(nullptr), start_(other.start_), limit_(other.limit_) {
   switch (type_) {
   case nullValue:
   case intValue:
@@ -1885,7 +1885,7 @@ Value::Value(const Value& other)
       value_.string_ = duplicateStringValue(other.value_.string_);
       allocated_ = true;
     } else {
-      value_.string_ = 0;
+      value_.string_ = nullptr;
       allocated_ = false;
     }
     break;
@@ -1991,7 +1991,7 @@ bool Value::operator<(const Value& other) const {
   case booleanValue:
     return value_.bool_ < other.value_.bool_;
   case stringValue:
-    return (value_.string_ == 0 && other.value_.string_) ||
+    return (value_.string_ == nullptr && other.value_.string_) ||
            (other.value_.string_ && value_.string_ &&
             strcmp(value_.string_, other.value_.string_) < 0);
 #ifndef JSON_VALUE_USE_INTERNAL_MAP
@@ -2180,7 +2180,7 @@ Value::UInt64 Value::asUInt64() const {
   }
   JSON_FAIL_MESSAGE("Value is not convertible to UInt64.");
 }
-#endif // if defined(JSON_HAS_INT64)
+#endif//if defined(JSON_HAS_INT64)
 
 LargestInt Value::asLargestInt() const {
 #if defined(JSON_NO_INT64)
@@ -2207,7 +2207,7 @@ double Value::asDouble() const {
     return static_cast<double>(value_.uint_);
 #else  // if !defined(JSON_USE_INT64_DOUBLE_CONVERSION)
     return integerToDouble(value_.uint_);
-#endif // if !defined(JSON_USE_INT64_DOUBLE_CONVERSION)
+#endif//if !defined(JSON_USE_INT64_DOUBLE_CONVERSION)
   case realValue:
     return value_.real_;
   case nullValue:
@@ -2229,7 +2229,7 @@ float Value::asFloat() const {
     return static_cast<float>(value_.uint_);
 #else  // if !defined(JSON_USE_INT64_DOUBLE_CONVERSION)
     return integerToDouble(value_.uint_);
-#endif // if !defined(JSON_USE_INT64_DOUBLE_CONVERSION)
+#endif//if !defined(JSON_USE_INT64_DOUBLE_CONVERSION)
   case realValue:
     return static_cast<float>(value_.real_);
   case nullValue:
@@ -2287,6 +2287,7 @@ bool Value::isConvertibleTo(ValueType other) const {
   case arrayValue:
     return type_ == arrayValue || type_ == nullValue;
   case objectValue:
+  default:
     return type_ == objectValue || type_ == nullValue;
   }
   JSON_ASSERT_UNREACHABLE;
@@ -2312,6 +2313,7 @@ ArrayIndex Value::size() const {
     }
     return 0;
   case objectValue:
+  default:
     return ArrayIndex(value_.map_->size());
 #else
   case arrayValue:
@@ -2671,7 +2673,7 @@ bool Value::isInt64() const {
   default:
     break;
   }
-#endif // JSON_HAS_INT64
+#endif//JSON_HAS_INT64
   return false;
 }
 
@@ -2691,7 +2693,7 @@ bool Value::isUInt64() const {
   default:
     break;
   }
-#endif // JSON_HAS_INT64
+#endif//JSON_HAS_INT64
   return false;
 }
 
@@ -2724,7 +2726,7 @@ void Value::setComment(const std::string& comment, CommentPlacement placement) {
 }
 
 bool Value::hasComment(CommentPlacement placement) const {
-  return comments_ != 0 && comments_[placement].comment_ != 0;
+  return comments_ != nullptr && comments_[placement].comment_ != nullptr;
 }
 
 std::string Value::getComment(CommentPlacement placement) const {
@@ -3030,7 +3032,7 @@ Value& Path::make(Value& root) const {
 #if !defined(JSON_IS_AMALGAMATION)
 #include <json/writer.h>
 #include "json_tool.h"
-#endif // if !defined(JSON_IS_AMALGAMATION)
+#endif//if !defined(JSON_IS_AMALGAMATION)
 #include <utility>
 #include <assert.h>
 #include <stdio.h>
@@ -3091,7 +3093,7 @@ std::string valueToString(UInt value) {
   return valueToString(LargestUInt(value));
 }
 
-#endif // # if defined(JSON_HAS_INT64)
+#endif//# if defined(JSON_HAS_INT64)
 
 std::string valueToString(double value) {
   // Allocate a buffer that is more than large enough to store the 16 digits of
@@ -3250,7 +3252,8 @@ void FastWriter::writeValue(const Value& value) {
     }
     document_ += "]";
   } break;
-  case objectValue: {
+  case objectValue:
+  default: {
     Value::Members members(value.getMemberNames());
     document_ += "{";
     for (Value::Members::iterator it = members.begin(); it != members.end();
@@ -3307,7 +3310,8 @@ void StyledWriter::writeValue(const Value& value) {
   case arrayValue:
     writeArrayValue(value);
     break;
-  case objectValue: {
+  case objectValue:
+  default: {
     Value::Members members(value.getMemberNames());
     if (members.empty())
       pushValue("{}");
@@ -3493,7 +3497,7 @@ std::string StyledWriter::normalizeEOL(const std::string& text) {
 // //////////////////////////////////////////////////////////////////
 
 StyledStreamWriter::StyledStreamWriter(std::string indentation)
-    : document_(NULL), rightMargin_(74), indentation_(indentation),
+    : document_(nullptr), rightMargin_(74), indentation_(indentation),
       addChildValues_() {}
 
 void StyledStreamWriter::write(std::ostream& out, const Value& root) {
@@ -3504,7 +3508,7 @@ void StyledStreamWriter::write(std::ostream& out, const Value& root) {
   writeValue(root);
   writeCommentAfterValueOnSameLine(root);
   *document_ << "\n";
-  document_ = NULL; // Forget the stream, for safety.
+  document_ = nullptr; // Forget the stream, for safety.
 }
 
 void StyledStreamWriter::writeValue(const Value& value) {
@@ -3530,7 +3534,8 @@ void StyledStreamWriter::writeValue(const Value& value) {
   case arrayValue:
     writeArrayValue(value);
     break;
-  case objectValue: {
+  case objectValue:
+  default: {
     Value::Members members(value.getMemberNames());
     if (members.empty())
       pushValue("{}");

@@ -99,4 +99,4 @@ class SpriteSheetAnimation
 		State::Context m_context;   ///< Current context of the application.
 };
 
-#endif // SPRITESHEETANIMATION_H
+#endif//SPRITESHEETANIMATION_H

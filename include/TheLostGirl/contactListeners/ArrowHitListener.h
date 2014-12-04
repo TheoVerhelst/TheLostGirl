@@ -42,4 +42,4 @@ class ArrowHitListener : public b2ContactListener
 		State::Context m_context;///< Current context of the application.
 };
 
-#endif // ARROWHITLISTENER_H
+#endif//ARROWHITLISTENER_H

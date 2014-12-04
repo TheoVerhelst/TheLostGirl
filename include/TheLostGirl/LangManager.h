@@ -49,4 +49,4 @@ class LangManager
 		static std::map<std::string, std::wstring> m_entries;///< Translations related to the current lang.
 };
 
-#endif // LANGMANAGER_H
+#endif//LANGMANAGER_H

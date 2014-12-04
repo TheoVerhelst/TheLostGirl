@@ -46,4 +46,4 @@ class ContactListener : public b2ContactListener
 		ArrowHitListener m_arrowHitListener;///< The arrow hit listener.
 };
 
-#endif // CONTACTLISTENER_H
+#endif//CONTACTLISTENER_H

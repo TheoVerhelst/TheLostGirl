@@ -23,4 +23,4 @@ class StatsSystem : public entityx::System<StatsSystem>
 		void update(entityx::EntityManager &es, entityx::EventManager &events, double dt) override;
 };
 
-#endif // STATSSYSTEM_H
+#endif//STATSSYSTEM_H

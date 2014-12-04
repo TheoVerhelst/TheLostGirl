@@ -78,4 +78,4 @@ typedef ResourceManager<sf::Font, std::string> FontManager;
 
 #include <TheLostGirl/ResourceManager.inl>
 
-#endif // RESOURCEMANAGER_H
+#endif//RESOURCEMANAGER_H

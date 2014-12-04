@@ -57,4 +57,4 @@ class MainMenuState : public State
 		tgui::Button::Ptr m_exitButton;///< The Exit button.
 };
 
-#endif // MAINMENUSTATE_H
+#endif//MAINMENUSTATE_H

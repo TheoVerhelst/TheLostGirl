@@ -32,4 +32,4 @@ struct Parameters
 	std::string textFont;         ///< Path of the main font.
 };
 
-#endif // PARAMETERS_H
+#endif//PARAMETERS_H

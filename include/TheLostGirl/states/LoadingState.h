@@ -56,4 +56,4 @@ class LoadingState : public State, public entityx::Receiver<LoadingState>
 		double m_sentenceTimer;          /// Timer in seconds of a little animation on the sentence.
 };
 
-#endif // LOADINGSTATE_H
+#endif//LOADINGSTATE_H

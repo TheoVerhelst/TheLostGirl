@@ -85,4 +85,4 @@ struct ArrowShooter : public Action
 	virtual void operator()(entityx::Entity entity, double dt) const;
 };
 
-#endif // ACTIONS_H
+#endif//ACTIONS_H

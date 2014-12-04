@@ -8,4 +8,4 @@
 #include <TheLostGirl/states/HUDState.h>
 #include <TheLostGirl/states/PauseState.h>
 
-#endif // STATES_H
+#endif//STATES_H

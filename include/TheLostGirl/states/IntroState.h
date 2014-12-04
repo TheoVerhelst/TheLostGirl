@@ -38,4 +38,4 @@ class IntroState : public State
 		virtual bool handleEvent(const sf::Event& event);
 };
 
-#endif // INTROSTATE_H
+#endif//INTROSTATE_H

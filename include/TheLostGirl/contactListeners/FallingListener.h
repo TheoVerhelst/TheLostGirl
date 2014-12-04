@@ -42,4 +42,4 @@ class FallingListener : public b2ContactListener
 		State::Context m_context;///< Current context of the application.
 };
 
-#endif // FALLINGLISTENER_H
+#endif//FALLINGLISTENER_H

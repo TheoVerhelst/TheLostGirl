@@ -95,7 +95,7 @@ license you like.
 # define JSONCPP_VERSION_QUALIFIER
 # define JSONCPP_VERSION_HEXA ((JSONCPP_VERSION_MAJOR << 24) | (JSONCPP_VERSION_MINOR << 16) | (JSONCPP_VERSION_PATCH << 8))
 
-#endif // JSON_VERSION_H_INCLUDED
+#endif//JSON_VERSION_H_INCLUDED
 
 // //////////////////////////////////////////////////////////////////////
 // End of content of file: include/json/version.h
@@ -163,13 +163,13 @@ license you like.
 #if defined(_MSC_VER)
 #define JSON_API __declspec(dllexport)
 #define JSONCPP_DISABLE_DLL_INTERFACE_WARNING
-#endif // if defined(_MSC_VER)
+#endif//if defined(_MSC_VER)
 #elif defined(JSON_DLL)
 #if defined(_MSC_VER)
 #define JSON_API __declspec(dllimport)
 #define JSONCPP_DISABLE_DLL_INTERFACE_WARNING
-#endif // if defined(_MSC_VER)
-#endif // ifdef JSON_IN_CPPTL
+#endif//if defined(_MSC_VER)
+#endif//ifdef JSON_IN_CPPTL
 #if !defined(JSON_API)
 #define JSON_API
 #endif
@@ -188,7 +188,7 @@ license you like.
 // All projects I've ever seen with VS6 were using this globally (not bothering
 // with pragma push/pop).
 #pragma warning(disable : 4786)
-#endif // if defined(_MSC_VER)  &&  _MSC_VER < 1200 // MSVC 6
+#endif//if defined(_MSC_VER)  &&  _MSC_VER < 1200 // MSVC 6
 
 #if defined(_MSC_VER) && _MSC_VER >= 1500 // MSVC 2008
 /// Indicates that the following function is deprecated.
@@ -197,7 +197,7 @@ license you like.
 
 #if !defined(JSONCPP_DEPRECATED)
 #define JSONCPP_DEPRECATED(message)
-#endif // if !defined(JSONCPP_DEPRECATED)
+#endif//if !defined(JSONCPP_DEPRECATED)
 
 namespace Json {
 typedef int Int;
@@ -214,14 +214,14 @@ typedef unsigned __int64 UInt64;
 #else                 // if defined(_MSC_VER) // Other platforms, use long long
 typedef long long int Int64;
 typedef unsigned long long int UInt64;
-#endif // if defined(_MSC_VER)
+#endif//if defined(_MSC_VER)
 typedef Int64 LargestInt;
 typedef UInt64 LargestUInt;
 #define JSON_HAS_INT64
-#endif // if defined(JSON_NO_INT64)
+#endif//if defined(JSON_NO_INT64)
 } // end namespace Json
 
-#endif // JSON_CONFIG_H_INCLUDED
+#endif//JSON_CONFIG_H_INCLUDED
 
 // //////////////////////////////////////////////////////////////////////
 // End of content of file: include/json/config.h
@@ -246,7 +246,7 @@ typedef UInt64 LargestUInt;
 
 #if !defined(JSON_IS_AMALGAMATION)
 #include "config.h"
-#endif // if !defined(JSON_IS_AMALGAMATION)
+#endif//if !defined(JSON_IS_AMALGAMATION)
 
 namespace Json {
 
@@ -274,11 +274,11 @@ class ValueMapAllocator;
 class ValueInternalLink;
 class ValueInternalArray;
 class ValueInternalMap;
-#endif // #ifdef JSON_VALUE_USE_INTERNAL_MAP
+#endif//#ifdef JSON_VALUE_USE_INTERNAL_MAP
 
 } // namespace Json
 
-#endif // JSON_FORWARDS_H_INCLUDED
+#endif//JSON_FORWARDS_H_INCLUDED
 
 // //////////////////////////////////////////////////////////////////////
 // End of content of file: include/json/forwards.h
@@ -303,7 +303,7 @@ class ValueInternalMap;
 
 #if !defined(JSON_IS_AMALGAMATION)
 #include "forwards.h"
-#endif // if !defined(JSON_IS_AMALGAMATION)
+#endif//if !defined(JSON_IS_AMALGAMATION)
 
 namespace Json {
 
@@ -349,7 +349,7 @@ public:
 
 } // namespace Json
 
-#endif // CPPTL_JSON_FEATURES_H_INCLUDED
+#endif//CPPTL_JSON_FEATURES_H_INCLUDED
 
 // //////////////////////////////////////////////////////////////////////
 // End of content of file: include/json/features.h
@@ -374,7 +374,7 @@ public:
 
 #if !defined(JSON_IS_AMALGAMATION)
 #include "forwards.h"
-#endif // if !defined(JSON_IS_AMALGAMATION)
+#endif//if !defined(JSON_IS_AMALGAMATION)
 #include <string>
 #include <vector>
 
@@ -392,7 +392,7 @@ public:
 #if defined(JSONCPP_DISABLE_DLL_INTERFACE_WARNING)
 #pragma warning(push)
 #pragma warning(disable : 4251)
-#endif // if defined(JSONCPP_DISABLE_DLL_INTERFACE_WARNING)
+#endif//if defined(JSONCPP_DISABLE_DLL_INTERFACE_WARNING)
 
 /** \brief JSON (JavaScript Object Notation).
  */
@@ -494,7 +494,7 @@ public:
 #if defined(JSON_HAS_INT64)
   typedef Json::UInt64 UInt64;
   typedef Json::Int64 Int64;
-#endif // defined(JSON_HAS_INT64)
+#endif//defined(JSON_HAS_INT64)
   typedef Json::LargestInt LargestInt;
   typedef Json::LargestUInt LargestUInt;
   typedef Json::ArrayIndex ArrayIndex;
@@ -521,7 +521,7 @@ public:
   static const Int64 maxInt64;
   /// Maximum unsigned 64 bits int value that can be stored in a Json::Value.
   static const UInt64 maxUInt64;
-#endif // defined(JSON_HAS_INT64)
+#endif//defined(JSON_HAS_INT64)
 
 private:
 #ifndef JSONCPP_DOC_EXCLUDE_IMPLEMENTATION
@@ -555,9 +555,9 @@ public:
   typedef std::map<CZString, Value> ObjectValues;
 #else
   typedef CppTL::SmallMap<CZString, Value> ObjectValues;
-#endif // ifndef JSON_USE_CPPTL_SMALLMAP
-#endif // ifndef JSON_VALUE_USE_INTERNAL_MAP
-#endif // ifndef JSONCPP_DOC_EXCLUDE_IMPLEMENTATION
+#endif//ifndef JSON_USE_CPPTL_SMALLMAP
+#endif//ifndef JSON_VALUE_USE_INTERNAL_MAP
+#endif//ifndef JSONCPP_DOC_EXCLUDE_IMPLEMENTATION
 
 public:
   /** \brief Create a default Value of the given type.
@@ -581,7 +581,7 @@ Json::Value obj_value(Json::objectValue); // {}
 #if defined(JSON_HAS_INT64)
   Value(Int64 value);
   Value(UInt64 value);
-#endif // if defined(JSON_HAS_INT64)
+#endif//if defined(JSON_HAS_INT64)
   Value(double value);
   Value(const char* value);
   Value(const char* beginValue, const char* endValue);
@@ -632,7 +632,7 @@ Json::Value obj_value(Json::objectValue); // {}
 #if defined(JSON_HAS_INT64)
   Int64 asInt64() const;
   UInt64 asUInt64() const;
-#endif // if defined(JSON_HAS_INT64)
+#endif//if defined(JSON_HAS_INT64)
   LargestInt asLargestInt() const;
   LargestUInt asLargestUInt() const;
   float asFloat() const;
@@ -818,7 +818,7 @@ private:
   inline void setMemberNameIsStatic(bool isStatic) {
     memberNameIsStatic_ = isStatic ? 1 : 0;
   }
-#endif // # ifdef JSON_VALUE_USE_INTERNAL_MAP
+#endif//# ifdef JSON_VALUE_USE_INTERNAL_MAP
 
 private:
   struct CommentInfo {
@@ -1043,7 +1043,7 @@ public:
     BucketIndex itemIndex_;
     BucketIndex bucketIndex_;
   };
-#endif // ifndef JSONCPP_DOC_EXCLUDE_IMPLEMENTATION
+#endif//ifndef JSONCPP_DOC_EXCLUDE_IMPLEMENTATION
 
   ValueInternalMap();
   ValueInternalMap(const ValueInternalMap& other);
@@ -1137,7 +1137,7 @@ public:
     Value** currentPageIndex_;
     unsigned int currentItemIndex_;
   };
-#endif // ifndef JSONCPP_DOC_EXCLUDE_IMPLEMENTATION
+#endif//ifndef JSONCPP_DOC_EXCLUDE_IMPLEMENTATION
 
   ValueInternalArray();
   ValueInternalArray(const ValueInternalArray& other);
@@ -1266,7 +1266,7 @@ public:
   virtual Value* allocateArrayPage() = 0;
   virtual void releaseArrayPage(Value* value) = 0;
 };
-#endif // #ifdef JSON_VALUE_USE_INTERNAL_MAP
+#endif//#ifdef JSON_VALUE_USE_INTERNAL_MAP
 
 /** \brief base class for Value iterators.
  *
@@ -1447,9 +1447,9 @@ public:
 
 #if defined(JSONCPP_DISABLE_DLL_INTERFACE_WARNING)
 #pragma warning(pop)
-#endif // if defined(JSONCPP_DISABLE_DLL_INTERFACE_WARNING)
+#endif//if defined(JSONCPP_DISABLE_DLL_INTERFACE_WARNING)
 
-#endif // CPPTL_JSON_H_INCLUDED
+#endif//CPPTL_JSON_H_INCLUDED
 
 // //////////////////////////////////////////////////////////////////////
 // End of content of file: include/json/value.h
@@ -1475,7 +1475,7 @@ public:
 #if !defined(JSON_IS_AMALGAMATION)
 #include "features.h"
 #include "value.h"
-#endif // if !defined(JSON_IS_AMALGAMATION)
+#endif//if !defined(JSON_IS_AMALGAMATION)
 #include <deque>
 #include <iosfwd>
 #include <stack>
@@ -1486,7 +1486,7 @@ public:
 #if defined(JSONCPP_DISABLE_DLL_INTERFACE_WARNING)
 #pragma warning(push)
 #pragma warning(disable : 4251)
-#endif // if defined(JSONCPP_DISABLE_DLL_INTERFACE_WARNING)
+#endif//if defined(JSONCPP_DISABLE_DLL_INTERFACE_WARNING)
 
 namespace Json {
 
@@ -1737,9 +1737,9 @@ JSON_API std::istream& operator>>(std::istream&, Value&);
 
 #if defined(JSONCPP_DISABLE_DLL_INTERFACE_WARNING)
 #pragma warning(pop)
-#endif // if defined(JSONCPP_DISABLE_DLL_INTERFACE_WARNING)
+#endif//if defined(JSONCPP_DISABLE_DLL_INTERFACE_WARNING)
 
-#endif // CPPTL_JSON_READER_H_INCLUDED
+#endif//CPPTL_JSON_READER_H_INCLUDED
 
 // //////////////////////////////////////////////////////////////////////
 // End of content of file: include/json/reader.h
@@ -1764,7 +1764,7 @@ JSON_API std::istream& operator>>(std::istream&, Value&);
 
 #if !defined(JSON_IS_AMALGAMATION)
 #include "value.h"
-#endif // if !defined(JSON_IS_AMALGAMATION)
+#endif//if !defined(JSON_IS_AMALGAMATION)
 #include <vector>
 #include <string>
 
@@ -1773,7 +1773,7 @@ JSON_API std::istream& operator>>(std::istream&, Value&);
 #if defined(JSONCPP_DISABLE_DLL_INTERFACE_WARNING)
 #pragma warning(push)
 #pragma warning(disable : 4251)
-#endif // if defined(JSONCPP_DISABLE_DLL_INTERFACE_WARNING)
+#endif//if defined(JSONCPP_DISABLE_DLL_INTERFACE_WARNING)
 
 namespace Json {
 
@@ -1949,7 +1949,7 @@ private:
 #if defined(JSON_HAS_INT64)
 std::string JSON_API valueToString(Int value);
 std::string JSON_API valueToString(UInt value);
-#endif // if defined(JSON_HAS_INT64)
+#endif//if defined(JSON_HAS_INT64)
 std::string JSON_API valueToString(LargestInt value);
 std::string JSON_API valueToString(LargestUInt value);
 std::string JSON_API valueToString(double value);
@@ -1964,9 +1964,9 @@ JSON_API std::ostream& operator<<(std::ostream&, const Value& root);
 
 #if defined(JSONCPP_DISABLE_DLL_INTERFACE_WARNING)
 #pragma warning(pop)
-#endif // if defined(JSONCPP_DISABLE_DLL_INTERFACE_WARNING)
+#endif//if defined(JSONCPP_DISABLE_DLL_INTERFACE_WARNING)
 
-#endif // JSON_WRITER_H_INCLUDED
+#endif//JSON_WRITER_H_INCLUDED
 
 // //////////////////////////////////////////////////////////////////////
 // End of content of file: include/json/writer.h
@@ -1993,7 +1993,7 @@ JSON_API std::ostream& operator<<(std::ostream&, const Value& root);
 
 #if !defined(JSON_IS_AMALGAMATION)
 #include "config.h"
-#endif // if !defined(JSON_IS_AMALGAMATION)
+#endif//if !defined(JSON_IS_AMALGAMATION)
 
 #if JSON_USE_EXCEPTION
 #include <stdexcept>
@@ -2021,7 +2021,7 @@ JSON_API std::ostream& operator<<(std::ostream&, const Value& root);
     JSON_FAIL_MESSAGE(message)                                                 \
   }
 
-#endif // CPPTL_JSON_ASSERTIONS_H_INCLUDED
+#endif//CPPTL_JSON_ASSERTIONS_H_INCLUDED
 
 // //////////////////////////////////////////////////////////////////////
 // End of content of file: include/json/assertions.h

@@ -126,4 +126,4 @@ class State
 		Context m_context;///< Current context of the game.
 };
 
-#endif // STATE_H
+#endif//STATE_H

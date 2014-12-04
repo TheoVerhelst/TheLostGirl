@@ -179,4 +179,4 @@ class AnimationsManager
 
 #include <TheLostGirl/AnimationsManager.inl>
 
-#endif // ANIMATIONS_H
+#endif//ANIMATIONS_H

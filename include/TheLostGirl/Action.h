@@ -19,4 +19,4 @@ struct Action
 	virtual void operator()(entityx::Entity entity, double dt) const = 0;
 };
 
-#endif // ACTION_H
+#endif//ACTION_H

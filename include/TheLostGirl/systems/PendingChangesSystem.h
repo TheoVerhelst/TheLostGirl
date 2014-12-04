@@ -50,4 +50,4 @@ class PendingChangesSystem : public entityx::System<PendingChangesSystem>
 		b2World& m_world;
 };
 
-#endif // PENDINGCHANGESSYSTEM_H
+#endif//PENDINGCHANGESSYSTEM_H

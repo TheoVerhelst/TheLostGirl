@@ -25,4 +25,4 @@ class SkyAnimation
 		entityx::Entity m_entity;///< The entity to animate.
 };
 
-#endif // SKYANIMATION_H
+#endif//SKYANIMATION_H

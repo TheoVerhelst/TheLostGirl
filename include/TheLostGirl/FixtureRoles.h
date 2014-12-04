@@ -15,4 +15,4 @@ inline bool fixtureHasRole(b2Fixture* fixture, FixtureRole role)
 	return fixture->GetUserData() and (reinterpret_cast<unsigned int>(fixture->GetUserData()) & static_cast<unsigned int>(role));
 }
 
-#endif // FIXTUREROLES_H
+#endif//FIXTUREROLES_H

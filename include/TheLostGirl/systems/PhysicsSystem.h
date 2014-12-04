@@ -33,4 +33,4 @@ class PhysicsSystem : public entityx::System<PhysicsSystem>
 		Parameters& m_parameters;///< Structure containing all the game parameters.
 };
 
-#endif // PHYSICSSYSTEM_H
+#endif//PHYSICSSYSTEM_H

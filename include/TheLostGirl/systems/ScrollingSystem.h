@@ -44,4 +44,4 @@ class ScrollingSystem : public entityx::System<ScrollingSystem>
 		float m_referencePlan;     ///< Number of the plan where actors evolute.
 };
 
-#endif // SCROLLINGSYSTEM_H
+#endif//SCROLLINGSYSTEM_H

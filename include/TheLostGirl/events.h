@@ -41,4 +41,4 @@ struct PlayerStaminaChange : public entityx::Event<PlayerStaminaChange>
 	float newStamina;///< The new stamina of the player
 };
 
-#endif // EVENTS_H
+#endif//EVENTS_H

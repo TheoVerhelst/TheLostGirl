@@ -32,4 +32,4 @@ class RenderSystem : public entityx::System<RenderSystem>
 		sf::RenderWindow& m_window;///< SFML's window on wich to render the entities.
 };
 
-#endif // RENDERSYSTEM_H
+#endif//RENDERSYSTEM_H

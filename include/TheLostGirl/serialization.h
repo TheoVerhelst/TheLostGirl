@@ -177,4 +177,4 @@ void deserialize(const Json::Value& value, entityx::ComponentHandle<ArrowCompone
 /// \param value The Json value containing the data.
 void deserialize(const Json::Value& value, entityx::ComponentHandle<HardnessComponent> component);
 
-#endif // SERIALIZATION_H
+#endif//SERIALIZATION_H

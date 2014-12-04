@@ -18,4 +18,4 @@ class ContactFilter : public b2ContactFilter
 		virtual bool ShouldCollide(b2Fixture* fixtureA, b2Fixture* fixtureB);
 };
 
-#endif // CONTACTFILTER_H
+#endif//CONTACTFILTER_H

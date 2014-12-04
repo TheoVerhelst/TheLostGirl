@@ -61,4 +61,4 @@ class PauseState : public State
 		tgui::Button::Ptr m_backToMainMenuButton;///< The Back to main menu button.
 };
 
-#endif // PAUSESTATE_H
+#endif//PAUSESTATE_H

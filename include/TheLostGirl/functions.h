@@ -190,4 +190,4 @@ Key getKey(const std::map<Key, Value>& map, const Value& value)
 	return it->first;
 }
 
-#endif // FUNCTIONS_H
+#endif//FUNCTIONS_H

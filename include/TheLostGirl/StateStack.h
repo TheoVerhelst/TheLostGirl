@@ -111,4 +111,4 @@ void StateStack::registerState(States stateID)
 	};
 }
 
-#endif // STATESTACK_H
+#endif//STATESTACK_H

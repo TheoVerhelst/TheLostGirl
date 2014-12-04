@@ -16,4 +16,4 @@ inline bool jointHasRole(b2Joint* joint, JointRole role)
 	return joint->GetUserData() and reinterpret_cast<unsigned int>(joint->GetUserData()) & static_cast<unsigned int>(role);
 }
 
-#endif // JOINTEROLES_H
+#endif//JOINTEROLES_H

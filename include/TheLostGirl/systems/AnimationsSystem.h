@@ -38,4 +38,4 @@ class AnimationsSystem : public entityx::System<AnimationsSystem>
 		float m_timeSpeed;
 };
 
-#endif // ANIMATIONSSYSTEM_H
+#endif//ANIMATIONSSYSTEM_H

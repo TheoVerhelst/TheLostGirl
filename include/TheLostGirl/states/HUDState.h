@@ -1,7 +1,7 @@
 #ifndef HUDSTATE_H
 #define HUDSTATE_H
 
-#include <TGUI/Label.hpp>
+#include <TGUI/Canvas.hpp>
 #include <entityx/Event.h>
 
 //Forward declarations
@@ -17,7 +17,7 @@ class PlayerHealthChange;
 class PlayerStaminaChange;
 
 /// State that display data about the player.
-class HUDState     : public State, public entityx::Receiver<HUDState>
+class HUDState : public State, public entityx::Receiver<HUDState>
 {
 	public:
         /// Default constructor.
@@ -53,8 +53,31 @@ class HUDState     : public State, public entityx::Receiver<HUDState>
 		void receive(const PlayerStaminaChange& playerStaminaChange);
 
 	private:
-		tgui::Label::Ptr m_healthLabel; ///< Label indicating the current heath of the player.
-		tgui::Label::Ptr m_staminaLabel;///< Label indicating the current stamina of the player.
+		//Canvas
+		tgui::Canvas::Ptr m_healthBar;   ///< The health bar.
+		tgui::Canvas::Ptr m_staminaBar;  ///< The stamina bar.
+		tgui::Canvas::Ptr m_windBar;     ///< The wind arrow.
+		//Sprites
+		sf::Sprite m_healthSpr;          ///< The sprite of the health bar.
+		sf::Sprite m_healthBorderSpr;    ///< The sprite of the health bar border.
+		sf::Sprite m_staminaSpr;         ///< The sprite of the stamina bar.
+		sf::Sprite m_staminaBorderSpr;   ///< The sprite of the stamina bar border.
+		sf::Sprite m_windStrengthSpr;    ///< The sprite of the wind arrow.
+		sf::Sprite m_windStrengthBarSpr; ///< The sprite of the wind bar.
+		//Textures
+		sf::Texture m_healthTex;          ///< The texture of the health bar.
+		sf::Texture m_healthBorderTex;    ///< The texture of the health bar border.
+		sf::Texture m_staminaTex;         ///< The texture of the stamina bar.
+		sf::Texture m_staminaBorderTex;   ///< The texture of the stamina bar border.
+		sf::Texture m_windStrengthTex;    ///< The texture of the wind arrow.
+		sf::Texture m_windStrengthBarTex; ///< The texture of the wind bar.
+		//Fading data
+		bool healthIsFading;             ///< True only if the fading of the health bar is currently active.
+		bool staminaIsFading;            ///< True only if the fading of the stamina bar is currently active.
+		bool windIsFading;               ///< True only if the fading of the wind arrow is currently active.
+		sf::Clock healthFadingTimer;     ///< Timer of the health bar fading.
+		sf::Clock staminaFadingTimer;    ///< Timer of the stamina bar fading.
+		sf::Clock windFadingTimer;       ///< Timer of the wind arrow fading.
 };
 
-#endif // HUDSTATE_H
+#endif//HUDSTATE_H

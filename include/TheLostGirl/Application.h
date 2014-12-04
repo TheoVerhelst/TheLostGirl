@@ -75,4 +75,4 @@ class Application
 		DebugDraw m_debugDraw;                 ///< The debugging drawer.
 };
 
-#endif // APPLICATION_H
+#endif//APPLICATION_H
