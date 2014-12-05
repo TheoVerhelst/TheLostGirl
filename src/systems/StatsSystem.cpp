@@ -17,7 +17,7 @@ void StatsSystem::update(entityx::EntityManager& entityManager, entityx::EventMa
 		if(healthComponent->current < healthComponent->maximum)
 		{
 			healthComponent->current = cap(healthComponent->current + healthComponent->regeneration*dt, 0.f, healthComponent->maximum);
-			eventManager.emit<PlayerHealthChange>(healthComponent->current);
+			eventManager.emit<PlayerHealthChange>(healthComponent->current, healthComponent->current/healthComponent->maximum);
 		}
 	}
 	//For every entity that can fall, set the right animation
@@ -26,12 +26,12 @@ void StatsSystem::update(entityx::EntityManager& entityManager, entityx::EventMa
 		if(staminaComponent->current < staminaComponent->maximum)
 		{
 			staminaComponent->current = cap(staminaComponent->current + staminaComponent->regeneration*dt, 0.f, staminaComponent->maximum);
-			eventManager.emit<PlayerStaminaChange>(staminaComponent->current);
+			eventManager.emit<PlayerStaminaChange>(staminaComponent->current, staminaComponent->current/staminaComponent->maximum);
 		}
 		if(entity.has_component<BowComponent>())
 		{
 			staminaComponent->current = cap(staminaComponent->current - entity.component<BowComponent>()->power*dt*3/100.f, 0.f, staminaComponent->maximum);
-			eventManager.emit<PlayerStaminaChange>(staminaComponent->current);
+			eventManager.emit<PlayerStaminaChange>(staminaComponent->current, staminaComponent->current/staminaComponent->maximum);
 		}
 	}
 }

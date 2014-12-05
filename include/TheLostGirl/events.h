@@ -21,24 +21,30 @@ struct LoadingStateChange : public entityx::Event<LoadingStateChange>
 struct PlayerHealthChange : public entityx::Event<PlayerHealthChange>
 {
 	///Default constructor
-	/// \param _newHealth The new health of the player
-	PlayerHealthChange(float _newHealth):
-		newHealth(_newHealth)
+	/// \param _health The new health of the player.
+	/// \param _normalizedHealth The new health of the player, normalized in [0, 1].
+	PlayerHealthChange(float _health, float _normalizedHealth):
+		health(_health),
+		normalizedHealth(_normalizedHealth)
 	{}
 	
-	float newHealth;///< The new health of the player
+	float health;          ///< The new health of the player.
+	float normalizedHealth;///< The new health of the player, normalized in [0, 1].
 };
 
 /// Structure used to emit and receive player's stamina changes.
 struct PlayerStaminaChange : public entityx::Event<PlayerStaminaChange>
 {
 	///Default constructor
-	/// \param _newStamina The new stamina of the player
-	PlayerStaminaChange(float _newStamina):
-		newStamina(_newStamina)
+	/// \param _stamina The new stamina of the player.
+	/// \param _normalizedStamina The new stamina of the player, normalized in [0, 1].
+	PlayerStaminaChange(float _stamina, float _normalizedStamina):
+		stamina(_stamina),
+		normalizedStamina(_normalizedStamina)
 	{}
 	
-	float newStamina;///< The new stamina of the player
+	float stamina;          ///< The new stamina of the player.
+	float normalizedStamina;///< The new stamina of the player, normalized in [0, 1].
 };
 
 #endif//EVENTS_H

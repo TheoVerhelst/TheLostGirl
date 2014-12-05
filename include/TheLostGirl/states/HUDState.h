@@ -13,8 +13,8 @@ namespace sf
 class State;
 class Context;
 class StateStack;
-class PlayerHealthChange;
-class PlayerStaminaChange;
+struct PlayerHealthChange;
+struct PlayerStaminaChange;
 
 /// State that display data about the player.
 class HUDState : public State, public entityx::Receiver<HUDState>
@@ -64,20 +64,13 @@ class HUDState : public State, public entityx::Receiver<HUDState>
 		sf::Sprite m_staminaBorderSpr;   ///< The sprite of the stamina bar border.
 		sf::Sprite m_windStrengthSpr;    ///< The sprite of the wind arrow.
 		sf::Sprite m_windStrengthBarSpr; ///< The sprite of the wind bar.
-		//Textures
-		sf::Texture m_healthTex;          ///< The texture of the health bar.
-		sf::Texture m_healthBorderTex;    ///< The texture of the health bar border.
-		sf::Texture m_staminaTex;         ///< The texture of the stamina bar.
-		sf::Texture m_staminaBorderTex;   ///< The texture of the stamina bar border.
-		sf::Texture m_windStrengthTex;    ///< The texture of the wind arrow.
-		sf::Texture m_windStrengthBarTex; ///< The texture of the wind bar.
 		//Fading data
-		bool healthIsFading;             ///< True only if the fading of the health bar is currently active.
-		bool staminaIsFading;            ///< True only if the fading of the stamina bar is currently active.
-		bool windIsFading;               ///< True only if the fading of the wind arrow is currently active.
-		sf::Clock healthFadingTimer;     ///< Timer of the health bar fading.
-		sf::Clock staminaFadingTimer;    ///< Timer of the stamina bar fading.
-		sf::Clock windFadingTimer;       ///< Timer of the wind arrow fading.
+		bool m_healthIsFading;             ///< True only if the fading of the health bar is currently active.
+		bool m_staminaIsFading;            ///< True only if the fading of the stamina bar is currently active.
+		bool m_windIsFading;               ///< True only if the fading of the wind arrow is currently active.
+		sf::Clock m_healthFadingTimer;     ///< Timer of the health bar fading.
+		sf::Clock m_staminaFadingTimer;    ///< Timer of the stamina bar fading.
+		sf::Clock m_windFadingTimer;       ///< Timer of the wind arrow fading.
 };
 
 #endif//HUDSTATE_H
