@@ -67,6 +67,14 @@ bool ContactFilter::ShouldCollide(b2Fixture* fixtureA, b2Fixture* fixtureB)
 	//If the left operand is false, then the collison do not occurs
 	ret = ret && (not (entityA.has_component<ArrowComponent>() and entityB.has_component<ArrowComponent>()));
 	
+	//If the entity A is an arrow, collide only if it is not sticked
+	if(entityA.has_component<ArrowComponent>())
+		ret = ret && not entityA.component<ArrowComponent>()->sticked;
+		
+	//If the entity B is an arrow, collide only if it is not sticked
+	if(entityB.has_component<ArrowComponent>())
+		ret = ret && not entityB.component<ArrowComponent>()->sticked;
+	
 	//If an entity is a sticked arrow and the other one an actor
 	if((entityA.has_component<CategoryComponent>() and entityB.has_component<ArrowComponent>())
 		or (entityB.has_component<CategoryComponent>() and entityA.has_component<ArrowComponent>()))

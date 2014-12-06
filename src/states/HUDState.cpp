@@ -24,9 +24,9 @@ HUDState::HUDState(StateStack& stack, Context context):
 	m_staminaBorderSpr{},
 	m_windStrengthSpr{},
 	m_windStrengthBarSpr{},
-	m_healthIsFading{false},
-	m_staminaIsFading{false},
-	m_windIsFading{false}
+	m_healthIsFading{true},
+	m_staminaIsFading{true},
+	m_windIsFading{true}
 {
 	getContext().eventManager.subscribe<PlayerHealthChange>(*this);
 	getContext().eventManager.subscribe<PlayerStaminaChange>(*this);
@@ -102,15 +102,54 @@ bool HUDState::update(sf::Time)
 	//Get the wind strength and compute the wind ath
 	float scale{getContext().parameters.scale};
 	float windStrength{cap(getContext().systemManager.system<TimeSystem>()->getWindStrength()/5.f, -1, 1)};
-	if(std::abs(windStrength) < 0.125)
-		m_windStrengthSpr.setTextureRect({0, 0, 0, 0});//Don't display the arrow, this is the size limit
-	else
+	
+	bool oldFadingState{m_windIsFading};
+	m_windIsFading = std::abs(windStrength) < 0.125;
+	if(m_windIsFading)
 	{
+		//If the fading start now
+		if(not oldFadingState)
+		{
+			m_windStrengthSpr.setTextureRect({0, 0, 0, 0});//Don't display the arrow, this is the size limit
+			m_windFadingTimer.restart();
+		}
+		//This time will be equal to 0 2 seconds after the start of the fading and then will grow normally
+		sf::Time time{cap(m_windFadingTimer.getElapsedTime()-sf::seconds(2), sf::seconds(0), sf::seconds(3))};
+		sf::Color color{fadingColor(time, sf::seconds(3), false)};
+		m_windStrengthBarSpr.setColor(color);
+		m_windStrengthSpr.setColor(color);
+	}
+	//If the fading is not active
+	else if(not m_windIsFading)
+	{
+		//If the fading end right now
+		if(oldFadingState)
+		{
+			//Reset sprite colors
+			m_windStrengthSpr.setColor(sf::Color::White);
+			m_windStrengthBarSpr.setColor(sf::Color::White);
+		}
 		m_windStrengthSpr.setTextureRect({static_cast<int>(120.f*(1 - std::abs(windStrength))*scale), 0, static_cast<int>(120.f*std::abs(windStrength)*scale), static_cast<int>(20.f*scale)});
 		if(windStrength > 0)
 			m_windStrengthSpr.setScale(1, 1);
 		else
 			m_windStrengthSpr.setScale(-1, 1);//Flip the arrow
+	}
+	if(m_healthIsFading)
+	{
+		//This time will be equal to 0 2 seconds after the start of the fading and then will grow normally
+		sf::Time time{cap(m_healthFadingTimer.getElapsedTime()-sf::seconds(2), sf::seconds(0), sf::seconds(3))};
+		sf::Color color{fadingColor(time, sf::seconds(3), false)};
+		m_healthSpr.setColor(color);
+		m_healthBorderSpr.setColor(color);
+	}
+	if(m_staminaIsFading)
+	{
+		//This time will be equal to 0 2 seconds after the start of the fading and then will grow normally
+		sf::Time time{cap(m_staminaFadingTimer.getElapsedTime()-sf::seconds(2), sf::seconds(0), sf::seconds(3))};
+		sf::Color color{fadingColor(time, sf::seconds(3), false)};
+		m_staminaSpr.setColor(color);
+		m_staminaBorderSpr.setColor(color);
 	}
 	return true;
 }
@@ -122,14 +161,39 @@ bool HUDState::handleEvent(const sf::Event&)
 
 void HUDState::receive(const PlayerHealthChange& playerHealthChange)
 {
-	m_healthIsFading = false;
+	bool oldFadingState{m_healthIsFading};
+	//The fading state is true if the health is maximum
+	m_healthIsFading = playerHealthChange.normalizedHealth >= 1.f;
+	//If the fading start right now
+	if(not oldFadingState and m_healthIsFading)
+		m_healthFadingTimer.restart();
+	//If the fading end now
+	else if(oldFadingState and not m_healthIsFading)
+	{
+		//Reset sprite colors
+		m_healthSpr.setColor(sf::Color::White);
+		m_healthBorderSpr.setColor(sf::Color::White);
+	}
 	float scale{getContext().parameters.scale};
 	m_healthSpr.setTextureRect({static_cast<int>((240.f - 240.f*playerHealthChange.normalizedHealth)*scale), 0, static_cast<int>(240.f*scale), static_cast<int>(20.f*scale)});
 }
 
 void HUDState::receive(const PlayerStaminaChange& playerStaminaChange)
 {
-	m_staminaIsFading = false;
+	bool oldFadingState{m_staminaIsFading};
+	//The fading state is true if the stamina is maximum
+	m_staminaIsFading = playerStaminaChange.normalizedStamina >= 1.f;
+	//If the fading start right now
+	if(not oldFadingState and m_staminaIsFading)
+		m_staminaFadingTimer.restart();
+	//If the fading end now
+	else if(oldFadingState and not m_staminaIsFading)
+	{
+		//Reset sprite colors
+		m_staminaSpr.setColor(sf::Color::White);
+		m_staminaBorderSpr.setColor(sf::Color::White);
+	}
+	m_staminaFadingTimer.restart();
 	float scale{getContext().parameters.scale};
 	m_staminaSpr.setTextureRect({static_cast<int>((240.f - 240.f*playerStaminaChange.normalizedStamina)*scale), 0, static_cast<int>(240.f*scale), static_cast<int>(20.f*scale)});
 }

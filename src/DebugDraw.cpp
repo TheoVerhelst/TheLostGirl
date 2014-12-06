@@ -170,6 +170,19 @@ void DebugDraw::drawDebugAth()
 			m_context.gui.add(bendingLabel, "bendingLabel");
 		}
 		bendingLabel->setText("Power : " + roundOutput(bendPower)+ "\nAngle : " + roundOutput(bendAngle));
+		
+		//FPS
+		tgui::Label::Ptr FPSLabel{m_context.gui.get<tgui::Label>("FPSLabel")};
+		if(FPSLabel == nullptr)
+		{
+			FPSLabel = tgui::Label::create();
+			FPSLabel->setPosition(tgui::bindWidth(m_context.gui, 0.7f), tgui::bindHeight(m_context.gui, 0.01f));
+			FPSLabel->setTextSize(20);
+			FPSLabel->setTextColor(sf::Color::Black);
+			FPSLabel->setTextFont(std::make_shared<sf::Font>(m_context.fontManager.get("debug")));
+			m_context.gui.add(FPSLabel, "FPSLabel");
+		}
+		FPSLabel->setText("FPS : " + roundOutput(m_framesPerSeconds));
 	}
 	else if(not m_context.parameters.debugMode and m_debugMode)
 	{
@@ -181,8 +194,16 @@ void DebugDraw::drawDebugAth()
 		tgui::Label::Ptr bendingLabel{m_context.gui.get<tgui::Label>("bendingLabel")};
 		if(bendingLabel != nullptr)
 			m_context.gui.remove(bendingLabel);
+		tgui::Label::Ptr FPSLabel{m_context.gui.get<tgui::Label>("FPSLabel")};
+		if(FPSLabel != nullptr)
+			m_context.gui.remove(FPSLabel);
 	}
 	
+}
+
+void DebugDraw::setFPS(float framesPerSeconds)
+{
+	m_framesPerSeconds = framesPerSeconds;
 }
 
 std::string DebugDraw::roundOutput(float x)

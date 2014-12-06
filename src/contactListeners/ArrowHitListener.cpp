@@ -51,12 +51,9 @@ void ArrowHitListener::PostSolve(b2Contact* contact, const b2ContactImpulse* imp
 		}
 		if(entityA.has_component<ArrowComponent>() and entityB.has_component<HardnessComponent>())
 		{
-			float totalImpact{0.f};
-			//Sum the impact
-			for(unsigned int i{0}; impulse->normalImpulses[i] > 0.f and i < b2_maxManifoldPoints; i++)
-				totalImpact += impulse->normalImpulses[i];
 			//If the impact multiplied by the penetrance of the arrow is greater than the hardness of the other object
-			if(totalImpact*entityA.component<ArrowComponent>()->penetrance > entityB.component<HardnessComponent>()->hardness)
+			if(impulse->normalImpulses[0]*entityA.component<ArrowComponent>()->penetrance > entityB.component<HardnessComponent>()->hardness
+				and not entityA.component<ArrowComponent>()->sticked)
 			{
 				b2Vec2 localStickPoint{sftob2(entityA.component<ArrowComponent>()->localStickPoint/m_context.parameters.pixelByMeter)};
 				b2Vec2 globalStickPoint{bodyA->GetWorldPoint(localStickPoint)};
@@ -70,7 +67,7 @@ void ArrowHitListener::PostSolve(b2Contact* contact, const b2ContactImpulse* imp
 				entityA.component<ArrowComponent>()->sticked = true;
 			}
 			if(entityB.has_component<HealthComponent>())
-				entityB.component<HealthComponent>()->current -= totalImpact*entityA.component<ArrowComponent>()->damage;
+				entityB.component<HealthComponent>()->current -= impulse->normalImpulses[0]*entityA.component<ArrowComponent>()->damage;
 		}
 	}
 }

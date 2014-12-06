@@ -10,6 +10,7 @@
 #include <TheLostGirl/Parameters.h>
 #include <TheLostGirl/functions.h>
 #include <TheLostGirl/JointRoles.h>
+#include <TheLostGirl/systems/TimeSystem.h>
 
 #include <TheLostGirl/systems/PhysicsSystem.h>
 
@@ -127,23 +128,32 @@ void PhysicsSystem::update(entityx::EntityManager& entityManager, entityx::Event
 	//Update the arrows
 	for(auto entity : entityManager.entities_with_components(bodyComponent, arrowComponent))
 	{
-		//If the arrow has not a main body, the program will crash
-		assert(bodyComponent->bodies.find("main") != bodyComponent->bodies.end());
-		b2Body* body{bodyComponent->bodies["main"]};
-		b2Vec2 pointingDirection{body->GetWorldVector(b2Vec2(1, 0))};//Get the global direction of the arrow
-		b2Vec2 flightDirection{body->GetLinearVelocity()};//Get the effective flight direction of the arrow
-		float flightSpeed{flightDirection.Normalize()};//Normalizes (v in ([0, 1], [0, 1])) and returns length
-		float scalarProduct{b2Dot(flightDirection, pointingDirection)};
-		float dragConstant{arrowComponent->friction};
-		//The first commented line apply a lower force on the arrow when the arrow is diriged to the opposite side of its trajectory,
-		//So if the arrow is fired vertically, it will be decelered less than with the second line.
-//		double dragForceMagnitude{(1 - fabs(scalarProduct)) * flightSpeed * flightSpeed * dragConstant * body->GetMass()};
-		double dragForceMagnitude{(1 - scalarProduct) * flightSpeed * flightSpeed * dragConstant * body->GetMass()};
+		if(not arrowComponent->sticked)
+		{
+			//If the arrow has not a main body, the program will crash
+			assert(bodyComponent->bodies.find("main") != bodyComponent->bodies.end());
+			b2Body* body{bodyComponent->bodies["main"]};
+			
+			//Apply the force of the wind
+			float windStrength{m_systemManager.system<TimeSystem>()->getWindStrength()};
+			body->ApplyForce({windStrength*body->GetMass(), 0}, body->GetWorldCenter(), true);
+			
+			//Apply a drag force to point to the direction of the trajectory
+			b2Vec2 pointingDirection{body->GetWorldVector(b2Vec2(1, 0))};//Get the global direction of the arrow
+			b2Vec2 flightDirection{body->GetLinearVelocity()};//Get the effective flight direction of the arrow
+			float flightSpeed{flightDirection.Normalize()};//Normalizes (v in ([0, 1], [0, 1])) and returns length
+			float scalarProduct{b2Dot(flightDirection, pointingDirection)};
+			float dragConstant{arrowComponent->friction};
+			//The first commented line apply a lower force on the arrow when the arrow is diriged to the opposite side of its trajectory,
+			//So if the arrow is fired vertically, it will be decelered less than with the second line.
+	//		double dragForceMagnitude{(1 - fabs(scalarProduct)) * flightSpeed * flightSpeed * dragConstant * body->GetMass()};
+			double dragForceMagnitude{(1 - scalarProduct) * flightSpeed * flightSpeed * dragConstant * body->GetMass()};
+			//Convert the local friction point to Box2D global coordinates
+			b2Vec2 localFrictionPoint{sftob2(arrowComponent->localFrictionPoint/m_parameters.pixelByMeter)};
+			b2Vec2 arrowTailPosition{body->GetWorldPoint(localFrictionPoint)};
+			body->ApplyForce(dragForceMagnitude*(-flightDirection), arrowTailPosition, true);
+		}
 		
-		//Convert the local friction point to Box2D global coordinates
-		b2Vec2 localFrictionPoint{sftob2(arrowComponent->localFrictionPoint/m_parameters.pixelByMeter)};
-		b2Vec2 arrowTailPosition{body->GetWorldPoint(localFrictionPoint)};
-		body->ApplyForce(dragForceMagnitude*(-flightDirection), arrowTailPosition, true);
 	}
 	
 	//Update the transformations according to the one of the b2Body.

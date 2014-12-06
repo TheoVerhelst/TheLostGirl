@@ -17,9 +17,11 @@ class PhysicsSystem : public entityx::System<PhysicsSystem>
 		/// Default constructor.
 		/// \param world b2World where the physics entities should be in.
 		/// \param parameters Structure containing all the game parameters.
-		PhysicsSystem(b2World& world, Parameters& parameters):
+		/// \param systemManager The system manager of the game.
+		PhysicsSystem(b2World& world, Parameters& parameters, entityx::SystemManager& systemManager):
 			m_world(world),
-			m_parameters(parameters)
+			m_parameters(parameters),
+			m_systemManager(systemManager)
 		{}
 
 		/// System's update function.
@@ -29,8 +31,9 @@ class PhysicsSystem : public entityx::System<PhysicsSystem>
 		void update(entityx::EntityManager &es, entityx::EventManager &events, double dt) override;
 
 	private:
-		b2World& m_world;        ///< b2World where the physics entities should be in.
-		Parameters& m_parameters;///< Structure containing all the game parameters.
+		b2World& m_world;                       ///< b2World where the physics entities should be in.
+		Parameters& m_parameters;               ///< Structure containing all the game parameters.
+		entityx::SystemManager& m_systemManager;///< The system manager of the game.
 };
 
 #endif//PHYSICSSYSTEM_H

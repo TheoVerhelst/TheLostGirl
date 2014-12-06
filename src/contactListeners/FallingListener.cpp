@@ -122,18 +122,14 @@ void FallingListener::PostSolve(b2Contact* contact, const b2ContactImpulse* impu
 	//Handle falling damage
 	entityx::Entity entityA{*static_cast<entityx::Entity*>(contact->GetFixtureA()->GetBody()->GetUserData())};
 	entityx::Entity entityB{*static_cast<entityx::Entity*>(contact->GetFixtureB()->GetBody()->GetUserData())};
-	float totalImpact{0.f};
 	//Sum the impact
-	for(unsigned int i{0}; impulse->normalImpulses[i] > 0.f and i < b2_maxManifoldPoints; i++)
-		totalImpact += impulse->normalImpulses[i];
-	
 	if(entityA.has_component<HealthComponent>()
 		and entityA.has_component<FallComponent>()
-		and totalImpact > entityA.component<FallComponent>()->fallingResistance)
-			entityA.component<HealthComponent>()->current -= totalImpact - entityA.component<FallComponent>()->fallingResistance;
+		and impulse->normalImpulses[0] > entityA.component<FallComponent>()->fallingResistance)
+			entityA.component<HealthComponent>()->current -= (impulse->normalImpulses[0] - entityA.component<FallComponent>()->fallingResistance)*10.f;
 	
 	if(entityB.has_component<HealthComponent>()
 		and entityB.has_component<FallComponent>()
-		and totalImpact > entityB.component<FallComponent>()->fallingResistance)
-			entityB.component<HealthComponent>()->current -= totalImpact - entityB.component<FallComponent>()->fallingResistance;
+		and impulse->normalImpulses[0] > entityB.component<FallComponent>()->fallingResistance)
+			entityB.component<HealthComponent>()->current -= (impulse->normalImpulses[0] - entityB.component<FallComponent>()->fallingResistance)*10.f;
 }

@@ -60,6 +60,8 @@ class DebugDraw : public b2Draw
 		/// Draw various informations on the screen, such as player position, bending angle, ...
 		void drawDebugAth();
 		
+		void setFPS(float framesPerSeconds);
+		
 	private:
 		/// Return a string containing x with 2 decimals.
 		/// \param x Number to convert.
@@ -68,6 +70,7 @@ class DebugDraw : public b2Draw
 		
 		bool m_debugMode;         ///< Indicate if the debug ath should be drawn.
 		State::Context m_context;///< Current context of the application.
+		float m_framesPerSeconds;
 };
 
 #endif//DEBUGDRAW_H

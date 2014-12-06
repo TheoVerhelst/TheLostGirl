@@ -122,6 +122,7 @@ void Application::processInput()
 void Application::update(sf::Time dt)
 {
 	m_stateStack.update(dt);
+	m_debugDraw.setFPS(1.f/dt.asSeconds());
 }
 
 void Application::render()
@@ -147,7 +148,7 @@ void Application::registerStates()
 
 void Application::registerSystems()
 {
-	m_systemManager.add<PhysicsSystem>(m_world, m_parameters);
+	m_systemManager.add<PhysicsSystem>(m_world, m_parameters, m_systemManager);
 	m_systemManager.add<PendingChangesSystem>(m_world);
 	m_systemManager.add<AnimationsSystem>();
 	m_systemManager.add<RenderSystem>(m_window);
