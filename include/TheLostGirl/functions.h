@@ -190,4 +190,10 @@ Key getKey(const std::map<Key, Value>& map, const Value& value)
 	return it->first;
 }
 
+template <typename T, typename R=T>
+R scaleRes(const T& value, float scale)
+{
+	return static_cast<R>(ceil(value*scale));
+}
+
 #endif//FUNCTIONS_H

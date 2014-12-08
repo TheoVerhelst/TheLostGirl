@@ -53,25 +53,24 @@ HUDState::HUDState(StateStack& stack, Context context):
 	
 	//Set textures to sprites
 	m_healthSpr.setTexture(texManager.get("health ath"));
-	m_healthSpr.setTextureRect({0, 0, static_cast<int>(240.f*scale), static_cast<int>(20.f*scale)});
+	m_healthSpr.setTextureRect({0, 0, scaleRes(240, scale), scaleRes(20, scale)});
 	m_healthBorderSpr.setTexture(texManager.get("health border ath"));
 	m_staminaSpr.setTexture(texManager.get("stamina ath"));
-	m_staminaSpr.setTextureRect({0, 0, static_cast<int>(240.f*scale), static_cast<int>(20.f*scale)});
+	m_staminaSpr.setTextureRect({0, 0, scaleRes(240, scale), scaleRes(20, scale)});
 	m_staminaBorderSpr.setTexture(texManager.get("stamina border ath"));
 	m_windStrengthSpr.setTexture(texManager.get("wind arrow ath"));
 	m_windStrengthSpr.setPosition(120.f*scale, 0);
 	m_windStrengthBarSpr.setTexture(texManager.get("wind bar ath"));
 	
-	m_healthBar = tgui::Canvas::create({240.f*scale, 20*scale});
-	m_healthBar->setPosition(bindWidth(gui, 0.01), bindHeight(gui, 0.99) - bindHeight(m_healthBar));
+	m_healthBar = tgui::Canvas::create({scaleRes(240.f, scale), scaleRes(20.f, scale)});
+	m_healthBar->setPosition(bindWidth(gui, 0.01f), bindHeight(gui, 0.99f) - bindHeight(m_healthBar));
 	gui.add(m_healthBar);
-	m_staminaBar = tgui::Canvas::create({240.f*scale, 20*scale});
-	m_staminaBar->setPosition(bindWidth(gui, 0.99) - bindWidth(m_staminaBar), bindHeight(gui, 0.99) - bindHeight(m_staminaBar));
+	m_staminaBar = tgui::Canvas::create({scaleRes(240.f, scale), scaleRes(20.f, scale)});
+	m_staminaBar->setPosition(bindWidth(gui, 0.99f) - bindWidth(m_staminaBar), bindHeight(gui, 0.99f) - bindHeight(m_staminaBar));
 	gui.add(m_staminaBar);
-	m_windBar = tgui::Canvas::create({240.f*scale, 20*scale});
-	m_windBar->setPosition(bindWidth(gui, 0.99) - bindWidth(m_windBar), bindHeight(gui, 0.99) - bindHeight(m_windBar) - bindHeight(m_staminaBar));
+	m_windBar = tgui::Canvas::create({scaleRes(240.f, scale), scaleRes(20.f, scale)});
+	m_windBar->setPosition(bindWidth(gui, 0.99f) - bindWidth(m_windBar), bindHeight(gui, 0.99f) - bindHeight(m_windBar) - bindHeight(m_staminaBar, 1.5));
 	gui.add(m_windBar);
-	
 }
 
 HUDState::~HUDState()
@@ -129,7 +128,7 @@ bool HUDState::update(sf::Time)
 			m_windStrengthSpr.setColor(sf::Color::White);
 			m_windStrengthBarSpr.setColor(sf::Color::White);
 		}
-		m_windStrengthSpr.setTextureRect({static_cast<int>(120.f*(1 - std::abs(windStrength))*scale), 0, static_cast<int>(120.f*std::abs(windStrength)*scale), static_cast<int>(20.f*scale)});
+		m_windStrengthSpr.setTextureRect({scaleRes<int>(120.f*(1.f - std::abs(windStrength)), scale), 0, scaleRes<int>(120.f*std::abs(windStrength), scale), scaleRes(20, scale)});
 		if(windStrength > 0)
 			m_windStrengthSpr.setScale(1, 1);
 		else
@@ -175,7 +174,7 @@ void HUDState::receive(const PlayerHealthChange& playerHealthChange)
 		m_healthBorderSpr.setColor(sf::Color::White);
 	}
 	float scale{getContext().parameters.scale};
-	m_healthSpr.setTextureRect({static_cast<int>((240.f - 240.f*playerHealthChange.normalizedHealth)*scale), 0, static_cast<int>(240.f*scale), static_cast<int>(20.f*scale)});
+	m_healthSpr.setTextureRect({scaleRes<int>(240 - 240.f*playerHealthChange.normalizedHealth, scale), 0, scaleRes(240, scale), scaleRes(20, scale)});
 }
 
 void HUDState::receive(const PlayerStaminaChange& playerStaminaChange)
@@ -195,5 +194,5 @@ void HUDState::receive(const PlayerStaminaChange& playerStaminaChange)
 	}
 	m_staminaFadingTimer.restart();
 	float scale{getContext().parameters.scale};
-	m_staminaSpr.setTextureRect({static_cast<int>((240.f - 240.f*playerStaminaChange.normalizedStamina)*scale), 0, static_cast<int>(240.f*scale), static_cast<int>(20.f*scale)});
+	m_staminaSpr.setTextureRect({scaleRes<int>(240 - 240.f*playerStaminaChange.normalizedStamina, scale), 0, scaleRes(240, scale), scaleRes(20, scale)});
 }

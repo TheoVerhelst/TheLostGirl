@@ -30,7 +30,7 @@ void TimeSystem::update(entityx::EntityManager&, entityx::EventManager&, double 
 		std::mt19937 gen{rd()};
 		std::uniform_real_distribution<float> transitionLenghtDis(15, 600);
 		m_windTransitionLength = transitionLenghtDis(gen);//A random number between 15 and 600
-		std::uniform_real_distribution<float> strengthDis(-10, 10);
+		std::uniform_real_distribution<float> strengthDis(-2, 2);
 		m_nextWindStrength = strengthDis(gen);//Another random number, between -10 and 10
 	}
 
@@ -46,7 +46,7 @@ void TimeSystem::update(entityx::EntityManager&, entityx::EventManager&, double 
 		std::mt19937 gen{rd()};
 		std::uniform_real_distribution<float> transitionLenghtDis(0.5, 2);
 		m_microWindTransitionLength = transitionLenghtDis(gen);//A random number between 0.5 and 2
-		std::uniform_real_distribution<float> strengthDis(-1, 1);
+		std::uniform_real_distribution<float> strengthDis(-0.2, 0.2);
 		m_microNextWindStrength = strengthDis(gen);//Another random number, between -1 and 1
 	}
 

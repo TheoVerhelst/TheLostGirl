@@ -1164,32 +1164,32 @@
                             {
                                 "name" : "enable limit",
                                 "type" : "bool",
-                                "required" : false,
-                                "default value" : false
+                                "required" : true
                             },
                             {
                                 "name" : "enable motor",
                                 "type" : "bool",
-                                "required" : false,
-                                "default value" : false
+                                "required" : true
                             },
                             {
                                 "name" : "upper angle",
                                 "type" : "real",
-                                "required" : false,
-                                "default value" : 0
+                                "required" : true
                             },
                             {
                                 "name" : "lower angle",
                                 "type" : "real",
-                                "required" : false,
-                                "default value" : 0
+                                "required" : true
                             },
                             {
-                                "name" : "max motor torque",
+                                "name" : "maximum motor torque",
                                 "type" : "real",
-                                "required" : false,
-                                "default value" : 0
+                                "required" : true
+                            },
+                            {
+                                "name" : "motor speed",
+                                "type" : "real",
+                                "required" : true
                             },
                             {
                                 "name" : "roles",
@@ -1297,44 +1297,37 @@
                             {
                                 "name" : "enable limit",
                                 "type" : "bool",
-                                "required" : false,
-                                "default value" : false
+                                "required" : true
                             },
                             {
                                 "name" : "upper translation",
                                 "type" : "real",
-                                "required" : false,
-                                "default value" : 0
+                                "required" : true
                             },
                             {
                                 "name" : "lower translation",
                                 "type" : "real",
-                                "required" : false,
-                                "default value" : 0
+                                "required" : true
                             },
                             {
                                 "name" : "enable motor",
                                 "type" : "bool",
-                                "required" : false,
-                                "default value" : false
+                                "required" : true
                             },
                             {
-                                "name" : "max motor force",
+                                "name" : "maximum motor force",
                                 "type" : "real",
-                                "required" : false,
-                                "default value" : 0
+                                "required" : true
                             },
                             {
                                 "name" : "motor speed",
                                 "type" : "real",
-                                "required" : false,
-                                "default value" : 0
+                                "required" : true
                             },
                             {
                                 "name" : "reference angle",
                                 "type" : "real",
-                                "required" : false,
-                                "default value" : 0
+                                "required" : true
                             },
                             {
                                 "name" : "roles",
@@ -1359,6 +1352,81 @@
                         "free children names" : false,
                         "children" :
                         [
+                            {
+                                "name" : "entity A",
+                                "type" : "string",
+                                "required" : true
+                            },
+                            {
+                                "name" : "entity B",
+                                "type" : "string",
+                                "required" : true
+                            },
+                            {
+                                "name" : "part A",
+                                "type" : "string",
+                                "required" : true
+                            },
+                            {
+                                "name" : "part B",
+                                "type" : "string",
+                                "required" : true
+                            },
+                            {
+                                "name" : "local anchor A",
+                                "type" : "object",
+                                "required" : true,
+                                "free children names" : false,
+                                "children" :
+                                [
+                                    {
+                                        "name" : "x",
+                                        "type" : "real",
+                                        "required" : true
+                                    },
+                                    {
+                                        "name" : "y",
+                                        "type" : "real",
+                                        "required" : true
+                                    }
+                                ]
+                                
+                            },
+                            {
+                                "name" : "local anchor B",
+                                "type" : "object",
+                                "required" : true,
+                                "free children names" : false,
+                                "children" :
+                                [
+                                    {
+                                        "name" : "x",
+                                        "type" : "real",
+                                        "required" : true
+                                    },
+                                    {
+                                        "name" : "y",
+                                        "type" : "real",
+                                        "required" : true
+                                    }
+                                ]
+                                
+                            },
+                            {
+                                "name" : "length",
+                                "type" : "real",
+                                "required" : true
+                            },
+                            {
+                                "name" : "frenquency Hz",
+                                "type" : "real",
+                                "required" : true
+                            },
+                            {
+                                "name" : "damping ratio",
+                                "type" : "real",
+                                "required" : true
+                            }
                         ]
                     }
                 },
@@ -1371,18 +1439,117 @@
                         "type" : "object",
                         "children" :
                         [
-                        ]
-                    }
-                },
-                {
-                    "name" : "mouse joints",
-                    "type" : "array",
-                    "required" : false,
-                    "children" :
-                    {
-                        "type" : "object",
-                        "children" :
-                        [
+                            {
+                                "name" : "entity A",
+                                "type" : "string",
+                                "required" : true
+                            },
+                            {
+                                "name" : "entity B",
+                                "type" : "string",
+                                "required" : true
+                            },
+                            {
+                                "name" : "part A",
+                                "type" : "string",
+                                "required" : true
+                            },
+                            {
+                                "name" : "part B",
+                                "type" : "string",
+                                "required" : true
+                            },
+                            {
+                                "name" : "local anchor A",
+                                "type" : "object",
+                                "required" : true,
+                                "free children names" : false,
+                                "children" :
+                                [
+                                    {
+                                        "name" : "x",
+                                        "type" : "real",
+                                        "required" : true
+                                    },
+                                    {
+                                        "name" : "y",
+                                        "type" : "real",
+                                        "required" : true
+                                    }
+                                ]
+                            },
+                            {
+                                "name" : "local anchor B",
+                                "type" : "object",
+                                "required" : true,
+                                "free children names" : false,
+                                "children" :
+                                [
+                                    {
+                                        "name" : "x",
+                                        "type" : "real",
+                                        "required" : true
+                                    },
+                                    {
+                                        "name" : "y",
+                                        "type" : "real",
+                                        "required" : true
+                                    }
+                                ]
+                            },
+                            {
+                                "name" : "ground anchor A",
+                                "type" : "object",
+                                "required" : true,
+                                "free children names" : false,
+                                "children" :
+                                [
+                                    {
+                                        "name" : "x",
+                                        "type" : "real",
+                                        "required" : true
+                                    },
+                                    {
+                                        "name" : "y",
+                                        "type" : "real",
+                                        "required" : true
+                                    }
+                                ]
+                            },
+                            {
+                                "name" : "ground anchor B",
+                                "type" : "object",
+                                "required" : true,
+                                "free children names" : false,
+                                "children" :
+                                [
+                                    {
+                                        "name" : "x",
+                                        "type" : "real",
+                                        "required" : true
+                                    },
+                                    {
+                                        "name" : "y",
+                                        "type" : "real",
+                                        "required" : true
+                                    }
+                                ]
+                            },
+                            {
+                                "name" : "length A",
+                                "type" : "real",
+                                "required" : true
+                            },
+                            {
+                                "name" : "length B",
+                                "type" : "real",
+                                "required" : true
+                            },
+                            {
+                                "name" : "ratio",
+                                "type" : "real",
+                                "required" : true
+                            }
                         ]
                     }
                 },
@@ -1409,6 +1576,111 @@
                         "free children names" : false,
                         "children" :
                         [
+                            {
+                                "name" : "entity A",
+                                "type" : "string",
+                                "required" : true
+                            },
+                            {
+                                "name" : "entity B",
+                                "type" : "string",
+                                "required" : true
+                            },
+                            {
+                                "name" : "part A",
+                                "type" : "string",
+                                "required" : true
+                            },
+                            {
+                                "name" : "part B",
+                                "type" : "string",
+                                "required" : true
+                            },
+                            {
+                                "name" : "local anchor A",
+                                "type" : "object",
+                                "required" : true,
+                                "free children names" : false,
+                                "children" :
+                                [
+                                    {
+                                        "name" : "x",
+                                        "type" : "real",
+                                        "required" : true
+                                    },
+                                    {
+                                        "name" : "y",
+                                        "type" : "real",
+                                        "required" : true
+                                    }
+                                ]
+                                
+                            },
+                            {
+                                "name" : "local anchor B",
+                                "type" : "object",
+                                "required" : true,
+                                "free children names" : false,
+                                "children" :
+                                [
+                                    {
+                                        "name" : "x",
+                                        "type" : "real",
+                                        "required" : true
+                                    },
+                                    {
+                                        "name" : "y",
+                                        "type" : "real",
+                                        "required" : true
+                                    }
+                                ]
+                                
+                            },
+                            {
+                                "name" : "local axis A",
+                                "type" : "object",
+                                "required" : true,
+                                "free children names" : false,
+                                "children" :
+                                [
+                                    {
+                                        "name" : "x",
+                                        "type" : "real",
+                                        "required" : true
+                                    },
+                                    {
+                                        "name" : "y",
+                                        "type" : "real",
+                                        "required" : true
+                                    }
+                                ]
+                                
+                            },
+                            {
+                                "name" : "enable motor",
+                                "type" : "bool",
+                                "required" : true
+                            },
+                            {
+                                "name" : "maximum motor torque",
+                                "type" : "real",
+                                "required" : true
+                            },
+                            {
+                                "name" : "motor speed",
+                                "type" : "real",
+                                "required" : true
+                            },
+                            {
+                                "name" : "frenquency Hz",
+                                "type" : "real",
+                                "required" : true
+                            },
+                            {
+                                "name" : "damping ratio",
+                                "type" : "real",
+                                "required" : true
+                            }
                         ]
                     }
                 },
@@ -1422,6 +1694,81 @@
                         "free children names" : false,
                         "children" :
                         [
+                            {
+                                "name" : "entity A",
+                                "type" : "string",
+                                "required" : true
+                            },
+                            {
+                                "name" : "entity B",
+                                "type" : "string",
+                                "required" : true
+                            },
+                            {
+                                "name" : "part A",
+                                "type" : "string",
+                                "required" : true
+                            },
+                            {
+                                "name" : "part B",
+                                "type" : "string",
+                                "required" : true
+                            },
+                            {
+                                "name" : "local anchor A",
+                                "type" : "object",
+                                "required" : true,
+                                "free children names" : false,
+                                "children" :
+                                [
+                                    {
+                                        "name" : "x",
+                                        "type" : "real",
+                                        "required" : true
+                                    },
+                                    {
+                                        "name" : "y",
+                                        "type" : "real",
+                                        "required" : true
+                                    }
+                                ]
+                                
+                            },
+                            {
+                                "name" : "local anchor B",
+                                "type" : "object",
+                                "required" : true,
+                                "free children names" : false,
+                                "children" :
+                                [
+                                    {
+                                        "name" : "x",
+                                        "type" : "real",
+                                        "required" : true
+                                    },
+                                    {
+                                        "name" : "y",
+                                        "type" : "real",
+                                        "required" : true
+                                    }
+                                ]
+                                
+                            },
+                            {
+                                "name" : "reference angle",
+                                "type" : "real",
+                                "required" : true
+                            },
+                            {
+                                "name" : "frequency Hz",
+                                "type" : "real",
+                                "required" : true
+                            },
+                            {
+                                "name" : "damping ratio",
+                                "type" : "real",
+                                "required" : true
+                            }
                         ]
                     }
                 },
@@ -1435,6 +1782,71 @@
                         "free children names" : false,
                         "children" :
                         [
+                            {
+                                "name" : "entity A",
+                                "type" : "string",
+                                "required" : true
+                            },
+                            {
+                                "name" : "entity B",
+                                "type" : "string",
+                                "required" : true
+                            },
+                            {
+                                "name" : "part A",
+                                "type" : "string",
+                                "required" : true
+                            },
+                            {
+                                "name" : "part B",
+                                "type" : "string",
+                                "required" : true
+                            },
+                            {
+                                "name" : "local anchor A",
+                                "type" : "object",
+                                "required" : true,
+                                "free children names" : false,
+                                "children" :
+                                [
+                                    {
+                                        "name" : "x",
+                                        "type" : "real",
+                                        "required" : true
+                                    },
+                                    {
+                                        "name" : "y",
+                                        "type" : "real",
+                                        "required" : true
+                                    }
+                                ]
+                                
+                            },
+                            {
+                                "name" : "local anchor B",
+                                "type" : "object",
+                                "required" : true,
+                                "free children names" : false,
+                                "children" :
+                                [
+                                    {
+                                        "name" : "x",
+                                        "type" : "real",
+                                        "required" : true
+                                    },
+                                    {
+                                        "name" : "y",
+                                        "type" : "real",
+                                        "required" : true
+                                    }
+                                ]
+                                
+                            },
+                            {
+                                "name" : "maximum length",
+                                "type" : "real",
+                                "required" : true
+                            }
                         ]
                     }
                 },
@@ -1448,6 +1860,65 @@
                         "free children names" : false,
                         "children" :
                         [
+                            {
+                                "name" : "entity A",
+                                "type" : "string",
+                                "required" : true
+                            },
+                            {
+                                "name" : "entity B",
+                                "type" : "string",
+                                "required" : true
+                            },
+                            {
+                                "name" : "part A",
+                                "type" : "string",
+                                "required" : true
+                            },
+                            {
+                                "name" : "part B",
+                                "type" : "string",
+                                "required" : true
+                            },
+                            {
+                                "name" : "maximum torque",
+                                "type" : "real",
+                                "required" : true
+                            },
+                            {
+                                "name" : "maximum force",
+                                "type" : "real",
+                                "required" : true
+                            },
+                            {
+                                "name" : "linear offset",
+                                "type" : "object",
+                                "required" : true,
+                                "free children names" : false,
+                                "children" :
+                                [
+                                    {
+                                        "name" : "x",
+                                        "type" : "real",
+                                        "required" : true
+                                    },
+                                    {
+                                        "name" : "y",
+                                        "type" : "real",
+                                        "required" : true
+                                    }
+                                ]
+                            },
+                            {
+                                "name" : "angular offset",
+                                "type" : "real",
+                                "required" : true
+                            },
+                            {
+                                "name" : "correction factor",
+                                "type" : "real",
+                                "required" : true
+                            }
                         ]
                     }
                 },
@@ -1461,6 +1932,74 @@
                         "free children names" : false,
                         "children" :
                         [
+                            {
+                                "name" : "entity A",
+                                "type" : "string",
+                                "required" : true
+                            },
+                            {
+                                "name" : "entity B",
+                                "type" : "string",
+                                "required" : true
+                            },
+                            {
+                                "name" : "part A",
+                                "type" : "string",
+                                "required" : true
+                            },
+                            {
+                                "name" : "part B",
+                                "type" : "string",
+                                "required" : true
+                            },
+                            {
+                                "name" : "local anchor A",
+                                "type" : "object",
+                                "required" : true,
+                                "free children names" : false,
+                                "children" :
+                                [
+                                    {
+                                        "name" : "x",
+                                        "type" : "real",
+                                        "required" : true
+                                    },
+                                    {
+                                        "name" : "y",
+                                        "type" : "real",
+                                        "required" : true
+                                    }
+                                ]
+                            },
+                            {
+                                "name" : "local anchor B",
+                                "type" : "object",
+                                "required" : true,
+                                "free children names" : false,
+                                "children" :
+                                [
+                                    {
+                                        "name" : "x",
+                                        "type" : "real",
+                                        "required" : true
+                                    },
+                                    {
+                                        "name" : "y",
+                                        "type" : "real",
+                                        "required" : true
+                                    }
+                                ]
+                            },
+                            {
+                                "name" : "maximum torque",
+                                "type" : "real",
+                                "required" : true
+                            },
+                            {
+                                "name" : "maximum force",
+                                "type" : "real",
+                                "required" : true
+                            }
                         ]
                     }
                 }
