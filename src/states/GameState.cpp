@@ -49,7 +49,7 @@ GameState::GameState(StateStack& stack, Context context) :
 
 GameState::~GameState()
 {
-	saveWorld("resources/levels/save.json");
+//	saveWorld("resources/levels/save.json");
 	for(auto& entity : m_entities)
 	{
 		if(entity.second.has_component<BodyComponent>())
@@ -217,6 +217,7 @@ void GameState::saveWorld(const std::string& file)
 					root["joints"]["revolute joints"][last]["upper angle"] = castedJoint->GetUpperLimit() * 180.f / b2_pi;
 					root["joints"]["revolute joints"][last]["enable limit"] = castedJoint->IsLimitEnabled();
 					root["joints"]["revolute joints"][last]["maximum motor torque"] = castedJoint->GetMaxMotorTorque()*pixelByMeter;
+					root["joints"]["revolute joints"][last]["motor speed"] = castedJoint->GetMotorSpeed()*pixelByMeter;
 					root["joints"]["revolute joints"][last]["enable motor"] = castedJoint->IsMotorEnabled();
 					if(jointHasRole(joint, JointRole::BendingAngle))
 						root["joints"]["revolute joints"][last]["roles"].append("bending angle");
