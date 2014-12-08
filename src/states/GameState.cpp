@@ -49,7 +49,7 @@ GameState::GameState(StateStack& stack, Context context) :
 
 GameState::~GameState()
 {
-//	saveWorld("resources/levels/save.json");
+	saveWorld("resources/levels/save.json");
 	for(auto& entity : m_entities)
 	{
 		if(entity.second.has_component<BodyComponent>())

@@ -339,6 +339,10 @@ void BowBender::operator()(entityx::Entity entity, double) const
 				assert(entity.component<BodyComponent>()->bodies.find("bow") != entity.component<BodyComponent>()->bodies.end());
 				b2Body* bowBody{entity.component<BodyComponent>()->bodies["bow"]};
 				
+				//Destroy all joints (e.g. the quiver/arrow joint)
+				for(b2JointEdge* jointEdge{arrowBody->GetJointList()}; jointEdge; jointEdge = jointEdge->next)
+					arrowBody->GetWorld()->DestroyJoint(jointEdge->joint);
+				
 				//Set the joint
 				b2PrismaticJointDef jointDef;
 				jointDef.bodyA = bowBody;
@@ -384,17 +388,16 @@ void ArrowShooter::operator()(entityx::Entity entity, double) const
 		entityx::Entity notchedArrow{bowComponent->notchedArrow};
 		DirectionComponent::Handle directionComponent{entity.component<DirectionComponent>()};
 		//If the notched arrow has a b2Body
-		if(notchedArrow.valid() and notchedArrow.has_component<BodyComponent>())
+		if(notchedArrow.valid() and notchedArrow.has_component<BodyComponent>() and notchedArrow.has_component<ArrowComponent>())
 		{
 			//If the notched arrow has not a main body, the program will crash
 			assert(notchedArrow.component<BodyComponent>()->bodies.find("main") != notchedArrow.component<BodyComponent>()->bodies.end());
 			b2Body* arrowBody{notchedArrow.component<BodyComponent>()->bodies["main"]};
-			//Iterate over all joints
+				
+			//Destroy all joints (e.g. the bow/arrow joint)
 			for(b2JointEdge* jointEdge{arrowBody->GetJointList()}; jointEdge; jointEdge = jointEdge->next)
-				//If this is a bending translation joint
-				if(jointHasRole(jointEdge->joint, JointRole::BendingPower))
-					//Destroy the joint
-					jointEdge->joint->GetBodyA()->GetWorld()->DestroyJoint(jointEdge->joint);
+				arrowBody->GetWorld()->DestroyJoint(jointEdge->joint);
+			
 			double shootForceX{bowComponent->power*cos(bowComponent->angle)};
 			double shootForceY{-bowComponent->power*sin(bowComponent->angle)};
 			if(directionComponent->direction == Direction::Left)
@@ -405,6 +408,7 @@ void ArrowShooter::operator()(entityx::Entity entity, double) const
 			b2Vec2 shootForce{static_cast<float32>(shootForceX), static_cast<float32>(shootForceY)};
 			arrowBody->ApplyLinearImpulse((arrowBody->GetMass()/20.f)*shootForce, arrowBody->GetWorldCenter(), true);
 			bowComponent->notchedArrow = entityx::Entity();
+			notchedArrow.component<ArrowComponent>()->sticked = false;
 		}
 	}
 }
