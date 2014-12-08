@@ -10,7 +10,6 @@
 #include <SFML/Graphics/Sprite.hpp>
 #include <TheLostGirl/AnimationsManager.h>
 #include <TheLostGirl/ContactListener.h>
-#include <TheLostGirl/ContactFilter.h>
 
 //Forward declarations
 namespace sf
@@ -79,7 +78,6 @@ class GameState : public State
 		std::map<std::string, entityx::Entity> m_sceneEntities;               ///< All scene entities.
 		std::map<std::string, std::vector<SceneReplaces>> m_sceneEntitiesData;///< A map containing data about scene entities.
 		ContactListener m_contactListener;                                    ///< The contact listener.
-		ContactFilter m_contactFilter;                                        ///< The contact filter.
 		float m_timeSpeed;                                                    ///< The speed of the time (usually 1.f). This influes only on the TimeSystem, not on physics!
 		bool m_loadingFinished;                                               ///< Indicate if the level loading is finished.
 		std::thread m_threadLoad;                                             ///< Thread launched when loading the level.

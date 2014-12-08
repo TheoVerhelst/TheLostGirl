@@ -35,7 +35,6 @@ GameState::GameState(StateStack& stack, Context context) :
 	m_sceneEntities(),
 	m_sceneEntitiesData(),
 	m_contactListener(getContext()),
-	m_contactFilter(),
 	m_timeSpeed{1.f},
 	m_threadLoad(),
 	m_levelIdentifier{""},
@@ -1071,7 +1070,6 @@ void GameState::initWorld(const std::string& file)
 		
 		getContext().player.handleInitialInputState(getContext().systemManager.system<PendingChangesSystem>()->commandQueue);
 		getContext().world.SetContactListener(&m_contactListener);
-		getContext().world.SetContactFilter(&m_contactFilter);
 		requestStackPop();
 		requestStackPush(States::HUD);
 	}
