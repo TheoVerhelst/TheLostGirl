@@ -16,10 +16,12 @@
 Mover::Mover(Direction _direction, bool _start):
 	direction{_direction},
 	start{_start}
-{}
+{
+}
 
 Mover::~Mover()
-{}
+{
+}
 		
 void Mover::operator()(entityx::Entity entity, double) const
 {
@@ -242,10 +244,12 @@ void Mover::operator()(entityx::Entity entity, double) const
 }
 
 Jumper::Jumper()
-{}
+{
+}
 
 Jumper::~Jumper()
-{}
+{
+}
 
 void Jumper::operator()(entityx::Entity entity, double) const
 {
@@ -281,10 +285,12 @@ void Jumper::operator()(entityx::Entity entity, double) const
 BowBender::BowBender(float _angle, float _power):
 	angle{_angle},
 	power{_power}
-{}
+{
+}
 
 BowBender::~BowBender()
-{}
+{
+}
 
 void BowBender::operator()(entityx::Entity entity, double) const
 {
@@ -377,10 +383,12 @@ void BowBender::operator()(entityx::Entity entity, double) const
 }
 
 ArrowShooter::ArrowShooter()
-{}
+{
+}
 
 ArrowShooter::~ArrowShooter()
-{}
+{
+}
 
 void ArrowShooter::operator()(entityx::Entity entity, double) const
 {
@@ -427,10 +435,12 @@ bool StickedArrowQueryCallback::ReportFixture(b2Fixture* fixture)
 }
 
 ArrowPicker::ArrowPicker()
-{}
+{
+}
 
 ArrowPicker::~ArrowPicker()
-{}
+{
+}
 
 void ArrowPicker::operator()(entityx::Entity entity, double) const
 {

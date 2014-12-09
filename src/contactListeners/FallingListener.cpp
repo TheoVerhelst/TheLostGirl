@@ -14,10 +14,12 @@
 
 FallingListener::FallingListener(State::Context context):
 	m_context(context)
-{}
+{
+}
 
 void FallingListener::PreSolve(b2Contact *, const b2Manifold*)
-{}
+{
+}
 
 void FallingListener::BeginContact(b2Contact* contact)
 {

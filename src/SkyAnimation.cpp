@@ -9,7 +9,8 @@
 
 SkyAnimation::SkyAnimation(entityx::Entity entity):
 	m_entity(entity)
-{}
+{
+}
 
 void SkyAnimation::animate(float progress)
 {

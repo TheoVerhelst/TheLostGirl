@@ -3,11 +3,13 @@
 template<typename A>
 AnimationsManager<A>::AnimationsManager():
 	m_animationsMap()
-{}
+{
+}
 
 template<typename A>
 AnimationsManager<A>::~AnimationsManager()
-{}
+{
+}
 
 template<typename A>
 void AnimationsManager<A>::addAnimation(const std::string& identifier, A animation, unsigned short int importance, sf::Time duration, bool loops)
@@ -187,4 +189,5 @@ AnimationsManager<A>::TimeAnimation::TimeAnimation(A _animation, unsigned short 
 	progress{_progress},
 	isPaused{_isPaused},
 	isActive{_isActive}
-{}
+{
+}

@@ -63,7 +63,8 @@ Player::Player()
 }
 
 Player::~Player()
-{}
+{
+}
 
 void Player::handleEvent(const sf::Event& event, std::queue<Command>& commands)
 {

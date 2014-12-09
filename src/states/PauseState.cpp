@@ -83,7 +83,8 @@ PauseState::~PauseState()
 }
 
 void PauseState::draw()
-{}
+{
+}
 
 bool PauseState::update(sf::Time)
 {
@@ -104,7 +105,8 @@ void PauseState::backToGame()
 }
 
 void PauseState::goToOptions()
-{}
+{
+}
 
 void PauseState::backToMainMenu()
 {

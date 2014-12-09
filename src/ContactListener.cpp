@@ -11,7 +11,8 @@ ContactListener::ContactListener(State::Context context):
 	m_context(context),
 	m_fallingListener(m_context),
 	m_arrowHitListener(m_context)
-{}
+{
+}
 
 
 void ContactListener::PreSolve(b2Contact* contact, const b2Manifold* oldManifold)

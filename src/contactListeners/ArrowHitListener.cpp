@@ -19,10 +19,12 @@
 
 ArrowHitListener::ArrowHitListener(State::Context context):
 	m_context(context)
-{}
+{
+}
 
 void ArrowHitListener::PreSolve(b2Contact *, const b2Manifold*)
-{}
+{
+}
 
 void ArrowHitListener::BeginContact(b2Contact*)
 {

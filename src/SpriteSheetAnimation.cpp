@@ -10,7 +10,8 @@
 SpriteSheetAnimation::SpriteSheetAnimation(sf::Sprite& sprite, State::Context context):
 	m_sprite(sprite),
 	m_context(context)
-{}
+{
+}
 
 void SpriteSheetAnimation::addFrame(const Frame& frame)
 {
