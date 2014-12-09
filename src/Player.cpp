@@ -313,6 +313,7 @@ void Player::initializeActions()
 	m_stopActionBinding[MoveDown].action = Mover(Direction::Bottom, false);
 	
 	m_immediateActionBinding[Jump].action = Jumper();
+	m_immediateActionBinding[PickUp].action = ArrowPicker();
 	
 	//Do not assign a command to the bending action, the DragAndDrop system already does
 }

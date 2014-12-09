@@ -406,10 +406,10 @@
                                 "required" : true
                             },
                             {
-                                "name" : "sticked",
-                                "type" : "bool",
-                                "required" : false,
-                                "default value" : false
+                                "name" : "state",
+                                "type" : "string",
+                                "required" : true,
+                                "possible values" : ["fired", "sticked", "stored", "notched"]
                             },
                             {
                                 "name" : "local friction point",

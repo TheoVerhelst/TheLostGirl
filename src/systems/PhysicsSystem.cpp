@@ -128,7 +128,7 @@ void PhysicsSystem::update(entityx::EntityManager& entityManager, entityx::Event
 	//Update the arrows
 	for(auto entity : entityManager.entities_with_components(bodyComponent, arrowComponent))
 	{
-		if(not arrowComponent->sticked)
+		if(arrowComponent->state == ArrowComponent::Fired)
 		{
 			//If the arrow has not a main body, the program will crash
 			assert(bodyComponent->bodies.find("main") != bodyComponent->bodies.end());

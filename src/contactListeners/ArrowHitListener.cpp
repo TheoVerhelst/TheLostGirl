@@ -52,8 +52,8 @@ void ArrowHitListener::PostSolve(b2Contact* contact, const b2ContactImpulse* imp
 		if(entityA.has_component<ArrowComponent>() and entityB.has_component<HardnessComponent>())
 		{
 			//If the impact multiplied by the penetrance of the arrow is greater than the hardness of the other object
-			if(impulse->normalImpulses[0]*entityA.component<ArrowComponent>()->penetrance > entityB.component<HardnessComponent>()->hardness
-				and not entityA.component<ArrowComponent>()->sticked)
+			if(entityA.component<ArrowComponent>()->state == ArrowComponent::Fired and
+				impulse->normalImpulses[0]*entityA.component<ArrowComponent>()->penetrance > entityB.component<HardnessComponent>()->hardness)
 			{
 				b2Vec2 localStickPoint{sftob2(entityA.component<ArrowComponent>()->localStickPoint/m_context.parameters.pixelByMeter)};
 				b2Vec2 globalStickPoint{bodyA->GetWorldPoint(localStickPoint)};
@@ -64,7 +64,7 @@ void ArrowHitListener::PostSolve(b2Contact* contact, const b2ContactImpulse* imp
 				weldJointDef->localAnchorB = bodyB->GetLocalPoint(globalStickPoint);
 				weldJointDef->referenceAngle = bodyB->GetAngle() - bodyA->GetAngle();
 				m_context.systemManager.system<PendingChangesSystem>()->jointsToCreate.push(weldJointDef);
-				entityA.component<ArrowComponent>()->sticked = true;
+				entityA.component<ArrowComponent>()->state = ArrowComponent::Sticked;
 			}
 			if(entityB.has_component<HealthComponent>())
 				entityB.component<HealthComponent>()->current -= impulse->normalImpulses[0]*entityA.component<ArrowComponent>()->damage;

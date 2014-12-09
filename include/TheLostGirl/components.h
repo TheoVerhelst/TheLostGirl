@@ -168,12 +168,21 @@ struct StaminaComponent : public entityx::Component<StaminaComponent>
 /// The penetrance indicates how much the arrow can stick into hard targets, and so make damages.
 struct ArrowComponent : public entityx::Component<ArrowComponent>
 {
+	/// Possibles states of an arrow.
+	enum ArrowState
+	{
+		Fired,  ///< The arrow is fired and is in air.
+		Sticked,///< The arrow is sticked into something.
+		Stored, ///< The arrow is stored into an inventory or in a quiver.
+		Notched ///< The arrow is notched in a bow.
+	};
+	
 	float friction;                 ///< The amplitude of the friction applied on the body.
 	sf::Vector2f localFrictionPoint;///< The point where the friction must be applied.
 	sf::Vector2f localStickPoint;   ///< The point where the arrow will be sticked when touch a target.
 	float penetrance;               ///< Indicates how much the arrow can stick into hard targets.
 	float damage;                   ///< Indicates the damage that the arrow can do on the target.
-	bool sticked;                   ///< Indicates if the arrow is sticked into a target.
+	ArrowState state;               ///< Indicates the current state of the arrow.
 };
 
 struct HardnessComponent : public entityx::Component<HardnessComponent>
