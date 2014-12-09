@@ -21,14 +21,11 @@ void RenderSystem::update(entityx::EntityManager& entityManager, entityx::EventM
 	{
 		for(auto& spritePair : spriteComponent->sprites)
 		{
-			if(transformComponent->transforms.find(spritePair.first) != transformComponent->transforms.end())
-			{
-				//If this is a scene entity, add them sprites beyond the others entities in this plan
-				if(entity.has_component<CategoryComponent>() and entity.component<CategoryComponent>()->category & Category::Scene)
-					orderedEntities[transformComponent->transforms[spritePair.first].z].push_front(&spritePair.second);
-				else
-					orderedEntities[transformComponent->transforms[spritePair.first].z].push_back(&spritePair.second);
-			}
+			//If this is a scene entity, add them sprites beyond the others entities in this plan
+			if(entity.has_component<CategoryComponent>() and entity.component<CategoryComponent>()->category & Category::Scene)
+				orderedEntities[transformComponent->transforms[spritePair.first].z].push_front(&spritePair.second);
+			else
+				orderedEntities[transformComponent->transforms[spritePair.first].z].push_back(&spritePair.second);
 		}
 	}
 	//For each plan, in the reverse order

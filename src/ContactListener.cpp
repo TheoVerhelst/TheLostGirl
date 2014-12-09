@@ -35,7 +35,7 @@ bool ContactListener::collide(b2Contact* contact, const b2Manifold*)
 	b2Body* bodyB{fixtureB->GetBody()};
 	entityx::Entity entityB{*static_cast<entityx::Entity*>(bodyB->GetUserData())};
 	
-	//Wrap all checks into this function allow to stop all checks when any of the test is verified.
+	//Wrap all checks into this function allow to stop next checks when any of the checks is verified.
 	
 	//The contact do not occurs if both entities are the same one
 	if(entityA == entityB)
@@ -46,21 +46,13 @@ bool ContactListener::collide(b2Contact* contact, const b2Manifold*)
 	{
 		BodyComponent::Handle bodiesA{entityA.component<BodyComponent>()};
 		TransformComponent::Handle trsfA{entityA.component<TransformComponent>()};
-		auto it = bodiesA->bodies.begin();
-		while(it != bodiesA->bodies.end() and it->second != bodyA)
-			++it;
-		if(it == bodiesA->bodies.end())
-			throw std::runtime_error("An entity is referenced by the user data of a body, but the entity has not registred this body in BodyComponent");
+		auto it = std::find_if(bodiesA->bodies.begin(), bodiesA->bodies.end(), [&](const std::pair<std::string, b2Body*>& pair){return pair.second == bodyA;});
 		std::string bodyNameA{it->first};
 		long int zA{lround(trsfA->transforms[bodyNameA].z)};//Nearest rounding of the plan of the body/sprite A
 		
 		BodyComponent::Handle bodiesB{entityB.component<BodyComponent>()};
 		TransformComponent::Handle trsfB{entityB.component<TransformComponent>()};
-		it = bodiesB->bodies.begin();
-		while(it != bodiesB->bodies.end() and it->second != bodyB)
-			++it;
-		if(it == bodiesB->bodies.end())
-			throw std::runtime_error("An entity is referenced by the user data of a body, but the entity has not registred this body in BodyComponent");
+		it = std::find_if(bodiesB->bodies.begin(), bodiesB->bodies.end(), [&](const std::pair<std::string, b2Body*>& pair){return pair.second == bodyB;});
 		std::string bodyNameB{it->first};
 		long int zB{lround(trsfB->transforms[bodyNameB].z)};//Nearest rounding of the plan of the body/sprite B
 		

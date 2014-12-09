@@ -102,8 +102,6 @@ void Mover::operator()(entityx::Entity entity, double) const
 					//If the notched arrow has a b2Body
 					if(notchedArrow.valid() and notchedArrow.has_component<BodyComponent>())
 					{
-						//If the notched arrow has not a main body, the program will crash
-						assert(notchedArrow.component<BodyComponent>()->bodies.find("main") != notchedArrow.component<BodyComponent>()->bodies.end());
 						b2Body* arrowBody{notchedArrow.component<BodyComponent>()->bodies["main"]};
 						//Iterate over all joints
 						for(b2JointEdge* jointEdge{arrowBody->GetJointList()}; jointEdge; jointEdge = jointEdge->next)
@@ -340,11 +338,7 @@ void BowBender::operator()(entityx::Entity entity, double) const
 				notchedArrow = *found;
 				bowComponent->arrows.erase(found);
 				
-				//If the notched arrow has not a main body, the program will crash
-				assert(notchedArrow.component<BodyComponent>()->bodies.find("main") != notchedArrow.component<BodyComponent>()->bodies.end());
 				b2Body* arrowBody{notchedArrow.component<BodyComponent>()->bodies["main"]};
-				//If the entity has not a bow, the program will crash
-				assert(entity.component<BodyComponent>()->bodies.find("bow") != entity.component<BodyComponent>()->bodies.end());
 				b2Body* bowBody{entity.component<BodyComponent>()->bodies["bow"]};
 				
 				//Destroy all joints (e.g. the quiver/arrow joint)
@@ -401,8 +395,6 @@ void ArrowShooter::operator()(entityx::Entity entity, double) const
 		//If the notched arrow has a b2Body
 		if(notchedArrow.valid() and notchedArrow.has_component<BodyComponent>() and notchedArrow.has_component<ArrowComponent>())
 		{
-			//If the notched arrow has not a main body, the program will crash
-			assert(notchedArrow.component<BodyComponent>()->bodies.find("main") != notchedArrow.component<BodyComponent>()->bodies.end());
 			b2Body* arrowBody{notchedArrow.component<BodyComponent>()->bodies["main"]};
 				
 			//Destroy all joints (e.g. the bow/arrow joint)
@@ -450,8 +442,6 @@ void ArrowPicker::operator()(entityx::Entity entity, double) const
 	{
 		DirectionComponent::Handle directionComponent{entity.component<DirectionComponent>()};
 		BodyComponent::Handle bodyComponent{entity.component<BodyComponent>()};
-		//If the entity has not a main body, the program will crash
-		assert(bodyComponent->bodies.find("main") != bodyComponent->bodies.end());
 		b2Body* body{bodyComponent->bodies["main"]};
 		b2World* world{body->GetWorld()};
 		
@@ -464,11 +454,7 @@ void ArrowPicker::operator()(entityx::Entity entity, double) const
 		
 		if(callback.foundEntity.valid())
 		{
-			//If the found arrow has not a main body, the program will crash
-			assert(callback.foundEntity.component<BodyComponent>()->bodies.find("main") != callback.foundEntity.component<BodyComponent>()->bodies.end());
 			b2Body* arrowBody{callback.foundEntity.component<BodyComponent>()->bodies["main"]};
-			//If the entity has not a main body, the program will crash
-			assert(entity.component<BodyComponent>()->bodies.find("main") != entity.component<BodyComponent>()->bodies.end());
 			b2Body* characterBody{entity.component<BodyComponent>()->bodies["main"]};
 			
 			//Destroy all joints (e.g. the ground/arrow weld joint)

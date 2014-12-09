@@ -21,57 +21,37 @@ void ScrollingSystem::update(entityx::EntityManager& entityManager, entityx::Eve
 		SpriteComponent::Handle spriteComponent;
 		TransformComponent::Handle transformComponent;
 		sf::Vector2f playerPosition;
-		bool found{false};
-		for(auto entity : entityManager.entities_with_components(transformComponent,
-																categoryComponent,
-																walkComponent))
+		for(auto entity : entityManager.entities_with_components(transformComponent, categoryComponent, walkComponent))
 		{
 			//We found the player
 			if(categoryComponent->category & Category::Player)
 			{
 				//Find the main body
-				std::map<std::string, Transform>& transforms(transformComponent->transforms);
-				if(not transforms.empty())
+				std::map<std::string, Transform>& transforms();
+				playerPosition = {transformComponent->transforms["main"].x, transformComponent->transforms["main"].y};
+				sf::View view{m_window.getView()};
+				//Compute the maximum and minimum coordinates that the view can have
+				float xmin{m_levelRect.left + ((view.getSize().x/m_parameters.scale) / 2)};
+				float xmax{m_levelRect.left + m_levelRect.width - ((view.getSize().x/m_parameters.scale) / 2)};
+				float ymin{m_levelRect.top + ((view.getSize().y/m_parameters.scale) / 2)};
+				float ymax{m_levelRect.top + m_levelRect.height - ((view.getSize().y/m_parameters.scale) / 2)};
+				//Cap the position between min and max
+				playerPosition.x = cap(playerPosition.x, xmin, xmax);
+				playerPosition.y = cap(playerPosition.y, ymin, ymax);
+				
+				//Assign the position to the view
+				view.setCenter(playerPosition*m_parameters.scale);
+				m_window.setView(view);
+				
+				//Assign transform on every sprite
+				for(auto entityToOffset : entityManager.entities_with_components(spriteComponent, transformComponent))
 				{
-					//If there is a main body
-					if(transforms.find("main") != transforms.end())
-						playerPosition = {transforms["main"].x, transforms["main"].y};
-					//Else, take the first that come in hand
-					else
-						playerPosition = {transforms.begin()->second.x, transforms.begin()->second.y};
-				}
-				found = true;
-				break;
-			}
-		}
-		if(found)
-		{
-			sf::View view{m_window.getView()};
-			//Compute the maximum and minimum coordinates that the view can have
-			float xmin{m_levelRect.left + ((view.getSize().x/m_parameters.scale) / 2)};
-			float xmax{m_levelRect.left + m_levelRect.width - ((view.getSize().x/m_parameters.scale) / 2)};
-			float ymin{m_levelRect.top + ((view.getSize().y/m_parameters.scale) / 2)};
-			float ymax{m_levelRect.top + m_levelRect.height - ((view.getSize().y/m_parameters.scale) / 2)};
-			//Cap the position between min and max
-			playerPosition.x = cap(playerPosition.x, xmin, xmax);
-			playerPosition.y = cap(playerPosition.y, ymin, ymax);
-			
-			//Assign the position to the view
-			view.setCenter(playerPosition*m_parameters.scale);
-			m_window.setView(view);
-			
-			//Assign transform on every sprite
-			for(auto entity : entityManager.entities_with_components(spriteComponent, transformComponent))
-			{
-				//The x-ordinate of the left border of the screen.
-				float xScreen{playerPosition.x - xmin};
-				std::map<std::string, sf::Sprite>& sprites(spriteComponent->sprites);
-				std::map<std::string, Transform>& transforms(transformComponent->transforms);
-				//For each transform in the map
-				for(auto& transformPair : transforms)
-				{
-					//If the associated sprite exists
-					if(sprites.find(transformPair.first) != sprites.end())
+					//The x-ordinate of the left border of the screen.
+					float xScreen{playerPosition.x - xmin};
+					std::map<std::string, sf::Sprite>& sprites(spriteComponent->sprites);
+					std::map<std::string, Transform>& transforms(transformComponent->transforms);
+					//For each transform in the map
+					for(auto& transformPair : transforms)
 					{
 						//The abscissa of the entity on the screen, relatively to the reference plan and the position of the player
 						double xScaled{transformPair.second.x + xScreen - (xScreen * pow(1.5, m_referencePlan - transformPair.second.z))};
@@ -79,6 +59,7 @@ void ScrollingSystem::update(entityx::EntityManager& entityManager, entityx::Eve
 						sprites[transformPair.first].setRotation(transformPair.second.angle);
 					}
 				}
+				break;
 			}
 		}
 	}
