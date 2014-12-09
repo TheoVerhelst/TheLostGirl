@@ -102,7 +102,7 @@ void Mover::operator()(entityx::Entity entity, double) const
 					//If the notched arrow has a b2Body
 					if(notchedArrow.valid() and notchedArrow.has_component<BodyComponent>())
 					{
-						b2Body* arrowBody{notchedArrow.component<BodyComponent>()->bodies["main"]};
+						b2Body* arrowBody{notchedArrow.component<BodyComponent>()->bodies.at("main")};
 						//Iterate over all joints
 						for(b2JointEdge* jointEdge{arrowBody->GetJointList()}; jointEdge; jointEdge = jointEdge->next)
 						{
@@ -338,8 +338,8 @@ void BowBender::operator()(entityx::Entity entity, double) const
 				notchedArrow = *found;
 				bowComponent->arrows.erase(found);
 				
-				b2Body* arrowBody{notchedArrow.component<BodyComponent>()->bodies["main"]};
-				b2Body* bowBody{entity.component<BodyComponent>()->bodies["bow"]};
+				b2Body* arrowBody{notchedArrow.component<BodyComponent>()->bodies.at("main")};
+				b2Body* bowBody{entity.component<BodyComponent>()->bodies.at("bow")};
 				
 				//Destroy all joints (e.g. the quiver/arrow joint)
 				for(b2JointEdge* jointEdge{arrowBody->GetJointList()}; jointEdge; jointEdge = jointEdge->next)
@@ -395,7 +395,7 @@ void ArrowShooter::operator()(entityx::Entity entity, double) const
 		//If the notched arrow has a b2Body
 		if(notchedArrow.valid() and notchedArrow.has_component<BodyComponent>() and notchedArrow.has_component<ArrowComponent>())
 		{
-			b2Body* arrowBody{notchedArrow.component<BodyComponent>()->bodies["main"]};
+			b2Body* arrowBody{notchedArrow.component<BodyComponent>()->bodies.at("main")};
 				
 			//Destroy all joints (e.g. the bow/arrow joint)
 			for(b2JointEdge* jointEdge{arrowBody->GetJointList()}; jointEdge; jointEdge = jointEdge->next)
@@ -442,7 +442,7 @@ void ArrowPicker::operator()(entityx::Entity entity, double) const
 	{
 		DirectionComponent::Handle directionComponent{entity.component<DirectionComponent>()};
 		BodyComponent::Handle bodyComponent{entity.component<BodyComponent>()};
-		b2Body* body{bodyComponent->bodies["main"]};
+		b2Body* body{bodyComponent->bodies.at("main")};
 		b2World* world{body->GetWorld()};
 		
 		//Do the querying
@@ -454,8 +454,8 @@ void ArrowPicker::operator()(entityx::Entity entity, double) const
 		
 		if(callback.foundEntity.valid())
 		{
-			b2Body* arrowBody{callback.foundEntity.component<BodyComponent>()->bodies["main"]};
-			b2Body* characterBody{entity.component<BodyComponent>()->bodies["main"]};
+			b2Body* arrowBody{callback.foundEntity.component<BodyComponent>()->bodies.at("main")};
+			b2Body* characterBody{entity.component<BodyComponent>()->bodies.at("main")};
 			
 			//Destroy all joints (e.g. the ground/arrow weld joint)
 			for(b2JointEdge* jointEdge{arrowBody->GetJointList()}; jointEdge; jointEdge = jointEdge->next)

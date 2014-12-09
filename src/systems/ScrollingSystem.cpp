@@ -28,7 +28,7 @@ void ScrollingSystem::update(entityx::EntityManager& entityManager, entityx::Eve
 			{
 				//Find the main body
 				std::map<std::string, Transform>& transforms();
-				playerPosition = {transformComponent->transforms["main"].x, transformComponent->transforms["main"].y};
+				playerPosition = {transformComponent->transforms.at("main").x, transformComponent->transforms.at("main").y};
 				sf::View view{m_window.getView()};
 				//Compute the maximum and minimum coordinates that the view can have
 				float xmin{m_levelRect.left + ((view.getSize().x/m_parameters.scale) / 2)};
@@ -55,8 +55,8 @@ void ScrollingSystem::update(entityx::EntityManager& entityManager, entityx::Eve
 					{
 						//The abscissa of the entity on the screen, relatively to the reference plan and the position of the player
 						double xScaled{transformPair.second.x + xScreen - (xScreen * pow(1.5, m_referencePlan - transformPair.second.z))};
-						sprites[transformPair.first].setPosition(xScaled*m_parameters.scale, transformPair.second.y*m_parameters.scale);
-						sprites[transformPair.first].setRotation(transformPair.second.angle);
+						sprites.at(transformPair.first).setPosition(xScaled*m_parameters.scale, transformPair.second.y*m_parameters.scale);
+						sprites.at(transformPair.first).setRotation(transformPair.second.angle);
 					}
 				}
 				break;

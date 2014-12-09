@@ -69,7 +69,7 @@ int Application::init()
 	}
 	catch(std::runtime_error& e)
 	{
-		std::cerr << "Exception : " << e.what() << std::endl;
+		std::cerr << "Runtime error : " << e.what() << std::endl;
 		return 1;
 	}
 	return 0;
@@ -92,7 +92,12 @@ int Application::run()
 	}
 	catch(std::runtime_error& e)
 	{
-		std::cerr << "Exception: " << e.what() << std::endl;
+		std::cerr << "Runtime error: " << e.what() << std::endl;
+		return 1;
+	}
+	catch(std::out_of_range& e)
+	{
+		std::cerr << "Out of range error (the level designer probably bad named entitie's parts): " << e.what() << std::endl;
 		return 1;
 	}
 	return 0;
