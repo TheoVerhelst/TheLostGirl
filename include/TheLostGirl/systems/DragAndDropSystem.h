@@ -32,7 +32,8 @@ class DragAndDropSystem : public entityx::System<DragAndDropSystem>
 			m_origin{0, 0},
 			m_line{sf::Vertex({0, 0}, sf::Color::Black), sf::Vertex({0, 0}, sf::Color::Black)},
 			m_isActive{false}
-		{}
+		{
+		}
 		
 		/// System's update function.
 		/// This function must be called if the drag and drop is not active.

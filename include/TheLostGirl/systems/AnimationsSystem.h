@@ -24,7 +24,8 @@ class AnimationsSystem : public entityx::System<AnimationsSystem>
 	public:
 		/// Default constructor.
 		AnimationsSystem()
-		{}
+		{
+		}
 
 		/// System's update function.
 		/// \param es Entity manager.

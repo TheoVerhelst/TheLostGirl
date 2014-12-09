@@ -48,7 +48,8 @@ class SpriteSheetAnimation
 			Frame(const sf::IntRect& _rect, float _duration):
 				rect(_rect),
 				duration(_duration)
-			{}
+			{
+			}
 		};
 		
 		/// Constructor.

@@ -12,7 +12,8 @@ struct LoadingStateChange : public entityx::Event<LoadingStateChange>
 	/// \param _sentence A short sentence describing the loading state.
 	LoadingStateChange(std::wstring _sentence):
 		sentence(_sentence)
-	{}
+	{
+	}
 	
 	std::wstring sentence;///< A short sentence describing the loading state.
 };
@@ -26,7 +27,8 @@ struct PlayerHealthChange : public entityx::Event<PlayerHealthChange>
 	PlayerHealthChange(float _health, float _normalizedHealth):
 		health(_health),
 		normalizedHealth(_normalizedHealth)
-	{}
+	{
+	}
 	
 	float health;          ///< The new health of the player.
 	float normalizedHealth;///< The new health of the player, normalized in [0, 1].
@@ -41,7 +43,8 @@ struct PlayerStaminaChange : public entityx::Event<PlayerStaminaChange>
 	PlayerStaminaChange(float _stamina, float _normalizedStamina):
 		stamina(_stamina),
 		normalizedStamina(_normalizedStamina)
-	{}
+	{
+	}
 	
 	float stamina;          ///< The new stamina of the player.
 	float normalizedStamina;///< The new stamina of the player, normalized in [0, 1].

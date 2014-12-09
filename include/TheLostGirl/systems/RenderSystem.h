@@ -20,7 +20,8 @@ class RenderSystem : public entityx::System<RenderSystem>
 		/// \param window SFML's window on wich to render the entities.
 		RenderSystem(sf::RenderWindow& window):
 			m_window(window)
-		{}
+		{
+		}
 
 		/// System's update function.
 		/// \param es Entity manager.

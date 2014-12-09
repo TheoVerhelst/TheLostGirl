@@ -17,6 +17,13 @@ ContactListener::ContactListener(State::Context context):
 
 void ContactListener::PreSolve(b2Contact* contact, const b2Manifold* oldManifold)
 {
+	contact->SetEnabled(collide(contact, oldManifold));
+	m_fallingListener.PreSolve(contact, oldManifold);
+	m_arrowHitListener.PreSolve(contact, oldManifold);
+}
+
+bool ContactListener::collide(b2Contact* contact, const b2Manifold*)
+{
 	//Contact filtering
 	//The filtering must be done here because the b2ContactFilter class is called
 	//only one time per contact, and that allow bodies overlapping to stay overlapped.
@@ -27,13 +34,12 @@ void ContactListener::PreSolve(b2Contact* contact, const b2Manifold* oldManifold
 	b2Fixture* fixtureB{contact->GetFixtureB()};
 	b2Body* bodyB{fixtureB->GetBody()};
 	entityx::Entity entityB{*static_cast<entityx::Entity*>(bodyB->GetUserData())};
-	bool enableContact{true};
-	//The &&=  assignement operator allow to specify that all operands right to the assignement must be true
-	//in order to enable the collision. So by default collision is enabled,
-	//and if at least one condition is false, the collision will not occurs.
 	
-	//If both entities are the same one
-	enableContact = enableContact && entityA != entityB;
+	//Wrap all checks into this function allow to stop all checks when any of the test is verified.
+	
+	//The contact do not occurs if both entities are the same one
+	if(entityA == entityB)
+		return false;
 	
 	//If the two entities are not in the same plan
 	if(entityA.has_component<TransformComponent>() and entityB.has_component<TransformComponent>())
@@ -58,26 +64,27 @@ void ContactListener::PreSolve(b2Contact* contact, const b2Manifold* oldManifold
 		std::string bodyNameB{it->first};
 		long int zB{lround(trsfB->transforms[bodyNameB].z)};//Nearest rounding of the plan of the body/sprite B
 		
-		enableContact = enableContact && (zA == zB);//Collide only if in the same plan
+		//The contact do not occurs if the entities are not in the same plan
+		if(zA != zB)
+			return false;
 	}
 	
-	//If both entities are arrows
-	//If the right operand is false, then the collison do not occurs
-	enableContact = enableContact && (not (entityA.has_component<ArrowComponent>() and entityB.has_component<ArrowComponent>()));
+	//The contact do not occurs if both entities are arrows
+	if(entityA.has_component<ArrowComponent>() and entityB.has_component<ArrowComponent>())
+		return false;
 	
-	//If the entity A is an arrow, collide only if this one is in air
-	if(entityA.has_component<ArrowComponent>())
-		enableContact = enableContact && entityA.component<ArrowComponent>()->state == ArrowComponent::Fired;
+	//The contact do not occurs if the entity A is an arrow wich is not fired
+	if(entityA.has_component<ArrowComponent>() and entityA.component<ArrowComponent>()->state != ArrowComponent::Fired)
+			return false;
 		
-	//If the entity B is an arrow, collide only if this one is fired
-	if(entityB.has_component<ArrowComponent>())
-		enableContact = enableContact && entityB.component<ArrowComponent>()->state == ArrowComponent::Fired;
+	//The contact do not occurs if the entity B is an arrow wich is not fired
+	if(entityB.has_component<ArrowComponent>() and entityB.component<ArrowComponent>()->state != ArrowComponent::Fired)
+		return false;
 	
-	contact->SetEnabled(enableContact);
-	
-	m_fallingListener.PreSolve(contact, oldManifold);
-	m_arrowHitListener.PreSolve(contact, oldManifold);
+	//If none of the previous case is verified, then the collision occurs
+	return true;
 }
+	
 
 void ContactListener::BeginContact(b2Contact* contact)
 {

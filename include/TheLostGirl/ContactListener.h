@@ -41,9 +41,15 @@ class ContactListener : public b2ContactListener
 		void PostSolve(b2Contact* contact, const b2ContactImpulse* impulse);
 	
 	private:
-		State::Context m_context;           ///< Current context of the application.
-		FallingListener m_fallingListener;  ///< The falling collision listener.
-		ArrowHitListener m_arrowHitListener;///< The arrow hit listener.
+		State::Context m_context;                   ///< Current context of the application.
+		FallingListener m_fallingListener;          ///< The falling collision listener.
+		ArrowHitListener m_arrowHitListener;        ///< The arrow hit listener.
+		
+		/// Do various checks to determine if the contact should occurs or not.
+		/// \param contact Structure containing data about the contact.
+		/// \param oldManifold Old manifold.
+		/// \return True if the contact should occurs, false otherwise.
+		bool collide(b2Contact* contact, const b2Manifold* oldManifold);
 };
 
 #endif//CONTACTLISTENER_H

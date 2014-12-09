@@ -22,7 +22,8 @@ class PhysicsSystem : public entityx::System<PhysicsSystem>
 			m_world(world),
 			m_parameters(parameters),
 			m_systemManager(systemManager)
-		{}
+		{
+		}
 
 		/// System's update function.
 		/// \param es Entity manager.
