@@ -20,6 +20,9 @@ void PhysicsSystem::update(entityx::EntityManager& entityManager, entityx::Event
 	int32 positionIterations{8};
 	m_world.Step(dt, velocityIterations, positionIterations);
 	
+	//Get the force of the wind
+	float windStrength{m_systemManager.system<TimeSystem>()->getWindStrength()};
+	
 	BodyComponent::Handle bodyComponent;
 	TransformComponent::Handle transformComponent;
 	WalkComponent::Handle walkComponent;
@@ -134,8 +137,6 @@ void PhysicsSystem::update(entityx::EntityManager& entityManager, entityx::Event
 			assert(bodyComponent->bodies.find("main") != bodyComponent->bodies.end());
 			b2Body* body{bodyComponent->bodies["main"]};
 			
-			//Apply the force of the wind
-			float windStrength{m_systemManager.system<TimeSystem>()->getWindStrength()};
 			body->ApplyForce({windStrength*body->GetMass(), 0}, body->GetWorldCenter(), true);
 			
 			//Apply a drag force to point to the direction of the trajectory

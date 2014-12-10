@@ -1,6 +1,10 @@
 #ifndef INTROSTATE_H
 #define INTROSTATE_H
 
+#include <TGUI/Picture.hpp>
+#include <TGUI/Panel.hpp>
+#include <TGUI/Label.hpp>
+
 //Forward declarations
 namespace sf
 {
@@ -20,6 +24,9 @@ class IntroState : public State
         /// \param context Current context of the application.
 		IntroState(StateStack& stack, Context context);
 		
+		/// Default destructor.
+		~IntroState();
+		
         /// The drawing function.
         /// \return virtual void
         /// It must do all things related to drawing stuff on the screen.
@@ -36,6 +43,11 @@ class IntroState : public State
         /// \return Return true if the state under this state in the stack must be also updated.
         /// \note The closing window and resinzing window events are already handled by the Application class.
 		virtual bool handleEvent(const sf::Event& event);
+		
+	private:
+		tgui::Panel::Ptr m_background; ///< The background of the menu.
+		tgui::Picture::Ptr m_logo;     ///< The Lost Girl logo.
+		tgui::Label::Ptr m_sentence;   ///< The sentence under the logo.
 };
 
 #endif//INTROSTATE_H

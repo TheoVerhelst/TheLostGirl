@@ -63,9 +63,9 @@ int Application::init()
 		m_fontManager.load("debug", "resources/fonts/FreeMonoBold.ttf");//Load the debug font
 		m_gui.setGlobalFont(std::make_shared<sf::Font>(m_fontManager.get("menu")));//Set the GUI font
 		m_world.SetDebugDraw(&m_debugDraw);//Set the debug drawer
-		m_debugDraw.SetFlags(b2Draw::e_shapeBit|b2Draw::e_jointBit|b2Draw::e_pairBit);//Debug drawing flags
+		m_debugDraw.SetFlags(b2Draw::e_shapeBit|b2Draw::e_jointBit|b2Draw::e_aabbBit);//Debug drawing flags
 		m_systemManager.configure();//Init the manager
-		m_stateStack.pushState(States::MainMenu);//Start with the main menu
+		m_stateStack.pushState(States::Intro);//Start with the main menu
 	}
 	catch(std::runtime_error& e)
 	{
