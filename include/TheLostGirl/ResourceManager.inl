@@ -1,6 +1,7 @@
 template <typename Resource, typename Identifier>
 void ResourceManager<Resource, Identifier>::load(Identifier id, const std::string& filename)
 {
+	std::lock_guard<std::mutex> lock(m_mutex);//Lock the mutex for thread-safety
 	// Create and load resource
 	std::unique_ptr<Resource> resource(new Resource());
 
@@ -15,6 +16,7 @@ template <typename Resource, typename Identifier>
 template <typename Parameter>
 void ResourceManager<Resource, Identifier>::load(Identifier id, const std::string& filename, const Parameter& secondParam)
 {
+	std::lock_guard<std::mutex> lock(m_mutex);//Lock the mutex for thread-safety
 	// Create and load resource
 	std::unique_ptr<Resource> resource(new Resource());
 
@@ -26,7 +28,7 @@ void ResourceManager<Resource, Identifier>::load(Identifier id, const std::strin
 }
 
 template <typename Resource, typename Identifier>
-bool ResourceManager<Resource, Identifier>::isLoaded(Identifier id)
+bool ResourceManager<Resource, Identifier>::isLoaded(Identifier id) const
 {
 	return m_resourceMap.find(id) != m_resourceMap.end();
 }

@@ -6,6 +6,7 @@
 #include <memory>
 #include <stdexcept>
 #include <cassert>
+#include <mutex>
 
 //Forward declarations
 namespace sf
@@ -41,7 +42,7 @@ class ResourceManager
 		/// Check if the given resource is already loaded.
 		/// \param id Identifier of the resource.
 		/// \return True if the given resource is already loaded, false otherwise.
-		bool isLoaded(Identifier id);
+		bool isLoaded(Identifier id) const;
 
         /// Get the resource identified by id.
         /// This function can be called only if the resource was loaded before by the load function.
@@ -69,6 +70,7 @@ class ResourceManager
 		void insertResource(Identifier id, std::unique_ptr<Resource> resource);
 		
 		std::map<Identifier, std::unique_ptr<Resource>> m_resourceMap;///< Resources mapped with their identifiers.
+		std::mutex m_mutex;                                           ///< Mutex for multithreaded ressource management.
 };
 
 /// Typedef of RessourceManager.
