@@ -65,7 +65,8 @@ int Application::init()
 		m_world.SetDebugDraw(&m_debugDraw);//Set the debug drawer
 		m_debugDraw.SetFlags(b2Draw::e_shapeBit|b2Draw::e_jointBit|b2Draw::e_aabbBit);//Debug drawing flags
 		m_systemManager.configure();//Init the manager
-		m_stateStack.pushState(States::Intro);//Start with the main menu
+		m_stateStack.pushState(States::EmptyLevel);//Add an empty level loading
+		m_stateStack.pushState(States::Intro);//And add the intro state on top of it
 	}
 	catch(std::runtime_error& e)
 	{
@@ -146,6 +147,7 @@ void Application::registerStates()
 	m_stateStack.registerState<MainMenuState>(States::MainMenu);
 	m_stateStack.registerState<LoadingState>(States::Loading);
 	m_stateStack.registerState<IntroState>(States::Intro);
+	m_stateStack.registerState<EmptyLevelState>(States::EmptyLevel);
 	m_stateStack.registerState<HUDState>(States::HUD);
 	m_stateStack.registerState<GameState>(States::Game);
 	m_stateStack.registerState<PauseState>(States::Pause);

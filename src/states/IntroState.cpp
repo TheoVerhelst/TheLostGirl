@@ -55,8 +55,7 @@ bool IntroState::update(sf::Time)
 
 bool IntroState::handleEvent(const sf::Event& event)
 {
-	if(event.type == sf::Event::KeyPressed or
-		event.type == sf::Event::MouseButtonPressed)
+	if(event.type == sf::Event::KeyPressed)
 	{
 		requestStackPop();
 		requestStackPush(States::MainMenu);

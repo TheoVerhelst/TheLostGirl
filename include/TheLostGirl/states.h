@@ -7,5 +7,6 @@
 #include <TheLostGirl/states/GameState.h>
 #include <TheLostGirl/states/HUDState.h>
 #include <TheLostGirl/states/PauseState.h>
+#include <TheLostGirl/states/EmptyLevelState.h>
 
 #endif//STATES_H

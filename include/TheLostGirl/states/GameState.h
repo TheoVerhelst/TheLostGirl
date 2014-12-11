@@ -3,8 +3,6 @@
 
 #include <thread>
 
-#include <dist/json/json-forwards.h>
-#include <SFML/System/Thread.hpp>
 #include <Box2D/Dynamics/Joints/b2Joint.h>
 
 #include <SFML/Graphics/Sprite.hpp>
@@ -79,7 +77,6 @@ class GameState : public State
 		std::map<std::string, std::vector<SceneReplaces>> m_sceneEntitiesData;///< A map containing data about scene entities.
 		ContactListener m_contactListener;                                    ///< The contact listener.
 		float m_timeSpeed;                                                    ///< The speed of the time (usually 1.f). This influes only on the TimeSystem, not on physics!
-		bool m_loadingFinished;                                               ///< Indicate if the level loading is finished.
 		std::thread m_threadLoad;                                             ///< Thread launched when loading the level.
 		
 		//Level informations

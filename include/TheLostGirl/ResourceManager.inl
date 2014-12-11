@@ -60,5 +60,6 @@ void ResourceManager<Resource, Identifier>::insertResource(Identifier id, std::u
 {
 	//Insert and check success
 	auto inserted = m_resourceMap.insert(std::make_pair(id, std::move(resource)));
+	std::cout << id << std::endl;
 	assert(inserted.second);
 }

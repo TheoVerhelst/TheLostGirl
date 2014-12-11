@@ -40,7 +40,7 @@ GameState::GameState(StateStack& stack, Context context) :
 	m_levelIdentifier{""},
 	m_numberOfPlans{1},
 	m_referencePlan{0.f},
-	m_levelRect{0, 0, 0, 1080}
+	m_levelRect{0, 0, 1920, 1080}
 {
 	//Dunno how to make a cleaner thread initialization from function member
 	m_threadLoad = std::thread([this](const std::string& str){return this->initWorld(str);}, "resources/levels/save.json");

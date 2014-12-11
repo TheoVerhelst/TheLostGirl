@@ -59,7 +59,7 @@ MainMenuState::MainMenuState(StateStack& stack, Context context):
 	m_exitButton = tgui::Button::copy(m_newButton);
 	m_exitButton->setPosition(bindWidth(gui, 0.25f), bindHeight(gui, 0.7f));
 	m_exitButton->setText(LangManager::tr("Exit"));
-	m_exitButton->connect("pressed", &MainMenuState::requestStackPop, this);
+	m_exitButton->connect("pressed", &MainMenuState::exitGame, this);
 	m_exitButton->disconnect(playGameSignal);
 	gui.add(m_exitButton);
 }
@@ -93,4 +93,10 @@ void MainMenuState::playGame()
 	requestStackPop();
 	requestStackPush(States::Game);
 	requestStackPush(States::Loading);
+}
+
+void MainMenuState::exitGame()
+{
+	requestStackPop();//The main menu
+	requestStackPop();//The empty level in the background
 }
