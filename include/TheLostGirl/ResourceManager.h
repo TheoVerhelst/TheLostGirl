@@ -27,6 +27,8 @@ class ResourceManager
         /// Load the resource identified by \a id at the path \a filename in the memory.
         /// Once you loaded the resource, you can then get it simply with the function \e get,
         /// so the resource is loaded only one time.
+		/// If this function is called a second time for the same resource,
+		/// the function will do nothing.
         /// \param id Identifier of the resource.
         /// \param filename String of the path to the resource.
 		void load(Identifier id, const std::string& filename);
@@ -38,11 +40,6 @@ class ResourceManager
         /// \param secondParam Additional parameter, it can be every type you want, and is passed to the SFML's loading function.
 		template <typename Parameter>
 		void load(Identifier id, const std::string& filename, const Parameter& secondParam);
-		
-		/// Check if the given resource is already loaded.
-		/// \param id Identifier of the resource.
-		/// \return True if the given resource is already loaded, false otherwise.
-		bool isLoaded(Identifier id) const;
 
         /// Get the resource identified by id.
         /// This function can be called only if the resource was loaded before by the load function.
@@ -64,11 +61,6 @@ class ResourceManager
 		Identifier getIdentifier(const Resource& resource) const;
 
 	private:
-		/// Insert the given resource to the resource map.
-		/// \param id Identifier of the resource to insert.
-		/// \param resource Resource to insert.
-		void insertResource(Identifier id, std::unique_ptr<Resource> resource);
-		
 		std::map<Identifier, std::unique_ptr<Resource>> m_resourceMap;///< Resources mapped with their identifiers.
 		std::mutex m_mutex;                                           ///< Mutex for multithreaded ressource management.
 };

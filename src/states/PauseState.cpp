@@ -113,5 +113,6 @@ void PauseState::backToMainMenu()
 	requestStackPop();//The pause state
 	requestStackPop();//The HUD state
 	requestStackPop();//The game state
+//	requestStackPush(States::EmptyLevel);
 	requestStackPush(States::MainMenu);
 }

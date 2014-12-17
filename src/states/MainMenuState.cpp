@@ -90,7 +90,8 @@ bool MainMenuState::handleEvent(const sf::Event&)
 
 void MainMenuState::playGame()
 {
-	requestStackPop();
+	requestStackPop();//The main mainu
+//	requestStackPop();//The empty level
 	requestStackPush(States::Game);
 	requestStackPush(States::Loading);
 }
@@ -98,5 +99,5 @@ void MainMenuState::playGame()
 void MainMenuState::exitGame()
 {
 	requestStackPop();//The main menu
-	requestStackPop();//The empty level in the background
+//	requestStackPop();//The empty level in the background
 }

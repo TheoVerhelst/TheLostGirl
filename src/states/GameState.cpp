@@ -43,7 +43,7 @@ GameState::GameState(StateStack& stack, Context context) :
 	m_levelRect{0, 0, 1920, 1080}
 {
 	//Dunno how to make a cleaner thread initialization from function member
-	m_threadLoad = std::thread([this](const std::string& str){return this->initWorld(str);}, "resources/levels/save.json");
+	m_threadLoad = std::thread(&GameState::initWorld, this, "resources/levels/save.json");
 }
 
 GameState::~GameState()
@@ -575,12 +575,8 @@ void GameState::initWorld(const std::string& file)
 					//Load the texture
 					//Identifier of the texture, in format "level_plan_texture"
 					std::string textureIdentifier{fileTexture + "_" + std::to_string(i)};
-					//If the texture is not alreday loaded (first loading of the level)
-					if(not texManager.isLoaded(textureIdentifier))
-					{
-						getContext().eventManager.emit<LoadingStateChange>(LangManager::tr("Loading plan") + L" " + std::wstring(groupOfReplacesName.begin(), groupOfReplacesName.end()));
-						texManager.load<sf::IntRect>(textureIdentifier, path, originRect);
-					}
+					getContext().eventManager.emit<LoadingStateChange>(LangManager::tr("Loading plan") + L" " + std::wstring(groupOfReplacesName.begin(), groupOfReplacesName.end()));
+					texManager.load<sf::IntRect>(textureIdentifier, path, originRect);
 					//Replaces
 					const Json::Value replaces{image["replaces"]};
 					//For each replacing of the image
@@ -640,12 +636,8 @@ void GameState::initWorld(const std::string& file)
 					unsigned int currentChunkSize{chunkSize};
 					if(j >= planLength/chunkSize)
 						currentChunkSize = planLength - chunkSize*j;
-					//If the texture is not alreday loaded (first loading of the level)
-					if(not texManager.isLoaded(textureIdentifier))
-					{
-						getContext().eventManager.emit<LoadingStateChange>(LangManager::tr("Loading plan") + L" " + std::to_wstring(i+1));
-						texManager.load<sf::IntRect>(textureIdentifier, path, sf::IntRect(j*chunkSize, 0, currentChunkSize, m_levelRect.height*getContext().parameters.scale));
-					}
+					getContext().eventManager.emit<LoadingStateChange>(LangManager::tr("Loading plan") + L" " + std::to_wstring(i+1));
+					texManager.load<sf::IntRect>(textureIdentifier, path, sf::IntRect(j*chunkSize, 0, currentChunkSize, m_levelRect.height*getContext().parameters.scale));
 					//Create an entity
 					m_sceneEntities.emplace(textureIdentifier, getContext().entityManager.create());
 					//Create a sprite with the loaded texture
@@ -1026,11 +1018,8 @@ void GameState::initWorld(const std::string& file)
 		const std::string dayIdentifier{"day sky"};
 		sf::Vector2f position{1920.f/2.f, 1080.f};
 		sf::Vector2f origin{2900.f/2.f, 2900.f/2.f};
-		if(not texManager.isLoaded(dayIdentifier))
-		{
-			getContext().eventManager.emit<LoadingStateChange>(LangManager::tr("Loading day sky"));
-			texManager.load(dayIdentifier, paths[getContext().parameters.scaleIndex] + "day.png");
-		}
+		getContext().eventManager.emit<LoadingStateChange>(LangManager::tr("Loading day sky"));
+		texManager.load(dayIdentifier, paths[getContext().parameters.scaleIndex] + "day.png");
 		//Create a sprite with the loaded texture
 		sf::Sprite daySpr(texManager.get(dayIdentifier));
 		//Assign origin of the sprite to the center of the day image
@@ -1038,11 +1027,8 @@ void GameState::initWorld(const std::string& file)
 		
 		//Load the night sky
 		const std::string nightIdentifier{"night sky"};
-		if(not texManager.isLoaded(nightIdentifier))
-		{
-			getContext().eventManager.emit<LoadingStateChange>(LangManager::tr("Loading night sky"));
-			texManager.load(nightIdentifier, paths[getContext().parameters.scaleIndex] + "night.png");
-		}
+		getContext().eventManager.emit<LoadingStateChange>(LangManager::tr("Loading night sky"));
+		texManager.load(nightIdentifier, paths[getContext().parameters.scaleIndex] + "night.png");
 		//Create a sprite with the loaded texture
 		sf::Sprite nightSpr(texManager.get(nightIdentifier));
 		//Assign origin of the sprite to the center of the night image

@@ -65,7 +65,7 @@ int Application::init()
 		m_world.SetDebugDraw(&m_debugDraw);//Set the debug drawer
 		m_debugDraw.SetFlags(b2Draw::e_shapeBit|b2Draw::e_jointBit|b2Draw::e_aabbBit);//Debug drawing flags
 		m_systemManager.configure();//Init the manager
-		m_stateStack.pushState(States::EmptyLevel);//Add an empty level loading
+//		m_stateStack.pushState(States::EmptyLevel);//Add an empty level loading
 		m_stateStack.pushState(States::Intro);//And add the intro state on top of it
 	}
 	catch(std::runtime_error& e)

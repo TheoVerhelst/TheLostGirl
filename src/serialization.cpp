@@ -560,8 +560,7 @@ void deserialize(const Json::Value& value, entityx::ComponentHandle<SpriteCompon
 	for(std::string& partName : value.getMemberNames())
 	{
 		const std::string identifier{value[partName]["identifier"].asString()};
-		if(not textureManager.isLoaded(identifier))
-			textureManager.load(identifier, path + "/" + identifier + ".png");
+		textureManager.load(identifier, path + "/" + identifier + ".png");
 		component->sprites.emplace(partName, sf::Sprite(textureManager.get(identifier)));
 	}
 }

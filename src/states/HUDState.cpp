@@ -38,18 +38,12 @@ HUDState::HUDState(StateStack& stack, Context context):
 	TextureManager& texManager(getContext().textureManager);
 	
 	//Load textures
-	if(not texManager.isLoaded("health ath"))
-		texManager.load("health ath", paths[getContext().parameters.scaleIndex] + "healthAth.png");
-	if(not texManager.isLoaded("health border ath"))
-		texManager.load("health border ath", paths[getContext().parameters.scaleIndex] + "healthBorderAth.png");
-	if(not texManager.isLoaded("stamina ath"))
-		texManager.load("stamina ath", paths[getContext().parameters.scaleIndex] + "staminaAth.png");
-	if(not texManager.isLoaded("stamina border ath"))
-		texManager.load("stamina border ath", paths[getContext().parameters.scaleIndex] + "staminaBorderAth.png");
-	if(not texManager.isLoaded("wind arrow ath"))
-		texManager.load("wind arrow ath", paths[getContext().parameters.scaleIndex] + "windArrowAth.png");
-	if(not texManager.isLoaded("wind bar ath"))
-		texManager.load("wind bar ath", paths[getContext().parameters.scaleIndex] + "windBarAth.png");
+	texManager.load("health ath", paths[getContext().parameters.scaleIndex] + "healthAth.png");
+	texManager.load("health border ath", paths[getContext().parameters.scaleIndex] + "healthBorderAth.png");
+	texManager.load("stamina ath", paths[getContext().parameters.scaleIndex] + "staminaAth.png");
+	texManager.load("stamina border ath", paths[getContext().parameters.scaleIndex] + "staminaBorderAth.png");
+	texManager.load("wind arrow ath", paths[getContext().parameters.scaleIndex] + "windArrowAth.png");
+	texManager.load("wind bar ath", paths[getContext().parameters.scaleIndex] + "windBarAth.png");
 	
 	//Set textures to sprites
 	m_healthSpr.setTexture(texManager.get("health ath"));

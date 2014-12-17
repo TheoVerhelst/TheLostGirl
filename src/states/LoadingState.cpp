@@ -53,7 +53,9 @@ LoadingState::LoadingState(StateStack& stack, Context context):
 		m_background->setBackgroundColor(sf::Color(255, 255, 255, 100));
 		gui.add(m_background);
 		
+		m_sentence = L"...";
 		m_sentenceLabel = tgui::Label::create();
+		m_sentenceLabel->setText(m_sentence);
 		m_sentenceLabel->setTextSize(20);
 		//Center the label
 		m_sentenceLabel->setPosition((bindWidth(gui) - bindWidth(m_sentenceLabel))/2, bindHeight(gui, 0.5));
@@ -61,11 +63,11 @@ LoadingState::LoadingState(StateStack& stack, Context context):
 		gui.add(m_sentenceLabel);
 		
 		m_hintLabel = tgui::Label::create();
+		m_hintLabel->setText(LangManager::tr(line));
 		m_hintLabel->setTextSize(30);
 		//Center the label
 		m_hintLabel->setPosition((bindWidth(gui) - bindWidth(m_hintLabel))/2, bindHeight(gui, 0.38));
 		m_hintLabel->setTextColor(sf::Color::Black);
-		m_hintLabel->setText(LangManager::tr(line));
 		gui.add(m_hintLabel);
 	}
 }
@@ -93,6 +95,9 @@ bool LoadingState::handleEvent(const sf::Event&)
 
 void LoadingState::receive(const LoadingStateChange &loadingStateChange)
 {
-	m_sentence = loadingStateChange.sentence + L"...";
-	m_sentenceLabel->setText(m_sentence);
+	if(m_sentenceLabel)
+	{
+		m_sentence = loadingStateChange.sentence + L"...";
+		m_sentenceLabel->setText(m_sentence);
+	}
 }
