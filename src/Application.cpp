@@ -15,16 +15,9 @@
 #include <TheLostGirl/Application.h>
 
 Application::Application(bool debugMode):
-	m_parameters{FR,
-				debugMode,
-				1,
-				scales[m_parameters.scaleIndex],
-				120.f,
-				m_parameters.scale*m_parameters.pixelByMeter,
-				{0.0f, 9.80665f},
-				"resources/fonts/euphorigenic.ttf"},
-	m_window{sf::VideoMode{static_cast<unsigned int>(1920*m_parameters.scale), static_cast<unsigned int>(1080*m_parameters.scale)}, "The Lost Girl"},
-	m_gui{m_window},
+	m_parameters{},
+	m_window{},
+	m_gui{},
 	m_textureManager{},
 	m_fontManager{},
 	m_eventManager{},
@@ -43,6 +36,49 @@ Application::Application(bool debugMode):
 								m_player}},			
 	m_debugDraw(m_stateStack.getContext())
 {
+	std::string file("settings.json");
+	Json::Value settings;//Will contains the root value after parsing.
+	Json::Value model;
+	Json::Reader reader;
+	std::ifstream settingsFile(file, std::ifstream::binary);
+	std::ifstream modelFile("settingsModel.json", std::ifstream::binary);
+	if(!reader.parse(settingsFile, settings))//report to the user the failure and their locations in the document.
+	{
+		std::cout << "\"" + file + "\": " + reader.getFormattedErrorMessages() << std::endl;
+		std::cout << "Loaded default settings." << std::endl;
+		m_window.create({640, 360}, "The Lost Girl");
+	}
+	else if(!reader.parse(modelFile, model))//report to the user the failure and their locations in the document.
+	{
+		std::cout << "\"settingsModel.json\": " + reader.getFormattedErrorMessages() << std::endl;
+		std::cout << "Loaded default settings." << std::endl;
+		m_window.create({640, 360}, "The Lost Girl");
+	}
+	else
+	{
+		//SuperMegaMagic parsing of the settings file from the model file
+		parse(settings, model, "root", "root");
+		
+		if(settings["lang"].asString() == "FR")
+			m_parameters.lang = FR;
+		else if(settings["lang"].asString() == "EN")
+			m_parameters.lang = EN;
+		if(settings["resolution"].asInt() == 360)
+			m_parameters.scaleIndex = 0;
+		else if(settings["resolution"].asInt() == 576)
+			m_parameters.scaleIndex = 1;
+		else if(settings["resolution"].asInt() == 720)
+			m_parameters.scaleIndex = 2;
+		else if(settings["resolution"].asInt() == 900)
+			m_parameters.scaleIndex = 3;
+		else if(settings["resolution"].asInt() == 1080)
+			m_parameters.scaleIndex = 4;
+		m_window.create({settings["window size"]["w"].asUInt(), settings["window size"]["h"].asUInt()}, "The Lost Girl");
+	}
+	m_parameters.scale = scales[m_parameters.scaleIndex];
+	m_parameters.scaledPixelByMeter = m_parameters.scale*m_parameters.pixelByMeter;
+	m_parameters.debugMode = debugMode;
+	m_gui.setWindow(m_window);
 }
 
 Application::~Application()
@@ -70,7 +106,7 @@ int Application::init()
 	}
 	catch(std::runtime_error& e)
 	{
-		std::cerr << "Runtime error : " << e.what() << std::endl;
+		std::cerr << "Runtime error: " << e.what() << std::endl;
 		return 1;
 	}
 	return 0;

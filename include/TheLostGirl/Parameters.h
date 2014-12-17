@@ -13,6 +13,7 @@ const float scales[5] = {30.f/90.f,
 						60.f/90.f,
 						75.f/90.f,
 						90.f/90.f};///<Differents scales, relatively to the maximum resolution.
+
 const std::string paths[5] = {"resources/images/360p/",
 								"resources/images/576p/",
 								"resources/images/720p/",
@@ -22,14 +23,14 @@ const std::string paths[5] = {"resources/images/360p/",
 /// Structure that hold various informations about the application.
 struct Parameters
 {
-	Lang lang;                    ///< The current language.
-	bool debugMode;               ///< True if the DebugDrawing must be activated.
-	unsigned short int scaleIndex;///< The index of the current scale, in the range [0, 5[
-	float scale;                  ///< Current scale.
-	float pixelByMeter;           ///< Original pixels/meter scale.
-	float scaledPixelByMeter;     ///< Scaled pixels/meter scale, equal to scale*fullPixelScale
-	b2Vec2 gravity;               ///< The gravity vector.
-	std::string textFont;         ///< Path of the main font.
+	Lang lang = EN;                                           ///< The current language.
+	bool debugMode = false;                                   ///< True if the DebugDrawing must be activated.
+	unsigned short int scaleIndex = 0;                        ///< The index of the current scale, in the range [0, 5[
+	float scale = scales[scaleIndex];                         ///< Current scale.
+	float pixelByMeter = 120.f;                               ///< Original pixels/meter scale.
+	float scaledPixelByMeter = scale*pixelByMeter;            ///< Scaled pixels/meter scale, equal to scale*fullPixelScale
+	b2Vec2 gravity = {0.0f, 9.80665f};                        ///< The gravity vector.
+	std::string textFont = "resources/fonts/euphorigenic.ttf";///< Path of the main font.
 };
 
 #endif//PARAMETERS_H

@@ -87,9 +87,9 @@ void EmptyLevelState::initWorld(const std::string& file)
 		std::ifstream saveFile(file, std::ifstream::binary);
 		std::ifstream modelSaveFile("resources/levels/model.json", std::ifstream::binary);
 		if(!reader.parse(saveFile, root))//report to the user the failure and their locations in the document.
-			throw std::runtime_error("\"" + file + "\" : " + reader.getFormattedErrorMessages());
+			throw std::runtime_error("\"" + file + "\": " + reader.getFormattedErrorMessages());
 		if(!reader.parse(modelSaveFile, model))
-			throw std::runtime_error("\"resources/levels/model.json\" : " + reader.getFormattedErrorMessages());
+			throw std::runtime_error("\"resources/levels/model.json\": " + reader.getFormattedErrorMessages());
 		
 		//SuperMegaMagic parsing of the save file from the model file
 		parse(root, model, "root", "root");

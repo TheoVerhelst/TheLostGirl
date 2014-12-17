@@ -417,7 +417,7 @@ void GameState::initWorld(const std::string& file)
 		if(!reader.parse(saveFile, root))//report to the user the failure and their locations in the document.
 			throw std::runtime_error("\"" + file + "\" : " + reader.getFormattedErrorMessages());
 		if(!reader.parse(modelSaveFile, model))
-			throw std::runtime_error("\"resources/levels/model.json\" : " + reader.getFormattedErrorMessages());
+			throw std::runtime_error("\"resources/levels/model.json\": " + reader.getFormattedErrorMessages());
 		
 		//SuperMegaMagic parsing of the save file from the model file
 		parse(root, model, "root", "root");
@@ -489,7 +489,7 @@ void GameState::initWorld(const std::string& file)
 						}
 						catch(std::runtime_error& e)
 						{
-							std::cerr << "Unable to parse \"root.entities." + entityName + ".body\" : " << e.what() << std::endl;
+							std::cerr << "Unable to parse \"root.entities." + entityName + ".body\": " << e.what() << std::endl;
 						}
 					}
 				}
@@ -508,7 +508,7 @@ void GameState::initWorld(const std::string& file)
 						}
 						catch(std::runtime_error& e)
 						{
-							std::cerr << "Unable to parse \"root.entities." + entityName + ".spritesheet animations\" : " << e.what() << std::endl;
+							std::cerr << "Unable to parse \"root.entities." + entityName + ".spritesheet animations\": " << e.what() << std::endl;
 						}
 					}
 				}

@@ -32,7 +32,7 @@ namespace entityx
 /// anim.addFrame(rect1, 0.1f);
 /// anim.addFrame(rect2, 0.9f);
 ///
-/// //Add the component to the entity :
+/// //Add the component to the entity:
 /// AnimationsComponent::Handle animationsComponent = entity->assign<AnimationsComponent>(AnimationsManager<SpriteSheetAnimation>());
 /// //Add the animation to the animations manager
 /// animationsComponent->animations.addAnimation("run", anim, 1, sf::seconds(3.f), true);

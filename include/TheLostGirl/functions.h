@@ -55,7 +55,7 @@ template <typename T, typename U>
 T cap(T value, U min, U max, T period)
 {
 	if(period > fabs(max - min))
-		throw std::runtime_error("Unable to cap value : the period is greater that difference between max and min bounds");
+		throw std::runtime_error("Unable to cap value: the period is greater that difference between max and min bounds");
 	while(value < min)
 		value += period;
 	while(value > max)

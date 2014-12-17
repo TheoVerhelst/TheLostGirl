@@ -13,7 +13,6 @@ void ResourceManager<Resource, Identifier>::load(Identifier id, const std::strin
 
 		//If loading successful, insert resource to map
 		m_resourceMap.insert(std::make_pair(id, std::move(resource)));
-		std::cout << id << " loaded." << std::endl;
 	}
 }
 
@@ -33,7 +32,6 @@ void ResourceManager<Resource, Identifier>::load(Identifier id, const std::strin
 
 		//If loading successful, insert resource to map
 		m_resourceMap.insert(std::make_pair(id, std::move(resource)));
-		std::cout << id << " loaded." << std::endl;
 	}
 }
 

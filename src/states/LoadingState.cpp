@@ -18,7 +18,7 @@ LoadingState::LoadingState(StateStack& stack, Context context):
 	getContext().eventManager.subscribe<LoadingStateChange>(*this);
 	std::ifstream fileStream("resources/lang/hints");
 	if(not fileStream.is_open())//If failed to open the file
-		throw std::runtime_error("Unable to open hints file : resources/lang/hints");
+		throw std::runtime_error("Unable to open hints file: resources/lang/hints");
 	else
 	{
 		std::string line;

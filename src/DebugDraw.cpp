@@ -170,7 +170,7 @@ void DebugDraw::drawDebugAth()
 			bendingLabel->setTextFont(std::make_shared<sf::Font>(m_context.fontManager.get("debug")));
 			m_context.gui.add(bendingLabel, "bendingLabel");
 		}
-		bendingLabel->setText("Power : " + roundOutput(bendPower)+ "\nAngle : " + roundOutput(bendAngle));
+		bendingLabel->setText("Power: " + roundOutput(bendPower)+ "\nAngle: " + roundOutput(bendAngle));
 		
 		//FPS
 		tgui::Label::Ptr FPSLabel{m_context.gui.get<tgui::Label>("FPSLabel")};
@@ -183,7 +183,7 @@ void DebugDraw::drawDebugAth()
 			FPSLabel->setTextFont(std::make_shared<sf::Font>(m_context.fontManager.get("debug")));
 			m_context.gui.add(FPSLabel, "FPSLabel");
 		}
-		FPSLabel->setText("FPS : " + roundOutput(m_framesPerSeconds));
+		FPSLabel->setText("FPS: " + roundOutput(m_framesPerSeconds));
 	}
 	else if(not m_context.parameters.debugMode and m_debugMode)
 	{

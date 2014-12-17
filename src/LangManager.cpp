@@ -58,7 +58,7 @@ void LangManager::loadLang(Lang langToLoad)
 	}
 	fileStream.open(filePath);
 	if(not fileStream.is_open())//If failed to open the file
-		throw std::runtime_error("Unable to open lang file : " + filePath);//Throw an exception
+		throw std::runtime_error("Unable to open lang file: " + filePath);//Throw an exception
 	else
 	{
 		while(not fileStream.eof())
