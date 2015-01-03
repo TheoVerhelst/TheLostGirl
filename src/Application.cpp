@@ -17,6 +17,7 @@
 Application::Application(bool debugMode):
 	m_parameters{},
 	m_window{},
+	m_texture{},
 	m_gui{},
 	m_textureManager{},
 	m_fontManager{},
@@ -24,16 +25,7 @@ Application::Application(bool debugMode):
 	m_entityManager{m_eventManager},
 	m_systemManager{m_entityManager, m_eventManager},
 	m_world{m_parameters.gravity},
-	m_stateStack{State::Context{m_parameters,
-								m_window,
-								m_textureManager,
-								m_fontManager,
-								m_gui,
-								m_eventManager,
-								m_entityManager,
-								m_systemManager,
-								m_world,
-								m_player}},			
+	m_stateStack{State::Context{m_parameters, m_window, m_texture, m_textureManager, m_fontManager, m_gui, m_eventManager, m_entityManager, m_systemManager, m_world, m_player}},		
 	m_debugDraw(m_stateStack.getContext())
 {
 	std::string file("settings.json");
@@ -89,6 +81,7 @@ Application::Application(bool debugMode):
 			mode = {1900, 1080};
 		}
 		m_window.create(mode, "The Lost Girl");
+		m_texture.create(mode.width, mode.height);
 		m_window.setSize({settings["window size"]["w"].asUInt(), settings["window size"]["h"].asUInt()});
 	}
 	m_parameters.scale = scales[m_parameters.scaleIndex];
@@ -242,9 +235,9 @@ void Application::registerSystems()
 	m_systemManager.add<PhysicsSystem>(m_world, m_parameters, m_systemManager);
 	m_systemManager.add<PendingChangesSystem>(m_world);
 	m_systemManager.add<AnimationsSystem>();
-	m_systemManager.add<RenderSystem>(m_window);
+	m_systemManager.add<RenderSystem>(m_window, m_texture);
 	m_systemManager.add<DragAndDropSystem>(m_window, m_systemManager.system<PendingChangesSystem>()->commandQueue);
-	m_systemManager.add<ScrollingSystem>(m_window, m_parameters);
+	m_systemManager.add<ScrollingSystem>(m_texture, m_parameters);
 	m_systemManager.add<TimeSystem>();
 	m_systemManager.add<StatsSystem>();
 }

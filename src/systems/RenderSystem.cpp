@@ -21,16 +21,26 @@ void RenderSystem::update(entityx::EntityManager& entityManager, entityx::EventM
 	{
 		for(auto& spritePair : spriteComponent->sprites)
 		{
-			//If this is a scene entity, add them sprites beyond the others entities in this plan
+			//If this is a scene entity, add its sprites beyond the others entities in this plan
 			if(entity.has_component<CategoryComponent>() and entity.component<CategoryComponent>()->category & Category::Scene)
 				orderedEntities[transformComponent->transforms.at(spritePair.first).z].push_front(&spritePair.second);
 			else
 				orderedEntities[transformComponent->transforms.at(spritePair.first).z].push_back(&spritePair.second);
 		}
 	}
+
+	m_texture.clear();
 	//For each plan, in the reverse order
 	for(std::multimap<float, std::deque<sf::Sprite*>>::const_reverse_iterator it{orderedEntities.crbegin()}; it != orderedEntities.crend(); it++)
 		//Draw the entities of this plan
 		for(auto sprite : it->second)
-			m_window.draw(*sprite);
+			//Draw on the texture
+			m_texture.draw(*sprite);
+	m_texture.display();
+	
+	if(PostEffect::isSupported())
+		//Display the texture on the window trough the bloom effect
+		m_bloomEffect.apply(m_texture, m_window);
+	else
+		m_window.draw(m_sprite);
 }

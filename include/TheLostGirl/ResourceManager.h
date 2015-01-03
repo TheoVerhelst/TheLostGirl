@@ -69,6 +69,8 @@ class ResourceManager
 typedef ResourceManager<sf::Texture, std::string> TextureManager;
 /// Typedef of RessourceManager.
 typedef ResourceManager<sf::Font, std::string> FontManager;
+/// Typedef of RessourceManager.
+typedef ResourceManager<sf::Shader, std::string> ShaderManager;
 
 #include <TheLostGirl/ResourceManager.inl>
 

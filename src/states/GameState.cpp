@@ -42,7 +42,6 @@ GameState::GameState(StateStack& stack, Context context) :
 	m_referencePlan{0.f},
 	m_levelRect{0, 0, 1920, 1080}
 {
-	//Dunno how to make a cleaner thread initialization from function member
 	m_threadLoad = std::thread(&GameState::initWorld, this, "resources/levels/save.json");
 }
 
