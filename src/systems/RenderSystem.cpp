@@ -38,7 +38,7 @@ void RenderSystem::update(entityx::EntityManager& entityManager, entityx::EventM
 			m_texture.draw(*sprite);
 	m_texture.display();
 	
-	if(PostEffect::isSupported())
+	if(PostEffect::isSupported() and m_parameters.bloomEnabled)
 		//Display the texture on the window trough the bloom effect
 		m_bloomEffect.apply(m_texture, m_window);
 	else

@@ -31,6 +31,7 @@ struct Parameters
 	float scaledPixelByMeter = scale*pixelByMeter;            ///< Scaled pixels/meter scale, equal to scale*fullPixelScale
 	b2Vec2 gravity = {0.0f, 9.80665f};                        ///< The gravity vector.
 	std::string textFont = "resources/fonts/euphorigenic.ttf";///< Path of the main font.
+	bool bloomEnabled = false;                                ///< Indicates if the bloom effect is enabled.
 };
 
 #endif//PARAMETERS_H

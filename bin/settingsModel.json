@@ -6,6 +6,11 @@
     "children":
     [
         {
+            "name" : "enable bloom",
+            "type" : "bool",
+            "required" : true
+        },
+        {
             "name" : "lang",
             "type" : "string",
             "required" : true,

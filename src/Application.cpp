@@ -55,6 +55,7 @@ Application::Application(bool debugMode):
 			m_parameters.lang = FR;
 		else if(settings["lang"].asString() == "EN")
 			m_parameters.lang = EN;
+		
 		if(settings["resolution"].asInt() == 360)
 		{
 			m_parameters.scaleIndex = 0;
@@ -83,6 +84,7 @@ Application::Application(bool debugMode):
 		m_window.create(mode, "The Lost Girl");
 		m_texture.create(mode.width, mode.height);
 		m_window.setSize({settings["window size"]["w"].asUInt(), settings["window size"]["h"].asUInt()});
+		m_parameters.bloomEnabled = settings["enable bloom"].asBool();
 	}
 	m_parameters.scale = scales[m_parameters.scaleIndex];
 	m_parameters.scaledPixelByMeter = m_parameters.scale*m_parameters.pixelByMeter;
@@ -121,6 +123,7 @@ Application::~Application()
 	
 	settings["window size"]["w"] = m_window.getSize().x;
 	settings["window size"]["h"] = m_window.getSize().y;
+	settings["enable bloom"] = m_parameters.bloomEnabled;
 	
 	settingsFileStream << writer.write(settings);
 	settingsFileStream.close();
@@ -235,7 +238,7 @@ void Application::registerSystems()
 	m_systemManager.add<PhysicsSystem>(m_world, m_parameters, m_systemManager);
 	m_systemManager.add<PendingChangesSystem>(m_world);
 	m_systemManager.add<AnimationsSystem>();
-	m_systemManager.add<RenderSystem>(m_window, m_texture);
+	m_systemManager.add<RenderSystem>(m_window, m_texture, m_parameters);
 	m_systemManager.add<DragAndDropSystem>(m_window, m_systemManager.system<PendingChangesSystem>()->commandQueue);
 	m_systemManager.add<ScrollingSystem>(m_texture, m_parameters);
 	m_systemManager.add<TimeSystem>();

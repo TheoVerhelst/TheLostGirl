@@ -1,5 +1,6 @@
 {
-   "lang" : "FR",
+   "enable bloom" : false,
+   "lang" : "EN",
    "resolution" : 576,
    "window size" : {
       "h" : 576,
