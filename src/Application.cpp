@@ -58,31 +58,79 @@ Application::Application(bool debugMode):
 	{
 		//SuperMegaMagic parsing of the settings file from the model file
 		parse(settings, model, "root", "root");
-		
+		sf::VideoMode mode;
 		if(settings["lang"].asString() == "FR")
 			m_parameters.lang = FR;
 		else if(settings["lang"].asString() == "EN")
 			m_parameters.lang = EN;
 		if(settings["resolution"].asInt() == 360)
+		{
 			m_parameters.scaleIndex = 0;
+			mode = {640, 360};
+		}
 		else if(settings["resolution"].asInt() == 576)
+		{
 			m_parameters.scaleIndex = 1;
+			mode = {1024, 576};
+		}
 		else if(settings["resolution"].asInt() == 720)
+		{
 			m_parameters.scaleIndex = 2;
+			mode = {1280, 720};
+		}
 		else if(settings["resolution"].asInt() == 900)
+		{
 			m_parameters.scaleIndex = 3;
+			mode = {1600, 900};
+		}
 		else if(settings["resolution"].asInt() == 1080)
+		{
 			m_parameters.scaleIndex = 4;
-		m_window.create({settings["window size"]["w"].asUInt(), settings["window size"]["h"].asUInt()}, "The Lost Girl");
+			mode = {1900, 1080};
+		}
+		m_window.create(mode, "The Lost Girl");
+		m_window.setSize({settings["window size"]["w"].asUInt(), settings["window size"]["h"].asUInt()});
 	}
 	m_parameters.scale = scales[m_parameters.scaleIndex];
 	m_parameters.scaledPixelByMeter = m_parameters.scale*m_parameters.pixelByMeter;
 	m_parameters.debugMode = debugMode;
 	m_gui.setWindow(m_window);
+	
+	sf::View view{m_window.getDefaultView()};
+	sf::Event::SizeEvent se{m_window.getSize().x, m_window.getSize().y};
+	view.setViewport(handleResize(se));
+	m_window.setView(view);
+	m_gui.setView(view);
 }
 
 Application::~Application()
 {
+	Json::Value settings;//Will contains the root value after serializing.
+	Json::StyledWriter writer;
+	std::string file("settings.json");
+	std::ofstream settingsFileStream(file, std::ofstream::binary);
+	
+	if(m_parameters.lang == FR)
+		settings["lang"] = "FR";
+	else if(m_parameters.lang == EN)
+		settings["lang"] = "EN";
+	
+	if(m_parameters.scaleIndex == 0)
+		settings["resolution"] = 360;
+	else if(m_parameters.scaleIndex == 1)
+		settings["resolution"] = 576;
+	else if(m_parameters.scaleIndex == 2)
+		settings["resolution"] = 720;
+	else if(m_parameters.scaleIndex == 3)
+		settings["resolution"] = 900;
+	else if(m_parameters.scaleIndex == 4)
+		settings["resolution"] = 1080;
+	
+	settings["window size"]["w"] = m_window.getSize().x;
+	settings["window size"]["h"] = m_window.getSize().y;
+	
+	settingsFileStream << writer.write(settings);
+	settingsFileStream.close();
 }
 
 int Application::init()
