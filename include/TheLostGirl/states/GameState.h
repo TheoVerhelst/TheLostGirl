@@ -78,6 +78,7 @@ class GameState : public State
 		ContactListener m_contactListener;                                    ///< The contact listener.
 		float m_timeSpeed;                                                    ///< The speed of the time (usually 1.f). This influes only on the TimeSystem, not on physics!
 		std::thread m_threadLoad;                                             ///< Thread launched when loading the level.
+		bool m_loading;                                                       ///< Indicates wether the loading is finished or not.
 		
 		//Level informations
 		std::string m_levelIdentifier;                                        ///< Identifer of the level, must be a non-spaced name.

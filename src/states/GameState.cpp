@@ -37,6 +37,7 @@ GameState::GameState(StateStack& stack, Context context) :
 	m_contactListener(getContext()),
 	m_timeSpeed{1.f},
 	m_threadLoad(),
+	m_loading{true},
 	m_levelIdentifier{""},
 	m_numberOfPlans{1},
 	m_referencePlan{0.f},
@@ -65,9 +66,12 @@ GameState::~GameState()
 
 void GameState::draw()
 {
-	getContext().systemManager.update<RenderSystem>(sf::Time::Zero.asSeconds());
-	//The drag and drop system draw a line on the screen, so we must put it here
-	getContext().systemManager.update<DragAndDropSystem>(sf::Time::Zero.asSeconds());
+	if(not m_loading)
+	{
+		getContext().systemManager.update<RenderSystem>(sf::Time::Zero.asSeconds());
+		//The drag and drop system draw a line on the screen, so we must put it here
+		getContext().systemManager.update<DragAndDropSystem>(sf::Time::Zero.asSeconds());
+	}
 }
 
 bool GameState::update(sf::Time elapsedTime)
@@ -1057,6 +1061,7 @@ void GameState::initWorld(const std::string& file)
 		getContext().world.SetContactListener(&m_contactListener);
 		requestStackPop();
 		requestStackPush(States::HUD);
+		m_loading = false;
 	}
 	catch(std::runtime_error& e)
 	{

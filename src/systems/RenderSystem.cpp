@@ -29,7 +29,7 @@ void RenderSystem::update(entityx::EntityManager& entityManager, entityx::EventM
 		}
 	}
 
-	m_texture.clear();
+	m_texture.clear(sf::Color(197, 182, 108));
 	//For each plan, in the reverse order
 	for(std::multimap<float, std::deque<sf::Sprite*>>::const_reverse_iterator it{orderedEntities.crbegin()}; it != orderedEntities.crend(); it++)
 		//Draw the entities of this plan
