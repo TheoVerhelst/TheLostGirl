@@ -18,11 +18,7 @@ class PhysicsSystem : public entityx::System<PhysicsSystem>
 		/// \param world b2World where the physics entities should be in.
 		/// \param parameters Structure containing all the game parameters.
 		/// \param systemManager The system manager of the game.
-		PhysicsSystem(b2World& world, Parameters& parameters, entityx::SystemManager& systemManager):
-			m_world(world),
-			m_parameters(parameters),
-			m_systemManager(systemManager)
-		{}
+		PhysicsSystem(b2World& world, Parameters& parameters, entityx::SystemManager& systemManager);
 
 		/// System's update function.
 		/// \param es Entity manager.

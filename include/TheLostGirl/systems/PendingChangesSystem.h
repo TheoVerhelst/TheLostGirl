@@ -31,9 +31,7 @@ class PendingChangesSystem : public entityx::System<PendingChangesSystem>
 	public:
 		/// Default constructor.
 		/// \param world The Box2D world.
-		PendingChangesSystem(b2World& world):
-			m_world(world)
-		{}
+		PendingChangesSystem(b2World& world);
 
 		/// System's update function.
 		/// \param es Entity manager.

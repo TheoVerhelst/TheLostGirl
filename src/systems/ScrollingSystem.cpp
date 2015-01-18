@@ -12,6 +12,12 @@
 
 #include <TheLostGirl/systems/ScrollingSystem.h>
 
+ScrollingSystem::ScrollingSystem(sf::RenderWindow& window, Parameters& parameters):
+	m_window(window),
+	m_parameters(parameters),
+	m_levelRect{0, 0, 0, 0}
+{}
+
 void ScrollingSystem::update(entityx::EntityManager& entityManager, entityx::EventManager&, double)
 {
 	if(m_levelRect != sf::IntRect(0, 0, 0, 0))

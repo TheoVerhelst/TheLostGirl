@@ -12,6 +12,10 @@
 
 #include <TheLostGirl/systems/PendingChangesSystem.h>
 
+PendingChangesSystem::PendingChangesSystem(b2World& world):
+	m_world(world)
+{}
+
 void PendingChangesSystem::update(entityx::EntityManager& entityManager, entityx::EventManager&, double dt)
 {
 	while(not commandQueue.empty())

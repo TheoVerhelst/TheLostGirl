@@ -14,6 +14,12 @@
 
 #include <TheLostGirl/systems/PhysicsSystem.h>
 
+PhysicsSystem::PhysicsSystem(b2World& world, Parameters& parameters, entityx::SystemManager& systemManager):
+	m_world(world),
+	m_parameters(parameters),
+	m_systemManager(systemManager)
+{}
+
 void PhysicsSystem::update(entityx::EntityManager& entityManager, entityx::EventManager&, double dt)
 {
 	int32 velocityIterations{8};

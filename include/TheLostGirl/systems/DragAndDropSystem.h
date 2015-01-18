@@ -26,13 +26,7 @@ class DragAndDropSystem : public entityx::System<DragAndDropSystem>
 		/// Default constructor.
 		/// \param window SFML's window on wich to render the drag and drop line.
 		/// \param commandQueue Queue of command where the actions should be putted in.
-		DragAndDropSystem(sf::RenderWindow& window, std::queue<Command>& commandQueue):
-			m_window(window),
-			m_commandQueue(commandQueue),
-			m_origin{0, 0},
-			m_line{sf::Vertex({0, 0}, sf::Color::Black), sf::Vertex({0, 0}, sf::Color::Black)},
-			m_isActive{false}
-		{}
+		DragAndDropSystem(sf::RenderWindow& window, std::queue<Command>& commandQueue);
 		
 		/// System's update function.
 		/// This function must be called if the drag and drop is not active.

@@ -12,6 +12,15 @@
 
 #include <TheLostGirl/systems/DragAndDropSystem.h>
 
+
+DragAndDropSystem::DragAndDropSystem(sf::RenderWindow& window, std::queue<Command>& commandQueue):
+	m_window(window),
+	m_commandQueue(commandQueue),
+	m_origin{0, 0},
+	m_line{sf::Vertex({0, 0}, sf::Color::Black), sf::Vertex({0, 0}, sf::Color::Black)},
+	m_isActive{false}
+{}
+
 void DragAndDropSystem::update(entityx::EntityManager&, entityx::EventManager&, double)
 {
 	//If the drag and drop is active and effective

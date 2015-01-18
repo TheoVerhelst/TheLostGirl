@@ -20,14 +20,7 @@ class RenderSystem : public entityx::System<RenderSystem>
 		/// Default constructor.
 		/// \param window SFML's window on wich to render the entities.
 		/// \param parameters Structure containing all the game parameters.
-		RenderSystem(sf::RenderWindow& window, Parameters& parameters):
-			m_window(window),
-			m_texture{},
-			m_parameters(parameters),
-			m_bloomEffect{}
-		{
-			m_texture.create(window.getSize().x, window.getSize().y);
-		}
+		RenderSystem(sf::RenderWindow& window, Parameters& parameters);
 
 		/// System's update function.
 		/// \param es Entity manager.

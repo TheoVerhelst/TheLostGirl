@@ -10,6 +10,15 @@
 
 #include <TheLostGirl/systems/RenderSystem.h>
 
+RenderSystem::RenderSystem(sf::RenderWindow& window, Parameters& parameters):
+	m_window(window),
+	m_texture{},
+	m_parameters(parameters),
+	m_bloomEffect{}
+{
+	m_texture.create(window.getSize().x, window.getSize().y);
+}
+
 void RenderSystem::update(entityx::EntityManager& entityManager, entityx::EventManager&, double)
 {
 	SpriteComponent::Handle spriteComponent;

@@ -8,6 +8,25 @@
 
 #include <TheLostGirl/systems/TimeSystem.h>
 
+TimeSystem::TimeSystem():
+	m_totalTime(0),
+	m_windStrength(0),
+	m_initialWindStrength(0),
+	m_nextWindStrength(0),
+	m_periodBeginning(0),
+	m_windTransitionLength(0),
+	m_microInitialWindStrength(0),
+	m_microNextWindStrength(0),
+	m_microPeriodBeginning(0),
+	m_microWindTransitionLength(0)
+{
+	m_periodBeginning = m_totalTime;
+	m_initialWindStrength = rand() % 21 - 10; //A random number, between -10 and 10
+	m_windTransitionLength = rand() % 586 + 15; //between 15 and 600
+	m_nextWindStrength = rand() % 21 - 10; //between -10 and 10
+	m_windStrength = m_initialWindStrength;
+}
+
 void TimeSystem::update(entityx::EntityManager&, entityx::EventManager&, double dt)
 {
 	m_totalTime += dt;

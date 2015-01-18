@@ -7,6 +7,9 @@
 
 #include <TheLostGirl/systems/StatsSystem.h>
 
+StatsSystem::StatsSystem()
+{}
+
 void StatsSystem::update(entityx::EntityManager& entityManager, entityx::EventManager& eventManager, double dt)
 {
 	HealthComponent::Handle healthComponent;
