@@ -47,10 +47,10 @@ class MainMenuState : public State
 		virtual bool handleEvent(const sf::Event& event);
 		
 	private:
-		///< Play the game (usually on press of the play button).
+		/// Play the game (usually on press of the play button).
 		void playGame();
 		
-		///< Exit the game (usually on press of the exit button).
+		/// Exit the game (usually on press of the exit button).
 		void exitGame();
 		
 		tgui::Panel::Ptr m_background; ///< The background of the menu.

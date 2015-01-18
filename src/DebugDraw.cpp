@@ -183,7 +183,7 @@ void DebugDraw::drawDebugAth()
 			FPSLabel->setTextFont(std::make_shared<sf::Font>(m_context.fontManager.get("debug")));
 			m_context.gui.add(FPSLabel, "FPSLabel");
 		}
-		FPSLabel->setText("FPS: " + roundOutput(m_framesPerSeconds));
+		FPSLabel->setText("FPS: " + roundOutput(m_framesPerSecond));
 	}
 	else if(not m_context.parameters.debugMode and m_debugMode)
 	{
@@ -202,9 +202,9 @@ void DebugDraw::drawDebugAth()
 	
 }
 
-void DebugDraw::setFPS(float framesPerSeconds)
+void DebugDraw::setFPS(float framesPerSecond)
 {
-	m_framesPerSeconds = framesPerSeconds;
+	m_framesPerSecond = framesPerSecond;
 }
 
 std::string DebugDraw::roundOutput(float x)

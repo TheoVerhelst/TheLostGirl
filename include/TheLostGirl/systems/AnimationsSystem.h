@@ -24,8 +24,7 @@ class AnimationsSystem : public entityx::System<AnimationsSystem>
 	public:
 		/// Default constructor.
 		AnimationsSystem()
-		{
-		}
+		{}
 
 		/// System's update function.
 		/// \param es Entity manager.
@@ -33,10 +32,12 @@ class AnimationsSystem : public entityx::System<AnimationsSystem>
 		/// \param dt Elapsed time in the last game frame.
 		void update(entityx::EntityManager &es, entityx::EventManager &events, double dt) override;
 		
+		/// Set the speed of the time.
+		/// \param timeSpeed New value fot the speed of the time.
 		void setTimeSpeed(float timeSpeed);
 	
 	private:
-		float m_timeSpeed;
+		float m_timeSpeed;///< Current speed of the time.
 };
 
 #endif//ANIMATIONSSYSTEM_H

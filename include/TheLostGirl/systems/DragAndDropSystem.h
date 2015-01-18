@@ -32,8 +32,7 @@ class DragAndDropSystem : public entityx::System<DragAndDropSystem>
 			m_origin{0, 0},
 			m_line{sf::Vertex({0, 0}, sf::Color::Black), sf::Vertex({0, 0}, sf::Color::Black)},
 			m_isActive{false}
-		{
-		}
+		{}
 		
 		/// System's update function.
 		/// This function must be called if the drag and drop is not active.
@@ -48,11 +47,11 @@ class DragAndDropSystem : public entityx::System<DragAndDropSystem>
 		void setDragAndDropActivation(bool isActive);
 		
 	private:
-		sf::RenderWindow& m_window;  ///< SFML's window on wich to render the entities.
+		sf::RenderWindow& m_window;         ///< SFML's window on wich to render the entities.
 		std::queue<Command>& m_commandQueue;///< Queue of command where the actions should be putted in.
-		sf::Vector2i m_origin;       ///< Position of the mouse when the drag and drop started.
-		sf::Vertex m_line[2];        ///< The drag and drop line.
-		bool m_isActive;             ///< True when the drag and drop is actived.
+		sf::Vector2i m_origin;              ///< Position of the mouse when the drag and drop started.
+		sf::Vertex m_line[2];               ///< The drag and drop line.
+		bool m_isActive;                    ///< True when the drag and drop is actived.
 };
 
 #endif//DRAGANDDROPSYSTEM_H

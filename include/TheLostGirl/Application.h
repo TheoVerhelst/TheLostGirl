@@ -57,18 +57,17 @@ class Application
         /// \param dt Elapsed time in the last game frame.
 		void update(sf::Time dt);
 		
-		///< Render all that need to be displayed on the screen.
+		/// Render all that need to be displayed on the screen.
 		void render();
 		
-		///< Registers all the game states.
+		/// Registers all the game states.
 		void registerStates();
 		
-		///< Registers all the logic systems.
+		/// Registers all the logic systems.
 		void registerSystems();
 		
 		Parameters m_parameters;               ///< Structure containing all the game parameters.
 		sf::RenderWindow m_window;             ///< The main window.
-//		sf::RenderTexture m_texture;           ///< The main texture.
 		tgui::Gui m_gui;                       ///< All the gui.
 		TextureManager m_textureManager;       ///< The texture manager.
 		FontManager m_fontManager;             ///< The fonts manager.

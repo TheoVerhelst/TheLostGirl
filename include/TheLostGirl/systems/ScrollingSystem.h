@@ -24,8 +24,7 @@ class ScrollingSystem : public entityx::System<ScrollingSystem>
 			m_window(window),
 			m_parameters(parameters),
 			m_levelRect{0, 0, 0, 0}
-		{
-		}
+		{}
 		
 		/// Set the level bounds. This must be called before the first update.
 		/// \param levelRect Rectangle defining the level bounds.

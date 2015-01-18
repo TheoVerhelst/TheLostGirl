@@ -33,8 +33,7 @@ class PendingChangesSystem : public entityx::System<PendingChangesSystem>
 		/// \param world The Box2D world.
 		PendingChangesSystem(b2World& world):
 			m_world(world)
-		{
-		}
+		{}
 
 		/// System's update function.
 		/// \param es Entity manager.
@@ -42,14 +41,14 @@ class PendingChangesSystem : public entityx::System<PendingChangesSystem>
 		/// \param dt Elapsed time in the last game frame.
 		void update(entityx::EntityManager &es, entityx::EventManager &events, double dt) override;
 		
-		std::queue<Command> commandQueue;
-		std::queue<b2BodyDef*> bodiesToCreate;
-		std::queue<b2Body*> bodiesToDestroy;
-		std::queue<b2JointDef*> jointsToCreate;
-		std::queue<b2Joint*> jointsToDestroy;
+		std::queue<Command> commandQueue;      ///< List of all commands that need to be executed.
+		std::queue<b2BodyDef*> bodiesToCreate; ///< List of all bodies that need to be created.
+		std::queue<b2Body*> bodiesToDestroy;   ///< List of all bodies that need to be destroyed.
+		std::queue<b2JointDef*> jointsToCreate;///< List of all joints that need to be created.
+		std::queue<b2Joint*> jointsToDestroy;  ///< List of all joints that need to be destroyed.
 	
 	private:
-		b2World& m_world;
+		b2World& m_world;///< Reference to the current world of the game.
 };
 
 #endif//PENDINGCHANGESSYSTEM_H

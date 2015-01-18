@@ -10,6 +10,10 @@ enum class FixtureRole : unsigned int
 	Foot  = 1 << 0, ///< Role for the fixture that observes the collisions with the ground.
 };
 
+/// Check wheter the given fixture has all its roles flags that match with the given flags.
+/// \param fixture Fixture to check.
+/// \param role Role to check.
+/// \return True if the given fixture has all its roles flags that match with the given flags, false otherwise.
 inline bool fixtureHasRole(b2Fixture* fixture, FixtureRole role)
 {
 	return fixture->GetUserData() and (reinterpret_cast<unsigned int>(fixture->GetUserData()) & static_cast<unsigned int>(role));

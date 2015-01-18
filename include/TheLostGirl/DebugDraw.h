@@ -60,7 +60,9 @@ class DebugDraw : public b2Draw
 		/// Draw various informations on the screen, such as player position, bending angle, ...
 		void drawDebugAth();
 		
-		void setFPS(float framesPerSeconds);
+		/// Set the FPS to display.
+		/// \param framesPerSecond New FPS value.
+		void setFPS(float framesPerSecond);
 		
 	private:
 		/// Return a string containing x with 2 decimals.
@@ -68,9 +70,9 @@ class DebugDraw : public b2Draw
 		/// \return A formated string.
 		std::string roundOutput(float x);
 		
-		bool m_debugMode;         ///< Indicate if the debug ath should be drawn.
+		bool m_debugMode;        ///< Indicate if the debug ath should be drawn.
 		State::Context m_context;///< Current context of the application.
-		float m_framesPerSeconds;
+		float m_framesPerSecond; ///< FPS value to display.
 };
 
 #endif//DEBUGDRAW_H

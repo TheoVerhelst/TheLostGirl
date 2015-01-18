@@ -14,8 +14,7 @@ class StatsSystem : public entityx::System<StatsSystem>
 	public:
 		/// Default constructor.
 		StatsSystem()
-		{
-		}
+		{}
 		
 		/// System's update function.
 		/// \param es Entity manager.

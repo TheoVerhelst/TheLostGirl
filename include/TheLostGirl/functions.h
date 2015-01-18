@@ -190,6 +190,10 @@ Key getKey(const std::map<Key, Value>& map, const Value& value)
 	return it->first;
 }
 
+/// Scale a value by a given factor, rounded up and casted to a given type.
+/// \param value Value to scale.
+/// \param scale Factor of the scaling.
+/// \return The scaled value.
 template <typename T, typename R=T>
 R scaleRes(const T& value, float scale)
 {

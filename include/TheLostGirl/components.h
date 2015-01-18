@@ -185,9 +185,12 @@ struct ArrowComponent : public entityx::Component<ArrowComponent>
 	ArrowState state;               ///< Indicates the current state of the arrow.
 };
 
+/// Target hardness component.
+/// This component must be applied on every object that can be the target of arrows,
+/// and it indicates the treshold of stucking of the arrow into the object.
 struct HardnessComponent : public entityx::Component<HardnessComponent>
 {
-	float hardness;
+	float hardness;///< Indicates the treshold of stucking of the arrow into the object.
 };
 
 #endif //COMPONENTS_H

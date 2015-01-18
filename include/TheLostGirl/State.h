@@ -58,7 +58,6 @@ class State
 			/// \param _systemManager The system manager of the entity system.
 			/// \param _world The Box2D physic world.
 			/// \param _player The input manager.
-			/// \param _pendingChanges The set of all pending changes.
 			Context(Parameters& _parameters,
 					sf::RenderWindow& _window,
 					TextureManager& _textureManager,

@@ -21,7 +21,6 @@ void PostEffect::applyShader(const sf::Shader& shader, sf::RenderTarget& output,
 	sf::RenderStates renderStates(states);
 	renderStates.shader = &shader;
 	renderStates.blendMode = sf::BlendNone;
-
 	output.draw(vertices, renderStates);
 }
 

@@ -53,7 +53,7 @@ class LoadingState : public State, public entityx::Receiver<LoadingState>
 		tgui::Label::Ptr m_sentenceLabel;///< Label explaining the loading state.
 		std::wstring m_sentence;         ///< String explaining the loading state.
 		tgui::Label::Ptr m_hintLabel;    ///< Label indicating a random hint.
-		double m_sentenceTimer;          /// Timer in seconds of a little animation on the sentence.
+		double m_sentenceTimer;          ///< Timer in seconds of a little animation on the sentence.
 };
 
 #endif//LOADINGSTATE_H
