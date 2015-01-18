@@ -10,7 +10,6 @@ namespace sf
 	class Event;
 	class Time;
 	class RenderWindow;
-	class RenderTexture;
 	class Font;
 	class Texture;
 }
@@ -51,7 +50,6 @@ class State
 			/// Default constructor
 			/// \param _parameters Structure containing all the game parameters.
 			/// \param _window The main window.
-			/// \param _texture The main texture.
 			/// \param _textureManager The texture manager.
 			/// \param _fontManager The font manager.
 			/// \param _gui The main GUI manager.
@@ -63,7 +61,6 @@ class State
 			/// \param _pendingChanges The set of all pending changes.
 			Context(Parameters& _parameters,
 					sf::RenderWindow& _window,
-					sf::RenderTexture& _texture,
 					TextureManager& _textureManager,
 					FontManager& _fontManager,
 					tgui::Gui& _gui,
@@ -75,7 +72,6 @@ class State
 				);
 			Parameters& parameters;               ///< Structure containing all the game parameters.
 			sf::RenderWindow& window;             ///< The main window.
-			sf::RenderTexture& texture;           ///< The main texture.
 			TextureManager& textureManager;       ///< The texture manager.
 			FontManager& fontManager;             ///< The font manager.
 			tgui::Gui& gui;                       ///< The main GUI manager.

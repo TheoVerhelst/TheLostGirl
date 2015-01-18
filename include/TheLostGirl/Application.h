@@ -8,7 +8,6 @@
 #include <queue>
 
 //Unable to forward-declare those types
-#include <SFML/Graphics/RenderWindow.hpp>
 #include <TGUI/Gui.hpp>
 #include <entityx/entityx.h>
 #include <Box2D/Dynamics/b2World.h>
@@ -29,7 +28,7 @@ namespace entityx
 }
 
 /// Main game class.
-/// That class holds all the components needed to execute the game (states stack, entity manager, physic engine, ...).
+/// That class holds all the components needed to execute the game (states stack, entity manager, physics engine, ...).
 class Application
 {
 	public:
@@ -41,29 +40,35 @@ class Application
 		~Application();
 		
         /// Initialize the game.
-        /// \return 0 if succeful, -1 otherwise.
-        /// This does all that need to be done at the beginning of the game.                                
+        /// This does all that need to be done at the beginning of the game. 
+        /// \return 0 on succes, 1 on failure.                               
 		int init();
 		
         /// Run the game.
-        /// \return 0 if succeful, -1 otherwise.
         /// This function contains the main game loop.
+        /// \return 0 on succes, 1 on undefined program failure or 2 on level loading failure.
 		int run();
 
 	private:
-		void processInput();     ///< Various input handling.
+		/// Various input handling.
+		void processInput();     
 		
 		/// Updates logics, systems, and so on.
         /// \param dt Elapsed time in the last game frame.
 		void update(sf::Time dt);
 		
-		void render();           ///< Render all that need to be displayed on the screen.
-		void registerStates();   ///< Registers all the game states.
-		void registerSystems();  ///< Registers all the logic systems.
+		///< Render all that need to be displayed on the screen.
+		void render();
+		
+		///< Registers all the game states.
+		void registerStates();
+		
+		///< Registers all the logic systems.
+		void registerSystems();
 		
 		Parameters m_parameters;               ///< Structure containing all the game parameters.
 		sf::RenderWindow m_window;             ///< The main window.
-		sf::RenderTexture m_texture;           ///< The main texture.
+//		sf::RenderTexture m_texture;           ///< The main texture.
 		tgui::Gui m_gui;                       ///< All the gui.
 		TextureManager m_textureManager;       ///< The texture manager.
 		FontManager m_fontManager;             ///< The fonts manager.

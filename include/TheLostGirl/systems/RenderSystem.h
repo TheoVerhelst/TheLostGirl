@@ -19,13 +19,14 @@ class RenderSystem : public entityx::System<RenderSystem>
 	public:
 		/// Default constructor.
 		/// \param window SFML's window on wich to render the entities.
-		RenderSystem(sf::RenderWindow& window, sf::RenderTexture& texture, Parameters& parameters):
+		RenderSystem(sf::RenderWindow& window, Parameters& parameters):
 			m_window(window),
-			m_texture(texture),
-			m_bloomEffect(),
-			m_sprite(m_texture.getTexture()),
-			m_parameters(parameters)
-		{}
+			m_texture{},
+			m_parameters(parameters),
+			m_bloomEffect{}
+		{
+			m_texture.create(window.getSize().x, window.getSize().y);
+		}
 
 		/// System's update function.
 		/// \param es Entity manager.
@@ -35,10 +36,9 @@ class RenderSystem : public entityx::System<RenderSystem>
 
 	private:
 		sf::RenderWindow& m_window;  ///< SFML's window on wich to render the entities.
-		sf::RenderTexture& m_texture;///< A render texture to apply the shaders.
-		BloomEffect m_bloomEffect;   ///< The shader.
-		sf::Sprite m_sprite;         ///< The sprite to display the main texture.
-		Parameters& m_parameters;      ///< The current application parameters.
+		sf::RenderTexture m_texture;///< A render texture to apply the shaders.
+		Parameters& m_parameters;    ///< The current application parameters.
+		BloomEffect m_bloomEffect;   ///< The shader to apply on m_texture.
 };
 
 #endif//RENDERSYSTEM_H

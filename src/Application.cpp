@@ -1,6 +1,4 @@
-#include <SFML/Graphics/RenderWindow.hpp>
-#include <TGUI/Gui.hpp>
-#include <entityx/entityx.h>
+#include <SFML/Graphics/RenderTexture.hpp>
 #include <Box2D/Box2D.h>
 
 #include <TheLostGirl/StateIdentifiers.h>
@@ -17,7 +15,6 @@
 Application::Application(bool debugMode):
 	m_parameters{},
 	m_window{},
-	m_texture{},
 	m_gui{},
 	m_textureManager{},
 	m_fontManager{},
@@ -25,7 +22,7 @@ Application::Application(bool debugMode):
 	m_entityManager{m_eventManager},
 	m_systemManager{m_entityManager, m_eventManager},
 	m_world{m_parameters.gravity},
-	m_stateStack{State::Context{m_parameters, m_window, m_texture, m_textureManager, m_fontManager, m_gui, m_eventManager, m_entityManager, m_systemManager, m_world, m_player}},		
+	m_stateStack{State::Context{m_parameters, m_window, m_textureManager, m_fontManager, m_gui, m_eventManager, m_entityManager, m_systemManager, m_world, m_player}},		
 	m_debugDraw(m_stateStack.getContext())
 {
 	std::string file("settings.json");
@@ -82,7 +79,7 @@ Application::Application(bool debugMode):
 			mode = {1900, 1080};
 		}
 		m_window.create(mode, "The Lost Girl");
-		m_texture.create(mode.width, mode.height);
+//		m_texture.create(mode.width, mode.height);
 		m_window.setSize({settings["window size"]["w"].asUInt(), settings["window size"]["h"].asUInt()});
 		m_parameters.bloomEnabled = settings["enable bloom"].asBool();
 	}
@@ -179,7 +176,7 @@ int Application::run()
 	catch(std::out_of_range& e)
 	{
 		std::cerr << "Out of range error (the level designer probably bad named entitie's parts): " << e.what() << std::endl;
-		return 1;
+		return 2;
 	}
 	return 0;
 }
@@ -213,11 +210,13 @@ void Application::update(sf::Time dt)
 
 void Application::render()
 {
-	m_window.clear({127, 127, 127});
+	//Clear the texture, draw on it and display
+	m_window.clear({197, 182, 108});
 	m_stateStack.draw();
-	m_debugDraw.drawDebugAth();
+	
 	if(m_parameters.debugMode)
 		m_world.DrawDebugData();
+	m_debugDraw.drawDebugAth();
 	m_gui.draw();
 	m_window.display();
 }
@@ -238,9 +237,9 @@ void Application::registerSystems()
 	m_systemManager.add<PhysicsSystem>(m_world, m_parameters, m_systemManager);
 	m_systemManager.add<PendingChangesSystem>(m_world);
 	m_systemManager.add<AnimationsSystem>();
-	m_systemManager.add<RenderSystem>(m_window, m_texture, m_parameters);
+	m_systemManager.add<RenderSystem>(m_window, m_parameters);
 	m_systemManager.add<DragAndDropSystem>(m_window, m_systemManager.system<PendingChangesSystem>()->commandQueue);
-	m_systemManager.add<ScrollingSystem>(m_texture, m_parameters);
+	m_systemManager.add<ScrollingSystem>(m_window, m_parameters);
 	m_systemManager.add<TimeSystem>();
 	m_systemManager.add<StatsSystem>();
 }

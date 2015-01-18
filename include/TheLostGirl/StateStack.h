@@ -96,9 +96,9 @@ class StateStack : private sf::NonCopyable
 			explicit PendingChange(Action _action, States _stateID = States::None);
 		};
 		
-		std::vector<State::Ptr> m_stack;                           ///< Array of pointers to the states.
-		std::vector<PendingChange> m_pendingList;                  ///< List of all changes to do in the next update.
-		State::Context m_context;                                  ///< Context of the application.
+		std::vector<State::Ptr> m_stack;                          ///< Array of pointers to the states.
+		std::vector<PendingChange> m_pendingList;                 ///< List of all changes to do in the next update.
+		State::Context m_context;                                 ///< Context of the application.
 		std::map<States, std::function<State::Ptr()>> m_factories;///< Array of constructors.
 };
 

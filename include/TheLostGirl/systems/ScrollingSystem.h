@@ -4,7 +4,7 @@
 //Forward declarations
 namespace sf
 {
-	class RenderTexture;
+	class RenderWindow;
 }
 namespace entityx
 {
@@ -20,8 +20,8 @@ class ScrollingSystem : public entityx::System<ScrollingSystem>
 		/// Default constructor.
 		/// \param window SFML's window of wich set the view.
 		/// \param parameters Structure containing all the game parameters.
-		ScrollingSystem(sf::RenderTexture& texture, Parameters& parameters):
-			m_texture(texture),
+		ScrollingSystem(sf::RenderWindow& window, Parameters& parameters):
+			m_window(window),
 			m_parameters(parameters),
 			m_levelRect{0, 0, 0, 0}
 		{
@@ -39,7 +39,7 @@ class ScrollingSystem : public entityx::System<ScrollingSystem>
 		void update(entityx::EntityManager &es, entityx::EventManager &events, double dt) override;
 
 	private:
-		sf::RenderTexture& m_texture;///< SFML's window of wich set the view.
+		sf::RenderWindow& m_window;///< SFML's window of wich set the view.
 		Parameters& m_parameters;  ///< Structure containing all the game parameters.
 		sf::IntRect m_levelRect;   ///< Rectangle defining the level bounds.
 		float m_referencePlan;     ///< Number of the plan where actors evolute.

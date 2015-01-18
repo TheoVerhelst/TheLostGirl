@@ -4,6 +4,7 @@
 #include <queue>
 
 #include <SFML/Graphics/Vertex.hpp>
+#include <entityx/System.h>
 
 #include <TheLostGirl/Command.h>
 

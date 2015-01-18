@@ -13,7 +13,7 @@ BloomEffect::BloomEffect():
 	m_shaders.load("add pass","resources/shaders/Fullpass.vert", "resources/shaders/Add.frag");
 }
 
-void BloomEffect::apply(const sf::RenderTexture& input, sf::RenderTarget& output)
+void BloomEffect::apply(const sf::RenderTexture& input, sf::RenderTarget& output, const sf::RenderStates& states)
 {
 	prepareTextures(input.getSize());
 
@@ -27,7 +27,7 @@ void BloomEffect::apply(const sf::RenderTexture& input, sf::RenderTarget& output
 
 	add(m_firstPassTextures[0], m_secondPassTextures[0], m_firstPassTextures[1]);
 	m_firstPassTextures[1].display();
-	add(input, m_firstPassTextures[1], output);
+	add(input, m_firstPassTextures[1], output, states);
 }
 
 void BloomEffect::prepareTextures(sf::Vector2u size)
@@ -89,11 +89,11 @@ void BloomEffect::downsample(const sf::RenderTexture& input, sf::RenderTexture& 
 	output.display();
 }
 
-void BloomEffect::add(const sf::RenderTexture& source, const sf::RenderTexture& bloom, sf::RenderTarget& output)
+void BloomEffect::add(const sf::RenderTexture& source, const sf::RenderTexture& bloom, sf::RenderTarget& output, const sf::RenderStates& states)
 {
 	sf::Shader& adder = m_shaders.get("add pass");
 
 	adder.setParameter("source", source.getTexture());
 	adder.setParameter("bloom", bloom.getTexture());
-	applyShader(adder, output);
+	applyShader(adder, output, states);
 }

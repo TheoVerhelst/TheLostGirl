@@ -1,6 +1,6 @@
 #include <iostream>
 
-#include <SFML/Graphics/RenderTexture.hpp>
+#include <SFML/Graphics/RenderWindow.hpp>
 #include <SFML/Graphics/Sprite.hpp>
 #include <entityx/entityx.h>
 #include <Box2D/Box2D.h>
@@ -29,7 +29,7 @@ void ScrollingSystem::update(entityx::EntityManager& entityManager, entityx::Eve
 				//Find the main body
 				std::map<std::string, Transform>& transforms();
 				playerPosition = {transformComponent->transforms.at("main").x, transformComponent->transforms.at("main").y};
-				sf::View view{m_texture.getView()};
+				sf::View view{m_window.getView()};
 				//Compute the maximum and minimum coordinates that the view can have
 				float xmin{m_levelRect.left + ((view.getSize().x/m_parameters.scale) / 2)};
 				float xmax{m_levelRect.left + m_levelRect.width - ((view.getSize().x/m_parameters.scale) / 2)};
@@ -41,7 +41,7 @@ void ScrollingSystem::update(entityx::EntityManager& entityManager, entityx::Eve
 				
 				//Assign the position to the view
 				view.setCenter(playerPosition*m_parameters.scale);
-				m_texture.setView(view);
+				m_window.setView(view);
 				
 				//Assign transform on every sprite
 				for(auto entityToOffset : entityManager.entities_with_components(spriteComponent, transformComponent))

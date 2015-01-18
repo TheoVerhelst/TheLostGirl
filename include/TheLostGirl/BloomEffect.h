@@ -14,7 +14,7 @@ class BloomEffect : public PostEffect
 {
 	public:
 		BloomEffect();
-		virtual void apply(const sf::RenderTexture& input, sf::RenderTarget& output);
+		virtual void apply(const sf::RenderTexture& input, sf::RenderTarget& output, const sf::RenderStates& states = sf::RenderStates::Default);
 
 	private:
 		typedef std::array<sf::RenderTexture, 2> RenderTextureArray;
@@ -24,7 +24,7 @@ class BloomEffect : public PostEffect
 		void blurMultipass(RenderTextureArray& renderTextures);
 		void blur(const sf::RenderTexture& input, sf::RenderTexture& output, sf::Vector2f offsetFactor);
 		void downsample(const sf::RenderTexture& input, sf::RenderTexture& output);
-		void add(const sf::RenderTexture& source, const sf::RenderTexture& bloom, sf::RenderTarget& target);
+		void add(const sf::RenderTexture& source, const sf::RenderTexture& bloom, sf::RenderTarget& target, const sf::RenderStates& states = sf::RenderStates::Default);
 		
 		ShaderManager m_shaders;
 		sf::RenderTexture m_brightnessTexture;

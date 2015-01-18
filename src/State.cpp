@@ -17,7 +17,6 @@ using entityx::SystemManager;
 
 State::Context::Context(Parameters& _parameters,
 						sf::RenderWindow& _window,
-						sf::RenderTexture& _texture,
 						TextureManager& _textureManager,
 						FontManager& _fontManager,
 						tgui::Gui& _gui,
@@ -29,7 +28,6 @@ State::Context::Context(Parameters& _parameters,
 						):
 	parameters(_parameters),
 	window(_window),
-	texture(_texture),
 	textureManager(_textureManager),
 	fontManager(_fontManager),
 	gui(_gui),
