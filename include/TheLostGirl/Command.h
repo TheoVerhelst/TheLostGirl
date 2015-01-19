@@ -32,7 +32,7 @@ struct Command
 	union
 	{
 		/// Category of entity concerned by \a action.
-		unsigned int category = 0;
+		unsigned int category;
 		
 		/// Specific entity concerned by \a action.
 		entityx::Entity* entity;
