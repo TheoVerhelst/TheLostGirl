@@ -10,6 +10,7 @@
 #include <dist/json/json.h>
 
 #include <TheLostGirl/State.h>
+#include <TheLostGirl/states/MainMenuState.h>
 #include <TheLostGirl/components.h>
 #include <TheLostGirl/Category.h>
 #include <TheLostGirl/StateStack.h>
@@ -29,8 +30,8 @@
 
 #include <TheLostGirl/states/EmptyLevelState.h>
 
-EmptyLevelState::EmptyLevelState(StateStack& stack, Context context) :
-	State(stack, context),
+EmptyLevelState::EmptyLevelState(StateStack& stack) :
+	State(stack),
 	m_sceneEntities(),
 	m_timeSpeed{1.f},
 	m_threadLoad(),
@@ -39,7 +40,6 @@ EmptyLevelState::EmptyLevelState(StateStack& stack, Context context) :
 	m_referencePlan{0.f},
 	m_levelRect{0, 0, 1920, 1080}
 {
-	//Dunno how to make a cleaner thread initialization from function member
 	m_threadLoad = std::thread([this](const std::string& str){return this->initWorld(str);}, "resources/levels/save.json");
 }
 
@@ -273,5 +273,5 @@ void EmptyLevelState::initWorld(const std::string& file)
 	}
 	//Pop the intro menu and push the main menu
 	requestStackPop();
-	requestStackPush(States::MainMenu);
+	requestStackPush<MainMenuState>();
 }

@@ -22,8 +22,7 @@ class MainMenuState : public State
 	public:
         /// Default constructor.
         /// \param stack StateStack wherein the State is added.
-        /// \param context Current context of the application.
-		MainMenuState(StateStack& stack, Context context);
+		MainMenuState(StateStack& stack);
 		
 		/// Default destructor.
 		/// It clear the GUI.

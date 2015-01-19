@@ -5,13 +5,14 @@
 #include <TGUI/Panel.hpp>
 #include <TGUI/Label.hpp>
 
+#include <TheLostGirl/State.h>
+
 //Forward declarations
 namespace sf
 {
 	class Event;
 	class Time;
 }
-class State;
 class Context;
 class StateStack;
 
@@ -21,8 +22,7 @@ class IntroState : public State
 	public:
         /// Default constructor.
         /// \param stack StateStack wherein the State is added.
-        /// \param context Current context of the application.
-		IntroState(StateStack& stack, Context context);
+		IntroState(StateStack& stack);
 		
 		/// Default destructor.
 		~IntroState();

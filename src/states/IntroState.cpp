@@ -3,13 +3,14 @@
 #include <TGUI/Gui.hpp>
 
 #include <TheLostGirl/State.h>
+#include <TheLostGirl/states/MainMenuState.h>
 #include <TheLostGirl/StateStack.h>
 #include <TheLostGirl/Parameters.h>
 
 #include <TheLostGirl/states/IntroState.h>
 
-IntroState::IntroState(StateStack& stack, Context context):
-	State(stack, context),
+IntroState::IntroState(StateStack& stack):
+	State(stack),
 	m_background{nullptr},
 	m_logo{nullptr},
 	m_sentence{nullptr}
@@ -58,7 +59,7 @@ bool IntroState::handleEvent(const sf::Event& event)
 	if(event.type == sf::Event::KeyPressed)
 	{
 		requestStackPop();
-		requestStackPush(States::MainMenu);
+		requestStackPush<MainMenuState>();
 	}
 	return false;
 }

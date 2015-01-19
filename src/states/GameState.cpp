@@ -10,6 +10,8 @@
 #include <dist/json/json.h>
 
 #include <TheLostGirl/State.h>
+#include <TheLostGirl/states/PauseState.h>
+#include <TheLostGirl/states/HUDState.h>
 #include <TheLostGirl/components.h>
 #include <TheLostGirl/Category.h>
 #include <TheLostGirl/StateStack.h>
@@ -29,8 +31,8 @@
 
 #include <TheLostGirl/states/GameState.h>
 
-GameState::GameState(StateStack& stack, Context context) :
-	State(stack, context),
+GameState::GameState(StateStack& stack) :
+	State(stack),
 	m_entities(),
 	m_sceneEntities(),
 	m_sceneEntitiesData(),
@@ -89,7 +91,7 @@ bool GameState::handleEvent(const sf::Event& event)
 {
 	if((event.type == sf::Event::KeyPressed and event.key.code == sf::Keyboard::Escape)
 		or event.type == sf::Event::LostFocus)
-		requestStackPush(States::Pause);
+		requestStackPush<PauseState>();
 	
 	getContext().player.handleEvent(event, getContext().systemManager.system<PendingChangesSystem>()->commandQueue);
 	//Update the drag and drop state
@@ -1060,7 +1062,7 @@ void GameState::initWorld(const std::string& file)
 		getContext().player.handleInitialInputState(getContext().systemManager.system<PendingChangesSystem>()->commandQueue);
 		getContext().world.SetContactListener(&m_contactListener);
 		requestStackPop();
-		requestStackPush(States::HUD);
+		requestStackPush<HUDState>();
 		m_loading = false;
 	}
 	catch(std::runtime_error& e)

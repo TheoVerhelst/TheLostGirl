@@ -1,13 +1,16 @@
+#include <cassert>
+
 #include <SFML/System/Time.hpp>
 #include <SFML/Window/Event.hpp>
 
+#include <TheLostGirl/State.h>
+
 #include <TheLostGirl/StateStack.h>
 
-StateStack::StateStack(State::Context context) :
+StateStack::StateStack(Context context) :
 	m_stack(),
 	m_pendingList(),
-	m_context(context),
-	m_factories()
+	m_context(context)
 {
 }
 
@@ -45,66 +48,54 @@ void StateStack::handleEvent(const sf::Event& event)
 	applyPendingChanges();
 }
 
-void StateStack::pushState(States stateID)
-{
-	m_pendingList.push_back(PendingChange(Push, stateID));
-}
-
 void StateStack::popState()
 {
-	m_pendingList.push_back(PendingChange(Pop));
+	m_pendingList.push_back([this]{m_stack.pop_back();});
 }
 
 void StateStack::clearStates()
 {
-	m_pendingList.push_back(PendingChange(Clear));
+	m_pendingList.push_back([this]{m_stack.clear();});
 }
-
+				
 bool StateStack::isEmpty() const
 {
 	return m_stack.empty();
 }
 
-State::Context StateStack::getContext()
+StateStack::Context StateStack::getContext()
 {
 	return m_context;
 }
 
-State::Ptr StateStack::createState(States stateID)
-{
-	auto found = m_factories.find(stateID);
-	assert(found != m_factories.end());
-	return found->second();
-}
-
 void StateStack::applyPendingChanges()
 {
-	for(PendingChange change : m_pendingList)
-	{
-		switch(change.action)
-		{
-			case Push:
-				m_stack.push_back(createState(change.stateID));
-				break;
-
-			case Pop:
-				m_stack.pop_back();
-				break;
-
-			case Clear:
-				m_stack.clear();
-				break;
-				
-			default:
-				break;
-		}
-	}
+	for(auto& change : m_pendingList)
+		change();
 
 	m_pendingList.clear();
 }
 
-StateStack::PendingChange::PendingChange(Action _action, States _stateID):
-	action(_action),
-	stateID(_stateID)
+StateStack::Context::Context(Parameters& _parameters,
+						sf::RenderWindow& _window,
+						TextureManager& _textureManager,
+						FontManager& _fontManager,
+						tgui::Gui& _gui,
+						entityx::EventManager& _eventManager,
+						entityx::EntityManager& _entityManager,
+						entityx::SystemManager& _systemManager,
+						b2World& _world,
+						Player& _player
+						):
+	parameters(_parameters),
+	window(_window),
+	textureManager(_textureManager),
+	fontManager(_fontManager),
+	gui(_gui),
+	eventManager(_eventManager),
+	entityManager(_entityManager),
+	systemManager(_systemManager),
+	world(_world),
+	player(_player)
 {
 }

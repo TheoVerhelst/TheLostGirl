@@ -7,7 +7,7 @@
 
 #include <TheLostGirl/ContactListener.h>
 
-ContactListener::ContactListener(State::Context context):
+ContactListener::ContactListener(StateStack::Context context):
 	m_context(context),
 	m_fallingListener(m_context),
 	m_arrowHitListener(m_context)

@@ -10,8 +10,8 @@
 
 #include <TheLostGirl/states/LoadingState.h>
 
-LoadingState::LoadingState(StateStack& stack, Context context):
-	State(stack, context),
+LoadingState::LoadingState(StateStack& stack):
+	State(stack),
 	m_sentenceLabel{nullptr},
 	m_hintLabel{nullptr}
 {

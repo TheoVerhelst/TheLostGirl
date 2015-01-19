@@ -13,8 +13,8 @@
 
 #include <TheLostGirl/states/HUDState.h>
 
-HUDState::HUDState(StateStack& stack, Context context):
-	State(stack, context),
+HUDState::HUDState(StateStack& stack):
+	State(stack),
 	m_healthBar{nullptr},
 	m_staminaBar{nullptr},
 	m_windBar{nullptr},

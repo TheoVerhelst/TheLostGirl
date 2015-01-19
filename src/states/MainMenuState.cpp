@@ -1,16 +1,17 @@
 #include <TGUI/Gui.hpp>
 
 #include <TheLostGirl/State.h>
+#include <TheLostGirl/states/GameState.h>
+#include <TheLostGirl/states/LoadingState.h>
 #include <TheLostGirl/StateStack.h>
-#include <TheLostGirl/StateIdentifiers.h>
 #include <TheLostGirl/LangManager.h>
 #include <TheLostGirl/functions.h>
 #include <TheLostGirl/Parameters.h>
 
 #include <TheLostGirl/states/MainMenuState.h>
 
-MainMenuState::MainMenuState(StateStack& stack, Context context):
-	State(stack, context),
+MainMenuState::MainMenuState(StateStack& stack):
+	State(stack),
 	m_background{nullptr},
 	m_logo{nullptr},
 	m_newButton{nullptr},
@@ -92,8 +93,8 @@ void MainMenuState::playGame()
 {
 	requestStackPop();//The main mainu
 //	requestStackPop();//The empty level
-	requestStackPush(States::Game);
-	requestStackPush(States::Loading);
+	requestStackPush<GameState>();
+	requestStackPush<LoadingState>();
 }
 
 void MainMenuState::exitGame()

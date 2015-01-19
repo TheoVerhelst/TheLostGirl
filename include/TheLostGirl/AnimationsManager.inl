@@ -153,7 +153,7 @@ Json::Value AnimationsManager<A>::serialize() const
 }
 
 template<typename A> template<typename T>
-void AnimationsManager<A>::deserialize(const Json::Value& value, T& object, State::Context context)
+void AnimationsManager<A>::deserialize(const Json::Value& value, T& object, StateStack::Context context)
 {
 	m_animationsMap.clear();
 	//For each animation name in the value

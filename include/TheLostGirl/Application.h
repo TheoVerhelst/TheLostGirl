@@ -14,6 +14,7 @@
 #include <Box2D/Common/b2Math.h>
 
 #include <TheLostGirl/ResourceManager.h>
+#include <TheLostGirl/State.h>
 #include <TheLostGirl/StateStack.h>
 #include <TheLostGirl/Player.h>
 #include <TheLostGirl/Parameters.h>
@@ -59,9 +60,6 @@ class Application
 		
 		/// Render all that need to be displayed on the screen.
 		void render();
-		
-		/// Registers all the game states.
-		void registerStates();
 		
 		/// Registers all the logic systems.
 		void registerSystems();

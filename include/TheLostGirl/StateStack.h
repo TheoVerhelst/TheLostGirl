@@ -2,21 +2,37 @@
 #define STATESTACK_H
 
 #include <vector>
-#include <utility>
-#include <functional>
-#include <map>
-#include <cassert>
+#include <memory>
 
 #include <SFML/System/NonCopyable.hpp>
-
-#include <TheLostGirl/StateIdentifiers.h>
-#include <TheLostGirl/State.h>
 
 namespace sf
 {
 	class Event;
 	class Time;
+	class RenderWindow;
+	class Font;
+	class Texture;
 }
+namespace tgui
+{
+	class Gui;
+}
+namespace entityx
+{
+	class EventManager;
+	class EntityManager;
+	class SystemManager;
+}
+
+struct Parameters;
+template <typename Resource, typename Identifier>
+class ResourceManager;
+typedef ResourceManager<sf::Texture, std::string> TextureManager;
+typedef ResourceManager<sf::Font, std::string> FontManager;
+class b2World;
+class Player;
+struct State;
 
 /// States manager.
 /// This class holds all the game or menu state and manages them.
@@ -24,27 +40,52 @@ namespace sf
 class StateStack : private sf::NonCopyable
 {
 	public:
-		/// Various actions to do on states.
-		enum Action
+        /// Various managers and globals instances.
+        /// It is useful to pass the context to the states,
+        /// they can then use these various resources managers.
+		struct Context
 		{
-			Push,  ///< Push a new state on the stack.
-			Pop,   ///< Remove the last state from the stack.
-			Clear, ///< Remove all the states from the stack.
+			/// Default constructor
+			/// \param _parameters Structure containing all the game parameters.
+			/// \param _window The main window.
+			/// \param _textureManager The texture manager.
+			/// \param _fontManager The font manager.
+			/// \param _gui The main GUI manager.
+			/// \param _eventManager The event manager of the entity system.
+			/// \param _entityManager The entity manager of the entity system.
+			/// \param _systemManager The system manager of the entity system.
+			/// \param _world The Box2D physic world.
+			/// \param _player The input manager.
+			Context(Parameters& _parameters,
+					sf::RenderWindow& _window,
+					TextureManager& _textureManager,
+					FontManager& _fontManager,
+					tgui::Gui& _gui,
+					entityx::EventManager& _eventManager,
+					entityx::EntityManager& _entityManager,
+					entityx::SystemManager& _systemManager,
+					b2World& _world,
+					Player& _player
+				);
+			Parameters& parameters;               ///< Structure containing all the game parameters.
+			sf::RenderWindow& window;             ///< The main window.
+			TextureManager& textureManager;       ///< The texture manager.
+			FontManager& fontManager;             ///< The font manager.
+			tgui::Gui& gui;                       ///< The main GUI manager.
+			entityx::EventManager& eventManager;  ///< The event manager of the entity system.
+			entityx::EntityManager& entityManager;///< The entity manager of the entity system
+			entityx::SystemManager& systemManager;///< The system manager of the entity system
+			b2World& world;                       ///< The Box2D physic world.
+			Player& player;                       ///< The input manager.
 		};
 		
 		/// Default constructor.
 		/// \param context Current context of the application.
-		/// \see State::Context
-		explicit StateStack(State::Context context);
+		/// \see StateStack::Context
+		explicit StateStack(StateStack::Context context);
 		
 		/// Default destructor;
 		~StateStack();
-		
-		/// Register a new state.
-		/// Try to add a state that was not already registred makes undefined behavior.
-		/// \param stateID Identifier of the state to register.
-		template <typename T>
-		void registerState(States stateID);
 		
 		/// Call the update() function of all the states in the stack.
 		/// \param dt Elapsed time in the last game frame.
@@ -57,9 +98,11 @@ class StateStack : private sf::NonCopyable
 		/// \param event SFML event to handle.
 		void handleEvent(const sf::Event& event);
 		
-		/// Add a new state on the pending list, and construct it as soon as possible.
-		/// \param stateID Identifier of the state to add.
-		void pushState(States stateID);
+		/// Add a new state of the templated type on the pending list, and construct it as soon as possible.
+		/// \param args Arguments that will be forwarded to the constructor of the state.
+		/// There can be zero, one or more arguments of any types.
+		template <typename T, typename ... Args>
+		void pushState(Args&&... args);
 		
 		/// Delete the top state as soon as possible.
 		void popState();
@@ -73,42 +116,21 @@ class StateStack : private sf::NonCopyable
 		
 		/// Acces the current context.
 		/// \return The current context.
-		State::Context getContext();
+		Context getContext();
 
 	private:
-		/// Construct the given state.
-		/// \param stateID Identifier of the state to construct.
-		/// \return A pointer to the created state.
-		State::Ptr createState(States stateID);
-		
 		/// Remove states that need to be removed, constructs others states, ...
 		void applyPendingChanges();
 		
-		/// Struct that represents change that need to be done in the stack.
-		struct PendingChange
-		{
-			Action action;  ///< Action to do.
-			States stateID; ///< Identifier of the state on wich to do the action.
-			
-			/// Default constructor.
-			/// \param _action Action to do.
-			/// \param _stateID Identifier of the state on wich to do the action.
-			explicit PendingChange(Action _action, States _stateID = States::None);
-		};
-		
-		std::vector<State::Ptr> m_stack;                          ///< Array of pointers to the states.
-		std::vector<PendingChange> m_pendingList;                 ///< List of all changes to do in the next update.
-		State::Context m_context;                                 ///< Context of the application.
-		std::map<States, std::function<State::Ptr()>> m_factories;///< Array of constructors.
+		std::vector<std::unique_ptr<State>> m_stack;     ///< Array of pointers to the states.
+		std::vector<std::function<void()>> m_pendingList;///< List of all changes to do in the next update.
+		Context m_context;                               ///< Context of the application.
 };
 
-template <typename T>
-void StateStack::registerState(States stateID)
+template <typename T, typename ... Args>
+void StateStack::pushState(Args&&... args)
 {
-	m_factories[stateID] = [this]()
-	{
-		return State::Ptr(new T(*this, m_context));
-	};
+	m_pendingList.push_back([&, this, args...]{m_stack.push_back(std::unique_ptr<State>(new T(*this, std::forward<Args>(args)...)));});
 }
 
 #endif//STATESTACK_H

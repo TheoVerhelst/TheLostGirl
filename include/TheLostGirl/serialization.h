@@ -124,7 +124,7 @@ void deserialize(const Json::Value& value, entityx::ComponentHandle<InventoryCom
 /// \param spriteComponent Sprite component of the entity.
 /// \param context Current context of the application.
 /// \param value The Json value containing the data.
-void deserialize(const Json::Value& value, entityx::ComponentHandle<AnimationsComponent<SpriteSheetAnimation>> component, entityx::ComponentHandle<SpriteComponent> spriteComponent, State::Context context);
+void deserialize(const Json::Value& value, entityx::ComponentHandle<AnimationsComponent<SpriteSheetAnimation>> component, entityx::ComponentHandle<SpriteComponent> spriteComponent, StateStack::Context context);
 
 /// Deserialize the given \a value in the given \a component.
 /// \param component Component in wich deserialize the data.

@@ -22,8 +22,7 @@ class LoadingState : public State, public entityx::Receiver<LoadingState>
 	public:
         /// Default constructor.
         /// \param stack StateStack wherein the State is added.
-        /// \param context Current context of the application.
-		LoadingState(StateStack& stack, Context context);
+		LoadingState(StateStack& stack);
 		
 		/// Default destructor.
 		~LoadingState();

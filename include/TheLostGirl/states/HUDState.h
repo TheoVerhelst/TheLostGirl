@@ -22,8 +22,7 @@ class HUDState : public State, public entityx::Receiver<HUDState>
 	public:
         /// Default constructor.
         /// \param stack StateStack wherein the State is added.
-        /// \param context Current context of the application.
-		HUDState(StateStack& stack, Context context);
+		HUDState(StateStack& stack);
 		
 		/// Default destructor.
 		~HUDState();

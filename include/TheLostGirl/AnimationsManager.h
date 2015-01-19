@@ -12,7 +12,7 @@
 #include <SFML/System/Time.hpp>
 #include <dist/json/json.h>
 
-#include <TheLostGirl/State.h>
+#include <TheLostGirl/StateStack.h>
 
 //Forward declarations
 namespace entityx
@@ -171,7 +171,7 @@ class AnimationsManager
 		/// \param object The object to pass to animations constructors.
 		/// \param context The current context of the application.
 		template <typename T>
-		void deserialize(const Json::Value& value, T& object, State::Context context);
+		void deserialize(const Json::Value& value, T& object, StateStack::Context context);
 
 	private:
 		std::map<std::string, TimeAnimation> m_animationsMap;///< List of all registred animations.

@@ -21,8 +21,7 @@ class PauseState : public State
 	public:
         /// Default constructor.
         /// \param stack StateStack wherein the State is added.
-        /// \param context Current context of the application.
-		PauseState(StateStack& stack, Context context);
+		PauseState(StateStack& stack);
 		
 		/// Default destructor.
 		/// It clear the GUI.

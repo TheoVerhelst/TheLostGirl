@@ -12,7 +12,7 @@
 
 #include <TheLostGirl/DebugDraw.h>
 
-DebugDraw::DebugDraw(State::Context context):
+DebugDraw::DebugDraw(StateStack::Context context):
 	m_context(context)
 {
 }

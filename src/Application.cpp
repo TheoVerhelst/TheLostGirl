@@ -1,9 +1,7 @@
 #include <SFML/Graphics/RenderTexture.hpp>
 #include <Box2D/Box2D.h>
 
-#include <TheLostGirl/StateIdentifiers.h>
-#include <TheLostGirl/State.h>
-#include <TheLostGirl/states.h>
+#include <TheLostGirl/states/IntroState.h>
 #include <TheLostGirl/components.h>
 #include <TheLostGirl/systems.h>
 #include <TheLostGirl/functions.h>
@@ -22,7 +20,7 @@ Application::Application(bool debugMode):
 	m_entityManager{m_eventManager},
 	m_systemManager{m_entityManager, m_eventManager},
 	m_world{m_parameters.gravity},
-	m_stateStack{State::Context{m_parameters, m_window, m_textureManager, m_fontManager, m_gui, m_eventManager, m_entityManager, m_systemManager, m_world, m_player}},		
+	m_stateStack{StateStack::Context{m_parameters, m_window, m_textureManager, m_fontManager, m_gui, m_eventManager, m_entityManager, m_systemManager, m_world, m_player}},		
 	m_debugDraw(m_stateStack.getContext())
 {
 	std::string file("settings.json");
@@ -131,7 +129,6 @@ int Application::init()
 	try
 	{
 		srand(static_cast<unsigned int>(time(nullptr)));//Init random numbers
-		registerStates();
 		registerSystems();
 		m_window.setKeyRepeatEnabled(false);//Desactive the key repeating
 		m_window.setFramerateLimit(60);//Limit the FPS
@@ -143,7 +140,7 @@ int Application::init()
 		m_debugDraw.SetFlags(b2Draw::e_shapeBit|b2Draw::e_jointBit|b2Draw::e_aabbBit);//Debug drawing flags
 		m_systemManager.configure();//Init the manager
 //		m_stateStack.pushState(States::EmptyLevel);//Add an empty level loading
-		m_stateStack.pushState(States::Intro);//And add the intro state on top of it
+		m_stateStack.pushState<IntroState>();//And add the intro state on top of it
 	}
 	catch(std::runtime_error& e)
 	{
@@ -219,17 +216,6 @@ void Application::render()
 	m_debugDraw.drawDebugAth();
 	m_gui.draw();
 	m_window.display();
-}
-
-void Application::registerStates()
-{
-	m_stateStack.registerState<MainMenuState>(States::MainMenu);
-	m_stateStack.registerState<LoadingState>(States::Loading);
-	m_stateStack.registerState<IntroState>(States::Intro);
-	m_stateStack.registerState<EmptyLevelState>(States::EmptyLevel);
-	m_stateStack.registerState<HUDState>(States::HUD);
-	m_stateStack.registerState<GameState>(States::Game);
-	m_stateStack.registerState<PauseState>(States::Pause);
 }
 
 void Application::registerSystems()

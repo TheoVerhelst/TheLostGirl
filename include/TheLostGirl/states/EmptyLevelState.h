@@ -30,8 +30,7 @@ class EmptyLevelState : public State
 	public:
         /// Default constructor.
         /// \param stack StateStack wherein the State is added.
-        /// \param context Current context of the application.
-		EmptyLevelState(StateStack& stack, Context context);
+		EmptyLevelState(StateStack& stack);
 		
 		/// Default destructor.
 		/// Remove all bodies, sprites and others from the memory.

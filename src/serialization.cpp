@@ -589,7 +589,7 @@ void deserialize(const Json::Value& value, entityx::ComponentHandle<InventoryCom
 	component->maxWeight = value["maximum weight"].asFloat();
 }
 
-void deserialize(const Json::Value& value, entityx::ComponentHandle<AnimationsComponent<SpriteSheetAnimation>> component, entityx::ComponentHandle<SpriteComponent> spriteComponent, State::Context context)
+void deserialize(const Json::Value& value, entityx::ComponentHandle<AnimationsComponent<SpriteSheetAnimation>> component, entityx::ComponentHandle<SpriteComponent> spriteComponent, StateStack::Context context)
 {
 	component->animationsManagers.clear();
 	for(std::string& partName : value.getMemberNames())

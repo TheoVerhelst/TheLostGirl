@@ -4,7 +4,7 @@
 #include <unordered_map>
 #include <iterator>
 
-#include <TheLostGirl/State.h>
+#include <TheLostGirl/StateStack.h>
 #include <TheLostGirl/Parameters.h>
 
 //Forward declarations
@@ -55,7 +55,7 @@ class SpriteSheetAnimation
 		/// Constructor.
 		/// \param sprite Sprite to animate.
 		/// \param context Current context of the application.
-		SpriteSheetAnimation(sf::Sprite& sprite, State::Context context);
+		SpriteSheetAnimation(sf::Sprite& sprite, StateStack::Context context);
 		
 		/// Registers a new frame.
 		/// \param frame Frame of texture to display on the sprite of the entity.
@@ -97,7 +97,7 @@ class SpriteSheetAnimation
 		}
 		std::vector<Frame> m_frames;///< Array of all registred frames.
 		sf::Sprite& m_sprite;       ///< Sprite to animate.
-		State::Context m_context;   ///< Current context of the application.
+		StateStack::Context m_context;   ///< Current context of the application.
 };
 
 #endif//SPRITESHEETANIMATION_H

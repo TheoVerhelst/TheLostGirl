@@ -12,7 +12,7 @@
 
 #include <TheLostGirl/contactListeners/FallingListener.h>
 
-FallingListener::FallingListener(State::Context context):
+FallingListener::FallingListener(StateStack::Context context):
 	m_context(context)
 {
 }

@@ -31,8 +31,7 @@ class GameState : public State
 	public:
         /// Default constructor.
         /// \param stack StateStack wherein the State is added.
-        /// \param context Current context of the application.
-		GameState(StateStack& stack, Context context);
+		GameState(StateStack& stack);
 		
 		/// Default destructor.
 		/// Remove all bodies, sprites and others from the memory.

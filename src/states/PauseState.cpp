@@ -2,6 +2,7 @@
 #include <entityx/System.h>
 
 #include <TheLostGirl/State.h>
+#include <TheLostGirl/states/MainMenuState.h>
 #include <TheLostGirl/StateStack.h>
 #include <TheLostGirl/LangManager.h>
 #include <TheLostGirl/Player.h>
@@ -9,8 +10,8 @@
 
 #include <TheLostGirl/states/PauseState.h>
 
-PauseState::PauseState(StateStack& stack, Context context) :
-	State(stack, context),
+PauseState::PauseState(StateStack& stack) :
+	State(stack),
 	m_background{nullptr},
 	m_pauseLabel{nullptr},
 	m_backToGameButton{nullptr},
@@ -114,5 +115,5 @@ void PauseState::backToMainMenu()
 	requestStackPop();//The HUD state
 	requestStackPop();//The game state
 //	requestStackPush(States::EmptyLevel);
-	requestStackPush(States::MainMenu);
+	requestStackPush<MainMenuState>();
 }

@@ -17,7 +17,7 @@
 
 #include <TheLostGirl/contactListeners/ArrowHitListener.h>
 
-ArrowHitListener::ArrowHitListener(State::Context context):
+ArrowHitListener::ArrowHitListener(StateStack::Context context):
 	m_context(context)
 {
 }
