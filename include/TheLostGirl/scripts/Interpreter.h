@@ -17,7 +17,7 @@ class Interpreter
 	public:
 	    /// Constructor.
 	    /// \param file Stream to the script to execute.
-		Interpreter(std::ifstream& file);
+		Interpreter(std::ifstream& file, entityx::Entity entity);
 
 		/// Execute the given script.
 		void interpret();
@@ -49,6 +49,7 @@ class Interpreter
 
 		std::ifstream& m_file;            ///< Stream to the script.
 		std::map<std::string, Var> m_vars;///< Set of registered variables.
+		entityx::Entity m_entity;		  ///< Entity that run the script.
 };
 
 template <typename T>

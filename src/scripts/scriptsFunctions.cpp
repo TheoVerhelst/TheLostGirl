@@ -1,14 +1,41 @@
 #include <TheLostGirl/scripts/scriptsFunctions.h>
 
-int checkFoes()
+entityx::Entity nearestFoe(entityx::Entity self)
 {
-	std::cout << "Foes are checked...\n";
+	return self;
+}
+
+float distanceFrom(entityx::Entity self, entityx::Entity target)
+{
+	return 100;
+}
+
+int attack(entityx::Entity self, entityx::Entity target)
+{
 	return 0;
 }
 
-int attack(int a, float b, bool c)
+bool canMove(entityx::Entity self)
 {
-	std::cout << "Attack " << a << " times with a strenght of " << b << ", with a " <<
-		(c?"goood white":"bad dark") << " spell!\n";
-    return 0;
+	return true;
+}
+
+int move(entityx::Entity self, int direction)
+{
+	return 0;
+}
+
+int stop(entityx::Entity self)
+{
+	return 0;
+}
+
+bool canJump(entityx::Entity self)
+{
+	return true;
+}
+
+int jump(entityx::Entity self)
+{
+	return 0;
 }

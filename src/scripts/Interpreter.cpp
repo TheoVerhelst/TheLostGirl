@@ -9,8 +9,9 @@
 
 using namespace std;
 
-Interpreter::Interpreter(ifstream& file):
-    m_file(file)
+Interpreter::Interpreter(ifstream& file, entityx::Entity entity):
+    m_file(file),
+    m_entity(entity)
 {}
 
 void Interpreter::interpret()
@@ -60,7 +61,7 @@ void Interpreter::interpret()
 	}
 	catch(runtime_error e)
 	{
-		cerr << "Unable to intepret byte " << m_file.tellg() << ": " << e.what() << endl;
+		cerr << "Unable to intepret byte " << m_file.tellg() << ": " << e.what() << "\n";
 	}
 }
 
@@ -148,28 +149,34 @@ Interpreter::Var Interpreter::compute(vector<string> tokens)
 			}
 			arguments.push_back(compute(current_argument));
 		}
-		auto check_args = [&](size_t arg_number, size_t target_number)
+		auto check_args = [&](vector<Var> args, vector<int> types)
 		{
-			if(arg_number > target_number)
+			if(args.size() > types.size())
 				throw runtime_error("too many arguments.");
-			else if(arg_number < target_number)
+			else if(args.size() < types.size())
 				throw runtime_error("too few arguments.");
+			else
+				for(size_t i{0}; i < args.size(); ++i)
+					if(args[i].which() != types[i])
+						throw std::runtime_error("bad argument type.");
 			return true;
 		};
 		try
 		{
-			if(tokens[0] == "check foes" && check_args(arguments.size(), 0))
+			if(tokens[0] == "nearest foe" && check_args(arguments, {}))
 			{
-				checkFoes();
+				nearestFoe(m_entity);
 			}
-			else if(tokens[0] == "attack" && check_args(arguments.size(), 3))
+			else if(tokens[0] == "attack" && check_args(arguments, {3}))
 			{
-				attack(convert<int>(arguments[0]),
-					   convert<float>(arguments[1]),
-					   convert<bool>(arguments[2]));
+				attack(m_entity, boost::get<entityx::Entity>(arguments[0]));
 			}
-			else if((tokens[0]=="print" or tokens[0]=="out")&& check_args(arguments.size(), 1))
+			else if((tokens[0]=="print" or tokens[0]=="out"))
 			{
+				if(arguments.size() > 1)
+					throw runtime_error("too many arguments.");
+				else if(arguments.size() == 0)
+					throw runtime_error("too few arguments.");
 				if(arguments[0].which() == 0)
 					print(boost::get<int>(arguments[0]));
 				else if(arguments[0].which() == 1)
