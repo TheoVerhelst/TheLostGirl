@@ -22,7 +22,7 @@ Mover::Mover(Direction _direction, bool _start):
 Mover::~Mover()
 {
 }
-		
+
 void Mover::operator()(entityx::Entity entity, double) const
 {
 	std::string directionStr;
@@ -37,28 +37,28 @@ void Mover::operator()(entityx::Entity entity, double) const
 			oppDirection = Direction::Right;
 			moveIsHorizontal = true;
 			break;
-		
+
 		case Direction::Right:
 			directionStr = " right";
 			oppDirectionStr = " left";
 			oppDirection = Direction::Left;
 			moveIsHorizontal = true;
 			break;
-		
+
 		case Direction::Top:
 			directionStr = "Top";
 			oppDirectionStr = "Bottom";
 			oppDirection = Direction::Bottom;
 			moveIsHorizontal = false;
 			break;
-		
+
 		case Direction::Bottom:
 			directionStr = "Bottom";
 			oppDirectionStr = "Top";
 			oppDirection = Direction::Top;
 			moveIsHorizontal = false;
 			break;
-		
+
 		default:
 			return;
 			break;
@@ -93,7 +93,7 @@ void Mover::operator()(entityx::Entity entity, double) const
 					entity.component<BowComponent>()->angle = cap(remainder(entity.component<BowComponent>()->angle - b2_pi, 2*b2_pi), -b2_pi, b2_pi/2);
 				else if(directionComponent->direction == Direction::Right)
 					entity.component<BowComponent>()->angle = cap(remainder(entity.component<BowComponent>()->angle - b2_pi, 2*b2_pi), -b2_pi/2, b2_pi);
-				
+
 				//If the entity has a quiver
 				if(entity.has_component<BowComponent>())
 				{
@@ -134,7 +134,7 @@ void Mover::operator()(entityx::Entity entity, double) const
 									jointDef.localAnchorA = {0.625f, 0.41666667};
 									jointDef.localAnchorB = {0.025f, 0.05f};
 								}
-								
+
 								b2World* world{jointEdge->joint->GetBodyA()->GetWorld()};
 								world->CreateJoint(&jointDef);
 								world->DestroyJoint(jointEdge->joint);
@@ -303,7 +303,7 @@ void BowBender::operator()(entityx::Entity entity, double) const
 			bowComponent->angle = cap(angle, -b2_pi/2, b2_pi);
 		//Set the bending power
 		bowComponent->power = cap(power, 0.f, bowComponent->maxPower);
-		
+
 		//If the entity has animation, set the right animation and play it accoring to the bending state
 		if(entity.has_component<AnimationsComponent<SpriteSheetAnimation>>())
 		{
@@ -337,14 +337,14 @@ void BowBender::operator()(entityx::Entity entity, double) const
 				bowComponent->notchedArrow = *found;
 				notchedArrow = *found;
 				bowComponent->arrows.erase(found);
-				
+
 				b2Body* arrowBody{notchedArrow.component<BodyComponent>()->bodies.at("main")};
 				b2Body* bowBody{entity.component<BodyComponent>()->bodies.at("bow")};
-				
+
 				//Destroy all joints (e.g. the quiver/arrow joint)
 				for(b2JointEdge* jointEdge{arrowBody->GetJointList()}; jointEdge; jointEdge = jointEdge->next)
 					arrowBody->GetWorld()->DestroyJoint(jointEdge->joint);
-				
+
 				//Set the joint
 				b2PrismaticJointDef jointDef;
 				jointDef.bodyA = bowBody;
@@ -396,11 +396,11 @@ void ArrowShooter::operator()(entityx::Entity entity, double) const
 		if(notchedArrow.valid() and notchedArrow.has_component<BodyComponent>() and notchedArrow.has_component<ArrowComponent>())
 		{
 			b2Body* arrowBody{notchedArrow.component<BodyComponent>()->bodies.at("main")};
-				
+
 			//Destroy all joints (e.g. the bow/arrow joint)
 			for(b2JointEdge* jointEdge{arrowBody->GetJointList()}; jointEdge; jointEdge = jointEdge->next)
 				arrowBody->GetWorld()->DestroyJoint(jointEdge->joint);
-			
+
 			double shootForceX{bowComponent->power*cos(bowComponent->angle)};
 			double shootForceY{-bowComponent->power*sin(bowComponent->angle)};
 			if(directionComponent->direction == Direction::Left)
@@ -444,23 +444,23 @@ void ArrowPicker::operator()(entityx::Entity entity, double) const
 		BodyComponent::Handle bodyComponent{entity.component<BodyComponent>()};
 		b2Body* body{bodyComponent->bodies.at("main")};
 		b2World* world{body->GetWorld()};
-		
+
 		//Do the querying
 		b2AABB pickBox;
 		pickBox.lowerBound = body->GetWorldCenter() - b2Vec2(2, 2);
 		pickBox.upperBound = body->GetWorldCenter() + b2Vec2(2, 2);
 		StickedArrowQueryCallback callback;
 		world->QueryAABB(&callback, pickBox);
-		
+
 		if(callback.foundEntity.valid())
 		{
 			b2Body* arrowBody{callback.foundEntity.component<BodyComponent>()->bodies.at("main")};
 			b2Body* characterBody{entity.component<BodyComponent>()->bodies.at("main")};
-			
+
 			//Destroy all joints (e.g. the ground/arrow weld joint)
 			for(b2JointEdge* jointEdge{arrowBody->GetJointList()}; jointEdge; jointEdge = jointEdge->next)
 				arrowBody->GetWorld()->DestroyJoint(jointEdge->joint);
-			
+
 			//Set the joint
 			b2WeldJointDef jointDef;
 			jointDef.bodyA = characterBody;
@@ -480,7 +480,7 @@ void ArrowPicker::operator()(entityx::Entity entity, double) const
 			jointDef.frequencyHz = 0.f;
 			jointDef.dampingRatio = 0.f;
 			world->CreateJoint(&jointDef);
-			
+
 			//Add the arrow to the quiver
 			entity.component<BowComponent>()->arrows.push_back(callback.foundEntity);
 			callback.foundEntity.component<ArrowComponent>()->state = ArrowComponent::Stored;

@@ -9,5 +9,6 @@
 #include <TheLostGirl/systems/ScrollingSystem.h>
 #include <TheLostGirl/systems/TimeSystem.h>
 #include <TheLostGirl/systems/StatsSystem.h>
+#include <TheLostGirl/systems/ScriptsSystem.h>
 
 #endif//SYSTEMS_H

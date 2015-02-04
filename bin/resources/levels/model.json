@@ -457,6 +457,24 @@
                         ]
                     },
                     {
+                        "name" : "scripts",
+                        "type" : "object",
+                        "free children names" : false,
+                        "required" : false,
+                        "children":
+                        [
+						{
+                                "name" : "scripts",
+                                "type" : "array",
+                                "required" : true,
+                                "children" :
+                                {
+                                    "type" : "string"
+                                }
+                            }
+                        ]
+                    },
+                    {
                         "name" : "sprites",
                         "type" : "object",
                         "free children names" : true,

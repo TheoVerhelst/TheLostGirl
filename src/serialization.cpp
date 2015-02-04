@@ -30,7 +30,7 @@ Json::Value serialize(entityx::ComponentHandle<BodyComponent> component, float p
 				ret[partName]["type"] = "static";
 				break;
 		}
-		
+
 		ret[partName]["linear velocity"]["x"] = body->GetLinearVelocity().x*pixelByMeter;
 		ret[partName]["linear velocity"]["y"] = body->GetLinearVelocity().y*pixelByMeter;
 		ret[partName]["angular velocity"] = body->GetAngularVelocity();
@@ -42,7 +42,7 @@ Json::Value serialize(entityx::ComponentHandle<BodyComponent> component, float p
 		ret[partName]["bullet"] = body->IsBullet();
 		ret[partName]["active"] = body->IsActive();
 		ret[partName]["gravity scale"] = body->GetGravityScale();
-		
+
 		//For each fixture of the body
 		for(b2Fixture* fix{body->GetFixtureList()}; fix; fix = fix->GetNext())
 		{
@@ -125,15 +125,15 @@ Json::Value serialize(entityx::ComponentHandle<BodyComponent> component, float p
 				case b2Shape::e_circle:
 					ret[partName]["circle fixtures"].append(fixtureObj);
 					break;
-					
+
 				case b2Shape::e_edge:
 					ret[partName]["edge fixtures"].append(fixtureObj);
 					break;
-					
+
 				case b2Shape::e_polygon:
 					ret[partName]["polygon fixtures"].append(fixtureObj);
 					break;
-					
+
 				default:
 				case b2Shape::e_chain:
 					ret[partName]["chain fixtures"].append(fixtureObj);
@@ -321,15 +321,15 @@ Json::Value serialize(entityx::ComponentHandle<ArrowComponent> component)
 		case ArrowComponent::Fired:
 			ret["state"] = "fired";
 			break;
-			
+
 		case ArrowComponent::Sticked:
 			ret["state"] = "sticked";
 			break;
-			
+
 		case ArrowComponent::Notched:
 			ret["state"] = "notched";
 			break;
-			
+
 		case ArrowComponent::Stored:
 		default:
 			ret["state"] = "stored";
@@ -343,6 +343,15 @@ Json::Value serialize(entityx::ComponentHandle<HardnessComponent> component)
 	return component->hardness;
 }
 
+Json::Value serialize(entityx::ComponentHandle<ScriptsComponent> component)
+{
+	Json::Value ret;
+	ret["scripts"] = Json::Value(Json::arrayValue);
+	for(auto& pair : component->scripts)
+        ret["scripts"].append(pair.first);
+    return ret;
+}
+
 void deserialize(const Json::Value& value, entityx::ComponentHandle<BodyComponent> component, entityx::ComponentHandle<TransformComponent> transformComponent, b2World& world, float pixelByMeter)
 {
 	component->bodies.clear();
@@ -354,7 +363,7 @@ void deserialize(const Json::Value& value, entityx::ComponentHandle<BodyComponen
 		{
 			Json::Value body{value[partName]};
 			b2BodyDef entityBodyComponentDef;
-			
+
 			//type
 			const Json::Value type{body["type"]};
 			if(type == "static")
@@ -363,11 +372,11 @@ void deserialize(const Json::Value& value, entityx::ComponentHandle<BodyComponen
 				entityBodyComponentDef.type = b2_kinematicBody;
 			else if(type == "dynamic")
 				entityBodyComponentDef.type = b2_dynamicBody;
-			
+
 			//position
 			entityBodyComponentDef.position.x = transformComponent->transforms[partName].x/pixelByMeter;
 			entityBodyComponentDef.position.y = transformComponent->transforms[partName].y/pixelByMeter;
-			
+
 			//angle
 			entityBodyComponentDef.angle = transformComponent->transforms[partName].angle*b2_pi/180;
 			const Json::Value linearVelocity{body["linear velocity"]};
@@ -382,10 +391,10 @@ void deserialize(const Json::Value& value, entityx::ComponentHandle<BodyComponen
 			entityBodyComponentDef.bullet = body["bullet"].asBool();
 			entityBodyComponentDef.active = body["active"].asBool();
 			entityBodyComponentDef.gravityScale = body["gravity scale"].asFloat();
-			
+
 			b2Body* entityBodyComponent{world.CreateBody(&entityBodyComponentDef)};
 			component->bodies.emplace(partName, entityBodyComponent);
-			
+
 			//polygon fixtures
 			if(body.isMember("polygon fixtures"))
 			{
@@ -395,7 +404,7 @@ void deserialize(const Json::Value& value, entityx::ComponentHandle<BodyComponen
 					const Json::Value fixture{fixtures[i]};
 					b2FixtureDef entityFixtureDef;
 					b2PolygonShape polygonShape;
-					
+
 					//vertices
 					const Json::Value vertices{fixtures[i]["vertices"]};
 					std::vector<b2Vec2> verticesVec(vertices.size());
@@ -407,7 +416,7 @@ void deserialize(const Json::Value& value, entityx::ComponentHandle<BodyComponen
 					}
 					polygonShape.Set(verticesVec.data(), verticesVec.size());
 					entityFixtureDef.shape = &polygonShape;
-					
+
 					entityFixtureDef.density = fixture["density"].asFloat();
 					entityFixtureDef.friction = fixture["friction"].asFloat();
 					entityFixtureDef.restitution = fixture["restitution"].asFloat();
@@ -417,11 +426,11 @@ void deserialize(const Json::Value& value, entityx::ComponentHandle<BodyComponen
 						if(roles[j].asString() == "foot sensor")
 							//Add the role to the data
 							entityFixtureDef.userData = add<unsigned int>(entityFixtureDef.userData, static_cast<unsigned int>(FixtureRole::Foot));
-						
+
 					entityBodyComponent->CreateFixture(&entityFixtureDef);
 				}
 			}
-			
+
 			//edge fixtures
 			if(body.isMember("edge fixtures"))
 			{
@@ -429,18 +438,18 @@ void deserialize(const Json::Value& value, entityx::ComponentHandle<BodyComponen
 				for(Json::ArrayIndex i{0}; i < fixtures.size(); ++i)
 				{
 					const Json::Value fixture{fixtures[i]};
-									
+
 					b2FixtureDef entityFixtureDef;
 					b2EdgeShape edgeShape;
 					b2Vec2 one{0, 0}, two{0, 0};
-					
+
 					one.x = fixtures[i]["1"]["x"].asFloat();
 					one.y = fixtures[i]["1"]["y"].asFloat();
 					two.x = fixtures[i]["2"]["x"].asFloat();
 					two.y = fixtures[i]["2"]["y"].asFloat();
-					
+
 					edgeShape.Set((1.f/pixelByMeter)*one, (1.f/pixelByMeter)*two);
-					
+
 					//0
 					if(fixture.isMember("0"))
 					{
@@ -448,7 +457,7 @@ void deserialize(const Json::Value& value, entityx::ComponentHandle<BodyComponen
 						edgeShape.m_vertex0.x = fixtures[i]["0"]["x"].asFloat()/pixelByMeter;
 						edgeShape.m_vertex0.y = fixtures[i]["0"]["y"].asFloat()/pixelByMeter;
 					}
-					
+
 					//3
 					if(fixture.isMember("3"))
 					{
@@ -461,18 +470,18 @@ void deserialize(const Json::Value& value, entityx::ComponentHandle<BodyComponen
 					entityFixtureDef.friction = fixture["friction"].asFloat();
 					entityFixtureDef.restitution = fixture["restitution"].asFloat();
 					entityFixtureDef.isSensor = fixture["is sensor"].asBool();
-					
+
 					//roles
 					const Json::Value roles{body["roles"]};
 					for(Json::ArrayIndex j{0}; j < roles.size(); ++j)
 						if(roles[j].asString() == "foot sensor")
 							//Add the role to the data
 							entityFixtureDef.userData = add<unsigned int>(entityFixtureDef.userData, static_cast<unsigned int>(FixtureRole::Foot));
-						
+
 					entityBodyComponent->CreateFixture(&entityFixtureDef);
 				}
 			}
-			
+
 			//chain fixtures
 			if(body.isMember("chain fixtures"))
 			{
@@ -493,14 +502,14 @@ void deserialize(const Json::Value& value, entityx::ComponentHandle<BodyComponen
 						verticesArray[j].y = vertice["y"].asFloat()/pixelByMeter;
 					}
 					chainShape.CreateChain(verticesArray.data(), verticesArray.size());
-					
+
 					if(fixtures[i].isMember("previous vertex"))
 					{
 						chainShape.m_hasPrevVertex = true;
 						chainShape.m_prevVertex.x = fixtures[i]["previous vertex"]["x"].asFloat()/pixelByMeter;
 						chainShape.m_prevVertex.y = fixtures[i]["previous vertex"]["y"].asFloat()/pixelByMeter;
 					}
-					
+
 					if(fixtures[i].isMember("next vertex"))
 					{
 						chainShape.m_hasNextVertex = true;
@@ -517,11 +526,11 @@ void deserialize(const Json::Value& value, entityx::ComponentHandle<BodyComponen
 						if(roles[j].asString() == "foot sensor")
 							//Add the role to the data
 							entityFixtureDef.userData = add<unsigned int>(entityFixtureDef.userData, static_cast<unsigned int>(FixtureRole::Foot));
-						
+
 					entityBodyComponent->CreateFixture(&entityFixtureDef);
 				}
 			}
-			
+
 			//circle fixtures
 			if(body.isMember("circle fixtures"))
 			{
@@ -529,13 +538,13 @@ void deserialize(const Json::Value& value, entityx::ComponentHandle<BodyComponen
 				for(Json::ArrayIndex i{0}; i < fixtures.size(); ++i)
 				{
 					const Json::Value fixture{fixtures[i]};
-									
+
 					b2FixtureDef entityFixtureDef;
-					
+
 					b2CircleShape circleShape;
 					circleShape.m_p.x = fixtures[i]["position"]["x"].asFloat()/pixelByMeter;
 					circleShape.m_p.y = fixtures[i]["position"]["y"].asFloat()/pixelByMeter;
-					
+
 					entityFixtureDef.shape = &circleShape;
 					entityFixtureDef.density = fixture["density"].asFloat();
 					entityFixtureDef.friction = fixture["friction"].asFloat();
@@ -546,7 +555,7 @@ void deserialize(const Json::Value& value, entityx::ComponentHandle<BodyComponen
 						if(roles[j].asString() == "foot sensor")
 							//Add the role to the data
 							entityFixtureDef.userData = add<unsigned int>(entityFixtureDef.userData, static_cast<unsigned int>(FixtureRole::Foot));
-						
+
 					entityBodyComponent->CreateFixture(&entityFixtureDef);
 				}
 			}
@@ -716,4 +725,11 @@ void deserialize(const Json::Value& value, entityx::ComponentHandle<ArrowCompone
 void deserialize(const Json::Value& value, entityx::ComponentHandle<HardnessComponent> component)
 {
 	component->hardness = value.asFloat();
+}
+
+void deserialize(const Json::Value& value, entityx::ComponentHandle<ScriptsComponent> component)
+{
+	for(Json::ArrayIndex i{0}; i < value["scripts"].size(); ++i)
+        component->scripts.emplace(value["scripts"][i].asString(),
+                                   new std::ifstream("resources/scripts/"+value["scripts"][i].asString()));
 }

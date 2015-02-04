@@ -93,6 +93,11 @@ Json::Value serialize(entityx::ComponentHandle<ArrowComponent> component);
 /// \return A Json value.
 Json::Value serialize(entityx::ComponentHandle<HardnessComponent> component);
 
+/// Serialize the given component.
+/// \param component Component to serialize.
+/// \return A Json value.
+Json::Value serialize(entityx::ComponentHandle<ScriptsComponent> component);
+
 /// Deserialize the given \a value in the given \a component.
 /// \param component Component in wich deserialize the data.
 /// \param pixelByMeter Number of pixel by meter.
@@ -176,5 +181,10 @@ void deserialize(const Json::Value& value, entityx::ComponentHandle<ArrowCompone
 /// \param component Component in wich deserialize the data.
 /// \param value The Json value containing the data.
 void deserialize(const Json::Value& value, entityx::ComponentHandle<HardnessComponent> component);
+
+/// Deserialize the given \a value in the given \a component.
+/// \param component Component in wich deserialize the data.
+/// \param value The Json value containing the data.
+void deserialize(const Json::Value& value, entityx::ComponentHandle<ScriptsComponent> component);
 
 #endif//SERIALIZATION_H

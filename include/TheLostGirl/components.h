@@ -4,6 +4,7 @@
 #include <map>
 #include <functional>
 #include <string>
+#include <fstream>
 
 #include <SFML/Graphics/Sprite.hpp>
 #include <entityx/Entity.h>
@@ -136,7 +137,7 @@ struct JumpComponent : public entityx::Component<JumpComponent>
 	bool mustJump;     ///< Indicate if the entity have received a jump command, and the jump is not yet handled by the physic system. Similar to moveToLeft in directionComponent.
 };
 
-/// Bending component.
+/// Bending component that hold all stats about the ability to use bows and arrows.
 struct BowComponent : public entityx::Component<BowComponent>
 {
 	float maxPower;                     ///< The maximum power of the bending of the bow.
@@ -163,7 +164,7 @@ struct StaminaComponent : public entityx::Component<StaminaComponent>
 	float regeneration;///< The regeneration of stamina (in units/s).
 };
 
-/// Wind friction component.
+/// Arrow component that hold all stats about an arrow.
 /// The friction is applied in order to set the angle of the body tangent to the arrow trajectory.
 /// The penetrance indicates how much the arrow can stick into hard targets, and so make damages.
 struct ArrowComponent : public entityx::Component<ArrowComponent>
@@ -176,7 +177,7 @@ struct ArrowComponent : public entityx::Component<ArrowComponent>
 		Stored, ///< The arrow is stored into an inventory or in a quiver.
 		Notched ///< The arrow is notched in a bow.
 	};
-	
+
 	float friction;                 ///< The amplitude of the friction applied on the body.
 	sf::Vector2f localFrictionPoint;///< The point where the friction must be applied.
 	sf::Vector2f localStickPoint;   ///< The point where the arrow will be sticked when touch a target.
@@ -185,12 +186,19 @@ struct ArrowComponent : public entityx::Component<ArrowComponent>
 	ArrowState state;               ///< Indicates the current state of the arrow.
 };
 
-/// Target hardness component.
-/// This component must be applied on every object that can be the target of arrows,
-/// and it indicates the treshold of stucking of the arrow into the object.
+/// Target hardness component that indicates the treshold of stucking of the arrow into the object.
+/// This component must be applied on every object that can be the target of arrows.
 struct HardnessComponent : public entityx::Component<HardnessComponent>
 {
 	float hardness;///< Indicates the treshold of stucking of the arrow into the object.
+};
+
+/// Script component that hold file streams that contains scripts.
+/// These scripts are executed each frame.
+/// More documentation about scripting will be released soon.
+struct ScriptsComponent : public entityx::Component<ScriptsComponent>
+{
+    std::map<std::string, std::ifstream*> scripts;///< File streams to each script that the entity have to execute.
 };
 
 #endif //COMPONENTS_H

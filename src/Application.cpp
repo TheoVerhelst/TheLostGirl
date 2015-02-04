@@ -20,7 +20,7 @@ Application::Application(bool debugMode):
 	m_entityManager{m_eventManager},
 	m_systemManager{m_entityManager, m_eventManager},
 	m_world{m_parameters.gravity},
-	m_stateStack{StateStack::Context{m_parameters, m_window, m_textureManager, m_fontManager, m_gui, m_eventManager, m_entityManager, m_systemManager, m_world, m_player}},		
+	m_stateStack{StateStack::Context{m_parameters, m_window, m_textureManager, m_fontManager, m_gui, m_eventManager, m_entityManager, m_systemManager, m_world, m_player}},
 	m_debugDraw(m_stateStack.getContext())
 {
 	std::string file("settings.json");
@@ -31,14 +31,14 @@ Application::Application(bool debugMode):
 	std::ifstream modelFile("settingsModel.json", std::ifstream::binary);
 	if(!reader.parse(settingsFile, settings))//report to the user the failure and their locations in the document.
 	{
-		std::cout << "\"" + file + "\": " + reader.getFormattedErrorMessages() << std::endl;
-		std::cout << "Loaded default settings." << std::endl;
+		std::cout << "\"" + file + "\": " + reader.getFormattedErrorMessages() << "\n"
+				  << "Loaded default settings.\n";
 		m_window.create({640, 360}, "The Lost Girl");
 	}
 	else if(!reader.parse(modelFile, model))//report to the user the failure and their locations in the document.
 	{
-		std::cout << "\"settingsModel.json\": " + reader.getFormattedErrorMessages() << std::endl;
-		std::cout << "Loaded default settings." << std::endl;
+		std::cout << "\"settingsModel.json\": " + reader.getFormattedErrorMessages() << "\n"
+				  << "Loaded default settings.\n";
 		m_window.create({640, 360}, "The Lost Girl");
 	}
 	else
@@ -50,7 +50,7 @@ Application::Application(bool debugMode):
 			m_parameters.lang = FR;
 		else if(settings["lang"].asString() == "EN")
 			m_parameters.lang = EN;
-		
+
 		if(settings["resolution"].asInt() == 360)
 		{
 			m_parameters.scaleIndex = 0;
@@ -85,7 +85,7 @@ Application::Application(bool debugMode):
 	m_parameters.scaledPixelByMeter = m_parameters.scale*m_parameters.pixelByMeter;
 	m_parameters.debugMode = debugMode;
 	m_gui.setWindow(m_window);
-	
+
 	sf::View view{m_window.getDefaultView()};
 	sf::Event::SizeEvent se{m_window.getSize().x, m_window.getSize().y};
 	view.setViewport(handleResize(se));
@@ -99,12 +99,12 @@ Application::~Application()
 	Json::StyledWriter writer;
 	std::string file("settings.json");
 	std::ofstream settingsFileStream(file, std::ofstream::binary);
-	
+
 	if(m_parameters.lang == FR)
 		settings["lang"] = "FR";
 	else if(m_parameters.lang == EN)
 		settings["lang"] = "EN";
-	
+
 	if(m_parameters.scaleIndex == 0)
 		settings["resolution"] = 360;
 	else if(m_parameters.scaleIndex == 1)
@@ -115,11 +115,11 @@ Application::~Application()
 		settings["resolution"] = 900;
 	else if(m_parameters.scaleIndex == 4)
 		settings["resolution"] = 1080;
-	
+
 	settings["window size"]["w"] = m_window.getSize().x;
 	settings["window size"]["h"] = m_window.getSize().y;
 	settings["enable bloom"] = m_parameters.bloomEnabled;
-	
+
 	settingsFileStream << writer.write(settings);
 	settingsFileStream.close();
 }
@@ -144,7 +144,7 @@ int Application::init()
 	}
 	catch(std::runtime_error& e)
 	{
-		std::cerr << "Runtime error: " << e.what() << std::endl;
+		std::cerr << "Runtime error: " << e.what() << "\n";
 		return 1;
 	}
 	return 0;
@@ -210,7 +210,7 @@ void Application::render()
 	//Clear the texture, draw on it and display
 	m_window.clear({197, 182, 108});
 	m_stateStack.draw();
-	
+
 	if(m_parameters.debugMode)
 		m_world.DrawDebugData();
 	m_debugDraw.drawDebugAth();
@@ -228,4 +228,5 @@ void Application::registerSystems()
 	m_systemManager.add<ScrollingSystem>(m_window, m_parameters);
 	m_systemManager.add<TimeSystem>();
 	m_systemManager.add<StatsSystem>();
+	m_systemManager.add<ScriptsSystem>();
 }

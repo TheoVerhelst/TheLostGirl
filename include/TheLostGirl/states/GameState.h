@@ -31,12 +31,12 @@ class GameState : public State
 	public:
         /// Default constructor.
         /// \param stack StateStack wherein the State is added.
-		GameState(StateStack& stack);
-		
+		GameState(StateStack& stack, const std::string& file = "resources/levels/save.json");
+
 		/// Default destructor.
 		/// Remove all bodies, sprites and others from the memory.
 		~GameState();
-		
+
         /// The drawing function.
         /// \return virtual void
         /// It must do all things related to drawing stuff on the screen.
@@ -62,15 +62,18 @@ class GameState : public State
 			sf::IntRect origin;             ///< Coordinate of the texture to place in the world.
 			std::vector<Transform> replaces;///< List of places where the texture should be displayed.
 		};
-		
+
 		/// Initialize the physic world.
 		/// \param file Path of the save file to load.
 		void initWorld(const std::string& file);
-		
+
 		/// Save the physic world.
 		/// \param file Path of the save file to override.
 		void saveWorld(const std::string& file);
-		
+
+		/// Clear all entities.
+		void clear();
+
 		std::map<std::string, entityx::Entity> m_entities;                    ///< All game entities.
 		std::map<std::string, entityx::Entity> m_sceneEntities;               ///< All scene entities.
 		std::map<std::string, std::vector<SceneReplaces>> m_sceneEntitiesData;///< A map containing data about scene entities.
@@ -78,7 +81,7 @@ class GameState : public State
 		float m_timeSpeed;                                                    ///< The speed of the time (usually 1.f). This influes only on the TimeSystem, not on physics!
 		std::thread m_threadLoad;                                             ///< Thread launched when loading the level.
 		bool m_loading;                                                       ///< Indicates wether the loading is finished or not.
-		
+
 		//Level informations
 		std::string m_levelIdentifier;                                        ///< Identifer of the level, must be a non-spaced name.
 		unsigned short int m_numberOfPlans;                                   ///< Number of plans in the background.

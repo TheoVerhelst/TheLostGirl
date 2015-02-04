@@ -31,7 +31,7 @@
 
 #include <TheLostGirl/states/GameState.h>
 
-GameState::GameState(StateStack& stack) :
+GameState::GameState(StateStack& stack, const std::string& file) :
 	State(stack),
 	m_entities(),
 	m_sceneEntities(),
@@ -45,23 +45,13 @@ GameState::GameState(StateStack& stack) :
 	m_referencePlan{0.f},
 	m_levelRect{0, 0, 1920, 1080}
 {
-	m_threadLoad = std::thread(&GameState::initWorld, this, "resources/levels/save.json");
+	m_threadLoad = std::thread(&GameState::initWorld, this, file);
 }
 
 GameState::~GameState()
 {
 //	saveWorld("resources/levels/save.json");
-	for(auto& entity : m_entities)
-	{
-		if(entity.second.has_component<BodyComponent>())
-		{
-			for(auto& partBody : entity.second.component<BodyComponent>()->bodies)
-				getContext().world.DestroyBody(partBody.second);
-		}
-		entity.second.destroy();
-	}
-	for(auto& sceneEntity : m_sceneEntities)
-		sceneEntity.second.destroy();
+	clear();
 	if(m_threadLoad.joinable())
 		m_threadLoad.join();
 }
@@ -83,6 +73,7 @@ bool GameState::update(sf::Time elapsedTime)
 	getContext().systemManager.update<AnimationsSystem>(elapsedTime.asSeconds());
 	getContext().systemManager.update<ScrollingSystem>(elapsedTime.asSeconds());
 	getContext().systemManager.update<StatsSystem>(elapsedTime.asSeconds());
+	getContext().systemManager.update<ScriptsSystem>(elapsedTime.asSeconds());
 	getContext().systemManager.update<TimeSystem>(elapsedTime.asSeconds()*m_timeSpeed);//Scale the time
 	return false;
 }
@@ -92,7 +83,7 @@ bool GameState::handleEvent(const sf::Event& event)
 	if((event.type == sf::Event::KeyPressed and event.key.code == sf::Keyboard::Escape)
 		or event.type == sf::Event::LostFocus)
 		requestStackPush<PauseState>();
-	
+
 	getContext().player.handleEvent(event, getContext().systemManager.system<PendingChangesSystem>()->commandQueue);
 	//Update the drag and drop state
 	bool isDragAndDropActive{getContext().player.isActived(Player::Action::Bend)};
@@ -110,54 +101,57 @@ void GameState::saveWorld(const std::string& file)
 		{
 			if(entity.second.has_component<BodyComponent>())
 				root["entities"][entity.first]["body"] = serialize(entity.second.component<BodyComponent>(), pixelByMeter);
-			
+
 			if(entity.second.has_component<SpriteComponent>())
 				root["entities"][entity.first]["sprites"] = serialize(entity.second.component<SpriteComponent>(), getContext().textureManager);
-			
+
 			if(entity.second.has_component<TransformComponent>())
 				root["entities"][entity.first]["transforms"] = serialize(entity.second.component<TransformComponent>());
-			
+
 			if(entity.second.has_component<InventoryComponent>())
 				root["entities"][entity.first]["inventory"] = serialize(entity.second.component<InventoryComponent>(), m_entities);
-			
+
 			if(entity.second.has_component<BowComponent>())
 				root["entities"][entity.first]["bow"] = serialize(entity.second.component<BowComponent>(), m_entities);
-			
+
 			if(entity.second.has_component<AnimationsComponent<SpriteSheetAnimation>>())
 				root["entities"][entity.first]["spritesheet animations"] = serialize(entity.second.component<AnimationsComponent<SpriteSheetAnimation>>());
-			
+
 			if(entity.second.has_component<DirectionComponent>())
 				root["entities"][entity.first]["direction"] = serialize(entity.second.component<DirectionComponent>());
-			
+
 			if(entity.second.has_component<CategoryComponent>())
 				root["entities"][entity.first]["categories"] = serialize(entity.second.component<CategoryComponent>());
-			
+
 			if(entity.second.has_component<FallComponent>())
 				root["entities"][entity.first]["fall"] = serialize(entity.second.component<FallComponent>());
-			
+
 			if(entity.second.has_component<WalkComponent>())
 				root["entities"][entity.first]["walk"] = serialize(entity.second.component<WalkComponent>());
-			
+
 			if(entity.second.has_component<JumpComponent>())
 				root["entities"][entity.first]["jump"] = serialize(entity.second.component<JumpComponent>());
-			
+
 			if(entity.second.has_component<HealthComponent>())
 				root["entities"][entity.first]["health"] = serialize(entity.second.component<HealthComponent>());
-			
+
 			if(entity.second.has_component<StaminaComponent>())
 				root["entities"][entity.first]["stamina"] = serialize(entity.second.component<StaminaComponent>());
-			
+
 			if(entity.second.has_component<ArrowComponent>())
 				root["entities"][entity.first]["arrow"] = serialize(entity.second.component<ArrowComponent>());
-			
+
 			if(entity.second.has_component<HardnessComponent>())
 				root["entities"][entity.first]["hardness"] = serialize(entity.second.component<HardnessComponent>());
+
+			if(entity.second.has_component<ScriptsComponent>())
+				root["entities"][entity.first]["scripts"] = serialize(entity.second.component<ScriptsComponent>());
 		}
-		
+
 		//time
 		root["time"]["speed"] = m_timeSpeed;
 		root["time"]["date"] = getContext().systemManager.system<TimeSystem>()->getRealTime().asSeconds();
-		
+
 		//level data
 		root["level"]["identifier"] = m_levelIdentifier;
 		root["level"]["box"]["x"] = m_levelRect.left;
@@ -166,11 +160,11 @@ void GameState::saveWorld(const std::string& file)
 		root["level"]["box"]["h"] = m_levelRect.height;
 		root["level"]["number of plans"] = m_numberOfPlans;
 		root["level"]["reference plan"] = m_referencePlan;
-		
+
 		//replaces
 		for(auto& planData : m_sceneEntitiesData)
 		{
-			for(size_t i{0}; i < planData.second.size(); ++i)
+			for(unsigned int i{0}; i < planData.second.size(); ++i)
 			{
 				root["level"]["replaces"][planData.first][i]["origin"]["x"] = planData.second[i].origin.left;
 				root["level"]["replaces"][planData.first][i]["origin"]["y"] = planData.second[i].origin.top;
@@ -185,7 +179,7 @@ void GameState::saveWorld(const std::string& file)
 				}
 			}
 		}
-		
+
 		//joints
 		for(b2Joint* joint{getContext().world.GetJointList()}; joint; joint = joint->GetNext())
 		{
@@ -195,7 +189,7 @@ void GameState::saveWorld(const std::string& file)
 			std::string entityAName{getKey(m_entities, entityA)};//Get the name of the entity A
 			assert(isMember(entityA.component<BodyComponent>()->bodies, bodyA));//Assert that the body A is in the body component of the entity A
 			std::string partAName{getKey(entityA.component<BodyComponent>()->bodies, bodyA)};//Get the name of the part A
-			
+
 			b2Body* bodyB{joint->GetBodyB()};//Get the body B
 			entityx::Entity entityB{*static_cast<entityx::Entity*>(bodyB->GetUserData())};//Get the entity B from the user data
 			assert(isMember(m_entities, entityB));
@@ -227,7 +221,7 @@ void GameState::saveWorld(const std::string& file)
 						root["joints"]["revolute joints"][last]["roles"].append("bending angle");
 					break;
 				}
-				
+
 				case e_prismaticJoint:
 				{
 					b2PrismaticJoint* castedJoint{static_cast<b2PrismaticJoint*>(joint)};
@@ -254,7 +248,7 @@ void GameState::saveWorld(const std::string& file)
 						root["joints"]["prismatic joints"][last]["roles"].append("bending power");
 					break;
 				}
-					
+
 				case e_distanceJoint:
 				{
 					b2DistanceJoint* castedJoint{static_cast<b2DistanceJoint*>(joint)};
@@ -273,7 +267,7 @@ void GameState::saveWorld(const std::string& file)
 					root["joints"]["distance joints"][last]["damping ratio"] = castedJoint->GetDampingRatio();
 					break;
 				}
-					
+
 				case e_pulleyJoint:
 				{
 					b2PulleyJoint* castedJoint{static_cast<b2PulleyJoint*>(joint)};
@@ -296,12 +290,12 @@ void GameState::saveWorld(const std::string& file)
 					root["joints"]["pulley joints"][last]["ratio"] = castedJoint->GetRatio();
 					break;
 				}
-					
+
 				case e_gearJoint:
 				{
 					break;
 				}
-					
+
 				case e_wheelJoint:
 				{
 					b2WheelJoint* castedJoint{static_cast<b2WheelJoint*>(joint)};
@@ -323,7 +317,7 @@ void GameState::saveWorld(const std::string& file)
 					root["joints"]["wheel joints"][last]["damping ratio"] = castedJoint->GetSpringDampingRatio();
 					break;
 				}
-					
+
 				case e_weldJoint:
 				{
 					b2WeldJoint* castedJoint{static_cast<b2WeldJoint*>(joint)};
@@ -342,7 +336,7 @@ void GameState::saveWorld(const std::string& file)
 					root["joints"]["weld joints"][last]["reference angle"] = castedJoint->GetReferenceAngle() * 180.f / b2_pi;
 					break;
 				}
-					
+
 				case e_frictionJoint:
 				{
 					b2FrictionJoint* castedJoint{static_cast<b2FrictionJoint*>(joint)};
@@ -360,7 +354,7 @@ void GameState::saveWorld(const std::string& file)
 					root["joints"]["friction joints"][last]["maximum torque"] = castedJoint->GetMaxTorque()*pixelByMeter;
 					break;
 				}
-					
+
 				case e_ropeJoint:
 				{
 					b2RopeJoint* castedJoint{static_cast<b2RopeJoint*>(joint)};
@@ -377,7 +371,7 @@ void GameState::saveWorld(const std::string& file)
 					root["joints"]["rope joints"][last]["maximum length"] = castedJoint->GetMaxLength()*pixelByMeter;
 					break;
 				}
-				
+
 				case e_motorJoint:
 				{
 					b2MotorJoint* castedJoint{static_cast<b2MotorJoint*>(joint)};
@@ -395,7 +389,7 @@ void GameState::saveWorld(const std::string& file)
 					root["joints"]["motor joints"][last]["correction factor"] = castedJoint->GetCorrectionFactor();
 					break;
 				}
-				
+
 				case e_unknownJoint:
 				default:
 					break;
@@ -423,10 +417,10 @@ void GameState::initWorld(const std::string& file)
 			throw std::runtime_error("\"" + file + "\" : " + reader.getFormattedErrorMessages());
 		if(!reader.parse(modelSaveFile, model))
 			throw std::runtime_error("\"resources/levels/model.json\": " + reader.getFormattedErrorMessages());
-		
+
 		//SuperMegaMagic parsing of the save file from the model file
 		parse(root, model, "root", "root");
-		
+
 		{
 			const Json::Value time{root["time"]};
 			getContext().systemManager.system<TimeSystem>()->setTotalTime(sf::seconds(time["date"].asFloat()));
@@ -434,7 +428,7 @@ void GameState::initWorld(const std::string& file)
 			getContext().systemManager.system<AnimationsSystem>()->setTimeSpeed(m_timeSpeed);
 		}
 		const Json::Value level{root["level"]};
-		
+
 		//number of plans
 		//must load it now in order to know how much plans can be defined
 		m_numberOfPlans = level["number of plans"].asUInt();
@@ -443,7 +437,7 @@ void GameState::initWorld(const std::string& file)
 			throw std::runtime_error("\"level.identifier\" value contains whitespaces.");
 		m_levelIdentifier = identifier;
 		m_referencePlan = level["reference plan"].asFloat();
-		
+
 		//box
 		{
 			const Json::Value levelBox{level["box"]};
@@ -452,9 +446,9 @@ void GameState::initWorld(const std::string& file)
 			m_levelRect.top = levelBox["x"].asInt();
 			m_levelRect.left = levelBox["y"].asInt();
 		}
-		
+
 		getContext().systemManager.system<ScrollingSystem>()->setLevelData(m_levelRect, m_referencePlan);
-		
+
 		//entities
 		//Load entities before everything else allow to call the ScrollingSystem update after each sprite creation,
 		//and so place sprite directly at the right position when loading the level, because the player is an entity,
@@ -466,18 +460,18 @@ void GameState::initWorld(const std::string& file)
 			//that m_entities is complete to be assigned (such as InventoryComponent).
 			for(std::string& entityName : entities.getMemberNames())
 				m_entities.emplace(entityName, getContext().entityManager.create());
-			
+
 			for(std::string& entityName : entities.getMemberNames())
 			{
 				const Json::Value entity{entities[entityName]};
-				
+
 				if(entity.isMember("transforms"))
 					deserialize(entity["transforms"], m_entities[entityName].assign<TransformComponent>());
 				if(entity.isMember("sprites"))
 					deserialize(entity["sprites"], m_entities[entityName].assign<SpriteComponent>(), texManager, paths[getContext().parameters.scaleIndex]);
 				//Update the ScrollingSystem in order to directly display the sprite at the right position
 				getContext().systemManager.update<ScrollingSystem>(sf::Time::Zero.asSeconds());
-					
+
 				//body
 				if(entity.isMember("body"))
 				{
@@ -494,33 +488,36 @@ void GameState::initWorld(const std::string& file)
 						}
 						catch(std::runtime_error& e)
 						{
-							std::cerr << "Unable to parse \"root.entities." + entityName + ".body\": " << e.what() << std::endl;
+							std::cerr << "Unable to parse \"root.entities." + entityName + ".body\": " << e.what() << "\n";
 						}
 					}
 				}
-				
+
 				//spritesheet animations
 				if(entity.isMember("spritesheet animations"))
 				{
-					
+
 					if(not entity.isMember("sprites"))
-						throw std::runtime_error("\"root.entities." + entityName + ".spritesheet animations\" is defined but not \"root.entities." + entityName + ".sprites\"");
+						throw std::runtime_error("\"root.entities." + entityName + ".spritesheet animations\""
+												 " is defined but not \"root.entities." + entityName + ".sprites\"");
 					else
 					{
 						try
 						{
-							deserialize(entity["spritesheet animations"], m_entities[entityName].assign<AnimationsComponent<SpriteSheetAnimation>>(), m_entities[entityName].component<SpriteComponent>(), getContext());
+							deserialize(entity["spritesheet animations"],
+											m_entities[entityName].assign<AnimationsComponent<SpriteSheetAnimation>>(),
+											m_entities[entityName].component<SpriteComponent>(),getContext());
 						}
 						catch(std::runtime_error& e)
 						{
-							std::cerr << "Unable to parse \"root.entities." + entityName + ".spritesheet animations\": " << e.what() << std::endl;
+							std::cerr << "Unable to parse \"root.entities." + entityName + ".spritesheet animations\": " << e.what() << "\n";
 						}
 					}
 				}
-				
+
 				//Update the AnimationSystem in order to don't show the whole tileset of every entity on the screen when loading the level
 				getContext().systemManager.update<AnimationsSystem>(sf::Time::Zero.asSeconds());
-				
+
 				if(entity.isMember("inventory"))
 					deserialize(entity["inventory"], m_entities[entityName].assign<InventoryComponent>(), m_entities);
 				if(entity.isMember("bow"))
@@ -543,9 +540,11 @@ void GameState::initWorld(const std::string& file)
 					deserialize(entity["arrow"], m_entities[entityName].assign<ArrowComponent>());
 				if(entity.isMember("hardness"))
 					deserialize(entity["hardness"], m_entities[entityName].assign<HardnessComponent>());
+				if(entity.isMember("scripts"))
+					deserialize(entity["scripts"], m_entities[entityName].assign<ScriptsComponent>());
 			}
 		}
-		
+
 		if(not getContext().parameters.debugMode)
 		{
 			//level
@@ -556,7 +555,7 @@ void GameState::initWorld(const std::string& file)
 				std::string fileTexture{m_levelIdentifier + "_" + groupOfReplacesName};
 				//Path of the image to load
 				std::string path{paths[getContext().parameters.scaleIndex] + "levels/" + m_levelIdentifier + "/" + fileTexture + ".png"};
-				
+
 				const Json::Value groupOfReplaces{level["replaces"][groupOfReplacesName]};
 				//Vector that will be added to m_sceneEntitiesData
 				std::vector<SceneReplaces> planData;
@@ -565,18 +564,18 @@ void GameState::initWorld(const std::string& file)
 				{
 					const Json::Value image{groupOfReplaces[i]};
 					const Json::Value origin{image["origin"]};
-					
+
 					//Coordinates of the original image
 					sf::IntRect originRect;
 					originRect.left = static_cast<int>(origin["x"].asInt()*getContext().parameters.scale);
 					originRect.top = static_cast<int>(origin["y"].asInt()*getContext().parameters.scale);
 					originRect.width = static_cast<int>(origin["w"].asInt()*getContext().parameters.scale);
 					originRect.height = static_cast<int>(origin["h"].asInt()*getContext().parameters.scale);
-					
+
 					SceneReplaces replacesData;
 					//Directly take the data from the json value in order to keep the not scaled size
 					replacesData.origin = {origin["x"].asInt(), origin["y"].asInt(), origin["w"].asInt(), origin["h"].asInt()};
-					
+
 					//Load the texture
 					//Identifier of the texture, in format "level_plan_texture"
 					std::string textureIdentifier{fileTexture + "_" + std::to_string(i)};
@@ -596,10 +595,10 @@ void GameState::initWorld(const std::string& file)
 						replaceTransform.y = replace["y"].asFloat()*getContext().parameters.scale;
 						replaceTransform.z = replace["z"].asFloat();
 						replaceTransform.angle = replace["angle"].asFloat();
-						
+
 						//Directly take the data from the json value in order to keep the not scaled size
 						replacesData.replaces.push_back({replace["x"].asFloat(), replace["y"].asFloat(), replace["z"].asFloat(), replace["angle"].asFloat()});
-						
+
 						//Create an entity
 						m_sceneEntities.emplace(replaceIdentifier, getContext().entityManager.create());
 						//Create a sprite with the loaded texture
@@ -632,7 +631,7 @@ void GameState::initWorld(const std::string& file)
 				unsigned int planLength{static_cast<unsigned int>((m_levelRect.width * pow(1.5, m_referencePlan - i))*getContext().parameters.scale)};
 				//Number of chunks to load in this plan
 				unsigned int numberOfChunks{(planLength/chunkSize)+1};
-				
+
 				for(unsigned int j{0}; j < numberOfChunks; ++j)
 				{
 					//Identifier of the entity, in format "level_plan_chunk"
@@ -662,7 +661,7 @@ void GameState::initWorld(const std::string& file)
 				}
 			}
 		}
-		
+
 		//joints
 		if(root.isMember("joints"))
 		{
@@ -701,14 +700,14 @@ void GameState::initWorld(const std::string& file)
 					jointDef.maxMotorTorque = joint["maximum motor torque"].asFloat()/pixelByMeter;
 					jointDef.motorSpeed = joint["motor speed"].asFloat()/pixelByMeter;
 					jointDef.enableMotor = joint["enable motor"].asBool();
-					
+
 					//roles
 					const Json::Value roles{joint["roles"]};
 					for(Json::ArrayIndex j{0}; j < roles.size(); ++j)
 						if(roles[j].asString() == "bending angle")
 							//Add the role to the definition
 							jointDef.userData = add<unsigned int>(jointDef.userData, static_cast<unsigned int>(JointRole::BendingAngle));
-					
+
 					getContext().world.CreateJoint(&jointDef);
 				}
 			}
@@ -732,7 +731,7 @@ void GameState::initWorld(const std::string& file)
 					//Assert that that entities have the givens parts
 					requireValues(root["entities"][entityA]["body"], "entities." + entityA + ".body", {{partA, Json::objectValue}});
 					requireValues(root["entities"][entityB]["body"], "entities." + entityB + ".body", {{partB, Json::objectValue}});
-					
+
 					b2DistanceJointDef jointDef;
 					jointDef.bodyA = m_entities[entityA].component<BodyComponent>()->bodies[partA];
 					jointDef.bodyB = m_entities[entityB].component<BodyComponent>()->bodies[partB];
@@ -743,7 +742,7 @@ void GameState::initWorld(const std::string& file)
 					jointDef.length = joint["length"].asFloat()/pixelByMeter;
 					jointDef.frequencyHz = joint["frequency Hz"].asFloat();
 					jointDef.dampingRatio = joint["damping ratio"].asFloat();
-					
+
 					getContext().world.CreateJoint(&jointDef);
 				}
 			}
@@ -767,7 +766,7 @@ void GameState::initWorld(const std::string& file)
 					//Assert that that entities have the givens parts
 					requireValues(root["entities"][entityA]["body"], "entities." + entityA + ".body", {{partA, Json::objectValue}});
 					requireValues(root["entities"][entityB]["body"], "entities." + entityB + ".body", {{partB, Json::objectValue}});
-					
+
 					b2FrictionJointDef jointDef;
 					jointDef.bodyA = m_entities[entityA].component<BodyComponent>()->bodies[partA];
 					jointDef.bodyB = m_entities[entityB].component<BodyComponent>()->bodies[partB];
@@ -777,7 +776,7 @@ void GameState::initWorld(const std::string& file)
 					jointDef.localAnchorB.y = joint["local anchor B"]["y"].asFloat()/pixelByMeter;
 					jointDef.maxTorque = joint["maximum torque"].asFloat()/pixelByMeter;
 					jointDef.maxForce = joint["maximum force"].asFloat()/pixelByMeter;
-					
+
 					getContext().world.CreateJoint(&jointDef);
 				}
 			}
@@ -809,7 +808,7 @@ void GameState::initWorld(const std::string& file)
 					//Assert that that entities have the givens parts
 					requireValues(root["entities"][entityA]["body"], "entities." + entityA + ".body", {{partA, Json::objectValue}});
 					requireValues(root["entities"][entityB]["body"], "entities." + entityB + ".body", {{partB, Json::objectValue}});
-					
+
 					b2MotorJointDef jointDef;
 					jointDef.bodyA = m_entities[entityA].component<BodyComponent>()->bodies[partA];
 					jointDef.bodyB = m_entities[entityB].component<BodyComponent>()->bodies[partB];
@@ -819,7 +818,7 @@ void GameState::initWorld(const std::string& file)
 					jointDef.linearOffset.y = joint["linear offset"]["y"].asFloat()/pixelByMeter;
 					jointDef.angularOffset = joint["angular offset"].asFloat();
 					jointDef.correctionFactor = joint["correction factor"].asFloat();
-					
+
 					getContext().world.CreateJoint(&jointDef);
 				}
 			}
@@ -860,14 +859,14 @@ void GameState::initWorld(const std::string& file)
 					jointDef.motorSpeed = joint["motor speed"].asFloat()/pixelByMeter/pixelByMeter;
 					jointDef.enableMotor = joint["enable motor"].asBool();
 					jointDef.referenceAngle = joint["reference angle"].asFloat() * b2_pi / 180.f;
-					
+
 					//roles
 					const Json::Value roles{joint["roles"]};
 					for(Json::ArrayIndex j{0}; j < roles.size(); ++j)
 						if(roles[j].asString() == "bending power")
 							//Add the role to the definition
 							jointDef.userData = add<unsigned int>(jointDef.userData, static_cast<unsigned int>(JointRole::BendingPower));
-					
+
 					getContext().world.CreateJoint(&jointDef);
 				}
 			}
@@ -891,7 +890,7 @@ void GameState::initWorld(const std::string& file)
 					//Assert that that entities have the givens parts
 					requireValues(root["entities"][entityA]["body"], "entities." + entityA + ".body", {{partA, Json::objectValue}});
 					requireValues(root["entities"][entityB]["body"], "entities." + entityB + ".body", {{partB, Json::objectValue}});
-					
+
 					b2PulleyJointDef jointDef;
 					jointDef.bodyA = m_entities[entityA].component<BodyComponent>()->bodies[partA];
 					jointDef.bodyB = m_entities[entityB].component<BodyComponent>()->bodies[partB];
@@ -906,7 +905,7 @@ void GameState::initWorld(const std::string& file)
 					jointDef.lengthA = joint["length A"].asFloat()/pixelByMeter;
 					jointDef.lengthB = joint["length B"].asFloat()/pixelByMeter;
 					jointDef.ratio = joint["ratio"].asFloat();
-					
+
 					getContext().world.CreateJoint(&jointDef);
 				}
 			}
@@ -930,7 +929,7 @@ void GameState::initWorld(const std::string& file)
 					//Assert that that entities have the givens parts
 					requireValues(root["entities"][entityA]["body"], "entities." + entityA + ".body", {{partA, Json::objectValue}});
 					requireValues(root["entities"][entityB]["body"], "entities." + entityB + ".body", {{partB, Json::objectValue}});
-					
+
 					b2RopeJointDef jointDef;
 					jointDef.bodyA = m_entities[entityA].component<BodyComponent>()->bodies[partA];
 					jointDef.bodyB = m_entities[entityB].component<BodyComponent>()->bodies[partB];
@@ -939,7 +938,7 @@ void GameState::initWorld(const std::string& file)
 					jointDef.localAnchorB.x = joint["local anchor B"]["x"].asFloat()/pixelByMeter;
 					jointDef.localAnchorB.y = joint["local anchor B"]["y"].asFloat()/pixelByMeter;
 					jointDef.maxLength = joint["maximum length"].asFloat()/pixelByMeter;
-					
+
 					getContext().world.CreateJoint(&jointDef);
 				}
 			}
@@ -963,7 +962,7 @@ void GameState::initWorld(const std::string& file)
 					//Assert that that entities have the givens parts
 					requireValues(root["entities"][entityA]["body"], "entities." + entityA + ".body", {{partA, Json::objectValue}});
 					requireValues(root["entities"][entityB]["body"], "entities." + entityB + ".body", {{partB, Json::objectValue}});
-					
+
 					b2WeldJointDef jointDef;
 					jointDef.bodyA = m_entities[entityA].component<BodyComponent>()->bodies[partA];
 					jointDef.bodyB = m_entities[entityB].component<BodyComponent>()->bodies[partB];
@@ -974,7 +973,7 @@ void GameState::initWorld(const std::string& file)
 					jointDef.referenceAngle = joint["reference angle"].asFloat() * b2_pi / 180.f;
 					jointDef.frequencyHz = joint["frequency Hz"].asFloat();
 					jointDef.dampingRatio = joint["damping ratio"].asFloat();
-					
+
 					getContext().world.CreateJoint(&jointDef);
 				}
 			}
@@ -1013,12 +1012,12 @@ void GameState::initWorld(const std::string& file)
 					jointDef.motorSpeed = joint["motor speed"].asFloat()/pixelByMeter;
 					jointDef.frequencyHz = joint["frequency Hz"].asFloat();
 					jointDef.dampingRatio = joint["damping ratio"].asFloat();
-					
+
 					getContext().world.CreateJoint(&jointDef);
 				}
 			}
 		}
-		
+
 		//Load the day sky
 		const std::string dayIdentifier{"day sky"};
 		sf::Vector2f position{1920.f/2.f, 1080.f};
@@ -1029,7 +1028,7 @@ void GameState::initWorld(const std::string& file)
 		sf::Sprite daySpr(texManager.get(dayIdentifier));
 		//Assign origin of the sprite to the center of the day image
 		daySpr.setOrigin(origin*scale);
-		
+
 		//Load the night sky
 		const std::string nightIdentifier{"night sky"};
 		getContext().eventManager.emit<LoadingStateChange>(LangManager::tr("Loading night sky"));
@@ -1038,7 +1037,7 @@ void GameState::initWorld(const std::string& file)
 		sf::Sprite nightSpr(texManager.get(nightIdentifier));
 		//Assign origin of the sprite to the center of the night image
 		nightSpr.setOrigin(origin*scale);
-		
+
 		//Create an entity
 		m_sceneEntities.emplace("sky", getContext().entityManager.create());
 		//Assign the sprites to the entity, and set its z-ordinates to positive infinity
@@ -1058,7 +1057,7 @@ void GameState::initWorld(const std::string& file)
 		double daySeconds{remainder(getContext().systemManager.system<TimeSystem>()->getRealTime().asSeconds(), 600)};
 		skyAnimationsComp->animationsManagers["main"].setProgress("day/night cycle", daySeconds/600.f);
 		skyAnimationsComp->animationsManagers["main"].play("day/night cycle");
-		
+
 		getContext().player.handleInitialInputState(getContext().systemManager.system<PendingChangesSystem>()->commandQueue);
 		getContext().world.SetContactListener(&m_contactListener);
 		requestStackPop();
@@ -1068,18 +1067,25 @@ void GameState::initWorld(const std::string& file)
 	catch(std::runtime_error& e)
 	{
 		std::cerr << e.what() << std::endl;
-		std::cerr << "Failed to load save file \"" << file << "\"." << std::endl;
-		//Clear game content in order to prevent segmentation faults.
-		for(auto& entity : m_entities)
-		{
-			if(entity.second.has_component<BodyComponent>())
-			{
-				for(auto& partBody : entity.second.component<BodyComponent>()->bodies)
-					getContext().world.DestroyBody(partBody.second);
-			}
-			entity.second.destroy();
-		}
-		for(auto& sceneEntity : m_sceneEntities)
-			sceneEntity.second.destroy();
+		std::cerr << "Failed to load save file \"" << file << "\".\n";
+		clear();//Clear game content in order to prevent segmentation faults.
 	}
+}
+
+void GameState::clear()
+{
+    for(auto& entity : m_entities)
+    {
+        if(entity.second.has_component<BodyComponent>())
+            for(auto& partBody : entity.second.component<BodyComponent>()->bodies)
+                getContext().world.DestroyBody(partBody.second);
+
+        if(entity.second.has_component<ScriptsComponent>())
+            for(auto& scriptPair : entity.second.component<ScriptsComponent>()->scripts)
+                scriptPair.second->close();
+
+        entity.second.destroy();
+    }
+    for(auto& sceneEntity : m_sceneEntities)
+        sceneEntity.second.destroy();
 }

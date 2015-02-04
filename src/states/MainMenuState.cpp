@@ -93,7 +93,7 @@ void MainMenuState::playGame()
 {
 	requestStackPop();//The main mainu
 //	requestStackPop();//The empty level
-	requestStackPush<GameState>();
+	requestStackPush<GameState>("resources/levels/S.json");
 	requestStackPush<LoadingState>();
 }
 

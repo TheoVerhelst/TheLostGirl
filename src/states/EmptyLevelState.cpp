@@ -90,10 +90,10 @@ void EmptyLevelState::initWorld(const std::string& file)
 			throw std::runtime_error("\"" + file + "\": " + reader.getFormattedErrorMessages());
 		if(!reader.parse(modelSaveFile, model))
 			throw std::runtime_error("\"resources/levels/model.json\": " + reader.getFormattedErrorMessages());
-		
+
 		//SuperMegaMagic parsing of the save file from the model file
 		parse(root, model, "root", "root");
-		
+
 		{
 			const Json::Value time{root["time"]};
 			getContext().systemManager.system<TimeSystem>()->setTotalTime(sf::seconds(time["date"].asFloat()));
@@ -101,7 +101,7 @@ void EmptyLevelState::initWorld(const std::string& file)
 			getContext().systemManager.system<AnimationsSystem>()->setTimeSpeed(m_timeSpeed);
 		}
 		const Json::Value level{root["level"]};
-		
+
 		//number of plans
 		//must load it now in order to know how much plans can be defined
 		m_numberOfPlans = level["number of plans"].asUInt();
@@ -110,7 +110,7 @@ void EmptyLevelState::initWorld(const std::string& file)
 			throw std::runtime_error("\"level.identifier\" value contains whitespaces.");
 		m_levelIdentifier = identifier;
 		m_referencePlan = level["reference plan"].asFloat();
-		
+
 		//box
 		{
 			const Json::Value levelBox{level["box"]};
@@ -119,7 +119,7 @@ void EmptyLevelState::initWorld(const std::string& file)
 			m_levelRect.top = levelBox["x"].asInt();
 			m_levelRect.left = levelBox["y"].asInt();
 		}
-		
+
 		//level
 		//for each group of replaces
 		for(std::string groupOfReplacesName : level["replaces"].getMemberNames())
@@ -128,21 +128,21 @@ void EmptyLevelState::initWorld(const std::string& file)
 			std::string fileTexture{m_levelIdentifier + "_" + groupOfReplacesName};
 			//Path of the image to load
 			std::string path{paths[getContext().parameters.scaleIndex] + "levels/" + m_levelIdentifier + "/" + fileTexture + ".png"};
-			
+
 			const Json::Value groupOfReplaces{level["replaces"][groupOfReplacesName]};
 			//For each image frame in the group of replaces
 			for(Json::ArrayIndex i{0}; i < groupOfReplaces.size(); i++)
 			{
 				const Json::Value image{groupOfReplaces[i]};
 				const Json::Value origin{image["origin"]};
-				
+
 				//Coordinates of the original image
 				sf::IntRect originRect;
 				originRect.left = static_cast<int>(origin["x"].asInt()*getContext().parameters.scale);
 				originRect.top = static_cast<int>(origin["y"].asInt()*getContext().parameters.scale);
 				originRect.width = static_cast<int>(origin["w"].asInt()*getContext().parameters.scale);
 				originRect.height = static_cast<int>(origin["h"].asInt()*getContext().parameters.scale);
-				
+
 				//Load the texture
 				//Identifier of the texture, in format "level_plan_texture"
 				std::string textureIdentifier{fileTexture + "_" + std::to_string(i)};
@@ -162,7 +162,7 @@ void EmptyLevelState::initWorld(const std::string& file)
 					replaceTransform.y = replace["y"].asFloat()*getContext().parameters.scale;
 					replaceTransform.z = replace["z"].asFloat();
 					replaceTransform.angle = replace["angle"].asFloat();
-					
+
 					//Create an entity
 					m_sceneEntities.emplace(replaceIdentifier, getContext().entityManager.create());
 					//Create a sprite with the loaded texture
@@ -193,7 +193,7 @@ void EmptyLevelState::initWorld(const std::string& file)
 			unsigned int planLength{static_cast<unsigned int>((m_levelRect.width * pow(1.5, m_referencePlan - i))*getContext().parameters.scale)};
 			//Number of chunks to load in this plan
 			unsigned int numberOfChunks{(planLength/chunkSize)+1};
-			
+
 			for(unsigned int j{0}; j < numberOfChunks; ++j)
 			{
 				//Identifier of the entity, in format "level_plan_chunk"
@@ -222,7 +222,7 @@ void EmptyLevelState::initWorld(const std::string& file)
 				getContext().systemManager.update<ScrollingSystem>(sf::Time::Zero.asSeconds());
 			}
 		}
-		
+
 		//Load the day sky
 		const std::string dayIdentifier{"day sky"};
 		sf::Vector2f position{1920.f/2.f, 1080.f};
@@ -233,7 +233,7 @@ void EmptyLevelState::initWorld(const std::string& file)
 		sf::Sprite daySpr(texManager.get(dayIdentifier));
 		//Assign origin of the sprite to the center of the day image
 		daySpr.setOrigin(origin*scale);
-		
+
 		//Load the night sky
 		const std::string nightIdentifier{"night sky"};
 		getContext().eventManager.emit<LoadingStateChange>(LangManager::tr("Loading night sky"));
@@ -242,7 +242,7 @@ void EmptyLevelState::initWorld(const std::string& file)
 		sf::Sprite nightSpr(texManager.get(nightIdentifier));
 		//Assign origin of the sprite to the center of the night image
 		nightSpr.setOrigin(origin*scale);
-		
+
 		//Create an entity
 		m_sceneEntities.emplace("sky", getContext().entityManager.create());
 		//Assign the sprites to the entity, and set its z-ordinates to positive infinity
@@ -265,8 +265,8 @@ void EmptyLevelState::initWorld(const std::string& file)
 	}
 	catch(std::runtime_error& e)
 	{
-		std::cerr << e.what() << std::endl;
-		std::cerr << "Failed to load save file \"" << file << "\"." << std::endl;
+		std::cerr << e.what() << "\n";
+		std::cerr << "Failed to load save file \"" << file << "\".\n";
 		//Clear game content in order to prevent segmentation faults.
 		for(auto& sceneEntity : m_sceneEntities)
 			sceneEntity.second.destroy();

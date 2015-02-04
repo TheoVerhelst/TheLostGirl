@@ -31,7 +31,7 @@ void SpriteSheetAnimation::animate(float progress)
 		float progressCounter{0};
 		for(auto& frame : m_frames)
 		{
-			
+
 			progressCounter += frame.duration;
 			if(progressCounter > progress)
 			{
@@ -46,7 +46,7 @@ void SpriteSheetAnimation::animate(float progress)
 Json::Value SpriteSheetAnimation::serialize() const
 {
 	Json::Value ret;
-	for(size_t i{0}; i < m_frames.size(); ++i)
+	for(unsigned int i{0}; i < m_frames.size(); ++i)
 	{
 		ret[i]["x"] = int(float(m_frames[i].rect.left));
 		ret[i]["y"] = int(float(m_frames[i].rect.top));
@@ -60,7 +60,7 @@ Json::Value SpriteSheetAnimation::serialize() const
 void SpriteSheetAnimation::deserialize(const Json::Value& value)
 {
 	m_frames.clear();
-	for(size_t i{0}; i < value.size(); ++i)
+	for(unsigned int i{0}; i < value.size(); ++i)
 	{
 		sf::IntRect rect;
 		float duration;

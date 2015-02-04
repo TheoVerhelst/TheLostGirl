@@ -12,7 +12,6 @@
 
 using namespace sf;
 using std::cout;
-using std::endl;
 
 FloatRect handleResize(Event::SizeEvent size)
 {
@@ -259,7 +258,7 @@ void parse(Json::Value& value, const Json::Value& model, const std::string& valu
 		//If value is a null value, so if the value do not exists, and if there is a default value
 		if(value == Json::Value(Json::nullValue) and model.isMember("default value"))
 			value = model["default value"];
-		
+
 		//Assert that the value is one of the possible values
 		if(model.isMember("possible values"))
 		{
