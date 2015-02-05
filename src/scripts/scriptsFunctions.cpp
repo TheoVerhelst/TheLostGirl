@@ -25,8 +25,6 @@ entityx::Entity nearestFoe(entityx::Entity self, float pixelByMeter)
 			aabb.lowerBound.Set(-range, -range);
 			aabb.upperBound.Set(range, range);
 			world->QueryAABB(&callback, aabb);
-			std::cout << "range = " <<range<< "\n";
-			std::cout << "self = " << self << "\n";
 			return callback.entity;
 		}
 	}
@@ -44,13 +42,13 @@ float distanceFrom(entityx::Entity self, entityx::Entity target)
 		if(selfBodies.find("main") != selfBodies.end() and targetBodies.find("main") != targetBodies.end())
 		{
 			b2Body* selfBody{selfBodies["main"]};
-			b2Body* targetBody{targetBodies["main"]};
+			b2Fixture* selfFixture{nullptr};
 		}
 	}
 	return 100.f;
 }
 
-int directionTo(entityx::Entity, entityx::Entity)
+int directionTo(entityx::Entity self, entityx::Entity target)
 {
 	return 100;
 }

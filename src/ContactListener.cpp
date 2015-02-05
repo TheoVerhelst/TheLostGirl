@@ -18,8 +18,11 @@ ContactListener::ContactListener(StateStack::Context context):
 void ContactListener::PreSolve(b2Contact* contact, const b2Manifold* oldManifold)
 {
 	contact->SetEnabled(collide(contact, oldManifold));
-	m_fallingListener.PreSolve(contact, oldManifold);
-	m_arrowHitListener.PreSolve(contact, oldManifold);
+	if(contact->IsEnabled())
+	{
+		m_fallingListener.PreSolve(contact, oldManifold);
+		m_arrowHitListener.PreSolve(contact, oldManifold);
+	}
 }
 
 bool ContactListener::collide(b2Contact* contact, const b2Manifold*)
@@ -87,18 +90,30 @@ bool ContactListener::collide(b2Contact* contact, const b2Manifold*)
 
 void ContactListener::BeginContact(b2Contact* contact)
 {
-	m_fallingListener.BeginContact(contact);
-	m_arrowHitListener.BeginContact(contact);
+	contact->SetEnabled(collide(contact, nullptr));
+	if(contact->IsEnabled())
+	{
+		m_fallingListener.BeginContact(contact);
+		m_arrowHitListener.BeginContact(contact);
+	}
 }
 
 void ContactListener::EndContact(b2Contact* contact)
 {
-	m_fallingListener.EndContact(contact);
-	m_arrowHitListener.EndContact(contact);
+	contact->SetEnabled(collide(contact, nullptr));
+	if(contact->IsEnabled())
+	{
+		m_fallingListener.EndContact(contact);
+		m_arrowHitListener.EndContact(contact);
+	}
 }
 
 void ContactListener::PostSolve(b2Contact* contact, const b2ContactImpulse* impulse)
 {
-	m_fallingListener.PostSolve(contact, impulse);
-	m_arrowHitListener.PostSolve(contact, impulse);
+	contact->SetEnabled(collide(contact, nullptr));
+	if(contact->IsEnabled())
+	{
+		m_fallingListener.PostSolve(contact, impulse);
+		m_arrowHitListener.PostSolve(contact, impulse);
+	}
 }

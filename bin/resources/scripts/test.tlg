@@ -1,3 +1,4 @@
-if nearest foe!
+nearest = nearest foe!
+if nearest
 	jump!
 endif

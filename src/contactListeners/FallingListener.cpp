@@ -129,7 +129,7 @@ void FallingListener::PostSolve(b2Contact* contact, const b2ContactImpulse* impu
 		and entityA.has_component<FallComponent>()
 		and impulse->normalImpulses[0] > entityA.component<FallComponent>()->fallingResistance)
 			entityA.component<HealthComponent>()->current -= (impulse->normalImpulses[0] - entityA.component<FallComponent>()->fallingResistance)*10.f;
-	
+
 	if(entityB.has_component<HealthComponent>()
 		and entityB.has_component<FallComponent>()
 		and impulse->normalImpulses[0] > entityB.component<FallComponent>()->fallingResistance)

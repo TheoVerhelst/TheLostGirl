@@ -14,7 +14,7 @@ void StatsSystem::update(entityx::EntityManager& entityManager, entityx::EventMa
 {
 	HealthComponent::Handle healthComponent;
 	StaminaComponent::Handle staminaComponent;
-	
+
 	for(auto entity : entityManager.entities_with_components(healthComponent))
 	{
 		//Damage all entities that fall in the void
@@ -25,7 +25,8 @@ void StatsSystem::update(entityx::EntityManager& entityManager, entityx::EventMa
 				if(pair.second->GetPosition().y > 300)
 				{
 					healthComponent->current = cap(healthComponent->current - 50*dt, 0.f, healthComponent->maximum);
-					eventManager.emit<PlayerHealthChange>(healthComponent->current, healthComponent->current/healthComponent->maximum);
+					if(entity.has_component<CategoryComponent>() and entity.component<CategoryComponent>()->category & Category::Player)
+						eventManager.emit<PlayerHealthChange>(healthComponent->current, healthComponent->current/healthComponent->maximum);
 					break;
 				}
 			}
@@ -34,10 +35,11 @@ void StatsSystem::update(entityx::EntityManager& entityManager, entityx::EventMa
 		if(healthComponent->current < healthComponent->maximum)
 		{
 			healthComponent->current = cap(healthComponent->current + healthComponent->regeneration*dt, 0.f, healthComponent->maximum);
-			eventManager.emit<PlayerHealthChange>(healthComponent->current, healthComponent->current/healthComponent->maximum);
+			if(entity.has_component<CategoryComponent>() and entity.component<CategoryComponent>()->category & Category::Player)
+				eventManager.emit<PlayerHealthChange>(healthComponent->current, healthComponent->current/healthComponent->maximum);
 		}
 	}
-	
+
 	for(auto entity : entityManager.entities_with_components(staminaComponent))
 	{
 		//Substract stamina if the entity bend his bow
@@ -45,15 +47,18 @@ void StatsSystem::update(entityx::EntityManager& entityManager, entityx::EventMa
 		{
 			float oldStamina{staminaComponent->current};
 			staminaComponent->current = cap(staminaComponent->current - entity.component<BowComponent>()->power*dt*3/100.f, 0.f, staminaComponent->maximum);
-			if(staminaComponent->current < oldStamina)
+			if(staminaComponent->current < oldStamina
+				and entity.has_component<CategoryComponent>()
+				and entity.component<CategoryComponent>()->category & Category::Player)
 				eventManager.emit<PlayerStaminaChange>(staminaComponent->current, staminaComponent->current/staminaComponent->maximum);
 		}
-		
+
 		//Regen stamina
 		if(staminaComponent->current < staminaComponent->maximum)
 		{
 			staminaComponent->current = cap(staminaComponent->current + staminaComponent->regeneration*dt, 0.f, staminaComponent->maximum);
-			eventManager.emit<PlayerStaminaChange>(staminaComponent->current, staminaComponent->current/staminaComponent->maximum);
+			if(entity.has_component<CategoryComponent>() and entity.component<CategoryComponent>()->category & Category::Player)
+				eventManager.emit<PlayerStaminaChange>(staminaComponent->current, staminaComponent->current/staminaComponent->maximum);
 		}
 	}
 }

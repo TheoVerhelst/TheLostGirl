@@ -1,5 +1,5 @@
 {
-   "enable bloom" : true,
+   "enable bloom" : false,
    "lang" : "EN",
    "resolution" : 576,
    "window size" : {
