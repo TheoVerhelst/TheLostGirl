@@ -754,7 +754,7 @@
                                                 "children":
                                                 {
                                                     "type" : "string",
-                                                    "possible values" : ["foot sensor"]
+                                                    "possible values" : ["foot sensor", "main"]
                                                 }
                                             }
                                         ]

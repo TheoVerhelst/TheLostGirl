@@ -17,8 +17,8 @@ class ScriptsSystem : public entityx::System<ScriptsSystem>
 {
 	public:
 		/// Default constructor.
-		/// \param commandQueue Queue where push commands.
-		ScriptsSystem(std::queue<Command>& commandQueue);
+	    /// \param context The current context of the application.
+		ScriptsSystem(StateStack::Context context);
 
 		/// System's update function.
 		/// \param es Entity manager.
@@ -27,7 +27,7 @@ class ScriptsSystem : public entityx::System<ScriptsSystem>
 		void update(entityx::EntityManager &es, entityx::EventManager &events, double dt) override;
 
 	private:
-		std::queue<Command>& m_commandQueue;
+		StateStack::Context m_context;///< The current context of the application.
 };
 
 #endif//SCRIPTSSYSTEM_H

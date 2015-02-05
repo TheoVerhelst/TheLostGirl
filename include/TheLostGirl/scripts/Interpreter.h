@@ -7,6 +7,7 @@
 #include <boost/variant/get.hpp>
 #include <boost/variant/variant.hpp>
 #include <entityx/Entity.h>
+#include <TheLostGirl/StateStack.h>
 
 //Forward declarations
 struct Command;
@@ -19,7 +20,9 @@ class Interpreter
 	public:
 	    /// Constructor.
 	    /// \param file Stream to the script to execute.
-		Interpreter(std::ifstream& file, entityx::Entity entity, std::queue<Command>& commandQueue);
+	    /// \param entity Entity on wich apply the sript.
+	    /// \param context The current context of the application.
+		Interpreter(std::ifstream& file, entityx::Entity entity, StateStack::Context context);
 
 		/// Execute the given script.
 		void interpret();
@@ -49,10 +52,10 @@ class Interpreter
 		template <typename T>
 		T convert(Var var);
 
-		std::ifstream& m_file;              ///< Stream to the script.
-		std::map<std::string, Var> m_vars;  ///< Set of registered variables.
-		entityx::Entity m_entity;		    ///< Entity that run the script.
-		std::queue<Command>& m_commandQueue;///< List of all commands that need to be executed.
+		std::ifstream& m_file;            ///< Stream to the script.
+		std::map<std::string, Var> m_vars;///< Set of registered variables.
+		entityx::Entity m_entity;		  ///< Entity that run the script.
+		StateStack::Context m_context;    ///< The current context of the application.
 
 };
 

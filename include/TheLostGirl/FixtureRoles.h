@@ -7,7 +7,8 @@
 enum class FixtureRole : unsigned int
 {
 	None  = 0,      ///< Role that correspond to none role.
-	Foot  = 1 << 0, ///< Role for the fixture that observes the collisions with the ground.
+	Foot  = 1 << 0, ///< Role for fixtures that observes the collisions with the ground.
+	Main  = 1 << 1  ///< Role for fixtures that are the main fixture of a body (e.g. to compute distance between entities).
 };
 
 /// Check wheter the given fixture has all its roles flags that match with the given flags.

@@ -530,7 +530,7 @@ void GameState::initWorld(const std::string& file)
 				if(entity.isMember("scripts"))
 					deserialize(entity["scripts"], m_entities[entityName].assign<ScriptsComponent>());
 				if(entity.isMember("detection range"))
-					deserialize(entity["detection"], m_entities[entityName].assign<DetectionRangeComponent>());
+					deserialize(entity["detection range"], m_entities[entityName].assign<DetectionRangeComponent>());
 			}
 		}
 

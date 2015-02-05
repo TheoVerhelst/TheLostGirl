@@ -123,6 +123,8 @@ Json::Value serialize(entityx::ComponentHandle<BodyComponent> component, float p
 			//If the fixture is a foot sensor
 			if(fixtureHasRole(fix, FixtureRole::Foot))
 				fixtureObj["roles"].append("foot sensor");
+			if(fixtureHasRole(fix, FixtureRole::Main))
+				fixtureObj["roles"].append("main");
 			//Add the fixture in the right array
 			switch(type)
 			{
@@ -538,6 +540,9 @@ void deserialize(const Json::Value& value, entityx::ComponentHandle<BodyComponen
 						if(roles[j].asString() == "foot sensor")
 							//Add the role to the data
 							entityFixtureDef.userData = add<unsigned int>(entityFixtureDef.userData, static_cast<unsigned int>(FixtureRole::Foot));
+						else if(roles[j].asString() == "main")
+							//Add the role to the data
+							entityFixtureDef.userData = add<unsigned int>(entityFixtureDef.userData, static_cast<unsigned int>(FixtureRole::Main));
 
 					entityBodyComponent->CreateFixture(&entityFixtureDef);
 				}

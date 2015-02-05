@@ -3,16 +3,20 @@
 #include <regex>
 #include <algorithm>
 
+#include <entityx/System.h>
+
 #include <TheLostGirl/scripts/scriptsFunctions.h>
+#include <TheLostGirl/Parameters.h>
+#include <TheLostGirl/systems/PendingChangesSystem.h>
 
 #include <TheLostGirl/scripts/Interpreter.h>
 
 using namespace std;
 
-Interpreter::Interpreter(ifstream& file, entityx::Entity entity, std::queue<Command>& commandQueue):
+Interpreter::Interpreter(ifstream& file, entityx::Entity entity, StateStack::Context context):
     m_file(file),
     m_entity(entity),
-    m_commandQueue(commandQueue)
+    m_context(context)
 {}
 
 void Interpreter::interpret()
@@ -168,7 +172,7 @@ Interpreter::Var Interpreter::compute(vector<string> tokens)
 		{
 			if(tokens[0] == "nearest foe" && check_args(arguments, {}))
 			{
-				return nearestFoe(m_entity);
+				return nearestFoe(m_entity, m_context.parameters.pixelByMeter);
 			}
 			else if(tokens[0] == "attack" && check_args(arguments, {3}))
 			{
@@ -180,7 +184,7 @@ Interpreter::Var Interpreter::compute(vector<string> tokens)
 			}
 			else if(tokens[0] == "jump" && check_args(arguments, {}))
 			{
-				return jump(m_entity, m_commandQueue);
+				return jump(m_entity, m_context.systemManager.system<PendingChangesSystem>()->commandQueue);
 			}
 			else if((tokens[0]=="print" or tokens[0]=="out"))
 			{
