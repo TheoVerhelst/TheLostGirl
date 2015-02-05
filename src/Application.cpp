@@ -131,7 +131,6 @@ int Application::init()
 		srand(static_cast<unsigned int>(time(nullptr)));//Init random numbers
 		registerSystems();
 		m_window.setKeyRepeatEnabled(false);//Desactive the key repeating
-		m_window.setFramerateLimit(60);//Limit the FPS
 		LangManager::setLang(m_parameters.lang);//Set and load the lang
 		m_fontManager.load("menu", m_parameters.textFont);//Load the GUI font
 		m_fontManager.load("debug", "resources/fonts/FreeMonoBold.ttf");//Load the debug font

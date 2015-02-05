@@ -174,6 +174,10 @@ Interpreter::Var Interpreter::compute(vector<string> tokens)
 			{
 				return nearestFoe(m_entity, m_context.parameters.pixelByMeter);
 			}
+			else if(tokens[0] == "distance from" && check_args(arguments, {3}))
+			{
+				return distanceFrom(m_entity, boost::get<entityx::Entity>(arguments[0]));
+			}
 			else if(tokens[0] == "attack" && check_args(arguments, {3}))
 			{
 				return attack(m_entity, boost::get<entityx::Entity>(arguments[0]));

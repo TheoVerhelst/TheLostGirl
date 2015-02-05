@@ -16,10 +16,10 @@ float distanceFrom(entityx::Entity self, entityx::Entity target);
 int directionTo(entityx::Entity self, entityx::Entity target);
 int attack(entityx::Entity self, entityx::Entity target);
 
-class NearestEntityQueryCallback : public b2QueryCallback
+class NearestFoeQueryCallback : public b2QueryCallback
 {
 	public:
-		NearestEntityQueryCallback(entityx::Entity);
+		NearestFoeQueryCallback(entityx::Entity);
 		bool ReportFixture(b2Fixture* fixture);
 		entityx::Entity entity;
 

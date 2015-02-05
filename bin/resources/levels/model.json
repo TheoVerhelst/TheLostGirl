@@ -250,7 +250,7 @@
                         "children":
                         {
                             "type" : "string",
-                            "possible values" : ["player", "scene", "actor"]
+                            "possible values" : ["player", "scene", "actor", "passive", "aggressive"]
                         }
                     },
                     {

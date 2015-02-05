@@ -233,6 +233,10 @@ Json::Value serialize(entityx::ComponentHandle<CategoryComponent> component)
 		ret.append("scene");
 	if(component->category & Category::Actor)
 		ret.append("actor");
+	if(component->category & Category::Passive)
+		ret.append("passive");
+	if(component->category & Category::Aggressive)
+		ret.append("aggressive");
 	return ret;
 }
 
@@ -437,10 +441,14 @@ void deserialize(const Json::Value& value, entityx::ComponentHandle<BodyComponen
 					entityFixtureDef.isSensor = fixture["is sensor"].asBool();
 					const Json::Value roles{fixture["roles"]};
 					for(Json::ArrayIndex j{0}; j < roles.size(); ++j)
+					{
 						if(roles[j].asString() == "foot sensor")
 							//Add the role to the data
 							entityFixtureDef.userData = add<unsigned int>(entityFixtureDef.userData, static_cast<unsigned int>(FixtureRole::Foot));
-
+						else if(roles[j].asString() == "main")
+							//Add the role to the data
+							entityFixtureDef.userData = add<unsigned int>(entityFixtureDef.userData, static_cast<unsigned int>(FixtureRole::Main));
+					}
 					entityBodyComponent->CreateFixture(&entityFixtureDef);
 				}
 			}
@@ -488,9 +496,14 @@ void deserialize(const Json::Value& value, entityx::ComponentHandle<BodyComponen
 					//roles
 					const Json::Value roles{body["roles"]};
 					for(Json::ArrayIndex j{0}; j < roles.size(); ++j)
+					{
 						if(roles[j].asString() == "foot sensor")
 							//Add the role to the data
 							entityFixtureDef.userData = add<unsigned int>(entityFixtureDef.userData, static_cast<unsigned int>(FixtureRole::Foot));
+						else if(roles[j].asString() == "main")
+							//Add the role to the data
+							entityFixtureDef.userData = add<unsigned int>(entityFixtureDef.userData, static_cast<unsigned int>(FixtureRole::Main));
+					}
 
 					entityBodyComponent->CreateFixture(&entityFixtureDef);
 				}
@@ -537,12 +550,14 @@ void deserialize(const Json::Value& value, entityx::ComponentHandle<BodyComponen
 					entityFixtureDef.isSensor = fixture["is sensor"].asBool();
 					const Json::Value roles{body["roles"]};
 					for(Json::ArrayIndex j{0}; j < roles.size(); ++j)
+					{
 						if(roles[j].asString() == "foot sensor")
 							//Add the role to the data
 							entityFixtureDef.userData = add<unsigned int>(entityFixtureDef.userData, static_cast<unsigned int>(FixtureRole::Foot));
 						else if(roles[j].asString() == "main")
 							//Add the role to the data
 							entityFixtureDef.userData = add<unsigned int>(entityFixtureDef.userData, static_cast<unsigned int>(FixtureRole::Main));
+					}
 
 					entityBodyComponent->CreateFixture(&entityFixtureDef);
 				}
@@ -569,10 +584,14 @@ void deserialize(const Json::Value& value, entityx::ComponentHandle<BodyComponen
 					entityFixtureDef.isSensor = fixture["is sensor"].asBool();
 					const Json::Value roles{body["roles"]};
 					for(Json::ArrayIndex j{0}; j < roles.size(); ++j)
+					{
 						if(roles[j].asString() == "foot sensor")
 							//Add the role to the data
 							entityFixtureDef.userData = add<unsigned int>(entityFixtureDef.userData, static_cast<unsigned int>(FixtureRole::Foot));
-
+						else if(roles[j].asString() == "main")
+							//Add the role to the data
+							entityFixtureDef.userData = add<unsigned int>(entityFixtureDef.userData, static_cast<unsigned int>(FixtureRole::Main));
+					}
 					entityBodyComponent->CreateFixture(&entityFixtureDef);
 				}
 			}
@@ -659,6 +678,10 @@ void deserialize(const Json::Value& value, entityx::ComponentHandle<CategoryComp
 			category |= Category::Scene;
 		else if(value[i] == "actor")
 			category |= Category::Actor;
+		else if(value[i] == "passive")
+			category |= Category::Passive;
+		else if(value[i] == "aggressive")
+			category |= Category::Aggressive;
 	}
 	component->category = category;
 }
