@@ -23,7 +23,7 @@ void PendingChangesSystem::update(entityx::EntityManager& entityManager, entityx
 		Command& command(commandQueue.front());
 		CategoryComponent::Handle categoryComponent;
 		if(command.targetIsSpecific)
-			command.action(*(command.entity), dt);
+			command.action(command.entity, dt);
 		else
 			for(auto entity : entityManager.entities_with_components(categoryComponent))
 				//On vérifie si l'entité correspond à la commande, si oui on fait l'action

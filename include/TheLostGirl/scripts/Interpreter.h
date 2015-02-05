@@ -2,12 +2,14 @@
 #include <vector>
 #include <map>
 #include <fstream>
-#include <typeindex>
-#include <functional>
+#include <queue>
 
 #include <boost/variant/get.hpp>
 #include <boost/variant/variant.hpp>
 #include <entityx/Entity.h>
+
+//Forward declarations
+struct Command;
 
 /// Interpreter of The Lost Girl scripts.
 /// Construct it with the filestream to execute,
@@ -17,7 +19,7 @@ class Interpreter
 	public:
 	    /// Constructor.
 	    /// \param file Stream to the script to execute.
-		Interpreter(std::ifstream& file, entityx::Entity entity);
+		Interpreter(std::ifstream& file, entityx::Entity entity, std::queue<Command>& commandQueue);
 
 		/// Execute the given script.
 		void interpret();
@@ -47,9 +49,11 @@ class Interpreter
 		template <typename T>
 		T convert(Var var);
 
-		std::ifstream& m_file;            ///< Stream to the script.
-		std::map<std::string, Var> m_vars;///< Set of registered variables.
-		entityx::Entity m_entity;		  ///< Entity that run the script.
+		std::ifstream& m_file;              ///< Stream to the script.
+		std::map<std::string, Var> m_vars;  ///< Set of registered variables.
+		entityx::Entity m_entity;		    ///< Entity that run the script.
+		std::queue<Command>& m_commandQueue;///< List of all commands that need to be executed.
+
 };
 
 template <typename T>

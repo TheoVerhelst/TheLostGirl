@@ -228,5 +228,5 @@ void Application::registerSystems()
 	m_systemManager.add<ScrollingSystem>(m_window, m_parameters);
 	m_systemManager.add<TimeSystem>();
 	m_systemManager.add<StatsSystem>();
-	m_systemManager.add<ScriptsSystem>();
+	m_systemManager.add<ScriptsSystem>(m_systemManager.system<PendingChangesSystem>()->commandQueue);
 }

@@ -5,7 +5,8 @@
 
 #include <TheLostGirl/systems/ScriptsSystem.h>
 
-ScriptsSystem::ScriptsSystem()
+ScriptsSystem::ScriptsSystem(std::queue<Command>& commandQueue):
+	m_commandQueue(commandQueue)
 {
 }
 
@@ -19,7 +20,7 @@ void ScriptsSystem::update(entityx::EntityManager& entityManager, entityx::Event
 			//Rewind the file
 			scriptPair.second->clear();
 			scriptPair.second->seekg(0);
-			Interpreter interpreter(*scriptPair.second, entity);
+			Interpreter interpreter(*scriptPair.second, entity, m_commandQueue);
 		    interpreter.interpret();
 		}
 	}

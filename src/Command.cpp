@@ -5,7 +5,16 @@
 #include <TheLostGirl/Command.h>
 
 Command::Command():
-	action(),
-	category(Category::None)
+	targetIsSpecific(false)
 {
+}
+
+Command::Command(const Command& other):
+	action(other.action),
+	targetIsSpecific(other.targetIsSpecific)
+{
+	if(targetIsSpecific)
+		entity = other.entity;
+	else
+		category = other.category;
 }

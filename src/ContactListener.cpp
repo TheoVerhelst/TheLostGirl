@@ -34,13 +34,20 @@ bool ContactListener::collide(b2Contact* contact, const b2Manifold*)
 	b2Fixture* fixtureB{contact->GetFixtureB()};
 	b2Body* bodyB{fixtureB->GetBody()};
 	entityx::Entity entityB{*static_cast<entityx::Entity*>(bodyB->GetUserData())};
-	
+
 	//Wrap all checks into this function allow to stop next checks when any of the checks is verified.
-	
+
 	//The contact do not occurs if both entities are the same one
 	if(entityA == entityB)
 		return false;
-	
+
+	//The contact do not occurs if both entities are actors
+	if(entityA.has_component<CategoryComponent>()
+		and entityA.component<CategoryComponent>()->category & Category::Actor
+		and entityB.has_component<CategoryComponent>()
+		and entityB.component<CategoryComponent>()->category & Category::Actor)
+		return false;
+
 	//If the two entities are not in the same plan
 	if(entityA.has_component<TransformComponent>() and entityB.has_component<TransformComponent>())
 	{
@@ -49,34 +56,34 @@ bool ContactListener::collide(b2Contact* contact, const b2Manifold*)
 		auto it = std::find_if(bodiesA->bodies.begin(), bodiesA->bodies.end(), [&](const std::pair<std::string, b2Body*>& pair){return pair.second == bodyA;});
 		std::string bodyNameA{it->first};
 		long int zA{lround(trsfA->transforms[bodyNameA].z)};//Nearest rounding of the plan of the body/sprite A
-		
+
 		BodyComponent::Handle bodiesB{entityB.component<BodyComponent>()};
 		TransformComponent::Handle trsfB{entityB.component<TransformComponent>()};
 		it = std::find_if(bodiesB->bodies.begin(), bodiesB->bodies.end(), [&](const std::pair<std::string, b2Body*>& pair){return pair.second == bodyB;});
 		std::string bodyNameB{it->first};
 		long int zB{lround(trsfB->transforms[bodyNameB].z)};//Nearest rounding of the plan of the body/sprite B
-		
+
 		//The contact do not occurs if the entities are not in the same plan
 		if(zA != zB)
 			return false;
 	}
-	
+
 	//The contact do not occurs if both entities are arrows
 	if(entityA.has_component<ArrowComponent>() and entityB.has_component<ArrowComponent>())
 		return false;
-	
+
 	//The contact do not occurs if the entity A is an arrow wich is not fired
 	if(entityA.has_component<ArrowComponent>() and entityA.component<ArrowComponent>()->state != ArrowComponent::Fired)
 			return false;
-		
+
 	//The contact do not occurs if the entity B is an arrow wich is not fired
 	if(entityB.has_component<ArrowComponent>() and entityB.component<ArrowComponent>()->state != ArrowComponent::Fired)
 		return false;
-	
+
 	//If none of the previous case is verified, then the collision occurs
 	return true;
 }
-	
+
 
 void ContactListener::BeginContact(b2Contact* contact)
 {

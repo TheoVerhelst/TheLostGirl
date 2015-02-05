@@ -9,9 +9,10 @@
 
 using namespace std;
 
-Interpreter::Interpreter(ifstream& file, entityx::Entity entity):
+Interpreter::Interpreter(ifstream& file, entityx::Entity entity, std::queue<Command>& commandQueue):
     m_file(file),
-    m_entity(entity)
+    m_entity(entity),
+    m_commandQueue(commandQueue)
 {}
 
 void Interpreter::interpret()
@@ -67,6 +68,8 @@ void Interpreter::interpret()
 
 vector<string> Interpreter::tokenize(string line)
 {
+	if(line.find_first_not_of("\n\t ") != std::string::npos)
+		line = line.substr(line.find_first_not_of("\n\t "));//Remove trailing blank character
 	string name("[[:alnum:]][\\w\\s]*\\w|\\w");
 	string number("\\d+|\\d*\\.\\d*");
 	string cmp("<=|>=|==|<|>");
@@ -165,11 +168,19 @@ Interpreter::Var Interpreter::compute(vector<string> tokens)
 		{
 			if(tokens[0] == "nearest foe" && check_args(arguments, {}))
 			{
-				nearestFoe(m_entity);
+				return nearestFoe(m_entity);
 			}
 			else if(tokens[0] == "attack" && check_args(arguments, {3}))
 			{
-				attack(m_entity, boost::get<entityx::Entity>(arguments[0]));
+				return attack(m_entity, boost::get<entityx::Entity>(arguments[0]));
+			}
+			else if(tokens[0] == "can jump" && check_args(arguments, {}))
+			{
+				return canJump(m_entity);
+			}
+			else if(tokens[0] == "jump" && check_args(arguments, {}))
+			{
+				return jump(m_entity, m_commandQueue);
 			}
 			else if((tokens[0]=="print" or tokens[0]=="out"))
 			{
@@ -178,13 +189,13 @@ Interpreter::Var Interpreter::compute(vector<string> tokens)
 				else if(arguments.size() == 0)
 					throw runtime_error("too few arguments.");
 				if(arguments[0].which() == 0)
-					print(boost::get<int>(arguments[0]));
+					return print(boost::get<int>(arguments[0]));
 				else if(arguments[0].which() == 1)
-					print(boost::get<float>(arguments[0]));
+					return print(boost::get<float>(arguments[0]));
 				else if(arguments[0].which() == 2)
 					print(boost::get<bool>(arguments[0]));
 				else if(arguments[0].which() == 3)
-					print(boost::get<entityx::Entity>(arguments[0]));
+					return print(boost::get<entityx::Entity>(arguments[0]));
 			}
 			else
 				throw runtime_error("unrecognized function name.");
