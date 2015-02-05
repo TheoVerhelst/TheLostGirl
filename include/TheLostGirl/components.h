@@ -201,4 +201,10 @@ struct ScriptsComponent : public entityx::Component<ScriptsComponent>
     std::map<std::string, std::ifstream*> scripts;///< File streams to each script that the entity have to execute.
 };
 
+/// Component that define the behavior of aggressive entities.
+struct DetectionRangeComponent : public entityx::Component<DetectionRangeComponent>
+{
+	float detectionRange;///< Distance from wich the entitie will detect and attack foes.
+};
+
 #endif //COMPONENTS_H

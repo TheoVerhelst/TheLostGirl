@@ -463,16 +463,21 @@
                         "required" : false,
                         "children":
                         [
-						{
+							{
                                 "name" : "scripts",
                                 "type" : "array",
                                 "required" : true,
-                                "children" :
-                                {
-                                    "type" : "string"
-                                }
+								"children" :
+								{
+									"type" : "string"
+								}
                             }
                         ]
+                    },
+                    {
+						"name" : "detection range",
+						"type" : "real",
+						"required" : false
                     },
                     {
                         "name" : "sprites",

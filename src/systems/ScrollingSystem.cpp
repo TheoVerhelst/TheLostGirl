@@ -44,13 +44,13 @@ void ScrollingSystem::update(entityx::EntityManager& entityManager, entityx::Eve
 				//Cap the position between min and max
 				playerPosition.x = cap(playerPosition.x, xmin, xmax);
 				playerPosition.y = cap(playerPosition.y, ymin, ymax);
-				
+
 				//Assign the position to the view
 				view.setCenter(playerPosition*m_parameters.scale);
 				m_window.setView(view);
-				
+
 				//Assign transform on every sprite
-				for(auto entityToOffset : entityManager.entities_with_components(spriteComponent, transformComponent))
+				for(auto entity : entityManager.entities_with_components(spriteComponent, transformComponent))
 				{
 					//The x-ordinate of the left border of the screen.
 					float xScreen{playerPosition.x - xmin};

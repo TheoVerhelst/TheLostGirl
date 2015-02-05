@@ -10,6 +10,10 @@
 
 #include <TheLostGirl/serialization.h>
 
+  //////////             ///////////
+ ////////// Serializing ///////////
+//////////             ///////////
+
 Json::Value serialize(entityx::ComponentHandle<BodyComponent> component, float pixelByMeter)
 {
 	Json::Value ret;
@@ -351,6 +355,14 @@ Json::Value serialize(entityx::ComponentHandle<ScriptsComponent> component)
         ret["scripts"].append(pair.first);
     return ret;
 }
+
+Json::Value serialize(entityx::ComponentHandle<DetectionRangeComponent> component)
+{
+	return component->detectionRange;
+}
+  //////////               //////////
+ ////////// Deserializing //////////
+//////////               //////////
 
 void deserialize(const Json::Value& value, entityx::ComponentHandle<BodyComponent> component, entityx::ComponentHandle<TransformComponent> transformComponent, b2World& world, float pixelByMeter)
 {
@@ -732,4 +744,9 @@ void deserialize(const Json::Value& value, entityx::ComponentHandle<ScriptsCompo
 	for(Json::ArrayIndex i{0}; i < value["scripts"].size(); ++i)
         component->scripts.emplace(value["scripts"][i].asString(),
                                    new std::ifstream("resources/scripts/"+value["scripts"][i].asString()));
+}
+
+void deserialize(const Json::Value& value, entityx::ComponentHandle<DetectionRangeComponent> component)
+{
+	component->detectionRange = value.asFloat();
 }

@@ -101,51 +101,38 @@ void GameState::saveWorld(const std::string& file)
 		{
 			if(entity.second.has_component<BodyComponent>())
 				root["entities"][entity.first]["body"] = serialize(entity.second.component<BodyComponent>(), pixelByMeter);
-
 			if(entity.second.has_component<SpriteComponent>())
 				root["entities"][entity.first]["sprites"] = serialize(entity.second.component<SpriteComponent>(), getContext().textureManager);
-
 			if(entity.second.has_component<TransformComponent>())
 				root["entities"][entity.first]["transforms"] = serialize(entity.second.component<TransformComponent>());
-
 			if(entity.second.has_component<InventoryComponent>())
 				root["entities"][entity.first]["inventory"] = serialize(entity.second.component<InventoryComponent>(), m_entities);
-
 			if(entity.second.has_component<BowComponent>())
 				root["entities"][entity.first]["bow"] = serialize(entity.second.component<BowComponent>(), m_entities);
-
 			if(entity.second.has_component<AnimationsComponent<SpriteSheetAnimation>>())
 				root["entities"][entity.first]["spritesheet animations"] = serialize(entity.second.component<AnimationsComponent<SpriteSheetAnimation>>());
-
 			if(entity.second.has_component<DirectionComponent>())
 				root["entities"][entity.first]["direction"] = serialize(entity.second.component<DirectionComponent>());
-
 			if(entity.second.has_component<CategoryComponent>())
 				root["entities"][entity.first]["categories"] = serialize(entity.second.component<CategoryComponent>());
-
 			if(entity.second.has_component<FallComponent>())
 				root["entities"][entity.first]["fall"] = serialize(entity.second.component<FallComponent>());
-
 			if(entity.second.has_component<WalkComponent>())
 				root["entities"][entity.first]["walk"] = serialize(entity.second.component<WalkComponent>());
-
 			if(entity.second.has_component<JumpComponent>())
 				root["entities"][entity.first]["jump"] = serialize(entity.second.component<JumpComponent>());
-
 			if(entity.second.has_component<HealthComponent>())
 				root["entities"][entity.first]["health"] = serialize(entity.second.component<HealthComponent>());
-
 			if(entity.second.has_component<StaminaComponent>())
 				root["entities"][entity.first]["stamina"] = serialize(entity.second.component<StaminaComponent>());
-
 			if(entity.second.has_component<ArrowComponent>())
 				root["entities"][entity.first]["arrow"] = serialize(entity.second.component<ArrowComponent>());
-
 			if(entity.second.has_component<HardnessComponent>())
 				root["entities"][entity.first]["hardness"] = serialize(entity.second.component<HardnessComponent>());
-
 			if(entity.second.has_component<ScriptsComponent>())
 				root["entities"][entity.first]["scripts"] = serialize(entity.second.component<ScriptsComponent>());
+			if(entity.second.has_component<DetectionRangeComponent>())
+				root["entities"][entity.first]["detection range"] = serialize(entity.second.component<DetectionRangeComponent>());
 		}
 
 		//time
@@ -542,6 +529,8 @@ void GameState::initWorld(const std::string& file)
 					deserialize(entity["hardness"], m_entities[entityName].assign<HardnessComponent>());
 				if(entity.isMember("scripts"))
 					deserialize(entity["scripts"], m_entities[entityName].assign<ScriptsComponent>());
+				if(entity.isMember("detection range"))
+					deserialize(entity["detection"], m_entities[entityName].assign<DetectionRangeComponent>());
 			}
 		}
 
