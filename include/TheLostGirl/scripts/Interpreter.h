@@ -1,78 +1,80 @@
-#include <string>
-#include <vector>
-#include <map>
-#include <fstream>
-#include <queue>
+#ifndef INTERPRETER_HPP
+#define INTERPRETER_HPP
 
-#include <boost/variant/get.hpp>
-#include <boost/variant/variant.hpp>
+#include <map>
+#include <regex>
+#include <fstream>
+
+#include <boost/variant.hpp>
 #include <entityx/Entity.h>
+
+#include <TheLostGirl/scripts/Tree.h>
 #include <TheLostGirl/StateStack.h>
 
-//Forward declarations
-struct Command;
+typedef boost::variant<bool, int, float, std::string, entityx::Entity> Data;
+typedef std::vector<std::string> VecStr;
 
-/// Interpreter of The Lost Girl scripts.
-/// Construct it with the filestream to execute,
-/// and run interpret().
 class Interpreter
 {
 	public:
-	    /// Constructor.
-	    /// \param file Stream to the script to execute.
-	    /// \param entity Entity on wich apply the sript.
-	    /// \param context The current context of the application.
 		Interpreter(std::ifstream& file, entityx::Entity entity, StateStack::Context context);
-
-		/// Execute the given script.
 		void interpret();
 
 	private:
-	    /// Variable in scripts, can have up to 4 differents types.
-		typedef boost::variant<int, float, bool, entityx::Entity> Var;
-
-        /// Divides in tokens the given line.
-        /// \param line The line to tokenize.
-        /// \return An array of tokens.
-		std::vector<std::string> tokenize(std::string line);
-
-		/// Calculates the value.
-		/// \param tokens The array of tokens to compute.
-		/// \return A variant value.
-		Var compute(std::vector<std::string> tokens);
-
-        /// Seek the script to the next else or the next endif.
-        /// \param jump_to_else True if the function must seek to the next else,
-        /// false if the function must seek to the next endif.
-		void jump_to_endif(bool jump_to_else = false);
-
-		/// Convert the variable to a concrete type.
-		/// \param var Variable to convert.
-		/// \return The converted value.
-		template <typename T>
-		T convert(Var var);
-
-		std::ifstream& m_file;            ///< Stream to the script.
-		std::map<std::string, Var> m_vars;///< Set of registered variables.
-		entityx::Entity m_entity;		  ///< Entity that run the script.
+		struct Function
+		{
+			short int numberOperands;
+			std::function<Data(const std::vector<Data>&, StateStack::Context)> pointer;
+		};
+		std::ifstream& m_file;
+		const std::map<std::string, int> m_precedence;
+		const std::map<std::string, Function> m_functions;
+		std::map<std::string, Data> m_vars;
 		StateStack::Context m_context;    ///< The current context of the application.
 
+		const std::string identifier;
+		const std::string number_literal;
+		const std::string boolean_literal;
+		const std::string string_literal;
+		const std::string operators;
+		const std::string other;
+		const std::string reserved_names;
+
+		const std::regex identifier_regex;
+		const std::regex number_literal_regex;
+		const std::regex boolean_literal_regex;
+		const std::regex string_literal_regex;
+		const std::regex reserved_names_regex;
+		const std::regex token_regex;
+		const std::regex value_regex;
+		const std::regex space_regex;
+
+		void interpretBlock(VecStr::iterator from, VecStr::iterator to, VecStr::iterator begin);
+		Tree<Data>::Ptr convert(const VecStr& tokens);
+		std::vector<std::string> tokenize(std::string line) const;
+		Data evaluateToken(const std::string& token) const;
+		Data evaluateTree(const Tree<Data>::Ptr expression) const;
+		size_t parenthesis(const VecStr& tokens) const;
 };
 
 template <typename T>
-T Interpreter::convert(Var var)
+void cast(Data& var)
 {
-    if(var.which() == 3)
-    {
-        if(typeid(T) != typeid(bool))
-            throw std::runtime_error("entity type cannot be converted to anything else than boolean.");
-        else
-            return (T)boost::get<entityx::Entity>(var);
-    }
-	else if(var.which() == 2)
-		return (T)boost::get<bool>(var);
-	else if(var.which() == 1)
-		return (T)boost::get<float>(var);
-	else
-		return (T)boost::get<int>(var);
 }
+
+template <>
+void cast<bool>(Data& var);
+
+template <>
+void cast<int>(Data& var);
+
+template <>
+void cast<float>(Data& var);
+
+template <>
+void cast<std::string>(Data& var);
+
+template <>
+void cast<entityx::Entity>(Data& var);
+
+#endif// INTERPRETER_HPP

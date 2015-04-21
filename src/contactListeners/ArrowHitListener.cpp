@@ -68,6 +68,7 @@ void ArrowHitListener::PostSolve(b2Contact* contact, const b2ContactImpulse* imp
 				m_context.systemManager.system<PendingChangesSystem>()->jointsToCreate.push(weldJointDef);
 				entityA.component<ArrowComponent>()->state = ArrowComponent::Sticked;
 			}
+			std::cout << "Damage = " << impulse->normalImpulses[0]*entityA.component<ArrowComponent>()->damage << std::endl;
 			if(entityB.has_component<HealthComponent>())
 				entityB.component<HealthComponent>()->current -= impulse->normalImpulses[0]*entityA.component<ArrowComponent>()->damage;
 		}

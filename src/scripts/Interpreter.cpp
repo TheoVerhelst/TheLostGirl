@@ -1,382 +1,514 @@
-#include <iostream>
-#include <stdexcept>
-#include <regex>
 #include <algorithm>
-
-#include <entityx/System.h>
-
-#include <TheLostGirl/scripts/scriptsFunctions.h>
-#include <TheLostGirl/Parameters.h>
-#include <TheLostGirl/systems/PendingChangesSystem.h>
+#include <stack>
 
 #include <TheLostGirl/scripts/Interpreter.h>
+#include <TheLostGirl/scripts/scriptsFunctions.h>
+#include <TheLostGirl/scripts/ScriptError.h>
+#include <TheLostGirl/components.h>
 
-using namespace std;
-
-Interpreter::Interpreter(ifstream& file, entityx::Entity entity, StateStack::Context context):
-    m_file(file),
-    m_entity(entity),
-    m_context(context)
-{}
+Interpreter::Interpreter(std::ifstream& file, entityx::Entity entity, StateStack::Context context):
+	m_file(file),
+	m_precedence{{"or", 1},
+				{"and", 2},
+				{"is", 3},
+				{"==", 3},
+				{"!=", 3},
+				{"<", 4},
+				{"<=", 4},
+				{">", 4},
+				{">=", 4},
+				{"+", 5},
+				{"-", 5},
+				{"*", 6},
+				{"/", 6},
+				{"%", 6},
+				{"!", 1}},
+	m_functions{{"print", {-1, print}},
+				{"<", {2, lowerThanOp}},
+				{">", {2, greaterThanOp}},
+				{"<=", {2, lowerEqualOp}},
+				{">=", {2, greaterEqualOp}},
+				{"==", {2, equalOp}},
+				{"is", {2, equalOp}},
+				{"!=", {2, notEqualOp}},
+				{"and", {2, andOp}},
+				{"or", {2, orOp}},
+				{"+", {2, addOp}},
+				{"-", {2, substractOp}},
+				{"*", {2, multiplyOp}},
+				{"/", {2, divideOp}},
+				{"%", {2, moduloOp}},
+				{"!", {1, notOp}},
+				{"nearest foe", {1, nearestFoe}},
+				{"distance from", {2, distanceFrom}},
+				{"direction to", {2, directionTo}},
+				{"attack", {2, attack}},
+				{"can move", {1, canMove}},
+				{"move", {2, move}},
+				{"stop", {2, stop}},
+				{"can jump", {1, canJump}},
+				{"jump", {1, jump}}},
+	m_vars{{"self", entity},//Add variables so that they will be available in the script
+		{"left", static_cast<int>(Direction::Left)},
+		{"right", static_cast<int>(Direction::Right)},
+		{"top", static_cast<int>(Direction::Top)},
+		{"bottom",static_cast<int>(Direction::Bottom)}},
+	m_context{context},
+	identifier("[[:alnum:]][\\w\\s]*\\w|\\w"),
+	number_literal("\\d+|\\d*\\.\\d*"),
+	boolean_literal("true|false"),
+	string_literal("\"([^\"]|\\\\\")*\"|'([^']|\\\\')*'"),
+	operators("<=|>=|==|!=|<|>|\\+|-|\\*|/|%|\\(|\\)"),
+	other(":|=|!|,"),
+	reserved_names("(if|else if|else|endif|event|and|or|not|is)"
+			"[\\s\\b]+"),
+	identifier_regex(identifier),
+	number_literal_regex(number_literal),
+	boolean_literal_regex(boolean_literal),
+	string_literal_regex("("+string_literal+")"),
+	reserved_names_regex(reserved_names),
+	token_regex("("+number_literal+"|"+string_literal+"|"+boolean_literal+"|"+identifier+"|"+operators+"|"+other+")\\s*"),
+	value_regex(identifier+"|"+string_literal+"|"+number_literal+"|"+boolean_literal),
+	space_regex("[[:space:]]*")
+{
+}
 
 void Interpreter::interpret()
 {
 	try
 	{
-		vector<string> tokens;
-		//Indicate if the branchement statement like else or else if
-		//must be skipped when encountered.
-		//So there will be a True when a if or else if condition is True,
-		//and following else statement must be skipped.
-		stack<bool> condition_match;
-		for(string line; getline(m_file, line);)
-		{
-			tokens = tokenize(line);
-//			cout << "Tokens: ";
-//			for(auto& token:tokens)
-//				cout << "[" << token << "]";
-//			cout << "\n";
-			if(tokens.size() > 0)
-			{
-				//Conditional branchement
-				if((tokens[0] == "else" or tokens[0] == "else if") and condition_match.top())
-					jump_to_endif();
-				else if(tokens[0] == "if" or tokens[0] == "else if")
-				{
-					tokens.erase(tokens.begin());
-					//If this is a else if statement, replace the flag
-					if(tokens[0] == "else if")
-						condition_match.pop();
-					condition_match.push(convert<bool>(compute(tokens)));
-					//If the condition is false
-					if(not condition_match.top())
-						//Jump to the next branchement
-						jump_to_endif(true);
-				}
-				else if(tokens[0] == "endif")
-					condition_match.pop();
-				//Assignement
-				else if(find(tokens.begin(), tokens.end(), "=") == tokens.begin()+1)
-					m_vars[tokens[0]] = compute(vector<string>(tokens.begin()+2, tokens.end()));
-				//Statement that does nothing
-				else
-					compute(tokens);
-			}
-		}
+		VecStr lines;
+		for(std::string line; std::getline(m_file, line);)
+			lines.push_back(line);
+		interpretBlock(lines.begin(), lines.end(), lines.begin());
 	}
-	catch(runtime_error e)
+	catch(const std::runtime_error& e)
 	{
-		cerr << "Unable to intepret byte " << m_file.tellg() << ": " << e.what() << "\n";
+		std::cerr << "Error while interpreting script : " << e.what() << std::endl;
 	}
 }
 
-vector<string> Interpreter::tokenize(string line)
+void Interpreter::interpretBlock(VecStr::iterator from, VecStr::iterator to, VecStr::iterator begin)
 {
-	if(line.find_first_not_of("\n\t ") != std::string::npos)
-		line = line.substr(line.find_first_not_of("\n\t "));//Remove trailing blank character
-	string name("[[:alnum:]][\\w\\s]*\\w|\\w");
-	string number("\\d+|\\d*\\.\\d*");
-	string cmp("<=|>=|==|<|>");
-	string arith("\\+|-|\\*|/|%|\\(|\\)");
-	regex reserved_token("(if|else if|else|endif|event|and|or|not|is|true|false)[\\s\\b]+");
-	regex token("("+number+"|"+name+"|"+cmp+"|"+arith+"|:|!|=|,)\\s*");
-	vector<string> first_tokenization, second_tokenization, unrecognized_tokens;
-	smatch m;
-	//First tokenization, match reserved words
-	while(regex_search(line, m, reserved_token))
+	for(;from != to; from++)
 	{
-		if(m.prefix().str().length() > 0)
-			first_tokenization.push_back(m.prefix().str());
-		first_tokenization.push_back(m[1].str());
-		line=m.suffix().str();
-	}
-	first_tokenization.push_back(line);
-	//Second tokenization of every submatch
-	for(auto& tok:first_tokenization)
-	{
-		copy(sregex_token_iterator(tok.begin(), tok.end(), token, 1),
-	    	 sregex_token_iterator(),
-			 back_inserter(second_tokenization));
-		copy(sregex_token_iterator(tok.begin(), tok.end(), token, -1),
-	    	 sregex_token_iterator(),
-			 back_inserter(unrecognized_tokens));
-	}
-	if(unrecognized_tokens.size() > 0 and
-		count(unrecognized_tokens.begin(), unrecognized_tokens.end(), "") != unrecognized_tokens.size())
-    {
-        string message("Lexical error:\n");
-        for(auto& tok:unrecognized_tokens)
-            message += "Unrecognized token: \"" + tok + "\"\n";
-        throw runtime_error(message);
-    }
-	return second_tokenization;
-}
-
-
-Interpreter::Var Interpreter::compute(vector<string> tokens)
-{
-	if(tokens.size() < 1)
-		throw runtime_error("expected value.");
-	else if(tokens.size() == 1)
-	{
-		if(regex_match(tokens[0], regex("\\d+")))
-			return stoi(tokens[0]);
-		else if(regex_match(tokens[0], regex("\\d*.\\d*")))
-			return stof(tokens[0]);
-		else if(tokens[0] == "true")
-			return true;
-		else if(tokens[0] == "false")
-			return false;
-		else if(regex_match(tokens[0], regex("[[:alnum:]][\\w\\s]*\\w|\\w"))
-				and m_vars.find(tokens[0]) != m_vars.end())
-			return m_vars[tokens[0]];
-		else
-			throw runtime_error("Unrecognized token: "+tokens[0]);
-	}
-	//If the tokens match a function call with arguments
-	else if(find(tokens.begin(), tokens.end(), "!") == tokens.end()-1//If there is a !
-			and (find(tokens.begin(), tokens.end(), ":") == tokens.begin()+1 //and if there is a :
-				or tokens.size() == 2))//or if there is only the identifier and !
-	{
-		vector<Var> arguments;
-		//If there is some arguments
-		if(find(tokens.begin(), tokens.end(), ":") == tokens.begin()+1)
-		{
-			//Get the list of the arguments
-			vector<string> current_argument;
-			for(unsigned int i{2}; i < tokens.size()-1; i++)
-			{
-				if(tokens[i] == ",")
-				{
-					arguments.push_back(compute(current_argument));
-					current_argument.clear();
-				}
-				else
-					current_argument.push_back(tokens[i]);
-			}
-			arguments.push_back(compute(current_argument));
-		}
-		auto check_args = [&](vector<Var> args, vector<int> types)
-		{
-			if(args.size() > types.size())
-				throw runtime_error("too many arguments.");
-			else if(args.size() < types.size())
-				throw runtime_error("too few arguments.");
-			else
-				for(size_t i{0}; i < args.size(); ++i)
-					if(args[i].which() != types[i])
-						throw std::runtime_error("bad argument type.");
-			return true;
-		};
 		try
 		{
-			if(tokens[0] == "nearest foe" && check_args(arguments, {}))
+			VecStr tokens = tokenize(*from);
+			/*std::cout << "Tokens:";
+			for(auto& tok:tokens)
+				std::cout << "[" << tok << "]";
+			std::cout << std::endl;*/
+			if(tokens.size() > 0)
 			{
-				return nearestFoe(m_entity, m_context.parameters.pixelByMeter);
+				if(tokens[0] == "if" or tokens[0] == "else if")
+				{
+					Data conditionData = evaluateTree(convert(VecStr(tokens.begin()+1, tokens.end())));
+					cast<bool>(conditionData);
+					bool condition{boost::get<bool>(conditionData)}, skip{false};
+					VecStr::iterator beginIf(from+1);
+					short int depth{0};
+					for(VecStr::iterator endIf(beginIf); endIf != to; endIf++)
+					{
+						VecStr ifTokens = tokenize(*endIf);
+						if(ifTokens[0] == "if")
+							depth++;
+						if(depth == 0 and not skip and (ifTokens[0] == "else if" or ifTokens[0] == "else" or ifTokens[0] == "endif"))
+						{
+							if(condition)
+							{
+								interpretBlock(beginIf, endIf, begin);
+								skip = true;
+							}
+							else
+							{
+								from = endIf-1;
+								break;
+							}
+						}
+						if(depth == 0 and ifTokens[0] == "endif")
+						{
+							from = endIf;
+							break;
+						}
+						if(ifTokens[0] == "endif")
+							depth--;
+					}
+				}
+				else if(tokens[0] != "else" and tokens[0] != "endif")
+					evaluateTree(convert(tokens));
 			}
-			else if(tokens[0] == "distance from" && check_args(arguments, {3}))
-			{
-				return distanceFrom(m_entity, boost::get<entityx::Entity>(arguments[0]));
-			}
-			else if(tokens[0] == "attack" && check_args(arguments, {3}))
-			{
-				return attack(m_entity, boost::get<entityx::Entity>(arguments[0]));
-			}
-			else if(tokens[0] == "can jump" && check_args(arguments, {}))
-			{
-				return canJump(m_entity);
-			}
-			else if(tokens[0] == "jump" && check_args(arguments, {}))
-			{
-				return jump(m_entity, m_context.systemManager.system<PendingChangesSystem>()->commandQueue);
-			}
-			else if((tokens[0]=="print" or tokens[0]=="out"))
-			{
-				if(arguments.size() > 1)
-					throw runtime_error("too many arguments.");
-				else if(arguments.size() == 0)
-					throw runtime_error("too few arguments.");
-				if(arguments[0].which() == 0)
-					return print(boost::get<int>(arguments[0]));
-				else if(arguments[0].which() == 1)
-					return print(boost::get<float>(arguments[0]));
-				else if(arguments[0].which() == 2)
-					print(boost::get<bool>(arguments[0]));
-				else if(arguments[0].which() == 3)
-					return print(boost::get<entityx::Entity>(arguments[0]));
-			}
-			else
-				throw runtime_error("unrecognized function name.");
 		}
-		catch(runtime_error& e)
+		catch(const ScriptError& e)
 		{
-			throw runtime_error("unable to execute the function " + tokens[0] +
-					": " + e.what());
+			throw std::runtime_error("unable to evaluate line " + std::to_string((from - begin)+1) + " : "
+					+ std::string(e.what()));
 		}
 	}
-	else
-	{
-		vector<string> operators{"(", ")", "or", "and", "is", "==", "!=", "<",
-				"<=",">", ">=", "+", "-", "*", "/", "%", "not"};
-		vector<string>::iterator lowest_op(find_if(operators.begin(), operators.end(),
-					[&](const string& str)
-					{return find(tokens.begin(), tokens.end(), str) != tokens.end();}));
-		if(lowest_op == operators.end())
-		{
-			string message("unable to compute following tokens: ");
-			for(auto& token:tokens)
-				message += "[" + token + "]";
-			throw runtime_error(message);
-		}
-		else if(*lowest_op == ")")
-			throw runtime_error("no matching parenthesis found.");
-		else if(*lowest_op == "(")
-		{
-			vector<string>::iterator match_par(find(tokens.begin(), tokens.end(), ")"));
-			if(match_par == tokens.end())
-				throw runtime_error("no matching parenthesis found.");
-		}
-		lowest_op = find(tokens.begin(), tokens.end(), *lowest_op);
-		Var left = compute(vector<string>(tokens.begin(), lowest_op));
-		Var right = compute(vector<string>(lowest_op+1, tokens.end()));
-		int highest_type = max(left.which(), right.which());
-		int lowest_type = min(left.which(), right.which());
-		if(highest_type == 3 and lowest_type < 2)
-			throw runtime_error("operations between entities and artihmetics types are not allowed.");
-		if(highest_type == 0)//Integers
-		{
-			int l{convert<int>(left)};
-			int r{convert<int>(right)};
-			if(*lowest_op == "or")
-				return l or r;
-			else if(*lowest_op == "and")
-				return l and r;
-			else if(*lowest_op == "is" or *lowest_op == "==")
-				return l == r;
-			else if(*lowest_op == "!=")
-				return l != r;
-			else if(*lowest_op == "<")
-				return l < r;
-			else if(*lowest_op == "<=")
-				return l <= r;
-			else if(*lowest_op == ">")
-				return l > r;
-			else if(*lowest_op == ">=")
-				return l >= r;
-			else if(*lowest_op == "+")
-				return l + r;
-			else if(*lowest_op == "-")
-				return l - r;
-			else if(*lowest_op == "*")
-				return l * r;
-			else if(*lowest_op == "/")
-				return l / r;
-			else if(*lowest_op == "%")
-				return l % r;
-			else if(*lowest_op == "not")
-				return not r;
-		}
-		else if(highest_type == 1)//Floating-point
-		{
-			float l{convert<float>(left)};
-			float r{convert<float>(right)};
-			if(*lowest_op == "or")
-				return l or r;
-			else if(*lowest_op == "and")
-				return l and r;
-			else if(*lowest_op == "is" or *lowest_op == "==")
-				return l == r;
-			else if(*lowest_op == "!=")
-				return l != r;
-			else if(*lowest_op == "<")
-				return l < r;
-			else if(*lowest_op == "<=")
-				return l <= r;
-			else if(*lowest_op == ">")
-				return l > r;
-			else if(*lowest_op == ">=")
-				return l >= r;
-			else if(*lowest_op == "+")
-				return l + r;
-			else if(*lowest_op == "-")
-				return l - r;
-			else if(*lowest_op == "*")
-				return l * r;
-			else if(*lowest_op == "/")
-				return l / r;
-			else if(*lowest_op == "not")
-				return not r;
-		}
-		else if(highest_type == 2 or (highest_type == 3 and lowest_type == 2))//Booleans
-		{
-			bool l{convert<bool>(left)};
-			bool r{convert<bool>(right)};
-			if(*lowest_op == "or")
-				return l or r;
-			else if(*lowest_op == "and")
-				return l and r;
-			else if(*lowest_op == "is" or *lowest_op == "==")
-				return l == r;
-			else if(*lowest_op == "!=")
-				return l != r;
-			else if(*lowest_op == "<")
-				return l < r;
-			else if(*lowest_op == "<=")
-				return l <= r;
-			else if(*lowest_op == ">")
-				return l > r;
-			else if(*lowest_op == ">=")
-				return l >= r;
-			else if(*lowest_op == "+")
-				return l + r;
-			else if(*lowest_op == "-")
-				return l - r;
-			else if(*lowest_op == "*")
-				return l * r;
-			else if(*lowest_op == "/")
-				return l / r;
-			else if(*lowest_op == "not")
-				return not r;
-		}
-		else//Entities
-		{
-			//Here we are sure that the two variables are entities
-			entityx::Entity l{boost::get<entityx::Entity>(left)};
-			entityx::Entity r{boost::get<entityx::Entity>(right)};
-			if(*lowest_op == "is" or *lowest_op == "==")
-				return l == r;
-			else if(*lowest_op == "!=")
-				return l != r;
-			else if(*lowest_op == "not")
-				return not r;
-			else
-				throw runtime_error("operator [" + *lowest_op + "] not allowed on entity.");
-		}
-	}
-	return false;
 }
 
-void Interpreter::jump_to_endif(bool jump_to_else)
+VecStr Interpreter::tokenize(std::string line) const
 {
-	int before_branchement;
-	int depth{0};
-	string line;
-	vector<string> tokens;
-	do
+	VecStr first, second, third, err;
+	std::smatch m;
+	//First tokenization, match string literal
+	//This step must be done before everything else because
+	//words in string must don't be matched.
+	while(regex_search(line, m, string_literal_regex))
 	{
-		if(tokens.size() > 0 and tokens[0] == "if")
-			depth++;
-		else if(tokens.size() > 0 and tokens[0] == "endif")
-			depth--;
-		before_branchement = m_file.tellg();
-		getline(m_file, line);
-		tokens = tokenize(line);
+		if(m.prefix().str() != "")
+			first.push_back(m.prefix().str());
+		first.push_back(m[1].str());
+		line=m.suffix().str();
 	}
-	//While the first token is not any of the given tokens
-	while(tokens.size() < 1
-			or (jump_to_else and tokens[0] != "else"
-				and tokens[0] != "else if" and tokens[0] != "endif")
-			or (not jump_to_else and tokens[0] != "endif")
-			or depth > 0);
-	m_file.seekg(before_branchement);
+	first.push_back(line);
+	for(auto submatch:first)
+	{
+		if(submatch.size() > 0 and submatch[0] != '\"')
+		{
+			//Second tokenization, match reserved words
+			while(regex_search(submatch, m, reserved_names_regex))
+			{
+				if(m.prefix().str() != "")
+					second.push_back(m.prefix().str());
+				second.push_back(m[1].str());
+				submatch=m.suffix().str();
+			}
+		}
+		second.push_back(submatch);
+	}
+	//Third tokenization of every submatch
+	for(auto& tok:second)
+	{
+		copy(std::sregex_token_iterator(tok.begin(), tok.end(), token_regex, 1),
+	    	 std::sregex_token_iterator(),
+			 std::back_inserter(third));
+		copy(std::sregex_token_iterator(tok.begin(), tok.end(), token_regex, -1),
+	    	 std::sregex_token_iterator(),
+			 std::back_inserter(err));
+	}
+	for(long int i{0}; i < static_cast<long int>(err.size()); ++i)
+	{
+		if(std::regex_match(err[i], space_regex))
+		{
+			err.erase(err.begin()+i);
+			i--;
+		}
+	}
+	if (not err.empty())
+	{
+		std::string errorMessage("unrecognized tokens while parsing:");
+		for(auto& tok:err)
+			errorMessage += " " + tok;
+		throw ScriptError(errorMessage);
+	}
+	return third;
 }
+
+Tree<Data>::Ptr Interpreter::convert(const VecStr& tokens)
+{
+	Tree<Data>::Ptr res;
+	std::stack<std::string> operatorsStack;
+	std::stack<Tree<Data>::Ptr> operands;
+	for(size_t i{0}; i < tokens.size(); ++i)
+	{
+		if(i+1 < tokens.size() and (tokens[i+1] == "=" or (m_precedence.find(tokens[i]) != m_precedence.end() and tokens[i+1] == "(")))
+			operands.push(nullptr);
+		else if(m_precedence.find(tokens[i]) != m_precedence.end())
+		{
+			while(not operatorsStack.empty() and
+					m_precedence.at(operatorsStack.top())
+					>= m_precedence.at(tokens[i]))
+			{
+				Tree<Data>::Ptr left, right;
+				left = res;
+				right = operands.top();
+				operands.pop();
+				if(not res)
+				{
+					left = operands.top();
+					operands.pop();
+				}
+				res = Tree<Data>::create(operatorsStack.top(),{left, right});
+				operatorsStack.pop();
+				res->resolveChildren(res);
+			}
+			operatorsStack.push(tokens[i]);
+		}
+		//Value token
+		else if(std::regex_match(tokens[i], value_regex) and tokens[i] != "is")
+			operands.push(Tree<Data>::create(evaluateToken(tokens[i])));
+		//Parenthesis token
+		else if(tokens[i] == "(")
+		{
+			//Parenthesis for function call
+			if(i > 0 and m_functions.find(tokens[i-1]) != m_functions.end())
+			{
+				Tree<Data>::Ptr functionTree = Tree<Data>::create(tokens[i-1]);
+				//The function has been pushed on the stack with the value 0, so pop it.
+				operands.pop();
+				int depth{1};
+				for(size_t j{i+1}, lastComma{j}; j < tokens.size() and depth > 0; ++j)
+				{
+					if(tokens[j] == "(")
+						depth++;
+					else if(tokens[j] == ")")
+						depth--;
+					//Add one argument in the arguments list.
+					if(tokens[j] == "," or depth == 0)
+					{
+						VecStr subExpression(tokens.begin()+lastComma, tokens.begin()+j);
+						functionTree->pushChild(convert(subExpression));
+						lastComma = j+1;
+						if(depth == 0)
+							i = j;
+					}
+					functionTree->resolveChildren(functionTree);
+				}
+				operands.push(functionTree);
+			}
+			//Arithmetic parenthesis
+			else
+			{
+				VecStr subExpression(tokens.begin()+i+1, tokens.end());
+				size_t offset(parenthesis(subExpression));
+				subExpression.assign(subExpression.begin(), subExpression.begin()+offset);
+				operands.push(convert(subExpression));
+				i += offset+1;
+			}
+		}
+		else if(tokens[i] == "=")
+		{
+			if(i < 1 or not std::regex_match(tokens[i-1], identifier_regex))
+				throw ScriptError("Invalid identifier in assignation.");
+			operands.pop();
+			Tree<Data>::Ptr value = convert(VecStr(tokens.begin()+i+1, tokens.end()));
+			m_vars[tokens[i-1]] = evaluateTree(value);
+			//Assignement return assigned value, allowing chained assigements.
+			return value;
+		}
+	}
+	while(not operatorsStack.empty())
+	{
+		Tree<Data>::Ptr left, right;
+		left = res;
+		if(operands.empty())
+			throw ScriptError("too few operands for operator " + operatorsStack.top());
+		right = operands.top();
+		operands.pop();
+		if(not res)
+		{
+			if(operands.empty())
+				throw ScriptError("too few operands for operator " + operatorsStack.top());
+			left = operands.top();
+			operands.pop();
+		}
+		res = Tree<Data>::create(operatorsStack.top(), {left, right});
+		operatorsStack.pop();
+		res->resolveChildren(res);
+	}
+	//If the line was only one value token.
+	if(not res)
+	{
+		res = operands.top();
+		operands.pop();
+	}
+	if(not operands.empty())
+	{
+		std::string errorMessage("Following operands need an operator:");
+		while(not operands.empty())
+		{
+			Data operand{operands.top()->getValue()};
+			operands.pop();
+			cast<std::string>(operand);
+			errorMessage += " " + boost::get<std::string>(operand);
+		}
+		throw ScriptError(errorMessage);
+	}
+	return res;
+}
+
+Data Interpreter::evaluateToken(const std::string& token) const
+{
+	//Number literal
+	if(std::regex_match(token, number_literal_regex))
+	{
+		if(token.find(".") != std::string::npos)
+			return stof(token);
+		else
+			return stoi(token);
+	}
+	//Boolean literal
+	else if(std::regex_match(token, boolean_literal_regex))
+		return token == "true";
+	//String literal
+	else if(std::regex_match(token, string_literal_regex))
+	{
+		std::string res(token.begin()+1, token.end()-1);
+		//Parse string and replace escaped characters
+		for(size_t i{0}; i < res.size(); ++i)
+		{
+			if(res[i] == '\\')
+			{
+				const char escaped{res[i+1]};
+				res.erase(i, 2);
+				switch(escaped)
+				{
+					case 'a':
+						res.insert(i, 1, '\a');
+						break;
+					case 'b':
+						res.insert(i, 1, '\b');
+						break;
+					case 'f':
+						res.insert(i, 1, '\f');
+						break;
+					case 'n':
+						res.insert(i, 1, '\n');
+						break;
+					case 'r':
+						res.insert(i, 1, '\r');
+						break;
+					case 't':
+						res.insert(i, 1, '\t');
+						break;
+					case 'v':
+						res.insert(i, 1, '\v');
+						break;
+					default:
+						res.insert(i, 1, escaped);
+						break;
+				}
+			}
+		}
+		return res;
+	}
+	//Variable
+	else if(std::regex_match(token, identifier_regex)
+			and m_vars.find(token) != m_vars.end())
+		return m_vars.at(token);
+	//Function name or variable identifier in assignement
+	else if(std::regex_match(token, identifier_regex)
+			and m_functions.find(token) != m_functions.end())
+		return 0;
+	else
+		throw ScriptError("Unrecognized token: " + token);
+}
+
+Data Interpreter::evaluateTree(const Tree<Data>::Ptr expression) const
+{
+	if(not expression->noChildren())
+	{
+		/*
+		std::cout << "Evaluate " << expression->getValue()
+		<< " with children:" << std::endl;
+		for(size_t i{0}; i < expression->childrenNumber(); ++i)
+			std::cout << "\t(" << i << ") "
+			<< expression->getChild(i)->getValue() << std::endl;
+		*/
+		auto fn_it = m_functions.find(boost::get<std::string>(expression->getValue()));
+		if(fn_it != m_functions.end())
+		{
+			auto fn = fn_it->second;
+			if(fn.numberOperands > -1 and
+					(short int)expression->childrenNumber() != fn.numberOperands)
+			{
+				throw ScriptError("wrong number of operands "
+						"(got "+std::to_string(expression->childrenNumber())+
+						", expected "+std::to_string(fn.numberOperands)+") :"+
+						boost::get<std::string>(expression->getValue()));
+			}
+			std::vector<Data> args;
+			for(size_t i{0}; i < expression->childrenNumber(); ++i)
+				args.push_back(evaluateTree(expression->getChild(i)));
+			return fn.pointer(args, m_context);
+		}
+		else
+		{
+			throw ScriptError("unable to parse the following token: " +
+					boost::get<std::string>(expression->getValue()));
+		}
+	}
+	return expression->getValue();
+}
+
+size_t Interpreter::parenthesis(const VecStr& tokens) const
+{
+	int depth{1};
+	size_t i(0);
+	for(; i < tokens.size(); i++)
+	{
+		if(tokens[i] == "(")
+			depth++;
+		else if(tokens[i] == ")")
+			depth--;
+		if(depth == 0)
+			break;
+	}
+	return i;
+}
+
+template <>
+void cast<bool>(Data& var)
+{
+	if(var.which() == 4)//Convert entity to bool
+		var = boost::get<entityx::Entity>(var).valid();
+	else if(var.which() == 3)//Convert string to bool
+		var = boost::get<std::string>(var).size() > 0;
+	else if(var.which() == 1)//Convert int to bool
+		var = static_cast<bool>(boost::get<int>(var));
+	else if(var.which() == 2)//Convert float to bool
+		var = static_cast<bool>(boost::get<float>(var));
+}
+
+template <>
+void cast<int>(Data& var)
+{
+	if(var.which() == 4)//Convert entity to int
+		throw ScriptError("Conversion from entity to integer is not allowed.");
+	else if(var.which() == 3)//Convert string to int
+		var = std::stoi(boost::get<std::string>(var));
+	else if(var.which() == 0)//Convert bool to int
+		var = static_cast<int>(boost::get<bool>(var));
+	else if(var.which() == 2)//Convert float to int
+		var = static_cast<int>(boost::get<float>(var));
+}
+
+template <>
+void cast<float>(Data& var)
+{
+	if(var.which() == 4)//Convert entity to float
+		throw ScriptError("Conversion from entity to floating point is not allowed.");
+	else if(var.which() == 3)//Convert string to float
+		var = std::stof(boost::get<std::string>(var));
+	else if(var.which() == 0)//Convert bool to float
+		var = static_cast<float>(boost::get<bool>(var));
+	else if(var.which() == 1)//Convert int to float
+		var = static_cast<float>(boost::get<int>(var));
+}
+
+template <>
+void cast<std::string>(Data& var)
+{
+	if(var.which() == 1)//Convert int to string
+		var = std::to_string(boost::get<int>(var));
+	else if(var.which() == 0)//Convert bool to string
+	{
+		if(boost::get<bool>(var))
+			var = "true";
+		else
+			var = "false";
+	}
+	else if(var.which() == 2)//Convert float to string
+		var = std::to_string(boost::get<float>(var));
+	else if(var.which() == 4)//Convert entity to string
+		throw ScriptError("Conversion from entity to string is not allowed.");
+}
+
+template <>
+void cast<entityx::Entity>(Data& var)
+{
+	if(var.which() != 4)
+		throw ScriptError("Conversion from any type to entity is not allowed.");
+}
+

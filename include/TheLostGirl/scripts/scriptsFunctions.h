@@ -1,49 +1,57 @@
 #ifndef SCRIPTSFUNCTIONS_H
 #define SCRIPTSFUNCTIONS_H
 
-#include <iostream>
-#include <queue>
+#include <vector>
 
 #include <Box2D/Dynamics/b2WorldCallbacks.h>
 #include <entityx/Entity.h>
 
+#include <TheLostGirl/scripts/Interpreter.h>
+
 //Forward declarations
 struct Command;
 
+Data lowerThanOp(const std::vector<Data>& args, StateStack::Context context);
+Data greaterThanOp(const std::vector<Data>& args, StateStack::Context context);
+Data lowerEqualOp(const std::vector<Data>& args, StateStack::Context context);
+Data greaterEqualOp(const std::vector<Data>& args, StateStack::Context context);
+Data equalOp(const std::vector<Data>& args, StateStack::Context context);
+Data notEqualOp(const std::vector<Data>& args, StateStack::Context context);
+Data andOp(const std::vector<Data>& args, StateStack::Context context);
+Data orOp(const std::vector<Data>& args, StateStack::Context context);
+Data addOp(const std::vector<Data>& args, StateStack::Context context);
+Data substractOp(const std::vector<Data>& args, StateStack::Context context);
+Data multiplyOp(const std::vector<Data>& args, StateStack::Context context);
+Data divideOp(const std::vector<Data>& args, StateStack::Context context);
+Data moduloOp(const std::vector<Data>& args, StateStack::Context context);
+Data notOp(const std::vector<Data>& args, StateStack::Context context);
+
+Data print(const std::vector<Data>& args, StateStack::Context context);
+
 //Foe handling
-entityx::Entity nearestFoe(entityx::Entity self, float pixelByMeter);
-float distanceFrom(entityx::Entity self, entityx::Entity target);
-int directionTo(entityx::Entity self, entityx::Entity target);
-int attack(entityx::Entity self, entityx::Entity target);
+entityx::Entity nearestFoe(const std::vector<Data>& args, StateStack::Context context);
+float distanceFrom(const std::vector<Data>& args, StateStack::Context context);
+int directionTo(const std::vector<Data>& args, StateStack::Context context);
+int attack(const std::vector<Data>& args, StateStack::Context context);
 
 class NearestFoeQueryCallback : public b2QueryCallback
 {
 	public:
-		NearestFoeQueryCallback(entityx::Entity);
+		NearestFoeQueryCallback(entityx::Entity, StateStack::Context);
 		bool ReportFixture(b2Fixture* fixture);
 		entityx::Entity entity;
 
 	private:
 		entityx::Entity m_self;
 		float m_distance;
+		StateStack::Context m_context;
 };
 
 //Moving
-bool canMove(entityx::Entity self);
-int move(entityx::Entity self, int direction);
-int stop(entityx::Entity self);
-bool canJump(const entityx::Entity self);
-int jump(const entityx::Entity self, std::queue<Command>& commandQueue);
+bool canMove(const std::vector<Data>& args, StateStack::Context context);
+int move(const std::vector<Data>& args, StateStack::Context context);
+int stop(const std::vector<Data>& args, StateStack::Context context);
+bool canJump(const std::vector<Data>& args, StateStack::Context context);
+int jump(const std::vector<Data>& args, StateStack::Context context);
 
-//Debugging
-template <typename T>
-int print(T val)
-{
-	if(typeid(val) == typeid(bool))
-		std::cout << (val ? "True\n" : "False\n");
-	else
-		std::cout << val << "\n";
-	return 0;
-}
-
-#endif// SCRIPTSFUNCTIONS_H
+#endif//SCRIPTSFUNCTIONS_H

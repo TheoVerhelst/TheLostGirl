@@ -18,8 +18,8 @@ enum class Textures;
 enum class Fonts;
 
 /// Simple resource manager.
-/// It loads and holds many type of SFML's resources and restitues them
-/// To do not have to load them many times.
+/// It loads and holds many type of resources (SFML textures, sounds, ...) and restitues them
+/// in order to do not have to load them many times.
 template <typename Resource, typename Identifier>
 class ResourceManager
 {
@@ -33,13 +33,22 @@ class ResourceManager
         /// \param filename String of the path to the resource.
 		void load(Identifier id, const std::string& filename);
 
-        /// Overloaded function that pass a custom argument to the SFML's loading function.
+        /// Overloaded function that pass a custom argument to the loading function.
         /// It is useful to load only a certain part of a texture, a type of shader, ...
         /// \param id Identifier of the resource.
         /// \param filename String of the path to the resource.
-        /// \param secondParam Additional parameter, it can be every type you want, and is passed to the SFML's loading function.
+        /// \param secondParam Additional parameter, it can be every type you want, and is passed to the loading function.
 		template <typename Parameter>
 		void load(Identifier id, const std::string& filename, const Parameter& secondParam);
+
+        /// Overloaded function that pass a custom argument to the loading function.
+        /// It is useful to load only a certain part of a texture, a type of shader, ...
+        /// \param id Identifier of the resource.
+        /// \param filename String of the path to the resource.
+        /// \param secondParam Additional parameter, it can be every type you want, and is passed to the loading function.
+        /// \param thirdParam Additional parameter, it can be every type you want, and is passed to the loading function.
+		template <typename Parameter2, typename Parameter3>
+		void load(Identifier id, const std::string& filename, const Parameter2& secondParam, const Parameter3& thirdParam);
 
         /// Get the resource identified by id.
         /// This function can be called only if the resource was loaded before by the load function.
@@ -53,7 +62,7 @@ class ResourceManager
         /// \param id Identifier of the resource to get.
         /// \return Const reference to the resource.
 		const Resource& get(Identifier id) const;
-		
+
 		/// Return the identifier of the given resource.
 		/// \warning In order to use this function, the Resource must have a == operator.
 		/// \param resource The resource to get the identifier.

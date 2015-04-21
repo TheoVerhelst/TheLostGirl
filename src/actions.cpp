@@ -214,8 +214,8 @@ void Mover::operator()(entityx::Entity entity, double) const
 						animations.play("move" + directionStr);
 						if(moveToOppDirection)
 						{
-							//Stop the player
-							walkComponent->effectiveMovement = Direction::None;//Stop the player
+							//Stop the entity
+							walkComponent->effectiveMovement = Direction::None;//Stop the entity
 							animations.stop("move" + directionStr);
 						}
 						else

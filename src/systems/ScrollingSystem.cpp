@@ -50,7 +50,7 @@ void ScrollingSystem::update(entityx::EntityManager& entityManager, entityx::Eve
 				m_window.setView(view);
 
 				//Assign transform on every sprite
-				for(auto entity : entityManager.entities_with_components(spriteComponent, transformComponent))
+				for(auto entitySecond : entityManager.entities_with_components(spriteComponent, transformComponent))
 				{
 					//The x-ordinate of the left border of the screen.
 					float xScreen{playerPosition.x - xmin};

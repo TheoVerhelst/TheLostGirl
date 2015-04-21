@@ -1,3 +1,10 @@
-if nearest foe!
-	jump!
+foe = nearest foe(self)
+if foe
+	dist = distance from(self, foe)
+	stop(self, left)
+	stop(self, right)
+	if dist > 0.5
+		dir = direction to(self, foe)
+		move(self, dir)
+	endif
 endif
