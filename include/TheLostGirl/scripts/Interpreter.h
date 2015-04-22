@@ -2,7 +2,6 @@
 #define INTERPRETER_HPP
 
 #include <map>
-#include <regex>
 #include <fstream>
 
 #include <boost/variant.hpp>
@@ -12,13 +11,15 @@
 #include <TheLostGirl/StateStack.h>
 
 typedef boost::variant<bool, int, float, std::string, entityx::Entity> Data;
-typedef std::vector<std::string> VecStr;
+typedef std::list<std::string> VecStr;
 
 class Interpreter
 {
 	public:
-		Interpreter(std::ifstream& file, entityx::Entity entity, StateStack::Context context);
-		void interpret();
+		Interpreter();
+		~Interpreter();
+		bool loadFromFile(const std::string& fileName);
+		void interpret(entityx::Entity entity, StateStack::Context context);
 
 	private:
 		struct Function
@@ -26,35 +27,56 @@ class Interpreter
 			short int numberOperands;
 			std::function<Data(const std::vector<Data>&, StateStack::Context)> pointer;
 		};
-		std::ifstream& m_file;
-		const std::map<std::string, int> m_precedence;
-		const std::map<std::string, Function> m_functions;
-		std::map<std::string, Data> m_vars;
-		StateStack::Context m_context;    ///< The current context of the application.
+		std::ifstream m_file;///< Stream of the script file to execute.
+		const std::map<std::string, int> m_precedence;///< Precedence of all binary and unary operators.
+		const std::map<std::string, Function> m_functions;///< All functions available in the script.
+		const std::map<std::string, Data> m_initialVars;///< Variables available by default in all scripts.
+		std::map<std::string, Data> m_vars;///< Variables of the current script.
+		StateStack::Context* m_context;    ///< The current context of the application.
 
-		const std::string identifier;
-		const std::string number_literal;
-		const std::string boolean_literal;
-		const std::string string_literal;
-		const std::string operators;
-		const std::string other;
-		const std::string reserved_names;
-
-		const std::regex identifier_regex;
-		const std::regex number_literal_regex;
-		const std::regex boolean_literal_regex;
-		const std::regex string_literal_regex;
-		const std::regex reserved_names_regex;
-		const std::regex token_regex;
-		const std::regex value_regex;
-		const std::regex space_regex;
+		std::string m_operators;
+		const std::vector<std::vector<std::string>> m_multichar0perators;
+		const std::vector<std::string> m_reservedNames;
 
 		void interpretBlock(VecStr::iterator from, VecStr::iterator to, VecStr::iterator begin);
 		Tree<Data>::Ptr convert(const VecStr& tokens);
-		std::vector<std::string> tokenize(std::string line) const;
+		VecStr tokenize(const std::string& line) const;
 		Data evaluateToken(const std::string& token) const;
 		Data evaluateTree(const Tree<Data>::Ptr expression) const;
+
 		size_t parenthesis(const VecStr& tokens) const;
+
+		/// Check if the given string contains only whitespaces.
+		/// \param str String to check.
+		/// \return True if the given string contains only whitespaces, false otherwise.
+		inline bool isSpace(const std::string& str) const;
+
+		/// Check if the given string represents a number, floating or integer.
+		/// \param str String to check.
+		/// \return True if the given string represents a number, false otherwise.
+		inline bool isNumber(const std::string& str) const;
+
+		/// Check if the given string represents an identifier.
+		/// \param str String to check.
+		/// \return True if the given represents an identifier, false otherwise.
+		inline bool isIdentifier(const std::string& str) const;
+
+		/// Check if the given string represents an boolean.
+		/// \param str String to check.
+		/// \return True if the given string represents an boolean, false otherwise.
+		inline bool isBool(const std::string& str) const;
+
+		/// Check if the given string represents an string literal.
+		/// \param str String to check.
+		/// \return True if the given string represents an string literal, false otherwise.
+		inline bool isString(const std::string& str) const;
+
+		inline bool isValue(const std::string& str) const;
+
+		/// Return a string without trailing blank.
+		/// \param str The string to strip.
+		/// \return The stripped string.
+		std::string strip(const std::string& str) const;
 };
 
 template <typename T>

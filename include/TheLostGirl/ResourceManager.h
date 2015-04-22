@@ -8,6 +8,8 @@
 #include <cassert>
 #include <mutex>
 
+#include <TheLostGirl/scripts/Interpreter.h>
+
 //Forward declarations
 namespace sf
 {
@@ -41,15 +43,6 @@ class ResourceManager
 		template <typename Parameter>
 		void load(Identifier id, const std::string& filename, const Parameter& secondParam);
 
-        /// Overloaded function that pass a custom argument to the loading function.
-        /// It is useful to load only a certain part of a texture, a type of shader, ...
-        /// \param id Identifier of the resource.
-        /// \param filename String of the path to the resource.
-        /// \param secondParam Additional parameter, it can be every type you want, and is passed to the loading function.
-        /// \param thirdParam Additional parameter, it can be every type you want, and is passed to the loading function.
-		template <typename Parameter2, typename Parameter3>
-		void load(Identifier id, const std::string& filename, const Parameter2& secondParam, const Parameter3& thirdParam);
-
         /// Get the resource identified by id.
         /// This function can be called only if the resource was loaded before by the load function.
         /// If the resource was not yet loaded, an assertion is raised.
@@ -80,6 +73,8 @@ typedef ResourceManager<sf::Texture, std::string> TextureManager;
 typedef ResourceManager<sf::Font, std::string> FontManager;
 /// Typedef of RessourceManager.
 typedef ResourceManager<sf::Shader, std::string> ShaderManager;
+/// Typedef of RessourceManager.
+typedef ResourceManager<Interpreter, std::string> ScriptManager;
 
 #include <TheLostGirl/ResourceManager.inl>
 

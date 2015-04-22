@@ -8,10 +8,10 @@
 
 #include <TheLostGirl/LangManager.h>
 
-const float scales[5] = {30.f/90.f,
-						48.f/90.f,
-						60.f/90.f,
-						75.f/90.f,
+const float scales[5] = {30.f/90.f,//62,5%
+						48.f/90.f, //80%
+						60.f/90.f, //80%
+						75.f/90.f, //83,333%
 						90.f/90.f};///<Differents scales, relatively to the maximum resolution.
 
 const std::string paths[5] = {"resources/images/360p/",

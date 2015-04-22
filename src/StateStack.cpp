@@ -57,7 +57,7 @@ void StateStack::clearStates()
 {
 	m_pendingList.push_back([this]{m_stack.clear();});
 }
-				
+
 bool StateStack::isEmpty() const
 {
 	return m_stack.empty();
@@ -80,6 +80,7 @@ StateStack::Context::Context(Parameters& _parameters,
 						sf::RenderWindow& _window,
 						TextureManager& _textureManager,
 						FontManager& _fontManager,
+						ScriptManager& _scriptManager,
 						tgui::Gui& _gui,
 						entityx::EventManager& _eventManager,
 						entityx::EntityManager& _entityManager,
@@ -91,6 +92,7 @@ StateStack::Context::Context(Parameters& _parameters,
 	window(_window),
 	textureManager(_textureManager),
 	fontManager(_fontManager),
+	scriptManager(_scriptManager),
 	gui(_gui),
 	eventManager(_eventManager),
 	entityManager(_entityManager),

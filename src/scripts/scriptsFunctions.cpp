@@ -324,6 +324,14 @@ int directionTo(const std::vector<Data>& args, StateStack::Context)
 	return static_cast<int>(Direction::None);
 }
 
+int directionOf(const std::vector<Data>& args, StateStack::Context)
+{
+	entityx::Entity self(boost::get<entityx::Entity>(args[0]));
+	if(self and self.has_component<DirectionComponent>())
+		return static_cast<int>(self.component<DirectionComponent>()->direction);
+	return static_cast<int>(Direction::None);
+}
+
 int attack(const std::vector<Data>&, StateStack::Context)
 {
 	return 0;
@@ -372,11 +380,33 @@ int move(const std::vector<Data>& args, StateStack::Context context)
 
 int stop(const std::vector<Data>& args, StateStack::Context context)
 {
-	Command moveCommand;
-	moveCommand.targetIsSpecific = true;
-	moveCommand.entity = boost::get<entityx::Entity>(args[0]);
-	moveCommand.action = Mover(static_cast<Direction>(boost::get<int>(args[1])), false);
-	context.systemManager.system<PendingChangesSystem>()->commandQueue.push(moveCommand);
+	entityx::Entity self(boost::get<entityx::Entity>(args[0]));
+	if(self.has_component<DirectionComponent>() and self.has_component<WalkComponent>())
+	{
+		DirectionComponent::Handle directionComponent = self.component<DirectionComponent>();
+		if(directionComponent->moveToLeft and directionComponent->moveToRight)
+		{
+			Command moveCommand1;
+			moveCommand1.targetIsSpecific = true;
+			moveCommand1.entity = self;
+			Command moveCommand2;
+			moveCommand2.targetIsSpecific = true;
+			moveCommand2.entity = self;
+			Direction opposite{directionComponent->direction == Direction::Left ? Direction::Right : Direction::Left};
+			moveCommand1.action = Mover(opposite, false);
+			moveCommand2.action = Mover(directionComponent->direction, false);
+			context.systemManager.system<PendingChangesSystem>()->commandQueue.push(moveCommand1);
+			context.systemManager.system<PendingChangesSystem>()->commandQueue.push(moveCommand2);
+		}
+		else
+		{
+			Command moveCommand;
+			moveCommand.targetIsSpecific = true;
+			moveCommand.entity = self;
+			moveCommand.action = Mover(directionComponent->direction, false);
+			context.systemManager.system<PendingChangesSystem>()->commandQueue.push(moveCommand);
+		}
+	}
 	return 0;
 }
 

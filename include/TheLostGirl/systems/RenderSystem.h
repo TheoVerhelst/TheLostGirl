@@ -30,9 +30,10 @@ class RenderSystem : public entityx::System<RenderSystem>
 
 	private:
 		sf::RenderWindow& m_window;  ///< SFML's window on wich to render the entities.
-		sf::RenderTexture m_texture;///< A render texture to apply the shaders.
+		sf::RenderTexture m_texture; ///< A render texture to apply the shaders.
 		Parameters& m_parameters;    ///< The current application parameters.
 		BloomEffect m_bloomEffect;   ///< The shader to apply on m_texture.
+		bool m_postEffectSupported;
 };
 
 #endif//RENDERSYSTEM_H

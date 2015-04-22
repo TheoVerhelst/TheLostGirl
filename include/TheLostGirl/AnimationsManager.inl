@@ -98,7 +98,8 @@ void AnimationsManager<A>::update(sf::Time dt)
 	if(not m_animationsMap.empty())
 	{
 		//Find the animation to play
-		typename std::map<std::string, TimeAnimation>::iterator mostImportant;//The map is T-dependent, so the typename keyword is necessary
+		//The map is T-dependent, so the typename keyword is necessary
+		typename std::map<std::string, TimeAnimation>::iterator mostImportant;
 		bool activeAnimationFound{false};
 		for(auto it = m_animationsMap.begin(); it != m_animationsMap.end(); it++)
 		{
@@ -181,7 +182,8 @@ void AnimationsManager<A>::deserialize(const Json::Value& value, T& object, Stat
 }
 
 template<typename A>
-AnimationsManager<A>::TimeAnimation::TimeAnimation(A _animation, unsigned short int _importance, sf::Time _duration, bool _loops, float _progress, bool _isPaused, bool _isActive):
+AnimationsManager<A>::TimeAnimation::TimeAnimation(A _animation, unsigned short int _importance, sf::Time _duration,
+												 bool _loops, float _progress, bool _isPaused, bool _isActive):
 	animation{_animation},
 	importance{_importance},
 	duration{_duration},

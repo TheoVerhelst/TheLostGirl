@@ -11,7 +11,6 @@
 #include <TheLostGirl/functions.h>
 
 using namespace sf;
-using std::cout;
 
 FloatRect handleResize(Event::SizeEvent size)
 {

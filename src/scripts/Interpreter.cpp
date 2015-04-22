@@ -5,9 +5,10 @@
 #include <TheLostGirl/scripts/scriptsFunctions.h>
 #include <TheLostGirl/scripts/ScriptError.h>
 #include <TheLostGirl/components.h>
+#include <TheLostGirl/functions.h>
 
-Interpreter::Interpreter(std::ifstream& file, entityx::Entity entity, StateStack::Context context):
-	m_file(file),
+Interpreter::Interpreter():
+	m_file(),
 	m_precedence{{"or", 1},
 				{"and", 2},
 				{"is", 3},
@@ -42,50 +43,62 @@ Interpreter::Interpreter(std::ifstream& file, entityx::Entity entity, StateStack
 				{"nearest foe", {1, nearestFoe}},
 				{"distance from", {2, distanceFrom}},
 				{"direction to", {2, directionTo}},
+				{"direction of", {1, directionOf}},
 				{"attack", {2, attack}},
 				{"can move", {1, canMove}},
 				{"move", {2, move}},
-				{"stop", {2, stop}},
+				{"stop", {1, stop}},
 				{"can jump", {1, canJump}},
 				{"jump", {1, jump}}},
-	m_vars{{"self", entity},//Add variables so that they will be available in the script
-		{"left", static_cast<int>(Direction::Left)},
-		{"right", static_cast<int>(Direction::Right)},
-		{"top", static_cast<int>(Direction::Top)},
-		{"bottom",static_cast<int>(Direction::Bottom)}},
-	m_context{context},
-	identifier("[[:alnum:]][\\w\\s]*\\w|\\w"),
-	number_literal("\\d+|\\d*\\.\\d*"),
-	boolean_literal("true|false"),
-	string_literal("\"([^\"]|\\\\\")*\"|'([^']|\\\\')*'"),
-	operators("<=|>=|==|!=|<|>|\\+|-|\\*|/|%|\\(|\\)"),
-	other(":|=|!|,"),
-	reserved_names("(if|else if|else|endif|event|and|or|not|is)"
-			"[\\s\\b]+"),
-	identifier_regex(identifier),
-	number_literal_regex(number_literal),
-	boolean_literal_regex(boolean_literal),
-	string_literal_regex("("+string_literal+")"),
-	reserved_names_regex(reserved_names),
-	token_regex("("+number_literal+"|"+string_literal+"|"+boolean_literal+"|"+identifier+"|"+operators+"|"+other+")\\s*"),
-	value_regex(identifier+"|"+string_literal+"|"+number_literal+"|"+boolean_literal),
-	space_regex("[[:space:]]*")
+	m_initialVars{{"left", static_cast<int>(Direction::Left)},
+				{"right", static_cast<int>(Direction::Right)},
+				{"top", static_cast<int>(Direction::Top)},
+				{"bottom",static_cast<int>(Direction::Bottom)}},
+	m_vars{},
+	m_context(nullptr),
+	m_operators("!:,=<>+-*/%()"),
+	m_multichar0perators{{"<", "="}, {">", "="}, {"=", "="}, {"!", "="}},
+	m_reservedNames{"else if", "if", "else", "endif", "and", "or", "not", "event", "is"}
 {
 }
 
-void Interpreter::interpret()
+Interpreter::~Interpreter()
 {
-	try
+	if(m_file.is_open())
+		m_file.close();
+}
+
+bool Interpreter::loadFromFile(const std::string& fileName)
+{
+	m_file.open(fileName);
+	return m_file.good();
+}
+
+void Interpreter::interpret(entityx::Entity entity, StateStack::Context context)
+{
+	if(m_file.is_open())
 	{
-		VecStr lines;
-		for(std::string line; std::getline(m_file, line);)
-			lines.push_back(line);
-		interpretBlock(lines.begin(), lines.end(), lines.begin());
+		try
+		{
+			m_file.clear();
+			m_file.seekg(0);
+			m_context = &context;
+			m_vars["self"] = entity;
+			VecStr lines;
+			for(std::string line; std::getline(m_file, line);)
+				lines.push_back(line);
+			interpretBlock(lines.begin(), lines.end(), lines.begin());
+			m_context = nullptr;
+			//Reset all variables
+			m_vars = m_initialVars;
+		}
+		catch(const std::runtime_error& e)
+		{
+			std::cerr << "Error while interpreting script : " << e.what() << std::endl;
+		}
 	}
-	catch(const std::runtime_error& e)
-	{
-		std::cerr << "Error while interpreting script : " << e.what() << std::endl;
-	}
+	else
+		throw std::runtime_error("Interpreter::interpret() method called with an invalid script file.");
 }
 
 void Interpreter::interpretBlock(VecStr::iterator from, VecStr::iterator to, VecStr::iterator begin)
@@ -101,19 +114,20 @@ void Interpreter::interpretBlock(VecStr::iterator from, VecStr::iterator to, Vec
 			std::cout << std::endl;*/
 			if(tokens.size() > 0)
 			{
-				if(tokens[0] == "if" or tokens[0] == "else if")
+				if(tokens.front() == "if" or tokens.front() == "else if")
 				{
-					Data conditionData = evaluateTree(convert(VecStr(tokens.begin()+1, tokens.end())));
+					Data conditionData = evaluateTree(convert(VecStr(std::next(tokens.begin()), tokens.end())));
 					cast<bool>(conditionData);
 					bool condition{boost::get<bool>(conditionData)}, skip{false};
-					VecStr::iterator beginIf(from+1);
+					VecStr::iterator beginIf(std::next(from));
 					short int depth{0};
 					for(VecStr::iterator endIf(beginIf); endIf != to; endIf++)
 					{
 						VecStr ifTokens = tokenize(*endIf);
-						if(ifTokens[0] == "if")
+						if(ifTokens.front() == "if")
 							depth++;
-						if(depth == 0 and not skip and (ifTokens[0] == "else if" or ifTokens[0] == "else" or ifTokens[0] == "endif"))
+						if(depth == 0 and not skip and
+								(ifTokens.front() == "else if" or ifTokens.front() == "else" or ifTokens.front() == "endif"))
 						{
 							if(condition)
 							{
@@ -122,87 +136,116 @@ void Interpreter::interpretBlock(VecStr::iterator from, VecStr::iterator to, Vec
 							}
 							else
 							{
-								from = endIf-1;
+								from = std::prev(endIf);
 								break;
 							}
 						}
-						if(depth == 0 and ifTokens[0] == "endif")
+						if(depth == 0 and ifTokens.front() == "endif")
 						{
 							from = endIf;
 							break;
 						}
-						if(ifTokens[0] == "endif")
+						if(ifTokens.front() == "endif")
 							depth--;
 					}
 				}
-				else if(tokens[0] != "else" and tokens[0] != "endif")
+				else if(tokens.front() != "else" and tokens.front() != "endif")
 					evaluateTree(convert(tokens));
 			}
 		}
 		catch(const ScriptError& e)
 		{
-			throw std::runtime_error("unable to evaluate line " + std::to_string((from - begin)+1) + " : "
+			throw std::runtime_error("unable to evaluate line " + std::to_string(std::distance(begin, from)+1) + " : "
 					+ std::string(e.what()));
 		}
 	}
 }
 
-VecStr Interpreter::tokenize(std::string line) const
+VecStr Interpreter::tokenize(const std::string& line) const
 {
-	VecStr first, second, third, err;
-	std::smatch m;
+	//This function use boost and handmade algorithms in place of std::regex because
+	//std:regex is very, very slow and totally kill the FPS.
+	VecStr first, res;
 	//First tokenization, match string literal
-	//This step must be done before everything else because
-	//words in string must don't be matched.
-	while(regex_search(line, m, string_literal_regex))
+	//This step must be done before everything else because words in string must don't be matched.
+	bool inString{false};
+	auto beginOfToken(line.cbegin());
+	for(auto it(line.cbegin()); it != line.cend(); ++it)
 	{
-		if(m.prefix().str() != "")
-			first.push_back(m.prefix().str());
-		first.push_back(m[1].str());
-		line=m.suffix().str();
-	}
-	first.push_back(line);
-	for(auto submatch:first)
-	{
-		if(submatch.size() > 0 and submatch[0] != '\"')
+		if(*it == '\"' and not (it != line.cbegin() and *(it-1) != '\\'))
 		{
-			//Second tokenization, match reserved words
-			while(regex_search(submatch, m, reserved_names_regex))
+			if(inString)
+				it++;
+			first.emplace_back(beginOfToken, it);
+			beginOfToken = it;
+			if(inString)
+				it--;
+			inString = not inString;
+		}
+	}
+	first.emplace_back(beginOfToken, line.cend());
+
+	//Second tokenization, match reserved names.
+	for(const auto& reservedName : m_reservedNames)
+	{
+		const size_t reservedNameSize{reservedName.size()};
+		//For each submatch
+		for(auto it(first.begin()); it != first.end(); ++it)
+		{
+			const std::string submatch(*it);
+			//Skip string literals
+			if(submatch.size() > 0 and submatch[0] != '\"')
 			{
-				if(m.prefix().str() != "")
-					second.push_back(m.prefix().str());
-				second.push_back(m[1].str());
-				submatch=m.suffix().str();
+				it = first.erase(it);
+				//Search the current reserved name in the submatch
+				auto found = std::search(submatch.cbegin(), submatch.cend(), reservedName.begin(), reservedName.end());
+				//The match is valid only if the preceding char is not a letter and the following one is a space.
+				if(found != submatch.cend()
+					and not (found != submatch.cbegin() and std::isalpha(*(found-1)))
+					and (found+reservedNameSize == submatch.cend() or std::isspace(*(found+reservedNameSize))))
+				{
+					it = first.emplace(it, found+reservedNameSize, submatch.cend());
+					it = first.emplace(it, submatch.cbegin(), found);
+					it = first.emplace(it, found, found+reservedNameSize);
+					++it;
+				}
+				else
+					it = first.insert(it, submatch);
 			}
 		}
-		second.push_back(submatch);
 	}
-	//Third tokenization of every submatch
-	for(auto& tok:second)
+	//Third tokenization, separates everything according to the operators.
+	for(const auto& submatch:first)
 	{
-		copy(std::sregex_token_iterator(tok.begin(), tok.end(), token_regex, 1),
-	    	 std::sregex_token_iterator(),
-			 std::back_inserter(third));
-		copy(std::sregex_token_iterator(tok.begin(), tok.end(), token_regex, -1),
-	    	 std::sregex_token_iterator(),
-			 std::back_inserter(err));
-	}
-	for(long int i{0}; i < static_cast<long int>(err.size()); ++i)
-	{
-		if(std::regex_match(err[i], space_regex))
+		auto beginOfToken(submatch.cbegin());
+		for(auto it(submatch.cbegin()); it != submatch.cend(); ++it)
 		{
-			err.erase(err.begin()+i);
-			i--;
+			if(*it == '!' or *it == ':' or *it == ',' or *it == '=' or *it == '<' or *it == '>' or *it == '+'
+					or *it == '-' or *it == '*' or *it == '/' or *it == '%' or *it == '(' or *it == ')')
+			{
+				const std::string strippedToken{strip(std::string(beginOfToken, it))};
+				if(strippedToken != "")
+					res.emplace_back(strippedToken);
+				res.emplace_back(it, std::next(it));
+				beginOfToken = std::next(it);
+			}
+		}
+		const std::string strippedToken{strip(std::string(beginOfToken, submatch.cend()))};
+		if(strippedToken != "")
+			res.emplace_back(strippedToken);
+	}
+	//Join operators that have been separated like <= or !=
+	for(const auto& multicharOp : m_multichar0perators)
+	{
+		std::list<std::string>::iterator it = std::search(res.begin(), res.end(), multicharOp.cbegin(), multicharOp.cend());
+		while(it != res.end())
+		{
+			it = res.erase(it, std::next(it, 2));
+			res.emplace(it, multicharOp[0] + multicharOp[1]);
+			it = std::search(res.begin(), res.end(), multicharOp.cbegin(), multicharOp.cend());
 		}
 	}
-	if (not err.empty())
-	{
-		std::string errorMessage("unrecognized tokens while parsing:");
-		for(auto& tok:err)
-			errorMessage += " " + tok;
-		throw ScriptError(errorMessage);
-	}
-	return third;
+	return res;
 }
 
 Tree<Data>::Ptr Interpreter::convert(const VecStr& tokens)
@@ -210,15 +253,16 @@ Tree<Data>::Ptr Interpreter::convert(const VecStr& tokens)
 	Tree<Data>::Ptr res;
 	std::stack<std::string> operatorsStack;
 	std::stack<Tree<Data>::Ptr> operands;
-	for(size_t i{0}; i < tokens.size(); ++i)
+	for(auto it(tokens.begin()); it != tokens.end(); ++it)
 	{
-		if(i+1 < tokens.size() and (tokens[i+1] == "=" or (m_precedence.find(tokens[i]) != m_precedence.end() and tokens[i+1] == "(")))
+		if(std::next(it) != tokens.end() and (*(std::next(it)) == "="
+				or (m_precedence.find(*it) != m_precedence.end() and *(std::next(it)) == "(")))
 			operands.push(nullptr);
-		else if(m_precedence.find(tokens[i]) != m_precedence.end())
+		else if(m_precedence.find(*it) != m_precedence.end())
 		{
 			while(not operatorsStack.empty() and
 					m_precedence.at(operatorsStack.top())
-					>= m_precedence.at(tokens[i]))
+					>= m_precedence.at(*it))
 			{
 				Tree<Data>::Ptr left, right;
 				left = res;
@@ -233,35 +277,35 @@ Tree<Data>::Ptr Interpreter::convert(const VecStr& tokens)
 				operatorsStack.pop();
 				res->resolveChildren(res);
 			}
-			operatorsStack.push(tokens[i]);
+			operatorsStack.push(*it);
 		}
 		//Value token
-		else if(std::regex_match(tokens[i], value_regex) and tokens[i] != "is")
-			operands.push(Tree<Data>::create(evaluateToken(tokens[i])));
+		else if(isValue(*it) and *it != "is")
+			operands.push(Tree<Data>::create(evaluateToken(*it)));
 		//Parenthesis token
-		else if(tokens[i] == "(")
+		else if(*it == "(")
 		{
 			//Parenthesis for function call
-			if(i > 0 and m_functions.find(tokens[i-1]) != m_functions.end())
+			if(it != tokens.begin() and m_functions.find(*std::prev(it)) != m_functions.end())
 			{
-				Tree<Data>::Ptr functionTree = Tree<Data>::create(tokens[i-1]);
+				Tree<Data>::Ptr functionTree = Tree<Data>::create(*std::prev(it));
 				//The function has been pushed on the stack with the value 0, so pop it.
 				operands.pop();
 				int depth{1};
-				for(size_t j{i+1}, lastComma{j}; j < tokens.size() and depth > 0; ++j)
+				for(auto it2(std::next(it)), lastComma(it2); it2 != tokens.end() and depth > 0; ++it2)
 				{
-					if(tokens[j] == "(")
+					if(*it2 == "(")
 						depth++;
-					else if(tokens[j] == ")")
+					else if(*it2 == ")")
 						depth--;
 					//Add one argument in the arguments list.
-					if(tokens[j] == "," or depth == 0)
+					if(*it2 == "," or depth == 0)
 					{
-						VecStr subExpression(tokens.begin()+lastComma, tokens.begin()+j);
+						VecStr subExpression(lastComma, it2);
 						functionTree->pushChild(convert(subExpression));
-						lastComma = j+1;
+						lastComma = std::next(it2);
 						if(depth == 0)
-							i = j;
+							it = it2;
 					}
 					functionTree->resolveChildren(functionTree);
 				}
@@ -270,20 +314,20 @@ Tree<Data>::Ptr Interpreter::convert(const VecStr& tokens)
 			//Arithmetic parenthesis
 			else
 			{
-				VecStr subExpression(tokens.begin()+i+1, tokens.end());
-				size_t offset(parenthesis(subExpression));
-				subExpression.assign(subExpression.begin(), subExpression.begin()+offset);
+				VecStr subExpression(std::next(it), tokens.end());
+				const size_t offset(parenthesis(subExpression));
+				subExpression.assign(subExpression.begin(), std::next(subExpression.begin(), offset));
 				operands.push(convert(subExpression));
-				i += offset+1;
+				std::advance(it, offset+1);
 			}
 		}
-		else if(tokens[i] == "=")
+		else if(*it == "=")
 		{
-			if(i < 1 or not std::regex_match(tokens[i-1], identifier_regex))
-				throw ScriptError("Invalid identifier in assignation.");
+			if(it == tokens.begin() or not isIdentifier(*std::prev(it)))
+				throw ScriptError("invalid identifier in assignation.");
 			operands.pop();
-			Tree<Data>::Ptr value = convert(VecStr(tokens.begin()+i+1, tokens.end()));
-			m_vars[tokens[i-1]] = evaluateTree(value);
+			Tree<Data>::Ptr value = convert(VecStr(std::next(it), tokens.end()));
+			m_vars[*std::prev(it)] = evaluateTree(value);
 			//Assignement return assigned value, allowing chained assigements.
 			return value;
 		}
@@ -315,7 +359,7 @@ Tree<Data>::Ptr Interpreter::convert(const VecStr& tokens)
 	}
 	if(not operands.empty())
 	{
-		std::string errorMessage("Following operands need an operator:");
+		std::string errorMessage("following operands need an operator:");
 		while(not operands.empty())
 		{
 			Data operand{operands.top()->getValue()};
@@ -331,7 +375,7 @@ Tree<Data>::Ptr Interpreter::convert(const VecStr& tokens)
 Data Interpreter::evaluateToken(const std::string& token) const
 {
 	//Number literal
-	if(std::regex_match(token, number_literal_regex))
+	if(isNumber(token))
 	{
 		if(token.find(".") != std::string::npos)
 			return stof(token);
@@ -339,10 +383,10 @@ Data Interpreter::evaluateToken(const std::string& token) const
 			return stoi(token);
 	}
 	//Boolean literal
-	else if(std::regex_match(token, boolean_literal_regex))
+	else if(isBool(token))
 		return token == "true";
 	//String literal
-	else if(std::regex_match(token, string_literal_regex))
+	else if(isString(token))
 	{
 		std::string res(token.begin()+1, token.end()-1);
 		//Parse string and replace escaped characters
@@ -384,15 +428,13 @@ Data Interpreter::evaluateToken(const std::string& token) const
 		return res;
 	}
 	//Variable
-	else if(std::regex_match(token, identifier_regex)
-			and m_vars.find(token) != m_vars.end())
+	else if(isIdentifier(token) and m_vars.find(token) != m_vars.end())
 		return m_vars.at(token);
 	//Function name or variable identifier in assignement
-	else if(std::regex_match(token, identifier_regex)
-			and m_functions.find(token) != m_functions.end())
+	else if(isIdentifier(token) and m_functions.find(token) != m_functions.end())
 		return 0;
 	else
-		throw ScriptError("Unrecognized token: " + token);
+		throw ScriptError("unrecognized token: " + token);
 }
 
 Data Interpreter::evaluateTree(const Tree<Data>::Ptr expression) const
@@ -421,7 +463,7 @@ Data Interpreter::evaluateTree(const Tree<Data>::Ptr expression) const
 			std::vector<Data> args;
 			for(size_t i{0}; i < expression->childrenNumber(); ++i)
 				args.push_back(evaluateTree(expression->getChild(i)));
-			return fn.pointer(args, m_context);
+			return fn.pointer(args, *m_context);
 		}
 		else
 		{
@@ -434,18 +476,65 @@ Data Interpreter::evaluateTree(const Tree<Data>::Ptr expression) const
 
 size_t Interpreter::parenthesis(const VecStr& tokens) const
 {
-	int depth{1};
-	size_t i(0);
-	for(; i < tokens.size(); i++)
+	int depth{1}, i{0};
+	for(auto& token : tokens)
 	{
-		if(tokens[i] == "(")
+		if(token == "(")
 			depth++;
-		else if(tokens[i] == ")")
+		else if(token == ")")
 			depth--;
 		if(depth == 0)
 			break;
+		i++;
 	}
 	return i;
+}
+
+inline bool Interpreter::isSpace(const std::string& str) const
+{
+	return strip(str) == "";
+}
+
+inline bool Interpreter::isNumber(const std::string& str) const
+{
+	bool foundDot{false};
+	return std::all_of(str.begin(), str.end(), [&foundDot](const char& ch)
+						{
+							bool res = std::isdigit(ch) or (ch == '.' and not foundDot);
+							if(ch == '.')
+								foundDot = true;
+							return res;
+						});
+}
+
+bool Interpreter::isIdentifier(const std::string& str) const
+{
+	return std::all_of(str.begin(), str.end(), [](const char& ch){return std::isalnum(ch) or std::isspace(ch);});
+}
+
+inline bool Interpreter::isBool(const std::string& str) const
+{
+	return str == "true" or str == "false";
+}
+
+inline bool Interpreter::isString(const std::string& str) const
+{
+	return str.size() >= 2 and *(str.begin()) == '\"' and *(str.end()-1) == '\"';
+}
+
+inline bool Interpreter::isValue(const std::string& str) const
+{
+	return isBool(str) or isNumber(str) or isIdentifier(str) or isString(str);
+}
+
+std::string Interpreter::strip(const std::string& str) const
+{
+	std::string res{str};
+	while(res.size() > 0 and std::isspace(res[0]))
+		res.erase(res.begin());
+	while(res.size() > 0 and std::isspace(res[res.size()-1]))
+		res.erase(res.end()-1);
+	return res;
 }
 
 template <>

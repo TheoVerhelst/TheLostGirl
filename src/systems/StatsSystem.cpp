@@ -31,6 +31,14 @@ void StatsSystem::update(entityx::EntityManager& entityManager, entityx::EventMa
 				}
 			}
 		}
+		if(not (entity.has_component<CategoryComponent>() and entity.component<CategoryComponent>()->category & Category::Player)
+				and healthComponent->current <= 0)
+		{
+			if(entity.has_component<AnimationsComponent<SpriteSheetAnimation>>())
+				for(auto& animationsPair : entity.component<AnimationsComponent<SpriteSheetAnimation>>()->animationsManagers)
+					animationsPair.second.play("death");
+		}
+
 		//Regen health
 		if(healthComponent->current < healthComponent->maximum)
 		{

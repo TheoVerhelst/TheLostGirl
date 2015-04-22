@@ -25,6 +25,8 @@ Mover::~Mover()
 
 void Mover::operator()(entityx::Entity entity, double) const
 {
+	if(not entity)
+		return;
 	std::string directionStr;
 	std::string oppDirectionStr;
 	Direction oppDirection;
@@ -46,22 +48,21 @@ void Mover::operator()(entityx::Entity entity, double) const
 			break;
 
 		case Direction::Top:
-			directionStr = "Top";
-			oppDirectionStr = "Bottom";
+			directionStr = " top";
+			oppDirectionStr = " bottom";
 			oppDirection = Direction::Bottom;
 			moveIsHorizontal = false;
 			break;
 
 		case Direction::Bottom:
-			directionStr = "Bottom";
-			oppDirectionStr = "Top";
+			directionStr = " bottom";
+			oppDirectionStr = " top";
 			oppDirection = Direction::Top;
 			moveIsHorizontal = false;
 			break;
 
 		default:
 			return;
-			break;
 	}
 	if(moveIsHorizontal)
 	{
@@ -279,6 +280,24 @@ void Jumper::operator()(entityx::Entity entity, double) const
 			}
 		}
 	}
+}
+
+Death::Death()
+{
+}
+
+Death::~Death()
+{
+}
+
+void Death::operator()(entityx::Entity entity, double) const
+{
+	if(not entity)
+		return;
+	if(entity.has_component<BodyComponent>())
+		for(auto& bodyPair : entity.component<BodyComponent>()->bodies)
+			bodyPair.second->GetWorld()->DestroyBody(bodyPair.second);
+	entity.destroy();
 }
 
 BowBender::BowBender(float _angle, float _power):

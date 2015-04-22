@@ -16,11 +16,13 @@ Application::Application(bool debugMode):
 	m_gui{},
 	m_textureManager{},
 	m_fontManager{},
+	m_scriptManager{},
 	m_eventManager{},
 	m_entityManager{m_eventManager},
 	m_systemManager{m_entityManager, m_eventManager},
 	m_world{m_parameters.gravity},
-	m_stateStack{StateStack::Context{m_parameters, m_window, m_textureManager, m_fontManager, m_gui, m_eventManager, m_entityManager, m_systemManager, m_world, m_player}},
+	m_stateStack{StateStack::Context{m_parameters, m_window, m_textureManager, m_fontManager, m_scriptManager,
+									m_gui, m_eventManager, m_entityManager, m_systemManager, m_world, m_player}},
 	m_debugDraw(m_stateStack.getContext())
 {
 	std::string file("settings.json");
@@ -31,13 +33,13 @@ Application::Application(bool debugMode):
 	std::ifstream modelFile("settingsModel.json", std::ifstream::binary);
 	if(!reader.parse(settingsFile, settings))//report to the user the failure and their locations in the document.
 	{
-		std::cout << "\"" + file + "\": " + reader.getFormattedErrorMessages() << "\n"
+		std::cerr << "\"" + file + "\": " + reader.getFormattedErrorMessages() << "\n"
 				  << "Loaded default settings.\n";
 		m_window.create({640, 360}, "The Lost Girl");
 	}
 	else if(!reader.parse(modelFile, model))//report to the user the failure and their locations in the document.
 	{
-		std::cout << "\"settingsModel.json\": " + reader.getFormattedErrorMessages() << "\n"
+		std::cerr << "\"settingsModel.json\": " + reader.getFormattedErrorMessages() << "\n"
 				  << "Loaded default settings.\n";
 		m_window.create({640, 360}, "The Lost Girl");
 	}

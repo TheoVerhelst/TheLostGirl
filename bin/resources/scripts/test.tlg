@@ -1,10 +1,10 @@
 foe = nearest foe(self)
-if foe
+if foe is true
 	dist = distance from(self, foe)
-	stop(self, left)
-	stop(self, right)
-	if dist > 0.5
-		dir = direction to(self, foe)
-		move(self, dir)
+	dir = direction to(self, foe)
+	move(self, dir)
+	if dist < 0.5
+		stop(self)
 	endif
 endif
+t = "abc d d"

@@ -18,18 +18,18 @@ enum class Direction;
 struct Mover : public Action
 {
 	/// Default constructor.
-	/// \param _direction 
+	/// \param _direction
 	/// \param _start True if the movement starts, false if it stops.
 	Mover(Direction _direction, bool _start = true);
-	
+
 	/// Default destructor
 	virtual ~Mover();
-	
+
 	/// Overload of the () operator.
 	/// \param entity Entity who move.
 	/// \param dt Elapsed time in the last game frame.
 	virtual void operator()(entityx::Entity entity, double dt) const;
-	
+
 	Direction direction;///< Indicates the direction of the movement.
 	bool start;         ///< True if the movement starts, false if it stops.
 };
@@ -39,12 +39,27 @@ struct Jumper : public Action
 {
 	/// Default constructor.
 	Jumper();
-	
+
 	/// Default destructor
 	virtual ~Jumper();
-	
+
 	/// Overload of the () operator.
 	/// \param entity Entity who jump.
+	/// \param dt Elapsed time in the last game frame.
+	virtual void operator()(entityx::Entity entity, double dt) const;
+};
+
+/// Structure that process the death of an entity
+struct Death : public Action
+{
+	/// Default constructor.
+	Death();
+
+	/// Default destructor
+	virtual ~Death();
+
+	/// Overload of the () operator.
+	/// \param entity Entity who dead.
 	/// \param dt Elapsed time in the last game frame.
 	virtual void operator()(entityx::Entity entity, double dt) const;
 };
@@ -59,15 +74,15 @@ struct BowBender : public Action
 	/// \param _angle The angle of the bending.
 	/// \param _power The power of the bending.
 	BowBender(float _angle, float _power);
-	
+
 	/// Default destructor
 	virtual ~BowBender();
-	
+
 	/// Overload of the () operator.
 	/// \param entity Entity who bend.
 	/// \param dt Elapsed time in the last game frame.
 	virtual void operator()(entityx::Entity entity, double dt) const;
-	
+
 	float angle;///< The angle of the bending.
 	float power;///< The power of the bending.
 };
@@ -77,10 +92,10 @@ struct ArrowShooter : public Action
 {
 	/// Default constructor.
 	ArrowShooter();
-	
+
 	/// Default destructor
 	virtual ~ArrowShooter();
-	
+
 	/// Overload of the () operator.
 	/// \param entity Entity who shoot.
 	/// \param dt Elapsed time in the last game frame.
@@ -95,7 +110,7 @@ class StickedArrowQueryCallback : public b2QueryCallback
 		/// \param fixture A fixture that overlap the AABB.
 		/// \return True if the querying should continue, false otherwise.
 		virtual bool ReportFixture(b2Fixture* fixture);
-		
+
 		entityx::Entity foundEntity;///< If no arrow is found, then this entity won't be valid.
 };
 
@@ -104,10 +119,10 @@ struct ArrowPicker : public Action
 {
 	/// Default constructor.
 	ArrowPicker();
-	
+
 	/// Default destructor
 	virtual ~ArrowPicker();
-	
+
 	/// Overload of the () operator.
 	/// \param entity Entity who shoot.
 	/// \param dt Elapsed time in the last game frame.

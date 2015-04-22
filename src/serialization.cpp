@@ -357,8 +357,8 @@ Json::Value serialize(entityx::ComponentHandle<ScriptsComponent> component)
 {
 	Json::Value ret;
 	ret["scripts"] = Json::Value(Json::arrayValue);
-	for(auto& pair : component->scripts)
-        ret["scripts"].append(pair.first);
+	for(auto& scriptName : component->scriptsNames)
+        ret["scripts"].append(scriptName);
     return ret;
 }
 
@@ -767,11 +767,14 @@ void deserialize(const Json::Value& value, entityx::ComponentHandle<HardnessComp
 	component->hardness = value.asFloat();
 }
 
-void deserialize(const Json::Value& value, entityx::ComponentHandle<ScriptsComponent> component)
+void deserialize(const Json::Value& value, entityx::ComponentHandle<ScriptsComponent> component, ScriptManager& scriptManager)
 {
 	for(Json::ArrayIndex i{0}; i < value["scripts"].size(); ++i)
-        component->scripts.emplace(value["scripts"][i].asString(),
-                                   new std::ifstream("resources/scripts/"+value["scripts"][i].asString()));
+	{
+		std::string scriptName{value["scripts"][i].asString()};
+		scriptManager.load(scriptName, "resources/scripts/" + scriptName + ".tlg");
+        component->scriptsNames.push_back(scriptName);
+	}
 }
 
 void deserialize(const Json::Value& value, entityx::ComponentHandle<DetectionRangeComponent> component)

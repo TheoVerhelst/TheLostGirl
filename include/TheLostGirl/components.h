@@ -66,7 +66,7 @@ struct AnimationsComponent : public entityx::Component<AnimationsComponent<A>>
 };
 
 /// Enumeration of every possible direction.
-enum class Direction
+enum class Direction : int
 {
 	None,  ///< Unhandled direction.
 	Left,  ///< Diriged to the left.
@@ -193,12 +193,13 @@ struct HardnessComponent : public entityx::Component<HardnessComponent>
 	float hardness;///< Indicates the treshold of stucking of the arrow into the object.
 };
 
-/// Script component that hold file streams that contains scripts.
-/// These scripts are executed each frame.
+/// Script component that hold scripts names to execute on the entity.
+/// The scripts are stored in the ressource manager.
+/// They are executed each frame.
 /// More documentation about scripting will be released soon.
 struct ScriptsComponent : public entityx::Component<ScriptsComponent>
 {
-    std::map<std::string, std::ifstream*> scripts;///< File streams to each script that the entity have to execute.
+    std::vector<std::string> scriptsNames;///< Names of scripts that the entity must execute,
 };
 
 /// Component that define the behavior of aggressive entities.

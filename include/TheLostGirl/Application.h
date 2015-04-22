@@ -36,15 +36,15 @@ class Application
 		/// Default constructor.
 		/// \param debugMode Indicate if the appliaction should start in debug mode.
 		Application(bool debugMode = false);
-		
+
 		/// Default destructor.
 		~Application();
-		
+
         /// Initialize the game.
-        /// This does all that need to be done at the beginning of the game. 
-        /// \return 0 on succes, 1 on failure.                               
+        /// This does all that need to be done at the beginning of the game.
+        /// \return 0 on succes, 1 on failure.
 		int init();
-		
+
         /// Run the game.
         /// This function contains the main game loop.
         /// \return 0 on succes, 1 on undefined program failure or 2 on level loading failure.
@@ -52,23 +52,24 @@ class Application
 
 	private:
 		/// Various input handling.
-		void processInput();     
-		
+		void processInput();
+
 		/// Updates logics, systems, and so on.
         /// \param dt Elapsed time in the last game frame.
 		void update(sf::Time dt);
-		
+
 		/// Render all that need to be displayed on the screen.
 		void render();
-		
+
 		/// Registers all the logic systems.
 		void registerSystems();
-		
+
 		Parameters m_parameters;               ///< Structure containing all the game parameters.
 		sf::RenderWindow m_window;             ///< The main window.
 		tgui::Gui m_gui;                       ///< All the gui.
 		TextureManager m_textureManager;       ///< The texture manager.
 		FontManager m_fontManager;             ///< The fonts manager.
+		ScriptManager m_scriptManager;         ///< The scripts manager.
 		entityx::EventManager m_eventManager;  ///< The entity events manager.
 		entityx::EntityManager m_entityManager;///< The entity manager.
 		entityx::SystemManager m_systemManager;///< The entity systems manager.

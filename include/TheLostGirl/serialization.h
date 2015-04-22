@@ -190,7 +190,7 @@ void deserialize(const Json::Value& value, entityx::ComponentHandle<HardnessComp
 /// Deserialize the given \a value in the given \a component.
 /// \param component Component in wich deserialize the data.
 /// \param value The Json value containing the data.
-void deserialize(const Json::Value& value, entityx::ComponentHandle<ScriptsComponent> component);
+void deserialize(const Json::Value& value, entityx::ComponentHandle<ScriptsComponent> component, ScriptManager& scriptManager);
 
 /// Deserialize the given \a value in the given \a component.
 /// \param component Component in wich deserialize the data.

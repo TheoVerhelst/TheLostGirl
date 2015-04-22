@@ -32,6 +32,7 @@ Data print(const std::vector<Data>& args, StateStack::Context context);
 entityx::Entity nearestFoe(const std::vector<Data>& args, StateStack::Context context);
 float distanceFrom(const std::vector<Data>& args, StateStack::Context context);
 int directionTo(const std::vector<Data>& args, StateStack::Context context);
+int directionOf(const std::vector<Data>& args, StateStack::Context context);
 int attack(const std::vector<Data>& args, StateStack::Context context);
 
 class NearestFoeQueryCallback : public b2QueryCallback

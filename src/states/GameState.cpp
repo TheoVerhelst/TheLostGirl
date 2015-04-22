@@ -68,12 +68,12 @@ void GameState::draw()
 
 bool GameState::update(sf::Time elapsedTime)
 {
-	getContext().systemManager.update<PhysicsSystem>(elapsedTime.asSeconds());
+	getContext().systemManager.update<ScriptsSystem>(elapsedTime.asSeconds());
 	getContext().systemManager.update<PendingChangesSystem>(elapsedTime.asSeconds());
+	getContext().systemManager.update<PhysicsSystem>(elapsedTime.asSeconds());
 	getContext().systemManager.update<AnimationsSystem>(elapsedTime.asSeconds());
 	getContext().systemManager.update<ScrollingSystem>(elapsedTime.asSeconds());
 	getContext().systemManager.update<StatsSystem>(elapsedTime.asSeconds());
-	getContext().systemManager.update<ScriptsSystem>(elapsedTime.asSeconds());
 	getContext().systemManager.update<TimeSystem>(elapsedTime.asSeconds()*m_timeSpeed);//Scale the time
 	return false;
 }
@@ -528,7 +528,7 @@ void GameState::initWorld(const std::string& file)
 				if(entity.isMember("hardness"))
 					deserialize(entity["hardness"], m_entities[entityName].assign<HardnessComponent>());
 				if(entity.isMember("scripts"))
-					deserialize(entity["scripts"], m_entities[entityName].assign<ScriptsComponent>());
+					deserialize(entity["scripts"], m_entities[entityName].assign<ScriptsComponent>(), getContext().scriptManager);
 				if(entity.isMember("detection range"))
 					deserialize(entity["detection range"], m_entities[entityName].assign<DetectionRangeComponent>());
 			}
@@ -1068,10 +1068,6 @@ void GameState::clear()
         if(entity.second.has_component<BodyComponent>())
             for(auto& partBody : entity.second.component<BodyComponent>()->bodies)
                 getContext().world.DestroyBody(partBody.second);
-
-        if(entity.second.has_component<ScriptsComponent>())
-            for(auto& scriptPair : entity.second.component<ScriptsComponent>()->scripts)
-                scriptPair.second->close();
 
         entity.second.destroy();
     }

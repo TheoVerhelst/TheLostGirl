@@ -14,7 +14,8 @@ RenderSystem::RenderSystem(sf::RenderWindow& window, Parameters& parameters):
 	m_window(window),
 	m_texture{},
 	m_parameters(parameters),
-	m_bloomEffect{}
+	m_bloomEffect{},
+	m_postEffectSupported{PostEffect::isSupported()}
 {
 	m_texture.create(window.getSize().x, window.getSize().y);
 }
@@ -37,9 +38,9 @@ void RenderSystem::update(entityx::EntityManager& entityManager, entityx::EventM
 				orderedEntities[transformComponent->transforms.at(spritePair.first).z].push_back(&spritePair.second);
 		}
 	}
-	
+
 	//Draw the texture and the GUI on the window and display
-	if(PostEffect::isSupported() and m_parameters.bloomEnabled)
+	if(m_postEffectSupported and m_parameters.bloomEnabled)
 	{
 		m_texture.clear({255, 0, 0});
 		//For each plan, in the reverse order
@@ -65,5 +66,5 @@ void RenderSystem::update(entityx::EntityManager& entityManager, entityx::EventM
 				//Draw on the texture
 				m_window.draw(*sprite);
 	}
-		
+
 }
