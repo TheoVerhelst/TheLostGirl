@@ -268,7 +268,7 @@ void GameState::saveWorld(const std::string& file)
 					root["joints"]["pulley joints"][last]["local anchor A"]["y"] = castedJoint->GetBodyA()->GetLocalPoint(castedJoint->GetAnchorA()).y*pixelByMeter;
 					root["joints"]["pulley joints"][last]["local anchor B"]["x"] = castedJoint->GetBodyB()->GetLocalPoint(castedJoint->GetAnchorB()).x*pixelByMeter;
 					root["joints"]["pulley joints"][last]["local anchor B"]["y"] = castedJoint->GetBodyB()->GetLocalPoint(castedJoint->GetAnchorB()).y*pixelByMeter;
-					root["joints"]["pulley joints"][last]["ground anchor A"]["x"] = castedJoint->GetGroundAnchorA().x*pixelByMeter;
+		root["joints"]["pulley joints"][last]["ground anchor A"]["x"] = castedJoint->GetGroundAnchorA().x*pixelByMeter;
 					root["joints"]["pulley joints"][last]["ground anchor A"]["y"] = castedJoint->GetGroundAnchorA().y*pixelByMeter;
 					root["joints"]["pulley joints"][last]["ground anchor B"]["x"] = castedJoint->GetGroundAnchorB().x*pixelByMeter;
 					root["joints"]["pulley joints"][last]["ground anchor B"]["y"] = castedJoint->GetGroundAnchorB().y*pixelByMeter;
@@ -378,6 +378,7 @@ void GameState::saveWorld(const std::string& file)
 				}
 
 				case e_unknownJoint:
+				case e_mouseJoint:
 				default:
 					break;
 			}

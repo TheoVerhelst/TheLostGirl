@@ -1,7 +1,7 @@
 #ifndef INTERPRETER_HPP
 #define INTERPRETER_HPP
 
-#include <map>
+#include <unordered_map>
 #include <fstream>
 
 #include <boost/variant.hpp>
@@ -11,7 +11,7 @@
 #include <TheLostGirl/StateStack.h>
 
 typedef boost::variant<bool, int, float, std::string, entityx::Entity> Data;
-typedef std::list<std::string> VecStr;
+typedef std::list<std::string> ListStr;
 
 class Interpreter
 {
@@ -28,23 +28,23 @@ class Interpreter
 			std::function<Data(const std::vector<Data>&, StateStack::Context)> pointer;
 		};
 		std::ifstream m_file;///< Stream of the script file to execute.
-		const std::map<std::string, int> m_precedence;///< Precedence of all binary and unary operators.
-		const std::map<std::string, Function> m_functions;///< All functions available in the script.
-		const std::map<std::string, Data> m_initialVars;///< Variables available by default in all scripts.
-		std::map<std::string, Data> m_vars;///< Variables of the current script.
+		const std::unordered_map<std::string, int> m_precedence;///< Precedence of all binary and unary operators.
+		const std::unordered_map<std::string, Function> m_functions;///< All functions available in the script.
+		const std::unordered_map<std::string, Data> m_initialVars;///< Variables available by default in all scripts.
+		std::unordered_map<std::string, Data> m_vars;///< Variables of the current script.
 		StateStack::Context* m_context;    ///< The current context of the application.
 
 		std::string m_operators;
 		const std::vector<std::vector<std::string>> m_multichar0perators;
 		const std::vector<std::string> m_reservedNames;
 
-		void interpretBlock(VecStr::iterator from, VecStr::iterator to, VecStr::iterator begin);
-		Tree<Data>::Ptr convert(const VecStr& tokens);
-		VecStr tokenize(const std::string& line) const;
+		void interpretBlock(ListStr::iterator from, ListStr::iterator to, ListStr::iterator begin);
+		Tree<Data>::Ptr convert(ListStr::const_iterator from, ListStr::const_iterator to);
+		ListStr tokenize(const std::string& line) const;
 		Data evaluateToken(const std::string& token) const;
 		Data evaluateTree(const Tree<Data>::Ptr expression) const;
 
-		size_t parenthesis(const VecStr& tokens) const;
+		ListStr::const_iterator parenthesis(ListStr::const_iterator from, ListStr::const_iterator to) const;
 
 		/// Check if the given string contains only whitespaces.
 		/// \param str String to check.

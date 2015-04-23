@@ -14,18 +14,18 @@ using namespace sf;
 
 FloatRect handleResize(Event::SizeEvent size)
 {
-	unsigned int iw{size.width};
-	unsigned int ih{size.height};
+	float iw{static_cast<float>(size.width)};
+	float ih{static_cast<float>(size.height)};
 	float fh(ih), fw(iw);//If size is in a 16:9 ratio, it won't change.
 
-	if(iw / 16 < ih / 9) //Taller than a 16:9 ratio
+	if(iw / 16.f < ih / 9.f) //Taller than a 16:9 ratio
 	{
-		fh = iw * (9.0 / 16.0);
+		fh = iw * (9.0f / 16.0f);
 		fw = iw;
 	}
-	else if(iw / 16 > ih / 9) //Larger than a 16:9 ratio
+	else if(iw / 16.f > ih / 9.f) //Larger than a 16:9 ratio
 	{
-		fw = ih * (16.0 / 9.0);
+		fw = ih * (16.0f / 9.0f);
 		fh = ih;
 	}
 

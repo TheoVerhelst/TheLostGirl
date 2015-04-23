@@ -61,6 +61,7 @@ void Mover::operator()(entityx::Entity entity, double) const
 			moveIsHorizontal = false;
 			break;
 
+		case Direction::None:
 		default:
 			return;
 	}
@@ -91,9 +92,9 @@ void Mover::operator()(entityx::Entity entity, double) const
 			{
 				//Flip the angle
 				if(directionComponent->direction == Direction::Left)
-					entity.component<BowComponent>()->angle = cap(remainder(entity.component<BowComponent>()->angle - b2_pi, 2*b2_pi), -b2_pi, b2_pi/2);
+					entity.component<BowComponent>()->angle = cap(static_cast<float>(remainder(entity.component<BowComponent>()->angle - b2_pi, 2.f*b2_pi)), -b2_pi, b2_pi/2.f);
 				else if(directionComponent->direction == Direction::Right)
-					entity.component<BowComponent>()->angle = cap(remainder(entity.component<BowComponent>()->angle - b2_pi, 2*b2_pi), -b2_pi/2, b2_pi);
+					entity.component<BowComponent>()->angle = cap(static_cast<float>(remainder(entity.component<BowComponent>()->angle - b2_pi, 2.f*b2_pi)), -b2_pi/2.f, b2_pi);
 
 				//If the entity has a quiver
 				if(entity.has_component<BowComponent>())
@@ -126,13 +127,13 @@ void Mover::operator()(entityx::Entity entity, double) const
 								if(directionComponent->direction == Direction::Left)
 								{
 									jointDef.referenceAngle = b2_pi;
-									jointDef.localAnchorA = {0.183333, 0.41666667};
+									jointDef.localAnchorA = {0.183333f, 0.41666667f};
 									jointDef.localAnchorB = {0.4f-0.025f, 0.05f};
 								}
 								else if(directionComponent->direction == Direction::Right)
 								{
 									jointDef.referenceAngle = 0.f;
-									jointDef.localAnchorA = {0.625f, 0.41666667};
+									jointDef.localAnchorA = {0.625f, 0.41666667f};
 									jointDef.localAnchorB = {0.025f, 0.05f};
 								}
 
@@ -372,13 +373,13 @@ void BowBender::operator()(entityx::Entity entity, double) const
 				if(directionComponent->direction == Direction::Left)
 				{
 					jointDef.referenceAngle = b2_pi;
-					jointDef.localAnchorA = {0.183333, 0.41666667};
+					jointDef.localAnchorA = {0.183333f, 0.41666667f};
 					jointDef.localAnchorB = {0.4f-0.025f, 0.05f};
 				}
 				else if(directionComponent->direction == Direction::Right)
 				{
 					jointDef.referenceAngle = 0.f;
-					jointDef.localAnchorA = {0.625f, 0.41666667};
+					jointDef.localAnchorA = {0.625f, 0.41666667f};
 					jointDef.localAnchorB = {0.025f, 0.05f};
 				}
 				jointDef.localAxisA = {1.f, 0.f};
@@ -421,8 +422,8 @@ void ArrowShooter::operator()(entityx::Entity entity, double) const
 			for(b2JointEdge* jointEdge{arrowBody->GetJointList()}; jointEdge; jointEdge = jointEdge->next)
 				arrowBody->GetWorld()->DestroyJoint(jointEdge->joint);
 
-			double shootForceX{bowComponent->power*cos(bowComponent->angle)};
-			double shootForceY{-bowComponent->power*sin(bowComponent->angle)};
+			float shootForceX{static_cast<float>(bowComponent->power*cos(bowComponent->angle))};
+			float shootForceY{static_cast<float>(-bowComponent->power*sin(bowComponent->angle))};
 			if(directionComponent->direction == Direction::Left)
 			{
 				shootForceX = bowComponent->power*cos(bowComponent->angle+b2_pi);

@@ -25,7 +25,7 @@ struct Parameters
 {
 	Lang lang = EN;                                           ///< The current language.
 	bool debugMode = false;                                   ///< True if the DebugDrawing must be activated.
-	unsigned short int scaleIndex = 0;                        ///< The index of the current scale, in the range [0, 5[
+	unsigned int scaleIndex = 0;                        ///< The index of the current scale, in the range [0, 5[
 	float scale = scales[scaleIndex];                         ///< Current scale.
 	float pixelByMeter = 120.f;                               ///< Original pixels/meter scale.
 	float scaledPixelByMeter = scale*pixelByMeter;            ///< Scaled pixels/meter scale, equal to scale*fullPixelScale

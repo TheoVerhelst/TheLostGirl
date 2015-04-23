@@ -1,5 +1,34 @@
 foe = nearest foe(self)
 if foe is true
+	test = 3+4
+	test = 3+4
+	test = 3+4
+	test = 3+4
+	test = 3+4
+	test = 3+4
+	test = 3+4
+	test = 3+4
+	test = 3+4
+	test = 3+4
+	test = 3+4
+	test = 3+4
+	test = 3+4
+	test = 3+4
+	test = 3+4
+	test = 3+4
+	test = 3+4
+	test = 3+4
+	test = 3+4
+	test = 3+4
+	test = 3+4
+	test = 3+4
+	test = 3+4
+	test = 3+4
+	test = 3+4
+	test = 3+4
+	test = 3+4
+	test = 3+4
+	test = 3+4
 	dist = distance from(self, foe)
 	dir = direction to(self, foe)
 	move(self, dir)
@@ -7,4 +36,3 @@ if foe is true
 		stop(self)
 	endif
 endif
-t = "abc d d"

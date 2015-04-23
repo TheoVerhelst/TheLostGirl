@@ -24,6 +24,8 @@ std::wstring LangManager::tr(const std::string& entryName)
 			case FR:
 				return L"Entrée non trouvée.";
 
+			case NL:
+			case IT:
 			default:
 				return L"Entry not found.";
 		}
@@ -52,6 +54,8 @@ void LangManager::loadLang(Lang langToLoad)
 			filePath = "resources/lang/FR";
 			break;
 
+		case NL:
+		case IT:
 		default:
 			filePath = "resources/lang/EN";
 			break;

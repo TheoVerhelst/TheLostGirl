@@ -140,10 +140,13 @@ Json::Value serialize(entityx::ComponentHandle<BodyComponent> component, float p
 					ret[partName]["polygon fixtures"].append(fixtureObj);
 					break;
 
-				default:
 				case b2Shape::e_chain:
 					ret[partName]["chain fixtures"].append(fixtureObj);
 					break;
+
+				case b2Shape::e_typeCount:
+				default:
+					throw std::runtime_error("Invalid shape type.");
 			}
 		}
 	}
@@ -215,6 +218,7 @@ Json::Value serialize(entityx::ComponentHandle<DirectionComponent> component)
 		case Direction::Bottom:
 			ret["direction"] = "bottom";
 			break;
+		case Direction::None:
 		default:
 			ret["direction"] = "none";
 			break;
@@ -264,6 +268,7 @@ Json::Value serialize(entityx::ComponentHandle<WalkComponent> component)
 		case Direction::Bottom:
 			ret["effective movement"] = "bottom";
 			break;
+		case Direction::None:
 		default:
 			ret["effective movement"] = "none";
 			break;

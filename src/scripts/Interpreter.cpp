@@ -84,9 +84,9 @@ void Interpreter::interpret(entityx::Entity entity, StateStack::Context context)
 			m_file.seekg(0);
 			m_context = &context;
 			m_vars["self"] = entity;
-			VecStr lines;
-			for(std::string line; std::getline(m_file, line);)
-				lines.push_back(line);
+			ListStr lines = {""};
+			while(std::getline(m_file, lines.back()))
+				lines.push_back("");
 			interpretBlock(lines.begin(), lines.end(), lines.begin());
 			m_context = nullptr;
 			//Reset all variables
@@ -101,29 +101,29 @@ void Interpreter::interpret(entityx::Entity entity, StateStack::Context context)
 		throw std::runtime_error("Interpreter::interpret() method called with an invalid script file.");
 }
 
-void Interpreter::interpretBlock(VecStr::iterator from, VecStr::iterator to, VecStr::iterator begin)
+void Interpreter::interpretBlock(ListStr::iterator from, ListStr::iterator to, ListStr::iterator begin)
 {
 	for(;from != to; from++)
 	{
 		try
 		{
-			VecStr tokens = tokenize(*from);
+			ListStr tokens = std::move(tokenize(*from));
 			/*std::cout << "Tokens:";
 			for(auto& tok:tokens)
 				std::cout << "[" << tok << "]";
 			std::cout << std::endl;*/
-			if(tokens.size() > 0)
+			if(not tokens.empty())
 			{
 				if(tokens.front() == "if" or tokens.front() == "else if")
 				{
-					Data conditionData = evaluateTree(convert(VecStr(std::next(tokens.begin()), tokens.end())));
+					Data conditionData = evaluateTree(convert(std::next(tokens.cbegin()), tokens.cend()));
 					cast<bool>(conditionData);
 					bool condition{boost::get<bool>(conditionData)}, skip{false};
-					VecStr::iterator beginIf(std::next(from));
+					ListStr::iterator beginIf(std::next(from));
 					short int depth{0};
-					for(VecStr::iterator endIf(beginIf); endIf != to; endIf++)
+					for(ListStr::iterator endIf(beginIf); endIf != to; endIf++)
 					{
-						VecStr ifTokens = tokenize(*endIf);
+						ListStr ifTokens = tokenize(*endIf);
 						if(ifTokens.front() == "if")
 							depth++;
 						if(depth == 0 and not skip and
@@ -150,7 +150,7 @@ void Interpreter::interpretBlock(VecStr::iterator from, VecStr::iterator to, Vec
 					}
 				}
 				else if(tokens.front() != "else" and tokens.front() != "endif")
-					evaluateTree(convert(tokens));
+					evaluateTree(convert(tokens.begin(), tokens.end()));
 			}
 		}
 		catch(const ScriptError& e)
@@ -161,11 +161,11 @@ void Interpreter::interpretBlock(VecStr::iterator from, VecStr::iterator to, Vec
 	}
 }
 
-VecStr Interpreter::tokenize(const std::string& line) const
+ListStr Interpreter::tokenize(const std::string& line) const
 {
 	//This function use boost and handmade algorithms in place of std::regex because
 	//std:regex is very, very slow and totally kill the FPS.
-	VecStr first, res;
+	ListStr first, res;
 	//First tokenization, match string literal
 	//This step must be done before everything else because words in string must don't be matched.
 	bool inString{false};
@@ -217,7 +217,7 @@ VecStr Interpreter::tokenize(const std::string& line) const
 	//Third tokenization, separates everything according to the operators.
 	for(const auto& submatch:first)
 	{
-		auto beginOfToken(submatch.cbegin());
+		beginOfToken = submatch.cbegin();
 		for(auto it(submatch.cbegin()); it != submatch.cend(); ++it)
 		{
 			if(*it == '!' or *it == ':' or *it == ',' or *it == '=' or *it == '<' or *it == '>' or *it == '+'
@@ -248,14 +248,14 @@ VecStr Interpreter::tokenize(const std::string& line) const
 	return res;
 }
 
-Tree<Data>::Ptr Interpreter::convert(const VecStr& tokens)
+Tree<Data>::Ptr Interpreter::convert(ListStr::const_iterator from, ListStr::const_iterator to)
 {
 	Tree<Data>::Ptr res;
 	std::stack<std::string> operatorsStack;
 	std::stack<Tree<Data>::Ptr> operands;
-	for(auto it(tokens.begin()); it != tokens.end(); ++it)
+	for(auto it(from); it != to; ++it)
 	{
-		if(std::next(it) != tokens.end() and (*(std::next(it)) == "="
+		if(std::next(it) != to and (*(std::next(it)) == "="
 				or (m_precedence.find(*it) != m_precedence.end() and *(std::next(it)) == "(")))
 			operands.push(nullptr);
 		else if(m_precedence.find(*it) != m_precedence.end())
@@ -286,13 +286,13 @@ Tree<Data>::Ptr Interpreter::convert(const VecStr& tokens)
 		else if(*it == "(")
 		{
 			//Parenthesis for function call
-			if(it != tokens.begin() and m_functions.find(*std::prev(it)) != m_functions.end())
+			if(it != from and m_functions.find(*std::prev(it)) != m_functions.end())
 			{
 				Tree<Data>::Ptr functionTree = Tree<Data>::create(*std::prev(it));
 				//The function has been pushed on the stack with the value 0, so pop it.
 				operands.pop();
 				int depth{1};
-				for(auto it2(std::next(it)), lastComma(it2); it2 != tokens.end() and depth > 0; ++it2)
+				for(auto it2(std::next(it)), lastComma(it2); it2 != to and depth > 0; ++it2)
 				{
 					if(*it2 == "(")
 						depth++;
@@ -301,8 +301,7 @@ Tree<Data>::Ptr Interpreter::convert(const VecStr& tokens)
 					//Add one argument in the arguments list.
 					if(*it2 == "," or depth == 0)
 					{
-						VecStr subExpression(lastComma, it2);
-						functionTree->pushChild(convert(subExpression));
+						functionTree->pushChild(convert(lastComma, it2));
 						lastComma = std::next(it2);
 						if(depth == 0)
 							it = it2;
@@ -314,19 +313,17 @@ Tree<Data>::Ptr Interpreter::convert(const VecStr& tokens)
 			//Arithmetic parenthesis
 			else
 			{
-				VecStr subExpression(std::next(it), tokens.end());
-				const size_t offset(parenthesis(subExpression));
-				subExpression.assign(subExpression.begin(), std::next(subExpression.begin(), offset));
-				operands.push(convert(subExpression));
-				std::advance(it, offset+1);
+				auto parenthesisIterator(parenthesis(std::next(it), to));
+				operands.push(convert(std::next(it), parenthesisIterator));
+				it = parenthesisIterator;
 			}
 		}
 		else if(*it == "=")
 		{
-			if(it == tokens.begin() or not isIdentifier(*std::prev(it)))
+			if(it == from or not isIdentifier(*std::prev(it)))
 				throw ScriptError("invalid identifier in assignation.");
 			operands.pop();
-			Tree<Data>::Ptr value = convert(VecStr(std::next(it), tokens.end()));
+			Tree<Data>::Ptr value = convert(std::next(it), to);
 			m_vars[*std::prev(it)] = evaluateTree(value);
 			//Assignement return assigned value, allowing chained assigements.
 			return value;
@@ -374,8 +371,14 @@ Tree<Data>::Ptr Interpreter::convert(const VecStr& tokens)
 
 Data Interpreter::evaluateToken(const std::string& token) const
 {
+	//Variable
+	if(isIdentifier(token) and m_vars.find(token) != m_vars.end())
+		return m_vars.at(token);
+	//Function name or variable identifier in assignement
+	else if(isIdentifier(token) and m_functions.find(token) != m_functions.end())
+		return 0;
 	//Number literal
-	if(isNumber(token))
+	else if(isNumber(token))
 	{
 		if(token.find(".") != std::string::npos)
 			return stof(token);
@@ -427,19 +430,15 @@ Data Interpreter::evaluateToken(const std::string& token) const
 		}
 		return res;
 	}
-	//Variable
-	else if(isIdentifier(token) and m_vars.find(token) != m_vars.end())
-		return m_vars.at(token);
-	//Function name or variable identifier in assignement
-	else if(isIdentifier(token) and m_functions.find(token) != m_functions.end())
-		return 0;
 	else
 		throw ScriptError("unrecognized token: " + token);
 }
 
 Data Interpreter::evaluateTree(const Tree<Data>::Ptr expression) const
 {
-	if(not expression->noChildren())
+	if(expression->noChildren())
+		return expression->getValue();
+	else
 	{
 		/*
 		std::cout << "Evaluate " << expression->getValue()
@@ -451,7 +450,7 @@ Data Interpreter::evaluateTree(const Tree<Data>::Ptr expression) const
 		auto fn_it = m_functions.find(boost::get<std::string>(expression->getValue()));
 		if(fn_it != m_functions.end())
 		{
-			auto fn = fn_it->second;
+			auto& fn = fn_it->second;
 			if(fn.numberOperands > -1 and
 					(short int)expression->childrenNumber() != fn.numberOperands)
 			{
@@ -471,23 +470,16 @@ Data Interpreter::evaluateTree(const Tree<Data>::Ptr expression) const
 					boost::get<std::string>(expression->getValue()));
 		}
 	}
-	return expression->getValue();
 }
 
-size_t Interpreter::parenthesis(const VecStr& tokens) const
+ListStr::const_iterator Interpreter::parenthesis(ListStr::const_iterator from, ListStr::const_iterator to) const
 {
-	int depth{1}, i{0};
-	for(auto& token : tokens)
-	{
-		if(token == "(")
+	for(int depth{1}; from != to and depth > 0; ++from)
+		if(*from == "(")
 			depth++;
-		else if(token == ")")
+		else if(*from == ")")
 			depth--;
-		if(depth == 0)
-			break;
-		i++;
-	}
-	return i;
+	return from;
 }
 
 inline bool Interpreter::isSpace(const std::string& str) const
@@ -498,7 +490,7 @@ inline bool Interpreter::isSpace(const std::string& str) const
 inline bool Interpreter::isNumber(const std::string& str) const
 {
 	bool foundDot{false};
-	return std::all_of(str.begin(), str.end(), [&foundDot](const char& ch)
+	return std::all_of(str.cbegin(), str.cend(), [&foundDot](const char& ch)
 						{
 							bool res = std::isdigit(ch) or (ch == '.' and not foundDot);
 							if(ch == '.')
@@ -509,7 +501,7 @@ inline bool Interpreter::isNumber(const std::string& str) const
 
 bool Interpreter::isIdentifier(const std::string& str) const
 {
-	return std::all_of(str.begin(), str.end(), [](const char& ch){return std::isalnum(ch) or std::isspace(ch);});
+	return std::all_of(str.cbegin(), str.cend(), [](const char& ch){return std::isalnum(ch) or std::isspace(ch);});
 }
 
 inline bool Interpreter::isBool(const std::string& str) const
@@ -519,7 +511,7 @@ inline bool Interpreter::isBool(const std::string& str) const
 
 inline bool Interpreter::isString(const std::string& str) const
 {
-	return str.size() >= 2 and *(str.begin()) == '\"' and *(str.end()-1) == '\"';
+	return str.size() >= 2 and *(str.cbegin()) == '\"' and *(str.cend()-1) == '\"';
 }
 
 inline bool Interpreter::isValue(const std::string& str) const
