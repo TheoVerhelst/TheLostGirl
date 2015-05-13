@@ -9,11 +9,12 @@
 
 #include <TheLostGirl/Category.h>
 #include <TheLostGirl/components.h>
+#include <TheLostGirl/Command.h>
 
 #include <TheLostGirl/systems/PendingChangesSystem.h>
 
-PendingChangesSystem::PendingChangesSystem(b2World& world):
-	m_world(world)
+PendingChangesSystem::PendingChangesSystem(StateStack::Context context):
+	m_world(context.world)
 {}
 
 void PendingChangesSystem::update(entityx::EntityManager& entityManager, entityx::EventManager&, double dt)

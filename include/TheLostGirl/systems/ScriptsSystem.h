@@ -1,7 +1,9 @@
 #ifndef SCRIPTSSYSTEM_H
 #define SCRIPTSSYSTEM_H
 
-#include <queue>
+#include <entityx/System.h>
+
+#include <TheLostGirl/StateStack.h>
 
 //Forward declarations
 namespace entityx
@@ -9,7 +11,6 @@ namespace entityx
 	class EventManager;
 	class EntityManager;
 }
-struct Command;
 
 /// System that plays animations on entities.
 /// \see AnimationsManager

@@ -14,10 +14,10 @@
 
 #include <TheLostGirl/systems/PhysicsSystem.h>
 
-PhysicsSystem::PhysicsSystem(b2World& world, Parameters& parameters, entityx::SystemManager& systemManager):
-	m_world(world),
-	m_parameters(parameters),
-	m_systemManager(systemManager)
+PhysicsSystem::PhysicsSystem(StateStack::Context context):
+	m_world(context.world),
+	m_pixelByMeter(context.parameters.pixelByMeter),
+	m_systemManager(context.systemManager)
 {}
 
 void PhysicsSystem::update(entityx::EntityManager& entityManager, entityx::EventManager&, double dt)
@@ -43,7 +43,7 @@ void PhysicsSystem::update(entityx::EntityManager& entityManager, entityx::Event
 		{
 			b2Body* body{bodyComponent->bodies["main"]};
 			float targetVelocity{0.f};
-			float walkVelocity{walkComponent->walkSpeed/m_parameters.pixelByMeter};
+			float walkVelocity{walkComponent->walkSpeed/m_pixelByMeter};
 			if(walkComponent->effectiveMovement ==  Direction::Left)
 				targetVelocity = -walkVelocity - body->GetLinearVelocity().x;
 			else if(walkComponent->effectiveMovement ==  Direction::Right)
@@ -61,7 +61,7 @@ void PhysicsSystem::update(entityx::EntityManager& entityManager, entityx::Event
 		if(jumpComponent->mustJump and bodyComponent->bodies.find("main") != bodyComponent->bodies.end())
 		{
 			b2Body* body{bodyComponent->bodies["main"]};
-			float targetVelocity{-jumpComponent->jumpStrength/m_parameters.pixelByMeter};
+			float targetVelocity{-jumpComponent->jumpStrength/m_pixelByMeter};
 			body->ApplyLinearImpulse({0.f, targetVelocity*body->GetMass()}, body->GetWorldCenter(), true);
 			jumpComponent->mustJump = false;
 		}
@@ -153,7 +153,7 @@ void PhysicsSystem::update(entityx::EntityManager& entityManager, entityx::Event
 	//		double dragForceMagnitude{(1 - fabs(scalarProduct)) * flightSpeed * flightSpeed * dragConstant * body->GetMass()};
 			double dragForceMagnitude{(1 - scalarProduct) * flightSpeed * flightSpeed * dragConstant * body->GetMass()};
 			//Convert the local friction point to Box2D global coordinates
-			b2Vec2 localFrictionPoint{sftob2(arrowComponent->localFrictionPoint/m_parameters.pixelByMeter)};
+			b2Vec2 localFrictionPoint{sftob2(arrowComponent->localFrictionPoint/m_pixelByMeter)};
 			b2Vec2 arrowTailPosition{body->GetWorldPoint(localFrictionPoint)};
 			body->ApplyForce(dragForceMagnitude*(-flightDirection), arrowTailPosition, true);
 		}
@@ -172,8 +172,8 @@ void PhysicsSystem::update(entityx::EntityManager& entityManager, entityx::Event
 			{
 				b2Vec2 pos{bodyPair.second->GetPosition()};
 				float32 angle{bodyPair.second->GetAngle()};
-				transforms[bodyPair.first].x = pos.x * m_parameters.pixelByMeter;
-				transforms[bodyPair.first].y = pos.y * m_parameters.pixelByMeter;
+				transforms[bodyPair.first].x = pos.x * m_pixelByMeter;
+				transforms[bodyPair.first].y = pos.y * m_pixelByMeter;
 				transforms[bodyPair.first].angle = angle*180/b2_pi;
 			}
 		}

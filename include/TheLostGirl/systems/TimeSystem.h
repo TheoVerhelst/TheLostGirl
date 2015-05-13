@@ -5,6 +5,8 @@
 
 #include <entityx/System.h>
 
+#include <TheLostGirl/StateStack.h>
+
 //Forward declarations
 namespace entityx
 {
@@ -17,7 +19,8 @@ class TimeSystem : public entityx::System<TimeSystem>
 {
 	public:
 		/// Default constructor.
-		TimeSystem();
+		/// \param context Current context of the application.
+		TimeSystem(StateStack::Context context);
 
 		/// System's update function.
 		/// \param es Entity manager.

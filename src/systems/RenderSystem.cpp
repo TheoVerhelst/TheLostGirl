@@ -10,14 +10,14 @@
 
 #include <TheLostGirl/systems/RenderSystem.h>
 
-RenderSystem::RenderSystem(sf::RenderWindow& window, Parameters& parameters):
-	m_window(window),
+RenderSystem::RenderSystem(StateStack::Context context):
+	m_window(context.window),
 	m_texture{},
-	m_parameters(parameters),
+	m_bloomEnabled(context.parameters.bloomEnabled),
 	m_bloomEffect{},
 	m_postEffectSupported{PostEffect::isSupported()}
 {
-	m_texture.create(window.getSize().x, window.getSize().y);
+	m_texture.create(m_window.getSize().x, m_window.getSize().y);
 }
 
 void RenderSystem::update(entityx::EntityManager& entityManager, entityx::EventManager&, double)
@@ -41,7 +41,7 @@ void RenderSystem::update(entityx::EntityManager& entityManager, entityx::EventM
 	const sf::View& windowView(m_window.getView());
 	const sf::FloatRect viewRect(windowView.getCenter()-windowView.getSize()/2.f, windowView.getSize());
 	//Draw the texture and the GUI on the window and display
-	if(m_postEffectSupported and m_parameters.bloomEnabled)
+	if(m_postEffectSupported and m_bloomEnabled)
 	{
 		m_texture.clear({255, 0, 0});
 		//For each plan, in the reverse order

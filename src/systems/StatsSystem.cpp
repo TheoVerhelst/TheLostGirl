@@ -11,7 +11,8 @@
 #include <TheLostGirl/systems/StatsSystem.h>
 
 StatsSystem::StatsSystem(StateStack::Context context):
-	m_context(context)
+	m_context(context),
+	m_commandQueue(context.systemManager.system<PendingChangesSystem>()->commandQueue)
 {}
 
 void StatsSystem::update(entityx::EntityManager& entityManager, entityx::EventManager& eventManager, double dt)

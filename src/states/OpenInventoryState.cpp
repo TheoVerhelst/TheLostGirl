@@ -23,8 +23,8 @@ OpenInventoryState::OpenInventoryState(StateStack& stack, entityx::Entity entity
 	tgui::Gui& gui(getContext().gui);
 
 	m_background = tgui::Panel::create();
-	m_background->setPosition(bindWidth(gui, 0.25f), bindHeight(gui, 0.f));
-	m_background->setSize(bindWidth(gui, 0.5f), bindHeight(gui));
+	m_background->setPosition(bindWidth(gui, 0.25f), bindHeight(gui, 0.125f));
+	m_background->setSize(bindWidth(gui, 0.5f), bindHeight(gui, 0.75f));
 	m_background->setBackgroundColor(sf::Color(255, 255, 255, 100));
 	gui.add(m_background);
 
@@ -34,8 +34,8 @@ OpenInventoryState::OpenInventoryState(StateStack& stack, entityx::Entity entity
 	else
 		m_entityName->setText("");
 	m_entityName->setTextColor(sf::Color::Black);
-	m_entityName->setPosition(0.f, bindHeight(m_background, 0.125f));
-	m_entityName->setSize(bindWidth(m_background), bindHeight(m_background, 0.5f));
+	m_entityName->setTextSize(35);
+	m_entityName->setPosition(bindWidth(m_background, 0.5f) - bindWidth(m_entityName, 0.5f), bindHeight(m_background, 0.125f));
 	m_background->add(m_entityName);
 
 	m_grid = tgui::Grid::create();

@@ -9,13 +9,14 @@
 #include <TheLostGirl/Command.h>
 #include <TheLostGirl/actions.h>
 #include <TheLostGirl/Category.h>
+#include <TheLostGirl/systems/PendingChangesSystem.h>
 
 #include <TheLostGirl/systems/DragAndDropSystem.h>
 
 
-DragAndDropSystem::DragAndDropSystem(sf::RenderWindow& window, std::queue<Command>& commandQueue):
-	m_window(window),
-	m_commandQueue(commandQueue),
+DragAndDropSystem::DragAndDropSystem(StateStack::Context context):
+	m_window(context.window),
+	m_commandQueue(context.systemManager.system<PendingChangesSystem>()->commandQueue),
 	m_origin{0, 0},
 	m_line{sf::Vertex({0, 0}, sf::Color::Black), sf::Vertex({0, 0}, sf::Color::Black)},
 	m_isActive{false}

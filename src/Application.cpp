@@ -229,13 +229,13 @@ void Application::render()
 
 void Application::registerSystems()
 {
-	m_systemManager.add<PhysicsSystem>(m_world, m_parameters, m_systemManager);
-	m_systemManager.add<PendingChangesSystem>(m_world);
-	m_systemManager.add<AnimationsSystem>();
-	m_systemManager.add<RenderSystem>(m_window, m_parameters);
-	m_systemManager.add<DragAndDropSystem>(m_window, m_systemManager.system<PendingChangesSystem>()->commandQueue);
-	m_systemManager.add<ScrollingSystem>(m_window, m_parameters);
-	m_systemManager.add<TimeSystem>();
+	m_systemManager.add<PhysicsSystem>(m_stateStack.getContext());
+	m_systemManager.add<PendingChangesSystem>(m_stateStack.getContext());
+	m_systemManager.add<AnimationsSystem>(m_stateStack.getContext());
+	m_systemManager.add<RenderSystem>(m_stateStack.getContext());
+	m_systemManager.add<DragAndDropSystem>(m_stateStack.getContext());
+	m_systemManager.add<ScrollingSystem>(m_stateStack.getContext());
+	m_systemManager.add<TimeSystem>(m_stateStack.getContext());
 	m_systemManager.add<StatsSystem>(m_stateStack.getContext());
 	m_systemManager.add<ScriptsSystem>(m_stateStack.getContext());
 }

@@ -1,6 +1,10 @@
 #ifndef SCROLLINGSYSTEM_H
 #define SCROLLINGSYSTEM_H
 
+#include <entityx/System.h>
+
+#include <TheLostGirl/StateStack.h>
+
 //Forward declarations
 namespace sf
 {
@@ -18,10 +22,9 @@ class ScrollingSystem : public entityx::System<ScrollingSystem>
 {
 	public:
 		/// Default constructor.
-		/// \param window SFML's window of wich set the view.
-		/// \param parameters Structure containing all the game parameters.
-		ScrollingSystem(sf::RenderWindow& window, Parameters& parameters);
-		
+		/// \param context Current context of the application.
+		ScrollingSystem(StateStack::Context context);
+
 		/// Set the level bounds. This must be called before the first update.
 		/// \param levelRect Rectangle defining the level bounds.
 		/// \param referencePlan Number of the plan where actors evolute.
@@ -35,7 +38,7 @@ class ScrollingSystem : public entityx::System<ScrollingSystem>
 
 	private:
 		sf::RenderWindow& m_window;///< SFML's window of wich set the view.
-		Parameters& m_parameters;  ///< Structure containing all the game parameters.
+		float& m_scale;            ///< Current scale of graphics and  images.
 		sf::IntRect m_levelRect;   ///< Rectangle defining the level bounds.
 		float m_referencePlan;     ///< Number of the plan where actors evolute.
 };

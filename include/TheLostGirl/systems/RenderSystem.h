@@ -1,10 +1,10 @@
 #ifndef RENDERSYSTEM_H
 #define RENDERSYSTEM_H
 
-#include <SFML/Graphics/RenderTexture.hpp>
-#include <SFML/Graphics/RenderWindow.hpp>
+#include <entityx/System.h>
 
 #include <TheLostGirl/BloomEffect.h>
+#include <TheLostGirl/StateStack.h>
 
 //Forward declarations
 namespace entityx
@@ -12,15 +12,19 @@ namespace entityx
 	class EventManager;
 	class EntityManager;
 }
+namespace sf
+{
+	class RenderWindow;
+	class RenderTexture;
+}
 
 /// System that draws all drawables entities on the screen.
 class RenderSystem : public entityx::System<RenderSystem>
 {
 	public:
 		/// Default constructor.
-		/// \param window SFML's window on wich to render the entities.
-		/// \param parameters Structure containing all the game parameters.
-		RenderSystem(sf::RenderWindow& window, Parameters& parameters);
+		/// \param context Current context of the application.
+		RenderSystem(StateStack::Context context);
 
 		/// System's update function.
 		/// \param es Entity manager.
@@ -31,7 +35,7 @@ class RenderSystem : public entityx::System<RenderSystem>
 	private:
 		sf::RenderWindow& m_window;  ///< SFML's window on wich to render the entities.
 		sf::RenderTexture m_texture; ///< A render texture to apply the shaders.
-		Parameters& m_parameters;    ///< The current application parameters.
+		bool& m_bloomEnabled;        ///< Indicates if the bloom effect i enabled.
 		BloomEffect m_bloomEffect;   ///< The shader to apply on m_texture.
 		bool m_postEffectSupported;  ///< Indicates if post effects are supported (avoid useless calls of PostEffect::isSupported())
 };

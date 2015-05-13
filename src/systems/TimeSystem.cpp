@@ -7,7 +7,7 @@
 
 #include <TheLostGirl/systems/TimeSystem.h>
 
-TimeSystem::TimeSystem():
+TimeSystem::TimeSystem(StateStack::Context):
 	m_totalTime{0.f},
 	m_windStrength{0.f},
 	m_initialWindStrength{0.f},

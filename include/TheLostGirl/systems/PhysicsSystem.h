@@ -1,6 +1,10 @@
 #ifndef PHYSICSSYSTEM_H
 #define PHYSICSSYSTEM_H
 
+#include <entityx/System.h>
+
+#include <TheLostGirl/StateStack.h>
+
 //Forward declarations
 namespace entityx
 {
@@ -15,10 +19,8 @@ class PhysicsSystem : public entityx::System<PhysicsSystem>
 {
 	public:
 		/// Default constructor.
-		/// \param world b2World where the physics entities should be in.
-		/// \param parameters Structure containing all the game parameters.
-		/// \param systemManager The system manager of the game.
-		PhysicsSystem(b2World& world, Parameters& parameters, entityx::SystemManager& systemManager);
+		/// \param context Current context of the application.
+		PhysicsSystem(StateStack::Context context);
 
 		/// System's update function.
 		/// \param es Entity manager.
@@ -28,7 +30,7 @@ class PhysicsSystem : public entityx::System<PhysicsSystem>
 
 	private:
 		b2World& m_world;                       ///< b2World where the physics entities should be in.
-		Parameters& m_parameters;               ///< Structure containing all the game parameters.
+		float& m_pixelByMeter;                  ///< Pixels/meter scale, not scaled.
 		entityx::SystemManager& m_systemManager;///< The system manager of the game.
 };
 
