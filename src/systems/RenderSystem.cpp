@@ -38,29 +38,27 @@ void RenderSystem::update(entityx::EntityManager& entityManager, entityx::EventM
 				orderedEntities[transformComponent->transforms.at(spritePair.first).z].push_back(&spritePair.second);
 		}
 	}
-
+	const sf::View& windowView(m_window.getView());
+	const sf::FloatRect viewRect(windowView.getCenter()-windowView.getSize()/2.f, windowView.getSize());
 	//Draw the texture and the GUI on the window and display
 	if(m_postEffectSupported and m_parameters.bloomEnabled)
 	{
 		m_texture.clear({255, 0, 0});
 		//For each plan, in the reverse order
-		for(std::multimap<float, std::deque<sf::Sprite*>>::const_reverse_iterator it{orderedEntities.crbegin()}; it != orderedEntities.crend(); it++)
+		for(auto it(orderedEntities.crbegin()); it != orderedEntities.crend(); it++)
 			//Draw the entities of this plan
 			for(auto sprite : it->second)
 				//Draw on the texture
 				m_texture.draw(*sprite);
 		m_texture.display();
-		const sf::View& windowView(m_window.getView());
 		m_texture.setView(windowView);
-		sf::Transform viewTransform;
-		viewTransform.translate(windowView.getCenter()-(windowView.getSize()/2.f));
 		//Draw the texture on the window trough the bloom effect
-		m_bloomEffect.apply(m_texture, m_window, viewTransform);
+		m_bloomEffect.apply(m_texture, m_window, sf::Transform().translate(viewRect.left, viewRect.top));
 	}
 	else
 	{
 		//For each plan, in the reverse order
-		for(std::multimap<float, std::deque<sf::Sprite*>>::const_reverse_iterator it{orderedEntities.crbegin()}; it != orderedEntities.crend(); it++)
+		for(auto it(orderedEntities.crbegin()); it != orderedEntities.crend(); it++)
 			//Draw the entities of this plan
 			for(auto sprite : it->second)
 				//Draw on the texture

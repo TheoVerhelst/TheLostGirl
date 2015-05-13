@@ -19,10 +19,14 @@ DebugDraw::DebugDraw(StateStack::Context context):
 
 void DebugDraw::DrawPolygon(const b2Vec2* vertices, int32 vertexCount, const b2Color& color)
 {
-	sf::ConvexShape polygon(vertexCount);
+	sf::ConvexShape polygon(static_cast<unsigned int>(vertexCount));
 	for(int32 i{0}; i < vertexCount; ++i)
-		polygon.setPoint(i, sf::Vector2f(vertices[i].x, vertices[i].y)*m_context.parameters.scaledPixelByMeter);
-	polygon.setOutlineColor(sf::Color(color.r*255.f, color.g*255.f, color.b*255.f, color.a*127.f));
+		polygon.setPoint(static_cast<unsigned int>(i),
+						sf::Vector2f(vertices[i].x, vertices[i].y)*m_context.parameters.scaledPixelByMeter);
+	polygon.setOutlineColor(sf::Color(static_cast<sf::Uint8>(color.r*255.f),
+										static_cast<sf::Uint8>(color.g*255.f),
+										static_cast<sf::Uint8>(color.b*255.f),
+										static_cast<sf::Uint8>(color.a*127.f)));
 	polygon.setOutlineThickness(-1.f);
 	polygon.setFillColor(sf::Color::Transparent);
 	m_context.window.draw(polygon);
@@ -59,7 +63,7 @@ void DebugDraw::DrawSolidCircle(const b2Vec2& center, float32 radius, const b2Ve
 	circle.setOutlineThickness(-1.f);
 	circle.setFillColor(sf::Color::Transparent);
 	m_context.window.draw(circle);
-	
+
 	sf::Vertex line[2];
 	b2Vec2 axisPoint{center + radius * axis};
 	line[0].position = sf::Vector2f(center.x, center.y)*m_context.parameters.scaledPixelByMeter;
@@ -96,7 +100,7 @@ void DebugDraw::DrawTransform(const b2Transform& xf)
 	line1[1].position = p1 + axisScale * xAxis;
 	line1[1].color = sf::Color::Red;
 	m_context.window.draw(line1, 2, sf::Lines);
-	
+
 	sf::Vertex line2[2];
 	line2[0].position = p1;
 	line2[0].color = sf::Color::Green;
@@ -124,15 +128,12 @@ void DebugDraw::drawDebugAth()
 				{
 					//Find the main body
 					std::map<std::string, b2Body*>& bodies(entity.component<BodyComponent>()->bodies);
-					if(not bodies.empty())
-					{
-						//If there is a main body
-						if(bodies.find("main") != bodies.end())
-							position = bodies["main"]->GetPosition();
-						//Else, take the first that come in hand
-						else
-							position = bodies.begin()->second->GetPosition();
-					}
+					//If there is a main body
+					if(bodies.find("main") != bodies.end())
+						position = bodies["main"]->GetPosition();
+					//Else, take the first that come in hand
+					else if(not bodies.empty())
+						position = bodies.begin()->second->GetPosition();
 				}
 				if(entity.has_component<BowComponent>())
 				{
@@ -142,7 +143,7 @@ void DebugDraw::drawDebugAth()
 				break;
 			}
 		}
-		
+
 		//Draw GUI
 		//Position
 		tgui::Label::Ptr positionLabel{m_context.gui.get<tgui::Label>("positionLabel")};
@@ -156,9 +157,9 @@ void DebugDraw::drawDebugAth()
 			m_context.gui.add(positionLabel, "positionLabel");
 		}
 		b2Vec2 positionPixels{m_context.parameters.pixelByMeter * position};
-		positionLabel->setText("Meters (" + roundOutput(position.x) + ", " + roundOutput(position.y) + ")\n" + 
+		positionLabel->setText("Meters (" + roundOutput(position.x) + ", " + roundOutput(position.y) + ")\n" +
 							   "Pixels (" + roundOutput(positionPixels.x) + ", " + roundOutput(positionPixels.y) + ")");
-		
+
 		//Bending
 		tgui::Label::Ptr bendingLabel{m_context.gui.get<tgui::Label>("bendingLabel")};
 		if(bendingLabel == nullptr)
@@ -171,7 +172,7 @@ void DebugDraw::drawDebugAth()
 			m_context.gui.add(bendingLabel, "bendingLabel");
 		}
 		bendingLabel->setText("Power: " + roundOutput(bendPower)+ "\nAngle: " + roundOutput(bendAngle));
-		
+
 		//FPS
 		tgui::Label::Ptr FPSLabel{m_context.gui.get<tgui::Label>("FPSLabel")};
 		if(FPSLabel == nullptr)
@@ -199,7 +200,7 @@ void DebugDraw::drawDebugAth()
 		if(FPSLabel != nullptr)
 			m_context.gui.remove(FPSLabel);
 	}
-	
+
 }
 
 void DebugDraw::setFPS(float framesPerSecond)

@@ -5,10 +5,12 @@
 #include <TheLostGirl/Command.h>
 #include <TheLostGirl/components.h>
 #include <TheLostGirl/actions.h>
+#include <TheLostGirl/systems/PendingChangesSystem.h>
 
 #include <TheLostGirl/Player.h>
 
-Player::Player()
+Player::Player(StateStack& stateStack):
+	m_stateStack(stateStack)
 {
 	// Set initial inputs bindings
 	m_keyBinding[sf::Keyboard::Q]         = Action::MoveLeft;
@@ -25,6 +27,8 @@ Player::Player()
 	m_keyBinding[sf::Keyboard::RAlt]      = Action::Roulade;
 	m_keyBinding[sf::Keyboard::E]         = Action::GenericAction;
 	m_keyBinding[sf::Keyboard::Period]    = Action::GenericAction;
+	m_keyBinding[sf::Keyboard::F]         = Action::SearchCorpse;
+	m_keyBinding[sf::Keyboard::M]         = Action::SearchCorpse;
 	m_keyBinding[sf::Keyboard::LControl]  = Action::FurtherView;
 	m_keyBinding[sf::Keyboard::RControl]  = Action::FurtherView;
 	m_keyBinding[sf::Keyboard::Space]     = Action::Jump;
@@ -35,12 +39,12 @@ Player::Player()
 	m_keyBinding[sf::Keyboard::Tab]       = Action::Inventory;
 	m_keyBinding[sf::Keyboard::L]         = Action::Inventory;
 	m_keyBinding[sf::Keyboard::Escape]    = Action::Pause;
-	
+
 	m_mouseButtonBinding[sf::Mouse::Button::Left]  = Action::Bend;
 	m_mouseButtonBinding[sf::Mouse::Button::Right] = Action::Concentrate;
-	
+
 	m_mouseWheelBinding = Action::ChangeArrow;
-	
+
 	// Set initial action bindings, fill the maps
 	initializeActions();
 
@@ -66,8 +70,9 @@ Player::~Player()
 {
 }
 
-void Player::handleEvent(const sf::Event& event, std::queue<Command>& commands)
+void Player::handleEvent(const sf::Event& event)
 {
+	auto& commands(m_stateStack.getContext().systemManager.system<PendingChangesSystem>()->commandQueue);
 	if(event.type == sf::Event::KeyPressed)
 	{
 		// Check if pressed key appears in key binding, trigger command if so
@@ -106,7 +111,7 @@ void Player::handleEvent(const sf::Event& event, std::queue<Command>& commands)
 	}
 	else if(event.type == sf::Event::MouseMoved)
 	{
-		
+
 	}
 	else if(event.type == sf::Event::MouseWheelMoved)
 	{
@@ -268,7 +273,7 @@ bool Player::isActived(Action action) const
 	}
 	for(auto& button : joystickButtonsBindings)
 	{
-		for(int i{0}; i < sf::Joystick::Count; ++i)
+		for(unsigned int i{0}; i < sf::Joystick::Count; ++i)
 		{
 			if(sf::Joystick::isButtonPressed(i, button))
 				return true;
@@ -284,9 +289,10 @@ bool Player::isActived(Action action) const
 	}
 	return false;
 }
-	
-void Player::handleInitialInputState(std::queue<Command>& commands)
+
+void Player::handleInitialInputState()
 {
+	auto& commands(m_stateStack.getContext().systemManager.system<PendingChangesSystem>()->commandQueue);
 	for(auto& pair : m_startActionBinding)
 	{
 		if(isActived(pair.first))
@@ -295,10 +301,8 @@ void Player::handleInitialInputState(std::queue<Command>& commands)
 	//We must do 2 differents loops because an action can have to differents
 	//bindings for the beginning and the ending of the action.
 	for(auto& pair : m_stopActionBinding)
-	{
 		if(not isActived(pair.first))
 			commands.push(pair.second);
-	}
 }
 
 void Player::initializeActions()
@@ -307,15 +311,16 @@ void Player::initializeActions()
 	m_startActionBinding[MoveRight].action =  Mover(Direction::Right);
 	m_startActionBinding[MoveUp].action =  Mover(Direction::Top);
 	m_startActionBinding[MoveDown].action =  Mover(Direction::Bottom);
-	
+
 	m_stopActionBinding[MoveLeft].action =  Mover(Direction::Left, false);
 	m_stopActionBinding[MoveRight].action = Mover(Direction::Right, false);
 	m_stopActionBinding[MoveUp].action = Mover(Direction::Top, false);
 	m_stopActionBinding[MoveDown].action = Mover(Direction::Bottom, false);
-	
+
 	m_immediateActionBinding[Jump].action = Jumper();
 	m_immediateActionBinding[PickUp].action = ArrowPicker();
-	
+	m_immediateActionBinding[SearchCorpse].action = CorpseSearcher(m_stateStack);
+
 	//Do not assign a command to the bending action, the DragAndDrop system already does
 }
 

@@ -22,11 +22,8 @@ void StateStack::update(sf::Time dt)
 {
 	// Iterate from top to bottom, stop as soon as update() returns false
 	for(auto itr = m_stack.rbegin(); itr != m_stack.rend(); ++itr)
-	{
 		if(!(*itr)->update(dt))
 			break;
-	}
-
 	applyPendingChanges();
 }
 

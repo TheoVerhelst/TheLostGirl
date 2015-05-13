@@ -31,7 +31,8 @@ class GameState : public State
 	public:
         /// Default constructor.
         /// \param stack StateStack wherein the State is added.
-		GameState(StateStack& stack, const std::string& file = "resources/levels/save.json");
+        /// \param file Path name of the save file to load.
+		GameState(StateStack& stack, std::string file = "resources/levels/save.json");
 
 		/// Default destructor.
 		/// Remove all bodies, sprites and others from the memory.

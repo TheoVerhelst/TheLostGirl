@@ -73,10 +73,13 @@ class Application
 		entityx::EventManager m_eventManager;  ///< The entity events manager.
 		entityx::EntityManager m_entityManager;///< The entity manager.
 		entityx::SystemManager m_systemManager;///< The entity systems manager.
-		Player m_player;                       ///< The input manager.
 		b2World m_world;                       ///< The Box2D world.
 		StateStack m_stateStack;               ///< The game state manager.
+		Player m_player;                       ///< The input manager.
 		DebugDraw m_debugDraw;                 ///< The debugging drawer.
+		sf::Time m_FPSTimer;                   ///< Count time since last FPS ath update.
+		sf::Time m_FPSRefreshRate;             ///< Refresh rate of the FPS ath.
+
 };
 
 #endif//APPLICATION_H

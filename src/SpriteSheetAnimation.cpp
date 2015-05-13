@@ -64,10 +64,10 @@ void SpriteSheetAnimation::deserialize(const Json::Value& value)
 	{
 		sf::IntRect rect;
 		float duration;
-		rect.left = float(value[i]["x"].asInt());
-		rect.top = float(value[i]["y"].asInt());
-		rect.width = float(value[i]["w"].asInt());
-		rect.height = float(value[i]["h"].asInt());
+		rect.left = static_cast<float>(value[i]["x"].asInt());
+		rect.top = static_cast<float>(value[i]["y"].asInt());
+		rect.width = static_cast<float>(value[i]["w"].asInt());
+		rect.height = static_cast<float>(value[i]["h"].asInt());
 		duration = value[i]["relative duration"].asFloat();
 		m_frames.push_back(Frame(rect, duration));
 	}

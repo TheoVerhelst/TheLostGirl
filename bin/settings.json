@@ -1,9 +1,9 @@
 {
    "enable bloom" : false,
-   "lang" : "EN",
+   "lang" : "FR",
    "resolution" : 576,
    "window size" : {
-      "h" : 632,
-      "w" : 1132
+      "h" : 627,
+      "w" : 1221
    }
 }

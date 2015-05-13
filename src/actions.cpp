@@ -1,3 +1,5 @@
+#include <random>
+
 #include <Box2D/Dynamics/b2Body.h>
 #include <Box2D/Dynamics/Joints/b2PrismaticJoint.h>
 #include <Box2D/Dynamics/Joints/b2RevoluteJoint.h>
@@ -10,6 +12,7 @@
 #include <TheLostGirl/AnimationsManager.h>
 #include <TheLostGirl/functions.h>
 #include <TheLostGirl/JointRoles.h>
+#include <TheLostGirl/states/OpenInventoryState.h>
 
 #include <TheLostGirl/actions.h>
 
@@ -102,7 +105,8 @@ void Mover::operator()(entityx::Entity entity, double) const
 					BowComponent::Handle bowComponent{entity.component<BowComponent>()};
 					entityx::Entity notchedArrow{bowComponent->notchedArrow};
 					//If the notched arrow has a b2Body
-					if(notchedArrow.valid() and notchedArrow.has_component<BodyComponent>())
+					if(notchedArrow.valid() and notchedArrow.has_component<BodyComponent>()
+							and notchedArrow.component<BodyComponent>()->bodies.find("main") != notchedArrow.component<BodyComponent>()->bodies.end())
 					{
 						b2Body* arrowBody{notchedArrow.component<BodyComponent>()->bodies.at("main")};
 						//Iterate over all joints
@@ -253,6 +257,8 @@ Jumper::~Jumper()
 
 void Jumper::operator()(entityx::Entity entity, double) const
 {
+	if(not entity)
+		return;
 	if(entity.has_component<JumpComponent>() and entity.has_component<FallComponent>())
 	{
 		FallComponent::Handle fallComponent{entity.component<FallComponent>()};
@@ -291,14 +297,57 @@ Death::~Death()
 {
 }
 
-void Death::operator()(entityx::Entity entity, double) const
+void Death::operator()(entityx::Entity entity, double dt) const
 {
 	if(not entity)
 		return;
-	if(entity.has_component<BodyComponent>())
-		for(auto& bodyPair : entity.component<BodyComponent>()->bodies)
-			bodyPair.second->GetWorld()->DestroyBody(bodyPair.second);
-	entity.destroy();
+	//Play death animation.
+	if(entity.has_component<AnimationsComponent<SpriteSheetAnimation>>())
+		for(auto& animationsPair : entity.component<AnimationsComponent<SpriteSheetAnimation>>()->animationsManagers)
+			if(animationsPair.second.isRegistred("death"))
+				animationsPair.second.play("death");
+	//Set the death component
+	entity.component<DeathComponent>()->dead = true;
+	if(entity.has_component<InventoryComponent>())
+	{
+		//Drop items
+		std::random_device randomDevice;
+		std::mt19937 generator{randomDevice()};
+		std::uniform_real_distribution<float> distribution{0, 1};
+		for(auto& drop : entity.component<DeathComponent>()->drops)
+		{
+			float dice;
+			for(unsigned int i{0}; i < drop.maxDrops; ++i)
+			{
+				dice = distribution(generator);
+				if(dice <= drop.probability)
+				{
+					//Construct and place item into the entity inventory.
+					entityx::Entity item = entity.getManager()->create();
+					ItemComponent::Handle itemComponent = item.assign<ItemComponent>();
+					itemComponent->category = drop.category;
+					itemComponent->type = drop.type;
+					entity.component<InventoryComponent>()->items.push_back(item);
+				}
+			}
+		}
+	}
+
+	//Send a stop command
+	if(entity.has_component<DirectionComponent>() and entity.has_component<WalkComponent>())
+	{
+		DirectionComponent::Handle directionComponent = entity.component<DirectionComponent>();
+		if(directionComponent->moveToLeft and directionComponent->moveToRight)
+		{
+			//Play directly the action, the commandeQueue is not available here
+			//and we know that we are into the main loop part that handles actions.
+			Direction opposite{directionComponent->direction == Direction::Left ? Direction::Right : Direction::Left};
+			Mover(opposite, false)(entity, dt);
+			Mover(directionComponent->direction, false)(entity, dt);
+		}
+		else
+			Mover(directionComponent->direction, false)(entity, dt);
+	}
 }
 
 BowBender::BowBender(float _angle, float _power):
@@ -313,6 +362,8 @@ BowBender::~BowBender()
 
 void BowBender::operator()(entityx::Entity entity, double) const
 {
+	if(not entity)
+		return;
 	if(entity.has_component<BowComponent>() and entity.has_component<DirectionComponent>() and entity.has_component<BodyComponent>())
 	{
 		BowComponent::Handle bowComponent{entity.component<BowComponent>()};
@@ -358,40 +409,44 @@ void BowBender::operator()(entityx::Entity entity, double) const
 				bowComponent->notchedArrow = *found;
 				notchedArrow = *found;
 				bowComponent->arrows.erase(found);
-
-				b2Body* arrowBody{notchedArrow.component<BodyComponent>()->bodies.at("main")};
-				b2Body* bowBody{entity.component<BodyComponent>()->bodies.at("bow")};
-
-				//Destroy all joints (e.g. the quiver/arrow joint)
-				for(b2JointEdge* jointEdge{arrowBody->GetJointList()}; jointEdge; jointEdge = jointEdge->next)
-					arrowBody->GetWorld()->DestroyJoint(jointEdge->joint);
-
-				//Set the joint
-				b2PrismaticJointDef jointDef;
-				jointDef.bodyA = bowBody;
-				jointDef.bodyB = arrowBody;
-				if(directionComponent->direction == Direction::Left)
+				auto& arrowBodies(notchedArrow.component<BodyComponent>()->bodies);
+				auto& entityBodies(entity.component<BodyComponent>()->bodies);
+				if(arrowBodies.find("main") != arrowBodies.end() and entityBodies.find("bow") != entityBodies.end())
 				{
-					jointDef.referenceAngle = b2_pi;
-					jointDef.localAnchorA = {0.183333f, 0.41666667f};
-					jointDef.localAnchorB = {0.4f-0.025f, 0.05f};
+					b2Body* arrowBody{arrowBodies.at("main")};
+					b2Body* bowBody{entityBodies.at("bow")};
+
+					//Destroy all joints (e.g. the quiver/arrow joint)
+					for(b2JointEdge* jointEdge{arrowBody->GetJointList()}; jointEdge; jointEdge = jointEdge->next)
+						arrowBody->GetWorld()->DestroyJoint(jointEdge->joint);
+
+					//Set the joint
+					b2PrismaticJointDef jointDef;
+					jointDef.bodyA = bowBody;
+					jointDef.bodyB = arrowBody;
+					if(directionComponent->direction == Direction::Left)
+					{
+						jointDef.referenceAngle = b2_pi;
+						jointDef.localAnchorA = {0.183333f, 0.41666667f};
+						jointDef.localAnchorB = {0.4f-0.025f, 0.05f};
+					}
+					else if(directionComponent->direction == Direction::Right)
+					{
+						jointDef.referenceAngle = 0.f;
+						jointDef.localAnchorA = {0.625f, 0.41666667f};
+						jointDef.localAnchorB = {0.025f, 0.05f};
+					}
+					jointDef.localAxisA = {1.f, 0.f};
+					jointDef.enableLimit = true;
+					jointDef.lowerTranslation = -0.30833333f;
+					jointDef.upperTranslation = 0.f;
+					jointDef.enableMotor = true;
+					jointDef.maxMotorForce = 10.f;
+					jointDef.userData = add<unsigned int>(jointDef.userData, static_cast<unsigned int>(JointRole::BendingPower));
+					b2World* world{bowBody->GetWorld()};
+					world->CreateJoint(&jointDef);
+					notchedArrow.component<ArrowComponent>()->state = ArrowComponent::Notched;
 				}
-				else if(directionComponent->direction == Direction::Right)
-				{
-					jointDef.referenceAngle = 0.f;
-					jointDef.localAnchorA = {0.625f, 0.41666667f};
-					jointDef.localAnchorB = {0.025f, 0.05f};
-				}
-				jointDef.localAxisA = {1.f, 0.f};
-				jointDef.enableLimit = true;
-				jointDef.lowerTranslation = -0.30833333f;
-				jointDef.upperTranslation = 0.f;
-				jointDef.enableMotor = true;
-				jointDef.maxMotorForce = 10.f;
-				jointDef.userData = add<unsigned int>(jointDef.userData, static_cast<unsigned int>(JointRole::BendingPower));
-				b2World* world{bowBody->GetWorld()};
-				world->CreateJoint(&jointDef);
-				notchedArrow.component<ArrowComponent>()->state = ArrowComponent::Notched;
 			}
 		}
 	}
@@ -407,6 +462,8 @@ ArrowShooter::~ArrowShooter()
 
 void ArrowShooter::operator()(entityx::Entity entity, double) const
 {
+	if(not entity)
+		return;
 	if(entity.has_component<BowComponent>()
 		and entity.has_component<DirectionComponent>())
 	{
@@ -414,7 +471,8 @@ void ArrowShooter::operator()(entityx::Entity entity, double) const
 		entityx::Entity notchedArrow{bowComponent->notchedArrow};
 		DirectionComponent::Handle directionComponent{entity.component<DirectionComponent>()};
 		//If the notched arrow has a b2Body
-		if(notchedArrow.valid() and notchedArrow.has_component<BodyComponent>() and notchedArrow.has_component<ArrowComponent>())
+		if(notchedArrow.valid() and notchedArrow.has_component<BodyComponent>() and notchedArrow.has_component<ArrowComponent>()
+			and notchedArrow.component<BodyComponent>()->bodies.find("main") != notchedArrow.component<BodyComponent>()->bodies.end())
 		{
 			b2Body* arrowBody{notchedArrow.component<BodyComponent>()->bodies.at("main")};
 
@@ -422,12 +480,12 @@ void ArrowShooter::operator()(entityx::Entity entity, double) const
 			for(b2JointEdge* jointEdge{arrowBody->GetJointList()}; jointEdge; jointEdge = jointEdge->next)
 				arrowBody->GetWorld()->DestroyJoint(jointEdge->joint);
 
-			float shootForceX{static_cast<float>(bowComponent->power*cos(bowComponent->angle))};
-			float shootForceY{static_cast<float>(-bowComponent->power*sin(bowComponent->angle))};
+			float shootForceX{bowComponent->power*static_cast<float>(cos(bowComponent->angle))};
+			float shootForceY{-bowComponent->power*static_cast<float>(sin(bowComponent->angle))};
 			if(directionComponent->direction == Direction::Left)
 			{
-				shootForceX = bowComponent->power*cos(bowComponent->angle+b2_pi);
-				shootForceY = -bowComponent->power*sin(bowComponent->angle+b2_pi);
+				shootForceX = bowComponent->power*static_cast<float>(cos(bowComponent->angle+b2_pi));
+				shootForceY = -bowComponent->power*static_cast<float>(sin(bowComponent->angle+b2_pi));
 			}
 			b2Vec2 shootForce{static_cast<float32>(shootForceX), static_cast<float32>(shootForceY)};
 			arrowBody->ApplyLinearImpulse((arrowBody->GetMass()/20.f)*shootForce, arrowBody->GetWorldCenter(), true);
@@ -457,54 +515,105 @@ ArrowPicker::~ArrowPicker()
 
 void ArrowPicker::operator()(entityx::Entity entity, double) const
 {
+	if(not entity)
+		return;
 	if(entity.has_component<BodyComponent>()
 		and entity.has_component<DirectionComponent>()
 		and entity.has_component<BowComponent>())
 	{
 		DirectionComponent::Handle directionComponent{entity.component<DirectionComponent>()};
 		BodyComponent::Handle bodyComponent{entity.component<BodyComponent>()};
-		b2Body* body{bodyComponent->bodies.at("main")};
-		b2World* world{body->GetWorld()};
-
-		//Do the querying
-		b2AABB pickBox;
-		pickBox.lowerBound = body->GetWorldCenter() - b2Vec2(2, 2);
-		pickBox.upperBound = body->GetWorldCenter() + b2Vec2(2, 2);
-		StickedArrowQueryCallback callback;
-		world->QueryAABB(&callback, pickBox);
-
-		if(callback.foundEntity.valid())
+		if(bodyComponent->bodies.find("main") != bodyComponent->bodies.end())
 		{
-			b2Body* arrowBody{callback.foundEntity.component<BodyComponent>()->bodies.at("main")};
-			b2Body* characterBody{entity.component<BodyComponent>()->bodies.at("main")};
+			b2Body* body{bodyComponent->bodies.at("main")};
+			b2World* world{body->GetWorld()};
 
-			//Destroy all joints (e.g. the ground/arrow weld joint)
-			for(b2JointEdge* jointEdge{arrowBody->GetJointList()}; jointEdge; jointEdge = jointEdge->next)
-				arrowBody->GetWorld()->DestroyJoint(jointEdge->joint);
+			//Do the querying
+			b2AABB pickBox;
+			pickBox.lowerBound = body->GetWorldCenter() - b2Vec2(2, 2);
+			pickBox.upperBound = body->GetWorldCenter() + b2Vec2(2, 2);
+			StickedArrowQueryCallback callback;
+			world->QueryAABB(&callback, pickBox);
 
-			//Set the joint
-			b2WeldJointDef jointDef;
-			jointDef.bodyA = characterBody;
-			jointDef.bodyB = arrowBody;
-			if(directionComponent->direction == Direction::Left)
+			if(callback.foundEntity.valid())
 			{
-				jointDef.referenceAngle = -b2_pi/2.f;
-				jointDef.localAnchorA = {0.36666667f, 0.49166667f};
-				jointDef.localAnchorB = {0.4f, 0.10833333f};
-			}
-			else if(directionComponent->direction == Direction::Right)
-			{
-				jointDef.referenceAngle = -b2_pi/2.f;
-				jointDef.localAnchorA = {0.36666667f, 0.49166667f};
-				jointDef.localAnchorB = {0.4f, 0.10833333f};
-			}
-			jointDef.frequencyHz = 0.f;
-			jointDef.dampingRatio = 0.f;
-			world->CreateJoint(&jointDef);
+				b2Body* arrowBody{callback.foundEntity.component<BodyComponent>()->bodies.at("main")};
+				b2Body* characterBody{entity.component<BodyComponent>()->bodies.at("main")};
 
-			//Add the arrow to the quiver
-			entity.component<BowComponent>()->arrows.push_back(callback.foundEntity);
-			callback.foundEntity.component<ArrowComponent>()->state = ArrowComponent::Stored;
+				//Destroy all joints (e.g. the ground/arrow weld joint)
+				for(b2JointEdge* jointEdge{arrowBody->GetJointList()}; jointEdge; jointEdge = jointEdge->next)
+					arrowBody->GetWorld()->DestroyJoint(jointEdge->joint);
+
+				//Set the joint
+				b2WeldJointDef jointDef;
+				jointDef.bodyA = characterBody;
+				jointDef.bodyB = arrowBody;
+				if(directionComponent->direction == Direction::Left)
+				{
+					jointDef.referenceAngle = -b2_pi/2.f;
+					jointDef.localAnchorA = {0.36666667f, 0.49166667f};
+					jointDef.localAnchorB = {0.4f, 0.10833333f};
+				}
+				else if(directionComponent->direction == Direction::Right)
+				{
+					jointDef.referenceAngle = -b2_pi/2.f;
+					jointDef.localAnchorA = {0.36666667f, 0.49166667f};
+					jointDef.localAnchorB = {0.4f, 0.10833333f};
+				}
+				jointDef.frequencyHz = 0.f;
+				jointDef.dampingRatio = 0.f;
+				world->CreateJoint(&jointDef);
+
+				//Add the arrow to the quiver
+				entity.component<BowComponent>()->arrows.push_back(callback.foundEntity);
+				callback.foundEntity.component<ArrowComponent>()->state = ArrowComponent::Stored;
+			}
+		}
+	}
+}
+
+bool CorpseQueryCallback::ReportFixture(b2Fixture* fixture)
+{
+	entityx::Entity entity{*static_cast<entityx::Entity*>(fixture->GetBody()->GetUserData())};
+	//Return false (and so stop) only if this is a arrow and if this one is sticked.
+	bool found{entity.has_component<InventoryComponent>()
+			and entity.has_component<DeathComponent>()
+			and entity.component<DeathComponent>()->dead};
+	if(found)
+		foundEntity = entity;
+	return not found;
+}
+
+CorpseSearcher::CorpseSearcher(StateStack& stateStack):
+	m_stateStack(stateStack)
+{
+}
+
+CorpseSearcher::~CorpseSearcher()
+{
+}
+
+void CorpseSearcher::operator()(entityx::Entity entity, double) const
+{
+	if(not entity)
+		return;
+	if(entity.has_component<TransformComponent>() and entity.has_component<BodyComponent>())
+	{
+		BodyComponent::Handle bodyComponent{entity.component<BodyComponent>()};
+		if(bodyComponent->bodies.find("main") != bodyComponent->bodies.end())
+		{
+			b2Body* body{bodyComponent->bodies.at("main")};
+			b2World* world{body->GetWorld()};
+
+			//Do the querying
+			b2AABB searchBox;
+			searchBox.lowerBound = body->GetWorldCenter() - b2Vec2(2, 2);
+			searchBox.upperBound = body->GetWorldCenter() + b2Vec2(2, 2);
+			CorpseQueryCallback callback;
+			world->QueryAABB(&callback, searchBox);
+
+			if(callback.foundEntity.valid())
+				m_stateStack.pushState<OpenInventoryState>(callback.foundEntity);
 		}
 	}
 }

@@ -6,11 +6,28 @@ typename Tree<T>::Ptr Tree<T>::create(const T& value,
 }
 
 template <typename T>
+typename Tree<T>::Ptr Tree<T>::copy(Ptr other)
+{
+	Ptr res = create(other->getValue());
+	for(size_t i{0}; i < other->childrenNumber(); ++i)
+		res->pushChild(copy(other->getChild(i)));
+	return res;
+}
+
+template <typename T>
 Tree<T>::Tree(const T& value,
 		const std::vector<Tree<T>::Ptr>& children):
 	m_children(children),
 	m_data(value)
 {}
+
+template <typename T>
+Tree<T>::Tree(Ptr other):
+	m_data(other->getValue())
+{
+	for(size_t i{0}; i < other->childrenNumber(); ++i)
+		pushChild(create(other->getChild(i)));
+}
 
 template <typename T>
 const T& Tree<T>::getValue() const

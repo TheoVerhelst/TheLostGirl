@@ -103,8 +103,8 @@ void AnimationsManager<A>::update(sf::Time dt)
 		bool activeAnimationFound{false};
 		for(auto it = m_animationsMap.begin(); it != m_animationsMap.end(); it++)
 		{
-			if((not activeAnimationFound and it->second.isActive) or
-				(activeAnimationFound and it->second.importance > mostImportant->second.importance))
+			if(it->second.isActive and (not activeAnimationFound or
+				(activeAnimationFound and it->second.importance > mostImportant->second.importance)))
 			{
 				activeAnimationFound = true;
 				mostImportant = it;

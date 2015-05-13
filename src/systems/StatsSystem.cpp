@@ -4,10 +4,13 @@
 #include <TheLostGirl/components.h>
 #include <TheLostGirl/functions.h>
 #include <TheLostGirl/events.h>
+#include <TheLostGirl/Command.h>
+#include <TheLostGirl/actions.h>
 
 #include <TheLostGirl/systems/StatsSystem.h>
 
-StatsSystem::StatsSystem()
+StatsSystem::StatsSystem(std::queue<Command>& commandQueue):
+	m_commandQueue(commandQueue)
 {}
 
 void StatsSystem::update(entityx::EntityManager& entityManager, entityx::EventManager& eventManager, double dt)
@@ -32,11 +35,13 @@ void StatsSystem::update(entityx::EntityManager& entityManager, entityx::EventMa
 			}
 		}
 		if(not (entity.has_component<CategoryComponent>() and entity.component<CategoryComponent>()->category & Category::Player)
-				and healthComponent->current <= 0)
+				and healthComponent->current <= 0 and entity.has_component<DeathComponent>() and not entity.component<DeathComponent>()->dead)
 		{
-			if(entity.has_component<AnimationsComponent<SpriteSheetAnimation>>())
-				for(auto& animationsPair : entity.component<AnimationsComponent<SpriteSheetAnimation>>()->animationsManagers)
-					animationsPair.second.play("death");
+			Command deathCommand;
+			deathCommand.targetIsSpecific = true;
+			deathCommand.entity = entity;
+			deathCommand.action = Death();
+			m_commandQueue.push(deathCommand);
 		}
 
 		//Regen health

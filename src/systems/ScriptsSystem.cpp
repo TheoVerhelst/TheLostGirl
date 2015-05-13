@@ -14,7 +14,11 @@ ScriptsSystem::ScriptsSystem(StateStack::Context context):
 void ScriptsSystem::update(entityx::EntityManager& entityManager, entityx::EventManager&, double)
 {
 	ScriptsComponent::Handle scriptsComponent;
-	for(entityx::Entity entity : entityManager.entities_with_components(scriptsComponent))
-		for(auto& scriptName : scriptsComponent->scriptsNames)
-			m_context.scriptManager.get(scriptName).interpret(entity, m_context);
+	DeathComponent::Handle deadComponent;
+	for(entityx::Entity entity : entityManager.entities_with_components(scriptsComponent, deadComponent))
+	{
+		if(not deadComponent->dead)
+			for(auto& scriptName : scriptsComponent->scriptsNames)
+				m_context.scriptManager.get(scriptName).interpret(entity, m_context);
+	}
 }

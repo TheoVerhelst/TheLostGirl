@@ -36,9 +36,9 @@ FloatRect handleResize(Event::SizeEvent size)
 
 Color fadingColor(Time dt, Time fadingLength, bool in)
 {
-	float alpha{cap((dt / fadingLength) * 255, 0, 255)};
+	float alpha{cap((dt / fadingLength) * 255, 0.f, 255.f)};
 	alpha = in ? alpha : 255 - alpha;//Invert the fading if in is false, so if it is a fade out
-	return Color(255, 255, 255, alpha);
+	return Color(255, 255, 255, static_cast<sf::Uint8>(alpha));
 }
 
 std::string typeToStr(Json::ValueType type)

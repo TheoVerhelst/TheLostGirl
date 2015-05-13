@@ -8,5 +8,6 @@
 #include <TheLostGirl/states/HUDState.h>
 #include <TheLostGirl/states/PauseState.h>
 #include <TheLostGirl/states/EmptyLevelState.h>
+#include <TheLostGirl/states/OpenInventoryState.h>
 
 #endif//STATES_H

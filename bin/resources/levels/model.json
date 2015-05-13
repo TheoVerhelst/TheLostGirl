@@ -433,6 +433,11 @@
                             
                         ]
                     },
+					{
+						"name" : "name",
+						"type" : "string",
+						"required" : false
+					},
                     {
                         "name" : "inventory",
                         "type" : "object",
@@ -451,7 +456,26 @@
                                 "required" : true,
                                 "children" :
                                 {
-                                    "type" : "string"
+                                    "type" : "object",
+									"free children names" : false,
+									"children" :
+									[
+										{
+											"name" : "type",
+											"type" : "string",
+											"required" : true
+										},
+										{
+											"name" : "category",
+											"type" : "string",
+											"required" : true
+										},
+										{
+											"name" : "weight",
+											"type" : "real",
+											"required" : true
+										}
+									]
                                 }
                             }
                         ]
@@ -472,6 +496,53 @@
 									"type" : "string"
 								}
                             }
+                        ]
+                    },
+                    {
+						"name" : "death",
+                        "type" : "object",
+                        "free children names" : false,
+                        "required" : false,
+                        "children":
+                        [
+							{
+                                "name" : "dead",
+                                "type" : "bool",
+                                "required" : true
+                            },
+							{
+								"name" : "drops",
+								"type" : "array",
+								"required" : true,
+								"children" : 
+								{
+									"type" : "object",
+									"free children names" : false,
+									"children" : 
+									[
+										{
+											"type" : "real",
+											"name" : "probability",
+											"required" : true
+										},
+										{
+											"type" : "string",
+											"name" : "category",
+											"required" : true
+										},
+										{
+											"type" : "string",
+											"name" : "type",
+											"required" : true
+										},
+										{
+											"type" : "int",
+											"name" : "max drops",
+											"required" : true
+										}
+									]
+								}
+							}
                         ]
                     },
                     {

@@ -21,7 +21,7 @@ void AnimationsSystem::update(entityx::EntityManager& entityManager, entityx::Ev
 	FallComponent::Handle fallComponent;
 	BodyComponent::Handle bodyComponent;
 	DirectionComponent::Handle directionComponent;
-	
+
 	//For every entity that can fall, set the right animation
 	for(auto entity : entityManager.entities_with_components(animationsComponent,
 															bodyComponent,
@@ -43,14 +43,14 @@ void AnimationsSystem::update(entityx::EntityManager& entityManager, entityx::Ev
 			}
 		}
 	}
-	
+
 	//Update the AnimationsManager components
 	for(auto entity : entityManager.entities_with_components(animationsComponent))
 		//For each animations manager of the entity
 		for(auto& animationsPair : animationsComponent->animationsManagers)
 			animationsPair.second.update(sf::seconds(dt));
-	
-	//Update the AnimationsManager components
+
+	//Update the AnimationsManager components of the sky entities
 	for(auto entity : entityManager.entities_with_components(skyAnimationsComponent))
 		//For each animations manager of the entity
 		for(auto& animationsPair : skyAnimationsComponent->animationsManagers)

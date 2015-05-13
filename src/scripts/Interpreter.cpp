@@ -23,7 +23,8 @@ Interpreter::Interpreter():
 				{"*", 6},
 				{"/", 6},
 				{"%", 6},
-				{"!", 1}},
+				{"!", 1},
+				{"=", 0}},
 	m_functions{{"print", {-1, print}},
 				{"<", {2, lowerThanOp}},
 				{">", {2, greaterThanOp}},
@@ -40,6 +41,7 @@ Interpreter::Interpreter():
 				{"/", {2, divideOp}},
 				{"%", {2, moduloOp}},
 				{"!", {1, notOp}},
+				{"=", {2, nullptr}},
 				{"nearest foe", {1, nearestFoe}},
 				{"distance from", {2, distanceFrom}},
 				{"direction to", {2, directionTo}},
@@ -54,7 +56,7 @@ Interpreter::Interpreter():
 				{"right", static_cast<int>(Direction::Right)},
 				{"top", static_cast<int>(Direction::Top)},
 				{"bottom",static_cast<int>(Direction::Bottom)}},
-	m_vars{},
+	m_vars(m_initialVars),
 	m_context(nullptr),
 	m_operators("!:,=<>+-*/%()"),
 	m_multichar0perators{{"<", "="}, {">", "="}, {"=", "="}, {"!", "="}},
@@ -70,109 +72,158 @@ Interpreter::~Interpreter()
 
 bool Interpreter::loadFromFile(const std::string& fileName)
 {
-	m_file.open(fileName);
-	return m_file.good();
+	std::ifstream file(fileName);
+	try
+	{
+		if(not file.is_open())
+			throw std::runtime_error("invalid script file.");
+		for(std::string line; std::getline(file, line);)
+		{
+			std::list<std::string> tokens = tokenize(line.begin(), line.end());
+			m_expressions.push_back(convertTokens(tokens.cbegin(), tokens.cend()));
+		}
+	}
+	catch(const std::runtime_error& e)
+	{
+		file.close();
+		throw std::runtime_error("Error while interpreting script \""+fileName+"\": " + e.what());
+	}
+	file.close();
+	return true;
 }
 
 void Interpreter::interpret(entityx::Entity entity, StateStack::Context context)
 {
-	if(m_file.is_open())
-	{
-		try
-		{
-			m_file.clear();
-			m_file.seekg(0);
-			m_context = &context;
-			m_vars["self"] = entity;
-			ListStr lines = {""};
-			while(std::getline(m_file, lines.back()))
-				lines.push_back("");
-			interpretBlock(lines.begin(), lines.end(), lines.begin());
-			m_context = nullptr;
-			//Reset all variables
-			m_vars = m_initialVars;
-		}
-		catch(const std::runtime_error& e)
-		{
-			std::cerr << "Error while interpreting script : " << e.what() << std::endl;
-		}
-	}
-	else
-		throw std::runtime_error("Interpreter::interpret() method called with an invalid script file.");
+	m_context = &context;
+	m_vars["self"] = entity;
+	interpretBlock(entity, context, m_expressions.begin(), m_expressions.end(), m_expressions.begin());
+	m_context = nullptr;
+	//Reset all variables
+	m_vars = m_initialVars;
 }
 
-void Interpreter::interpretBlock(ListStr::iterator from, ListStr::iterator to, ListStr::iterator begin)
+inline std::string Interpreter::getStr(std::list<Expression::Ptr>::iterator it) const
 {
-	for(;from != to; from++)
+	return boost::get<std::string>((*it)->getValue().first);
+}
+
+void Interpreter::interpretBlock(entityx::Entity entity, StateStack::Context context, std::list<Expression::Ptr>::iterator from, std::list<Expression::Ptr>::iterator to, std::list<Expression::Ptr>::iterator begin)
+{
+	try
 	{
-		try
+		for(;from != to; ++from)
 		{
-			ListStr tokens = std::move(tokenize(*from));
-			/*std::cout << "Tokens:";
-			for(auto& tok:tokens)
-				std::cout << "[" << tok << "]";
-			std::cout << std::endl;*/
-			if(not tokens.empty())
+			if(getStr(from) == "if" or getStr(from) == "else if")
 			{
-				if(tokens.front() == "if" or tokens.front() == "else if")
+				//An if statement has only one child, the boolean expression to evaluate.
+				Data conditionData = evaluateExpression((*from)->getChild(0));
+				cast<bool>(conditionData);
+				bool condition{boost::get<bool>(conditionData)}, skip{false};
+				std::list<Expression::Ptr>::iterator beginIf(std::next(from));
+				short int depth{0};
+				for(std::list<Expression::Ptr>::iterator endIf(beginIf); endIf != to; ++endIf)
 				{
-					Data conditionData = evaluateTree(convert(std::next(tokens.cbegin()), tokens.cend()));
-					cast<bool>(conditionData);
-					bool condition{boost::get<bool>(conditionData)}, skip{false};
-					ListStr::iterator beginIf(std::next(from));
-					short int depth{0};
-					for(ListStr::iterator endIf(beginIf); endIf != to; endIf++)
+					if(getStr(endIf) == "if")
+						depth++;
+					if(depth == 0 and not skip and (getStr(endIf) == "else if" or getStr(endIf) == "else" or getStr(endIf) == "endif"))
 					{
-						ListStr ifTokens = tokenize(*endIf);
-						if(ifTokens.front() == "if")
-							depth++;
-						if(depth == 0 and not skip and
-								(ifTokens.front() == "else if" or ifTokens.front() == "else" or ifTokens.front() == "endif"))
+						if(condition)
 						{
-							if(condition)
-							{
-								interpretBlock(beginIf, endIf, begin);
-								skip = true;
-							}
-							else
-							{
-								from = std::prev(endIf);
-								break;
-							}
+							interpretBlock(entity, context, beginIf, endIf, begin);
+							skip = true;
 						}
-						if(depth == 0 and ifTokens.front() == "endif")
+						else
+						{
+							from = std::prev(endIf);
+							break;
+						}
+					}
+					if(getStr(endIf) == "endif")
+					{
+						if(depth == 0)
 						{
 							from = endIf;
 							break;
 						}
-						if(ifTokens.front() == "endif")
+						else
 							depth--;
 					}
 				}
-				else if(tokens.front() != "else" and tokens.front() != "endif")
-					evaluateTree(convert(tokens.begin(), tokens.end()));
 			}
+			else if(getStr(from) != "else" and getStr(from) != "endif")
+				evaluateExpression(*from);
 		}
-		catch(const ScriptError& e)
+	}
+	catch(const ScriptError& e)
+	{
+		throw std::runtime_error("unable to evaluate line " + std::to_string(std::distance(begin, from)+1) + " : "
+				+ std::string(e.what()));
+	}
+}
+
+Data Interpreter::evaluateExpression(const Expression::Ptr expression)
+{
+	if(expression->noChildren())
+	{
+		if(expression->getValue().second)
 		{
-			throw std::runtime_error("unable to evaluate line " + std::to_string(std::distance(begin, from)+1) + " : "
-					+ std::string(e.what()));
+			auto it = m_vars.find(boost::get<std::string>(expression->getValue().first));
+			if(it == m_vars.end())
+				throw ScriptError("unknow variable name: " + it->first);
+			return it->second;
+		}
+		else
+			return expression->getValue().first;
+	}
+	else
+	{
+		std::string value = boost::get<std::string>(expression->getValue().first);
+		if(value == "=")
+		{
+			const Data rvalue = evaluateExpression(Expression::copy(expression->getChild(1)));
+			m_vars[boost::get<std::string>(expression->getChild(0)->getValue().first)] = rvalue;
+			return rvalue;
+		}
+		else
+		{
+			auto fn_it = m_functions.find(value);
+			if(fn_it != m_functions.end())
+			{
+				auto& fn = fn_it->second;
+				if(fn.numberOperands > -1 and
+						(short int)expression->childrenNumber() != fn.numberOperands)
+				{
+					throw ScriptError("wrong number of operands "
+							"(got "+std::to_string(expression->childrenNumber())+
+							", expected "+std::to_string(fn.numberOperands)+"): "+
+							boost::get<std::string>(expression->getValue().first));
+				}
+				std::vector<Data> args;
+				for(size_t i{0}; i < expression->childrenNumber(); ++i)
+					args.push_back(evaluateExpression(expression->getChild(i)));
+				return fn.pointer(args, *m_context);
+			}
+			else
+			{
+				throw ScriptError("unable to parse the following token: " +
+						boost::get<std::string>(expression->getValue().first));
+			}
 		}
 	}
 }
 
-ListStr Interpreter::tokenize(const std::string& line) const
+std::list<std::string> Interpreter::tokenize(std::string::const_iterator from, std::string::const_iterator to) const
 {
 	//This function use boost and handmade algorithms in place of std::regex because
 	//std:regex is very, very slow and totally kill the FPS.
-	ListStr first, res;
+	std::list<std::string> first, res;
 	//First tokenization, match string literal
-	//This step must be done before everything else because words in string must don't be matched.
+	//This step must be done before everything else because reserved words in string must not be matched.
 	bool inString{false};
-	auto beginOfToken(line.cbegin());
-	for(auto it(line.cbegin()); it != line.cend(); ++it)
+	auto beginOfToken(from);
+	for(auto it(from); it != to; ++it)
 	{
-		if(*it == '\"' and not (it != line.cbegin() and *(it-1) != '\\'))
+		if(*it == '\"' and not (it != from and *(it-1) != '\\'))
 		{
 			if(inString)
 				it++;
@@ -183,7 +234,7 @@ ListStr Interpreter::tokenize(const std::string& line) const
 			inString = not inString;
 		}
 	}
-	first.emplace_back(beginOfToken, line.cend());
+	first.emplace_back(beginOfToken, to);
 
 	//Second tokenization, match reserved names.
 	for(const auto& reservedName : m_reservedNames)
@@ -214,14 +265,14 @@ ListStr Interpreter::tokenize(const std::string& line) const
 			}
 		}
 	}
+
 	//Third tokenization, separates everything according to the operators.
 	for(const auto& submatch:first)
 	{
 		beginOfToken = submatch.cbegin();
 		for(auto it(submatch.cbegin()); it != submatch.cend(); ++it)
 		{
-			if(*it == '!' or *it == ':' or *it == ',' or *it == '=' or *it == '<' or *it == '>' or *it == '+'
-					or *it == '-' or *it == '*' or *it == '/' or *it == '%' or *it == '(' or *it == ')')
+			if(m_operators.find(*it) != std::string::npos)
 			{
 				const std::string strippedToken{strip(std::string(beginOfToken, it))};
 				if(strippedToken != "")
@@ -234,6 +285,7 @@ ListStr Interpreter::tokenize(const std::string& line) const
 		if(strippedToken != "")
 			res.emplace_back(strippedToken);
 	}
+
 	//Join operators that have been separated like <= or !=
 	for(const auto& multicharOp : m_multichar0perators)
 	{
@@ -241,238 +293,174 @@ ListStr Interpreter::tokenize(const std::string& line) const
 		while(it != res.end())
 		{
 			it = res.erase(it, std::next(it, 2));
-			res.emplace(it, multicharOp[0] + multicharOp[1]);
+			res.emplace(it, multicharOp.front() + multicharOp.back());
 			it = std::search(res.begin(), res.end(), multicharOp.cbegin(), multicharOp.cend());
 		}
 	}
 	return res;
 }
 
-Tree<Data>::Ptr Interpreter::convert(ListStr::const_iterator from, ListStr::const_iterator to)
+Expression::Ptr Interpreter::convertTokens(std::list<std::string>::const_iterator from, std::list<std::string>::const_iterator to) const
 {
-	Tree<Data>::Ptr res;
-	std::stack<std::string> operatorsStack;
-	std::stack<Tree<Data>::Ptr> operands;
-	for(auto it(from); it != to; ++it)
+	Expression::Ptr res;
+	if(*from == "if" or *from == "else if")
+		res = Expression::create({*from, false}, {convertTokens(std::next(from), to)});
+	else if(*from == "else" or *from == "endif")
 	{
-		if(std::next(it) != to and (*(std::next(it)) == "="
-				or (m_precedence.find(*it) != m_precedence.end() and *(std::next(it)) == "(")))
-			operands.push(nullptr);
-		else if(m_precedence.find(*it) != m_precedence.end())
+		if(std::next(from) != to)
 		{
-			while(not operatorsStack.empty() and
-					m_precedence.at(operatorsStack.top())
-					>= m_precedence.at(*it))
-			{
-				Tree<Data>::Ptr left, right;
-				left = res;
-				right = operands.top();
-				operands.pop();
-				if(not res)
-				{
-					left = operands.top();
-					operands.pop();
-				}
-				res = Tree<Data>::create(operatorsStack.top(),{left, right});
-				operatorsStack.pop();
-				res->resolveChildren(res);
-			}
-			operatorsStack.push(*it);
+			std::string errorMessage{"unexpected tokens after " + *from + ": "};
+			from++;
+			for(; from != to; ++from)
+				errorMessage += *from;
+			throw ScriptError(errorMessage);
 		}
-		//Value token
-		else if(isValue(*it) and *it != "is")
-			operands.push(Tree<Data>::create(evaluateToken(*it)));
-		//Parenthesis token
-		else if(*it == "(")
+		res = Expression::create({*from, false});
+	}
+	else
+	{
+		//First, convert the tokens to a list of Expression::Ptr, with the postfix notation.
+		//So a list of tokens like ["a", "+", "c", "*", "2"]
+		//will be converted to [{"a"}, {"c"}, {"2"}, {"*"}, {"+"}].
+		std::list<Expression::Ptr> postfixeRes;
+		std::stack<std::string> operatorsStack;
+		for(auto it(from); it != to; ++it)
 		{
-			//Parenthesis for function call
-			if(it != from and m_functions.find(*std::prev(it)) != m_functions.end())
+			//If *it is a funtion name, nothing has to be pushed on the stack
+			if(m_functions.find(*it) != m_functions.end() and std::next(it) != to and *(std::next(it)) == "(")
+				;
+			//If *it is a literal value token
+			else if(isInt(*it))
+				postfixeRes.push_back(Expression::create({std::stoi(*it), false}));
+			else if(isFloat(*it))
+				postfixeRes.push_back(Expression::create({std::stof(*it), false}));
+			else if(isString(*it))
+				postfixeRes.push_back(Expression::create({evaluateStringToken(*it), false}));
+			else if(isBool(*it))
+				postfixeRes.push_back(Expression::create({(*it) == "true", false}));
+			//If *it is an operator
+			else if(m_precedence.find(*it) != m_precedence.end())
 			{
-				Tree<Data>::Ptr functionTree = Tree<Data>::create(*std::prev(it));
-				//The function has been pushed on the stack with the value 0, so pop it.
-				operands.pop();
-				int depth{1};
-				for(auto it2(std::next(it)), lastComma(it2); it2 != to and depth > 0; ++it2)
+				while(not operatorsStack.empty() and m_precedence.at(operatorsStack.top()) >= m_precedence.at(*it))
 				{
-					if(*it2 == "(")
-						depth++;
-					else if(*it2 == ")")
-						depth--;
-					//Add one argument in the arguments list.
-					if(*it2 == "," or depth == 0)
+					postfixeRes.push_back(Expression::create({operatorsStack.top(), false}));
+					operatorsStack.pop();
+				}
+				operatorsStack.push(*it);
+			}
+			//If *it is a variable name
+			else if(isIdentifier(*it))
+				postfixeRes.push_back(Expression::create({*it, true}));
+			//If *it is a parenthesis token
+			else if(*it == "(")
+			{
+				//Parenthesis for function call
+				if(it != from and m_functions.find(*std::prev(it)) != m_functions.end())
+				{
+					Expression::Ptr functionTree = Expression::create({*std::prev(it), false});
+					int depth{1};
+					for(auto it2(std::next(it)), lastComma(it2); it2 != to and depth > 0; ++it2)
 					{
-						functionTree->pushChild(convert(lastComma, it2));
-						lastComma = std::next(it2);
+						if(*it2 == "(")
+							depth++;
+						else if(*it2 == ")")
+							depth--;
+						//Add one argument in the arguments list.
+						if(*it2 == "," and depth == 1)
+						{
+							functionTree->pushChild(convertTokens(lastComma, it2));
+							lastComma = std::next(it2);
+						}
 						if(depth == 0)
+						{
+							functionTree->pushChild(convertTokens(lastComma, it2));
 							it = it2;
+						}
 					}
 					functionTree->resolveChildren(functionTree);
+					postfixeRes.push_back(functionTree);
 				}
-				operands.push(functionTree);
+				//Arithmetic parenthesis
+				else
+				{
+					auto closingParenthesis(parenthesis(std::next(it), to));
+					postfixeRes.push_back(convertTokens(std::next(it), closingParenthesis));
+					it = closingParenthesis;//Go to the end of the parentheses expression
+				}
 			}
-			//Arithmetic parenthesis
 			else
+				throw ScriptError("unrecognized token: " + *it);
+		}
+		while(not operatorsStack.empty())
+		{
+			postfixeRes.push_back(Expression::create({operatorsStack.top(), false}));
+			operatorsStack.pop();
+		}
+		//New effectively convert the postfixe expression to a tree.
+		std::stack<Expression::Ptr> operandsStack;
+		for(auto token:postfixeRes)
+		{
+			Data& value = token->getValue().first;
+			if(value.which() == 3 and m_precedence.find(boost::get<std::string>(value)) != m_precedence.end())
 			{
-				auto parenthesisIterator(parenthesis(std::next(it), to));
-				operands.push(convert(std::next(it), parenthesisIterator));
-				it = parenthesisIterator;
+				Expression::Ptr operand2 = operandsStack.top();
+				operandsStack.pop();
+				Expression::Ptr operand1 = operandsStack.top();
+				operandsStack.pop();
+				Expression::Ptr result = Expression::create(token->getValue(), {operand1, operand2});
+				operandsStack.push(result);
 			}
+			else
+				operandsStack.push(token);
 		}
-		else if(*it == "=")
-		{
-			if(it == from or not isIdentifier(*std::prev(it)))
-				throw ScriptError("invalid identifier in assignation.");
-			operands.pop();
-			Tree<Data>::Ptr value = convert(std::next(it), to);
-			m_vars[*std::prev(it)] = evaluateTree(value);
-			//Assignement return assigned value, allowing chained assigements.
-			return value;
-		}
-	}
-	while(not operatorsStack.empty())
-	{
-		Tree<Data>::Ptr left, right;
-		left = res;
-		if(operands.empty())
-			throw ScriptError("too few operands for operator " + operatorsStack.top());
-		right = operands.top();
-		operands.pop();
-		if(not res)
-		{
-			if(operands.empty())
-				throw ScriptError("too few operands for operator " + operatorsStack.top());
-			left = operands.top();
-			operands.pop();
-		}
-		res = Tree<Data>::create(operatorsStack.top(), {left, right});
-		operatorsStack.pop();
-		res->resolveChildren(res);
-	}
-	//If the line was only one value token.
-	if(not res)
-	{
-		res = operands.top();
-		operands.pop();
-	}
-	if(not operands.empty())
-	{
-		std::string errorMessage("following operands need an operator:");
-		while(not operands.empty())
-		{
-			Data operand{operands.top()->getValue()};
-			operands.pop();
-			cast<std::string>(operand);
-			errorMessage += " " + boost::get<std::string>(operand);
-		}
-		throw ScriptError(errorMessage);
+		res = operandsStack.top();
 	}
 	return res;
 }
 
-Data Interpreter::evaluateToken(const std::string& token) const
+Data Interpreter::evaluateStringToken(const std::string& token) const
 {
-	//Variable
-	if(isIdentifier(token) and m_vars.find(token) != m_vars.end())
-		return m_vars.at(token);
-	//Function name or variable identifier in assignement
-	else if(isIdentifier(token) and m_functions.find(token) != m_functions.end())
-		return 0;
-	//Number literal
-	else if(isNumber(token))
+	std::string res(token.begin()+1, token.end()-1);
+	//Parse string and replace escaped characters
+	for(size_t i{0}; i < res.size(); ++i)
 	{
-		if(token.find(".") != std::string::npos)
-			return stof(token);
-		else
-			return stoi(token);
-	}
-	//Boolean literal
-	else if(isBool(token))
-		return token == "true";
-	//String literal
-	else if(isString(token))
-	{
-		std::string res(token.begin()+1, token.end()-1);
-		//Parse string and replace escaped characters
-		for(size_t i{0}; i < res.size(); ++i)
+		if(res[i] == '\\')
 		{
-			if(res[i] == '\\')
+			const char escaped{res[i+1]};
+			res.erase(i, 2);
+			switch(escaped)
 			{
-				const char escaped{res[i+1]};
-				res.erase(i, 2);
-				switch(escaped)
-				{
-					case 'a':
-						res.insert(i, 1, '\a');
-						break;
-					case 'b':
-						res.insert(i, 1, '\b');
-						break;
-					case 'f':
-						res.insert(i, 1, '\f');
-						break;
-					case 'n':
-						res.insert(i, 1, '\n');
-						break;
-					case 'r':
-						res.insert(i, 1, '\r');
-						break;
-					case 't':
-						res.insert(i, 1, '\t');
-						break;
-					case 'v':
-						res.insert(i, 1, '\v');
-						break;
-					default:
-						res.insert(i, 1, escaped);
-						break;
-				}
+				case 'a':
+					res.insert(i, 1, '\a');
+					break;
+				case 'b':
+					res.insert(i, 1, '\b');
+					break;
+				case 'f':
+					res.insert(i, 1, '\f');
+					break;
+				case 'n':
+					res.insert(i, 1, '\n');
+					break;
+				case 'r':
+					res.insert(i, 1, '\r');
+					break;
+				case 't':
+					res.insert(i, 1, '\t');
+					break;
+				case 'v':
+					res.insert(i, 1, '\v');
+					break;
+				default:
+					res.insert(i, 1, escaped);
+					break;
 			}
 		}
-		return res;
 	}
-	else
-		throw ScriptError("unrecognized token: " + token);
+	return res;
 }
 
-Data Interpreter::evaluateTree(const Tree<Data>::Ptr expression) const
-{
-	if(expression->noChildren())
-		return expression->getValue();
-	else
-	{
-		/*
-		std::cout << "Evaluate " << expression->getValue()
-		<< " with children:" << std::endl;
-		for(size_t i{0}; i < expression->childrenNumber(); ++i)
-			std::cout << "\t(" << i << ") "
-			<< expression->getChild(i)->getValue() << std::endl;
-		*/
-		auto fn_it = m_functions.find(boost::get<std::string>(expression->getValue()));
-		if(fn_it != m_functions.end())
-		{
-			auto& fn = fn_it->second;
-			if(fn.numberOperands > -1 and
-					(short int)expression->childrenNumber() != fn.numberOperands)
-			{
-				throw ScriptError("wrong number of operands "
-						"(got "+std::to_string(expression->childrenNumber())+
-						", expected "+std::to_string(fn.numberOperands)+") :"+
-						boost::get<std::string>(expression->getValue()));
-			}
-			std::vector<Data> args;
-			for(size_t i{0}; i < expression->childrenNumber(); ++i)
-				args.push_back(evaluateTree(expression->getChild(i)));
-			return fn.pointer(args, *m_context);
-		}
-		else
-		{
-			throw ScriptError("unable to parse the following token: " +
-					boost::get<std::string>(expression->getValue()));
-		}
-	}
-}
-
-ListStr::const_iterator Interpreter::parenthesis(ListStr::const_iterator from, ListStr::const_iterator to) const
+std::list<std::string>::const_iterator Interpreter::parenthesis(std::list<std::string>::const_iterator from, std::list<std::string>::const_iterator to) const
 {
 	for(int depth{1}; from != to and depth > 0; ++from)
 		if(*from == "(")
@@ -487,7 +475,7 @@ inline bool Interpreter::isSpace(const std::string& str) const
 	return strip(str) == "";
 }
 
-inline bool Interpreter::isNumber(const std::string& str) const
+inline bool Interpreter::isFloat(const std::string& str) const
 {
 	bool foundDot{false};
 	return std::all_of(str.cbegin(), str.cend(), [&foundDot](const char& ch)
@@ -496,12 +484,18 @@ inline bool Interpreter::isNumber(const std::string& str) const
 							if(ch == '.')
 								foundDot = true;
 							return res;
-						});
+						}) and foundDot;
+}
+
+inline bool Interpreter::isInt(const std::string& str) const
+{
+	return std::all_of(str.cbegin(), str.cend(), [](const char& ch){return std::isdigit(ch);});
 }
 
 bool Interpreter::isIdentifier(const std::string& str) const
 {
-	return std::all_of(str.cbegin(), str.cend(), [](const char& ch){return std::isalnum(ch) or std::isspace(ch);});
+	return str.size() > 0 and not std::isdigit(str[0])
+		and std::all_of(str.cbegin(), str.cend(), [](const char& ch){return std::isalnum(ch) or std::isspace(ch);});
 }
 
 inline bool Interpreter::isBool(const std::string& str) const
@@ -514,11 +508,6 @@ inline bool Interpreter::isString(const std::string& str) const
 	return str.size() >= 2 and *(str.cbegin()) == '\"' and *(str.cend()-1) == '\"';
 }
 
-inline bool Interpreter::isValue(const std::string& str) const
-{
-	return isBool(str) or isNumber(str) or isIdentifier(str) or isString(str);
-}
-
 std::string Interpreter::strip(const std::string& str) const
 {
 	std::string res{str};
@@ -528,68 +517,3 @@ std::string Interpreter::strip(const std::string& str) const
 		res.erase(res.end()-1);
 	return res;
 }
-
-template <>
-void cast<bool>(Data& var)
-{
-	if(var.which() == 4)//Convert entity to bool
-		var = boost::get<entityx::Entity>(var).valid();
-	else if(var.which() == 3)//Convert string to bool
-		var = boost::get<std::string>(var).size() > 0;
-	else if(var.which() == 1)//Convert int to bool
-		var = static_cast<bool>(boost::get<int>(var));
-	else if(var.which() == 2)//Convert float to bool
-		var = static_cast<bool>(boost::get<float>(var));
-}
-
-template <>
-void cast<int>(Data& var)
-{
-	if(var.which() == 4)//Convert entity to int
-		throw ScriptError("Conversion from entity to integer is not allowed.");
-	else if(var.which() == 3)//Convert string to int
-		var = std::stoi(boost::get<std::string>(var));
-	else if(var.which() == 0)//Convert bool to int
-		var = static_cast<int>(boost::get<bool>(var));
-	else if(var.which() == 2)//Convert float to int
-		var = static_cast<int>(boost::get<float>(var));
-}
-
-template <>
-void cast<float>(Data& var)
-{
-	if(var.which() == 4)//Convert entity to float
-		throw ScriptError("Conversion from entity to floating point is not allowed.");
-	else if(var.which() == 3)//Convert string to float
-		var = std::stof(boost::get<std::string>(var));
-	else if(var.which() == 0)//Convert bool to float
-		var = static_cast<float>(boost::get<bool>(var));
-	else if(var.which() == 1)//Convert int to float
-		var = static_cast<float>(boost::get<int>(var));
-}
-
-template <>
-void cast<std::string>(Data& var)
-{
-	if(var.which() == 1)//Convert int to string
-		var = std::to_string(boost::get<int>(var));
-	else if(var.which() == 0)//Convert bool to string
-	{
-		if(boost::get<bool>(var))
-			var = "true";
-		else
-			var = "false";
-	}
-	else if(var.which() == 2)//Convert float to string
-		var = std::to_string(boost::get<float>(var));
-	else if(var.which() == 4)//Convert entity to string
-		throw ScriptError("Conversion from entity to string is not allowed.");
-}
-
-template <>
-void cast<entityx::Entity>(Data& var)
-{
-	if(var.which() != 4)
-		throw ScriptError("Conversion from any type to entity is not allowed.");
-}
-

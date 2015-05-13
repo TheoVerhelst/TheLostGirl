@@ -21,13 +21,13 @@ PauseState::PauseState(StateStack& stack) :
 	using tgui::bindWidth;
 	using tgui::bindHeight;
 	tgui::Gui& gui(getContext().gui);
-	
+
 	m_background = tgui::Panel::create();
 	m_background->setPosition(bindWidth(gui, 0.25f), bindHeight(gui, 0.f));
 	m_background->setSize(bindWidth(gui, 0.5f), bindHeight(gui));
 	m_background->setBackgroundColor(sf::Color(255, 255, 255, 100));
 	gui.add(m_background);
-	
+
 	// Left:   25% of window width
 	// Top:    10% of window height
 	m_pauseLabel = tgui::Label::create();
@@ -36,7 +36,7 @@ PauseState::PauseState(StateStack& stack) :
 	m_pauseLabel->setTextSize(80);
 	m_pauseLabel->setTextColor(sf::Color::Black);
 	gui.add(m_pauseLabel);
-	
+
 	// Left:   25% of window width
 	// Top:    40% of window height
 	// Width:  50% of window width
@@ -99,17 +99,17 @@ bool PauseState::handleEvent(const sf::Event& event)
 	return false;
 }
 
-void PauseState::backToGame()
+inline void PauseState::backToGame()
 {
 	requestStackPop();
-	getContext().player.handleInitialInputState(getContext().systemManager.system<PendingChangesSystem>()->commandQueue);
+	getContext().player.handleInitialInputState();
 }
 
-void PauseState::goToOptions()
+inline void PauseState::goToOptions()
 {
 }
 
-void PauseState::backToMainMenu()
+inline void PauseState::backToMainMenu()
 {
 	requestStackPop();//The pause state
 	requestStackPop();//The HUD state

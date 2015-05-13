@@ -1,5 +1,4 @@
 #include <cmath>
-#include <random>
 #include <iostream>
 
 #include <SFML/System/Time.hpp>
@@ -9,16 +8,20 @@
 #include <TheLostGirl/systems/TimeSystem.h>
 
 TimeSystem::TimeSystem():
-	m_totalTime(0),
-	m_windStrength(0),
-	m_initialWindStrength(0),
-	m_nextWindStrength(0),
-	m_periodBeginning(0),
-	m_windTransitionLength(0),
-	m_microInitialWindStrength(0),
-	m_microNextWindStrength(0),
-	m_microPeriodBeginning(0),
-	m_microWindTransitionLength(0)
+	m_totalTime{0.f},
+	m_windStrength{0.f},
+	m_initialWindStrength{0.f},
+	m_nextWindStrength{0.f},
+	m_periodBeginning{0.f},
+	m_windTransitionLength{0.f},
+	m_microInitialWindStrength{0.f},
+	m_microNextWindStrength{0.f},
+	m_microPeriodBeginning{0.f},
+	m_microWindTransitionLength{0.f},
+	m_rd{},
+	m_gen{m_rd()},
+	m_transitionLenghtDis{15, 600},
+	m_strengthDis{-2, 2}
 {
 	m_periodBeginning = m_totalTime;
 	m_initialWindStrength = rand() % 21 - 10; //A random number, between -10 and 10
@@ -45,12 +48,8 @@ void TimeSystem::update(entityx::EntityManager&, entityx::EventManager&, double 
 	{
 		m_periodBeginning = m_totalTime;
 		m_initialWindStrength = m_nextWindStrength;
-		std::random_device rd;
-		std::mt19937 gen{rd()};
-		std::uniform_real_distribution<float> transitionLenghtDis(15, 600);
-		m_windTransitionLength = transitionLenghtDis(gen);//A random number between 15 and 600
-		std::uniform_real_distribution<float> strengthDis(-2, 2);
-		m_nextWindStrength = strengthDis(gen);//Another random number, between -10 and 10
+		m_windTransitionLength = m_transitionLenghtDis(m_gen);//A random number between 15 and 600
+		m_nextWindStrength = m_strengthDis(m_gen);//Another random number, between -2 and 2
 	}
 
 	float deltaStrength{m_nextWindStrength - m_initialWindStrength};

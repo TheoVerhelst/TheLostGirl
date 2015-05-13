@@ -84,7 +84,7 @@ struct DirectionComponent : public entityx::Component<DirectionComponent>
 	bool moveToRight;   ///< Indicate if the entity want to move to right (e.g. left arrow key pressed).
 };
 
-/// The category component.
+/// The category component (player, aggressive, passive, ...).
 struct CategoryComponent : public entityx::Component<CategoryComponent>
 {
 	unsigned int category;///< Category of the entity.
@@ -105,9 +105,9 @@ struct ItemComponent : public entityx::Component<ItemComponent>
 /// The inventory component.
 struct InventoryComponent : public entityx::Component<InventoryComponent>
 {
-	std::vector<entityx::Entity> items;///< List of all stocked items.
-	float weight;                      ///< Sum of the weight of every item.
-	float maxWeight;                   ///< Maximum weight that that inventory can carry.
+	std::list<entityx::Entity> items;///< List of all stocked items.
+	float weight;                    ///< Sum of the weight of every item.
+	float maxWeight;                 ///< Maximum weight that that inventory can carry.
 };
 
 /// Falling component.
@@ -140,12 +140,12 @@ struct JumpComponent : public entityx::Component<JumpComponent>
 /// Bending component that hold all stats about the ability to use bows and arrows.
 struct BowComponent : public entityx::Component<BowComponent>
 {
-	float maxPower;                     ///< The maximum power of the bending of the bow.
-	float power;                        ///< The current power of the bending of the bow.
-	float angle;                        ///< The current angle of the bow, in radians.
-	std::vector<entityx::Entity> arrows;///< List of all stocked arrows.
-	entityx::Entity notchedArrow;       ///< Current arrow notched in the bow.
-	unsigned short int quiverCapacity;  ///< Maximum number of arrows in the quiver.
+	float maxPower;                   ///< The maximum power of the bending of the bow.
+	float power;                      ///< The current power of the bending of the bow.
+	float angle;                      ///< The current angle of the bow, in radians.
+	std::list<entityx::Entity> arrows;///< List of all stocked arrows.
+	entityx::Entity notchedArrow;     ///< Current arrow notched in the bow.
+	unsigned short int quiverCapacity;///< Maximum number of arrows in the quiver.
 };
 
 /// Health component.
@@ -199,13 +199,37 @@ struct HardnessComponent : public entityx::Component<HardnessComponent>
 /// More documentation about scripting will be released soon.
 struct ScriptsComponent : public entityx::Component<ScriptsComponent>
 {
-    std::vector<std::string> scriptsNames;///< Names of scripts that the entity must execute,
+    std::list<std::string> scriptsNames;///< Names of scripts that the entity must execute,
 };
 
 /// Component that define the behavior of aggressive entities.
 struct DetectionRangeComponent : public entityx::Component<DetectionRangeComponent>
 {
 	float detectionRange;///< Distance from wich the entitie will detect and attack foes.
+};
+
+/// Component that indicate if the entity is dead or not.
+struct DeathComponent : public entityx::Component<DeathComponent>
+{
+	/// Store informations about the drop of an item on an entity when this one dead.
+	/// For more informations about items, see ItemComponent.
+	/// \see ItemComponent
+	struct Drop
+	{
+		std::string category; ///< Category of item (bow, knife, helmet, ...).
+		std::string type;     ///< Type of item (dark bow, simple wood arrow, ...).
+		float probability;    ///< The probability that one item is dropped.
+		unsigned int maxDrops;///< The maximum number of items that can be dropped.
+	};
+	bool dead;            ///< Indicate if the entity is dead or not.
+	std::list<Drop> drops;///< List of all possible drops when the entity dead.
+};
+
+
+/// Store the name of an entity that will be displayed to the player.
+struct NameComponent : public entityx::Component<NameComponent>
+{
+	std::string name;///There is stored the english version of the name, translation is done by the LangManager.
 };
 
 #endif //COMPONENTS_H

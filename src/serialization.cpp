@@ -371,6 +371,29 @@ Json::Value serialize(entityx::ComponentHandle<DetectionRangeComponent> componen
 {
 	return component->detectionRange;
 }
+
+Json::Value serialize(entityx::ComponentHandle<DeathComponent> component)
+{
+	Json::Value ret;
+	ret["dead"] = component->dead;
+	ret["drops"] = Json::arrayValue;
+	for(auto& drop : component->drops)
+	{
+		Json::Value dropJson;
+		dropJson["category"] = drop.category;
+		dropJson["type"] = drop.category;
+		dropJson["probability"] = drop.category;
+		dropJson["max drops"] = drop.category;
+		ret["drops"].append(dropJson);
+	}
+	return ret;
+}
+
+Json::Value serialize(entityx::ComponentHandle<NameComponent> component)
+{
+	return component->name;
+}
+
   //////////               //////////
  ////////// Deserializing //////////
 //////////               //////////
@@ -785,4 +808,19 @@ void deserialize(const Json::Value& value, entityx::ComponentHandle<ScriptsCompo
 void deserialize(const Json::Value& value, entityx::ComponentHandle<DetectionRangeComponent> component)
 {
 	component->detectionRange = value.asFloat();
+}
+
+void deserialize(const Json::Value& value, entityx::ComponentHandle<DeathComponent> component)
+{
+	component->dead = value["dead"].asBool();
+	for(Json::ArrayIndex i{0}; i < value["drops"].size(); ++i)
+		component->drops.push_back({value["drops"][i]["category"].asString(),
+									value["drops"][i]["type"].asString(),
+									value["drops"][i]["probability"].asFloat(),
+									value["drops"][i]["max drops"].asUInt()});
+}
+
+void deserialize(const Json::Value& value, entityx::ComponentHandle<NameComponent> component)
+{
+	component->name = value.asString();
 }

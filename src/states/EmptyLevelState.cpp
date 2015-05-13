@@ -138,10 +138,10 @@ void EmptyLevelState::initWorld(const std::string& file)
 
 				//Coordinates of the original image
 				sf::IntRect originRect;
-				originRect.left = static_cast<int>(origin["x"].asInt()*getContext().parameters.scale);
-				originRect.top = static_cast<int>(origin["y"].asInt()*getContext().parameters.scale);
-				originRect.width = static_cast<int>(origin["w"].asInt()*getContext().parameters.scale);
-				originRect.height = static_cast<int>(origin["h"].asInt()*getContext().parameters.scale);
+				originRect.left = static_cast<int>(origin["x"].asFloat()*getContext().parameters.scale);
+				originRect.top = static_cast<int>(origin["y"].asFloat()*getContext().parameters.scale);
+				originRect.width = static_cast<int>(origin["w"].asFloat()*getContext().parameters.scale);
+				originRect.height = static_cast<int>(origin["h"].asFloat()*getContext().parameters.scale);
 
 				//Load the texture
 				//Identifier of the texture, in format "level_plan_texture"
@@ -260,7 +260,7 @@ void EmptyLevelState::initWorld(const std::string& file)
 		//Add the animation, this is a sky animation, the importance is equal to zero, the duration is 600 seconds (1 day), and it loops.
 		skyAnimationsComp->animationsManagers["main"].addAnimation("day/night cycle", SkyAnimation(m_sceneEntities["sky"]), 0, sf::seconds(600), true);
 		double daySeconds{remainder(getContext().systemManager.system<TimeSystem>()->getRealTime().asSeconds(), 600)};
-		skyAnimationsComp->animationsManagers["main"].setProgress("day/night cycle", daySeconds/600.f);
+		skyAnimationsComp->animationsManagers["main"].setProgress("day/night cycle", daySeconds/600.);
 		skyAnimationsComp->animationsManagers["main"].play("day/night cycle");
 	}
 	catch(std::runtime_error& e)

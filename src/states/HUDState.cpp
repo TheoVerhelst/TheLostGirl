@@ -30,13 +30,13 @@ HUDState::HUDState(StateStack& stack):
 {
 	getContext().eventManager.subscribe<PlayerHealthChange>(*this);
 	getContext().eventManager.subscribe<PlayerStaminaChange>(*this);
-	
+
 	using tgui::bindWidth;
 	using tgui::bindHeight;
 	tgui::Gui& gui(getContext().gui);
 	float scale{getContext().parameters.scale};
 	TextureManager& texManager(getContext().textureManager);
-	
+
 	//Load textures
 	texManager.load("health ath", paths[getContext().parameters.scaleIndex] + "healthAth.png");
 	texManager.load("health border ath", paths[getContext().parameters.scaleIndex] + "healthBorderAth.png");
@@ -44,7 +44,7 @@ HUDState::HUDState(StateStack& stack):
 	texManager.load("stamina border ath", paths[getContext().parameters.scaleIndex] + "staminaBorderAth.png");
 	texManager.load("wind arrow ath", paths[getContext().parameters.scaleIndex] + "windArrowAth.png");
 	texManager.load("wind bar ath", paths[getContext().parameters.scaleIndex] + "windBarAth.png");
-	
+
 	//Set textures to sprites
 	m_healthSpr.setTexture(texManager.get("health ath"));
 	m_healthSpr.setTextureRect({0, 0, scaleRes(240, scale), scaleRes(20, scale)});
@@ -55,7 +55,7 @@ HUDState::HUDState(StateStack& stack):
 	m_windStrengthSpr.setTexture(texManager.get("wind arrow ath"));
 	m_windStrengthSpr.setPosition(120.f*scale, 0);
 	m_windStrengthBarSpr.setTexture(texManager.get("wind bar ath"));
-	
+
 	m_healthBar = tgui::Canvas::create({scaleRes(240.f, scale), scaleRes(20.f, scale)});
 	m_healthBar->setPosition(bindWidth(gui, 0.01f), bindHeight(gui, 0.99f) - bindHeight(m_healthBar));
 	gui.add(m_healthBar);
@@ -95,9 +95,9 @@ bool HUDState::update(sf::Time)
 	//Get the wind strength and compute the wind ath
 	float scale{getContext().parameters.scale};
 	float windStrength{cap(getContext().systemManager.system<TimeSystem>()->getWindStrength()/5.f, -1, 1)};
-	
+
 	bool oldFadingState{m_windIsFading};
-	m_windIsFading = std::abs(windStrength) < 0.125;
+	m_windIsFading = std::abs(windStrength) < 0.125f;
 	if(m_windIsFading)
 	{
 		//If the fading start now
@@ -168,7 +168,7 @@ void HUDState::receive(const PlayerHealthChange& playerHealthChange)
 		m_healthBorderSpr.setColor(sf::Color::White);
 	}
 	float scale{getContext().parameters.scale};
-	m_healthSpr.setTextureRect({scaleRes<int>(240 - 240.f*playerHealthChange.normalizedHealth, scale), 0, scaleRes(240, scale), scaleRes(20, scale)});
+	m_healthSpr.setTextureRect({scaleRes<int>(240.f - 240.f*playerHealthChange.normalizedHealth, scale), 0, scaleRes(240, scale), scaleRes(20, scale)});
 }
 
 void HUDState::receive(const PlayerStaminaChange& playerStaminaChange)

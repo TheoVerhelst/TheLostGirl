@@ -16,6 +16,70 @@
 #include <TheLostGirl/scripts/ScriptError.h>
 #include <TheLostGirl/systems/PendingChangesSystem.h>
 
+template <>
+void cast<bool>(Data& var)
+{
+	if(var.which() == 4)//Convert entity to bool
+		var = boost::get<entityx::Entity>(var).valid();
+	else if(var.which() == 3)//Convert string to bool
+		var = boost::get<std::string>(var).size() > 0;
+	else if(var.which() == 1)//Convert int to bool
+		var = static_cast<bool>(boost::get<int>(var));
+	else if(var.which() == 2)//Convert float to bool
+		var = static_cast<bool>(boost::get<float>(var));
+}
+
+template <>
+void cast<int>(Data& var)
+{
+	if(var.which() == 4)//Convert entity to int
+		throw ScriptError("Conversion from entity to integer is not allowed.");
+	else if(var.which() == 3)//Convert string to int
+		var = std::stoi(boost::get<std::string>(var));
+	else if(var.which() == 0)//Convert bool to int
+		var = static_cast<int>(boost::get<bool>(var));
+	else if(var.which() == 2)//Convert float to int
+		var = static_cast<int>(boost::get<float>(var));
+}
+
+template <>
+void cast<float>(Data& var)
+{
+	if(var.which() == 4)//Convert entity to float
+		throw ScriptError("Conversion from entity to floating point is not allowed.");
+	else if(var.which() == 3)//Convert string to float
+		var = std::stof(boost::get<std::string>(var));
+	else if(var.which() == 0)//Convert bool to float
+		var = static_cast<float>(boost::get<bool>(var));
+	else if(var.which() == 1)//Convert int to float
+		var = static_cast<float>(boost::get<int>(var));
+}
+
+template <>
+void cast<std::string>(Data& var)
+{
+	if(var.which() == 1)//Convert int to string
+		var = std::to_string(boost::get<int>(var));
+	else if(var.which() == 0)//Convert bool to string
+	{
+		if(boost::get<bool>(var))
+			var = "true";
+		else
+			var = "false";
+	}
+	else if(var.which() == 2)//Convert float to string
+		var = std::to_string(boost::get<float>(var));
+	else if(var.which() == 4)//Convert entity to string
+		throw ScriptError("Conversion from entity to string is not allowed.");
+}
+
+template <>
+void cast<entityx::Entity>(Data& var)
+{
+	if(var.which() != 4)
+		throw ScriptError("Conversion from any type to entity is not allowed.");
+}
+
 Data print(const std::vector<Data>& args, StateStack::Context)
 {
 	std::cout << std::boolalpha;
@@ -241,6 +305,9 @@ Data notOp(const std::vector<Data>& args, StateStack::Context)
 entityx::Entity nearestFoe(const std::vector<Data>& args, StateStack::Context context)
 {
 	entityx::Entity self(boost::get<entityx::Entity>(args[0]));
+	if(not self)
+		throw ScriptError("nearest foe(): first argument is an invalid entity.");
+
 	if(self.has_component<BodyComponent>() and self.has_component<DetectionRangeComponent>())
 	{
 		auto& bodies(self.component<BodyComponent>()->bodies);
@@ -264,6 +331,10 @@ float distanceFrom(const std::vector<Data>& args, StateStack::Context)
 {
 	entityx::Entity self(boost::get<entityx::Entity>(args[0]));
 	entityx::Entity target(boost::get<entityx::Entity>(args[1]));
+	if(not self)
+		throw ScriptError("distance from(): first argument is an invalid entity.");
+	if(not target)
+		throw ScriptError("distance from(): second argument is an invalid entity.");
 	if(self == target)
 		return 0.f;
 	if(self.has_component<BodyComponent>() and target.has_component<BodyComponent>())
@@ -274,30 +345,32 @@ float distanceFrom(const std::vector<Data>& args, StateStack::Context)
 		{
 			b2Body* selfBody{selfBodies["main"]};
 			b2Fixture* selfFixture{nullptr};
-			//Check all fixtures until a main fixture is found.
+			//Check all fixtures untill a main fixture is found.
 			for(b2Fixture* fixture{selfBody->GetFixtureList()}; fixture and not selfFixture; fixture = fixture->GetNext())
 				if(fixtureHasRole(fixture, FixtureRole::Main))
 					selfFixture = fixture;
-			b2DistanceProxy selfProxy;
 
 			b2Body* targetBody{targetBodies["main"]};
 			b2Fixture* targetFixture{nullptr};
-			//Check all fixtures until a main fixture is found.
+			//Check all fixtures untill a main fixture is found.
 			for(b2Fixture* fixture{targetBody->GetFixtureList()}; fixture and not targetFixture; fixture = fixture->GetNext())
 				if(fixtureHasRole(fixture, FixtureRole::Main))
 					targetFixture = fixture;
-			b2DistanceProxy targetProxy;
 
 			if(selfFixture and targetFixture)
 			{
-				selfProxy.Set(selfFixture->GetShape(),1);
-				targetProxy.Set(targetFixture->GetShape(),1);
+				b2DistanceProxy selfProxy;
+				selfProxy.Set(selfFixture->GetShape(), 1);
+				b2DistanceProxy targetProxy;
+				targetProxy.Set(targetFixture->GetShape(), 1);
+
 				b2DistanceInput distanceInput;
 				distanceInput.transformA = selfBody->GetTransform();
 				distanceInput.transformB = targetBody->GetTransform();
 				distanceInput.proxyA = selfProxy;
 				distanceInput.proxyB = targetProxy;
 				distanceInput.useRadii = false;
+
 				b2SimplexCache cache;
 				cache.count = 0;
 
@@ -314,6 +387,10 @@ int directionTo(const std::vector<Data>& args, StateStack::Context)
 {
 	entityx::Entity self(boost::get<entityx::Entity>(args[0]));
 	entityx::Entity target(boost::get<entityx::Entity>(args[1]));
+	if(not self)
+		throw ScriptError("direction to(): first argument is an invalid entity.");
+	if(not target)
+		throw ScriptError("direction to(): second argument is an invalid entity.");
 	if(self and target and self.has_component<TransformComponent>() and target.has_component<TransformComponent>())
 	{
 		if(self.component<TransformComponent>()->transforms["main"].x < target.component<TransformComponent>()->transforms["main"].x)
@@ -327,6 +404,8 @@ int directionTo(const std::vector<Data>& args, StateStack::Context)
 int directionOf(const std::vector<Data>& args, StateStack::Context)
 {
 	entityx::Entity self(boost::get<entityx::Entity>(args[0]));
+	if(not self)
+		throw ScriptError("direction of(): first argument is an invalid entity.");
 	if(self and self.has_component<DirectionComponent>())
 		return static_cast<int>(self.component<DirectionComponent>()->direction);
 	return static_cast<int>(Direction::None);
@@ -347,16 +426,17 @@ NearestFoeQueryCallback::NearestFoeQueryCallback(entityx::Entity self, StateStac
 bool NearestFoeQueryCallback::ReportFixture(b2Fixture* fixture)
 {
 	entityx::Entity currentEntity{*static_cast<entityx::Entity*>(fixture->GetBody()->GetUserData())};
-	if(m_self.has_component<CategoryComponent>()
-			and currentEntity.has_component<CategoryComponent>()
-			and m_self.component<CategoryComponent>()->category & Category::Aggressive//self must be aggressive
+	if(currentEntity.has_component<CategoryComponent>()
 			and currentEntity.component<CategoryComponent>()->category & Category::Passive)//currentEntity must be passive
 	{
-		float currentDistance{distanceFrom({m_self, currentEntity}, m_context)};
-		if(currentEntity != m_self and currentDistance < m_distance)
+		if(currentEntity != m_self)
 		{
-			m_distance = currentDistance;
-			entity = currentEntity;
+			float currentDistance{distanceFrom({m_self, currentEntity}, m_context)};
+			if(currentDistance < m_distance)
+			{
+				m_distance = currentDistance;
+				entity = currentEntity;
+			}
 		}
 	}
 	return true;
@@ -365,7 +445,9 @@ bool NearestFoeQueryCallback::ReportFixture(b2Fixture* fixture)
 bool canMove(const std::vector<Data>& args, StateStack::Context)
 {
 	entityx::Entity self(boost::get<entityx::Entity>(args[0]));
-	return self and self.has_component<WalkComponent>();
+	if(not self)
+		throw ScriptError("can move(): first argument is an invalid entity.");
+	return self.has_component<WalkComponent>();
 }
 
 int move(const std::vector<Data>& args, StateStack::Context context)
@@ -373,6 +455,8 @@ int move(const std::vector<Data>& args, StateStack::Context context)
 	Command moveCommand;
 	moveCommand.targetIsSpecific = true;
 	moveCommand.entity = boost::get<entityx::Entity>(args[0]);
+	if(not moveCommand.entity)
+		throw ScriptError("can move(): first argument is an invalid entity.");
 	moveCommand.action = Mover(static_cast<Direction>(boost::get<int>(args[1])));
 	context.systemManager.system<PendingChangesSystem>()->commandQueue.push(moveCommand);
 	return 0;
@@ -381,6 +465,8 @@ int move(const std::vector<Data>& args, StateStack::Context context)
 int stop(const std::vector<Data>& args, StateStack::Context context)
 {
 	entityx::Entity self(boost::get<entityx::Entity>(args[0]));
+	if(not self)
+		throw ScriptError("stop(): first argument is an invalid entity.");
 	if(self.has_component<DirectionComponent>() and self.has_component<WalkComponent>())
 	{
 		DirectionComponent::Handle directionComponent = self.component<DirectionComponent>();
@@ -413,8 +499,9 @@ int stop(const std::vector<Data>& args, StateStack::Context context)
 bool canJump(const std::vector<Data>& args, StateStack::Context)
 {
 	entityx::Entity self(boost::get<entityx::Entity>(args[0]));
-	return self
-		and self.has_component<JumpComponent>()
+	if(not self)
+		throw ScriptError("can jump(): first argument is an invalid entity.");
+	return self.has_component<JumpComponent>()
 		and self.has_component<FallComponent>()
 		and not self.component<FallComponent>()->inAir;
 }
@@ -422,6 +509,8 @@ bool canJump(const std::vector<Data>& args, StateStack::Context)
 int jump(const std::vector<Data>& args, StateStack::Context context)
 {
 	entityx::Entity self(boost::get<entityx::Entity>(args[0]));
+	if(not self)
+		throw ScriptError("jump(): first argument is an invalid entity.");
 	if(canJump({self}, context))
 	{
 		//Simply push a jump command on the command queue

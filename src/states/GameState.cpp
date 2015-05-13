@@ -31,7 +31,7 @@
 
 #include <TheLostGirl/states/GameState.h>
 
-GameState::GameState(StateStack& stack, const std::string& file) :
+GameState::GameState(StateStack& stack, std::string file) :
 	State(stack),
 	m_entities(),
 	m_sceneEntities(),
@@ -84,7 +84,7 @@ bool GameState::handleEvent(const sf::Event& event)
 		or event.type == sf::Event::LostFocus)
 		requestStackPush<PauseState>();
 
-	getContext().player.handleEvent(event, getContext().systemManager.system<PendingChangesSystem>()->commandQueue);
+	getContext().player.handleEvent(event);
 	//Update the drag and drop state
 	bool isDragAndDropActive{getContext().player.isActived(Player::Action::Bend)};
 	getContext().systemManager.system<DragAndDropSystem>()->setDragAndDropActivation(isDragAndDropActive);
@@ -133,6 +133,10 @@ void GameState::saveWorld(const std::string& file)
 				root["entities"][entity.first]["scripts"] = serialize(entity.second.component<ScriptsComponent>());
 			if(entity.second.has_component<DetectionRangeComponent>())
 				root["entities"][entity.first]["detection range"] = serialize(entity.second.component<DetectionRangeComponent>());
+			if(entity.second.has_component<DeathComponent>())
+				root["entities"][entity.first]["death"] = serialize(entity.second.component<DeathComponent>());
+			if(entity.second.has_component<NameComponent>())
+				root["entities"][entity.first]["name"] = serialize(entity.second.component<NameComponent>());
 		}
 
 		//time
@@ -532,6 +536,10 @@ void GameState::initWorld(const std::string& file)
 					deserialize(entity["scripts"], m_entities[entityName].assign<ScriptsComponent>(), getContext().scriptManager);
 				if(entity.isMember("detection range"))
 					deserialize(entity["detection range"], m_entities[entityName].assign<DetectionRangeComponent>());
+				if(entity.isMember("death"))
+					deserialize(entity["death"], m_entities[entityName].assign<DeathComponent>());
+				if(entity.isMember("name"))
+					deserialize(entity["name"], m_entities[entityName].assign<NameComponent>());
 			}
 		}
 
@@ -557,10 +565,10 @@ void GameState::initWorld(const std::string& file)
 
 					//Coordinates of the original image
 					sf::IntRect originRect;
-					originRect.left = static_cast<int>(origin["x"].asInt()*getContext().parameters.scale);
-					originRect.top = static_cast<int>(origin["y"].asInt()*getContext().parameters.scale);
-					originRect.width = static_cast<int>(origin["w"].asInt()*getContext().parameters.scale);
-					originRect.height = static_cast<int>(origin["h"].asInt()*getContext().parameters.scale);
+					originRect.left = static_cast<int>(origin["x"].asFloat()*getContext().parameters.scale);
+					originRect.top = static_cast<int>(origin["y"].asFloat()*getContext().parameters.scale);
+					originRect.width = static_cast<int>(origin["w"].asFloat()*getContext().parameters.scale);
+					originRect.height = static_cast<int>(origin["h"].asFloat()*getContext().parameters.scale);
 
 					SceneReplaces replacesData;
 					//Directly take the data from the json value in order to keep the not scaled size
@@ -1045,10 +1053,10 @@ void GameState::initWorld(const std::string& file)
 		//Add the animation, this is a sky animation, the importance is equal to zero, the duration is 600 seconds (1 day), and it loops.
 		skyAnimationsComp->animationsManagers["main"].addAnimation("day/night cycle", SkyAnimation(m_sceneEntities["sky"]), 0, sf::seconds(600), true);
 		double daySeconds{remainder(getContext().systemManager.system<TimeSystem>()->getRealTime().asSeconds(), 600)};
-		skyAnimationsComp->animationsManagers["main"].setProgress("day/night cycle", daySeconds/600.f);
+		skyAnimationsComp->animationsManagers["main"].setProgress("day/night cycle", daySeconds/600);
 		skyAnimationsComp->animationsManagers["main"].play("day/night cycle");
 
-		getContext().player.handleInitialInputState(getContext().systemManager.system<PendingChangesSystem>()->commandQueue);
+		getContext().player.handleInitialInputState();
 		getContext().world.SetContactListener(&m_contactListener);
 		requestStackPop();
 		requestStackPush<HUDState>();
@@ -1056,7 +1064,7 @@ void GameState::initWorld(const std::string& file)
 	}
 	catch(std::runtime_error& e)
 	{
-		std::cerr << e.what() << std::endl;
+		std::cerr << e.what() << "\n";
 		std::cerr << "Failed to load save file \"" << file << "\".\n";
 		clear();//Clear game content in order to prevent segmentation faults.
 	}

@@ -1,38 +1,7 @@
 foe = nearest foe(self)
-if foe is true
-	test = 3+4
-	test = 3+4
-	test = 3+4
-	test = 3+4
-	test = 3+4
-	test = 3+4
-	test = 3+4
-	test = 3+4
-	test = 3+4
-	test = 3+4
-	test = 3+4
-	test = 3+4
-	test = 3+4
-	test = 3+4
-	test = 3+4
-	test = 3+4
-	test = 3+4
-	test = 3+4
-	test = 3+4
-	test = 3+4
-	test = 3+4
-	test = 3+4
-	test = 3+4
-	test = 3+4
-	test = 3+4
-	test = 3+4
-	test = 3+4
-	test = 3+4
-	test = 3+4
-	dist = distance from(self, foe)
-	dir = direction to(self, foe)
-	move(self, dir)
-	if dist < 0.5
+if foe
+	move(self, direction to(self, foe))
+	if distance from(self, foe) < 1
 		stop(self)
 	endif
 endif

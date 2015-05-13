@@ -33,7 +33,7 @@ class RenderSystem : public entityx::System<RenderSystem>
 		sf::RenderTexture m_texture; ///< A render texture to apply the shaders.
 		Parameters& m_parameters;    ///< The current application parameters.
 		BloomEffect m_bloomEffect;   ///< The shader to apply on m_texture.
-		bool m_postEffectSupported;
+		bool m_postEffectSupported;  ///< Indicates if post effects are supported (avoid useless calls of PostEffect::isSupported())
 };
 
 #endif//RENDERSYSTEM_H

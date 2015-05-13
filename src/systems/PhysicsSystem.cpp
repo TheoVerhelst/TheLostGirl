@@ -25,82 +25,83 @@ void PhysicsSystem::update(entityx::EntityManager& entityManager, entityx::Event
 	int32 velocityIterations{8};
 	int32 positionIterations{8};
 	m_world.Step(dt, velocityIterations, positionIterations);
-	
+
 	//Get the force of the wind
 	float windStrength{m_systemManager.system<TimeSystem>()->getWindStrength()};
-	
+
 	BodyComponent::Handle bodyComponent;
 	TransformComponent::Handle transformComponent;
 	WalkComponent::Handle walkComponent;
 	BowComponent::Handle bowComponent;
 	JumpComponent::Handle jumpComponent;
 	ArrowComponent::Handle arrowComponent;
-	
+
 	//Update the walkers
 	for(auto entity : entityManager.entities_with_components(bodyComponent, walkComponent))
 	{
-		//If the walker has not a main body, the program will crash
-		assert(bodyComponent->bodies.find("main") != bodyComponent->bodies.end());
-		b2Body* body{bodyComponent->bodies["main"]};
-		float targetVelocity{0.f};
-		float walkVelocity{walkComponent->walkSpeed/m_parameters.pixelByMeter};
-		if(walkComponent->effectiveMovement ==  Direction::Left)
-			targetVelocity = -walkVelocity - body->GetLinearVelocity().x;
-		else if(walkComponent->effectiveMovement ==  Direction::Right)
-			targetVelocity = walkVelocity - body->GetLinearVelocity().x;
-		else if(walkComponent->effectiveMovement ==  Direction::None)
-			targetVelocity = -body->GetLinearVelocity().x;
-		//Apply an impulse relatively to the mass of the body
-		body->ApplyLinearImpulse({targetVelocity*body->GetMass(), 0.f}, body->GetWorldCenter(), true);
+		if(bodyComponent->bodies.find("main") != bodyComponent->bodies.end())
+		{
+			b2Body* body{bodyComponent->bodies["main"]};
+			float targetVelocity{0.f};
+			float walkVelocity{walkComponent->walkSpeed/m_parameters.pixelByMeter};
+			if(walkComponent->effectiveMovement ==  Direction::Left)
+				targetVelocity = -walkVelocity - body->GetLinearVelocity().x;
+			else if(walkComponent->effectiveMovement ==  Direction::Right)
+				targetVelocity = walkVelocity - body->GetLinearVelocity().x;
+			else if(walkComponent->effectiveMovement ==  Direction::None)
+				targetVelocity = -body->GetLinearVelocity().x;
+			//Apply an impulse relatively to the mass of the body
+			body->ApplyLinearImpulse({targetVelocity*body->GetMass(), 0.f}, body->GetWorldCenter(), true);
+		}
 	}
-	
+
 	//Update the jumpers
 	for(auto entity : entityManager.entities_with_components(bodyComponent, jumpComponent))
 	{
-		if(jumpComponent->mustJump)
+		if(jumpComponent->mustJump and bodyComponent->bodies.find("main") != bodyComponent->bodies.end())
 		{
-			//If the jumper has not a main body, the program will crash
-			assert(bodyComponent->bodies.find("main") != bodyComponent->bodies.end());
 			b2Body* body{bodyComponent->bodies["main"]};
 			float targetVelocity{-jumpComponent->jumpStrength/m_parameters.pixelByMeter};
 			body->ApplyLinearImpulse({0.f, targetVelocity*body->GetMass()}, body->GetWorldCenter(), true);
 			jumpComponent->mustJump = false;
 		}
 	}
-	
+
 	//Update the archers
 	for(auto entity : entityManager.entities_with_components(bodyComponent, bowComponent))
 	{
 		float angleTarget{-bowComponent->angle};
 		float32 gain{20.f};
 		float32 differenceAngle;
-		//If the archer has not a arms body, the program will crash
-		assert(bodyComponent->bodies.find("arms") != bodyComponent->bodies.end());
-		b2Body* bodyArms{bodyComponent->bodies["arms"]};
-		//Iterate over all joints
-		for(b2JointEdge* jointEdge{bodyArms->GetJointList()}; jointEdge; jointEdge = jointEdge->next)
+		if(bodyComponent->bodies.find("arms") != bodyComponent->bodies.end())
 		{
-			//If this is a bending joint
-			if(jointHasRole(jointEdge->joint, JointRole::BendingAngle))
+			b2Body* bodyArms{bodyComponent->bodies["arms"]};
+			//Iterate over all joints
+			for(b2JointEdge* jointEdge{bodyArms->GetJointList()}; jointEdge; jointEdge = jointEdge->next)
 			{
-				b2RevoluteJoint* jointArms{static_cast<b2RevoluteJoint*>(jointEdge->joint)};
-				differenceAngle = angleTarget - jointArms->GetJointAngle();
-				jointArms->SetMotorSpeed(gain * differenceAngle);
+				//If this is a bending joint
+				if(jointHasRole(jointEdge->joint, JointRole::BendingAngle))
+				{
+					b2RevoluteJoint* jointArms{static_cast<b2RevoluteJoint*>(jointEdge->joint)};
+					differenceAngle = angleTarget - jointArms->GetJointAngle();
+					jointArms->SetMotorSpeed(gain * differenceAngle);
+				}
 			}
 		}
-		
-		//If the archer has not a bow body, the program will crash
-		assert(bodyComponent->bodies.find("bow") != bodyComponent->bodies.end());
-		b2Body* bodyBow{bodyComponent->bodies["bow"]};
-		//Iterate over all joints
-		for(b2JointEdge* jointEdge{bodyBow->GetJointList()}; jointEdge; jointEdge = jointEdge->next)
+
+		if(bodyComponent->bodies.find("bow") != bodyComponent->bodies.end())
 		{
-			//If this is a bending joint
-			if(jointHasRole(jointEdge->joint, JointRole::BendingAngle))
+			b2Body* bodyBow{bodyComponent->bodies["bow"]};
+			//Iterate over all joints
+			for(b2JointEdge* jointEdge{bodyBow->GetJointList()}; jointEdge; jointEdge = jointEdge->next)
 			{
-				b2RevoluteJoint* jointBow{static_cast<b2RevoluteJoint*>(jointEdge->joint)};
-				differenceAngle = angleTarget - jointBow->GetJointAngle();
-				jointBow->SetMotorSpeed(gain * differenceAngle);
+				//If this is a bending joint
+				if(jointHasRole(jointEdge->joint, JointRole::BendingAngle))
+				{
+					b2RevoluteJoint* jointBow{static_cast<b2RevoluteJoint*>(jointEdge->joint)};
+					differenceAngle = angleTarget - jointBow->GetJointAngle();
+					jointBow->SetMotorSpeed(gain * differenceAngle);
+				}
 			}
 		}
 		if(entity.has_component<DirectionComponent>())
@@ -109,10 +110,9 @@ void PhysicsSystem::update(entityx::EntityManager& entityManager, entityx::Event
 			entityx::Entity notchedArrow{bowComponent->notchedArrow};
 			//If the notched arrow has a b2Body,
 			//Set the translation of the joint between bow and arrow
-			if(notchedArrow.valid() and notchedArrow.has_component<BodyComponent>())
+			if(notchedArrow.valid() and notchedArrow.has_component<BodyComponent>()
+				and notchedArrow.component<BodyComponent>()->bodies.find("main") != notchedArrow.component<BodyComponent>()->bodies.end())
 			{
-				//If the notched arrow has not a main body, the program will crash
-				assert(notchedArrow.component<BodyComponent>()->bodies.find("main") != notchedArrow.component<BodyComponent>()->bodies.end());
 				b2Body* arrowBody{notchedArrow.component<BodyComponent>()->bodies["main"]};
 				float translationTarget{bowComponent->power/bowComponent->maxPower};//Power of the bending, in range [0, 1]
 				if(direction == Direction::Left)
@@ -133,18 +133,15 @@ void PhysicsSystem::update(entityx::EntityManager& entityManager, entityx::Event
 			}
 		}
 	}
-	
+
 	//Update the arrows
 	for(auto entity : entityManager.entities_with_components(bodyComponent, arrowComponent))
 	{
-		if(arrowComponent->state == ArrowComponent::Fired)
+		if(arrowComponent->state == ArrowComponent::Fired and bodyComponent->bodies.find("main") != bodyComponent->bodies.end())
 		{
-			//If the arrow has not a main body, the program will crash
-			assert(bodyComponent->bodies.find("main") != bodyComponent->bodies.end());
 			b2Body* body{bodyComponent->bodies["main"]};
-			
 			body->ApplyForce({windStrength*body->GetMass(), 0}, body->GetWorldCenter(), true);
-			
+
 			//Apply a drag force to point to the direction of the trajectory
 			b2Vec2 pointingDirection{body->GetWorldVector(b2Vec2(1, 0))};//Get the global direction of the arrow
 			b2Vec2 flightDirection{body->GetLinearVelocity()};//Get the effective flight direction of the arrow
@@ -160,9 +157,9 @@ void PhysicsSystem::update(entityx::EntityManager& entityManager, entityx::Event
 			b2Vec2 arrowTailPosition{body->GetWorldPoint(localFrictionPoint)};
 			body->ApplyForce(dragForceMagnitude*(-flightDirection), arrowTailPosition, true);
 		}
-		
+
 	}
-	
+
 	//Update the transformations according to the one of the b2Body.
 	for(auto entity : entityManager.entities_with_components(bodyComponent, transformComponent))
 	{

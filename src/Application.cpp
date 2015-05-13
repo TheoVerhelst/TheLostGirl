@@ -23,7 +23,10 @@ Application::Application(bool debugMode):
 	m_world{m_parameters.gravity},
 	m_stateStack{StateStack::Context{m_parameters, m_window, m_textureManager, m_fontManager, m_scriptManager,
 									m_gui, m_eventManager, m_entityManager, m_systemManager, m_world, m_player}},
-	m_debugDraw(m_stateStack.getContext())
+	m_player(m_stateStack),
+	m_debugDraw(m_stateStack.getContext()),
+	m_FPSTimer(),
+	m_FPSRefreshRate(sf::milliseconds(500))
 {
 	std::string file("settings.json");
 	Json::Value settings;//Will contains the root value after parsing.
@@ -138,7 +141,7 @@ int Application::init()
 		m_fontManager.load("debug", "resources/fonts/FreeMonoBold.ttf");//Load the debug font
 		m_gui.setGlobalFont(std::make_shared<sf::Font>(m_fontManager.get("menu")));//Set the GUI font
 		m_world.SetDebugDraw(&m_debugDraw);//Set the debug drawer
-		m_debugDraw.SetFlags(b2Draw::e_shapeBit|b2Draw::e_jointBit|b2Draw::e_aabbBit);//Debug drawing flags
+		m_debugDraw.SetFlags(b2Draw::e_shapeBit|b2Draw::e_jointBit);//Debug drawing flags
 		m_systemManager.configure();//Init the manager
 //		m_stateStack.pushState(States::EmptyLevel);//Add an empty level loading
 		m_stateStack.pushState<IntroState>();//And add the intro state on top of it
@@ -203,7 +206,12 @@ void Application::processInput()
 void Application::update(sf::Time dt)
 {
 	m_stateStack.update(dt);
-	m_debugDraw.setFPS(1.f/dt.asSeconds());
+	m_FPSTimer += dt;
+	if(m_FPSTimer > m_FPSRefreshRate)
+	{
+		m_debugDraw.setFPS(1.f/dt.asSeconds());
+		m_FPSTimer %= m_FPSRefreshRate;
+	}
 }
 
 void Application::render()
@@ -228,6 +236,6 @@ void Application::registerSystems()
 	m_systemManager.add<DragAndDropSystem>(m_window, m_systemManager.system<PendingChangesSystem>()->commandQueue);
 	m_systemManager.add<ScrollingSystem>(m_window, m_parameters);
 	m_systemManager.add<TimeSystem>();
-	m_systemManager.add<StatsSystem>();
+	m_systemManager.add<StatsSystem>(m_systemManager.system<PendingChangesSystem>()->commandQueue);
 	m_systemManager.add<ScriptsSystem>(m_stateStack.getContext());
 }

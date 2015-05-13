@@ -23,7 +23,7 @@ class State
         /// Default constructor.
         /// \param stack StateStack wherein the State is added.
 		State(StateStack& stack);
-		
+
 		/// Default destructor.
 		virtual ~State();
 
@@ -47,16 +47,16 @@ class State
 	protected:
 		/// Add the given game state to the pending queue,
 		/// and construct it as soon as possible.
-		/// \param stateID Identifier of the state to push.
+		/// \param args Arguments to transfer to the state constructor.
 		template<typename T, typename ... Args>
 		void requestStackPush(Args&&... args);
-		
+
 		/// Delete the top state as soon as possible.
 		void requestStackPop();
-		
+
 		/// Delete all the states as soon as possible.
 		void requestStateClear();
-		
+
 		/// Give the context of the application.
 		/// \return Context structure of the current game.
 		StateStack::Context getContext() const;

@@ -22,11 +22,11 @@ class PauseState : public State
         /// Default constructor.
         /// \param stack StateStack wherein the State is added.
 		PauseState(StateStack& stack);
-		
+
 		/// Default destructor.
 		/// It clear the GUI.
 		~PauseState();
-		
+
         /// The drawing function.
         /// \return virtual void
         /// It must do all things related to drawing stuff on the screen.
@@ -42,17 +42,17 @@ class PauseState : public State
         /// \return Return true if the state under this state in the stack must be also updated.
         /// \note The closing window and resinzing window events are already handled by the Application class.
 		virtual bool handleEvent(const sf::Event& event);
-		
+
 	private:
 		/// Return to the GameState state and delete this one.
-		void backToGame();
-		
+		inline void backToGame();
+
 		/// Add an OptionsState state in top of this one.
-		void goToOptions();
-		
+		inline void goToOptions();
+
 		/// Go back to the main menu, delete this state and the GameState state.
-		void backToMainMenu();
-		
+		inline void backToMainMenu();
+
 		tgui::Panel::Ptr m_background;           ///< The background of the menu.
 		tgui::Label::Ptr m_pauseLabel;           ///< The pause label.
 		tgui::Button::Ptr m_backToGameButton;    ///< The Back to game button.
