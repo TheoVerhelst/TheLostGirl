@@ -236,6 +236,6 @@ void Application::registerSystems()
 	m_systemManager.add<DragAndDropSystem>(m_window, m_systemManager.system<PendingChangesSystem>()->commandQueue);
 	m_systemManager.add<ScrollingSystem>(m_window, m_parameters);
 	m_systemManager.add<TimeSystem>();
-	m_systemManager.add<StatsSystem>(m_systemManager.system<PendingChangesSystem>()->commandQueue);
+	m_systemManager.add<StatsSystem>(m_stateStack.getContext());
 	m_systemManager.add<ScriptsSystem>(m_stateStack.getContext());
 }

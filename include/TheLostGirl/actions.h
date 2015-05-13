@@ -53,7 +53,7 @@ struct Jumper : public Action
 struct Death : public Action
 {
 	/// Default constructor.
-	Death();
+	Death(StateStack::Context context);
 
 	/// Default destructor
 	virtual ~Death();
@@ -62,6 +62,9 @@ struct Death : public Action
 	/// \param entity Entity who dead.
 	/// \param dt Elapsed time in the last game frame.
 	virtual void operator()(entityx::Entity entity, double dt) const;
+
+	private:
+		StateStack::Context m_context;
 };
 
 /// Structure that bend the bow of the given entity.

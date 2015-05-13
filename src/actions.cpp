@@ -13,6 +13,7 @@
 #include <TheLostGirl/functions.h>
 #include <TheLostGirl/JointRoles.h>
 #include <TheLostGirl/states/OpenInventoryState.h>
+#include <TheLostGirl/scripts/scriptsFunctions.h>
 
 #include <TheLostGirl/actions.h>
 
@@ -289,7 +290,8 @@ void Jumper::operator()(entityx::Entity entity, double) const
 	}
 }
 
-Death::Death()
+Death::Death(StateStack::Context context):
+	m_context(context)
 {
 }
 
@@ -334,20 +336,7 @@ void Death::operator()(entityx::Entity entity, double dt) const
 	}
 
 	//Send a stop command
-	if(entity.has_component<DirectionComponent>() and entity.has_component<WalkComponent>())
-	{
-		DirectionComponent::Handle directionComponent = entity.component<DirectionComponent>();
-		if(directionComponent->moveToLeft and directionComponent->moveToRight)
-		{
-			//Play directly the action, the commandeQueue is not available here
-			//and we know that we are into the main loop part that handles actions.
-			Direction opposite{directionComponent->direction == Direction::Left ? Direction::Right : Direction::Left};
-			Mover(opposite, false)(entity, dt);
-			Mover(directionComponent->direction, false)(entity, dt);
-		}
-		else
-			Mover(directionComponent->direction, false)(entity, dt);
-	}
+	stop({entity}, m_context);
 }
 
 BowBender::BowBender(float _angle, float _power):

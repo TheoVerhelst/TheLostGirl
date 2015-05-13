@@ -6,11 +6,12 @@
 #include <TheLostGirl/events.h>
 #include <TheLostGirl/Command.h>
 #include <TheLostGirl/actions.h>
+#include <TheLostGirl/systems/PendingChangesSystem.h>
 
 #include <TheLostGirl/systems/StatsSystem.h>
 
-StatsSystem::StatsSystem(std::queue<Command>& commandQueue):
-	m_commandQueue(commandQueue)
+StatsSystem::StatsSystem(StateStack::Context context):
+	m_context(context)
 {}
 
 void StatsSystem::update(entityx::EntityManager& entityManager, entityx::EventManager& eventManager, double dt)
@@ -40,8 +41,8 @@ void StatsSystem::update(entityx::EntityManager& entityManager, entityx::EventMa
 			Command deathCommand;
 			deathCommand.targetIsSpecific = true;
 			deathCommand.entity = entity;
-			deathCommand.action = Death();
-			m_commandQueue.push(deathCommand);
+			deathCommand.action = Death(m_context);
+			m_context.systemManager.system<PendingChangesSystem>()->commandQueue.push(deathCommand);
 		}
 
 		//Regen health

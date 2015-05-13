@@ -83,6 +83,16 @@ bool ContactListener::collide(b2Contact* contact, const b2Manifold*)
 	if(entityB.has_component<ArrowComponent>() and entityB.component<ArrowComponent>()->state != ArrowComponent::Fired)
 		return false;
 
+	//The contact do not occurs if the entity A is a corpse and the entity B is an arrow
+	if(entityA.has_component<DeathComponent>() and entityA.component<DeathComponent>()->dead
+		and entityB.has_component<ArrowComponent>())
+		return false;
+
+	//The contact do not occurs if the entity B is a corpse and the entity A is an arrow
+	if(entityB.has_component<DeathComponent>() and entityB.component<DeathComponent>()->dead
+		and entityA.has_component<ArrowComponent>())
+		return false;
+
 	//If none of the previous case is verified, then the collision occurs
 	return true;
 }
