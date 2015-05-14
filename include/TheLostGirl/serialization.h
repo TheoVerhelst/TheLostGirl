@@ -113,6 +113,11 @@ Json::Value serialize(entityx::ComponentHandle<DeathComponent> component);
 /// \return A Json value.
 Json::Value serialize(entityx::ComponentHandle<NameComponent> component);
 
+/// Serialize the given component.
+/// \param component Component to serialize.
+/// \return A Json value.
+Json::Value serialize(entityx::ComponentHandle<HandToHandComponent> component);
+
 /// Deserialize the given \a value in the given \a component.
 /// \param component Component in wich deserialize the data.
 /// \param pixelByMeter Number of pixel by meter.
@@ -217,5 +222,10 @@ void deserialize(const Json::Value& value, entityx::ComponentHandle<DeathCompone
 /// \param component Component in wich deserialize the data.
 /// \param value The Json value containing the data.
 void deserialize(const Json::Value& value, entityx::ComponentHandle<NameComponent> component);
+
+/// Deserialize the given \a value in the given \a component.
+/// \param component Component in wich deserialize the data.
+/// \param value The Json value containing the data.
+void deserialize(const Json::Value& value, entityx::ComponentHandle<HandToHandComponent> component);
 
 #endif//SERIALIZATION_H

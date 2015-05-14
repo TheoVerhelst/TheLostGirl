@@ -55,7 +55,7 @@
                     "type" : "object",
                     "required" : true,
                     "free children names" : false,
-                    "children" : 
+                    "children" :
                     [
                         {
                             "name" : "x",
@@ -359,6 +359,20 @@
                             }
                         ]
                     },
+					{
+						"name" : "hand to hand",
+						"type" : "object",
+						"required" : false,
+						"free children names" : false,
+						"children" :
+						[
+							{
+								"name" : "damages",
+								"type" : "real",
+								"required" : true
+							}
+						]
+					},
                     {
                         "name" : "hardness",
                         "type" : "real",
@@ -430,7 +444,7 @@
                                     }
                                 ]
                             }
-                            
+
                         ]
                     },
 					{
@@ -514,11 +528,11 @@
 								"name" : "drops",
 								"type" : "array",
 								"required" : true,
-								"children" : 
+								"children" :
 								{
 									"type" : "object",
 									"free children names" : false,
-									"children" : 
+									"children" :
 									[
 										{
 											"type" : "real",
@@ -623,7 +637,7 @@
                         {
                             "type" : "object",
                             "free children names" : true,
-                            "children" : 
+                            "children" :
                             {
                                 "type" : "object",
                                 "free children names" : false,
@@ -672,7 +686,7 @@
                                         {
                                             "type" : "object",
                                             "free children names" : false,
-                                            "children" : 
+                                            "children" :
                                             [
                                                 {
                                                     "name" : "x",
@@ -1233,7 +1247,7 @@
                                         "required" : true
                                     }
                                 ]
-                                
+
                             },
                             {
                                 "name" : "local anchor B",
@@ -1253,7 +1267,7 @@
                                         "required" : true
                                     }
                                 ]
-                                
+
                             },
                             {
                                 "name" : "enable limit",
@@ -1346,7 +1360,7 @@
                                         "required" : true
                                     }
                                 ]
-                                
+
                             },
                             {
                                 "name" : "local anchor B",
@@ -1366,7 +1380,7 @@
                                         "required" : true
                                     }
                                 ]
-                                
+
                             },
                             {
                                 "name" : "local axis A",
@@ -1386,7 +1400,7 @@
                                         "required" : true
                                     }
                                 ]
-                                
+
                             },
                             {
                                 "name" : "enable limit",
@@ -1484,7 +1498,7 @@
                                         "required" : true
                                     }
                                 ]
-                                
+
                             },
                             {
                                 "name" : "local anchor B",
@@ -1504,7 +1518,7 @@
                                         "required" : true
                                     }
                                 ]
-                                
+
                             },
                             {
                                 "name" : "length",
@@ -1708,7 +1722,7 @@
                                         "required" : true
                                     }
                                 ]
-                                
+
                             },
                             {
                                 "name" : "local anchor B",
@@ -1728,7 +1742,7 @@
                                         "required" : true
                                     }
                                 ]
-                                
+
                             },
                             {
                                 "name" : "local axis A",
@@ -1748,7 +1762,7 @@
                                         "required" : true
                                     }
                                 ]
-                                
+
                             },
                             {
                                 "name" : "enable motor",
@@ -1826,7 +1840,7 @@
                                         "required" : true
                                     }
                                 ]
-                                
+
                             },
                             {
                                 "name" : "local anchor B",
@@ -1846,7 +1860,7 @@
                                         "required" : true
                                     }
                                 ]
-                                
+
                             },
                             {
                                 "name" : "reference angle",
@@ -1914,7 +1928,7 @@
                                         "required" : true
                                     }
                                 ]
-                                
+
                             },
                             {
                                 "name" : "local anchor B",
@@ -1934,7 +1948,7 @@
                                         "required" : true
                                     }
                                 ]
-                                
+
                             },
                             {
                                 "name" : "maximum length",

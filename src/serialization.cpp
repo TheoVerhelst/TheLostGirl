@@ -394,6 +394,13 @@ Json::Value serialize(entityx::ComponentHandle<NameComponent> component)
 	return component->name;
 }
 
+Json::Value serialize(entityx::ComponentHandle<HandToHandComponent> component)
+{
+	Json::Value ret;
+	ret["damages"] = component->damages;
+	return ret;
+}
+
   //////////               //////////
  ////////// Deserializing //////////
 //////////               //////////
@@ -823,4 +830,9 @@ void deserialize(const Json::Value& value, entityx::ComponentHandle<DeathCompone
 void deserialize(const Json::Value& value, entityx::ComponentHandle<NameComponent> component)
 {
 	component->name = value.asString();
+}
+
+void deserialize(const Json::Value& value, entityx::ComponentHandle<HandToHandComponent> component)
+{
+	component->damages = value["damages"].asFloat();
 }

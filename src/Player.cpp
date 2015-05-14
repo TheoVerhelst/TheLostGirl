@@ -307,32 +307,33 @@ void Player::handleInitialInputState()
 
 void Player::initializeActions()
 {
-	m_startActionBinding[MoveLeft].action = Mover(Direction::Left);
-	m_startActionBinding[MoveRight].action =  Mover(Direction::Right);
-	m_startActionBinding[MoveUp].action =  Mover(Direction::Top);
-	m_startActionBinding[MoveDown].action =  Mover(Direction::Bottom);
+	m_startActionBinding[Action::MoveLeft].action = Mover(Direction::Left);
+	m_startActionBinding[Action::MoveRight].action =  Mover(Direction::Right);
+	m_startActionBinding[Action::MoveUp].action =  Mover(Direction::Top);
+	m_startActionBinding[Action::MoveDown].action =  Mover(Direction::Bottom);
 
-	m_stopActionBinding[MoveLeft].action =  Mover(Direction::Left, false);
-	m_stopActionBinding[MoveRight].action = Mover(Direction::Right, false);
-	m_stopActionBinding[MoveUp].action = Mover(Direction::Top, false);
-	m_stopActionBinding[MoveDown].action = Mover(Direction::Bottom, false);
+	m_stopActionBinding[Action::MoveLeft].action =  Mover(Direction::Left, false);
+	m_stopActionBinding[Action::MoveRight].action = Mover(Direction::Right, false);
+	m_stopActionBinding[Action::MoveUp].action = Mover(Direction::Top, false);
+	m_stopActionBinding[Action::MoveDown].action = Mover(Direction::Bottom, false);
 
-	m_immediateActionBinding[Jump].action = Jumper();
-	m_immediateActionBinding[PickUp].action = ArrowPicker();
-	m_immediateActionBinding[SearchCorpse].action = CorpseSearcher(m_stateStack);
+	m_immediateActionBinding[Action::Jump].action = Jumper();
+	m_immediateActionBinding[Action::PickUp].action = ArrowPicker();
+	m_immediateActionBinding[Action::HandToHand].action = HandToHand();
+	m_immediateActionBinding[Action::SearchCorpse].action = CorpseSearcher(m_stateStack);
 
 	//Do not assign a command to the bending action, the DragAndDrop system already does
 }
 
 bool Player::isImmediateAction(Action action) const
 {
-	auto found = m_immediateActionBinding.find(action);
-	return found != m_immediateActionBinding.end();//If the action is in the table, it's an immediate action
+	//If the action is in the table, it's an immediate action
+	return m_immediateActionBinding.find(action) != m_immediateActionBinding.end();
 }
 
 bool Player::isRealtimeAction(Action action) const
 {
-	auto foundStart = m_startActionBinding.find(action);
-	auto foundStop = m_stopActionBinding.find(action);
-	return foundStart != m_startActionBinding.end() and foundStop != m_stopActionBinding.end();//If the action is in the table, it's a realtime action
+	//If the action is in both tables, it's a realtime action
+	return m_startActionBinding.find(action) != m_startActionBinding.end()
+		and m_stopActionBinding.find(action) != m_stopActionBinding.end();
 }

@@ -232,4 +232,10 @@ struct NameComponent : public entityx::Component<NameComponent>
 	std::string name;///There is stored the english version of the name, translation is done by the LangManager.
 };
 
+/// Store data about hand to hand abilities.
+struct HandToHandComponent : public entityx::Component<HandToHandComponent>
+{
+	float damages;///< Damages that generates an attack.
+};
+
 #endif //COMPONENTS_H

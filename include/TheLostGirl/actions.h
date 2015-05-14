@@ -8,5 +8,6 @@
 #include <TheLostGirl/actions/Death.h>
 #include <TheLostGirl/actions/Jumper.h>
 #include <TheLostGirl/actions/Mover.h>
+#include <TheLostGirl/actions/HandToHand.h>
 
 #endif//ACTIONS_H

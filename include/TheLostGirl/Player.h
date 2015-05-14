@@ -17,7 +17,7 @@ class Player
 	public:
         /// Players's action.
         /// That's all the player can do.
-		enum Action
+		enum class Action
 		{
 			MoveUp,       ///< Go in an exit on the top.
 			MoveDown,     ///< Go in an exit on the bottom.
