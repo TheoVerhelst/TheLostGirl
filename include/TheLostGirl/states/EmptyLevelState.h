@@ -28,14 +28,14 @@ struct Transform;
 class EmptyLevelState : public State
 {
 	public:
-        /// Default constructor.
+        /// Constructor.
         /// \param stack StateStack wherein the State is added.
 		EmptyLevelState(StateStack& stack);
-		
-		/// Default destructor.
+
+		/// Destructor.
 		/// Remove all bodies, sprites and others from the memory.
 		~EmptyLevelState();
-		
+
         /// The drawing function.
         /// \return virtual void
         /// It must do all things related to drawing stuff on the screen.
@@ -57,15 +57,15 @@ class EmptyLevelState : public State
 		/// Initialize the physic world.
 		/// \param file Path of the save file to load.
 		void initWorld(const std::string& file);
-		
+
 		std::map<std::string, entityx::Entity> m_entities;     ///< All game entities.
 		std::map<std::string, entityx::Entity> m_sceneEntities;///< All scene entities.
 		float m_timeSpeed;                                     ///< The speed of the time (usually 1.f). This influes only on the TimeSystem, not on physics!
 		std::thread m_threadLoad;                              ///< Thread launched when loading the level.
-		
+
 		//Level informations
 		std::string m_levelIdentifier;                         ///< Identifer of the level, must be a non-spaced name.
-		unsigned short int m_numberOfPlans;                    ///< Number of plans in the background.
+		unsigned int m_numberOfPlans;                          ///< Number of plans in the background.
 		float m_referencePlan;                                 ///< Number of the plan where actors evolute.
 		sf::IntRect m_levelRect;                               ///< The dimensions of the level, in pixels.
 };

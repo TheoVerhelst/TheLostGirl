@@ -12,7 +12,7 @@ AnimationsManager<A>::~AnimationsManager()
 }
 
 template<typename A>
-void AnimationsManager<A>::addAnimation(const std::string& identifier, A animation, unsigned short int importance, sf::Time duration, bool loops)
+void AnimationsManager<A>::addAnimation(const std::string& identifier, A animation, unsigned int importance, sf::Time duration, bool loops)
 {
 	TimeAnimation timeAnime{animation, importance, duration, loops};
 	m_animationsMap.emplace(identifier, timeAnime);
@@ -182,7 +182,7 @@ void AnimationsManager<A>::deserialize(const Json::Value& value, T& object, Stat
 }
 
 template<typename A>
-AnimationsManager<A>::TimeAnimation::TimeAnimation(A _animation, unsigned short int _importance, sf::Time _duration,
+AnimationsManager<A>::TimeAnimation::TimeAnimation(A _animation, unsigned int _importance, sf::Time _duration,
 												 bool _loops, float _progress, bool _isPaused, bool _isActive):
 	animation{_animation},
 	importance{_importance},

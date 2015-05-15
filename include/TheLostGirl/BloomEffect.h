@@ -13,7 +13,7 @@
 class BloomEffect : public PostEffect
 {
 	public:
-		/// Default constructor.
+		/// Constructor.
 		BloomEffect();
 
 		/// Apply the bloom effect.

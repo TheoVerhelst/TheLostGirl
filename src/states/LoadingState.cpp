@@ -58,7 +58,7 @@ LoadingState::LoadingState(StateStack& stack):
 		m_sentenceLabel->setText(m_sentence);
 		m_sentenceLabel->setTextSize(20);
 		//Center the label
-		m_sentenceLabel->setPosition((bindWidth(gui) - bindWidth(m_sentenceLabel))/2, bindHeight(gui, 0.5));
+		m_sentenceLabel->setPosition((bindWidth(gui) - bindWidth(m_sentenceLabel))/2, bindHeight(gui, 0.5f));
 		m_sentenceLabel->setTextColor(sf::Color::Black);
 		gui.add(m_sentenceLabel);
 
@@ -66,7 +66,7 @@ LoadingState::LoadingState(StateStack& stack):
 		m_hintLabel->setText(LangManager::tr(line));
 		m_hintLabel->setTextSize(30);
 		//Center the label
-		m_hintLabel->setPosition((bindWidth(gui) - bindWidth(m_hintLabel))/2, bindHeight(gui, 0.38));
+		m_hintLabel->setPosition((bindWidth(gui) - bindWidth(m_hintLabel))/2.f, bindHeight(gui, 0.38f));
 		m_hintLabel->setTextColor(sf::Color::Black);
 		gui.add(m_hintLabel);
 	}

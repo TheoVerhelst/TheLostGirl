@@ -48,15 +48,15 @@ class AnimationsManager
 		/// Animation associated with a certain duration.
 		struct TimeAnimation
 		{
-			A animation;      ///< Pointer to the concrete animation.
-			unsigned short int importance;///< Indicates the importance of the animation, relatively to the others.
-			sf::Time duration;            ///< Duration of the animation.
-			bool loops;                   ///< Indicates if the animation must loops or not.
-			float progress;               ///< Current progress of the animation, in the range [0,1].
-			bool isPaused;                ///< Indicates if the animations is paused.
-			bool isActive;                ///< Indicates if the animations is active.
+			A animation;            ///< Pointer to the concrete animation.
+			unsigned int importance;///< Indicates the importance of the animation, relatively to the others.
+			sf::Time duration;      ///< Duration of the animation.
+			bool loops;             ///< Indicates if the animation must loops or not.
+			float progress;         ///< Current progress of the animation, in the range [0,1].
+			bool isPaused;          ///< Indicates if the animations is paused.
+			bool isActive;          ///< Indicates if the animations is active.
 
-			/// Default constructor.
+			/// Constructor.
 			/// \param _animation Functor of the animation.
 			/// \param _importance Indicates the importance of the animation, relatively to the others.
 			/// \param _duration Duration of the animation.
@@ -65,7 +65,7 @@ class AnimationsManager
 			/// \param _isPaused Indicates if the animations is paused.
 			/// \param _isActive Indicates if the animations is active.
 			TimeAnimation(A _animation,
-							unsigned short int _importance = 0,
+							unsigned int _importance = 0,
 							sf::Time _duration = sf::seconds(1.f),
 							bool _loops = false,
 							float _progress = 0.f,
@@ -73,10 +73,10 @@ class AnimationsManager
 							bool _isActive = false);
 		};
 
-		/// Default constructor.
+		/// Constructor.
 		AnimationsManager();
 
-		/// Default destructor.
+		/// Destructor.
 		~AnimationsManager();
 
 		/// Add a new animation to the manager.
@@ -86,7 +86,7 @@ class AnimationsManager
 		/// \param duration Duration fo the animation.
 		/// \param loops Indicate if the animation must loops or not.
 		/// \see removeAnimation
-		void addAnimation(const std::string& identifier, A animation, unsigned short int importance = 0, sf::Time duration = sf::seconds(1.f), bool loops = false);
+		void addAnimation(const std::string& identifier, A animation, unsigned int importance = 0, sf::Time duration = sf::seconds(1.f), bool loops = false);
 
 		/// Remove an animation from the animation manager.
 		/// \param identifier Identifier of the animation to delete.
@@ -155,16 +155,16 @@ class AnimationsManager
 		/// Update the animation system.
 		/// \param dt Elapsed time in the last game frame.
 		void update(sf::Time dt = sf::Time::Zero);
-		
+
 		/// Check if the given animation exists in the manager.
 		/// \param identifier Identifier of the animation to check.
 		/// \return True if the given animation is registred in the manager, false otherwise.
 		bool isRegistred(const std::string& identifier) const;
-		
+
 		/// Serialize the animations manager.
 		/// \return A Json value containing all the data.
 		Json::Value serialize() const;
-		
+
 		/// Serialize the animations manager.
 		/// That copy all data in value and construct them in this instance of animations manager.
 		/// \param value A Json value containing all the data.

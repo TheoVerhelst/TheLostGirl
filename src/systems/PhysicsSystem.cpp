@@ -24,7 +24,7 @@ void PhysicsSystem::update(entityx::EntityManager& entityManager, entityx::Event
 {
 	int32 velocityIterations{8};
 	int32 positionIterations{8};
-	m_world.Step(dt, velocityIterations, positionIterations);
+	m_world.Step(float32(dt), velocityIterations, positionIterations);
 
 	//Get the force of the wind
 	float windStrength{m_systemManager.system<TimeSystem>()->getWindStrength()};
@@ -155,7 +155,7 @@ void PhysicsSystem::update(entityx::EntityManager& entityManager, entityx::Event
 			//Convert the local friction point to Box2D global coordinates
 			b2Vec2 localFrictionPoint{sftob2(arrowComponent->localFrictionPoint/m_pixelByMeter)};
 			b2Vec2 arrowTailPosition{body->GetWorldPoint(localFrictionPoint)};
-			body->ApplyForce(dragForceMagnitude*(-flightDirection), arrowTailPosition, true);
+			body->ApplyForce(float32(dragForceMagnitude)*(-flightDirection), arrowTailPosition, true);
 		}
 
 	}

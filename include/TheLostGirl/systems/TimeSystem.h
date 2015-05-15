@@ -18,7 +18,7 @@ namespace entityx
 class TimeSystem : public entityx::System<TimeSystem>
 {
 	public:
-		/// Default constructor.
+		/// Constructor.
 		/// \param context Current context of the application.
 		TimeSystem(StateStack::Context context);
 

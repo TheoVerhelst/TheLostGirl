@@ -10,9 +10,9 @@ namespace entityx
 /// Base class for every action.
 struct Action
 {
-	/// Default destructor
+	/// Destructor.
 	virtual ~Action();
-	
+
 	/// Overload of the () operator.
 	/// \param entity Entity to do the action on.
 	/// \param dt Elapsed time in the last game frame.

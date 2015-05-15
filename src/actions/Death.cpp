@@ -14,7 +14,7 @@ Death::~Death()
 {
 }
 
-void Death::operator()(entityx::Entity entity, double dt) const
+void Death::operator()(entityx::Entity entity, double) const
 {
 	if(not entity)
 		return;

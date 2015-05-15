@@ -12,12 +12,12 @@ enum class Direction;
 /// Structure that move an entity to a given side.
 struct Mover : public Action
 {
-	/// Default constructor.
+	/// Constructor.
 	/// \param _direction
 	/// \param _start True if the movement starts, false if it stops.
 	Mover(Direction _direction, bool _start = true);
 
-	/// Default destructor
+	/// Destructor.
 	virtual ~Mover();
 
 	/// Overload of the () operator.

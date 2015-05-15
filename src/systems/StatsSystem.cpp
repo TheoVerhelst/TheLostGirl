@@ -29,7 +29,7 @@ void StatsSystem::update(entityx::EntityManager& entityManager, entityx::EventMa
 			{
 				if(pair.second->GetPosition().y > 300)
 				{
-					healthComponent->current = cap(healthComponent->current - 50*dt, 0.f, healthComponent->maximum);
+					healthComponent->current = cap(healthComponent->current - 50.f*float(dt), 0.f, healthComponent->maximum);
 					if(entity.has_component<CategoryComponent>() and entity.component<CategoryComponent>()->category & Category::Player)
 						eventManager.emit<PlayerHealthChange>(healthComponent->current, healthComponent->current/healthComponent->maximum);
 					break;
@@ -49,7 +49,7 @@ void StatsSystem::update(entityx::EntityManager& entityManager, entityx::EventMa
 		//Regen health
 		if(healthComponent->current < healthComponent->maximum)
 		{
-			healthComponent->current = cap(healthComponent->current + healthComponent->regeneration*dt, 0.f, healthComponent->maximum);
+			healthComponent->current = cap(healthComponent->current + healthComponent->regeneration*float(dt), 0.f, healthComponent->maximum);
 			if(entity.has_component<CategoryComponent>() and entity.component<CategoryComponent>()->category & Category::Player)
 				eventManager.emit<PlayerHealthChange>(healthComponent->current, healthComponent->current/healthComponent->maximum);
 		}
@@ -61,7 +61,7 @@ void StatsSystem::update(entityx::EntityManager& entityManager, entityx::EventMa
 		if(entity.has_component<BowComponent>())
 		{
 			float oldStamina{staminaComponent->current};
-			staminaComponent->current = cap(staminaComponent->current - entity.component<BowComponent>()->power*dt*3/100.f, 0.f, staminaComponent->maximum);
+			staminaComponent->current = cap(staminaComponent->current - entity.component<BowComponent>()->power*float(dt)*3.f/100.f, 0.f, staminaComponent->maximum);
 			if(staminaComponent->current < oldStamina
 				and entity.has_component<CategoryComponent>()
 				and entity.component<CategoryComponent>()->category & Category::Player)
@@ -71,7 +71,7 @@ void StatsSystem::update(entityx::EntityManager& entityManager, entityx::EventMa
 		//Regen stamina
 		if(staminaComponent->current < staminaComponent->maximum)
 		{
-			staminaComponent->current = cap(staminaComponent->current + staminaComponent->regeneration*dt, 0.f, staminaComponent->maximum);
+			staminaComponent->current = cap(staminaComponent->current + staminaComponent->regeneration*float(dt), 0.f, staminaComponent->maximum);
 			if(entity.has_component<CategoryComponent>() and entity.component<CategoryComponent>()->category & Category::Player)
 				eventManager.emit<PlayerStaminaChange>(staminaComponent->current, staminaComponent->current/staminaComponent->maximum);
 		}

@@ -48,10 +48,10 @@ Json::Value SpriteSheetAnimation::serialize() const
 	Json::Value ret;
 	for(unsigned int i{0}; i < m_frames.size(); ++i)
 	{
-		ret[i]["x"] = int(float(m_frames[i].rect.left));
-		ret[i]["y"] = int(float(m_frames[i].rect.top));
-		ret[i]["w"] = int(float(m_frames[i].rect.width));
-		ret[i]["h"] = int(float(m_frames[i].rect.height));
+		ret[i]["x"] = m_frames[i].rect.left;
+		ret[i]["y"] = m_frames[i].rect.top;
+		ret[i]["w"] = m_frames[i].rect.width;
+		ret[i]["h"] = m_frames[i].rect.height;
 		ret[i]["relative duration"] = m_frames[i].duration;
 	}
 	return ret;
@@ -64,10 +64,10 @@ void SpriteSheetAnimation::deserialize(const Json::Value& value)
 	{
 		sf::IntRect rect;
 		float duration;
-		rect.left = static_cast<float>(value[i]["x"].asInt());
-		rect.top = static_cast<float>(value[i]["y"].asInt());
-		rect.width = static_cast<float>(value[i]["w"].asInt());
-		rect.height = static_cast<float>(value[i]["h"].asInt());
+		rect.left = value[i]["x"].asInt();
+		rect.top = value[i]["y"].asInt();
+		rect.width = value[i]["w"].asInt();
+		rect.height = value[i]["h"].asInt();
 		duration = value[i]["relative duration"].asFloat();
 		m_frames.push_back(Frame(rect, duration));
 	}

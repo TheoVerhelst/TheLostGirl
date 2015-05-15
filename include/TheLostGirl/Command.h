@@ -15,7 +15,7 @@ namespace entityx
 /// The Command structure hold a function that will be applied to a specific entity.
 struct Command
 {
-	/// Default constructor.
+	/// Constructor.
 	Command();
 
 	/// Copy constructor.

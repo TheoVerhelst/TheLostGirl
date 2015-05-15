@@ -25,7 +25,7 @@ struct Command;
 class DragAndDropSystem : public entityx::System<DragAndDropSystem>
 {
 	public:
-		/// Default constructor.
+		/// Constructor.
 		/// \param context Current context of the application.
 		DragAndDropSystem(StateStack::Context context);
 

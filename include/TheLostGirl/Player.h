@@ -38,10 +38,11 @@ class Player
 			Pause,        ///< Pause the game.
 		};
 
-		/// Default constructor.
+		/// Constructor.
+		/// \param stateStack The game state manager.
 		Player(StateStack& stateStack);
 
-		/// Default destructor.
+		/// Destructor.
 		~Player();
 
         /// Handle the input.
@@ -124,7 +125,6 @@ class Player
 		bool isRealtimeAction(Action action) const;
 
 		StateStack& m_stateStack;                                  ///< State manager.
-		std::queue<Command>& m_commands;                           ///< Queue of commands.
 		std::map<sf::Keyboard::Key, Action> m_keyBinding;          ///< Binding between keyboard keys and theoric actions.
 		std::map<sf::Mouse::Button, Action> m_mouseButtonBinding;  ///< Binding between mouse buttons and theoric actions.
 		Action m_mouseWheelBinding;                                ///< Binding between mouse wheel and an unique theoric action.

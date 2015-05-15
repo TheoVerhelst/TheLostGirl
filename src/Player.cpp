@@ -281,7 +281,7 @@ bool Player::isActived(Action action) const
 	}
 	for(auto& axis : joystickAxisBindings)
 	{
-		for(int i{0}; i < sf::Joystick::Count; ++i)
+		for(unsigned int i{0}; i < sf::Joystick::Count; ++i)
 		{
 			if(std::fabs(sf::Joystick::getAxisPosition(i, axis)) < 1.f)
 				return true;

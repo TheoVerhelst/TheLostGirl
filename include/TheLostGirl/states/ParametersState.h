@@ -17,11 +17,11 @@ class StateStack;
 class ParametersState : public State
 {
 	public:
-        /// Default constructor.
+        /// Constructor.
         /// \param stack StateStack wherein the State is added.
 		ParametersState(StateStack& stack);
 
-		/// Default destructor.
+		/// Destructor.
 		~ParametersState();
 
         /// The drawing function.

@@ -11,10 +11,10 @@ namespace entityx
 /// Structure that jump an entity.
 struct Jumper : public Action
 {
-	/// Default constructor.
+	/// Constructor.
 	Jumper();
 
-	/// Default destructor
+	/// Destructor.
 	virtual ~Jumper();
 
 	/// Overload of the () operator.

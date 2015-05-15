@@ -7,6 +7,7 @@
 #include <SFML/Graphics/Rect.hpp>
 #include <SFML/Window/Event.hpp>
 #include <Box2D/Common/b2Math.h>
+#include <Box2D/Common/b2Draw.h>
 #include <dist/json/json.h>
 
 //Forward declarations
@@ -153,6 +154,12 @@ sf::Vector2f b2tosf(const b2Vec2& vec);
 /// \return A Box2D vector.
 b2Vec2 sftob2(const sf::Vector2f& vec);
 
+
+/// Convert a Box2D color to a SFML color;
+/// \param color A Box2D color;
+/// \return A SFML color.
+sf::Color b2ColorToSf(const b2Color& color);
+
 /// Add \a value to ptr with the operator |, it is useful for storing data in Box2D userData.
 /// \note So the ptr is not really a ptr, just a 32 or 64 bits value contained in a void pointer.
 /// \param ptr A void pointer.
@@ -197,7 +204,7 @@ Key getKey(const std::map<Key, Value>& map, const Value& value)
 template <typename T, typename R=T>
 R scaleRes(const T& value, float scale)
 {
-	return static_cast<R>(ceil(value*scale));
+	return static_cast<R>(ceil(static_cast<float>(value)*scale));
 }
 
 #endif//FUNCTIONS_H

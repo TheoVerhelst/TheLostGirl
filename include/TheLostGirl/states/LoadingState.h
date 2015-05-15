@@ -20,13 +20,13 @@ class LoadingStateChange;
 class LoadingState : public State, public entityx::Receiver<LoadingState>
 {
 	public:
-        /// Default constructor.
+        /// Constructor.
         /// \param stack StateStack wherein the State is added.
 		LoadingState(StateStack& stack);
-		
-		/// Default destructor.
+
+		/// Destructor.
 		~LoadingState();
-		
+
         /// The drawing function.
         /// \return virtual void
         /// It must do all things related to drawing stuff on the screen.
@@ -42,9 +42,9 @@ class LoadingState : public State, public entityx::Receiver<LoadingState>
         /// \return Return true if the state under this state in the stack must be also updated.
         /// \note The closing window and resinzing window events are already handled by the Application class.
 		virtual bool handleEvent(const sf::Event& event);
-		
+
 		/// Receive an event indicating that the loading has progressed.
-		/// \param loadingStateChange Structure containing data about the change. 
+		/// \param loadingStateChange Structure containing data about the change.
 		void receive(const LoadingStateChange& loadingStateChange);
 
 	private:

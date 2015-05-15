@@ -20,13 +20,13 @@ struct PlayerStaminaChange;
 class HUDState : public State, public entityx::Receiver<HUDState>
 {
 	public:
-        /// Default constructor.
+        /// Constructor.
         /// \param stack StateStack wherein the State is added.
 		HUDState(StateStack& stack);
-		
-		/// Default destructor.
+
+		/// Destructor.
 		~HUDState();
-		
+
         /// The drawing function.
         /// \return virtual void
         /// It must do all things related to drawing stuff on the screen.
@@ -42,13 +42,13 @@ class HUDState : public State, public entityx::Receiver<HUDState>
         /// \return Return true if the state under this state in the stack must be also updated.
         /// \note The closing window and resinzing window events are already handled by the Application class.
 		virtual bool handleEvent(const sf::Event& event);
-		
+
 		/// Receive an event indicating that the health of the player changed.
-		/// \param playerHealthChange Structure containing data about the change. 
+		/// \param playerHealthChange Structure containing data about the change.
 		void receive(const PlayerHealthChange& playerHealthChange);
-		
+
 		/// Receive an event indicating that the health of the player changed.
-		/// \param playerStaminaChange Structure containing data about the change. 
+		/// \param playerStaminaChange Structure containing data about the change.
 		void receive(const PlayerStaminaChange& playerStaminaChange);
 
 	private:

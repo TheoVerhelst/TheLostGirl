@@ -17,7 +17,7 @@ void HandToHand::operator()(entityx::Entity entity, double) const
 {
 	if(not entity)
 		return;
-	if(entity.has_component<DirectionComponent>())
+	if(entity.has_component<DirectionComponent>() and entity.has_component<HandToHandComponent>())
 	{
 		DirectionComponent::Handle directionComponent{entity.component<DirectionComponent>()};
 		if(entity.has_component<BodyComponent>())
@@ -32,22 +32,20 @@ void HandToHand::operator()(entityx::Entity entity, double) const
 				b2AABB handToHandBox;
 				if(directionComponent->direction == Direction::Left)
 				{
-					handToHandBox.lowerBound = body->GetWorldCenter() - b2Vec2(-1, -0.8);
-					handToHandBox.upperBound = body->GetWorldCenter() + b2Vec2(0, 0.8);
+					handToHandBox.lowerBound = body->GetWorldCenter() - b2Vec2(-1, -0.8f);
+					handToHandBox.upperBound = body->GetWorldCenter() + b2Vec2(0, 0.8f);
 				}
 				else
 				{
-					handToHandBox.lowerBound = body->GetWorldCenter() - b2Vec2(0, -0.8);
-					handToHandBox.upperBound = body->GetWorldCenter() + b2Vec2(1, 0.8);
+					handToHandBox.lowerBound = body->GetWorldCenter() - b2Vec2(0, -0.8f);
+					handToHandBox.upperBound = body->GetWorldCenter() + b2Vec2(1, 0.8f);
 				}
 				HandToHandQueryCallback callback(entity);
 				world->QueryAABB(&callback, handToHandBox);
 
-				if(callback.foundEntity.valid())
-				{
-					if(callback.foundEntity.has_component<HealthComponent>())
-						callback.foundEntity.component<HealthComponent>()->current -= 1000;
-				}
+				for(auto& foundEntity : callback.foundEntities)
+					if(foundEntity.valid() and foundEntity.has_component<HealthComponent>())
+						foundEntity.component<HealthComponent>()->current -= entity.component<HandToHandComponent>()->damages;
 			}
 		}
 		if(entity.has_component<AnimationsComponent<SpriteSheetAnimation>>())
@@ -79,8 +77,8 @@ bool HandToHandQueryCallback::ReportFixture(b2Fixture* fixture)
 {
 	entityx::Entity entity{*static_cast<entityx::Entity*>(fixture->GetBody()->GetUserData())};
 	//Return false (and so stop) only if this is a arrow and if this one is sticked.
-	bool found{entity != m_attacker and entity.has_component<CategoryComponent>() and entity.component<CategoryComponent>()->category & Category::Actor};
-	if(found)
-		foundEntity = entity;
-	return not found;
+	if(entity != m_attacker and entity.has_component<CategoryComponent>()
+			and entity.component<CategoryComponent>()->category & Category::Actor)
+		foundEntities.push_front(entity);
+	return true;
 }

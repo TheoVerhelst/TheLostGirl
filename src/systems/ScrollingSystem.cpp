@@ -38,10 +38,10 @@ void ScrollingSystem::update(entityx::EntityManager& entityManager, entityx::Eve
 				sf::View view{m_window.getView()};
 				//Compute the maximum and minimum coordinates that the view can have
 				float wiewWidth{view.getSize().x}, viewHeight{view.getSize().y};
-				float xmin{m_levelRect.left + wiewWidth/(m_scale*2)};
-				float xmax{m_levelRect.left + m_levelRect.width - wiewWidth/(m_scale*2)};
-				float ymin{m_levelRect.top + viewHeight/(m_scale*2)};
-				float ymax{m_levelRect.top + m_levelRect.height - viewHeight/(m_scale*2)};
+				float xmin{float(m_levelRect.left) + wiewWidth/(m_scale*2.f)};
+				float xmax{float(m_levelRect.left) + m_levelRect.width - wiewWidth/(m_scale*2.f)};
+				float ymin{float(m_levelRect.top) + viewHeight/(m_scale*2.f)};
+				float ymax{float(m_levelRect.top) + m_levelRect.height - viewHeight/(m_scale*2.f)};
 				//Cap the position between min and max
 				playerPosition.x = cap(playerPosition.x, xmin, xmax);
 				playerPosition.y = cap(playerPosition.y, ymin, ymax);
@@ -51,7 +51,7 @@ void ScrollingSystem::update(entityx::EntityManager& entityManager, entityx::Eve
 				m_window.setView(view);
 
 				//The x-ordinate of the left border of the screen.
-				float xScreen{playerPosition.x - xmin};
+				double xScreen{playerPosition.x - xmin};
 				//Assign transform on every sprite
 				for(auto entitySecond : entityManager.entities_with_components(spriteComponent, transformComponent))
 				{

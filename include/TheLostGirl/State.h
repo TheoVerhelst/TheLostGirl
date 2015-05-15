@@ -20,11 +20,11 @@ class State
         /// Pointer typedef.
 		typedef std::unique_ptr<State> Ptr;
 
-        /// Default constructor.
+        /// Constructor.
         /// \param stack StateStack wherein the State is added.
 		State(StateStack& stack);
 
-		/// Default destructor.
+		/// Destructor.
 		virtual ~State();
 
         /// The drawing function.

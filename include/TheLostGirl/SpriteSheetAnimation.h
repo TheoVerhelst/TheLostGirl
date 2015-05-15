@@ -41,8 +41,8 @@ class SpriteSheetAnimation
 		{
 			sf::IntRect rect;///< Rect to display.
 			float duration;  ///< Relative duration of the frame, in the range [0, 1].
-			
-			/// Default constructor.
+
+			/// Constructor.
 			/// \param _rect Rect to display.
 			/// \param _duration Relative duration of the frame, in the range [0, 1].
 			Frame(const sf::IntRect& _rect, float _duration):
@@ -51,35 +51,35 @@ class SpriteSheetAnimation
 			{
 			}
 		};
-		
+
 		/// Constructor.
 		/// \param sprite Sprite to animate.
 		/// \param context Current context of the application.
 		SpriteSheetAnimation(sf::Sprite& sprite, StateStack::Context context);
-		
+
 		/// Registers a new frame.
 		/// \param frame Frame of texture to display on the sprite of the entity.
 		void addFrame(const Frame& frame);
-		
+
 		/// Overload of the addFrame function.
 		/// Registers a new frame.
 		/// \param rect IntRect of the texture to display on the sprite of the entity.
 		/// \param duration Relative duration of the frame.
 		void addFrame(const sf::IntRect& rect, float duration);
-		
+
 		/// Apply the animation to the sprite passed as argument in the constructor.
 		/// In fact, it just search wich rect to apply to the texture of the sprite.
 		/// \param progress Progress of the animation to apply.
 		void animate(float progress);
-		
+
 		/// Serialize the spritesheet animation.
 		/// \return A Json value containing all the data.
 		Json::Value serialize() const;
-		
+
 		/// Deserialize the value and set it in the animation.
 		/// \param value A Json value containing the data.
 		void deserialize(const Json::Value& value);
-		
+
 	private:
 		/// Scale the given rectangle with the scale indicated in m_context.
 		/// \param rect Rectangle to scale.
@@ -95,9 +95,9 @@ class SpriteSheetAnimation
 			res.height = T(float(rect.height)*scaleRes);
 			return res;
 		}
-		std::vector<Frame> m_frames;///< Array of all registred frames.
-		sf::Sprite& m_sprite;       ///< Sprite to animate.
-		StateStack::Context m_context;   ///< Current context of the application.
+		std::vector<Frame> m_frames;  ///< Array of all registred frames.
+		sf::Sprite& m_sprite;         ///< Sprite to animate.
+		StateStack::Context m_context;///< Current context of the application.
 };
 
 #endif//SPRITESHEETANIMATION_H

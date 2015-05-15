@@ -283,3 +283,9 @@ b2Vec2 sftob2(const Vector2f& vec)
 {
 	return {vec.x, vec.y};
 }
+
+sf::Color b2ColorToSf(const b2Color& color)
+{
+	return sf::Color(static_cast<sf::Uint8>(color.r*255.f), static_cast<sf::Uint8>(color.g*255.f),
+					 static_cast<sf::Uint8>(color.b*255.f), static_cast<sf::Uint8>(color.a*255.f));
+}

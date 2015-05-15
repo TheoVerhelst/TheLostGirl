@@ -14,12 +14,12 @@ namespace entityx
 /// since the angle or the power can change.
 struct BowBender : public Action
 {
-	/// Default constructor.
+	/// Constructor.
 	/// \param _angle The angle of the bending.
 	/// \param _power The power of the bending.
 	BowBender(float _angle, float _power);
 
-	/// Default destructor
+	/// Destructor.
 	virtual ~BowBender();
 
 	/// Overload of the () operator.

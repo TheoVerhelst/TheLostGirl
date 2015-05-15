@@ -18,7 +18,7 @@ struct Command;
 class StatsSystem : public entityx::System<StatsSystem>
 {
 	public:
-		/// Default constructor.
+		/// Constructor.
 		/// \param context Current context of the application.
 		StatsSystem(StateStack::Context context);
 

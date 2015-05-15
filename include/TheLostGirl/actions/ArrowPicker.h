@@ -13,10 +13,10 @@ namespace entityx
 /// Structure that pick a sticked arrow nearby the entity.
 struct ArrowPicker : public Action
 {
-	/// Default constructor.
+	/// Constructor.
 	ArrowPicker();
 
-	/// Default destructor
+	/// Destructor.
 	virtual ~ArrowPicker();
 
 	/// Overload of the () operator.

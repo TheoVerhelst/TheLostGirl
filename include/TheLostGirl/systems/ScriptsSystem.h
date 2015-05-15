@@ -17,7 +17,7 @@ namespace entityx
 class ScriptsSystem : public entityx::System<ScriptsSystem>
 {
 	public:
-		/// Default constructor.
+		/// Constructor.
 	    /// \param context The current context of the application.
 		ScriptsSystem(StateStack::Context context);
 

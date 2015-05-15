@@ -43,7 +43,7 @@ struct State;
 class StateStack : private sf::NonCopyable
 {
 	public:
-        /// Various managers and globals instances.
+        /// Various managers and instances references.
         /// It is useful to pass the context to the states,
         /// they can then use these various resources managers.
 		struct Context
@@ -85,12 +85,12 @@ class StateStack : private sf::NonCopyable
 			Player& player;                       ///< The input manager.
 		};
 
-		/// Default constructor.
+		/// Constructor.
 		/// \param context Current context of the application.
 		/// \see StateStack::Context
 		explicit StateStack(StateStack::Context context);
 
-		/// Default destructor;
+		/// Destructor;
 		~StateStack();
 
 		/// Call the update() function of all the states in the stack.

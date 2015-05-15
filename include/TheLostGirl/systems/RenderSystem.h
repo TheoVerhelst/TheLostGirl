@@ -22,7 +22,7 @@ namespace sf
 class RenderSystem : public entityx::System<RenderSystem>
 {
 	public:
-		/// Default constructor.
+		/// Constructor.
 		/// \param context Current context of the application.
 		RenderSystem(StateStack::Context context);
 

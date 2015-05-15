@@ -11,10 +11,10 @@ namespace entityx
 /// Structure that shoot the arrow notched by the entity.
 struct ArrowShooter : public Action
 {
-	/// Default constructor.
+	/// Constructor.
 	ArrowShooter();
 
-	/// Default destructor
+	/// Destructor.
 	virtual ~ArrowShooter();
 
 	/// Overload of the () operator.

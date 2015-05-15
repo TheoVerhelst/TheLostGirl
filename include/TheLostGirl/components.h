@@ -145,7 +145,7 @@ struct BowComponent : public entityx::Component<BowComponent>
 	float angle;                      ///< The current angle of the bow, in radians.
 	std::list<entityx::Entity> arrows;///< List of all stocked arrows.
 	entityx::Entity notchedArrow;     ///< Current arrow notched in the bow.
-	unsigned short int quiverCapacity;///< Maximum number of arrows in the quiver.
+	unsigned int quiverCapacity;      ///< Maximum number of arrows in the quiver.
 };
 
 /// Health component.
@@ -229,7 +229,7 @@ struct DeathComponent : public entityx::Component<DeathComponent>
 /// Store the name of an entity that will be displayed to the player.
 struct NameComponent : public entityx::Component<NameComponent>
 {
-	std::string name;///There is stored the english version of the name, translation is done by the LangManager.
+	std::string name;///< There is stored the english version of the name, translation is done by the LangManager.
 };
 
 /// Store data about hand to hand abilities.

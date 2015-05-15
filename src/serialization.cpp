@@ -467,7 +467,7 @@ void deserialize(const Json::Value& value, entityx::ComponentHandle<BodyComponen
 						verticesVec[j].x = vertice["x"].asFloat()/pixelByMeter;
 						verticesVec[j].y = vertice["y"].asFloat()/pixelByMeter;
 					}
-					polygonShape.Set(verticesVec.data(), verticesVec.size());
+					polygonShape.Set(verticesVec.data(), static_cast<int32>(verticesVec.size()));
 					entityFixtureDef.shape = &polygonShape;
 
 					entityFixtureDef.density = fixture["density"].asFloat();
@@ -563,7 +563,7 @@ void deserialize(const Json::Value& value, entityx::ComponentHandle<BodyComponen
 						verticesArray[j].x = vertice["x"].asFloat()/pixelByMeter;
 						verticesArray[j].y = vertice["y"].asFloat()/pixelByMeter;
 					}
-					chainShape.CreateChain(verticesArray.data(), verticesArray.size());
+					chainShape.CreateChain(verticesArray.data(), static_cast<int32>(verticesArray.size()));
 
 					if(fixtures[i].isMember("previous vertex"))
 					{

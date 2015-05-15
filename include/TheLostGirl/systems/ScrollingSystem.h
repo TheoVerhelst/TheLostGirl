@@ -21,7 +21,7 @@ struct Parameters;
 class ScrollingSystem : public entityx::System<ScrollingSystem>
 {
 	public:
-		/// Default constructor.
+		/// Constructor.
 		/// \param context Current context of the application.
 		ScrollingSystem(StateStack::Context context);
 

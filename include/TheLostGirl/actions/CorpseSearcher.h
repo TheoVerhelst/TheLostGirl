@@ -14,10 +14,11 @@ namespace entityx
 /// Structure that search on a corpse around the entity.
 struct CorpseSearcher : public Action
 {
-	/// Default constructor.
+	/// Constructor.
+	/// \param stateStack The game state manager.
 	CorpseSearcher(StateStack& stateStack);
 
-	/// Default destructor
+	/// Destructor.
 	virtual ~CorpseSearcher();
 
 	/// Overload of the () operator.
@@ -26,7 +27,7 @@ struct CorpseSearcher : public Action
 	virtual void operator()(entityx::Entity entity, double dt) const;
 
 	private:
-		StateStack& m_stateStack;
+		StateStack& m_stateStack;///< The game state manager.
 };
 
 /// AABB query callback that indicate if a corpse is found into the AABB.

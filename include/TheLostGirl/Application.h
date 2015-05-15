@@ -33,11 +33,11 @@ namespace entityx
 class Application
 {
 	public:
-		/// Default constructor.
+		/// Constructor.
 		/// \param debugMode Indicate if the appliaction should start in debug mode.
 		Application(bool debugMode = false);
 
-		/// Default destructor.
+		/// Destructor.
 		~Application();
 
         /// Initialize the game.

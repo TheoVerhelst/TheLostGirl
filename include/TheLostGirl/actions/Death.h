@@ -11,10 +11,11 @@ namespace entityx
 /// Structure that process the death of an entity
 struct Death : public Action
 {
-	/// Default constructor.
+	/// Constructor.
+	/// \param context Current context of the application.
 	Death(StateStack::Context context);
 
-	/// Default destructor
+	/// Destructor.
 	virtual ~Death();
 
 	/// Overload of the () operator.
@@ -23,7 +24,7 @@ struct Death : public Action
 	virtual void operator()(entityx::Entity entity, double dt) const;
 
 	private:
-		StateStack::Context m_context;
+		StateStack::Context m_context;///< Current context of the application.
 };
 
 #endif//DEATH_H

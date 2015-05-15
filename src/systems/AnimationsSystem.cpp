@@ -48,13 +48,13 @@ void AnimationsSystem::update(entityx::EntityManager& entityManager, entityx::Ev
 	for(auto entity : entityManager.entities_with_components(animationsComponent))
 		//For each animations manager of the entity
 		for(auto& animationsPair : animationsComponent->animationsManagers)
-			animationsPair.second.update(sf::seconds(dt));
+			animationsPair.second.update(sf::seconds(float(dt)));
 
 	//Update the AnimationsManager components of the sky entities
 	for(auto entity : entityManager.entities_with_components(skyAnimationsComponent))
 		//For each animations manager of the entity
 		for(auto& animationsPair : skyAnimationsComponent->animationsManagers)
-			animationsPair.second.update(sf::seconds(dt*m_timeSpeed));
+			animationsPair.second.update(sf::seconds(float(dt)*m_timeSpeed));
 }
 
 void AnimationsSystem::setTimeSpeed(float timeSpeed)

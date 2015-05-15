@@ -18,7 +18,7 @@ struct Parameters;
 class PhysicsSystem : public entityx::System<PhysicsSystem>
 {
 	public:
-		/// Default constructor.
+		/// Constructor.
 		/// \param context Current context of the application.
 		PhysicsSystem(StateStack::Context context);
 

@@ -20,13 +20,13 @@ class StateStack;
 class IntroState : public State
 {
 	public:
-        /// Default constructor.
+        /// Constructor.
         /// \param stack StateStack wherein the State is added.
 		IntroState(StateStack& stack);
-		
-		/// Default destructor.
+
+		/// Destructor.
 		~IntroState();
-		
+
         /// The drawing function.
         /// \return virtual void
         /// It must do all things related to drawing stuff on the screen.
@@ -43,7 +43,7 @@ class IntroState : public State
         /// \return Return true if the state under this state in the stack must be also updated.
         /// \note The closing window and resinzing window events are already handled by the Application class.
 		virtual bool handleEvent(const sf::Event& event);
-		
+
 	private:
 		tgui::Panel::Ptr m_background; ///< The background of the menu.
 		tgui::Picture::Ptr m_logo;     ///< The Lost Girl logo.

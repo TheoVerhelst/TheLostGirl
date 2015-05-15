@@ -239,7 +239,7 @@ std::list<std::string> Interpreter::tokenize(std::string::const_iterator from, s
 	//Second tokenization, match reserved names.
 	for(const auto& reservedName : m_reservedNames)
 	{
-		const size_t reservedNameSize{reservedName.size()};
+		const auto reservedNameSize(static_cast<std::string::iterator::difference_type>(reservedName.size()));
 		//For each submatch
 		for(auto it(first.begin()); it != first.end(); ++it)
 		{

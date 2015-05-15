@@ -28,7 +28,7 @@ class b2World;
 class PendingChangesSystem : public entityx::System<PendingChangesSystem>
 {
 	public:
-		/// Default constructor.
+		/// Constructor.
 		/// \param context Current context of the application.
 		PendingChangesSystem(StateStack::Context context);
 

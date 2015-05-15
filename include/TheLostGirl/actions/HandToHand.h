@@ -1,6 +1,8 @@
 #ifndef HANDTOHAND_H
 #define HANDTOHAND_H
 
+#include <forward_list>
+
 #include <Box2D/Dynamics/b2WorldCallbacks.h>
 
 #include <TheLostGirl/Action.h>
@@ -10,12 +12,14 @@ namespace entityx
     class Entity;
 }
 
+/// Performs a hand to hand attack in front on the entity.
+/// This attack strikes all entities that are near the entity at once.
 struct HandToHand : public Action
 {
-	/// Default constructor.
+	/// Constructor.
 	HandToHand();
 
-	/// Default destructor
+	/// Destructor.
 	virtual ~HandToHand();
 
 	/// Overload of the () operator.
@@ -26,7 +30,7 @@ struct HandToHand : public Action
 	private:
 };
 
-/// AABB query callback that indicate if an actor is found into the AABB.
+/// AABB query callback that indicate if some actors are found into the AABB.
 class HandToHandQueryCallback : public b2QueryCallback
 {
 	public:
@@ -39,10 +43,10 @@ class HandToHandQueryCallback : public b2QueryCallback
 		/// \return True if the querying should continue, false otherwise.
 		virtual bool ReportFixture(b2Fixture* fixture);
 
-		entityx::Entity foundEntity;///< If no actor is found, then this entity won't be valid.
+		std::forward_list<entityx::Entity> foundEntities;///< List of all entities that overlaps the AABB.
 
 	private:
-		entityx::Entity m_attacker;
+		entityx::Entity m_attacker;///< The entity that performs the attack (and then excluded from the result).
 };
 
 #endif//HANDTOHAND_H

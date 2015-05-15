@@ -122,7 +122,7 @@ bool HUDState::update(sf::Time)
 			m_windStrengthSpr.setColor(sf::Color::White);
 			m_windStrengthBarSpr.setColor(sf::Color::White);
 		}
-		m_windStrengthSpr.setTextureRect({scaleRes<int>(120.f*(1.f - std::abs(windStrength)), scale), 0, scaleRes<int>(120.f*std::abs(windStrength), scale), scaleRes(20, scale)});
+		m_windStrengthSpr.setTextureRect({scaleRes<float, int>(120.f*(1.f - std::abs(windStrength)), scale), 0, scaleRes<float, int>(120.f*std::abs(windStrength), scale), scaleRes(20, scale)});
 		if(windStrength > 0)
 			m_windStrengthSpr.setScale(1, 1);
 		else
@@ -188,5 +188,5 @@ void HUDState::receive(const PlayerStaminaChange& playerStaminaChange)
 	}
 	m_staminaFadingTimer.restart();
 	float scale{getContext().parameters.scale};
-	m_staminaSpr.setTextureRect({scaleRes<int>(240 - 240.f*playerStaminaChange.normalizedStamina, scale), 0, scaleRes(240, scale), scaleRes(20, scale)});
+	m_staminaSpr.setTextureRect({scaleRes<float, int>(240 - 240.f*playerStaminaChange.normalizedStamina, scale), 0, scaleRes(240, scale), scaleRes(20, scale)});
 }

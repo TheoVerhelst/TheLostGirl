@@ -15,7 +15,7 @@ namespace sf
 class PostEffect : sf::NonCopyable
 {
 	public:
-		/// Default destructor.
+		/// Destructor.
 		virtual ~PostEffect();
 
 		/// Apply the effect.

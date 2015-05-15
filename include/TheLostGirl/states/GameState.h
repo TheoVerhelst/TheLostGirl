@@ -29,12 +29,12 @@ struct Transform;
 class GameState : public State
 {
 	public:
-        /// Default constructor.
+        /// Constructor.
         /// \param stack StateStack wherein the State is added.
         /// \param file Path name of the save file to load.
 		GameState(StateStack& stack, std::string file = "resources/levels/save.json");
 
-		/// Default destructor.
+		/// Destructor.
 		/// Remove all bodies, sprites and others from the memory.
 		~GameState();
 
@@ -85,7 +85,7 @@ class GameState : public State
 
 		//Level informations
 		std::string m_levelIdentifier;                                        ///< Identifer of the level, must be a non-spaced name.
-		unsigned short int m_numberOfPlans;                                   ///< Number of plans in the background.
+		unsigned int m_numberOfPlans;                                         ///< Number of plans in the background.
 		float m_referencePlan;                                                ///< Number of the plan where actors evolute.
 		sf::IntRect m_levelRect;                                              ///< The dimensions of the level, in pixels.
 };

@@ -30,12 +30,12 @@ struct Transform;
 class OpenInventoryState : public State
 {
 	public:
-        /// Default constructor.
+        /// Constructor.
         /// \param stack StateStack wherein the State is added.
+        /// \param entity Entity of which open the inventory.
 		OpenInventoryState(StateStack& stack, entityx::Entity entity);
 
-		/// Default destructor.
-		/// Remove all bodies, sprites and others from the memory.
+		/// Destructor.
 		~OpenInventoryState();
 
         /// The drawing function.
@@ -56,17 +56,18 @@ class OpenInventoryState : public State
 		virtual bool handleEvent(const sf::Event& event);
 
 	private:
+		/// Hold GUI widgets to represent an item in the inventory.
 		struct ItemWidget
 		{
-			tgui::Panel::Ptr background;
-			tgui::Picture::Ptr picture;
-			tgui::Label::Ptr caption;
+			tgui::Panel::Ptr background;///< The background of the item.
+			tgui::Picture::Ptr picture; ///< The image of the item.
+			tgui::Label::Ptr caption;   ///< A label with the naim of the item.
 		};
-		entityx::Entity m_entity;
-		tgui::Panel::Ptr m_background;
-		tgui::Label::Ptr m_entityName;
-		tgui::Grid::Ptr m_grid;
-		std::list<ItemWidget> m_itemWidgets;
+		entityx::Entity m_entity;           ///< Entity of which open the inventory.
+		tgui::Panel::Ptr m_background;      ///< Background of the whole inventory window.
+		tgui::Label::Ptr m_entityName;      ///< Label with the name of the entity.
+		tgui::Grid::Ptr m_grid;             ///< Grid to organize all items.
+		std::list<ItemWidget> m_itemWidgets;///< List of all items to display.
 };
 
 #endif//OPENINVENTORYSTATE_H

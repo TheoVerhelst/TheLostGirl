@@ -9,6 +9,7 @@
 #include <TheLostGirl/Parameters.h>
 #include <TheLostGirl/components.h>
 #include <TheLostGirl/ResourceManager.h>
+#include <TheLostGirl/functions.h>
 
 #include <TheLostGirl/DebugDraw.h>
 
@@ -34,10 +35,11 @@ void DebugDraw::DrawPolygon(const b2Vec2* vertices, int32 vertexCount, const b2C
 
 void DebugDraw::DrawSolidPolygon(const b2Vec2* vertices, int32 vertexCount, const b2Color& color)
 {
-	sf::ConvexShape polygon(vertexCount);
-	for(int32 i{0}; i < vertexCount; ++i)
+	unsigned int count{static_cast<unsigned int>(vertexCount)};
+	sf::ConvexShape polygon(count);
+	for(unsigned int i{0}; i < count; ++i)
 		polygon.setPoint(i, sf::Vector2f(vertices[i].x, vertices[i].y)*m_context.parameters.scaledPixelByMeter);
-	polygon.setOutlineColor(sf::Color(color.r*255.f, color.g*255.f, color.b*255.f, color.a*255.f));
+	polygon.setOutlineColor(b2ColorToSf(color));
 	polygon.setOutlineThickness(-1.f);
 	polygon.setFillColor(sf::Color::Transparent);
 	m_context.window.draw(polygon);
@@ -48,7 +50,7 @@ void DebugDraw::DrawCircle(const b2Vec2& center, float32 radius, const b2Color& 
 	sf::CircleShape circle(radius * m_context.parameters.scaledPixelByMeter);
 	circle.setOrigin(radius * m_context.parameters.scaledPixelByMeter, radius * m_context.parameters.scaledPixelByMeter);
 	circle.setPosition(center.x* m_context.parameters.scaledPixelByMeter, center.y* m_context.parameters.scaledPixelByMeter);
-	circle.setOutlineColor(sf::Color(color.r*255.f, color.g*255.f, color.b*255.f, color.a*255.f));
+	circle.setOutlineColor(b2ColorToSf(color));
 	circle.setOutlineThickness(-1.f);
 	circle.setFillColor(sf::Color::Transparent);
 	m_context.window.draw(circle);
@@ -59,7 +61,7 @@ void DebugDraw::DrawSolidCircle(const b2Vec2& center, float32 radius, const b2Ve
 	sf::CircleShape circle(radius * m_context.parameters.scaledPixelByMeter);
 	circle.setOrigin(radius * m_context.parameters.scaledPixelByMeter, radius * m_context.parameters.scaledPixelByMeter);
 	circle.setPosition(center.x* m_context.parameters.scaledPixelByMeter, center.y* m_context.parameters.scaledPixelByMeter);
-	circle.setOutlineColor(sf::Color(color.r*255.f, color.g*255.f, color.b*255.f, color.a*255.f));
+	circle.setOutlineColor(b2ColorToSf(color));
 	circle.setOutlineThickness(-1.f);
 	circle.setFillColor(sf::Color::Transparent);
 	m_context.window.draw(circle);
@@ -68,8 +70,8 @@ void DebugDraw::DrawSolidCircle(const b2Vec2& center, float32 radius, const b2Ve
 	b2Vec2 axisPoint{center + radius * axis};
 	line[0].position = sf::Vector2f(center.x, center.y)*m_context.parameters.scaledPixelByMeter;
 	line[1].position = sf::Vector2f(axisPoint.x, axisPoint.y)*m_context.parameters.scaledPixelByMeter;
-	line[0].color = sf::Color(color.r*255.f, color.g*255.f, color.b*255.f, color.a*255.f);
-	line[1].color = sf::Color(color.r*255.f, color.g*255.f, color.b*255.f, color.a*255.f);
+	line[0].color = b2ColorToSf(color);
+	line[1].color = line[0].color;
 	m_context.window.draw(line, 2, sf::Lines);
 }
 
@@ -78,8 +80,8 @@ void DebugDraw::DrawSegment(const b2Vec2& p1, const b2Vec2& p2, const b2Color& c
 	sf::Vertex line[2];
 	line[0].position = sf::Vector2f(p1.x, p1.y)*m_context.parameters.scaledPixelByMeter;
 	line[1].position = sf::Vector2f(p2.x, p2.y)*m_context.parameters.scaledPixelByMeter;
-	line[0].color = sf::Color(color.r*255.f, color.g*255.f, color.b*255.f, color.a*255.f);
-	line[1].color = sf::Color(color.r*255.f, color.g*255.f, color.b*255.f, color.a*255.f);
+	line[0].color = b2ColorToSf(color);
+	line[1].color = line[0].color;
 	m_context.window.draw(line, 2, sf::Lines);
 }
 
