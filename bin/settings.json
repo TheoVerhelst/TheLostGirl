@@ -1,9 +1,11 @@
+
 {
-   "enable bloom" : false,
-   "lang" : "FR",
-   "resolution" : 576,
-   "window size" : {
-      "h" : 627,
-      "w" : 1221
-   }
+    "enable bloom" : false,
+    "lang" : "FR",
+    "resolution" : 576,
+    "window size" : 
+    {
+        "h" : 636,
+        "w" : 1128
+    }
 }

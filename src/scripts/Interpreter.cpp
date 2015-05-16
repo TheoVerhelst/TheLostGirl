@@ -46,7 +46,7 @@ Interpreter::Interpreter():
 				{"distance from", {2, distanceFrom}},
 				{"direction to", {2, directionTo}},
 				{"direction of", {1, directionOf}},
-				{"attack", {2, attack}},
+				{"attack", {1, attack}},
 				{"can move", {1, canMove}},
 				{"move", {2, move}},
 				{"stop", {1, stop}},
@@ -85,8 +85,9 @@ bool Interpreter::loadFromFile(const std::string& fileName)
 	}
 	catch(const std::runtime_error& e)
 	{
+		std::cerr << "Error while interpreting script \"" << fileName << "\": " << e.what() << std::endl;
 		file.close();
-		throw std::runtime_error("Error while interpreting script \""+fileName+"\": " + e.what());
+		return false;
 	}
 	file.close();
 	return true;
@@ -156,8 +157,7 @@ void Interpreter::interpretBlock(entityx::Entity entity, StateStack::Context con
 	}
 	catch(const ScriptError& e)
 	{
-		throw std::runtime_error("unable to evaluate line " + std::to_string(std::distance(begin, from)+1) + " : "
-				+ std::string(e.what()));
+		std::cerr << "unable to evaluate line " << std::distance(begin, from)+1 << " : " << e.what() << std::endl;
 	}
 }
 

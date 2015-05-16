@@ -7,6 +7,7 @@
 #include <fstream>
 
 #include <SFML/Graphics/Sprite.hpp>
+#include <SFML/System/Clock.hpp>
 #include <entityx/Entity.h>
 #include <dist/json/json-forwards.h>
 
@@ -235,7 +236,10 @@ struct NameComponent : public entityx::Component<NameComponent>
 /// Store data about hand to hand abilities.
 struct HandToHandComponent : public entityx::Component<HandToHandComponent>
 {
-	float damages;///< Damages that generates an attack.
+	float damages;     ///< Damages that generates an attack.
+	sf::Time delay;    ///< Minimal time between two attacks.
+	sf::Time lastShoot;///< Elapsed time since the last attack, used with timer below.
+	sf::Clock timer;   ///< Timer to compute elapsed time, its value is added to lastShoot at each attack try.
 };
 
 #endif //COMPONENTS_H

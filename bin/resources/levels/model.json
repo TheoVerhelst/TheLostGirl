@@ -370,6 +370,16 @@
 								"name" : "damages",
 								"type" : "real",
 								"required" : true
+							},
+							{
+								"name" : "delay",
+								"type" : "real",
+								"required" : true
+							},
+							{
+								"name" : "last shoot",
+								"type" : "real",
+								"required" : true
 							}
 						]
 					},

@@ -1,7 +1,8 @@
 foe = nearest foe(self)
 if foe
 	move(self, direction to(self, foe))
-	if distance from(self, foe) < 1
+	if distance from(self, foe) < 0.5
 		stop(self)
+		attack(self)
 	endif
 endif

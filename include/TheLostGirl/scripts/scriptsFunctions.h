@@ -177,8 +177,8 @@ int directionTo(const std::vector<Data>& args, StateStack::Context context);
 /// \return The direction of the entity.
 int directionOf(const std::vector<Data>& args, StateStack::Context context);
 
-/// Make that first entity attack second entity.
-/// \param args Entities that will fight.
+/// Make that first entity attack.
+/// \param args Entity that will attack.
 /// \param context Current context of the application.
 /// \return 0 as integer.
 int attack(const std::vector<Data>& args, StateStack::Context context);

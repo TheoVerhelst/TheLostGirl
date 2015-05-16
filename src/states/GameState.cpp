@@ -50,7 +50,7 @@ GameState::GameState(StateStack& stack, std::string file) :
 
 GameState::~GameState()
 {
-//	saveWorld("resources/levels/save.json");
+//	saveWorld("resources/levels/S.json");
 	clear();
 	if(m_threadLoad.joinable())
 		m_threadLoad.join();

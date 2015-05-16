@@ -381,9 +381,9 @@ Json::Value serialize(entityx::ComponentHandle<DeathComponent> component)
 	{
 		Json::Value dropJson;
 		dropJson["category"] = drop.category;
-		dropJson["type"] = drop.category;
-		dropJson["probability"] = drop.category;
-		dropJson["max drops"] = drop.category;
+		dropJson["type"] = drop.type;
+		dropJson["probability"] = drop.probability;
+		dropJson["max drops"] = drop.maxDrops;
 		ret["drops"].append(dropJson);
 	}
 	return ret;
@@ -398,6 +398,8 @@ Json::Value serialize(entityx::ComponentHandle<HandToHandComponent> component)
 {
 	Json::Value ret;
 	ret["damages"] = component->damages;
+	ret["delay"] = component->delay.asSeconds();
+	ret["last shoot"] = component->lastShoot.asSeconds();
 	return ret;
 }
 
@@ -835,4 +837,6 @@ void deserialize(const Json::Value& value, entityx::ComponentHandle<NameComponen
 void deserialize(const Json::Value& value, entityx::ComponentHandle<HandToHandComponent> component)
 {
 	component->damages = value["damages"].asFloat();
+	component->delay = sf::seconds(value["delay"].asFloat());
+	component->lastShoot = sf::seconds(value["last shoot"].asFloat());
 }

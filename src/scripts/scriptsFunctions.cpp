@@ -411,8 +411,15 @@ int directionOf(const std::vector<Data>& args, StateStack::Context)
 	return static_cast<int>(Direction::None);
 }
 
-int attack(const std::vector<Data>&, StateStack::Context)
+int attack(const std::vector<Data>& args, StateStack::Context context)
 {
+	Command attackCommand;
+	attackCommand.targetIsSpecific = true;
+	attackCommand.entity = boost::get<entityx::Entity>(args[0]);
+	if(not attackCommand.entity)
+		throw ScriptError("can move(): first argument is an invalid entity.");
+	attackCommand.action = HandToHand();
+	context.systemManager.system<PendingChangesSystem>()->commandQueue.push(attackCommand);
 	return 0;
 }
 

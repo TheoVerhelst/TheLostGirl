@@ -3278,7 +3278,7 @@ void FastWriter::writeValue(const Value& value) {
 // //////////////////////////////////////////////////////////////////
 
 StyledWriter::StyledWriter()
-    : rightMargin_(74), indentSize_(3), addChildValues_() {}
+    : rightMargin_(74), indentSize_(4), addChildValues_() {}
 
 std::string StyledWriter::write(const Value& root) {
   document_ = "";
@@ -3320,6 +3320,7 @@ void StyledWriter::writeValue(const Value& value) {
     if (members.empty())
       pushValue("{}");
     else {
+      document_ += "\n";
       writeWithIndent("{");
       indent();
       Value::Members::iterator it = members.begin();
@@ -3351,6 +3352,7 @@ void StyledWriter::writeArrayValue(const Value& value) {
   else {
     bool isArrayMultiLine = isMultineArray(value);
     if (isArrayMultiLine) {
+      document_ += "\n";
       writeWithIndent("[");
       indent();
       bool hasChildValue = !childValues_.empty();

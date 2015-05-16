@@ -1,7 +1,7 @@
 #ifndef HANDTOHAND_H
 #define HANDTOHAND_H
 
-#include <forward_list>
+#include <unordered_set>
 
 #include <Box2D/Dynamics/b2WorldCallbacks.h>
 
@@ -33,6 +33,19 @@ struct HandToHand : public Action
 /// AABB query callback that indicate if some actors are found into the AABB.
 class HandToHandQueryCallback : public b2QueryCallback
 {
+	private:
+		/// Hash function object for entities.
+		/// Hash entities allow to make unordered set of entities,  with the benefit that implies:
+		/// making a set of entities, with constant time insertion without duplicate.
+		struct HashEntity
+		{
+			/// Hash fonction.
+			/// \param entity The entity to hash.
+			/// \return The hashed value, based on the entity's ID.
+			size_t operator()(entityx::Entity entity) const;
+		};
+		entityx::Entity m_attacker;///< The entity that performs the attack (and then excluded from the result).
+
 	public:
 		/// Constructor.
 		/// \param attacker The entity that does the attack.
@@ -43,10 +56,7 @@ class HandToHandQueryCallback : public b2QueryCallback
 		/// \return True if the querying should continue, false otherwise.
 		virtual bool ReportFixture(b2Fixture* fixture);
 
-		std::forward_list<entityx::Entity> foundEntities;///< List of all entities that overlaps the AABB.
-
-	private:
-		entityx::Entity m_attacker;///< The entity that performs the attack (and then excluded from the result).
+		std::unordered_set<entityx::Entity, HashEntity> foundEntities;///< Set of all entities that overlaps the AABB.
 };
 
 #endif//HANDTOHAND_H

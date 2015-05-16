@@ -37,7 +37,7 @@ void StatsSystem::update(entityx::EntityManager& entityManager, entityx::EventMa
 			}
 		}
 		if(not (entity.has_component<CategoryComponent>() and entity.component<CategoryComponent>()->category & Category::Player)
-				and healthComponent->current <= 0 and entity.has_component<DeathComponent>() and not entity.component<DeathComponent>()->dead)
+				and healthComponent->current <= 0.f and entity.has_component<DeathComponent>() and not entity.component<DeathComponent>()->dead)
 		{
 			Command deathCommand;
 			deathCommand.targetIsSpecific = true;
