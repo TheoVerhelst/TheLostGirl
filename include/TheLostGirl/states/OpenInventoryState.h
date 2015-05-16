@@ -59,6 +59,8 @@ class OpenInventoryState : public State
 		/// Hold GUI widgets to represent an item in the inventory.
 		struct ItemWidget
 		{
+			/// Destructor.
+			~ItemWidget();
 			tgui::Panel::Ptr background;///< The background of the item.
 			tgui::Picture::Ptr picture; ///< The image of the item.
 			tgui::Label::Ptr caption;   ///< A label with the naim of the item.

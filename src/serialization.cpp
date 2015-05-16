@@ -588,10 +588,10 @@ void deserialize(const Json::Value& value, entityx::ComponentHandle<BodyComponen
 					{
 						if(roles[j].asString() == "foot sensor")
 							//Add the role to the data
-							entityFixtureDef.userData = add<unsigned int>(entityFixtureDef.userData, static_cast<unsigned int>(FixtureRole::Foot));
+							entityFixtureDef.userData = add<long unsigned int>(entityFixtureDef.userData, static_cast<long unsigned int>(FixtureRole::Foot));
 						else if(roles[j].asString() == "main")
 							//Add the role to the data
-							entityFixtureDef.userData = add<unsigned int>(entityFixtureDef.userData, static_cast<unsigned int>(FixtureRole::Main));
+							entityFixtureDef.userData = add<long unsigned int>(entityFixtureDef.userData, static_cast<long unsigned int>(FixtureRole::Main));
 					}
 
 					entityBodyComponent->CreateFixture(&entityFixtureDef);
@@ -622,10 +622,10 @@ void deserialize(const Json::Value& value, entityx::ComponentHandle<BodyComponen
 					{
 						if(roles[j].asString() == "foot sensor")
 							//Add the role to the data
-							entityFixtureDef.userData = add<unsigned int>(entityFixtureDef.userData, static_cast<unsigned int>(FixtureRole::Foot));
+							entityFixtureDef.userData = add<long unsigned int>(entityFixtureDef.userData, static_cast<long unsigned int>(FixtureRole::Foot));
 						else if(roles[j].asString() == "main")
 							//Add the role to the data
-							entityFixtureDef.userData = add<unsigned int>(entityFixtureDef.userData, static_cast<unsigned int>(FixtureRole::Main));
+							entityFixtureDef.userData = add<long unsigned int>(entityFixtureDef.userData, static_cast<long unsigned int>(FixtureRole::Main));
 					}
 					entityBodyComponent->CreateFixture(&entityFixtureDef);
 				}

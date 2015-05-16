@@ -72,8 +72,7 @@ OpenInventoryState::~OpenInventoryState()
 }
 
 void OpenInventoryState::draw()
-{
-}
+{}
 
 bool OpenInventoryState::update(sf::Time)
 {
@@ -90,3 +89,5 @@ bool OpenInventoryState::handleEvent(const sf::Event& event)
 	return false;
 }
 
+OpenInventoryState::ItemWidget::~ItemWidget()
+{}
