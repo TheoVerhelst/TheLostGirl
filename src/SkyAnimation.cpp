@@ -30,24 +30,24 @@ void SkyAnimation::animate(float progress)
 
 			//day sprite
 			if(progress < 0.1875f or progress >= 0.8125f)//Night
-				daySpr.setColor(sf::Color(255, 255, 255, 0));
+				daySpr.setColor(sf::Color::Transparent);
 			else if(progress >= 0.1875f and progress < 0.3125f)//Dawn
-				daySpr.setColor(sf::Color(255, 255, 255, sf::Uint8(8 * 255 * sf::Uint8(progress - 0.1875f))));
+				daySpr.setColor(sf::Color(255, 255, 255, sf::Uint8(255.f * 8.f * (progress - 0.1875f))));
 			else if(progress >= 0.3125f and progress < 0.6875f)//Day
-				daySpr.setColor(sf::Color(255, 255, 255, 255));
+				daySpr.setColor(sf::Color::White);
 			else if(progress >= 0.6875f and progress < 0.8125f)//Twilight
-				daySpr.setColor(sf::Color(255, 255, 255, sf::Uint8(1 - 8 * 255 * sf::Uint8(progress - 0.6875f))));
+				daySpr.setColor(sf::Color(255, 255, 255, sf::Uint8( 255.f * (1 - 8.f * (progress - 0.6875f)))));
 			dayTrsf.angle = progress*360.f;
 
 			//night sprite
 			if(progress < 0.1875f or progress >= 0.8125f)//Night
-				nightSpr.setColor(sf::Color(255, 255, 255, 255));
+				nightSpr.setColor(sf::Color::White);
 			else if(progress >= 0.1875f and progress < 0.3125f)//Dawn
-				nightSpr.setColor(sf::Color(255, 255, 255, sf::Uint8(1 - 8 * 255 * sf::Uint8(progress - 0.1875f))));
+				nightSpr.setColor(sf::Color(255, 255, 255, sf::Uint8(255.f * (1 - 8.f * (progress - 0.1875f)))));
 			else if(progress >= 0.3125f and progress < 0.6875f)//Day
-				nightSpr.setColor(sf::Color(255, 255, 255, 0));
+				nightSpr.setColor(sf::Color::Transparent);
 			else if(progress >= 0.6875f and progress < 0.8125f)//Twilight
-				nightSpr.setColor(sf::Color(255, 255, 255,sf::Uint8( 8 * 255 * sf::Uint8(progress - 0.6875f))));
+				nightSpr.setColor(sf::Color(255, 255, 255,sf::Uint8(8.f * 255.f * (progress - 0.6875f))));
 			nightTrsf.angle = progress*360.f;
 		}
 	}

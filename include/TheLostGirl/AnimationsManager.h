@@ -52,6 +52,7 @@ class AnimationsManager
 			unsigned int importance;///< Indicates the importance of the animation, relatively to the others.
 			sf::Time duration;      ///< Duration of the animation.
 			bool loops;             ///< Indicates if the animation must loops or not.
+			bool stopAtEnd;         ///< Indicates if the animation must stops when the loop is finished.
 			float progress;         ///< Current progress of the animation, in the range [0,1].
 			bool isPaused;          ///< Indicates if the animations is paused.
 			bool isActive;          ///< Indicates if the animations is active.
@@ -62,12 +63,14 @@ class AnimationsManager
 			/// \param _duration Duration of the animation.
 			/// \param _loops Indicates if the animation must loops or not.
 			/// \param _progress Current progress of the animation, in the range [0,1].
-			/// \param _isPaused Indicates if the animations is paused.
-			/// \param _isActive Indicates if the animations is active.
+			/// \param _isPaused Indicates if the animation is paused.
+			/// \param _isActive Indicates if the animation is active.
+			/// \param _stopAtEnd Indicates if the animation must stops when the loop is finished.
 			TimeAnimation(A _animation,
 							unsigned int _importance = 0,
 							sf::Time _duration = sf::seconds(1.f),
 							bool _loops = false,
+							bool _stopAtEnd = false,
 							float _progress = 0.f,
 							bool _isPaused = true,
 							bool _isActive = false);
@@ -85,8 +88,9 @@ class AnimationsManager
 		/// \param importance Order of importance of the animation, relatively to others animations.
 		/// \param duration Duration fo the animation.
 		/// \param loops Indicate if the animation must loops or not.
+		/// \param stopAtEnd Indicates if the animation must stops when the loop is finished.
 		/// \see removeAnimation
-		void addAnimation(const std::string& identifier, A animation, unsigned int importance = 0, sf::Time duration = sf::seconds(1.f), bool loops = false);
+		void addAnimation(const std::string& identifier, A animation, unsigned int importance = 0, sf::Time duration = sf::seconds(1.f), bool loops = false, bool stopAtEnd = false);
 
 		/// Remove an animation from the animation manager.
 		/// \param identifier Identifier of the animation to delete.

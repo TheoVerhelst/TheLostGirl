@@ -31,6 +31,11 @@
 
 #include <TheLostGirl/states/GameState.h>
 
+//TODO Barre de vie au dessus des ennemis non full life.
+//TODO Inclure les entités ciel dans la save plutot que de les harcoder.
+//TODO Faire un système multi texture pour une même partie d'entité (soit chunker une grande image, soit faire plusieurs images).
+//TODO Faire un système d'entité générique (pour les mobs, les items, ...).
+
 GameState::GameState(StateStack& stack, std::string file) :
 	State(stack),
 	m_entities(),

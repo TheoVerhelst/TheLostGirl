@@ -588,8 +588,7 @@
                                 {
                                     "name" : "identifier",
                                     "type" : "string",
-                                    "required" : true,
-                                    "possible values" : ["archer", "bow", "arms", "arrow", "wolf"]
+                                    "required" : true
                                 }
                             ]
                         }
@@ -688,6 +687,12 @@
                                         "required" : false,
                                         "default value" : false
                                     },
+									{
+										"name" : "stop at end",
+										"type" : "bool",
+										"required" : false,
+										"default value" : false
+									},
                                     {
                                         "name" : "data",
                                         "type" : "array",

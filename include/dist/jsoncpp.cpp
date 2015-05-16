@@ -3278,7 +3278,7 @@ void FastWriter::writeValue(const Value& value) {
 // //////////////////////////////////////////////////////////////////
 
 StyledWriter::StyledWriter()
-    : rightMargin_(74), indentSize_(4), addChildValues_() {}
+    : rightMargin_(74), indentSize_(1), addChildValues_() {}
 
 std::string StyledWriter::write(const Value& root) {
   document_ = "";
@@ -3320,7 +3320,6 @@ void StyledWriter::writeValue(const Value& value) {
     if (members.empty())
       pushValue("{}");
     else {
-      document_ += "\n";
       writeWithIndent("{");
       indent();
       Value::Members::iterator it = members.begin();
@@ -3330,6 +3329,8 @@ void StyledWriter::writeValue(const Value& value) {
         writeCommentBeforeValue(childValue);
         writeWithIndent(valueToQuotedString(name.c_str()));
         document_ += " : ";
+        if(childValue.type() == objectValue or (childValue.type() == arrayValue and isMultineArray(childValue)))
+			document_ += "\n";
         writeValue(childValue);
         if (++it == members.end()) {
           writeCommentAfterValueOnSameLine(childValue);
@@ -3352,7 +3353,6 @@ void StyledWriter::writeArrayValue(const Value& value) {
   else {
     bool isArrayMultiLine = isMultineArray(value);
     if (isArrayMultiLine) {
-      document_ += "\n";
       writeWithIndent("[");
       indent();
       bool hasChildValue = !childValues_.empty();
@@ -3424,7 +3424,7 @@ void StyledWriter::pushValue(const std::string& value) {
 void StyledWriter::writeIndent() {
   if (!document_.empty()) {
     char last = document_[document_.length() - 1];
-    if (last == ' ') // already indented
+    if (last == ' ' or last == '\t') // already indented
       return;
     if (last != '\n') // Comments may add new-line
       document_ += '\n';
@@ -3437,7 +3437,7 @@ void StyledWriter::writeWithIndent(const std::string& value) {
   document_ += value;
 }
 
-void StyledWriter::indent() { indentString_ += std::string(indentSize_, ' '); }
+void StyledWriter::indent() { indentString_ += std::string(indentSize_, '\t'); }
 
 void StyledWriter::unindent() {
   assert(int(indentString_.size()) >= indentSize_);

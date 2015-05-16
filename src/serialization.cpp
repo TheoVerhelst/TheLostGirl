@@ -642,7 +642,7 @@ void deserialize(const Json::Value& value, entityx::ComponentHandle<SpriteCompon
 	for(std::string& partName : value.getMemberNames())
 	{
 		const std::string identifier{value[partName]["identifier"].asString()};
-		textureManager.load(identifier, path + "/" + identifier + ".png");
+		textureManager.load(identifier, path + "/" + identifier);
 		component->sprites.emplace(partName, sf::Sprite(textureManager.get(identifier)));
 	}
 }
@@ -809,7 +809,7 @@ void deserialize(const Json::Value& value, entityx::ComponentHandle<ScriptsCompo
 	for(Json::ArrayIndex i{0}; i < value["scripts"].size(); ++i)
 	{
 		std::string scriptName{value["scripts"][i].asString()};
-		scriptManager.load(scriptName, "resources/scripts/" + scriptName + ".tlg");
+		scriptManager.load(scriptName, "resources/scripts/" + scriptName);
         component->scriptsNames.push_back(scriptName);
 	}
 }

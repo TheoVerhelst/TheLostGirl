@@ -12,9 +12,9 @@ AnimationsManager<A>::~AnimationsManager()
 }
 
 template<typename A>
-void AnimationsManager<A>::addAnimation(const std::string& identifier, A animation, unsigned int importance, sf::Time duration, bool loops)
+void AnimationsManager<A>::addAnimation(const std::string& identifier, A animation, unsigned int importance, sf::Time duration, bool loops, bool stopAtEnd)
 {
-	TimeAnimation timeAnime{animation, importance, duration, loops};
+	TimeAnimation timeAnime{animation, importance, duration, loops, stopAtEnd};
 	m_animationsMap.emplace(identifier, timeAnime);
 }
 
@@ -123,6 +123,8 @@ void AnimationsManager<A>::update(sf::Time dt)
 				}
 				else if(timeAnim.progress < 1.f)//If the animation doesn't loops, incerement progress only if less than 1
 					timeAnim.progress += dt.asSeconds()/timeAnim.duration.asSeconds();
+				if(timeAnim.progress > 1.f and timeAnim.stopAtEnd)
+					stop(mostImportant->first);
 			}
 			timeAnim.animation.animate(timeAnim.progress);
 		}
@@ -144,6 +146,7 @@ Json::Value AnimationsManager<A>::serialize() const
 		ret[pair.first]["importance"] = pair.second.importance;
 		ret[pair.first]["duration"] = pair.second.duration.asSeconds();
 		ret[pair.first]["loops"] = pair.second.loops;
+		ret[pair.first]["stop at end"] = pair.second.stopAtEnd;
 		ret[pair.first]["progress"] = pair.second.progress;
 		ret[pair.first]["is paused"] = pair.second.isPaused;
 		ret[pair.first]["is active"] = pair.second.isActive;
@@ -177,17 +180,20 @@ void AnimationsManager<A>::deserialize(const Json::Value& value, T& object, Stat
 			timeAnim.isPaused = animationObj["is paused"].asBool();
 		if(animationObj.isMember("is active"))
 			timeAnim.isActive = animationObj["is active"].asBool();
+		if(animationObj.isMember("stop at end"))
+			timeAnim.stopAtEnd = animationObj["stop at end"].asBool();
 		m_animationsMap.emplace(animationName, timeAnim);
 	}
 }
 
 template<typename A>
 AnimationsManager<A>::TimeAnimation::TimeAnimation(A _animation, unsigned int _importance, sf::Time _duration,
-												 bool _loops, float _progress, bool _isPaused, bool _isActive):
+												 bool _loops, bool _stopAtEnd, float _progress, bool _isPaused, bool _isActive):
 	animation{_animation},
 	importance{_importance},
 	duration{_duration},
 	loops{_loops},
+	stopAtEnd{_stopAtEnd},
 	progress{_progress},
 	isPaused{_isPaused},
 	isActive{_isActive}
