@@ -24,16 +24,16 @@ TimeSystem::TimeSystem(StateStack::Context):
 	m_strengthDis{-2, 2}
 {
 	m_periodBeginning = m_totalTime;
-	m_initialWindStrength = rand() % 21 - 10; //A random number, between -10 and 10
-	m_windTransitionLength = rand() % 586 + 15; //between 15 and 600
-	m_nextWindStrength = rand() % 21 - 10; //between -10 and 10
+	m_initialWindStrength = float(rand() % 21) - 10.f; //A random number, between -10 and 10
+	m_windTransitionLength = float(rand() % 586) + 15.f; //between 15 and 600
+	m_nextWindStrength = float(rand() % 21) - 10.f; //between -10 and 10
 	m_windStrength = m_initialWindStrength;
 }
 
 void TimeSystem::update(entityx::EntityManager&, entityx::EventManager&, double dt)
 {
-	m_totalTime += dt;
-	double seasonFactor{sin((m_totalTime / 24000.f) * 360.f)}; //Vary between -1  and 1, maximum in the spring and the automn
+	m_totalTime += float(dt);
+	float seasonFactor{std::sin((m_totalTime / 24000.f) * 360.f)}; //Vary between -1  and 1, maximum in the spring and the automn
 	seasonFactor = (seasonFactor + 1.f) / 2.f; //Now between 0 and 1
 
 	/*
@@ -62,9 +62,9 @@ void TimeSystem::update(entityx::EntityManager&, entityx::EventManager&, double 
 		m_microInitialWindStrength = m_microNextWindStrength;
 		std::random_device rd;
 		std::mt19937 gen{rd()};
-		std::uniform_real_distribution<float> transitionLenghtDis(0.5, 2);
+		std::uniform_real_distribution<float> transitionLenghtDis(0.5f, 2.f);
 		m_microWindTransitionLength = transitionLenghtDis(gen);//A random number between 0.5 and 2
-		std::uniform_real_distribution<float> strengthDis(-0.2, 0.2);
+		std::uniform_real_distribution<float> strengthDis(-0.2f, 0.2f);
 		m_microNextWindStrength = strengthDis(gen);//Another random number, between -1 and 1
 	}
 

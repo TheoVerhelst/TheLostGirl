@@ -27,9 +27,9 @@ void BowBender::operator()(entityx::Entity entity, double) const
 		DirectionComponent::Handle directionComponent{entity.component<DirectionComponent>()};
 		//Set the bending angle
 		if(directionComponent->direction == Direction::Left)
-			bowComponent->angle = cap(angle - b2_pi, -b2_pi, b2_pi/2);
+			bowComponent->angle = cap(angle - b2_pi, -b2_pi, b2_pi/2.f);
 		else if(directionComponent->direction == Direction::Right)
-			bowComponent->angle = cap(angle, -b2_pi/2, b2_pi);
+			bowComponent->angle = cap(angle, -b2_pi/2.f, b2_pi);
 		//Set the bending power
 		bowComponent->power = cap(power, 0.f, bowComponent->maxPower);
 
@@ -99,7 +99,7 @@ void BowBender::operator()(entityx::Entity entity, double) const
 					jointDef.upperTranslation = 0.f;
 					jointDef.enableMotor = true;
 					jointDef.maxMotorForce = 10.f;
-					jointDef.userData = add<unsigned int>(jointDef.userData, static_cast<unsigned int>(JointRole::BendingPower));
+					jointDef.userData = add<long unsigned int>(jointDef.userData, static_cast<long unsigned int>(JointRole::BendingPower));
 					b2World* world{bowBody->GetWorld()};
 					world->CreateJoint(&jointDef);
 					notchedArrow.component<ArrowComponent>()->state = ArrowComponent::Notched;

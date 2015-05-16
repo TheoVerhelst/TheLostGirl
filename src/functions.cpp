@@ -36,7 +36,7 @@ FloatRect handleResize(Event::SizeEvent size)
 
 Color fadingColor(Time dt, Time fadingLength, bool in)
 {
-	float alpha{cap((dt / fadingLength) * 255, 0.f, 255.f)};
+	float alpha{cap((dt / fadingLength) * 255.f, 0.f, 255.f)};
 	alpha = in ? alpha : 255 - alpha;//Invert the fading if in is false, so if it is a fade out
 	return Color(255, 255, 255, static_cast<sf::Uint8>(alpha));
 }

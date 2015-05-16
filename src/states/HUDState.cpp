@@ -94,7 +94,7 @@ bool HUDState::update(sf::Time)
 {
 	//Get the wind strength and compute the wind ath
 	float scale{getContext().parameters.scale};
-	float windStrength{cap(getContext().systemManager.system<TimeSystem>()->getWindStrength()/5.f, -1, 1)};
+	float windStrength{cap(getContext().systemManager.system<TimeSystem>()->getWindStrength()/5.f, -1.f, 1.f)};
 
 	bool oldFadingState{m_windIsFading};
 	m_windIsFading = std::abs(windStrength) < 0.125f;
@@ -168,7 +168,7 @@ void HUDState::receive(const PlayerHealthChange& playerHealthChange)
 		m_healthBorderSpr.setColor(sf::Color::White);
 	}
 	float scale{getContext().parameters.scale};
-	m_healthSpr.setTextureRect({scaleRes<int>(240.f - 240.f*playerHealthChange.normalizedHealth, scale), 0, scaleRes(240, scale), scaleRes(20, scale)});
+	m_healthSpr.setTextureRect({scaleRes<float, int>(240.f - 240.f*playerHealthChange.normalizedHealth, scale), 0, scaleRes(240, scale), scaleRes(20, scale)});
 }
 
 void HUDState::receive(const PlayerStaminaChange& playerStaminaChange)

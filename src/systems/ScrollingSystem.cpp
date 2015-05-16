@@ -39,9 +39,9 @@ void ScrollingSystem::update(entityx::EntityManager& entityManager, entityx::Eve
 				//Compute the maximum and minimum coordinates that the view can have
 				float wiewWidth{view.getSize().x}, viewHeight{view.getSize().y};
 				float xmin{float(m_levelRect.left) + wiewWidth/(m_scale*2.f)};
-				float xmax{float(m_levelRect.left) + m_levelRect.width - wiewWidth/(m_scale*2.f)};
+				float xmax{float(m_levelRect.left + m_levelRect.width) - wiewWidth/(m_scale*2.f)};
 				float ymin{float(m_levelRect.top) + viewHeight/(m_scale*2.f)};
-				float ymax{float(m_levelRect.top) + m_levelRect.height - viewHeight/(m_scale*2.f)};
+				float ymax{float(m_levelRect.top + m_levelRect.height) - viewHeight/(m_scale*2.f)};
 				//Cap the position between min and max
 				playerPosition.x = cap(playerPosition.x, xmin, xmax);
 				playerPosition.y = cap(playerPosition.y, ymin, ymax);
@@ -51,7 +51,7 @@ void ScrollingSystem::update(entityx::EntityManager& entityManager, entityx::Eve
 				m_window.setView(view);
 
 				//The x-ordinate of the left border of the screen.
-				double xScreen{playerPosition.x - xmin};
+				float xScreen{playerPosition.x - xmin};
 				//Assign transform on every sprite
 				for(auto entitySecond : entityManager.entities_with_components(spriteComponent, transformComponent))
 				{
@@ -59,7 +59,7 @@ void ScrollingSystem::update(entityx::EntityManager& entityManager, entityx::Eve
 					for(const auto& transformPair : transformComponent->transforms)
 					{
 						//The abscissa of the entity on the screen, relatively to the reference plan and the position of the player
-						double xScaled{transformPair.second.x + xScreen - (xScreen * pow(1.5, m_referencePlan - transformPair.second.z))};
+						float xScaled{transformPair.second.x + xScreen - (xScreen * std::pow(1.5f, m_referencePlan - transformPair.second.z))};
 						spriteComponent->sprites.at(transformPair.first).setPosition(xScaled*m_scale, transformPair.second.y*m_scale);
 						spriteComponent->sprites.at(transformPair.first).setRotation(transformPair.second.angle);
 					}

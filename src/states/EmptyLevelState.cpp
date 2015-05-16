@@ -188,28 +188,28 @@ void EmptyLevelState::initWorld(const std::string& file)
 		{
 			std::string fileTexture{m_levelIdentifier + "_" + std::to_string(i)};
 			std::string path{paths[getContext().parameters.scaleIndex] + "levels/" + m_levelIdentifier + "/" + fileTexture + ".png"};
-			unsigned int chunkSize{sf::Texture::getMaximumSize()};
+			int chunkSize{int(sf::Texture::getMaximumSize())};
 			//The length of the plan, relatively to the reference.
-			unsigned int planLength(m_levelRect.width * static_cast<float>(pow(1.5, m_referencePlan - i)) * getContext().parameters.scale);
+			int planLength{int(float(m_levelRect.width) * std::pow(1.5f, m_referencePlan - float(i)) * getContext().parameters.scale)};
 			//Number of chunks to load in this plan
-			unsigned int numberOfChunks{(planLength/chunkSize)+1};
+			int numberOfChunks{(planLength/chunkSize)+1};
 
-			for(unsigned int j{0}; j < numberOfChunks; ++j)
+			for(int j{0}; j < numberOfChunks; ++j)
 			{
 				//Identifier of the entity, in format "level_plan_chunk"
 				std::string textureIdentifier{fileTexture + "_" + std::to_string(j)};
 				//Size of the chunk to load, may be truncated if we reach the end of the image.
-				unsigned int currentChunkSize{chunkSize};
+				int currentChunkSize{chunkSize};
 				if(j >= planLength/chunkSize)
 					currentChunkSize = planLength - chunkSize*j;
 				getContext().eventManager.emit<LoadingStateChange>(LangManager::tr("Loading plan") + L" " + std::to_wstring(i+1));
-				texManager.load<sf::IntRect>(textureIdentifier, path, sf::IntRect(j*chunkSize, 0, currentChunkSize, int(m_levelRect.height*getContext().parameters.scale)));
+				texManager.load<sf::IntRect>(textureIdentifier, path, sf::IntRect(j*chunkSize, 0, currentChunkSize, int(float(m_levelRect.height)*getContext().parameters.scale)));
 				//Create an entity
 				m_sceneEntities.emplace(textureIdentifier, getContext().entityManager.create());
 				//Create a sprite with the loaded texture
 				//Assign the sprite to the entity
 				sf::Sprite chunkSpr(texManager.get(textureIdentifier));
-				chunkSpr.setPosition(static_cast<float>(j*chunkSize), 0);
+				chunkSpr.setPosition(float(j*chunkSize), 0);
 				std::map<std::string, sf::Sprite> sprites{{"main", chunkSpr}};
 				std::map<std::string, Transform> transforms{{"main", {float(j*chunkSize), 0, float(i), 0}}};
 				SpriteComponent::Handle sprComp{m_sceneEntities[textureIdentifier].assign<SpriteComponent>()};
@@ -259,7 +259,7 @@ void EmptyLevelState::initWorld(const std::string& file)
 		skyAnimationsComp->animationsManagers.emplace("main", AnimationsManager<SkyAnimation>());
 		//Add the animation, this is a sky animation, the importance is equal to zero, the duration is 600 seconds (1 day), and it loops.
 		skyAnimationsComp->animationsManagers["main"].addAnimation("day/night cycle", SkyAnimation(m_sceneEntities["sky"]), 0, sf::seconds(600), true);
-		double daySeconds{remainder(getContext().systemManager.system<TimeSystem>()->getRealTime().asSeconds(), 600)};
+		float daySeconds{std::remainder(getContext().systemManager.system<TimeSystem>()->getRealTime().asSeconds(), 600.f)};
 		skyAnimationsComp->animationsManagers["main"].setProgress("day/night cycle", daySeconds/600.f);
 		skyAnimationsComp->animationsManagers["main"].play("day/night cycle");
 	}

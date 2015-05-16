@@ -42,7 +42,7 @@ OpenInventoryState::OpenInventoryState(StateStack& stack, entityx::Entity entity
 	m_grid->setPosition(0.f, bindHeight(m_background, 0.25f));
 	m_grid->setSize(bindWidth(m_background), bindHeight(m_background, 0.5f));
 	m_background->add(m_grid);
-	size_t rowCounter{0}, columnCounter{0}, itemCounter{0};
+	unsigned int rowCounter{0}, columnCounter{0}, itemCounter{0};
 	for(auto& entityItem : m_entity.component<InventoryComponent>()->items)
 	{
 		std::string type{entityItem.component<ItemComponent>()->type};
@@ -75,7 +75,7 @@ void OpenInventoryState::draw()
 {
 }
 
-bool OpenInventoryState::update(sf::Time elapsedTime)
+bool OpenInventoryState::update(sf::Time)
 {
 	return false;
 }

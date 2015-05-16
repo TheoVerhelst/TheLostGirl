@@ -89,9 +89,9 @@ void Mover::operator()(entityx::Entity entity, double) const
 			{
 				//Flip the angle
 				if(directionComponent->direction == Direction::Left)
-					entity.component<BowComponent>()->angle = cap(static_cast<float>(remainder(entity.component<BowComponent>()->angle - b2_pi, 2.f*b2_pi)), -b2_pi, b2_pi/2.f);
+					entity.component<BowComponent>()->angle = cap(std::remainder(entity.component<BowComponent>()->angle - b2_pi, 2.f*b2_pi), -b2_pi, b2_pi/2.f);
 				else if(directionComponent->direction == Direction::Right)
-					entity.component<BowComponent>()->angle = cap(static_cast<float>(remainder(entity.component<BowComponent>()->angle - b2_pi, 2.f*b2_pi)), -b2_pi/2.f, b2_pi);
+					entity.component<BowComponent>()->angle = cap(std::remainder(entity.component<BowComponent>()->angle - b2_pi, 2.f*b2_pi), -b2_pi/2.f, b2_pi);
 
 				//If the entity has a quiver
 				if(entity.has_component<BowComponent>())

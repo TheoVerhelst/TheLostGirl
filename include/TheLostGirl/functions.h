@@ -34,8 +34,8 @@ sf::FloatRect handleResize(sf::Event::SizeEvent size);
 /// \param min Minimum.
 /// \param max Maximum.
 /// \return A value of type T that is strictly comprised in [min, max].
-template <typename T, typename U>
-T cap(T value, U min, U max)
+template <typename T>
+T cap(T value, T min, T max)
 {
 	if(value < min)
 		return min;
@@ -43,25 +43,6 @@ T cap(T value, U min, U max)
 		return max;
 	else
 		return value;
-}
-
-/// Return \a value capped between \a min and \a max.
-/// The \a value is incremented or decremented by \a period until it fits between min and max.
-/// \param value Value to cap.
-/// \param min Minimum.
-/// \param max Maximum.
-/// \param period Value used to in/decrement.
-/// \return A value of type T that is strictly comprised in [min, max].
-template <typename T, typename U>
-T cap(T value, U min, U max, T period)
-{
-	if(period > fabs(max - min))
-		throw std::runtime_error("Unable to cap value: the period is greater that difference between max and min bounds");
-	while(value < min)
-		value += period;
-	while(value > max)
-		value -= period;
-	return value;
 }
 
 /// Return a color according to a certain transparent fading.
