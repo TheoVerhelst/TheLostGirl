@@ -161,6 +161,11 @@ Json::Value serialize(entityx::ComponentHandle<SpriteComponent> component, Textu
 		const std::string partName{spritePair.first};//Get the name of the entity's part
 		const sf::Texture* tex{spritePair.second.getTexture()};//Get the associated texture
 		ret[partName]["identifier"] = textureManager.getIdentifier(*tex);//Get the identifier of the texture and put it in Json
+		if(spritePair.second.getOrigin() != sf::Vector2f(0, 0))
+		{
+			ret[partName]["origin"]["x"] = spritePair.second.getOrigin().x;
+			ret[partName]["origin"]["y"] = spritePair.second.getOrigin().y;
+		}
 	}
 	return ret;
 }
@@ -644,6 +649,8 @@ void deserialize(const Json::Value& value, entityx::ComponentHandle<SpriteCompon
 		const std::string identifier{value[partName]["identifier"].asString()};
 		textureManager.load(identifier, path + "/" + identifier);
 		component->sprites.emplace(partName, sf::Sprite(textureManager.get(identifier)));
+		if(value[partName].isMember("origin"))
+			component->sprites[partName].setOrigin(value[partName]["origin"]["x"].asFloat(), value[partName]["origin"]["y"].asFloat());
 	}
 }
 

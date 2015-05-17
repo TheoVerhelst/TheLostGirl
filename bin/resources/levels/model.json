@@ -589,7 +589,26 @@
                                     "name" : "identifier",
                                     "type" : "string",
                                     "required" : true
-                                }
+                                },
+								{
+									"name" : "origin",
+									"type" : "object",
+									"required" : false,
+									"free children names" : false,
+									"children" : 
+									[
+										{
+											"name" : "x",
+											"type" : "real",
+											"required" : true
+										},
+										{
+											"name" : "y",
+											"type" : "real",
+											"required" : true
+										}
+									]
+								}
                             ]
                         }
                     },

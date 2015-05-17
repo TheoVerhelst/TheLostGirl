@@ -197,6 +197,7 @@ static inline void fixNumericLocale(char* begin, char* end) {
 #include <cassert>
 #include <cstring>
 #include <istream>
+#include <limits>
 
 #if defined(_MSC_VER) && _MSC_VER < 1500 // VC++ 8.0 and below
 #define snprintf _snprintf
@@ -371,6 +372,16 @@ bool Reader::readValue() {
     currentValue().setOffsetStart(token.start_ - begin_);
     currentValue().setOffsetLimit(token.end_ - begin_);
     break;
+  case tokenInf:
+    currentValue() = std::numeric_limits<float>::infinity();
+    currentValue().setOffsetStart(token.start_ - begin_);
+    currentValue().setOffsetLimit(token.end_ - begin_);
+    break;
+  case tokenNegInf:
+    currentValue() = -std::numeric_limits<float>::infinity();
+    currentValue().setOffsetStart(token.start_ - begin_);
+    currentValue().setOffsetLimit(token.end_ - begin_);
+    break;
   case tokenFalse:
     currentValue() = false;
     currentValue().setOffsetStart(token.start_ - begin_);
@@ -472,8 +483,21 @@ bool Reader::readToken(Token& token) {
     ok = match("alse", 4);
     break;
   case 'n':
+  {
+  	Location oldCurrent = current_;
     token.type_ = tokenNull;
     ok = match("ull", 3);
+    if(not ok)
+	{
+		current_ = oldCurrent;//Rewind match
+		token.type_ = tokenNegInf;
+		ok = match("egativeInfinity", 15);
+	}
+    break;
+  }
+  case 'i':
+    token.type_ = tokenInf;
+    ok = match("nfinity", 7);
     break;
   case ',':
     token.type_ = tokenArraySeparator;

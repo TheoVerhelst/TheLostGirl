@@ -1632,6 +1632,8 @@ private:
     tokenArrayEnd,
     tokenString,
     tokenNumber,
+    tokenInf,
+    tokenNegInf,
     tokenTrue,
     tokenFalse,
     tokenNull,
