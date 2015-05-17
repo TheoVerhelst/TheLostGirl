@@ -23,8 +23,9 @@ Json::Value serialize(entityx::ComponentHandle<BodyComponent> component, float p
 /// Serialize the given component.
 /// \param component Component to serialize.
 /// \param textureManager The texture manager.
+/// \param scale The current pixel/meter scale.
 /// \return A Json value.
-Json::Value serialize(entityx::ComponentHandle<SpriteComponent> component, TextureManager& textureManager);
+Json::Value serialize(entityx::ComponentHandle<SpriteComponent> component, TextureManager& textureManager, float scale);
 
 /// Serialize the given component.
 /// \param component Component to serialize.
@@ -131,7 +132,8 @@ void deserialize(const Json::Value& value, entityx::ComponentHandle<BodyComponen
 /// \param textureManager The texture manager.
 /// \param path File path to the current image directory.
 /// \param value The Json value containing the data.
-void deserialize(const Json::Value& value, entityx::ComponentHandle<SpriteComponent> component, TextureManager& textureManager, const std::string& path);
+/// \param scale The current pixel/meter scale.
+void deserialize(const Json::Value& value, entityx::ComponentHandle<SpriteComponent> component, TextureManager& textureManager, const std::string& path, float scale);
 
 /// Deserialize the given \a value in the given \a component.
 /// \param component Component in wich deserialize the data.

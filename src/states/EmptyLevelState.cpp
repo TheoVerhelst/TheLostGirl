@@ -56,7 +56,7 @@ EmptyLevelState::~EmptyLevelState()
 
 void EmptyLevelState::draw()
 {
-	getContext().systemManager.update<RenderSystem>(sf::Time::Zero.asSeconds());
+	getContext().systemManager.update<RenderSystem>(0.f);
 }
 
 bool EmptyLevelState::update(sf::Time elapsedTime)
@@ -179,7 +179,7 @@ void EmptyLevelState::initWorld(const std::string& file)
 					CategoryComponent::Handle catComp{m_sceneEntities[replaceIdentifier].assign<CategoryComponent>()};
 					catComp->category = Category::Scene;
 					//Update the ScrollingSystem in order to directly display the sprite at the right position
-					getContext().systemManager.update<ScrollingSystem>(sf::Time::Zero.asSeconds());
+					getContext().systemManager.update<ScrollingSystem>(0.f);
 				}
 			}
 		}
@@ -219,7 +219,7 @@ void EmptyLevelState::initWorld(const std::string& file)
 				CategoryComponent::Handle catComp{m_sceneEntities[textureIdentifier].assign<CategoryComponent>()};
 				catComp->category = Category::Scene;
 				//Update the ScrollingSystem in order to directly display the sprite at the right position
-				getContext().systemManager.update<ScrollingSystem>(sf::Time::Zero.asSeconds());
+				getContext().systemManager.update<ScrollingSystem>(0.f);
 			}
 		}
 

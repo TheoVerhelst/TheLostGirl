@@ -65,9 +65,9 @@ void GameState::draw()
 {
 	if(not m_loading)
 	{
-		getContext().systemManager.update<RenderSystem>(sf::Time::Zero.asSeconds());
+		getContext().systemManager.update<RenderSystem>(0.f);
 		//The drag and drop system draw a line on the screen, so we must put it here
-		getContext().systemManager.update<DragAndDropSystem>(sf::Time::Zero.asSeconds());
+		getContext().systemManager.update<DragAndDropSystem>(0.f);
 	}
 }
 
@@ -98,6 +98,7 @@ bool GameState::handleEvent(const sf::Event& event)
 
 void GameState::saveWorld(const std::string& file)
 {
+		const float scale{getContext().parameters.scale};
 		const float pixelByMeter{getContext().parameters.pixelByMeter};//The pixel/meters scale at the maximum resolution, about 1.f/120.f
 		Json::Value root;//Will contains the root value after serializing.
 		Json::StyledWriter writer;
@@ -107,7 +108,7 @@ void GameState::saveWorld(const std::string& file)
 			if(entity.second.has_component<BodyComponent>())
 				root["entities"][entity.first]["body"] = serialize(entity.second.component<BodyComponent>(), pixelByMeter);
 			if(entity.second.has_component<SpriteComponent>())
-				root["entities"][entity.first]["sprites"] = serialize(entity.second.component<SpriteComponent>(), getContext().textureManager);
+				root["entities"][entity.first]["sprites"] = serialize(entity.second.component<SpriteComponent>(), getContext().textureManager, scale);
 			if(entity.second.has_component<TransformComponent>())
 				root["entities"][entity.first]["transforms"] = serialize(entity.second.component<TransformComponent>());
 			if(entity.second.has_component<InventoryComponent>())
@@ -467,56 +468,23 @@ void GameState::initWorld(const std::string& file)
 				if(entity.isMember("transforms"))
 					deserialize(entity["transforms"], m_entities[entityName].assign<TransformComponent>());
 				if(entity.isMember("sprites"))
-					deserialize(entity["sprites"], m_entities[entityName].assign<SpriteComponent>(), texManager, paths[getContext().parameters.scaleIndex]);
+					deserialize(entity["sprites"], m_entities[entityName].assign<SpriteComponent>(), texManager, paths[getContext().parameters.scaleIndex], scale);
 				//Update the ScrollingSystem in order to directly display the sprite at the right position
-				getContext().systemManager.update<ScrollingSystem>(sf::Time::Zero.asSeconds());
-
+				getContext().systemManager.update<ScrollingSystem>(0.f);
 				//body
 				if(entity.isMember("body"))
 				{
-					if(not entity.isMember("transforms"))
-						throw std::runtime_error("\"root.entities." + entityName + ".body\" is defined but not \"root.entities." + entityName + ".transforms\"");
-					else
-					{
-						try
-						{
-							deserialize(entity["body"], m_entities[entityName].assign<BodyComponent>(), m_entities[entityName].component<TransformComponent>(), getContext().world, pixelByMeter);
-							//Assign user data to every body of the entity
-							for(auto& bodyPair : m_entities[entityName].component<BodyComponent>()->bodies)
-								bodyPair.second->SetUserData(&m_entities[entityName]);
-						}
-						catch(std::runtime_error& e)
-						{
-							std::cerr << "Unable to parse \"root.entities." + entityName + ".body\": " << e.what() << "\n";
-						}
-					}
+					deserialize(entity["body"], m_entities[entityName].assign<BodyComponent>(), m_entities[entityName].component<TransformComponent>(), getContext().world, pixelByMeter);
+					//Assign user data to every body of the entity
+					for(auto& bodyPair : m_entities[entityName].component<BodyComponent>()->bodies)
+						bodyPair.second->SetUserData(&m_entities[entityName]);
 				}
-
 				//spritesheet animations
 				if(entity.isMember("spritesheet animations"))
-				{
-
-					if(not entity.isMember("sprites"))
-						throw std::runtime_error("\"root.entities." + entityName + ".spritesheet animations\""
-												 " is defined but not \"root.entities." + entityName + ".sprites\"");
-					else
-					{
-						try
-						{
-							deserialize(entity["spritesheet animations"],
-											m_entities[entityName].assign<AnimationsComponent<SpriteSheetAnimation>>(),
-											m_entities[entityName].component<SpriteComponent>(),getContext());
-						}
-						catch(std::runtime_error& e)
-						{
-							std::cerr << "Unable to parse \"root.entities." + entityName + ".spritesheet animations\": " << e.what() << "\n";
-						}
-					}
-				}
-
+					deserialize(entity["spritesheet animations"], m_entities[entityName].assign<AnimationsComponent<SpriteSheetAnimation>>(),
+									m_entities[entityName].component<SpriteComponent>(), getContext());
 				//Update the AnimationSystem in order to don't show the whole tileset of every entity on the screen when loading the level
-				getContext().systemManager.update<AnimationsSystem>(sf::Time::Zero.asSeconds());
-
+				getContext().systemManager.update<AnimationsSystem>(0.f);
 				if(entity.isMember("inventory"))
 					deserialize(entity["inventory"], m_entities[entityName].assign<InventoryComponent>(), m_entities);
 				if(entity.isMember("bow"))
@@ -622,7 +590,7 @@ void GameState::initWorld(const std::string& file)
 						CategoryComponent::Handle catComp{m_sceneEntities[replaceIdentifier].assign<CategoryComponent>()};
 						catComp->category = Category::Scene;
 						//Update the ScrollingSystem in order to directly display the sprite at the right position
-						getContext().systemManager.update<ScrollingSystem>(sf::Time::Zero.asSeconds());
+						getContext().systemManager.update<ScrollingSystem>(0.f);
 					}
 					planData.push_back(replacesData);
 				}
@@ -664,7 +632,7 @@ void GameState::initWorld(const std::string& file)
 					CategoryComponent::Handle catComp{m_sceneEntities[textureIdentifier].assign<CategoryComponent>()};
 					catComp->category = Category::Scene;
 					//Update the ScrollingSystem in order to directly display the sprite at the right position
-					getContext().systemManager.update<ScrollingSystem>(sf::Time::Zero.asSeconds());
+					getContext().systemManager.update<ScrollingSystem>(0.f);
 				}
 			}
 		}
@@ -1025,45 +993,17 @@ void GameState::initWorld(const std::string& file)
 			}
 		}
 
-		//Load the day sky
-		const std::string dayIdentifier{"day sky"};
-		sf::Vector2f position{1920.f/2.f, 1080.f};
-		sf::Vector2f origin{2900.f/2.f, 2900.f/2.f};
-		getContext().eventManager.emit<LoadingStateChange>(LangManager::tr("Loading day sky"));
-		texManager.load(dayIdentifier, paths[getContext().parameters.scaleIndex] + "day.png");
-		//Create a sprite with the loaded texture
-		sf::Sprite daySpr(texManager.get(dayIdentifier));
-		//Assign origin of the sprite to the center of the day image
-		daySpr.setOrigin(origin*scale);
-
-		//Load the night sky
-		const std::string nightIdentifier{"night sky"};
-		getContext().eventManager.emit<LoadingStateChange>(LangManager::tr("Loading night sky"));
-		texManager.load(nightIdentifier, paths[getContext().parameters.scaleIndex] + "night.png");
-		//Create a sprite with the loaded texture
-		sf::Sprite nightSpr(texManager.get(nightIdentifier));
-		//Assign origin of the sprite to the center of the night image
-		nightSpr.setOrigin(origin*scale);
-
-		//Create an entity
-		m_sceneEntities.emplace("sky", getContext().entityManager.create());
-		//Assign the sprites to the entity, and set its z-ordinates to positive infinity
-		std::map<std::string, sf::Sprite> skySprites{{"day", daySpr}, {"night", nightSpr}};
-		std::map<std::string, Transform> skyTransforms{{"day", {position.x, position.y, std::numeric_limits<float>::infinity(), 0}},
-														{"night", {position.x, position.y, std::numeric_limits<float>::infinity(), 0}}};
-		SpriteComponent::Handle sprComp{m_sceneEntities["sky"].assign<SpriteComponent>()};
-		sprComp->sprites = skySprites;
-		TransformComponent::Handle trsfComp{m_sceneEntities["sky"].assign<TransformComponent>()};
-		trsfComp->transforms = skyTransforms;
-		CategoryComponent::Handle catComp{m_sceneEntities["sky"].assign<CategoryComponent>()};
-		catComp->category = Category::Scene;
-		AnimationsComponent<SkyAnimation>::Handle skyAnimationsComp{m_sceneEntities["sky"].assign<AnimationsComponent<SkyAnimation>>()};
-		skyAnimationsComp->animationsManagers.emplace("main", AnimationsManager<SkyAnimation>());
-		//Add the animation, this is a sky animation, the importance is equal to zero, the duration is 600 seconds (1 day), and it loops.
-		skyAnimationsComp->animationsManagers["main"].addAnimation("day/night cycle", SkyAnimation(m_sceneEntities["sky"]), 0, sf::seconds(600), true);
-		float daySeconds{std::remainder(getContext().systemManager.system<TimeSystem>()->getRealTime().asSeconds(), 600.f)};
-		skyAnimationsComp->animationsManagers["main"].setProgress("day/night cycle", daySeconds/600.f);
-		skyAnimationsComp->animationsManagers["main"].play("day/night cycle");
+		//Add sky animations.
+		if(m_entities.find("sky") != m_entities.end() and m_entities["sky"].valid())
+		{
+			AnimationsComponent<SkyAnimation>::Handle skyAnimationsComp{m_entities["sky"].assign<AnimationsComponent<SkyAnimation>>()};
+			skyAnimationsComp->animationsManagers.emplace("main", AnimationsManager<SkyAnimation>());
+			//Add the animation, this is a sky animation, the importance is equal to zero, the duration is 600 seconds (1 day), and it loops.
+			skyAnimationsComp->animationsManagers["main"].addAnimation("day/night cycle", SkyAnimation(m_entities["sky"]), 0, sf::seconds(600), true);
+			float daySeconds{std::remainder(getContext().systemManager.system<TimeSystem>()->getRealTime().asSeconds(), 600.f)};
+			skyAnimationsComp->animationsManagers["main"].setProgress("day/night cycle", daySeconds/600.f);
+			skyAnimationsComp->animationsManagers["main"].play("day/night cycle");
+		}
 
 		getContext().player.handleInitialInputState();
 		getContext().world.SetContactListener(&m_contactListener);
