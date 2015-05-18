@@ -30,7 +30,6 @@
 
 #include <TheLostGirl/states/GameState.h>
 
-//TODO Barre de vie au dessus des ennemis non full life.
 //TODO Faire un système multi texture pour une même partie d'entité (soit chunker une grande image, soit faire plusieurs images).
 //TODO Faire un système d'entité générique (pour les mobs, les items, ...).
 //TODO Changer scaleRes, retirer le template explicite et remplacer par static_cast<type>(scaleres(...))

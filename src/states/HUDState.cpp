@@ -45,7 +45,7 @@ HUDState::HUDState(StateStack& stack):
 	m_windStrengthSpr.setTexture(texManager.get("wind arrow ath"));
 	m_windStrengthSpr.setPosition(120.f*scale, 0);
 	m_windStrengthBarSpr.setTexture(texManager.get("wind bar ath"));
-	m_windBar = tgui::Canvas::create({scaleRes(240.f, scale), scaleRes(20.f, scale)});
+	m_windBar = tgui::Canvas::create({240.f*scale, 20.f*scale});
 	m_windBar->setPosition(bindWidth(gui, 0.99f) - bindWidth(m_windBar), bindHeight(gui, 0.95f) - bindHeight(m_windBar));
 	gui.add(m_windBar);
 }
@@ -62,20 +62,42 @@ HUDState::~HUDState()
 
 void HUDState::draw()
 {
+	std::list<entityx::Entity> entitiesToRemove;
 	for(auto& barPair : m_healthBars)
 	{
-		barPair.second.canvas->clear(sf::Color::Transparent);
-		barPair.second.canvas->draw(barPair.second.sprite);
-		barPair.second.canvas->draw(barPair.second.borderSprite);
-		barPair.second.canvas->display();
+		if(barPair.first.has_component<DeathComponent>() and barPair.first.component<DeathComponent>()->dead)
+		{
+			getContext().gui.remove(barPair.second.canvas);
+			entitiesToRemove.push_back(barPair.first);
+		}
+		else
+		{
+			barPair.second.canvas->clear(sf::Color::Transparent);
+			barPair.second.canvas->draw(barPair.second.sprite);
+			barPair.second.canvas->draw(barPair.second.borderSprite);
+			barPair.second.canvas->display();
+		}
 	}
+	for(auto& entity : entitiesToRemove)
+		m_healthBars.erase(entity);
+	entitiesToRemove.clear();
 	for(auto& barPair : m_staminaBars)
 	{
-		barPair.second.canvas->clear(sf::Color::Transparent);
-		barPair.second.canvas->draw(barPair.second.sprite);
-		barPair.second.canvas->draw(barPair.second.borderSprite);
-		barPair.second.canvas->display();
+		if(barPair.first.has_component<DeathComponent>() and barPair.first.component<DeathComponent>()->dead)
+		{
+			getContext().gui.remove(barPair.second.canvas);
+			entitiesToRemove.push_back(barPair.first);
+		}
+		else
+		{
+			barPair.second.canvas->clear(sf::Color::Transparent);
+			barPair.second.canvas->draw(barPair.second.sprite);
+			barPair.second.canvas->draw(barPair.second.borderSprite);
+			barPair.second.canvas->display();
+		}
 	}
+	for(auto& entity : entitiesToRemove)
+		m_staminaBars.erase(entity);
 	m_windBar->clear(sf::Color::Transparent);
 	m_windBar->draw(m_windStrengthBarSpr);
 	m_windBar->draw(m_windStrengthSpr);
@@ -121,7 +143,7 @@ bool HUDState::update(sf::Time dt)
 			m_windStrengthSpr.setColor(sf::Color::White);
 			m_windStrengthBarSpr.setColor(sf::Color::White);
 		}
-		m_windStrengthSpr.setTextureRect({scaleRes<float, int>(120.f*(1.f - std::abs(windStrength)), scale), 0, scaleRes<float, int>(120.f*std::abs(windStrength), scale), scaleRes(20, scale)});
+		m_windStrengthSpr.setTextureRect({int(120.f*(1.f - std::abs(windStrength))*scale), 0, int(120.f*std::abs(windStrength)*scale), int(20.f*scale)});
 		if(windStrength > 0)
 			m_windStrengthSpr.setScale(1, 1);
 		else
@@ -183,17 +205,17 @@ void HUDState::receive(const EntityHealthChange& entityHealthChange)
 		if(isPlayer(entity))
 		{
 			bar.sprite.setTexture(texManager.get("health ath"));
-			bar.sprite.setTextureRect({0, 0, scaleRes(240, scale), scaleRes(20, scale)});
+			bar.sprite.setTextureRect({0, 0, int(240.f*scale), int(20.f*scale)});
 			bar.borderSprite.setTexture(texManager.get("health border ath"));
-			bar.canvas = tgui::Canvas::create({scaleRes(240.f, scale), scaleRes(20.f, scale)});
+			bar.canvas = tgui::Canvas::create({240.f*scale, 20.f*scale});
 			bar.canvas->setPosition(bindWidth(gui, 0.01f), bindHeight(gui, 0.99f) - bindHeight(bar.canvas));
 		}
 		else
 		{
 			bar.sprite.setTexture(texManager.get("entity health bar"));
-			bar.sprite.setTextureRect({0, 0, scaleRes(100, scale), scaleRes(10, scale)});
+			bar.sprite.setTextureRect({0, 0, int(100.f*scale), int(10.f*scale)});
 			bar.borderSprite.setTexture(texManager.get("entity health bar borders"));
-			bar.canvas = tgui::Canvas::create({scaleRes<int, float>(100, scale), scaleRes<int, float>(10.f, scale)});
+			bar.canvas = tgui::Canvas::create({100.f*scale, 10.f*scale});
 			bar.canvas->setPosition(bindWidth(gui, 0.5f), bindHeight(gui, 0.99f) - bindHeight(bar.canvas));
 		}
 		gui.add(bar.canvas);
@@ -211,9 +233,9 @@ void HUDState::receive(const EntityHealthChange& entityHealthChange)
 	}
 	bar.timer = sf::Time::Zero;//In all cases, the timer should reset when the health change
 	if(isPlayer(entity))
-		bar.sprite.setTextureRect({scaleRes<float, int>(240.f - 240.f*entityHealthChange.normalizedHealth, scale), 0, scaleRes(240, scale), scaleRes(20, scale)});
+		bar.sprite.setTextureRect({int((240.f - 240.f*entityHealthChange.normalizedHealth)*scale), 0, int(240.f*scale), int(20.f*scale)});
 	else
-		bar.sprite.setTextureRect({scaleRes<float, int>(100.f - 100.f*entityHealthChange.normalizedHealth, scale), 0, scaleRes(100, scale), scaleRes(10, scale)});
+		bar.sprite.setTextureRect({int((100.f - 100.f*entityHealthChange.normalizedHealth)*scale), 0, int(100.f*scale), int(10.f*scale)});
 }
 
 void HUDState::receive(const EntityStaminaChange& entityStaminaChange)
@@ -231,9 +253,9 @@ void HUDState::receive(const EntityStaminaChange& entityStaminaChange)
 		{
 			Bar bar;
 			bar.sprite.setTexture(texManager.get("stamina ath"));
-			bar.sprite.setTextureRect({0, 0, scaleRes(240, scale), scaleRes(20, scale)});
+			bar.sprite.setTextureRect({0, 0, int(240.f*scale), int(20.f*scale)});
 			bar.borderSprite.setTexture(texManager.get("stamina border ath"));
-			bar.canvas = tgui::Canvas::create({scaleRes(240.f, scale), scaleRes(20.f, scale)});
+			bar.canvas = tgui::Canvas::create({240.f*scale, 20.f*scale});
 			bar.canvas->setPosition(bindWidth(gui, 0.99f) - bindWidth(bar.canvas), bindHeight(gui, 0.99f) - bindHeight(bar.canvas));
 			gui.add(bar.canvas);
 			m_staminaBars.emplace(entity, bar);
@@ -249,6 +271,6 @@ void HUDState::receive(const EntityStaminaChange& entityStaminaChange)
 			bar.borderSprite.setColor(sf::Color::White);
 		}
 		bar.timer = sf::Time::Zero;//In all cases, the timer should reset when the health change
-		bar.sprite.setTextureRect({scaleRes<float, int>(240 - 240.f*entityStaminaChange.normalizedStamina, scale), 0, scaleRes(240, scale), scaleRes(20, scale)});
+		bar.sprite.setTextureRect({int((240.f - 240.f*entityStaminaChange.normalizedStamina)*scale), 0, int(240.f*scale), int(20.f*scale)});
 	}
 }

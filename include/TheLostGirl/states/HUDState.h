@@ -61,6 +61,10 @@ class HUDState : public State, public entityx::Receiver<HUDState>
 		/// A fading to transparent is done when the entity's stat is full.
 		struct Bar
 		{
+			/// Destructor.
+			~Bar()
+			{}
+
 			tgui::Canvas::Ptr canvas;///< Canvas to draw the sprites.
 			sf::Sprite sprite;       ///< The sprite of the bar.
 			sf::Sprite borderSprite; ///< The sprite of the borders of the bar.
