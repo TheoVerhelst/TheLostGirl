@@ -1,8 +1,12 @@
 #ifndef HUDSTATE_H
 #define HUDSTATE_H
 
+#include <unordered_map>
+
 #include <TGUI/Canvas.hpp>
 #include <entityx/Event.h>
+
+#include <TheLostGirl/HashEntity.h>
 
 //Forward declarations
 namespace sf
@@ -13,8 +17,8 @@ namespace sf
 class State;
 class Context;
 class StateStack;
-struct PlayerHealthChange;
-struct PlayerStaminaChange;
+struct EntityHealthChange;
+struct EntityStaminaChange;
 
 /// State that display data about the player.
 class HUDState : public State, public entityx::Receiver<HUDState>
@@ -43,33 +47,36 @@ class HUDState : public State, public entityx::Receiver<HUDState>
         /// \note The closing window and resinzing window events are already handled by the Application class.
 		virtual bool handleEvent(const sf::Event& event);
 
-		/// Receive an event indicating that the health of the player changed.
+		/// Receive an event indicating that the health of an entity changed.
 		/// \param playerHealthChange Structure containing data about the change.
-		void receive(const PlayerHealthChange& playerHealthChange);
+		void receive(const EntityHealthChange& entityHealthChange);
 
-		/// Receive an event indicating that the health of the player changed.
+		/// Receive an event indicating that the health of an entity changed.
 		/// \param playerStaminaChange Structure containing data about the change.
-		void receive(const PlayerStaminaChange& playerStaminaChange);
+		void receive(const EntityStaminaChange& entityStaminaChange);
 
 	private:
-		//Canvas
-		tgui::Canvas::Ptr m_healthBar;   ///< The health bar.
-		tgui::Canvas::Ptr m_staminaBar;  ///< The stamina bar.
-		tgui::Canvas::Ptr m_windBar;     ///< The wind arrow.
-		//Sprites
-		sf::Sprite m_healthSpr;          ///< The sprite of the health bar.
-		sf::Sprite m_healthBorderSpr;    ///< The sprite of the health bar border.
-		sf::Sprite m_staminaSpr;         ///< The sprite of the stamina bar.
-		sf::Sprite m_staminaBorderSpr;   ///< The sprite of the stamina bar border.
-		sf::Sprite m_windStrengthSpr;    ///< The sprite of the wind arrow.
-		sf::Sprite m_windStrengthBarSpr; ///< The sprite of the wind bar.
-		//Fading data
-		bool m_healthIsFading;             ///< True only if the fading of the health bar is currently active.
-		bool m_staminaIsFading;            ///< True only if the fading of the stamina bar is currently active.
-		bool m_windIsFading;               ///< True only if the fading of the wind arrow is currently active.
-		sf::Clock m_healthFadingTimer;     ///< Timer of the health bar fading.
-		sf::Clock m_staminaFadingTimer;    ///< Timer of the stamina bar fading.
-		sf::Clock m_windFadingTimer;       ///< Timer of the wind arrow fading.
+		/// Holds graphical data to represent a bar for each entity with a given stat.
+		/// This can be health, stamina, mana, and so on.
+		/// A fading to transparent is done when the entity's stat is full.
+		struct Bar
+		{
+			tgui::Canvas::Ptr canvas;///< Canvas to draw the sprites.
+			sf::Sprite sprite;       ///< The sprite of the bar.
+			sf::Sprite borderSprite; ///< The sprite of the borders of the bar.
+			bool isFull;             ///< Indicates whether the bar is full.
+			sf::Time timer;          ///< Timer of the fading animation.
+		};
+
+		std::unordered_map<entityx::Entity, Bar, HashEntity> m_healthBars; ///< Store all entities health bars.
+		std::unordered_map<entityx::Entity, Bar, HashEntity> m_staminaBars;///< Store all entities stamina bars.
+
+		//Player wind HUD
+		tgui::Canvas::Ptr m_windBar;       ///< The wind arrow.
+		sf::Sprite m_windStrengthSpr;      ///< The sprite of the wind arrow.
+		sf::Sprite m_windStrengthBarSpr;   ///< The sprite of the wind bar.
+		bool m_windIsFading;               ///< Indicates whether the fading of the wind arrow is currently active.
+		sf::Time m_windFadingTimer;        ///< Timer of the wind arrow fading animation.
 };
 
 #endif//HUDSTATE_H

@@ -14,22 +14,7 @@ std::wstring LangManager::tr(const std::string& entryName)
 	if(m_entries.count(entryName) > 0)
 		return m_entries[entryName];
 	else
-	{
-		//Return an error message
-		switch(m_lang)
-		{
-			case EN:
-				return L"Entry not found.";
-
-			case FR:
-				return L"Entrée non trouvée.";
-
-			case NL:
-			case IT:
-			default:
-				return L"Entry not found.";
-		}
-	}
+		return std::wstring(entryName.begin(), entryName.end());
 }
 
 Lang LangManager::getLang()

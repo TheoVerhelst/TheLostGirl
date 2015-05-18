@@ -4,6 +4,7 @@
 #include <string>
 
 #include <entityx/Event.h>
+#include <entityx/Entity.h>
 
 /// Structure used to emit and receive loading progression between differents game states.
 struct LoadingStateChange : public entityx::Event<LoadingStateChange>
@@ -12,40 +13,43 @@ struct LoadingStateChange : public entityx::Event<LoadingStateChange>
 	/// \param _sentence A short sentence describing the loading state.
 	LoadingStateChange(std::wstring _sentence):
 		sentence(_sentence)
-	{
-	}
-	
+	{}
+
 	std::wstring sentence;///< A short sentence describing the loading state.
 };
 
-/// Structure used to emit and receive player's health changes.
-struct PlayerHealthChange : public entityx::Event<PlayerHealthChange>
+/// Structure used to emit and receive entity health changes.
+struct EntityHealthChange : public entityx::Event<EntityHealthChange>
 {
-	///Default constructor
-	/// \param _health The new health of the player.
-	/// \param _normalizedHealth The new health of the player, normalized in [0, 1].
-	PlayerHealthChange(float _health, float _normalizedHealth):
+	/// Constructor.
+	/// \param _entity The entity touched by the health change.
+	/// \param _health The new health of the entity.
+	/// \param _normalizedHealth The new health of the entity, normalized in [0, 1].
+	EntityHealthChange(entityx::Entity _entity, float _health, float _normalizedHealth):
+		entity(_entity),
 		health(_health),
 		normalizedHealth(_normalizedHealth)
-	{
-	}
-	
-	float health;          ///< The new health of the player.
-	float normalizedHealth;///< The new health of the player, normalized in [0, 1].
+	{}
+
+	entityx::Entity entity;///< The entity touched by the health change.
+	float health;          ///< The new health of the entity.
+	float normalizedHealth;///< The new health of the entity, normalized in [0, 1].
 };
 
-/// Structure used to emit and receive player's stamina changes.
-struct PlayerStaminaChange : public entityx::Event<PlayerStaminaChange>
+/// Structure used to emit and receive entity stamina changes.
+struct EntityStaminaChange : public entityx::Event<EntityStaminaChange>
 {
-	///Default constructor
-	/// \param _stamina The new stamina of the player.
-	/// \param _normalizedStamina The new stamina of the player, normalized in [0, 1].
-	PlayerStaminaChange(float _stamina, float _normalizedStamina):
+	/// Constructor.
+	/// \param _entity The entity touched by the stamina change.
+	/// \param _stamina The new stamina of the entity.
+	/// \param _normalizedStamina The new stamina of the entity, normalized in [0, 1].
+	EntityStaminaChange(entityx::Entity _entity, float _stamina, float _normalizedStamina):
+		entity(_entity),
 		stamina(_stamina),
 		normalizedStamina(_normalizedStamina)
-	{
-	}
-	
+	{}
+
+	entityx::Entity entity; ///< The entity touched by the health change.
 	float stamina;          ///< The new stamina of the player.
 	float normalizedStamina;///< The new stamina of the player, normalized in [0, 1].
 };

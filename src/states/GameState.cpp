@@ -27,14 +27,14 @@
 #include <TheLostGirl/FixtureRoles.h>
 #include <TheLostGirl/JointRoles.h>
 #include <TheLostGirl/serialization.h>
-#include <TheLostGirl/serialization.h>
 
 #include <TheLostGirl/states/GameState.h>
 
 //TODO Barre de vie au dessus des ennemis non full life.
-//TODO Inclure les entités ciel dans la save plutot que de les harcoder.
 //TODO Faire un système multi texture pour une même partie d'entité (soit chunker une grande image, soit faire plusieurs images).
 //TODO Faire un système d'entité générique (pour les mobs, les items, ...).
+//TODO Changer scaleRes, retirer le template explicite et remplacer par static_cast<type>(scaleres(...))
+//TODO Checker les headers pour ne pas avoir d'include redondants.
 
 GameState::GameState(StateStack& stack, std::string file) :
 	State(stack),
@@ -464,7 +464,10 @@ void GameState::initWorld(const std::string& file)
 			for(std::string& entityName : entities.getMemberNames())
 			{
 				const Json::Value entity{entities[entityName]};
-
+				if(entity.isMember("name"))
+					getContext().eventManager.emit<LoadingStateChange>(LangManager::tr("Loading") + L" " + LangManager::tr(entity["name"].asString()));
+				else
+					getContext().eventManager.emit<LoadingStateChange>(LangManager::tr("Loading") + L" " + LangManager::tr(entityName));
 				if(entity.isMember("transforms"))
 					deserialize(entity["transforms"], m_entities[entityName].assign<TransformComponent>());
 				if(entity.isMember("sprites"))
@@ -640,6 +643,7 @@ void GameState::initWorld(const std::string& file)
 		//joints
 		if(root.isMember("joints"))
 		{
+			getContext().eventManager.emit<LoadingStateChange>(LangManager::tr("Assembling entities"));
 			const Json::Value joints{root["joints"]};
 			if(joints.isMember("revolute joints"))
 			{

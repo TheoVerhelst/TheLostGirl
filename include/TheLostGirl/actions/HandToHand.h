@@ -6,6 +6,7 @@
 #include <Box2D/Dynamics/b2WorldCallbacks.h>
 
 #include <TheLostGirl/Action.h>
+#include <TheLostGirl/HashEntity.h>
 
 namespace entityx
 {
@@ -34,16 +35,6 @@ struct HandToHand : public Action
 class HandToHandQueryCallback : public b2QueryCallback
 {
 	private:
-		/// Hash function object for entities.
-		/// Hash entities allow to make unordered set of entities,  with the benefit that implies:
-		/// making a set of entities, with constant time insertion without duplicate.
-		struct HashEntity
-		{
-			/// Hash fonction.
-			/// \param entity The entity to hash.
-			/// \return The hashed value, based on the entity's ID.
-			size_t operator()(entityx::Entity entity) const;
-		};
 		entityx::Entity m_attacker;///< The entity that performs the attack (and then excluded from the result).
 
 	public:

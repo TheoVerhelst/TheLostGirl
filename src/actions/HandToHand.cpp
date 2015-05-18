@@ -91,8 +91,3 @@ bool HandToHandQueryCallback::ReportFixture(b2Fixture* fixture)
 		foundEntities.insert(entity);
 	return true;
 }
-
-size_t HandToHandQueryCallback::HashEntity::operator()(entityx::Entity entity) const
-{
-	return std::hash<uint64_t>()(entity.id().index());
-}
