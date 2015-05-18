@@ -20,6 +20,11 @@ namespace sf
 	class Time;
 }
 
+namespace entityx
+{
+	class Entity;
+}
+
 /// \file functions.h
 
 /// Calculate a new viewport at each resize of the window.
@@ -187,5 +192,7 @@ R scaleRes(const T& value, float scale)
 {
 	return static_cast<R>(ceil(static_cast<float>(value)*scale));
 }
+
+bool isPlayer(entityx::Entity entity);
 
 #endif//FUNCTIONS_H

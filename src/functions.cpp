@@ -7,6 +7,9 @@
 #include <SFML/System/Time.hpp>
 #include <SFML/Window/Event.hpp>
 #include <dist/json/json.h>
+#include <entityx/Entity.h>
+
+#include <TheLostGirl/components.h>
 
 #include <TheLostGirl/functions.h>
 
@@ -288,4 +291,9 @@ sf::Color b2ColorToSf(const b2Color& color)
 {
 	return sf::Color(static_cast<sf::Uint8>(color.r*255.f), static_cast<sf::Uint8>(color.g*255.f),
 					 static_cast<sf::Uint8>(color.b*255.f), static_cast<sf::Uint8>(color.a*255.f));
+}
+
+bool isPlayer(entityx::Entity entity)
+{
+	return entity.valid() and entity.has_component<CategoryComponent>() and entity.component<CategoryComponent>()->category & Category::Player;
 }

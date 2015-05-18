@@ -87,6 +87,7 @@ bool HUDState::update(sf::Time dt)
 	//Get the wind strength and compute the wind ath
 	const float scale{getContext().parameters.scale};
 	const float windStrength{cap(getContext().systemManager.system<TimeSystem>()->getWindStrength()/5.f, -1.f, 1.f)};
+	const sf::RenderWindow& window(getContext().window);
 
 	for(auto& barPair : m_healthBars)
 		barPair.second.timer += dt;
@@ -136,6 +137,17 @@ bool HUDState::update(sf::Time dt)
 			barPair.second.sprite.setColor(color);
 			barPair.second.borderSprite.setColor(color);
 		}
+		if(barPair.first.has_component<TransformComponent>() and not isPlayer(barPair.first))
+		{
+			const auto& transforms(barPair.first.component<TransformComponent>()->transforms);
+			if(transforms.find("main") != transforms.end())
+			{
+				sf::Vector2f position(transforms.at("main").x, transforms.at("main").y);
+				position *= scale;
+				position -= window.getView().getCenter() - window.getDefaultView().getCenter();
+				barPair.second.canvas->setPosition(position);
+			}
+		}
 	}
 	for(auto& barPair : m_staminaBars)
 	{
@@ -168,7 +180,7 @@ void HUDState::receive(const EntityHealthChange& entityHealthChange)
 	if(m_healthBars.find(entity) == m_healthBars.end())
 	{
 		Bar bar;
-		if(entity.has_component<CategoryComponent>() and entity.component<CategoryComponent>()->category & Category::Player)
+		if(isPlayer(entity))
 		{
 			bar.sprite.setTexture(texManager.get("health ath"));
 			bar.sprite.setTextureRect({0, 0, scaleRes(240, scale), scaleRes(20, scale)});
@@ -198,7 +210,10 @@ void HUDState::receive(const EntityHealthChange& entityHealthChange)
 		bar.borderSprite.setColor(sf::Color::White);
 	}
 	bar.timer = sf::Time::Zero;//In all cases, the timer should reset when the health change
-	bar.sprite.setTextureRect({scaleRes<float, int>(240.f - 240.f*entityHealthChange.normalizedHealth, scale), 0, scaleRes(240, scale), scaleRes(20, scale)});
+	if(isPlayer(entity))
+		bar.sprite.setTextureRect({scaleRes<float, int>(240.f - 240.f*entityHealthChange.normalizedHealth, scale), 0, scaleRes(240, scale), scaleRes(20, scale)});
+	else
+		bar.sprite.setTextureRect({scaleRes<float, int>(100.f - 100.f*entityHealthChange.normalizedHealth, scale), 0, scaleRes(100, scale), scaleRes(10, scale)});
 }
 
 void HUDState::receive(const EntityStaminaChange& entityStaminaChange)
@@ -210,7 +225,7 @@ void HUDState::receive(const EntityStaminaChange& entityStaminaChange)
 	const float scale{getContext().parameters.scale};
 	entityx::Entity entity{entityStaminaChange.entity};
 
-	if(entity.has_component<CategoryComponent>() and entity.component<CategoryComponent>()->category & Category::Player)
+	if(isPlayer(entity))
 	{
 		if(m_staminaBars.find(entity) == m_staminaBars.end())
 		{

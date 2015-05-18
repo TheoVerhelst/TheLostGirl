@@ -35,8 +35,8 @@ void StatsSystem::update(entityx::EntityManager& entityManager, entityx::EventMa
 				}
 			}
 		}
-		if(not (entity.has_component<CategoryComponent>() and entity.component<CategoryComponent>()->category & Category::Player)
-				and healthComponent->current <= 0.f and entity.has_component<DeathComponent>() and not entity.component<DeathComponent>()->dead)
+		bool isDead{entity.has_component<DeathComponent>() and entity.component<DeathComponent>()->dead};
+		if(not isPlayer(entity) and healthComponent->current <= 0.f and not isDead)
 		{
 			Command deathCommand;
 			deathCommand.targetIsSpecific = true;
@@ -46,7 +46,7 @@ void StatsSystem::update(entityx::EntityManager& entityManager, entityx::EventMa
 		}
 
 		//Regen health
-		if(healthComponent->current < healthComponent->maximum)
+		if(not isDead and healthComponent->current < healthComponent->maximum)
 		{
 			healthComponent->current = cap(healthComponent->current + healthComponent->regeneration*float(dt), 0.f, healthComponent->maximum);
 			eventManager.emit<EntityHealthChange>(entity, healthComponent->current, healthComponent->current/healthComponent->maximum);
