@@ -1,6 +1,10 @@
 #include <dist/json/json.h>
 #include <entityx/Entity.h>
-#include <Box2D/Box2D.h>
+#include <Box2D/Collision/Shapes/b2CircleShape.h>
+#include <Box2D/Collision/Shapes/b2ChainShape.h>
+#include <Box2D/Collision/Shapes/b2EdgeShape.h>
+#include <Box2D/Collision/Shapes/b2PolygonShape.h>
+#include <Box2D/Dynamics/b2World.h>
 #include <SFML/Graphics/Texture.hpp>
 
 #include <TheLostGirl/components.h>
@@ -184,7 +188,7 @@ Json::Value serialize(entityx::ComponentHandle<TransformComponent> component)
 	return ret;
 }
 
-Json::Value serialize(entityx::ComponentHandle<InventoryComponent> component, const std::map<std::string, entityx::Entity>& entitiesMap)
+Json::Value serialize(entityx::ComponentHandle<InventoryComponent> component, const std::unordered_map<std::string, entityx::Entity>& entitiesMap)
 {
 	Json::Value ret;
 	ret["maximum weight"] = component->maxWeight;
@@ -194,7 +198,7 @@ Json::Value serialize(entityx::ComponentHandle<InventoryComponent> component, co
 		//If the item is in the entity list
 		if(isMember(entitiesMap, item) and item.valid())
 			//Add it to the value
-			ret["items"].append(getKey(entitiesMap, item));
+			ret["items"].append(getKey<std::string>(entitiesMap, item));
 	return ret;
 }
 
@@ -289,7 +293,7 @@ Json::Value serialize(entityx::ComponentHandle<JumpComponent> component)
 	return ret;
 }
 
-Json::Value serialize(entityx::ComponentHandle<BowComponent> component, const std::map<std::string, entityx::Entity>& entitiesMap)
+Json::Value serialize(entityx::ComponentHandle<BowComponent> component, const std::unordered_map<std::string, entityx::Entity>& entitiesMap)
 {
 	Json::Value ret;
 	ret["power"] = component->power;
@@ -297,14 +301,14 @@ Json::Value serialize(entityx::ComponentHandle<BowComponent> component, const st
 	ret["angle"] = component->angle;
 	ret["quiver capacity"] = component->quiverCapacity;
 	if(isMember(entitiesMap, component->notchedArrow) and component->notchedArrow.valid())
-		ret["notched arrow"] = getKey(entitiesMap, component->notchedArrow);
+		ret["notched arrow"] = getKey<std::string>(entitiesMap, component->notchedArrow);
 	ret["arrows"] = Json::Value(Json::arrayValue);
 	//For each arrow of the quiver
 	for(entityx::Entity arrow : component->arrows)
 		//If the arrow is in the entity list
 		if(isMember(entitiesMap, arrow) and arrow.valid())
 			//Add it to the value
-			ret["arrows"].append(getKey(entitiesMap, arrow));
+			ret["arrows"].append(getKey<std::string>(entitiesMap, arrow));
 	return ret;
 }
 
@@ -669,7 +673,7 @@ void deserialize(const Json::Value& value, entityx::ComponentHandle<TransformCom
 	}
 }
 
-void deserialize(const Json::Value& value, entityx::ComponentHandle<InventoryComponent> component, const std::map<std::string, entityx::Entity>& entitiesMap)
+void deserialize(const Json::Value& value, entityx::ComponentHandle<InventoryComponent> component, const std::unordered_map<std::string, entityx::Entity>& entitiesMap)
 {
 	component->items.clear();
 	for(Json::ArrayIndex i{0}; i < value["items"].size(); ++i)
@@ -759,7 +763,7 @@ void deserialize(const Json::Value& value, entityx::ComponentHandle<JumpComponen
 	component->mustJump = false;
 }
 
-void deserialize(const Json::Value& value, entityx::ComponentHandle<BowComponent> component, const std::map<std::string, entityx::Entity>& entitiesMap)
+void deserialize(const Json::Value& value, entityx::ComponentHandle<BowComponent> component, const std::unordered_map<std::string, entityx::Entity>& entitiesMap)
 {
 	component->power = value["power"].asFloat();
 	component->angle = value["angle"].asFloat();

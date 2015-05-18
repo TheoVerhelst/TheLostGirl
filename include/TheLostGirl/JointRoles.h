@@ -1,6 +1,8 @@
 #ifndef JOINTEROLES_H
 #define JOINTEROLES_H
 
+#include <Box2D/Dynamics/Joints/b2Joint.h>
+
 /// \file JointRoles.h
 
 /// Enumeration of role of some joints (bending angle, bending recoil, ...).

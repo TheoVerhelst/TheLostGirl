@@ -36,7 +36,7 @@ Json::Value serialize(entityx::ComponentHandle<TransformComponent> component);
 /// \param component Component to serialize.
 /// \param entitiesMap The map containing all entities (to find name - entity correspondance).
 /// \return A Json value.
-Json::Value serialize(entityx::ComponentHandle<InventoryComponent> component, const std::map<std::string, entityx::Entity>& entitiesMap);
+Json::Value serialize(entityx::ComponentHandle<InventoryComponent> component, const std::unordered_map<std::string, entityx::Entity>& entitiesMap);
 
 /// Serialize the given component.
 /// \param component Component to serialize.
@@ -72,7 +72,7 @@ Json::Value serialize(entityx::ComponentHandle<JumpComponent> component);
 /// \param component Component to serialize.
 /// \param entitiesMap The map containing all entities (to find name - entity correspondance).
 /// \return A Json value.
-Json::Value serialize(entityx::ComponentHandle<BowComponent> component, const std::map<std::string, entityx::Entity>& entitiesMap);
+Json::Value serialize(entityx::ComponentHandle<BowComponent> component, const std::unordered_map<std::string, entityx::Entity>& entitiesMap);
 
 /// Serialize the given component.
 /// \param component Component to serialize.
@@ -144,7 +144,7 @@ void deserialize(const Json::Value& value, entityx::ComponentHandle<TransformCom
 /// \param component Component in wich deserialize the data.
 /// \param entitiesMap The map containing all entities (to find name - entity correspondance).
 /// \param value The Json value containing the data.
-void deserialize(const Json::Value& value, entityx::ComponentHandle<InventoryComponent> component, const std::map<std::string, entityx::Entity>& entitiesMap);
+void deserialize(const Json::Value& value, entityx::ComponentHandle<InventoryComponent> component, const std::unordered_map<std::string, entityx::Entity>& entitiesMap);
 
 /// Deserialize the given \a value in the given \a component.
 /// \param component Component in wich deserialize the data.
@@ -182,7 +182,7 @@ void deserialize(const Json::Value& value, entityx::ComponentHandle<JumpComponen
 /// \param component Component in wich deserialize the data.
 /// \param entitiesMap The map containing all entities (to find name - entity correspondance).
 /// \param value The Json value containing the data.
-void deserialize(const Json::Value& value, entityx::ComponentHandle<BowComponent> component, const std::map<std::string, entityx::Entity>& entitiesMap);
+void deserialize(const Json::Value& value, entityx::ComponentHandle<BowComponent> component, const std::unordered_map<std::string, entityx::Entity>& entitiesMap);
 
 /// Deserialize the given \a value in the given \a component.
 /// \param component Component in wich deserialize the data.

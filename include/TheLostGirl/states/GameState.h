@@ -2,10 +2,9 @@
 #define GAMESTATE_H
 
 #include <thread>
+#include <SFML/Graphics/Rect.hpp>
+#include <entityx/Entity.h>
 
-#include <Box2D/Dynamics/Joints/b2Joint.h>
-
-#include <SFML/Graphics/Sprite.hpp>
 #include <TheLostGirl/AnimationsManager.h>
 #include <TheLostGirl/ContactListener.h>
 
@@ -14,10 +13,6 @@ namespace sf
 {
 	class Event;
 	class Time;
-}
-namespace entityx
-{
-	class Entity;
 }
 class State;
 class Context;
@@ -75,19 +70,19 @@ class GameState : public State
 		/// Clear all entities.
 		void clear();
 
-		std::map<std::string, entityx::Entity> m_entities;                    ///< All game entities.
-		std::map<std::string, entityx::Entity> m_sceneEntities;               ///< All scene entities.
-		std::map<std::string, std::vector<SceneReplaces>> m_sceneEntitiesData;///< A map containing data about scene entities.
-		ContactListener m_contactListener;                                    ///< The contact listener.
-		float m_timeSpeed;                                                    ///< The speed of the time (usually 1.f). This influes only on the TimeSystem, not on physics!
-		std::thread m_threadLoad;                                             ///< Thread launched when loading the level.
-		bool m_loading;                                                       ///< Indicates wether the loading is finished or not.
+		std::unordered_map<std::string, entityx::Entity> m_entities;                    ///< All game entities.
+		std::unordered_map<std::string, entityx::Entity> m_sceneEntities;               ///< All scene entities.
+		std::unordered_map<std::string, std::vector<SceneReplaces>> m_sceneEntitiesData;///< A map containing data about scene entities.
+		ContactListener m_contactListener;///< The contact listener.
+		float m_timeSpeed;                ///< The speed of the time (usually 1.f). This influes only on the TimeSystem, not on physics!
+		std::thread m_threadLoad;         ///< Thread launched when loading the level.
+		bool m_loading;                   ///< Indicates wether the loading is finished or not.
 
 		//Level informations
-		std::string m_levelIdentifier;                                        ///< Identifer of the level, must be a non-spaced name.
-		unsigned int m_numberOfPlans;                                         ///< Number of plans in the background.
-		float m_referencePlan;                                                ///< Number of the plan where actors evolute.
-		sf::IntRect m_levelRect;                                              ///< The dimensions of the level, in pixels.
+		std::string m_levelIdentifier;    ///< Identifer of the level, must be a non-spaced name.
+		unsigned int m_numberOfPlans;     ///< Number of plans in the background.
+		float m_referencePlan;            ///< Number of the plan where actors evolute.
+		sf::IntRect m_levelRect;          ///< The dimensions of the level, in pixels.
 };
 
 #endif//GAMESTATE_H

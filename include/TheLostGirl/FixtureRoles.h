@@ -1,6 +1,8 @@
 #ifndef FIXTUREROLES_H
 #define FIXTUREROLES_H
 
+#include <Box2D/Dynamics/b2Fixture.h>
+
 /// \file FixtureRoles.h
 
 /// Enumeration of role of some fixture (foot, head, ...).

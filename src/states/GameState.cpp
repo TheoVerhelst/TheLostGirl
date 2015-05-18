@@ -1,12 +1,19 @@
-#include <iostream>
 #include <fstream>
-
 #include <SFML/Graphics/Texture.hpp>
 #include <SFML/Graphics/View.hpp>
 #include <SFML/System/Time.hpp>
 #include <SFML/Window/Event.hpp>
+#include <Box2D/Dynamics/b2World.h>
+#include <Box2D/Dynamics/Joints/b2RevoluteJoint.h>
+#include <Box2D/Dynamics/Joints/b2PrismaticJoint.h>
+#include <Box2D/Dynamics/Joints/b2DistanceJoint.h>
+#include <Box2D/Dynamics/Joints/b2PulleyJoint.h>
+#include <Box2D/Dynamics/Joints/b2WheelJoint.h>
+#include <Box2D/Dynamics/Joints/b2WeldJoint.h>
+#include <Box2D/Dynamics/Joints/b2FrictionJoint.h>
+#include <Box2D/Dynamics/Joints/b2RopeJoint.h>
+#include <Box2D/Dynamics/Joints/b2MotorJoint.h>
 #include <entityx/entityx.h>
-#include <Box2D/Box2D.h>
 #include <dist/json/json.h>
 
 #include <TheLostGirl/State.h>
@@ -15,7 +22,6 @@
 #include <TheLostGirl/components.h>
 #include <TheLostGirl/Category.h>
 #include <TheLostGirl/StateStack.h>
-#include <TheLostGirl/Command.h>
 #include <TheLostGirl/systems.h>
 #include <TheLostGirl/ResourceManager.h>
 #include <TheLostGirl/Player.h>
@@ -64,7 +70,7 @@ void GameState::draw()
 	if(not m_loading)
 	{
 		getContext().systemManager.update<RenderSystem>(0.f);
-		//The drag and drop system draw a line on the screen, so we must put it here
+		//The drag and drop system draw a line on the screen, so we have to update it here
 		getContext().systemManager.update<DragAndDropSystem>(0.f);
 	}
 }
@@ -183,16 +189,16 @@ void GameState::saveWorld(const std::string& file)
 			b2Body* bodyA{joint->GetBodyA()};//Get the body A
 			entityx::Entity entityA{*static_cast<entityx::Entity*>(bodyA->GetUserData())};//Get the entity A from the user data
 			assert(isMember(m_entities, entityA));
-			std::string entityAName{getKey(m_entities, entityA)};//Get the name of the entity A
+			std::string entityAName{getKey<std::string>(m_entities, entityA)};//Get the name of the entity A
 			assert(isMember(entityA.component<BodyComponent>()->bodies, bodyA));//Assert that the body A is in the body component of the entity A
-			std::string partAName{getKey(entityA.component<BodyComponent>()->bodies, bodyA)};//Get the name of the part A
+			std::string partAName{getKey<std::string>(entityA.component<BodyComponent>()->bodies, bodyA)};//Get the name of the part A
 
 			b2Body* bodyB{joint->GetBodyB()};//Get the body B
 			entityx::Entity entityB{*static_cast<entityx::Entity*>(bodyB->GetUserData())};//Get the entity B from the user data
 			assert(isMember(m_entities, entityB));
-			std::string entityBName{getKey(m_entities, entityB)};//Get the name of the entity B
+			std::string entityBName{getKey<std::string>(m_entities, entityB)};//Get the name of the entity B
 			assert(isMember(entityB.component<BodyComponent>()->bodies, bodyB));//Assert that the body B is in the body component of entity B
-			std::string partBName{getKey(entityB.component<BodyComponent>()->bodies, bodyB)};//Get the name of the part B
+			std::string partBName{getKey<std::string>(entityB.component<BodyComponent>()->bodies, bodyB)};//Get the name of the part B
 			switch(joint->GetType())
 			{
 				case e_revoluteJoint:

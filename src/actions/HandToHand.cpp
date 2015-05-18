@@ -1,7 +1,7 @@
 #include <algorithm>
 
 #include <entityx/Entity.h>
-#include <Box2D/Box2D.h>
+#include <Box2D/Dynamics/b2World.h>
 
 #include <TheLostGirl/components.h>
 #include <TheLostGirl/FixtureRoles.h>

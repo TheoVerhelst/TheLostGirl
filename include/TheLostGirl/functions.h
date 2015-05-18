@@ -157,29 +157,29 @@ inline void* add(void* ptr, T value)
 	return reinterpret_cast<void*>(reinterpret_cast<T>(ptr) | value);
 }
 
-/// Check if the given \a value is registred in \a map.
-/// \param map Map to search in.
+/// Check if the given \a value is registred in map or hash map.
+/// \param container Map or hash map to search in.
 /// \param value Value to search for.
 /// \return True if the given value is registred in map, false otherwise.
-template <typename Key, typename Value>
-bool isMember(const std::map<Key, Value>& map, const Value& value)
+template <typename Container, typename Value>
+bool isMember(const Container& container, const Value& value)
 {
-	auto it = map.begin();
-	for(;it != map.end() and it->second != value; ++it);
-	return it != map.end();
+	auto it = container.cbegin();
+	for(;it != container.cend() and it->second != value; ++it);
+	return it != container.cend();
 }
 
-/// Get the key of the given \a value in \a map.
+/// Get the key of the given \a value in a map or hash map.
 /// \note If the given value is not registred in the map, the behavior is undefined.
-/// \param map Map to search in.
+/// \param container Map or hash map to search in.
 /// \param value Value to search for.
 /// \return The key of \a value if found in the map, undefied behavior otherwise.
 /// \see isMember
-template <typename Key, typename Value>
-Key getKey(const std::map<Key, Value>& map, const Value& value)
+template <typename Key, typename Container, typename Value>
+Key getKey(const Container& container, const Value& value)
 {
-	auto it = map.begin();
-	for(;it != map.end() and it->second != value; ++it);
+	auto it = container.cbegin();
+	for(;it != container.cend() and it->second != value; ++it);
 	return it->first;
 }
 
