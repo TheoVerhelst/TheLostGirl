@@ -85,9 +85,15 @@ HandToHandQueryCallback::HandToHandQueryCallback(entityx::Entity attacker):
 bool HandToHandQueryCallback::ReportFixture(b2Fixture* fixture)
 {
 	entityx::Entity entity{*static_cast<entityx::Entity*>(fixture->GetBody()->GetUserData())};
-	//Return false (and so stop) only if this is a arrow and if this one is sticked.
+	//The entity is added to the list only if:
+	// -this is not the attacker itself
+	// -this is an actor
+	// -attacker and current entity are not both aggressive
 	if(entity != m_attacker and entity.has_component<CategoryComponent>()
-			and entity.component<CategoryComponent>()->category & Category::Actor)
+			and entity.component<CategoryComponent>()->category & Category::Actor
+			and not (m_attacker.has_component<CategoryComponent>()
+				and m_attacker.component<CategoryComponent>()->category & Category::Aggressive
+				and entity.component<CategoryComponent>()->category & Category::Aggressive))
 		foundEntities.insert(entity);
 	return true;
 }

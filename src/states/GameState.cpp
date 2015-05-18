@@ -32,7 +32,6 @@
 
 //TODO Faire un système multi texture pour une même partie d'entité (soit chunker une grande image, soit faire plusieurs images).
 //TODO Faire un système d'entité générique (pour les mobs, les items, ...).
-//TODO Changer scaleRes, retirer le template explicite et remplacer par static_cast<type>(scaleres(...))
 //TODO Checker les headers pour ne pas avoir d'include redondants.
 
 GameState::GameState(StateStack& stack, std::string file) :
