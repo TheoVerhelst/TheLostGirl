@@ -30,6 +30,11 @@ class ScrollingSystem : public entityx::System<ScrollingSystem>
 		/// \param referencePlan Number of the plan where actors evolute.
 		void setLevelData(const sf::IntRect& levelRect, float referencePlan);
 
+		/// Search the player in all entities, in order to avoid unnecessary search at each update.
+		/// This function must be called every time the player's entity change, such as at the beginning of a level.
+		/// \param entityManager The global entity manager.
+		void searchPlayer(entityx::EntityManager& entityManager);
+
 		/// System's update function.
 		/// \param es Entity manager.
 		/// \param events Event manager.
@@ -37,6 +42,7 @@ class ScrollingSystem : public entityx::System<ScrollingSystem>
 		void update(entityx::EntityManager &es, entityx::EventManager &events, double dt) override;
 
 	private:
+		entityx::Entity m_player;  ///< The player entity, it is fulfilled with searchPlayer().
 		sf::RenderWindow& m_window;///< SFML's window of wich set the view.
 		float& m_scale;            ///< Current scale of graphics and  images.
 		sf::IntRect m_levelRect;   ///< Rectangle defining the level bounds.

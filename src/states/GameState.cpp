@@ -1013,6 +1013,7 @@ void GameState::initWorld(const std::string& file)
 			skyAnimationsComp->animationsManagers["main"].play("day/night cycle");
 		}
 
+		getContext().systemManager.system<ScrollingSystem>()->searchPlayer(getContext().entityManager);
 		getContext().player.handleInitialInputState();
 		getContext().world.SetContactListener(&m_contactListener);
 		requestStackPop();
