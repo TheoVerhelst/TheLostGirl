@@ -170,8 +170,8 @@ void EmptyLevelState::initWorld(const std::string& file)
 					sf::Sprite replaceSpr(texManager.get(textureIdentifier));
 					replaceSpr.setPosition(replaceTransform.x, replaceTransform.y);
 					replaceSpr.setRotation(replaceTransform.angle);
-					std::map<std::string, sf::Sprite> sprites{{"main", replaceSpr}};
-					std::map<std::string, Transform> transforms{{"main", replaceTransform}};
+					std::unordered_map<std::string, sf::Sprite> sprites{{"main", replaceSpr}};
+					std::unordered_map<std::string, Transform> transforms{{"main", replaceTransform}};
 					SpriteComponent::Handle sprComp{m_sceneEntities[replaceIdentifier].assign<SpriteComponent>()};
 					sprComp->sprites = sprites;
 					TransformComponent::Handle trsfComp{m_sceneEntities[replaceIdentifier].assign<TransformComponent>()};
@@ -210,8 +210,8 @@ void EmptyLevelState::initWorld(const std::string& file)
 				//Assign the sprite to the entity
 				sf::Sprite chunkSpr(texManager.get(textureIdentifier));
 				chunkSpr.setPosition(float(j*chunkSize), 0);
-				std::map<std::string, sf::Sprite> sprites{{"main", chunkSpr}};
-				std::map<std::string, Transform> transforms{{"main", {float(j*chunkSize), 0, float(i), 0}}};
+				std::unordered_map<std::string, sf::Sprite> sprites{{"main", chunkSpr}};
+				std::unordered_map<std::string, Transform> transforms{{"main", {float(j*chunkSize), 0, float(i), 0}}};
 				SpriteComponent::Handle sprComp{m_sceneEntities[textureIdentifier].assign<SpriteComponent>()};
 				sprComp->sprites = sprites;
 				TransformComponent::Handle trsfComp{m_sceneEntities[textureIdentifier].assign<TransformComponent>()};
@@ -246,8 +246,8 @@ void EmptyLevelState::initWorld(const std::string& file)
 		//Create an entity
 		m_sceneEntities.emplace("sky", getContext().entityManager.create());
 		//Assign the sprites to the entity, and set its z-ordinates to positive infinity
-		std::map<std::string, sf::Sprite> skySprites{{"day", daySpr}, {"night", nightSpr}};
-		std::map<std::string, Transform> skyTransforms{{"day", {position.x, position.y, std::numeric_limits<float>::infinity(), 0}},
+		std::unordered_map<std::string, sf::Sprite> skySprites{{"day", daySpr}, {"night", nightSpr}};
+		std::unordered_map<std::string, Transform> skyTransforms{{"day", {position.x, position.y, std::numeric_limits<float>::infinity(), 0}},
 														{"night", {position.x, position.y, std::numeric_limits<float>::infinity(), 0}}};
 		SpriteComponent::Handle sprComp{m_sceneEntities["sky"].assign<SpriteComponent>()};
 		sprComp->sprites = skySprites;

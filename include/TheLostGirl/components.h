@@ -1,15 +1,11 @@
 #ifndef COMPONENTS_H
 #define COMPONENTS_H
 
-#include <map>
-#include <functional>
 #include <string>
-#include <fstream>
 
 #include <SFML/Graphics/Sprite.hpp>
 #include <SFML/System/Clock.hpp>
 #include <entityx/Entity.h>
-#include <dist/json/json-forwards.h>
 
 #include <TheLostGirl/Category.h>
 #include <TheLostGirl/AnimationsManager.h>
@@ -25,7 +21,7 @@ class AnimationsManager;
 /// The BodyComponent component store a pointer to a b2Body and is used to simulate physics in the game world.
 struct BodyComponent : public entityx::Component<BodyComponent>
 {
-	std::map<std::string, b2Body*> bodies;///< Pointers to the physic body.
+	std::unordered_map<std::string, b2Body*> bodies;///< Pointers to the physic body.
 };
 
 /// Sprite component.
@@ -33,7 +29,7 @@ struct BodyComponent : public entityx::Component<BodyComponent>
 /// For more information about sprites, see the SFML doc.
 struct SpriteComponent : public entityx::Component<SpriteComponent>
 {
-	std::map<std::string, sf::Sprite> sprites;///< Sprites to draw.
+	std::unordered_map<std::string, sf::Sprite> sprites;///< Sprites to draw.
 };
 
 /// Data about the world position of an entity.
@@ -55,7 +51,7 @@ struct Transform
 /// and a transform must exists in the transforms map for every body/sprite of the entity.
 struct TransformComponent : public entityx::Component<TransformComponent>
 {
-	std::map<std::string, Transform> transforms;///< Indicates the target position in the world, the layer the sprite should be drawn and the angle.
+	std::unordered_map<std::string, Transform> transforms;///< Indicates the target position in the world, the layer the sprite should be drawn and the angle.
 };
 
 /// AnimationsManager component.
@@ -63,7 +59,7 @@ struct TransformComponent : public entityx::Component<TransformComponent>
 template<typename A>
 struct AnimationsComponent : public entityx::Component<AnimationsComponent<A>>
 {
-	std::map<const std::string, AnimationsManager<A>> animationsManagers;///< AnimationsManager managers.
+	std::unordered_map<std::string, AnimationsManager<A>> animationsManagers;///< AnimationsManager managers.
 };
 
 /// Enumeration of every possible direction.

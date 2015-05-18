@@ -129,7 +129,7 @@ void DebugDraw::drawDebugAth()
 				if(entity.has_component<BodyComponent>() and entity.has_component<WalkComponent>())
 				{
 					//Find the main body
-					std::map<std::string, b2Body*>& bodies(entity.component<BodyComponent>()->bodies);
+					auto& bodies(entity.component<BodyComponent>()->bodies);
 					//If there is a main body
 					if(bodies.find("main") != bodies.end())
 						position = bodies["main"]->GetPosition();

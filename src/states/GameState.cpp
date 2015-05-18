@@ -189,16 +189,16 @@ void GameState::saveWorld(const std::string& file)
 			b2Body* bodyA{joint->GetBodyA()};//Get the body A
 			entityx::Entity entityA{*static_cast<entityx::Entity*>(bodyA->GetUserData())};//Get the entity A from the user data
 			assert(isMember(m_entities, entityA));
-			std::string entityAName{getKey<std::string>(m_entities, entityA)};//Get the name of the entity A
+			std::string entityAName{getKey(m_entities, entityA)};//Get the name of the entity A
 			assert(isMember(entityA.component<BodyComponent>()->bodies, bodyA));//Assert that the body A is in the body component of the entity A
-			std::string partAName{getKey<std::string>(entityA.component<BodyComponent>()->bodies, bodyA)};//Get the name of the part A
+			std::string partAName{getKey(entityA.component<BodyComponent>()->bodies, bodyA)};//Get the name of the part A
 
 			b2Body* bodyB{joint->GetBodyB()};//Get the body B
 			entityx::Entity entityB{*static_cast<entityx::Entity*>(bodyB->GetUserData())};//Get the entity B from the user data
 			assert(isMember(m_entities, entityB));
-			std::string entityBName{getKey<std::string>(m_entities, entityB)};//Get the name of the entity B
+			std::string entityBName{getKey(m_entities, entityB)};//Get the name of the entity B
 			assert(isMember(entityB.component<BodyComponent>()->bodies, bodyB));//Assert that the body B is in the body component of entity B
-			std::string partBName{getKey<std::string>(entityB.component<BodyComponent>()->bodies, bodyB)};//Get the name of the part B
+			std::string partBName{getKey(entityB.component<BodyComponent>()->bodies, bodyB)};//Get the name of the part B
 			switch(joint->GetType())
 			{
 				case e_revoluteJoint:
@@ -588,8 +588,8 @@ void GameState::initWorld(const std::string& file)
 						sf::Sprite replaceSpr(texManager.get(textureIdentifier));
 						replaceSpr.setPosition(replaceTransform.x, replaceTransform.y);
 						replaceSpr.setRotation(replaceTransform.angle);
-						std::map<std::string, sf::Sprite> sprites{{"main", replaceSpr}};
-						std::map<std::string, Transform> transforms{{"main", replaceTransform}};
+						std::unordered_map<std::string, sf::Sprite> sprites{{"main", replaceSpr}};
+						std::unordered_map<std::string, Transform> transforms{{"main", replaceTransform}};
 						SpriteComponent::Handle sprComp{m_sceneEntities[replaceIdentifier].assign<SpriteComponent>()};
 						sprComp->sprites = sprites;
 						TransformComponent::Handle trsfComp{m_sceneEntities[replaceIdentifier].assign<TransformComponent>()};
@@ -630,8 +630,8 @@ void GameState::initWorld(const std::string& file)
 					//Assign the sprite to the entity
 					sf::Sprite chunkSpr(texManager.get(textureIdentifier));
 					chunkSpr.setPosition(float(j*chunkSize), 0);
-					std::map<std::string, sf::Sprite> sprites{{"main", chunkSpr}};
-					std::map<std::string, Transform> transforms{{"main", {static_cast<float>(j*chunkSize), 0, static_cast<float>(i), 0}}};
+					std::unordered_map<std::string, sf::Sprite> sprites{{"main", chunkSpr}};
+					std::unordered_map<std::string, Transform> transforms{{"main", {static_cast<float>(j*chunkSize), 0, static_cast<float>(i), 0}}};
 					SpriteComponent::Handle sprComp{m_sceneEntities[textureIdentifier].assign<SpriteComponent>()};
 					sprComp->sprites = sprites;
 					TransformComponent::Handle trsfComp{m_sceneEntities[textureIdentifier].assign<TransformComponent>()};

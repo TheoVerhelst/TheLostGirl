@@ -163,8 +163,8 @@ void PhysicsSystem::update(entityx::EntityManager& entityManager, entityx::Event
 	//Update the transformations according to the one of the b2Body.
 	for(auto entity : entityManager.entities_with_components(bodyComponent, transformComponent))
 	{
-		std::map<std::string, Transform>& transforms(transformComponent->transforms);
-		std::map<std::string, b2Body*>& bodies(bodyComponent->bodies);
+		auto& transforms(transformComponent->transforms);
+		auto& bodies(bodyComponent->bodies);
 		for(auto& bodyPair : bodies)
 		{
 			//If the name of the body exists in the transforms maps

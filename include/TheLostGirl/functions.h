@@ -165,21 +165,21 @@ template <typename Container, typename Value>
 bool isMember(const Container& container, const Value& value)
 {
 	auto it = container.cbegin();
-	for(;it != container.cend() and it->second != value; ++it);
+	while(it != container.cend() and it->second != value) ++it;
 	return it != container.cend();
 }
 
-/// Get the key of the given \a value in a map or hash map.
+/// Get the key of the given \a value in a hash map.
 /// \note If the given value is not registred in the map, the behavior is undefined.
-/// \param container Map or hash map to search in.
+/// \param map Hash map to search in.
 /// \param value Value to search for.
 /// \return The key of \a value if found in the map, undefied behavior otherwise.
 /// \see isMember
-template <typename Key, typename Container, typename Value>
-Key getKey(const Container& container, const Value& value)
+template <typename Key, typename Value>
+Key getKey(std::unordered_map<Key, Value> map, Value& value)
 {
-	auto it = container.cbegin();
-	for(;it != container.cend() and it->second != value; ++it);
+	auto it = map.cbegin();
+	while(it != map.cend() and it->second != value) ++it;
 	return it->first;
 }
 

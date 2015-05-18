@@ -198,7 +198,7 @@ Json::Value serialize(entityx::ComponentHandle<InventoryComponent> component, co
 		//If the item is in the entity list
 		if(isMember(entitiesMap, item) and item.valid())
 			//Add it to the value
-			ret["items"].append(getKey<std::string>(entitiesMap, item));
+			ret["items"].append(getKey(entitiesMap, item));
 	return ret;
 }
 
@@ -301,14 +301,14 @@ Json::Value serialize(entityx::ComponentHandle<BowComponent> component, const st
 	ret["angle"] = component->angle;
 	ret["quiver capacity"] = component->quiverCapacity;
 	if(isMember(entitiesMap, component->notchedArrow) and component->notchedArrow.valid())
-		ret["notched arrow"] = getKey<std::string>(entitiesMap, component->notchedArrow);
+		ret["notched arrow"] = getKey(entitiesMap, component->notchedArrow);
 	ret["arrows"] = Json::Value(Json::arrayValue);
 	//For each arrow of the quiver
 	for(entityx::Entity arrow : component->arrows)
 		//If the arrow is in the entity list
 		if(isMember(entitiesMap, arrow) and arrow.valid())
 			//Add it to the value
-			ret["arrows"].append(getKey<std::string>(entitiesMap, arrow));
+			ret["arrows"].append(getKey(entitiesMap, arrow));
 	return ret;
 }
 

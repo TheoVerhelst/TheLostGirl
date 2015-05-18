@@ -28,7 +28,7 @@ void AnimationsSystem::update(entityx::EntityManager& entityManager, entityx::Ev
 															directionComponent,
 															fallComponent))
 	{
-		std::map<std::string, b2Body*>& bodies(bodyComponent->bodies);
+		auto& bodies(bodyComponent->bodies);
 		for(auto& animationsPair : animationsComponent->animationsManagers)
 		{
 			AnimationsManager<SpriteSheetAnimation>& animations(animationsPair.second);
