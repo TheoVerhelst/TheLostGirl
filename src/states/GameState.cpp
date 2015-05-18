@@ -89,7 +89,7 @@ bool GameState::handleEvent(const sf::Event& event)
 
 	getContext().player.handleEvent(event);
 	//Update the drag and drop state
-	bool isDragAndDropActive{getContext().player.isActived(Player::Action::Bend)};
+	const bool isDragAndDropActive{getContext().player.isActived(Player::Action::Bend)};
 	getContext().systemManager.system<DragAndDropSystem>()->setDragAndDropActivation(isDragAndDropActive);
 	return false;
 }

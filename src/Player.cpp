@@ -1,5 +1,6 @@
 #include <iostream>
 
+#include <SFML/Graphics/RenderWindow.hpp>
 #include <entityx/entityx.h>
 
 #include <TheLostGirl/Command.h>
@@ -210,10 +211,8 @@ std::vector<sf::Keyboard::Key> Player::getAssignedKeys(Action action) const
 {
 	std::vector<sf::Keyboard::Key> ret;
 	for(auto pair : m_keyBinding)
-	{
 		if(pair.second == action)
 			ret.push_back(pair.first);
-	}
 	return ret;
 }
 
@@ -221,10 +220,8 @@ std::vector<sf::Mouse::Button> Player::getAssignedMouseButtons(Action action) co
 {
 	std::vector<sf::Mouse::Button> ret;
 	for(auto pair : m_mouseButtonBinding)
-	{
 		if(pair.second == action)
 			ret.push_back(pair.first);
-	}
 	return ret;
 }
 
@@ -237,10 +234,8 @@ std::vector<unsigned int> Player::getAssignedJoystickButtons(Action action) cons
 {
 	std::vector<unsigned int> ret;
 	for(auto pair : m_joystickButtonBinding)
-	{
 		if(pair.second == action)
 			ret.push_back(pair.first);
-	}
 	return ret;
 }
 
@@ -248,10 +243,8 @@ std::vector<sf::Joystick::Axis> Player::getAssignedJoystickAxis(Action action) c
 {
 	std::vector<sf::Joystick::Axis> ret;
 	for(auto pair : m_joystickAxisBinding)
-	{
 		if(pair.second == action)
 			ret.push_back(pair.first);
-	}
 	return ret;
 }
 
@@ -262,31 +255,26 @@ bool Player::isActived(Action action) const
 	std::vector<unsigned int> joystickButtonsBindings{getAssignedJoystickButtons(action)};
 	std::vector<sf::Joystick::Axis> joystickAxisBindings{getAssignedJoystickAxis(action)};
 	for(auto& key : keyBindings)
-	{
 		if(sf::Keyboard::isKeyPressed(key))
 			return true;
-	}
-	for(auto& button : mouseButtonsBindings)
-	{
-		if(sf::Mouse::isButtonPressed(button))
-			return true;
-	}
+
+	const sf::RenderWindow& window(m_stateStack.getContext().window);
+	sf::IntRect windowRect({0, 0}, sf::Vector2i(window.getSize()));
+	if(windowRect.contains(sf::Mouse::getPosition(window)))
+		for(auto& button : mouseButtonsBindings)
+			if(sf::Mouse::isButtonPressed(button))
+				return true;
+
 	for(auto& button : joystickButtonsBindings)
-	{
 		for(unsigned int i{0}; i < sf::Joystick::Count; ++i)
-		{
 			if(sf::Joystick::isButtonPressed(i, button))
 				return true;
-		}
-	}
+
 	for(auto& axis : joystickAxisBindings)
-	{
 		for(unsigned int i{0}; i < sf::Joystick::Count; ++i)
-		{
 			if(std::fabs(sf::Joystick::getAxisPosition(i, axis)) < 1.f)
 				return true;
-		}
-	}
+
 	return false;
 }
 

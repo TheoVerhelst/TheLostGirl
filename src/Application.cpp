@@ -26,7 +26,7 @@ Application::Application(bool debugMode):
 	m_player(m_stateStack),
 	m_debugDraw(m_stateStack.getContext()),
 	m_FPSTimer(),
-	m_FPSRefreshRate(sf::milliseconds(500))
+	m_FPSRefreshRate(sf::milliseconds(50))
 {
 	std::string file("settings.json");
 	Json::Value settings;//Will contains the root value after parsing.
