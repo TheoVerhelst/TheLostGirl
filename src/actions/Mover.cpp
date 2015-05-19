@@ -3,10 +3,12 @@
 #include <Box2D/Dynamics/Joints/b2PrismaticJoint.h>
 #include <Box2D/Dynamics/b2Body.h>
 #include <Box2D/Dynamics/b2World.h>
+#include <Box2D/Dynamics/b2Fixture.h>
 
 #include <TheLostGirl/components.h>
 #include <TheLostGirl/functions.h>
 #include <TheLostGirl/JointRoles.h>
+#include <TheLostGirl/FixtureRoles.h>
 
 #include <TheLostGirl/actions/Mover.h>
 
@@ -122,17 +124,25 @@ void Mover::operator()(entityx::Entity entity, double) const
 								jointDef.maxMotorForce = joint->GetMaxMotorForce();
 								jointDef.motorSpeed = joint->GetMotorSpeed();
 								jointDef.userData = joint->GetUserData();
+								//Get the AABB of the arrow, to compute where place anchor of the joint
+								b2AABB arrowBox;
+								b2Transform identity;
+								identity.SetIdentity();
+								for(b2Fixture* fixture{arrowBody->GetFixtureList()}; fixture; fixture = fixture->GetNext())
+									if(fixtureHasRole(fixture, FixtureRole::Main))
+										fixture->GetShape()->ComputeAABB(&arrowBox, identity, 0);
+								b2Vec2 arrowSize{arrowBox.upperBound - arrowBox.lowerBound};
 								if(directionComponent->direction == Direction::Left)
 								{
 									jointDef.referenceAngle = b2_pi;
-									jointDef.localAnchorA = {0.183333f, 0.41666667f};
-									jointDef.localAnchorB = {0.4f-0.025f, 0.05f};
+									jointDef.localAnchorA = {-0.1f, 0.41f};
+									jointDef.localAnchorB = {arrowSize.x, arrowSize.y*0.5f};
 								}
 								else if(directionComponent->direction == Direction::Right)
 								{
 									jointDef.referenceAngle = 0.f;
-									jointDef.localAnchorA = {0.625f, 0.41666667f};
-									jointDef.localAnchorB = {0.025f, 0.05f};
+									jointDef.localAnchorA = {0.625f, 0.41f};
+									jointDef.localAnchorB = {0.f, arrowSize.y*0.5f};
 								}
 
 								b2World* world{jointEdge->joint->GetBodyA()->GetWorld()};

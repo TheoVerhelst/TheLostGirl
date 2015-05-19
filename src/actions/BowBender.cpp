@@ -2,10 +2,12 @@
 #include <Box2D/Dynamics/b2Body.h>
 #include <Box2D/Dynamics/b2World.h>
 #include <Box2D/Dynamics/Joints/b2PrismaticJoint.h>
+#include <Box2D/Dynamics/b2Fixture.h>
 
 #include <TheLostGirl/components.h>
 #include <TheLostGirl/functions.h>
 #include <TheLostGirl/JointRoles.h>
+#include <TheLostGirl/FixtureRoles.h>
 
 #include <TheLostGirl/actions/BowBender.h>
 
@@ -83,25 +85,33 @@ void BowBender::operator()(entityx::Entity entity, double) const
 					b2PrismaticJointDef jointDef;
 					jointDef.bodyA = bowBody;
 					jointDef.bodyB = arrowBody;
+					//Get the AABB of the arrow, to compute where place anchor of the joint
+					b2AABB arrowBox;
+					b2Transform identity;
+					identity.SetIdentity();
+					for(b2Fixture* fixture{arrowBody->GetFixtureList()}; fixture; fixture = fixture->GetNext())
+						if(fixtureHasRole(fixture, FixtureRole::Main))
+							fixture->GetShape()->ComputeAABB(&arrowBox, identity, 0);
+					b2Vec2 arrowSize{arrowBox.upperBound - arrowBox.lowerBound};
 					if(directionComponent->direction == Direction::Left)
 					{
 						jointDef.referenceAngle = b2_pi;
-						jointDef.localAnchorA = {0.183333f, 0.41666667f};
-						jointDef.localAnchorB = {0.4f-0.025f, 0.05f};
+						jointDef.localAnchorA = {-0.1f, 0.41f};
+						jointDef.localAnchorB = {arrowSize.x, arrowSize.y*0.5f};
 					}
 					else if(directionComponent->direction == Direction::Right)
 					{
 						jointDef.referenceAngle = 0.f;
-						jointDef.localAnchorA = {0.625f, 0.41666667f};
-						jointDef.localAnchorB = {0.025f, 0.05f};
+						jointDef.localAnchorA = {0.625f, 0.41f};
+						jointDef.localAnchorB = {0.f, arrowSize.y*0.5f};
 					}
 					jointDef.localAxisA = {1.f, 0.f};
 					jointDef.enableLimit = true;
-					jointDef.lowerTranslation = -0.30833333f;
+					jointDef.lowerTranslation = -0.3333333f;
 					jointDef.upperTranslation = 0.f;
 					jointDef.enableMotor = true;
 					jointDef.maxMotorForce = 10.f;
-					jointDef.userData = add<long unsigned int>(jointDef.userData, static_cast<long unsigned int>(JointRole::BendingPower));
+					jointDef.userData = add(jointDef.userData, static_cast<long unsigned int>(JointRole::BendingPower));
 					b2World* world{bowBody->GetWorld()};
 					world->CreateJoint(&jointDef);
 					notchedArrow.component<ArrowComponent>()->state = ArrowComponent::Notched;

@@ -717,7 +717,7 @@ void GameState::initWorld(const std::string& file)
 					for(Json::ArrayIndex j{0}; j < roles.size(); ++j)
 						if(roles[j].asString() == "bending angle")
 							//Add the role to the definition
-							jointDef.userData = add<long unsigned int>(jointDef.userData, static_cast<long unsigned int>(JointRole::BendingAngle));
+							jointDef.userData = add(jointDef.userData, static_cast<long unsigned int>(JointRole::BendingAngle));
 
 					getContext().world.CreateJoint(&jointDef);
 				}
@@ -876,7 +876,7 @@ void GameState::initWorld(const std::string& file)
 					for(Json::ArrayIndex j{0}; j < roles.size(); ++j)
 						if(roles[j].asString() == "bending power")
 							//Add the role to the definition
-							jointDef.userData = add<long unsigned int>(jointDef.userData, static_cast<long unsigned int>(JointRole::BendingPower));
+							jointDef.userData = add(jointDef.userData, static_cast<long unsigned int>(JointRole::BendingPower));
 
 					getContext().world.CreateJoint(&jointDef);
 				}
