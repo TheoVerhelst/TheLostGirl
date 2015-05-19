@@ -2,7 +2,7 @@
 #define FUNCTIONS_H
 
 #include <string>
-#include <unordered_map>
+#include <map>
 
 #include <SFML/Graphics/Rect.hpp>
 #include <SFML/Window/Event.hpp>
@@ -176,7 +176,7 @@ bool isMember(const Container& container, const Value& value)
 /// \return The key of \a value if found in the map, undefied behavior otherwise.
 /// \see isMember
 template <typename Key, typename Value>
-Key getKey(std::unordered_map<Key, Value> map, Value& value)
+Key getKey(std::map<Key, Value> map, Value& value)
 {
 	auto it = map.cbegin();
 	while(it != map.cend() and it->second != value) ++it;

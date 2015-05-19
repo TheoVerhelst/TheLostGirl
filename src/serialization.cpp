@@ -188,7 +188,7 @@ Json::Value serialize(entityx::ComponentHandle<TransformComponent> component)
 	return ret;
 }
 
-Json::Value serialize(entityx::ComponentHandle<InventoryComponent> component, const std::unordered_map<std::string, entityx::Entity>& entitiesMap)
+Json::Value serialize(entityx::ComponentHandle<InventoryComponent> component, const std::map<std::string, entityx::Entity>& entitiesMap)
 {
 	Json::Value ret;
 	ret["maximum weight"] = component->maxWeight;
@@ -293,7 +293,7 @@ Json::Value serialize(entityx::ComponentHandle<JumpComponent> component)
 	return ret;
 }
 
-Json::Value serialize(entityx::ComponentHandle<BowComponent> component, const std::unordered_map<std::string, entityx::Entity>& entitiesMap)
+Json::Value serialize(entityx::ComponentHandle<BowComponent> component, const std::map<std::string, entityx::Entity>& entitiesMap)
 {
 	Json::Value ret;
 	ret["power"] = component->power;
@@ -673,7 +673,7 @@ void deserialize(const Json::Value& value, entityx::ComponentHandle<TransformCom
 	}
 }
 
-void deserialize(const Json::Value& value, entityx::ComponentHandle<InventoryComponent> component, const std::unordered_map<std::string, entityx::Entity>& entitiesMap)
+void deserialize(const Json::Value& value, entityx::ComponentHandle<InventoryComponent> component, const std::map<std::string, entityx::Entity>& entitiesMap)
 {
 	component->items.clear();
 	for(Json::ArrayIndex i{0}; i < value["items"].size(); ++i)
@@ -763,7 +763,7 @@ void deserialize(const Json::Value& value, entityx::ComponentHandle<JumpComponen
 	component->mustJump = false;
 }
 
-void deserialize(const Json::Value& value, entityx::ComponentHandle<BowComponent> component, const std::unordered_map<std::string, entityx::Entity>& entitiesMap)
+void deserialize(const Json::Value& value, entityx::ComponentHandle<BowComponent> component, const std::map<std::string, entityx::Entity>& entitiesMap)
 {
 	component->power = value["power"].asFloat();
 	component->angle = value["angle"].asFloat();

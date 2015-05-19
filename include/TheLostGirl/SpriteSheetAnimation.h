@@ -1,9 +1,6 @@
 #ifndef SPRITESHEETANIMATION_H
 #define SPRITESHEETANIMATION_H
 
-#include <unordered_map>
-#include <iterator>
-
 #include <TheLostGirl/StateStack.h>
 #include <TheLostGirl/Parameters.h>
 

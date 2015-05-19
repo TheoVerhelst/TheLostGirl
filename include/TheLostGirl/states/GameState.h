@@ -70,9 +70,9 @@ class GameState : public State
 		/// Clear all entities.
 		void clear();
 
-		std::unordered_map<std::string, entityx::Entity> m_entities;                    ///< All game entities.
-		std::unordered_map<std::string, entityx::Entity> m_sceneEntities;               ///< All scene entities.
-		std::unordered_map<std::string, std::vector<SceneReplaces>> m_sceneEntitiesData;///< A map containing data about scene entities.
+		std::map<std::string, entityx::Entity> m_entities;                    ///< All game entities.
+		std::map<std::string, entityx::Entity> m_sceneEntities;               ///< All scene entities.
+		std::map<std::string, std::vector<SceneReplaces>> m_sceneEntitiesData;///< A map containing data about scene entities.
 		ContactListener m_contactListener;///< The contact listener.
 		float m_timeSpeed;                ///< The speed of the time (usually 1.f). This influes only on the TimeSystem, not on physics!
 		std::thread m_threadLoad;         ///< Thread launched when loading the level.

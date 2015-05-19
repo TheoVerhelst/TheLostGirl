@@ -616,8 +616,8 @@ void GameState::initWorld(const std::string& file)
 						sf::Sprite replaceSpr(texManager.get(textureIdentifier));
 						replaceSpr.setPosition(replaceTransform.x, replaceTransform.y);
 						replaceSpr.setRotation(replaceTransform.angle);
-						std::unordered_map<std::string, sf::Sprite> sprites{{"main", replaceSpr}};
-						std::unordered_map<std::string, Transform> transforms{{"main", replaceTransform}};
+						std::map<std::string, sf::Sprite> sprites{{"main", replaceSpr}};
+						std::map<std::string, Transform> transforms{{"main", replaceTransform}};
 						SpriteComponent::Handle sprComp{m_sceneEntities[replaceIdentifier].assign<SpriteComponent>()};
 						sprComp->sprites = sprites;
 						TransformComponent::Handle trsfComp{m_sceneEntities[replaceIdentifier].assign<TransformComponent>()};
@@ -658,8 +658,8 @@ void GameState::initWorld(const std::string& file)
 					//Assign the sprite to the entity
 					sf::Sprite chunkSpr(texManager.get(textureIdentifier));
 					chunkSpr.setPosition(float(j*chunkSize), 0);
-					std::unordered_map<std::string, sf::Sprite> sprites{{"main", chunkSpr}};
-					std::unordered_map<std::string, Transform> transforms{{"main", {static_cast<float>(j*chunkSize), 0, static_cast<float>(i), 0}}};
+					std::map<std::string, sf::Sprite> sprites{{"main", chunkSpr}};
+					std::map<std::string, Transform> transforms{{"main", {static_cast<float>(j*chunkSize), 0, static_cast<float>(i), 0}}};
 					SpriteComponent::Handle sprComp{m_sceneEntities[textureIdentifier].assign<SpriteComponent>()};
 					sprComp->sprites = sprites;
 					TransformComponent::Handle trsfComp{m_sceneEntities[textureIdentifier].assign<TransformComponent>()};
