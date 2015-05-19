@@ -15,11 +15,9 @@
 
 #include <TheLostGirl/states/HUDState.h>
 
-HUDState::HUDState(StateStack& stack):
+HUDState::HUDState(StateStack& stack, size_t entitiesNumber):
 	State(stack),
 	m_windBar{nullptr},
-	m_windStrengthSpr{},
-	m_windStrengthBarSpr{},
 	m_windIsFading{true}
 {
 	getContext().eventManager.subscribe<EntityHealthChange>(*this);
@@ -48,6 +46,11 @@ HUDState::HUDState(StateStack& stack):
 	m_windBar = tgui::Canvas::create({240.f*scale, 20.f*scale});
 	m_windBar->setPosition(bindWidth(gui, 0.99f) - bindWidth(m_windBar), bindHeight(gui, 0.95f) - bindHeight(m_windBar));
 	gui.add(m_windBar);
+
+	for(size_t i{0}; i < entitiesNumber; ++i)
+		m_loadedCanvas.insert(tgui::Canvas::create({100.f*scale, 10.f*scale}));
+	m_playerHealthCanvas = tgui::Canvas::create({240.f*scale, 20.f*scale});
+	m_playerStaminaCanvas = tgui::Canvas::create({240.f*scale, 20.f*scale});
 }
 
 HUDState::~HUDState()
@@ -207,7 +210,7 @@ void HUDState::receive(const EntityHealthChange& entityHealthChange)
 			bar.sprite.setTexture(texManager.get("health ath"));
 			bar.sprite.setTextureRect({0, 0, int(240.f*scale), int(20.f*scale)});
 			bar.borderSprite.setTexture(texManager.get("health border ath"));
-			bar.canvas = tgui::Canvas::create({240.f*scale, 20.f*scale});
+			bar.canvas = m_playerHealthCanvas;
 			bar.canvas->setPosition(bindWidth(gui, 0.01f), bindHeight(gui, 0.99f) - bindHeight(bar.canvas));
 		}
 		else
@@ -215,7 +218,13 @@ void HUDState::receive(const EntityHealthChange& entityHealthChange)
 			bar.sprite.setTexture(texManager.get("entity health bar"));
 			bar.sprite.setTextureRect({0, 0, int(100.f*scale), int(10.f*scale)});
 			bar.borderSprite.setTexture(texManager.get("entity health bar borders"));
-			bar.canvas = tgui::Canvas::create({100.f*scale, 10.f*scale});
+			if(not m_loadedCanvas.empty())
+			{
+				bar.canvas = *m_loadedCanvas.begin();
+				m_loadedCanvas.erase(m_loadedCanvas.begin());
+			}
+			else
+				bar.canvas = tgui::Canvas::create({100.f*scale, 10.f*scale});
 			bar.canvas->setPosition(bindWidth(gui, 0.5f), bindHeight(gui, 0.99f) - bindHeight(bar.canvas));
 		}
 		gui.add(bar.canvas);
@@ -255,7 +264,7 @@ void HUDState::receive(const EntityStaminaChange& entityStaminaChange)
 			bar.sprite.setTexture(texManager.get("stamina ath"));
 			bar.sprite.setTextureRect({0, 0, int(240.f*scale), int(20.f*scale)});
 			bar.borderSprite.setTexture(texManager.get("stamina border ath"));
-			bar.canvas = tgui::Canvas::create({240.f*scale, 20.f*scale});
+			bar.canvas = m_playerStaminaCanvas;
 			bar.canvas->setPosition(bindWidth(gui, 0.99f) - bindWidth(bar.canvas), bindHeight(gui, 0.99f) - bindHeight(bar.canvas));
 			gui.add(bar.canvas);
 			m_staminaBars.emplace(entity, bar);

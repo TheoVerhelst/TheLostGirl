@@ -26,7 +26,8 @@ Application::Application(bool debugMode):
 	m_player(m_stateStack),
 	m_debugDraw(m_stateStack.getContext()),
 	m_FPSTimer(),
-	m_FPSRefreshRate(sf::milliseconds(50))
+	m_FPSRefreshRate(sf::milliseconds(50)),
+	m_frameTime{sf::seconds(1.f/60.f)}
 {
 	std::string file("settings.json");
 	Json::Value settings;//Will contains the root value after parsing.
@@ -56,30 +57,29 @@ Application::Application(bool debugMode):
 		else if(settings["lang"].asString() == "EN")
 			m_parameters.lang = EN;
 
-		if(settings["resolution"].asInt() == 360)
+		switch(settings["resolution"].asInt())
 		{
-			m_parameters.scaleIndex = 0;
-			mode = {640, 360};
-		}
-		else if(settings["resolution"].asInt() == 576)
-		{
-			m_parameters.scaleIndex = 1;
-			mode = {1024, 576};
-		}
-		else if(settings["resolution"].asInt() == 720)
-		{
-			m_parameters.scaleIndex = 2;
-			mode = {1280, 720};
-		}
-		else if(settings["resolution"].asInt() == 900)
-		{
-			m_parameters.scaleIndex = 3;
-			mode = {1600, 900};
-		}
-		else if(settings["resolution"].asInt() == 1080)
-		{
-			m_parameters.scaleIndex = 4;
-			mode = {1900, 1080};
+			case 360:
+				m_parameters.scaleIndex = 0;
+				mode = {640, 360};
+				break;
+			case 576:
+				m_parameters.scaleIndex = 1;
+				mode = {1024, 576};
+				break;
+			case 720:
+				m_parameters.scaleIndex = 2;
+				mode = {1280, 720};
+				break;
+			case 900:
+				m_parameters.scaleIndex = 3;
+				mode = {1600, 900};
+				break;
+			case 1080:
+			default:
+				m_parameters.scaleIndex = 4;
+				mode = {1900, 1080};
+				break;
 		}
 		m_window.create(mode, "The Lost Girl");
 //		m_texture.create(mode.width, mode.height);
@@ -110,16 +110,25 @@ Application::~Application()
 	else if(m_parameters.lang == EN)
 		settings["lang"] = "EN";
 
-	if(m_parameters.scaleIndex == 0)
-		settings["resolution"] = 360;
-	else if(m_parameters.scaleIndex == 1)
-		settings["resolution"] = 576;
-	else if(m_parameters.scaleIndex == 2)
-		settings["resolution"] = 720;
-	else if(m_parameters.scaleIndex == 3)
-		settings["resolution"] = 900;
-	else if(m_parameters.scaleIndex == 4)
-		settings["resolution"] = 1080;
+	switch(m_parameters.scaleIndex)
+	{
+		case 0:
+			settings["resolution"] = 360;
+			break;
+		case 1:
+			settings["resolution"] = 576;
+			break;
+		case 2:
+			settings["resolution"] = 720;
+			break;
+		case 3:
+			settings["resolution"] = 900;
+			break;
+		case 4:
+		default:
+			settings["resolution"] = 1080;
+			break;
+	}
 
 	settings["window size"]["w"] = m_window.getSize().x;
 	settings["window size"]["h"] = m_window.getSize().y;
@@ -158,14 +167,20 @@ int Application::run()
 {
 	try
 	{
-		//Main loop
 		sf::Clock clock;
+		sf::Time timeSinceLastUpdate{sf::Time::Zero};
 		while(m_window.isOpen())
 		{
 			processInput();
-			update(clock.restart());
-			if(m_stateStack.isEmpty())
-				m_window.close();
+			timeSinceLastUpdate += clock.restart();
+			while(timeSinceLastUpdate > m_frameTime)
+			{
+				timeSinceLastUpdate -= m_frameTime;
+				update(m_frameTime);
+				if(m_stateStack.isEmpty())
+					m_window.close();
+				processInput();
+			}
 			render();
 		}
 	}
@@ -176,7 +191,7 @@ int Application::run()
 	}
 	catch(std::out_of_range& e)
 	{
-		std::cerr << "Out of range error (the level designer probably bad named entitie's parts): " << e.what() << "\n";
+		std::cerr << "Out of range error (the level designer probably wrongly named entitie's parts): " << e.what() << "\n";
 		return 2;
 	}
 	return 0;

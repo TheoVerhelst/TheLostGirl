@@ -37,7 +37,6 @@
 #include <TheLostGirl/states/GameState.h>
 
 //TODO Faire un système multi texture pour une même partie d'entité (soit chunker une grande image, soit faire plusieurs images).
-//TODO Faire un système d'entité générique (pour les mobs, les items, ...).
 //TODO Checker les headers pour ne pas avoir d'include redondants.
 
 GameState::GameState(StateStack& stack, std::string file) :
@@ -1046,7 +1045,7 @@ void GameState::initWorld(const std::string& file)
 		getContext().player.handleInitialInputState();
 		getContext().world.SetContactListener(&m_contactListener);
 		requestStackPop();
-		requestStackPush<HUDState>();
+		requestStackPush<HUDState>(m_entities.size());
 		m_loading = false;
 	}
 	catch(std::runtime_error& e)

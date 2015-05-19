@@ -50,7 +50,6 @@ void PhysicsSystem::update(entityx::EntityManager& entityManager, entityx::Event
 		//Update the jumpers
 		if(body and entity.has_component<JumpComponent>() and entity.component<JumpComponent>()->mustJump)
 		{
-			std::cout << "jump" << std::endl;
 			float targetVelocity{-entity.component<JumpComponent>()->jumpStrength/m_pixelByMeter};
 			body->ApplyLinearImpulse({0.f, targetVelocity*body->GetMass()}, body->GetWorldCenter(), true);
 			entity.component<JumpComponent>()->mustJump = false;

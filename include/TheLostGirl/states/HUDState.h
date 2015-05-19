@@ -2,6 +2,7 @@
 #define HUDSTATE_H
 
 #include <unordered_map>
+#include <unordered_set>
 
 #include <TGUI/Canvas.hpp>
 #include <entityx/Event.h>
@@ -25,8 +26,11 @@ class HUDState : public State, public entityx::Receiver<HUDState>
 {
 	public:
         /// Constructor.
+        /// The role of the entitiesNumber parameter is to load some tgui::Canvas
+        /// in order to do not load them on the fly during the game, when entities health change.
         /// \param stack StateStack wherein the State is added.
-		HUDState(StateStack& stack);
+        /// \param entitiesNumber Number of entities that will be in the level.
+		HUDState(StateStack& stack, size_t entitiesNumber);
 
 		/// Destructor.
 		~HUDState();
@@ -74,6 +78,9 @@ class HUDState : public State, public entityx::Receiver<HUDState>
 
 		std::unordered_map<entityx::Entity, Bar, HashEntity> m_healthBars; ///< Store all entities health bars.
 		std::unordered_map<entityx::Entity, Bar, HashEntity> m_staminaBars;///< Store all entities stamina bars.
+		std::unordered_set<tgui::Canvas::Ptr> m_loadedCanvas;              ///< Store some canvas that will be assigned to an entity later.
+		tgui::Canvas::Ptr m_playerHealthCanvas;                            ///< A preloaded canvas for the player health bar.
+		tgui::Canvas::Ptr m_playerStaminaCanvas;                           ///< A preloaded canvas for the player stamina bar.
 
 		//Player wind HUD
 		tgui::Canvas::Ptr m_windBar;       ///< The wind arrow.

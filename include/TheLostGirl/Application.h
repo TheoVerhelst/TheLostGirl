@@ -1,17 +1,10 @@
 #ifndef APPLICATION_H
 #define APPLICATION_H
 
-#include <iostream>
-#include <ctime>
-#include <memory>
-#include <cstdlib>
-#include <queue>
-
 //Unable to forward-declare those types
 #include <TGUI/Gui.hpp>
 #include <entityx/entityx.h>
 #include <Box2D/Dynamics/b2World.h>
-#include <Box2D/Common/b2Math.h>
 
 #include <TheLostGirl/ResourceManager.h>
 #include <TheLostGirl/State.h>
@@ -79,6 +72,7 @@ class Application
 		DebugDraw m_debugDraw;                 ///< The debugging drawer.
 		sf::Time m_FPSTimer;                   ///< Count time since last FPS ath update.
 		sf::Time m_FPSRefreshRate;             ///< Refresh rate of the FPS ath.
+		sf::Time m_frameTime;                  ///< The target frame time (1/FPS).
 
 };
 

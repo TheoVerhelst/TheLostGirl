@@ -48,10 +48,7 @@ EmptyLevelState::~EmptyLevelState()
 	if(m_threadLoad.joinable())
 		m_threadLoad.join();
 	for(auto& sceneEntity : m_sceneEntities)
-	{
-		std::cout << sceneEntity.first << " DESTROYED." << std::endl;
 		sceneEntity.second.destroy();
-	}
 }
 
 void EmptyLevelState::draw()
