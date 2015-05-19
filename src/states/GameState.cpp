@@ -417,41 +417,61 @@ void GameState::initWorld(const std::string& file)
 		Json::Reader reader;
 		std::ifstream saveFile(file, std::ifstream::binary);
 		std::ifstream modelSaveFile("resources/levels/model.json", std::ifstream::binary);
-		if(!reader.parse(saveFile, root))//report to the user the failure and their locations in the document.
-			throw std::runtime_error("\"" + file + "\" : " + reader.getFormattedErrorMessages());
-		if(!reader.parse(modelSaveFile, model))
-			throw std::runtime_error("\"resources/levels/model.json\": " + reader.getFormattedErrorMessages());
+		if(not reader.parse(saveFile, root))//report to the user the failure and their locations in the document.
+			throw std::runtime_error("save file \"" + file + "\" : " + reader.getFormattedErrorMessages());
+		if(not reader.parse(modelSaveFile, model))
+			throw std::runtime_error("model file \"resources/levels/model.json\": " + reader.getFormattedErrorMessages());
 
 		//SuperMegaMagic parsing of the save file from the model file
 		parse(root, model, "root", "root");
 
-		{
-			const Json::Value time{root["time"]};
-			getContext().systemManager.system<TimeSystem>()->setTotalTime(sf::seconds(time["date"].asFloat()));
-			m_timeSpeed = time["speed"].asFloat();
-			getContext().systemManager.system<AnimationsSystem>()->setTimeSpeed(m_timeSpeed);
-		}
-		const Json::Value level{root["level"]};
+		const Json::Value time{root["time"]};
+		getContext().systemManager.system<TimeSystem>()->setTotalTime(sf::seconds(time["date"].asFloat()));
+		m_timeSpeed = time["speed"].asFloat();
+		getContext().systemManager.system<AnimationsSystem>()->setTimeSpeed(m_timeSpeed);
 
+		const Json::Value level{root["level"]};
 		//number of plans
 		//must load it now in order to know how much plans can be defined
 		m_numberOfPlans = level["number of plans"].asUInt();
-		std::string identifier{level["identifier"].asString()};
+		const std::string identifier{level["identifier"].asString()};
 		if(hasWhiteSpace(identifier))
 			throw std::runtime_error("\"level.identifier\" value contains whitespaces.");
 		m_levelIdentifier = identifier;
 		m_referencePlan = level["reference plan"].asFloat();
 
 		//box
-		{
-			const Json::Value levelBox{level["box"]};
-			m_levelRect.width = levelBox["w"].asInt();
-			m_levelRect.height = levelBox["h"].asInt();
-			m_levelRect.top = levelBox["x"].asInt();
-			m_levelRect.left = levelBox["y"].asInt();
-		}
+		const Json::Value levelBox{level["box"]};
+		m_levelRect.width = levelBox["w"].asInt();
+		m_levelRect.height = levelBox["h"].asInt();
+		m_levelRect.top = levelBox["x"].asInt();
+		m_levelRect.left = levelBox["y"].asInt();
 
 		getContext().systemManager.system<ScrollingSystem>()->setLevelData(m_levelRect, m_referencePlan);
+		Json::Value genericEntities;
+		if(root.isMember("include"))
+		{
+			const Json::Value includes{root["include"]};
+			for(Json::ArrayIndex i{0}; i < includes.size(); ++i)
+			{
+				//Parse the level data
+				Json::Value includeRoot;//Will contains the root value after parsing.
+				Json::Value includeModel;
+				std::ifstream includeFile("resources/levels/" + includes[i].asString(), std::ifstream::binary);
+				std::ifstream includeModelFile("resources/levels/includeModel.json", std::ifstream::binary);
+				if(not reader.parse(includeFile, includeRoot))//report to the user the failure and their locations in the document.
+					throw std::runtime_error("included file \"resources/levels/" + includes[i].asString() + "\" : " + reader.getFormattedErrorMessages());
+				if(not reader.parse(includeModelFile, includeModel))
+					throw std::runtime_error("included model file \"resources/levels/includeModel.json\": " + reader.getFormattedErrorMessages());
+
+				//Parsing of the included file from the model file
+				parse(includeRoot, includeModel, "root", "root");
+				//Add generic entities to others
+				Json::Value currentGenericEntities{includeRoot["generic entities"]};
+				for(const std::string& genericEntityName : currentGenericEntities.getMemberNames())
+					genericEntities[genericEntityName] = currentGenericEntities[genericEntityName];
+			}
+		}
 
 		//entities
 		//Load entities before everything else allow to call the ScrollingSystem update after each sprite creation,
@@ -462,12 +482,21 @@ void GameState::initWorld(const std::string& file)
 			const Json::Value entities{root["entities"]};
 			//First add all entities without add components, that's for component that need
 			//that m_entities is complete to be assigned (such as InventoryComponent).
-			for(std::string& entityName : entities.getMemberNames())
+			for(const std::string& entityName : entities.getMemberNames())
 				m_entities.emplace(entityName, getContext().entityManager.create());
 
-			for(std::string& entityName : entities.getMemberNames())
+			for(const std::string& entityName : entities.getMemberNames())
 			{
-				const Json::Value entity{entities[entityName]};
+				Json::Value entity{entities[entityName]};
+				//If the entity is derivated from a generic entities, add components of the base to the entity
+				if(entity.isMember("base"))
+				{
+					const Json::Value base{genericEntities[entity["base"].asString()]};
+					for(const std::string& componentName : base.getMemberNames())
+						entity[componentName] = base[componentName];
+				}
+				//Assign to root the new entity
+				root["entities"][entityName] = entity;
 				if(entity.isMember("name"))
 					getContext().eventManager.emit<LoadingStateChange>(LangManager::tr("Loading") + L" " + LangManager::tr(entity["name"].asString()));
 				else
@@ -476,8 +505,6 @@ void GameState::initWorld(const std::string& file)
 					deserialize(entity["transforms"], m_entities[entityName].assign<TransformComponent>());
 				if(entity.isMember("sprites"))
 					deserialize(entity["sprites"], m_entities[entityName].assign<SpriteComponent>(), texManager, paths[getContext().parameters.scaleIndex], scale);
-				//Update the ScrollingSystem in order to directly display the sprite at the right position
-				getContext().systemManager.update<ScrollingSystem>(0.f);
 				//body
 				if(entity.isMember("body"))
 				{
@@ -486,6 +513,8 @@ void GameState::initWorld(const std::string& file)
 					for(auto& bodyPair : m_entities[entityName].component<BodyComponent>()->bodies)
 						bodyPair.second->SetUserData(&m_entities[entityName]);
 				}
+				//Update the ScrollingSystem in order to directly display the sprite at the right position
+				getContext().systemManager.update<ScrollingSystem>(0.f);
 				//spritesheet animations
 				if(entity.isMember("spritesheet animations"))
 					deserialize(entity["spritesheet animations"], m_entities[entityName].assign<AnimationsComponent<SpriteSheetAnimation>>(),
@@ -531,12 +560,12 @@ void GameState::initWorld(const std::string& file)
 		{
 			//level
 			//for each group of replaces
-			for(std::string groupOfReplacesName : level["replaces"].getMemberNames())
+			for(const std::string groupOfReplacesName : level["replaces"].getMemberNames())
 			{
 				//Filename of the image to load
-				std::string fileTexture{m_levelIdentifier + "_" + groupOfReplacesName};
+				const std::string fileTexture{m_levelIdentifier + "_" + groupOfReplacesName};
 				//Path of the image to load
-				std::string path{paths[getContext().parameters.scaleIndex] + "levels/" + m_levelIdentifier + "/" + fileTexture + ".png"};
+				const std::string path{paths[getContext().parameters.scaleIndex] + "levels/" + m_levelIdentifier + "/" + fileTexture + ".png"};
 
 				const Json::Value groupOfReplaces{level["replaces"][groupOfReplacesName]};
 				//Vector that will be added to m_sceneEntitiesData
@@ -560,7 +589,7 @@ void GameState::initWorld(const std::string& file)
 
 					//Load the texture
 					//Identifier of the texture, in format "level_plan_texture"
-					std::string textureIdentifier{fileTexture + "_" + std::to_string(i)};
+					const std::string textureIdentifier{fileTexture + "_" + std::to_string(i)};
 					getContext().eventManager.emit<LoadingStateChange>(LangManager::tr("Loading plan") + L" " + std::wstring(groupOfReplacesName.begin(), groupOfReplacesName.end()));
 					texManager.load<sf::IntRect>(textureIdentifier, path, originRect);
 					//Replaces
@@ -570,7 +599,7 @@ void GameState::initWorld(const std::string& file)
 					{
 						const Json::Value replace{replaces[j]};
 						//Identifier of the entity, in format "level_plan_texture_replace"
-						std::string replaceIdentifier{textureIdentifier + "_" + std::to_string(j)};
+						const std::string replaceIdentifier{textureIdentifier + "_" + std::to_string(j)};
 						//Position where the frame should be replaced
 						Transform replaceTransform;
 						replaceTransform.x = replace["x"].asFloat()*getContext().parameters.scale;
@@ -606,18 +635,18 @@ void GameState::initWorld(const std::string& file)
 			//Load all the image in multiples chunks
 			for(unsigned int i{0}; i < m_numberOfPlans; ++i)
 			{
-				std::string fileTexture{m_levelIdentifier + "_" + std::to_string(i)};
-				std::string path{paths[getContext().parameters.scaleIndex] + "levels/" + m_levelIdentifier + "/" + fileTexture + ".png"};
-				int chunkSize{int(sf::Texture::getMaximumSize())};
+				const std::string fileTexture{m_levelIdentifier + "_" + std::to_string(i)};
+				const std::string path{paths[getContext().parameters.scaleIndex] + "levels/" + m_levelIdentifier + "/" + fileTexture + ".png"};
+				const int chunkSize{int(sf::Texture::getMaximumSize())};
 				//The length of the plan, relatively to the reference.
-				int planLength{int(float(m_levelRect.width) * std::pow(1.5f, m_referencePlan - float(i)) * getContext().parameters.scale)};
+				const int planLength{int(float(m_levelRect.width) * std::pow(1.5f, m_referencePlan - float(i)) * getContext().parameters.scale)};
 				//Number of chunks to load in this plan
-				int numberOfChunks{(planLength/chunkSize)+1};
+				const int numberOfChunks{(planLength/chunkSize)+1};
 
 				for(int j{0}; j < numberOfChunks; ++j)
 				{
 					//Identifier of the entity, in format "level_plan_chunk"
-					std::string textureIdentifier{fileTexture + "_" + std::to_string(j)};
+					const std::string textureIdentifier{fileTexture + "_" + std::to_string(j)};
 					//Size of the chunk to load, may be truncated if we reach the end of the image.
 					int currentChunkSize{chunkSize};
 					if(j >= planLength/chunkSize)
@@ -655,10 +684,10 @@ void GameState::initWorld(const std::string& file)
 				for(Json::ArrayIndex i{0}; i < revoluteJoints.size(); ++i)
 				{
 					const Json::Value joint{revoluteJoints[i]};
-					std::string entityA{joint["entity A"].asString()};
-					std::string entityB{joint["entity B"].asString()};
-					std::string partA{joint["part A"].asString()};
-					std::string partB{joint["part B"].asString()};
+					const std::string entityA{joint["entity A"].asString()};
+					const std::string entityB{joint["entity B"].asString()};
+					const std::string partA{joint["part A"].asString()};
+					const std::string partB{joint["part B"].asString()};
 					//Assert that somes entities exists
 					requireValues(root, "root", {{"entities", Json::objectValue}});
 					//Assert that the given entities exist
@@ -700,10 +729,10 @@ void GameState::initWorld(const std::string& file)
 				for(Json::ArrayIndex i{0}; i < distanceJoints.size(); ++i)
 				{
 					const Json::Value joint{distanceJoints[i]};
-					std::string entityA{joint["entity A"].asString()};
-					std::string entityB{joint["entity B"].asString()};
-					std::string partA{joint["part A"].asString()};
-					std::string partB{joint["part B"].asString()};
+					const std::string entityA{joint["entity A"].asString()};
+					const std::string entityB{joint["entity B"].asString()};
+					const std::string partA{joint["part A"].asString()};
+					const std::string partB{joint["part B"].asString()};
 					//Assert that somes entities exists
 					requireValues(root, "root", {{"entities", Json::objectValue}});
 					//Assert that the given entities exist
@@ -735,10 +764,10 @@ void GameState::initWorld(const std::string& file)
 				for(Json::ArrayIndex i{0}; i < frictionJoints.size(); ++i)
 				{
 					const Json::Value joint{frictionJoints[i]};
-					std::string entityA{joint["entity A"].asString()};
-					std::string entityB{joint["entity B"].asString()};
-					std::string partA{joint["part A"].asString()};
-					std::string partB{joint["part B"].asString()};
+					const std::string entityA{joint["entity A"].asString()};
+					const std::string entityB{joint["entity B"].asString()};
+					const std::string partA{joint["part A"].asString()};
+					const std::string partB{joint["part B"].asString()};
 					//Assert that somes entities exists
 					requireValues(root, "root", {{"entities", Json::objectValue}});
 					//Assert that the given entities exist
@@ -777,10 +806,10 @@ void GameState::initWorld(const std::string& file)
 				for(Json::ArrayIndex i{0}; i < motorJoints.size(); ++i)
 				{
 					const Json::Value joint{motorJoints[i]};
-					std::string entityA{joint["entity A"].asString()};
-					std::string entityB{joint["entity B"].asString()};
-					std::string partA{joint["part A"].asString()};
-					std::string partB{joint["part B"].asString()};
+					const std::string entityA{joint["entity A"].asString()};
+					const std::string entityB{joint["entity B"].asString()};
+					const std::string partA{joint["part A"].asString()};
+					const std::string partB{joint["part B"].asString()};
 					//Assert that somes entities exists
 					requireValues(root, "root", {{"entities", Json::objectValue}});
 					//Assert that the given entities exist
@@ -811,10 +840,10 @@ void GameState::initWorld(const std::string& file)
 				for(Json::ArrayIndex i{0}; i < prismaticJoints.size(); ++i)
 				{
 					const Json::Value joint{prismaticJoints[i]};
-					std::string entityA{joint["entity A"].asString()};
-					std::string entityB{joint["entity B"].asString()};
-					std::string partA{joint["part A"].asString()};
-					std::string partB{joint["part B"].asString()};
+					const std::string entityA{joint["entity A"].asString()};
+					const std::string entityB{joint["entity B"].asString()};
+					const std::string partA{joint["part A"].asString()};
+					const std::string partB{joint["part B"].asString()};
 					//Assert that somes entities exists
 					requireValues(root, "root", {{"entities", Json::objectValue}});
 					//Assert that the given entities exist
@@ -859,10 +888,10 @@ void GameState::initWorld(const std::string& file)
 				for(Json::ArrayIndex i{0}; i < pulleyJoints.size(); ++i)
 				{
 					const Json::Value joint{pulleyJoints[i]};
-					std::string entityA{joint["entity A"].asString()};
-					std::string entityB{joint["entity B"].asString()};
-					std::string partA{joint["part A"].asString()};
-					std::string partB{joint["part B"].asString()};
+					const std::string entityA{joint["entity A"].asString()};
+					const std::string entityB{joint["entity B"].asString()};
+					const std::string partA{joint["part A"].asString()};
+					const std::string partB{joint["part B"].asString()};
 					//Assert that somes entities exists
 					requireValues(root, "root", {{"entities", Json::objectValue}});
 					//Assert that the given entities exist
@@ -898,10 +927,10 @@ void GameState::initWorld(const std::string& file)
 				for(Json::ArrayIndex i{0}; i < ropeJoints.size(); ++i)
 				{
 					const Json::Value joint{ropeJoints[i]};
-					std::string entityA{joint["entity A"].asString()};
-					std::string entityB{joint["entity B"].asString()};
-					std::string partA{joint["part A"].asString()};
-					std::string partB{joint["part B"].asString()};
+					const std::string entityA{joint["entity A"].asString()};
+					const std::string entityB{joint["entity B"].asString()};
+					const std::string partA{joint["part A"].asString()};
+					const std::string partB{joint["part B"].asString()};
 					//Assert that somes entities exists
 					requireValues(root, "root", {{"entities", Json::objectValue}});
 					//Assert that the given entities exist
@@ -931,10 +960,10 @@ void GameState::initWorld(const std::string& file)
 				for(Json::ArrayIndex i{0}; i < weldJoints.size(); ++i)
 				{
 					const Json::Value joint{weldJoints[i]};
-					std::string entityA{joint["entity A"].asString()};
-					std::string entityB{joint["entity B"].asString()};
-					std::string partA{joint["part A"].asString()};
-					std::string partB{joint["part B"].asString()};
+					const std::string entityA{joint["entity A"].asString()};
+					const std::string entityB{joint["entity B"].asString()};
+					const std::string partA{joint["part A"].asString()};
+					const std::string partB{joint["part B"].asString()};
 					//Assert that somes entities exists
 					requireValues(root, "root", {{"entities", Json::objectValue}});
 					//Assert that the given entities exist
@@ -966,10 +995,10 @@ void GameState::initWorld(const std::string& file)
 				for(Json::ArrayIndex i{0}; i < wheelJoints.size(); ++i)
 				{
 					const Json::Value joint{wheelJoints[i]};
-					std::string entityA{joint["entity A"].asString()};
-					std::string entityB{joint["entity B"].asString()};
-					std::string partA{joint["part A"].asString()};
-					std::string partB{joint["part B"].asString()};
+					const std::string entityA{joint["entity A"].asString()};
+					const std::string entityB{joint["entity B"].asString()};
+					const std::string partA{joint["part A"].asString()};
+					const std::string partB{joint["part B"].asString()};
 					//Assert that somes entities exists
 					requireValues(root, "root", {{"entities", Json::objectValue}});
 					//Assert that the given entities exist
@@ -1008,7 +1037,7 @@ void GameState::initWorld(const std::string& file)
 			skyAnimationsComp->animationsManagers.emplace("main", AnimationsManager<SkyAnimation>());
 			//Add the animation, this is a sky animation, the importance is equal to zero, the duration is 600 seconds (1 day), and it loops.
 			skyAnimationsComp->animationsManagers["main"].addAnimation("day/night cycle", SkyAnimation(m_entities["sky"]), 0, sf::seconds(600), true);
-			float daySeconds{std::remainder(getContext().systemManager.system<TimeSystem>()->getRealTime().asSeconds(), 600.f)};
+			const float daySeconds{std::remainder(getContext().systemManager.system<TimeSystem>()->getRealTime().asSeconds(), 600.f)};
 			skyAnimationsComp->animationsManagers["main"].setProgress("day/night cycle", daySeconds/600.f);
 			skyAnimationsComp->animationsManagers["main"].play("day/night cycle");
 		}

@@ -30,7 +30,7 @@ void PhysicsSystem::update(entityx::EntityManager& entityManager, entityx::Event
 	BodyComponent::Handle bodyComponent;
 	for(auto entity : entityManager.entities_with_components(bodyComponent))
 	{
-		b2Body* body{bodyComponent->bodies.find("main") != bodyComponent->bodies.end() ? bodyComponent->bodies.at("main"): nullptr};
+		b2Body* body{bodyComponent->bodies.find("main") != bodyComponent->bodies.end() ? bodyComponent->bodies.at("main") : nullptr};
 		//Update the walkers
 		if(body and entity.has_component<WalkComponent>())
 		{
@@ -50,6 +50,7 @@ void PhysicsSystem::update(entityx::EntityManager& entityManager, entityx::Event
 		//Update the jumpers
 		if(body and entity.has_component<JumpComponent>() and entity.component<JumpComponent>()->mustJump)
 		{
+			std::cout << "jump" << std::endl;
 			float targetVelocity{-entity.component<JumpComponent>()->jumpStrength/m_pixelByMeter};
 			body->ApplyLinearImpulse({0.f, targetVelocity*body->GetMass()}, body->GetWorldCenter(), true);
 			entity.component<JumpComponent>()->mustJump = false;

@@ -5,6 +5,15 @@
     "free children names" : false,
     "children":
     [
+		{
+			"name" : "include",
+			"type" : "array",
+			"required" : false,
+			"children" :
+			{
+				"type" : "string"
+			}
+		},
         {
             "name" : "time",
             "type" : "object",
@@ -177,8 +186,8 @@
                 "children" :
                 [
                     {
-                        "name" : "ID",
-                        "type" : "int",
+                        "name" : "base",
+                        "type" : "string",
                         "required" : false
                     },
                     {
