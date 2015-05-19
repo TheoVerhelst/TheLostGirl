@@ -43,14 +43,14 @@ HUDState::HUDState(StateStack& stack, size_t entitiesNumber):
 	m_windStrengthSpr.setTexture(texManager.get("wind arrow ath"));
 	m_windStrengthSpr.setPosition(120.f*scale, 0);
 	m_windStrengthBarSpr.setTexture(texManager.get("wind bar ath"));
-	m_windBar = tgui::Canvas::create({240.f*scale, 20.f*scale});
+	m_windBar = tgui::Canvas::create({std::ceil(240.f*scale), std::ceil(20.f*scale)});
 	m_windBar->setPosition(bindWidth(gui, 0.99f) - bindWidth(m_windBar), bindHeight(gui, 0.95f) - bindHeight(m_windBar));
 	gui.add(m_windBar);
 
 	for(size_t i{0}; i < entitiesNumber; ++i)
-		m_loadedCanvas.insert(tgui::Canvas::create({100.f*scale, 10.f*scale}));
-	m_playerHealthCanvas = tgui::Canvas::create({240.f*scale, 20.f*scale});
-	m_playerStaminaCanvas = tgui::Canvas::create({240.f*scale, 20.f*scale});
+		m_loadedCanvas.insert(tgui::Canvas::create({std::ceil(100.f*scale), std::ceil(10.f*scale)}));
+	m_playerHealthCanvas = tgui::Canvas::create({std::ceil(240.f*scale), std::ceil(20.f*scale)});
+	m_playerStaminaCanvas = tgui::Canvas::create({std::ceil(240.f*scale), std::ceil(20.f*scale)});
 }
 
 HUDState::~HUDState()
@@ -146,7 +146,7 @@ bool HUDState::update(sf::Time dt)
 			m_windStrengthSpr.setColor(sf::Color::White);
 			m_windStrengthBarSpr.setColor(sf::Color::White);
 		}
-		m_windStrengthSpr.setTextureRect({int(120.f*(1.f - std::abs(windStrength))*scale), 0, int(120.f*std::abs(windStrength)*scale), int(20.f*scale)});
+		m_windStrengthSpr.setTextureRect({int(std::ceil(120.f*(1.f - std::abs(windStrength))*scale)), 0, int(std::ceil(120.f*std::abs(windStrength)*scale)), int(std::ceil(20.f*scale))});
 		if(windStrength > 0)
 			m_windStrengthSpr.setScale(1, 1);
 		else
@@ -208,7 +208,7 @@ void HUDState::receive(const EntityHealthChange& entityHealthChange)
 		if(isPlayer(entity))
 		{
 			bar.sprite.setTexture(texManager.get("health ath"));
-			bar.sprite.setTextureRect({0, 0, int(240.f*scale), int(20.f*scale)});
+			bar.sprite.setTextureRect({0, 0, int(std::ceil(240.f*scale)), int(std::ceil(20.f*scale))});
 			bar.borderSprite.setTexture(texManager.get("health border ath"));
 			bar.canvas = m_playerHealthCanvas;
 			bar.canvas->setPosition(bindWidth(gui, 0.01f), bindHeight(gui, 0.99f) - bindHeight(bar.canvas));
@@ -216,7 +216,7 @@ void HUDState::receive(const EntityHealthChange& entityHealthChange)
 		else
 		{
 			bar.sprite.setTexture(texManager.get("entity health bar"));
-			bar.sprite.setTextureRect({0, 0, int(100.f*scale), int(10.f*scale)});
+			bar.sprite.setTextureRect({0, 0, int(std::ceil(100.f*scale)), int(std::ceil(10.f*scale))});
 			bar.borderSprite.setTexture(texManager.get("entity health bar borders"));
 			if(not m_loadedCanvas.empty())
 			{
@@ -224,7 +224,7 @@ void HUDState::receive(const EntityHealthChange& entityHealthChange)
 				m_loadedCanvas.erase(m_loadedCanvas.begin());
 			}
 			else
-				bar.canvas = tgui::Canvas::create({100.f*scale, 10.f*scale});
+				bar.canvas = tgui::Canvas::create({std::ceil(100.f*scale), std::ceil(10.f*scale)});
 			bar.canvas->setPosition(bindWidth(gui, 0.5f), bindHeight(gui, 0.99f) - bindHeight(bar.canvas));
 		}
 		gui.add(bar.canvas);
@@ -242,9 +242,9 @@ void HUDState::receive(const EntityHealthChange& entityHealthChange)
 	}
 	bar.timer = sf::Time::Zero;//In all cases, the timer should reset when the health change
 	if(isPlayer(entity))
-		bar.sprite.setTextureRect({int((240.f - 240.f*entityHealthChange.normalizedHealth)*scale), 0, int(240.f*scale), int(20.f*scale)});
+		bar.sprite.setTextureRect({int(std::ceil((240.f - 240.f*entityHealthChange.normalizedHealth)*scale)), 0, int(std::ceil(240.f*scale)), int(std::ceil(20.f*scale))});
 	else
-		bar.sprite.setTextureRect({int((100.f - 100.f*entityHealthChange.normalizedHealth)*scale), 0, int(100.f*scale), int(10.f*scale)});
+		bar.sprite.setTextureRect({int(std::ceil((100.f - 100.f*entityHealthChange.normalizedHealth)*scale)), 0, int(std::ceil(100.f*scale)), int(std::ceil(10.f*scale))});
 }
 
 void HUDState::receive(const EntityStaminaChange& entityStaminaChange)
@@ -262,7 +262,7 @@ void HUDState::receive(const EntityStaminaChange& entityStaminaChange)
 		{
 			Bar bar;
 			bar.sprite.setTexture(texManager.get("stamina ath"));
-			bar.sprite.setTextureRect({0, 0, int(240.f*scale), int(20.f*scale)});
+			bar.sprite.setTextureRect({0, 0, int(std::ceil(240.f*scale)), int(std::ceil(20.f*scale))});
 			bar.borderSprite.setTexture(texManager.get("stamina border ath"));
 			bar.canvas = m_playerStaminaCanvas;
 			bar.canvas->setPosition(bindWidth(gui, 0.99f) - bindWidth(bar.canvas), bindHeight(gui, 0.99f) - bindHeight(bar.canvas));
@@ -280,6 +280,6 @@ void HUDState::receive(const EntityStaminaChange& entityStaminaChange)
 			bar.borderSprite.setColor(sf::Color::White);
 		}
 		bar.timer = sf::Time::Zero;//In all cases, the timer should reset when the health change
-		bar.sprite.setTextureRect({int((240.f - 240.f*entityStaminaChange.normalizedStamina)*scale), 0, int(240.f*scale), int(20.f*scale)});
+		bar.sprite.setTextureRect({int(std::ceil((240.f - 240.f*entityStaminaChange.normalizedStamina)*scale)), 0, int(std::ceil(240.f*scale)), int(std::ceil(20.f*scale))});
 	}
 }
