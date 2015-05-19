@@ -1,7 +1,7 @@
 #ifndef INTERPRETER_HPP
 #define INTERPRETER_HPP
 
-#include <unordered_map>
+#include <map>
 #include <fstream>
 
 #include <boost/variant.hpp>
@@ -52,17 +52,17 @@ class Interpreter
 			std::function<Data(const std::vector<Data>&, StateStack::Context)> pointer;///< Pointer to the effective C++ function to execute.
 		};
 
-		std::ifstream m_file;                                       ///< Stream of the script file to execute.
-		const std::unordered_map<std::string, int> m_precedence;    ///< Precedence of all binary and unary operators.
-		const std::unordered_map<std::string, Function> m_functions;///< All functions available in the script.
-		const std::unordered_map<std::string, Data> m_initialVars;  ///< Variables available by default in all scripts.
-		std::unordered_map<std::string, Data> m_vars;               ///< Variables of the current script.
-		StateStack::Context* m_context;                             ///< The current context of the application.
+		std::ifstream m_file;                                        ///< Stream of the script file to execute.
+		const std::map<std::string, int> m_precedence;               ///< Precedence of all binary and unary operators.
+		const std::map<std::string, Function> m_functions;           ///< All functions available in the script.
+		const std::map<std::string, Data> m_initialVars;             ///< Variables available by default in all scripts.
+		std::map<std::string, Data> m_vars;                          ///< Variables of the current script.
+		StateStack::Context* m_context;                              ///< The current context of the application.
 
-		std::list<Expression::Ptr> m_expressions;                   ///< List of all expression of the script, stored as trees.
-		std::string m_operators;                                    ///< List of characters that will separates tokens in tokenization process.
+		std::list<Expression::Ptr> m_expressions;                    ///< List of all expression of the script, stored as trees.
+		std::string m_operators;                                     ///< List of characters that will separates tokens in tokenization process.
 		const std::list<std::list<std::string>> m_multichar0perators;///< List of all operators that are made from more than one characters.
-		const std::list<std::string> m_reservedNames;               ///< List of all reserved names that cannot be a part of a variable identifier.
+		const std::list<std::string> m_reservedNames;                ///< List of all reserved names that cannot be a part of a variable identifier.
 
 		/// Evaluates a block of instructions.
 		/// The iterators should be iterator on m_tree.

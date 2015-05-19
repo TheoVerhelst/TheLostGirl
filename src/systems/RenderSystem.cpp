@@ -25,24 +25,25 @@ void RenderSystem::update(entityx::EntityManager& entityManager, entityx::EventM
 	SpriteComponent::Handle spriteComponent;
 	TransformComponent::Handle transformComponent;
 	//A map containing all sprites grouped and sorted by z-order
-	std::map<float, std::deque<sf::Sprite*>> orderedEntities;
+	std::map<float, std::deque<const sf::Sprite*>> orderedEntities;
 	//Add the sprites in the map
-	for(entityx::Entity entity : entityManager.entities_with_components(spriteComponent, transformComponent))
+	for(const entityx::Entity& entity : entityManager.entities_with_components(spriteComponent, transformComponent))
 	{
-		for(auto& spritePair : spriteComponent->sprites)
+		bool scene{entity.has_component<CategoryComponent>() and entity.component<CategoryComponent>()->category & Category::Scene};
+		for(const auto& spritePair : spriteComponent->sprites)
 		{
 			//If this is a scene entity, add its sprites beyond the others entities in this plan
-			if(entity.has_component<CategoryComponent>() and entity.component<CategoryComponent>()->category & Category::Scene)
+			if(scene)
 				orderedEntities[transformComponent->transforms.at(spritePair.first).z].push_front(&spritePair.second);
 			else
 				orderedEntities[transformComponent->transforms.at(spritePair.first).z].push_back(&spritePair.second);
 		}
 	}
-	const sf::View& windowView(m_window.getView());
-	const sf::FloatRect viewRect(windowView.getCenter()-windowView.getSize()/2.f, windowView.getSize());
 	//Draw the texture and the GUI on the window and display
 	if(m_postEffectSupported and m_bloomEnabled)
 	{
+		const sf::View& windowView(m_window.getView());
+		const sf::FloatRect viewRect(windowView.getCenter()-windowView.getSize()/2.f, windowView.getSize());
 		m_texture.clear({255, 0, 0});
 		//For each plan, in the reverse order
 		for(auto it(orderedEntities.crbegin()); it != orderedEntities.crend(); it++)

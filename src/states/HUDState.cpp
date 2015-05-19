@@ -48,7 +48,7 @@ HUDState::HUDState(StateStack& stack, size_t entitiesNumber):
 	gui.add(m_windBar);
 
 	for(size_t i{0}; i < entitiesNumber; ++i)
-		m_loadedCanvas.insert(tgui::Canvas::create({std::ceil(100.f*scale), std::ceil(10.f*scale)}));
+		m_loadedCanvas.push_back(tgui::Canvas::create({std::ceil(100.f*scale), std::ceil(10.f*scale)}));
 	m_playerHealthCanvas = tgui::Canvas::create({std::ceil(240.f*scale), std::ceil(20.f*scale)});
 	m_playerStaminaCanvas = tgui::Canvas::create({std::ceil(240.f*scale), std::ceil(20.f*scale)});
 }
