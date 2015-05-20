@@ -21,17 +21,17 @@ MainMenuState::MainMenuState(StateStack& stack):
 	using tgui::bindWidth;
 	using tgui::bindHeight;
 	tgui::Gui& gui(getContext().gui);
-	
+
 	m_background = tgui::Panel::create();
 	m_background->setPosition(bindWidth(gui, 0.25f), bindHeight(gui, 0.f));
 	m_background->setSize(bindWidth(gui, 0.5f), bindHeight(gui));
 	m_background->setBackgroundColor(sf::Color(255, 255, 255, 100));
 	gui.add(m_background);
-	
+
 	m_logo = tgui::Picture::create(paths[getContext().parameters.scaleIndex] + "title.png");
 	m_logo->setPosition((bindWidth(gui) - bindWidth(m_logo))/2, bindHeight(gui, 0.f));
 	gui.add(m_logo);
-	
+
 	// Left:   25% of window width
 	// Top:    40% of window height
 	// Width:  50% of window width
@@ -40,11 +40,7 @@ MainMenuState::MainMenuState(StateStack& stack):
 	m_newButton->setPosition(bindWidth(gui, 0.25f), bindHeight(gui, 0.4f));
 	m_newButton->setSize(bindWidth(gui, 0.5f), bindHeight(gui, 0.15f));
 	m_newButton->setText(LangManager::tr("New game"));
-	m_newButton->getRenderer()->setBorders(0.f, 0.f);
-	m_newButton->getRenderer()->setProperty("backgroundcolor", "(255, 255, 255, 0)");
-	m_newButton->getRenderer()->setProperty("backgroundcolorhover", "(255, 255, 255, 55)");
-	m_newButton->getRenderer()->setProperty("backgroundcolordown", "(255, 255, 255, 90)");
-	m_newButton->getRenderer()->setProperty("textcolornormal", "(0, 0, 0)");
+	prettifyButton(m_newButton);
 	unsigned int playGameSignal{m_newButton->connect("pressed", &MainMenuState::playGame, this)};
 	gui.add(m_newButton);
 

@@ -297,3 +297,12 @@ bool isPlayer(entityx::Entity entity)
 {
 	return entity.valid() and entity.has_component<CategoryComponent>() and entity.component<CategoryComponent>()->category & Category::Player;
 }
+
+void prettifyButton(tgui::Button::Ptr button)
+{
+	button->getRenderer()->setBorders(0.f, 0.f);
+	button->getRenderer()->setProperty("backgroundcolor", "(255, 255, 255, 0)");
+	button->getRenderer()->setProperty("backgroundcolorhover", "(255, 255, 255, 55)");
+	button->getRenderer()->setProperty("backgroundcolordown", "(255, 255, 255, 90)");
+	button->getRenderer()->setProperty("textcolornormal", "(0, 0, 0)");
+}

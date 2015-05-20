@@ -5,13 +5,14 @@
 #include <TGUI/Label.hpp>
 #include <TGUI/Panel.hpp>
 
+#include <TheLostGirl/State.h>
+
 //Forward declarations
 namespace sf
 {
 	class Event;
 	class Time;
 }
-class State;
 class Context;
 class StateStack;
 

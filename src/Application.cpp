@@ -53,9 +53,9 @@ Application::Application(bool debugMode):
 		parse(settings, model, "root", "root");
 		sf::VideoMode mode;
 		if(settings["lang"].asString() == "FR")
-			m_parameters.lang = FR;
+			LangManager::setLang(FR);
 		else if(settings["lang"].asString() == "EN")
-			m_parameters.lang = EN;
+			LangManager::setLang(EN);
 
 		switch(settings["resolution"].asInt())
 		{
@@ -105,9 +105,9 @@ Application::~Application()
 	std::string file("settings.json");
 	std::ofstream settingsFileStream(file, std::ofstream::binary);
 
-	if(m_parameters.lang == FR)
+	if(LangManager::getLang() == FR)
 		settings["lang"] = "FR";
-	else if(m_parameters.lang == EN)
+	else if(LangManager::getLang() == EN)
 		settings["lang"] = "EN";
 
 	switch(m_parameters.scaleIndex)
@@ -145,7 +145,6 @@ int Application::init()
 		srand(static_cast<unsigned int>(time(nullptr)));//Init random numbers
 		registerSystems();
 		m_window.setKeyRepeatEnabled(false);//Desactive the key repeating
-		LangManager::setLang(m_parameters.lang);//Set and load the lang
 		m_fontManager.load("menu", m_parameters.textFont);//Load the GUI font
 		m_fontManager.load("debug", "resources/fonts/FreeMonoBold.ttf");//Load the debug font
 		m_gui.setGlobalFont(std::make_shared<sf::Font>(m_fontManager.get("menu")));//Set the GUI font

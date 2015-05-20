@@ -9,6 +9,7 @@
 #include <Box2D/Common/b2Math.h>
 #include <Box2D/Common/b2Draw.h>
 #include <dist/json/json.h>
+#include <TGUI/Button.hpp>
 
 //Forward declarations
 namespace sf
@@ -184,5 +185,7 @@ Key getKey(std::map<Key, Value> map, Value& value)
 }
 
 bool isPlayer(entityx::Entity entity);
+
+void prettifyButton(tgui::Button::Ptr button);
 
 #endif//FUNCTIONS_H

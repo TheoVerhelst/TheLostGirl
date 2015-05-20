@@ -23,7 +23,6 @@ const std::string paths[5] = {"resources/images/360p/",
 /// Structure that hold various informations about the application.
 struct Parameters
 {
-	Lang lang = EN;                                           ///< The current language.
 	bool debugMode = false;                                   ///< True if the DebugDrawing must be activated.
 	unsigned int scaleIndex = 0;                              ///< The index of the current scale, in the range [0, 5[
 	float scale = scales[scaleIndex];                         ///< Current scale of graphics and  images.

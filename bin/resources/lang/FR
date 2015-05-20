@@ -1,29 +1,30 @@
-Loading save file|Chargement du fichier de sauvegarde
-Loading plan|Chargement du plan 
-Loading night sky|Chargement du ciel nocturne
-Loading day sky|Chargement du ciel diurne
 Press any key to continue...|Appuyez sur une touche pour continuer...
+Loading save file|Chargement du fichier de sauvegarde
+Loading|Chargement de
+Wood wolf|Loup des bois
+archer|archer
+arrow|flèche
+sky|ciel
+Loading plan|Chargement du plan 
+Assembling entities|Assemblage des entités
+Loading HUD|Chargement de l'ATH
 New game|Nouvelle partie
 Load game|Charger une partie
 Exit|Quitter
-Configure|Configurer
-Arcade|Arcade
-Normal|Normal
-Realistic|Réaliste
 Main volume|Volume principal
 Music volume|Volume de la musique
 Effects volume|Volume des effets
 Fullscreen|Plein écran
 Controls|Contrôles
-Antialiasing|Antialiasing
-Realism|Réalisme
-Options|Options
 Resolution|Résolution
 Apply|Appliquer
-Back|Retour
+OK|Valider
+Cancel|Annuler
 Pause|Pause
 Back to game|Retour au jeu
 Parameters|Paramètres
+Bloom effect|Effet bloom
+Lang|Langue
 Back to main menu|Retour au menu principal
 Snow season|Saison de la neige
 Flowers season|Saison des fleurs

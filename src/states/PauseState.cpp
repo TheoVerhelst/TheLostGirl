@@ -6,6 +6,7 @@
 #include <TheLostGirl/StateStack.h>
 #include <TheLostGirl/LangManager.h>
 #include <TheLostGirl/Player.h>
+#include <TheLostGirl/states/ParametersState.h>
 #include <TheLostGirl/systems/PendingChangesSystem.h>
 
 #include <TheLostGirl/states/PauseState.h>
@@ -107,6 +108,8 @@ inline void PauseState::backToGame()
 
 inline void PauseState::goToOptions()
 {
+	requestStackPop();
+	requestStackPush<ParametersState>();
 }
 
 inline void PauseState::backToMainMenu()
@@ -114,6 +117,5 @@ inline void PauseState::backToMainMenu()
 	requestStackPop();//The pause state
 	requestStackPop();//The HUD state
 	requestStackPop();//The game state
-//	requestStackPush(States::EmptyLevel);
 	requestStackPush<MainMenuState>();
 }

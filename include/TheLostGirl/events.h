@@ -6,6 +6,8 @@
 #include <entityx/Event.h>
 #include <entityx/Entity.h>
 
+#include <TheLostGirl/LangManager.h>
+
 /// Structure used to emit and receive loading progression between differents game states.
 struct LoadingStateChange : public entityx::Event<LoadingStateChange>
 {
@@ -52,6 +54,21 @@ struct EntityStaminaChange : public entityx::Event<EntityStaminaChange>
 	entityx::Entity entity; ///< The entity touched by the health change.
 	float stamina;          ///< The new stamina of the player.
 	float normalizedStamina;///< The new stamina of the player, normalized in [0, 1].
+};
+
+/// Give informations about a change in the game settings.
+struct ParametersChange : public entityx::Event<ParametersChange>
+{
+	/// Constructor.
+	ParametersChange(bool _langChanged, bool _bloomEnabledChanged, bool _resolutionChanged):
+		langChanged{_langChanged},
+		bloomEnabledChanged{_bloomEnabledChanged},
+		resolutionChanged{_resolutionChanged}
+	{}
+
+	bool langChanged;        ///< Indicates whether the lang has been changed.
+	bool bloomEnabledChanged;///< Indicates whether the bloom option has been toggled.
+	bool resolutionChanged;  ///< Indicates whether the resolution has been changed.
 };
 
 #endif//EVENTS_H
