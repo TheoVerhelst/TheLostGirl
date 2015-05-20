@@ -3,7 +3,6 @@
 
 #include <TGUI/Label.hpp>
 #include <TGUI/Panel.hpp>
-#include <entityx/Event.h>
 
 //Forward declarations
 namespace sf
@@ -15,9 +14,10 @@ class State;
 class Context;
 class StateStack;
 class LoadingStateChange;
+struct ParametersChange;
 
 /// State that display the current state of the loading.
-class LoadingState : public State, public entityx::Receiver<LoadingState>
+class LoadingState : public State
 {
 	public:
         /// Constructor.
@@ -47,10 +47,17 @@ class LoadingState : public State, public entityx::Receiver<LoadingState>
 		/// \param loadingStateChange Structure containing data about the change.
 		void receive(const LoadingStateChange& loadingStateChange);
 
+		/// Receive an event about a change in the parameters.
+		/// \param parametersChange The data about the change.
+		void receive(const ParametersChange& parametersChange);
+
 	private:
+		/// Reset all texts in the buttons and other widgets.
+		void resetTexts();
+
 		tgui::Panel::Ptr m_background;   ///< The grey background.
 		tgui::Label::Ptr m_sentenceLabel;///< Label explaining the loading state.
-		std::wstring m_sentence;         ///< String explaining the loading state.
+		std::string m_sentence;          ///< String explaining the loading state.
 		tgui::Label::Ptr m_hintLabel;    ///< Label indicating a random hint.
 		float m_sentenceTimer;           ///< Timer in seconds of a little animation on the sentence.
 };

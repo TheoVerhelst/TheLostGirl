@@ -19,6 +19,7 @@ namespace sf
 }
 
 class StateStack;
+struct ParametersChange;
 
 /// State that allow the user to change settings of the game.
 class ParametersState : public State
@@ -48,6 +49,12 @@ class ParametersState : public State
         /// \note The closing window and resinzing window events are already handled by the Application class.
 		virtual bool handleEvent(const sf::Event& event);
 
+		/// Receive an event about a change in the parameters.
+		/// This function is defined because this is possible that
+		/// this is not this state wich change parameters.
+		/// \param parametersChange The data about the change.
+		void receive(const ParametersChange& parametersChange);
+
 	private:
 		tgui::Panel::Ptr m_background;           ///< The background of the menu.
 		tgui::Label::Ptr m_title;                ///< The title label of the menu
@@ -67,15 +74,18 @@ class ParametersState : public State
 		/// Apply the new settings.
 		void applyChanges();
 
+		/// Reset all texts in the buttons and other widgets.
+		void resetTexts();
+
 		/// Gives the string corresponding to the given Lang, to display in parameters menu.
 		/// \param lang The lang to convert.
 		/// \return The corresponding string.
-		std::string toString(Lang lang);
+		sf::String toString(Lang lang);
 
 		/// Gives the Lang corresponding to the given string.
 		/// \param string The string to convert.
 		/// \return The corresponding Lang.
-		Lang fromString(std::string string);
+		Lang fromString(sf::String string);
 };
 
 #endif//PARAMETERSSTATE_H

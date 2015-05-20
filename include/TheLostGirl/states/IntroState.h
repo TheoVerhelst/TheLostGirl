@@ -15,6 +15,7 @@ namespace sf
 }
 class Context;
 class StateStack;
+struct ParametersChange;
 
 /// Introduction at the launching of the game.
 class IntroState : public State
@@ -44,7 +45,14 @@ class IntroState : public State
         /// \note The closing window and resinzing window events are already handled by the Application class.
 		virtual bool handleEvent(const sf::Event& event);
 
+		/// Receive an event about a change in the parameters.
+		/// \param parametersChange The data about the change.
+		void receive(const ParametersChange& parametersChange);
+
 	private:
+		/// Reset all texts in the buttons and other widgets.
+		void resetTexts();
+
 		tgui::Panel::Ptr m_background; ///< The background of the menu.
 		tgui::Picture::Ptr m_logo;     ///< The Lost Girl logo.
 		tgui::Label::Ptr m_sentence;   ///< The sentence under the logo.

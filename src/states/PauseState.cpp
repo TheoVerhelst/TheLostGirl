@@ -8,6 +8,7 @@
 #include <TheLostGirl/Player.h>
 #include <TheLostGirl/states/ParametersState.h>
 #include <TheLostGirl/systems/PendingChangesSystem.h>
+#include <TheLostGirl/events.h>
 
 #include <TheLostGirl/states/PauseState.h>
 
@@ -19,6 +20,7 @@ PauseState::PauseState(StateStack& stack) :
 	m_goToOptionsButton{nullptr},
 	m_backToMainMenuButton{nullptr}
 {
+	getContext().eventManager.subscribe<ParametersChange>(*this);
 	using tgui::bindWidth;
 	using tgui::bindHeight;
 	tgui::Gui& gui(getContext().gui);
@@ -32,7 +34,6 @@ PauseState::PauseState(StateStack& stack) :
 	// Left:   25% of window width
 	// Top:    10% of window height
 	m_pauseLabel = tgui::Label::create();
-	m_pauseLabel->setText(LangManager::tr("Pause"));
 	m_pauseLabel->setPosition((bindWidth(gui) - bindWidth(m_pauseLabel))/2, bindHeight(gui, 0.1f));
 	m_pauseLabel->setTextSize(80);
 	m_pauseLabel->setTextColor(sf::Color::Black);
@@ -45,7 +46,6 @@ PauseState::PauseState(StateStack& stack) :
 	m_backToGameButton = tgui::Button::create();
 	m_backToGameButton->setPosition(bindWidth(gui, 0.25f), bindHeight(gui, 0.4f));
 	m_backToGameButton->setSize(bindWidth(gui, 0.5f), bindHeight(gui, 0.15f));
-	m_backToGameButton->setText(LangManager::tr("Back to game"));
 	m_backToGameButton->setTextSize(50);
 	m_backToGameButton->getRenderer()->setBorders(0.f, 0.f);
 	m_backToGameButton->getRenderer()->setProperty("backgroundcolor", "(255, 255, 255, 0)");
@@ -59,7 +59,6 @@ PauseState::PauseState(StateStack& stack) :
 	// Top:    55% of window height
 	m_goToOptionsButton = tgui::Button::copy(m_backToGameButton);
 	m_goToOptionsButton->setPosition(bindWidth(gui, 0.25f), bindHeight(gui, 0.55f));
-	m_goToOptionsButton->setText(LangManager::tr("Parameters"));
 	m_goToOptionsButton->connect("pressed", &PauseState::goToOptions, this);
 	m_goToOptionsButton->disconnect(backToGameSignal);
 	gui.add(m_goToOptionsButton);
@@ -68,10 +67,10 @@ PauseState::PauseState(StateStack& stack) :
 	// Top:    70% of window height
 	m_backToMainMenuButton = tgui::Button::copy(m_backToGameButton);
 	m_backToMainMenuButton->setPosition(bindWidth(gui, 0.25f), bindHeight(gui, 0.7f));
-	m_backToMainMenuButton->setText(LangManager::tr("Back to main menu"));
 	m_backToMainMenuButton->connect("pressed", &PauseState::backToMainMenu, this);
 	m_backToMainMenuButton->disconnect(backToGameSignal);
 	gui.add(m_backToMainMenuButton);
+	resetTexts();
 }
 
 PauseState::~PauseState()
@@ -99,6 +98,21 @@ bool PauseState::handleEvent(const sf::Event& event)
 		backToGame();
 	return false;
 }
+
+void PauseState::receive(const ParametersChange& parametersChange)
+{
+	if(parametersChange.langChanged)
+		resetTexts();
+}
+
+void PauseState::resetTexts()
+{
+	m_pauseLabel->setText(LangManager::tr("Pause"));
+	m_backToGameButton->setText(LangManager::tr("Back to game"));
+	m_goToOptionsButton->setText(LangManager::tr("Parameters"));
+	m_backToMainMenuButton->setText(LangManager::tr("Back to main menu"));
+}
+
 
 inline void PauseState::backToGame()
 {

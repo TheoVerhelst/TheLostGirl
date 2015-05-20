@@ -12,6 +12,7 @@
 ParametersState::ParametersState(StateStack& stack) :
 	State(stack)
 {
+	getContext().eventManager.subscribe<ParametersChange>(*this);
 	using tgui::bindWidth;
 	using tgui::bindHeight;
 	tgui::Gui& gui(getContext().gui);
@@ -23,14 +24,12 @@ ParametersState::ParametersState(StateStack& stack) :
 	gui.add(m_background);
 
 	m_title = tgui::Label::create();
-	m_title->setText(LangManager::tr("Parameters"));
 	m_title->setPosition((bindWidth(m_background) - bindWidth(m_title))/2.f, bindHeight(m_background, 0.1f));
 	m_title->setTextSize(80);
 	m_title->setTextColor(sf::Color::Black);
 	m_background->add(m_title);
 
 	m_resolutionLabel = tgui::Label::create();
-	m_resolutionLabel->setText(LangManager::tr("Resolution"));
 	m_resolutionLabel->setTextSize(30);
 	m_resolutionLabel->setPosition(10.f, bindHeight(m_background, 0.3f));
 	m_resolutionLabel->setTextColor(sf::Color::Black);
@@ -48,7 +47,6 @@ ParametersState::ParametersState(StateStack& stack) :
 	m_background->add(m_resolutionComboBox);
 
 	m_langLabel = tgui::Label::create();
-	m_langLabel->setText(LangManager::tr("Lang"));
 	m_langLabel->setTextSize(30);
 	m_langLabel->setPosition(10.f, bindHeight(m_background, 0.4f));
 	m_langLabel->setTextColor(sf::Color::Black);
@@ -65,7 +63,6 @@ ParametersState::ParametersState(StateStack& stack) :
 	m_background->add(m_langComboBox);
 
 	m_bloomLabel = tgui::Label::create();
-	m_bloomLabel->setText(LangManager::tr("Bloom effect"));
 	m_bloomLabel->setTextSize(30);
 	m_bloomLabel->setPosition(10.f, bindHeight(m_background, 0.5f));
 	m_bloomLabel->setTextColor(sf::Color::Black);
@@ -78,7 +75,6 @@ ParametersState::ParametersState(StateStack& stack) :
 	m_background->add(m_bloomCheckbox);
 
 	m_applyButton = tgui::Button::create();
-	m_applyButton->setText(LangManager::tr("Apply"));
 	m_applyButton->setPosition(bindWidth(m_background, 0.f), bindHeight(m_background, 0.9f));
 	m_applyButton->setSize(bindWidth(m_background, 1.f/3.f), bindHeight(m_background, 0.1f));
 	m_applyButton->connect("pressed", &ParametersState::applyChanges, this);
@@ -86,7 +82,6 @@ ParametersState::ParametersState(StateStack& stack) :
 	m_background->add(m_applyButton);
 
 	m_cancelButton = tgui::Button::create();
-	m_cancelButton->setText(LangManager::tr("Cancel"));
 	m_cancelButton->setPosition(bindWidth(m_background, 1.f/3.f), bindHeight(m_background, 0.9f));
 	m_cancelButton->setSize(bindWidth(m_background, 1.f/3.f), bindHeight(m_background, 0.1f));
 	m_cancelButton->connect("pressed", &ParametersState::backToPause, this);
@@ -94,12 +89,13 @@ ParametersState::ParametersState(StateStack& stack) :
 	m_background->add(m_cancelButton);
 
 	m_okButton = tgui::Button::create();
-	m_okButton->setText(LangManager::tr("OK"));
 	m_okButton->setPosition(bindWidth(m_background, 2.f/3.f), bindHeight(m_background, 0.9f));
 	m_okButton->setSize(bindWidth(m_background, 1.f/3.f), bindHeight(m_background, 0.1f));
 	m_okButton->connect("pressed", [this](){applyChanges(); backToPause();});
 	prettifyButton(m_okButton);
 	m_background->add(m_okButton);
+
+	resetTexts();
 }
 
 ParametersState::~ParametersState()
@@ -120,6 +116,12 @@ bool ParametersState::handleEvent(const sf::Event& event)
 	if(event.type == sf::Event::KeyPressed and event.key.code == sf::Keyboard::Escape)
 		backToPause();
 	return false;
+}
+
+void ParametersState::receive(const ParametersChange& parametersChange)
+{
+	if(parametersChange.langChanged)
+		resetTexts();
 }
 
 void ParametersState::backToPause()
@@ -144,12 +146,30 @@ void ParametersState::applyChanges()
 		getContext().eventManager.emit<ParametersChange>(langChanged, bloomEnabledChanged, resolutionChanged);
 }
 
-std::string ParametersState::toString(Lang lang)
+void ParametersState::resetTexts()
+{
+	if(m_title)
+		m_title->setText(LangManager::tr("Parameters"));
+	if(m_resolutionLabel)
+		m_resolutionLabel->setText(LangManager::tr("Resolution"));
+	if(m_langLabel)
+		m_langLabel->setText(LangManager::tr("Lang"));
+	if(m_bloomLabel)
+		m_bloomLabel->setText(LangManager::tr("Bloom effect"));
+	if(m_applyButton)
+		m_applyButton->setText(LangManager::tr("Apply"));
+	if(m_cancelButton)
+		m_cancelButton->setText(LangManager::tr("Cancel"));
+	if(m_okButton)
+		m_okButton->setText(LangManager::tr("OK"));
+}
+
+sf::String ParametersState::toString(Lang lang)
 {
 	switch(lang)
 	{
 		case FR:
-			return "Français";
+			return L"Français";
 		case IT:
 			return "Italiano";
 		case NL:
@@ -160,9 +180,9 @@ std::string ParametersState::toString(Lang lang)
 	}
 }
 
-Lang ParametersState::fromString(std::string string)
+Lang ParametersState::fromString(sf::String string)
 {
-	if(string == "Français")
+	if(string == L"Français")
 		return FR;
 	else if(string == "Italiano")
 		return IT;

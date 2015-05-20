@@ -15,6 +15,7 @@ namespace sf
 }
 class Context;
 class StateStack;
+struct ParametersChange;
 
 /// Cannot be more explicit.
 class MainMenuState : public State
@@ -45,12 +46,19 @@ class MainMenuState : public State
         /// \note The closing window and resinzing window events are already handled by the Application class.
 		virtual bool handleEvent(const sf::Event& event);
 
+		/// Receive an event about a change in the parameters.
+		/// \param parametersChange The data about the change.
+		void receive(const ParametersChange& parametersChange);
+
 	private:
 		/// Play the game (usually on press of the play button).
 		void playGame();
 
 		/// Exit the game (usually on press of the exit button).
 		void exitGame();
+
+		/// Reset all texts in the buttons and other widgets.
+		void resetTexts();
 
 		tgui::Panel::Ptr m_background; ///< The background of the menu.
 		tgui::Picture::Ptr m_logo;     ///< The Lost Girl logo.

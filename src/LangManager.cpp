@@ -24,6 +24,7 @@ Lang LangManager::getLang()
 
 void LangManager::loadLang(Lang langToLoad)
 {
+	m_entries.clear();
 	std::string filePath;
 	std::wifstream fileStream;
 	//Things to handle wide encoding

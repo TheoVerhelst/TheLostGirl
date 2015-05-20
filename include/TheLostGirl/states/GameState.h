@@ -18,6 +18,7 @@ class State;
 class Context;
 class StateStack;
 struct Transform;
+struct ParametersChange;
 
 /// State that effectively play the game.
 /// The game become really interesting here.
@@ -49,6 +50,10 @@ class GameState : public State
         /// \return Return true if the state under this state in the stack must be also updated.
         /// \note The closing window and resinzing window events are already handled by the Application class.
 		virtual bool handleEvent(const sf::Event& event);
+
+		/// Receive an event about a change in the parameters.
+		/// \param parametersChange The data about the change.
+		void receive(const ParametersChange& parametersChange);
 
 	private:
 		/// Structure that hold data about scene entities.

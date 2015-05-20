@@ -13,11 +13,11 @@ struct LoadingStateChange : public entityx::Event<LoadingStateChange>
 {
 	///Default constructor
 	/// \param _sentence A short sentence describing the loading state.
-	LoadingStateChange(std::wstring _sentence):
+	LoadingStateChange(std::string _sentence):
 		sentence(_sentence)
 	{}
 
-	std::wstring sentence;///< A short sentence describing the loading state.
+	std::string sentence;///< A short sentence describing the loading state.
 };
 
 /// Structure used to emit and receive entity health changes.

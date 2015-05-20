@@ -2,7 +2,6 @@
 #define HUDSTATE_H
 
 #include <TGUI/Canvas.hpp>
-#include <entityx/Event.h>
 
 #include <TheLostGirl/HashEntity.h>
 
@@ -19,7 +18,7 @@ struct EntityHealthChange;
 struct EntityStaminaChange;
 
 /// State that display data about the player.
-class HUDState : public State, public entityx::Receiver<HUDState>
+class HUDState : public State
 {
 	public:
         /// Constructor.

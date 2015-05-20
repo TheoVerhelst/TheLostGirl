@@ -15,6 +15,7 @@ namespace sf
 }
 class Context;
 class StateStack;
+struct ParametersChange;
 
 /// Introduction at the launching of the game.
 class PauseState : public State
@@ -44,6 +45,10 @@ class PauseState : public State
         /// \note The closing window and resinzing window events are already handled by the Application class.
 		virtual bool handleEvent(const sf::Event& event);
 
+		/// Receive an event about a change in the parameters.
+		/// \param parametersChange The data about the change.
+		void receive(const ParametersChange& parametersChange);
+
 	private:
 		/// Return to the GameState state and delete this one.
 		inline void backToGame();
@@ -53,6 +58,9 @@ class PauseState : public State
 
 		/// Go back to the main menu, delete this state and the GameState state.
 		inline void backToMainMenu();
+
+		/// Reset all texts in the buttons and other widgets.
+		void resetTexts();
 
 		tgui::Panel::Ptr m_background;           ///< The background of the menu.
 		tgui::Label::Ptr m_pauseLabel;           ///< The pause label.

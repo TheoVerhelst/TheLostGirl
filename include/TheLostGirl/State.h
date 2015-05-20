@@ -2,6 +2,7 @@
 #define STATE_H
 
 #include <memory>
+#include <entityx/Event.h>
 
 #include <TheLostGirl/StateStack.h>
 
@@ -14,7 +15,10 @@ namespace sf
 /// Base class for the various game states.
 /// In order to make a game state, you must inherit from this class and implement the pure virtual members.
 /// The new state must then be registered and pushed in a StateStack.
-class State
+/// The State class inherits from entityx::Receiver, allowing all states to receive events from entityx.
+/// All states should at least implement a receiver function of the ParametersChange event,
+/// because if the lang change then all texts must be updated in the state.
+class State: public entityx::Receiver<State>
 {
 	public:
         /// Pointer typedef.

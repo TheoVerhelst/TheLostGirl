@@ -6,6 +6,7 @@
 #include <TheLostGirl/states/MainMenuState.h>
 #include <TheLostGirl/StateStack.h>
 #include <TheLostGirl/Parameters.h>
+#include <TheLostGirl/events.h>
 
 #include <TheLostGirl/states/IntroState.h>
 
@@ -15,6 +16,7 @@ IntroState::IntroState(StateStack& stack):
 	m_logo{nullptr},
 	m_sentence{nullptr}
 {
+	getContext().eventManager.subscribe<ParametersChange>(*this);
 	using tgui::bindWidth;
 	using tgui::bindHeight;
 	tgui::Gui& gui(getContext().gui);
@@ -30,11 +32,11 @@ IntroState::IntroState(StateStack& stack):
 	gui.add(m_logo);
 
 	m_sentence = tgui::Label::create();
-	m_sentence->setText(LangManager::tr("Press any key to continue..."));
 	m_sentence->setTextSize(30);
 	m_sentence->setPosition((bindWidth(gui) - bindWidth(m_sentence))/2, bindHeight(gui, 0.5));
 	m_sentence->setTextColor(sf::Color::Black);
 	gui.add(m_sentence);
+	resetTexts();
 }
 
 IntroState::~IntroState()
@@ -62,4 +64,15 @@ bool IntroState::handleEvent(const sf::Event& event)
 		requestStackPush<MainMenuState>();
 	}
 	return false;
+}
+
+void IntroState::receive(const ParametersChange& parametersChange)
+{
+	if(parametersChange.langChanged)
+		resetTexts();
+}
+
+void IntroState::resetTexts()
+{
+	m_sentence->setText(LangManager::tr("Press any key to continue..."));
 }

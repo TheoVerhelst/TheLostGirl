@@ -53,6 +53,7 @@ GameState::GameState(StateStack& stack, std::string file) :
 	m_referencePlan{0.f},
 	m_levelRect{0, 0, 1920, 1080}
 {
+	getContext().eventManager.subscribe<ParametersChange>(*this);
 	m_threadLoad = std::thread(&GameState::initWorld, this, file);
 }
 
@@ -97,6 +98,10 @@ bool GameState::handleEvent(const sf::Event& event)
 	const bool isDragAndDropActive{getContext().player.isActived(Player::Action::Bend)};
 	getContext().systemManager.system<DragAndDropSystem>()->setDragAndDropActivation(isDragAndDropActive);
 	return false;
+}
+
+void GameState::receive(const ParametersChange&)
+{
 }
 
 void GameState::saveWorld(const std::string& file)
@@ -407,7 +412,7 @@ void GameState::initWorld(const std::string& file)
 	const float scale{getContext().parameters.scale};
 	const float pixelByMeter{getContext().parameters.pixelByMeter};//The pixel/meters scale at the maximum resolution, about 120.f
 	TextureManager& texManager(getContext().textureManager);
-	getContext().eventManager.emit<LoadingStateChange>(LangManager::tr("Loading save file"));
+	getContext().eventManager.emit<LoadingStateChange>("Loading save file");
 	try
 	{
 		//Parse the level data
@@ -497,9 +502,9 @@ void GameState::initWorld(const std::string& file)
 				//Assign to root the new entity
 				root["entities"][entityName] = entity;
 				if(entity.isMember("name"))
-					getContext().eventManager.emit<LoadingStateChange>(LangManager::tr("Loading") + L" " + LangManager::tr(entity["name"].asString()));
+					getContext().eventManager.emit<LoadingStateChange>("Loading " + entity["name"].asString());
 				else
-					getContext().eventManager.emit<LoadingStateChange>(LangManager::tr("Loading") + L" " + LangManager::tr(entityName));
+					getContext().eventManager.emit<LoadingStateChange>("Loading " + entityName);
 				if(entity.isMember("transforms"))
 					deserialize(entity["transforms"], m_entities[entityName].assign<TransformComponent>());
 				if(entity.isMember("sprites"))
@@ -589,7 +594,7 @@ void GameState::initWorld(const std::string& file)
 					//Load the texture
 					//Identifier of the texture, in format "level_plan_texture"
 					const std::string textureIdentifier{fileTexture + "_" + std::to_string(i)};
-					getContext().eventManager.emit<LoadingStateChange>(LangManager::tr("Loading plan") + L" " + std::wstring(groupOfReplacesName.begin(), groupOfReplacesName.end()));
+					getContext().eventManager.emit<LoadingStateChange>("Loading plan " + groupOfReplacesName);
 					texManager.load<sf::IntRect>(textureIdentifier, path, originRect);
 					//Replaces
 					const Json::Value replaces{image["replaces"]};
@@ -650,7 +655,7 @@ void GameState::initWorld(const std::string& file)
 					int currentChunkSize{chunkSize};
 					if(j >= planLength/chunkSize)
 						currentChunkSize = planLength - chunkSize*j;
-					getContext().eventManager.emit<LoadingStateChange>(LangManager::tr("Loading plan") + L" " + std::to_wstring(i+1));
+					getContext().eventManager.emit<LoadingStateChange>("Loading plan " + std::to_string(i+1));
 					texManager.load<sf::IntRect>(textureIdentifier, path, sf::IntRect(j*chunkSize, 0, currentChunkSize, int(float(m_levelRect.height)*getContext().parameters.scale)));
 					//Create an entity
 					m_sceneEntities.emplace(textureIdentifier, getContext().entityManager.create());
@@ -675,7 +680,7 @@ void GameState::initWorld(const std::string& file)
 		//joints
 		if(root.isMember("joints"))
 		{
-			getContext().eventManager.emit<LoadingStateChange>(LangManager::tr("Assembling entities"));
+			getContext().eventManager.emit<LoadingStateChange>("Assembling entities");
 			const Json::Value joints{root["joints"]};
 			if(joints.isMember("revolute joints"))
 			{
@@ -1045,7 +1050,7 @@ void GameState::initWorld(const std::string& file)
 		getContext().player.handleInitialInputState();
 		getContext().world.SetContactListener(&m_contactListener);
 		requestStackPop();
-		getContext().eventManager.emit<LoadingStateChange>(LangManager::tr("Loading HUD"));
+		getContext().eventManager.emit<LoadingStateChange>("Loading HUD");
 		size_t entitiesNumber{0};
 		for(auto& entity : m_entities)
 			if(entity.second.has_component<HealthComponent>() and not isPlayer(entity.second))

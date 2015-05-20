@@ -24,6 +24,7 @@ namespace entityx
 }
 class StateStack;
 struct Transform;
+struct ParametersChange;
 
 /// State that effectively play the game.
 /// The game become really interesting here.
@@ -55,7 +56,14 @@ class OpenInventoryState : public State
         /// \note The closing window and resinzing window events are already handled by the Application class.
 		virtual bool handleEvent(const sf::Event& event);
 
+		/// Receive an event about a change in the parameters.
+		/// \param parametersChange The data about the change.
+		void receive(const ParametersChange& parametersChange);
+
 	private:
+		/// Reset all texts in the buttons and other widgets.
+		void resetTexts();
+
 		/// Hold GUI widgets to represent an item in the inventory.
 		struct ItemWidget
 		{
@@ -64,6 +72,7 @@ class OpenInventoryState : public State
 			tgui::Panel::Ptr background;///< The background of the item.
 			tgui::Picture::Ptr picture; ///< The image of the item.
 			tgui::Label::Ptr caption;   ///< A label with the naim of the item.
+			entityx::Entity item;       ///< The represented item.
 		};
 		entityx::Entity m_entity;           ///< Entity of which open the inventory.
 		tgui::Panel::Ptr m_background;      ///< Background of the whole inventory window.

@@ -13,9 +13,11 @@
 LoadingState::LoadingState(StateStack& stack):
 	State(stack),
 	m_sentenceLabel{nullptr},
+	m_sentence{""},
 	m_hintLabel{nullptr}
 {
 	getContext().eventManager.subscribe<LoadingStateChange>(*this);
+	getContext().eventManager.subscribe<ParametersChange>(*this);
 	std::ifstream fileStream("resources/lang/hints");
 	if(not fileStream.is_open())//If failed to open the file
 		throw std::runtime_error("Unable to open hints file: resources/lang/hints");
@@ -53,7 +55,6 @@ LoadingState::LoadingState(StateStack& stack):
 		m_background->setBackgroundColor(sf::Color(255, 255, 255, 100));
 		gui.add(m_background);
 
-		m_sentence = L"...";
 		m_sentenceLabel = tgui::Label::create();
 		m_sentenceLabel->setText(m_sentence);
 		m_sentenceLabel->setTextSize(20);
@@ -97,7 +98,20 @@ void LoadingState::receive(const LoadingStateChange &loadingStateChange)
 {
 	if(m_sentenceLabel)
 	{
-		m_sentence = loadingStateChange.sentence + L"...";
-		m_sentenceLabel->setText(m_sentence);
+		m_sentence = loadingStateChange.sentence;
+		resetTexts();
 	}
+}
+
+void LoadingState::resetTexts()
+{
+	if(m_sentenceLabel)
+		m_sentenceLabel->setText(LangManager::tr(m_sentence) + L"...");
+}
+
+
+void LoadingState::receive(const ParametersChange& parametersChange)
+{
+	if(parametersChange.langChanged)
+		resetTexts();
 }

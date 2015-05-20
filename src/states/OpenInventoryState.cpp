@@ -8,6 +8,7 @@
 #include <TheLostGirl/Parameters.h>
 #include <TheLostGirl/Player.h>
 #include <TheLostGirl/components.h>
+#include <TheLostGirl/events.h>
 
 #include <TheLostGirl/states/OpenInventoryState.h>
 
@@ -16,6 +17,7 @@ OpenInventoryState::OpenInventoryState(StateStack& stack, entityx::Entity entity
 	m_entity(entity),
 	m_background{nullptr}
 {
+	getContext().eventManager.subscribe<ParametersChange>(*this);
 	using tgui::bindWidth;
 	using tgui::bindHeight;
 	using tgui::bindLeft;
@@ -29,10 +31,6 @@ OpenInventoryState::OpenInventoryState(StateStack& stack, entityx::Entity entity
 	gui.add(m_background);
 
 	m_entityName = tgui::Label::create();
-	if(entity.has_component<NameComponent>())
-		m_entityName->setText(entity.component<NameComponent>()->name);
-	else
-		m_entityName->setText("");
 	m_entityName->setTextColor(sf::Color::Black);
 	m_entityName->setTextSize(35);
 	m_entityName->setPosition(bindWidth(m_background, 0.5f) - bindWidth(m_entityName, 0.5f), bindHeight(m_background, 0.125f));
@@ -55,14 +53,15 @@ OpenInventoryState::OpenInventoryState(StateStack& stack, entityx::Entity entity
 		itemWidget.background->add(itemWidget.picture);
 		itemWidget.picture->move(bindWidth(itemWidget.background, 0.08333333f), bindHeight(itemWidget.background, 0.08333333f));
 		itemWidget.caption = tgui::Label::create();
-		itemWidget.caption->setText(type);
 		itemWidget.caption->setTextColor(sf::Color::Black);
 		itemWidget.background->add(itemWidget.caption);
+		itemWidget.item = entityItem;
 		m_grid->addWidget(itemWidget.background, rowCounter, columnCounter);
 		m_itemWidgets.push_back(itemWidget);
 		rowCounter = (++itemCounter) / 8;
 		columnCounter = itemCounter % 8;
 	}
+	resetTexts();
 }
 
 OpenInventoryState::~OpenInventoryState()
@@ -88,6 +87,27 @@ bool OpenInventoryState::handleEvent(const sf::Event& event)
 	}
 	return false;
 }
+
+void OpenInventoryState::receive(const ParametersChange& parametersChange)
+{
+	if(parametersChange.langChanged)
+		resetTexts();
+}
+
+void OpenInventoryState::resetTexts()
+{
+	if(m_entityName)
+	{
+		if(m_entity.has_component<NameComponent>())
+			m_entityName->setText(LangManager::tr(m_entity.component<NameComponent>()->name));
+		else
+			m_entityName->setText("");
+	}
+	for(ItemWidget& itemWidget : m_itemWidgets)
+		if(itemWidget.caption)
+			itemWidget.caption->setText(LangManager::tr(itemWidget.item.component<ItemComponent>()->type));
+}
+
 
 OpenInventoryState::ItemWidget::~ItemWidget()
 {}
