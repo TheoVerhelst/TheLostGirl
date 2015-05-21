@@ -75,6 +75,7 @@ void StateStack::applyPendingChanges()
 
 StateStack::Context::Context(Parameters& _parameters,
 						sf::RenderWindow& _window,
+						sf::RenderTexture& _postEffectsTexture,
 						TextureManager& _textureManager,
 						FontManager& _fontManager,
 						ScriptManager& _scriptManager,
@@ -87,6 +88,7 @@ StateStack::Context::Context(Parameters& _parameters,
 						):
 	parameters(_parameters),
 	window(_window),
+	postEffectsTexture(_postEffectsTexture),
 	textureManager(_textureManager),
 	fontManager(_fontManager),
 	scriptManager(_scriptManager),

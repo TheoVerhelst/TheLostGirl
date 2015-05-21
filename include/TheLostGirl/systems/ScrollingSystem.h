@@ -42,11 +42,13 @@ class ScrollingSystem : public entityx::System<ScrollingSystem>
 		void update(entityx::EntityManager &es, entityx::EventManager &events, double dt) override;
 
 	private:
-		entityx::Entity m_player;  ///< The player entity, it is fulfilled with searchPlayer().
-		sf::RenderWindow& m_window;///< SFML's window of wich set the view.
-		float& m_scale;            ///< Current scale of graphics and  images.
-		sf::IntRect m_levelRect;   ///< Rectangle defining the level bounds.
-		float m_referencePlan;     ///< Number of the plan where actors evolute.
+		entityx::Entity m_player;    ///< The player entity, it is fulfilled with searchPlayer().
+		sf::RenderWindow& m_window;  ///< SFML's window of wich set the view.
+		sf::RenderTexture& m_texture;///< Render texture of wich set the view, if bloom is enabled.
+		bool& m_bloomEnabled;        ///< Indicates whether the bloom effect is enabled
+		float& m_scale;              ///< Current scale of graphics and  images.
+		sf::IntRect m_levelRect;     ///< Rectangle defining the level bounds.
+		float m_referencePlan;       ///< Number of the plan where actors evolute.
 };
 
 #endif//SCROLLINGSYSTEM_H

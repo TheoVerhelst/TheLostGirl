@@ -139,7 +139,19 @@ void ParametersState::applyChanges()
 	if(langChanged)
 		LangManager::setLang(fromString(m_langComboBox->getSelectedItem()));
 	if(bloomEnabledChanged)
+	{
+		if(m_bloomCheckbox->isChecked())
+		{
+			getContext().postEffectsTexture.setView(getContext().window.getView());
+			getContext().window.setView(getContext().window.getDefaultView());
+		}
+		else
+		{
+			getContext().window.setView(getContext().postEffectsTexture.getView());
+			getContext().postEffectsTexture.setView(getContext().postEffectsTexture.getDefaultView());
+		}
 		getContext().parameters.bloomEnabled = m_bloomCheckbox->isChecked();
+	}
 	if(resolutionChanged)
 		getContext().parameters.scaleIndex = scaleIndex;
 	if(langChanged or bloomEnabledChanged or resolutionChanged)

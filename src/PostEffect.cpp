@@ -10,7 +10,7 @@ PostEffect::~PostEffect()
 
 void PostEffect::applyShader(const sf::Shader& shader, sf::RenderTarget& output, const sf::RenderStates& states)
 {
-	sf::Vector2f outputSize = static_cast<sf::Vector2f>(output.getSize());
+	sf::Vector2f outputSize = output.getDefaultView().getSize();
 
 	sf::VertexArray vertices(sf::TrianglesStrip, 4);
 	vertices[0] = sf::Vertex(sf::Vector2f(0, 0), sf::Vector2f(0, 1));

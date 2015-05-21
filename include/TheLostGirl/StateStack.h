@@ -12,6 +12,7 @@ namespace sf
 	class Event;
 	class Time;
 	class RenderWindow;
+	class RenderTexture;
 	class Font;
 	class Texture;
 }
@@ -51,6 +52,7 @@ class StateStack : private sf::NonCopyable
 			/// Default constructor
 			/// \param _parameters Structure containing all the game parameters.
 			/// \param _window The main window.
+			/// \param _postEffectsTexture Texture for rendering posteffects.
 			/// \param _textureManager The textures manager.
 			/// \param _fontManager The fonts manager.
 			/// \param _scriptManager The scripts manager.
@@ -62,6 +64,7 @@ class StateStack : private sf::NonCopyable
 			/// \param _player The input manager.
 			Context(Parameters& _parameters,
 					sf::RenderWindow& _window,
+					sf::RenderTexture& _postEffectsTexture,
 					TextureManager& _textureManager,
 					FontManager& _fontManager,
 					ScriptManager& _scriptManager,
@@ -74,6 +77,7 @@ class StateStack : private sf::NonCopyable
 				);
 			Parameters& parameters;               ///< Structure containing all the game parameters.
 			sf::RenderWindow& window;             ///< The main window.
+			sf::RenderTexture& postEffectsTexture;///< Texture for rendering posteffects.
 			TextureManager& textureManager;       ///< The textures manager.
 			FontManager& fontManager;             ///< The fonts manager.
 			ScriptManager& scriptManager;         ///< The scripts manager.

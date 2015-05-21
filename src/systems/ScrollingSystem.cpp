@@ -14,6 +14,8 @@
 
 ScrollingSystem::ScrollingSystem(StateStack::Context context):
 	m_window(context.window),
+	m_texture(context.postEffectsTexture),
+	m_bloomEnabled(context.parameters.bloomEnabled),
 	m_scale(context.parameters.scale),
 	m_levelRect{0, 0, 0, 0}
 {}
@@ -26,7 +28,7 @@ void ScrollingSystem::update(entityx::EntityManager& entityManager, entityx::Eve
 		sf::Vector2f playerPosition;
 		//Find the main body
 		playerPosition = {transformComponent->transforms.at("main").x, transformComponent->transforms.at("main").y};
-		sf::View view{m_window.getView()};
+		sf::View view{m_bloomEnabled ? m_texture.getView() : m_window.getView()};
 		sf::Vector2f halfViewSize{view.getSize()/(m_scale*2.f)};
 		//Compute the maximum and minimum center coordinates that the view can have
 		sf::Vector2f viewCenterMin{sf::Vector2f(float(m_levelRect.left), float(m_levelRect.top))+halfViewSize};
@@ -37,7 +39,10 @@ void ScrollingSystem::update(entityx::EntityManager& entityManager, entityx::Eve
 
 		//Assign the position to the view
 		view.setCenter(playerPosition*m_scale);
-		m_window.setView(view);
+		if(m_bloomEnabled)
+			m_texture.setView(view);
+		else
+			m_window.setView(view);
 
 		//The position of the screen in world coordinates
 		const sf::Vector2f viewPos{playerPosition - viewCenterMin};

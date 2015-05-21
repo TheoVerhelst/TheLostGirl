@@ -13,6 +13,7 @@
 Application::Application(bool debugMode):
 	m_parameters{},
 	m_window{},
+	m_postEffectsTexture{},
 	m_gui{},
 	m_textureManager{},
 	m_fontManager{},
@@ -21,7 +22,7 @@ Application::Application(bool debugMode):
 	m_entityManager{m_eventManager},
 	m_systemManager{m_entityManager, m_eventManager},
 	m_world{m_parameters.gravity},
-	m_stateStack{StateStack::Context{m_parameters, m_window, m_textureManager, m_fontManager, m_scriptManager,
+	m_stateStack{StateStack::Context{m_parameters, m_window, m_postEffectsTexture, m_textureManager, m_fontManager, m_scriptManager,
 									m_gui, m_eventManager, m_entityManager, m_systemManager, m_world, m_player}},
 	m_player(m_stateStack),
 	m_debugDraw(m_stateStack.getContext()),
@@ -40,12 +41,14 @@ Application::Application(bool debugMode):
 		std::cerr << "\"" + file + "\": " + reader.getFormattedErrorMessages() << "\n"
 				  << "Loaded default settings.\n";
 		m_window.create({640, 360}, "The Lost Girl");
+		m_postEffectsTexture.create(640, 360);
 	}
 	else if(!reader.parse(modelFile, model))//report to the user the failure and their locations in the document.
 	{
 		std::cerr << "\"settingsModel.json\": " + reader.getFormattedErrorMessages() << "\n"
 				  << "Loaded default settings.\n";
 		m_window.create({640, 360}, "The Lost Girl");
+		m_postEffectsTexture.create(640, 360);
 	}
 	else
 	{
@@ -82,7 +85,7 @@ Application::Application(bool debugMode):
 				break;
 		}
 		m_window.create(mode, "The Lost Girl");
-//		m_texture.create(mode.width, mode.height);
+		m_postEffectsTexture.create(mode.width, mode.height);
 		m_window.setSize({settings["window size"]["w"].asUInt(), settings["window size"]["h"].asUInt()});
 		m_parameters.bloomEnabled = settings["enable bloom"].asBool();
 	}
@@ -151,7 +154,6 @@ int Application::init()
 		m_world.SetDebugDraw(&m_debugDraw);//Set the debug drawer
 		m_debugDraw.SetFlags(b2Draw::e_shapeBit|b2Draw::e_jointBit);//Debug drawing flags
 		m_systemManager.configure();//Init the manager
-//		m_stateStack.pushState(States::EmptyLevel);//Add an empty level loading
 		m_stateStack.pushState<IntroState>();//And add the intro state on top of it
 	}
 	catch(std::runtime_error& e)

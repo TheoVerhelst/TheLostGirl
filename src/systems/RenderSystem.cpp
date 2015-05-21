@@ -12,12 +12,11 @@
 
 RenderSystem::RenderSystem(StateStack::Context context):
 	m_window(context.window),
-	m_texture{},
+	m_texture(context.postEffectsTexture),
 	m_bloomEnabled(context.parameters.bloomEnabled),
 	m_bloomEffect{},
 	m_postEffectSupported{PostEffect::isSupported()}
 {
-	m_texture.create(m_window.getSize().x, m_window.getSize().y);
 }
 
 void RenderSystem::update(entityx::EntityManager& entityManager, entityx::EventManager&, double)
@@ -42,8 +41,6 @@ void RenderSystem::update(entityx::EntityManager& entityManager, entityx::EventM
 	//Draw the texture and the GUI on the window and display
 	if(m_postEffectSupported and m_bloomEnabled)
 	{
-		const sf::View& windowView(m_window.getView());
-		const sf::FloatRect viewRect(windowView.getCenter()-windowView.getSize()/2.f, windowView.getSize());
 		m_texture.clear({255, 0, 0});
 		//For each plan, in the reverse order
 		for(auto it(orderedEntities.crbegin()); it != orderedEntities.crend(); it++)
@@ -52,9 +49,8 @@ void RenderSystem::update(entityx::EntityManager& entityManager, entityx::EventM
 				//Draw on the texture
 				m_texture.draw(*sprite);
 		m_texture.display();
-		m_texture.setView(windowView);
 		//Draw the texture on the window trough the bloom effect
-		m_bloomEffect.apply(m_texture, m_window, sf::Transform().translate(viewRect.left, viewRect.top));
+		m_bloomEffect.apply(m_texture, m_window);
 	}
 	else
 	{
