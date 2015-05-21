@@ -74,5 +74,5 @@ void IntroState::receive(const ParametersChange& parametersChange)
 
 void IntroState::resetTexts()
 {
-	m_sentence->setText(LangManager::tr("Press any key to continue..."));
+	m_sentence->setText(getContext().langManager.tr("Press any key to continue..."));
 }

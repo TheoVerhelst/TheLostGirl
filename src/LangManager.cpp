@@ -9,7 +9,7 @@ void LangManager::setLang(Lang newLang)
 	loadLang(m_lang);
 }
 
-std::wstring LangManager::tr(const std::string& entryName)
+std::wstring LangManager::tr(const std::string& entryName) const
 {
 	if(m_entries.count(entryName) > 0)
 		return m_entries[entryName];
@@ -17,7 +17,7 @@ std::wstring LangManager::tr(const std::string& entryName)
 		return std::wstring(entryName.begin(), entryName.end());
 }
 
-Lang LangManager::getLang()
+Lang LangManager::getLang() const
 {
 	return m_lang;
 }

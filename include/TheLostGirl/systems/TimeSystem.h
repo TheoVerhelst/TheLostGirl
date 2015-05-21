@@ -93,6 +93,8 @@ class TimeSystem : public entityx::System<TimeSystem>
 		std::mt19937 m_gen;				  ///< Generate a sequence of numbers from the seed.
 		std::uniform_real_distribution<float> m_transitionLenghtDis;///< Distribute the sequence uniformely.
 		std::uniform_real_distribution<float> m_strengthDis;///< Same as above.
+
+		const LangManager& m_langManager;
 };
 
 #endif//TIMESYSTEM_H

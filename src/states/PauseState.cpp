@@ -107,10 +107,10 @@ void PauseState::receive(const ParametersChange& parametersChange)
 
 void PauseState::resetTexts()
 {
-	m_pauseLabel->setText(LangManager::tr("Pause"));
-	m_backToGameButton->setText(LangManager::tr("Back to game"));
-	m_goToOptionsButton->setText(LangManager::tr("Parameters"));
-	m_backToMainMenuButton->setText(LangManager::tr("Back to main menu"));
+	m_pauseLabel->setText(getContext().langManager.tr("Pause"));
+	m_backToGameButton->setText(getContext().langManager.tr("Back to game"));
+	m_goToOptionsButton->setText(getContext().langManager.tr("Parameters"));
+	m_backToMainMenuButton->setText(getContext().langManager.tr("Back to main menu"));
 }
 
 

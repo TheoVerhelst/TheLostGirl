@@ -64,7 +64,7 @@ LoadingState::LoadingState(StateStack& stack):
 		gui.add(m_sentenceLabel);
 
 		m_hintLabel = tgui::Label::create();
-		m_hintLabel->setText(LangManager::tr(line));
+		m_hintLabel->setText(getContext().langManager.tr(line));
 		m_hintLabel->setTextSize(30);
 		//Center the label
 		m_hintLabel->setPosition((bindWidth(gui) - bindWidth(m_hintLabel))/2.f, bindHeight(gui, 0.38f));
@@ -106,7 +106,7 @@ void LoadingState::receive(const LoadingStateChange &loadingStateChange)
 void LoadingState::resetTexts()
 {
 	if(m_sentenceLabel)
-		m_sentenceLabel->setText(LangManager::tr(m_sentence) + L"...");
+		m_sentenceLabel->setText(getContext().langManager.tr(m_sentence) + L"...");
 }
 
 

@@ -18,33 +18,32 @@ enum Lang
 
 /// Language manager that translate strings.
 /// It translate a std::string in english to a std::wtring in the langage defined by setLang.
-/// If no langage is set, it will return L"Entry not found." at every call of LangManager::tr.
+/// If an error occurs, such as when no language is set or when no translation in found, the original string is returned.
 class LangManager
 {
 	public:
         /// Set the current lang.
-        /// This function is static, so it should be called by only one user.
         /// The lang file is automaticaly loaded by the manager.
         /// \param newLang Lang to load
         /// \return void
-		static void setLang(Lang newLang);
+		void setLang(Lang newLang);
 
         /// Return the current lang.
         /// \return Lang
-		static Lang getLang();
+		Lang getLang() const;
 
         /// Translate the given string.
         ///	The \a entryName must be an entry in the lang file, and be in english.
-        /// Write LangManager::tr() around every in-game text.
+        /// Should be called for every in-game text.
         /// \param entryName const std::string&
-        /// \return The translated wide string if the string can be translated, or a default error string in the current lang otherwise.
-		static std::wstring tr(const std::string& entryName);
+        /// \return The translated wide string if the string can be translated, or entryName as std::wstring otherwise.
+		std::wstring tr(const std::string& entryName) const;
 
 	private:
 		/// Load the data related to the given lang.
 		/// \param langToLoad Lang to load.
 		static void loadLang(Lang langToLoad);
-		
+
 		static Lang m_lang;                                  ///< The current lang.
 		static std::map<std::string, std::wstring> m_entries;///< Translations related to the current lang.
 };

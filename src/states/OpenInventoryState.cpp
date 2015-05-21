@@ -99,13 +99,13 @@ void OpenInventoryState::resetTexts()
 	if(m_entityName)
 	{
 		if(m_entity.has_component<NameComponent>())
-			m_entityName->setText(LangManager::tr(m_entity.component<NameComponent>()->name));
+			m_entityName->setText(getContext().langManager.tr(m_entity.component<NameComponent>()->name));
 		else
 			m_entityName->setText("");
 	}
 	for(ItemWidget& itemWidget : m_itemWidgets)
 		if(itemWidget.caption)
-			itemWidget.caption->setText(LangManager::tr(itemWidget.item.component<ItemComponent>()->type));
+			itemWidget.caption->setText(getContext().langManager.tr(itemWidget.item.component<ItemComponent>()->type));
 }
 
 

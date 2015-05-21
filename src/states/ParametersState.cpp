@@ -57,7 +57,7 @@ ParametersState::ParametersState(StateStack& stack) :
 	m_langComboBox->addItem(toString(EN));
 	m_langComboBox->addItem(toString(IT));
 	m_langComboBox->addItem(toString(NL));
-	m_langComboBox->setSelectedItem(toString(LangManager::getLang()));
+	m_langComboBox->setSelectedItem(toString(getContext().langManager.getLang()));
 	m_langComboBox->setPosition(bindWidth(m_background, 0.5f), bindHeight(m_background, 0.4f));
 	m_langComboBox->setSize(bindWidth(m_background, 0.4f), 30.f);
 	m_background->add(m_langComboBox);
@@ -132,12 +132,12 @@ void ParametersState::backToPause()
 
 void ParametersState::applyChanges()
 {
-	bool langChanged{LangManager::getLang() != fromString(m_langComboBox->getSelectedItem())};
+	bool langChanged{getContext().langManager.getLang() != fromString(m_langComboBox->getSelectedItem())};
 	bool bloomEnabledChanged{getContext().parameters.bloomEnabled != m_bloomCheckbox->isChecked()};
 	const unsigned int scaleIndex{unsigned(std::stoi(m_resolutionComboBox->getSelectedItemId().toAnsiString()))};
 	bool resolutionChanged{getContext().parameters.scaleIndex != scaleIndex};
 	if(langChanged)
-		LangManager::setLang(fromString(m_langComboBox->getSelectedItem()));
+		getContext().langManager.setLang(fromString(m_langComboBox->getSelectedItem()));
 	if(bloomEnabledChanged)
 	{
 		if(m_bloomCheckbox->isChecked())
@@ -161,19 +161,19 @@ void ParametersState::applyChanges()
 void ParametersState::resetTexts()
 {
 	if(m_title)
-		m_title->setText(LangManager::tr("Parameters"));
+		m_title->setText(getContext().langManager.tr("Parameters"));
 	if(m_resolutionLabel)
-		m_resolutionLabel->setText(LangManager::tr("Resolution"));
+		m_resolutionLabel->setText(getContext().langManager.tr("Resolution"));
 	if(m_langLabel)
-		m_langLabel->setText(LangManager::tr("Lang"));
+		m_langLabel->setText(getContext().langManager.tr("Lang"));
 	if(m_bloomLabel)
-		m_bloomLabel->setText(LangManager::tr("Bloom effect"));
+		m_bloomLabel->setText(getContext().langManager.tr("Bloom effect"));
 	if(m_applyButton)
-		m_applyButton->setText(LangManager::tr("Apply"));
+		m_applyButton->setText(getContext().langManager.tr("Apply"));
 	if(m_cancelButton)
-		m_cancelButton->setText(LangManager::tr("Cancel"));
+		m_cancelButton->setText(getContext().langManager.tr("Cancel"));
 	if(m_okButton)
-		m_okButton->setText(LangManager::tr("OK"));
+		m_okButton->setText(getContext().langManager.tr("OK"));
 }
 
 sf::String ParametersState::toString(Lang lang)

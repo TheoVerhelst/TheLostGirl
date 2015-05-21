@@ -64,6 +64,7 @@ class Application
 		TextureManager m_textureManager;       ///< The texture manager.
 		FontManager m_fontManager;             ///< The fonts manager.
 		ScriptManager m_scriptManager;         ///< The scripts manager.
+		LangManager m_langManager;             ///< The lang manager.
 		entityx::EventManager m_eventManager;  ///< The entity events manager.
 		entityx::EntityManager m_entityManager;///< The entity manager.
 		entityx::SystemManager m_systemManager;///< The entity systems manager.

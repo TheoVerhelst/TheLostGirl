@@ -18,12 +18,13 @@ Application::Application(bool debugMode):
 	m_textureManager{},
 	m_fontManager{},
 	m_scriptManager{},
+	m_langManager{},
 	m_eventManager{},
 	m_entityManager{m_eventManager},
 	m_systemManager{m_entityManager, m_eventManager},
 	m_world{m_parameters.gravity},
 	m_stateStack{StateStack::Context{m_parameters, m_window, m_postEffectsTexture, m_textureManager, m_fontManager, m_scriptManager,
-									m_gui, m_eventManager, m_entityManager, m_systemManager, m_world, m_player}},
+									m_langManager, m_gui, m_eventManager, m_entityManager, m_systemManager, m_world, m_player}},
 	m_player(m_stateStack),
 	m_debugDraw(m_stateStack.getContext()),
 	m_FPSTimer(),
@@ -56,9 +57,9 @@ Application::Application(bool debugMode):
 		parse(settings, model, "root", "root");
 		sf::VideoMode mode;
 		if(settings["lang"].asString() == "FR")
-			LangManager::setLang(FR);
+			m_langManager.setLang(FR);
 		else if(settings["lang"].asString() == "EN")
-			LangManager::setLang(EN);
+			m_langManager.setLang(EN);
 
 		switch(settings["resolution"].asInt())
 		{
@@ -111,9 +112,9 @@ Application::~Application()
 	std::string file("settings.json");
 	std::ofstream settingsFileStream(file, std::ofstream::binary);
 
-	if(LangManager::getLang() == FR)
+	if(m_langManager.getLang() == FR)
 		settings["lang"] = "FR";
-	else if(LangManager::getLang() == EN)
+	else if(m_langManager.getLang() == EN)
 		settings["lang"] = "EN";
 
 	switch(m_parameters.scaleIndex)

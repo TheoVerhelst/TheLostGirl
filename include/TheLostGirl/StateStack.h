@@ -37,6 +37,7 @@ typedef ResourceManager<Interpreter, std::string> ScriptManager;
 class b2World;
 class Player;
 struct State;
+class LangManager;
 
 /// States manager.
 /// This class holds all the game or menu state and manages them.
@@ -56,6 +57,7 @@ class StateStack : private sf::NonCopyable
 			/// \param _textureManager The textures manager.
 			/// \param _fontManager The fonts manager.
 			/// \param _scriptManager The scripts manager.
+			/// \param _langManager The lang manager.
 			/// \param _gui The main GUI manager.
 			/// \param _eventManager The event manager of the entity system.
 			/// \param _entityManager The entity manager of the entity system.
@@ -68,6 +70,7 @@ class StateStack : private sf::NonCopyable
 					TextureManager& _textureManager,
 					FontManager& _fontManager,
 					ScriptManager& _scriptManager,
+					LangManager& _langManager,
 					tgui::Gui& _gui,
 					entityx::EventManager& _eventManager,
 					entityx::EntityManager& _entityManager,
@@ -81,6 +84,7 @@ class StateStack : private sf::NonCopyable
 			TextureManager& textureManager;       ///< The textures manager.
 			FontManager& fontManager;             ///< The fonts manager.
 			ScriptManager& scriptManager;         ///< The scripts manager.
+			LangManager& langManager;             ///< The lang manager.
 			tgui::Gui& gui;                       ///< The main GUI manager.
 			entityx::EventManager& eventManager;  ///< The event manager of the entity system.
 			entityx::EntityManager& entityManager;///< The entity manager of the entity system
