@@ -41,7 +41,7 @@ void RenderSystem::update(entityx::EntityManager& entityManager, entityx::EventM
 	//Draw the texture and the GUI on the window and display
 	if(m_postEffectSupported and m_bloomEnabled)
 	{
-		m_texture.clear({255, 0, 0});
+		m_texture.clear({197, 182, 108});
 		//For each plan, in the reverse order
 		for(auto it(orderedEntities.crbegin()); it != orderedEntities.crend(); it++)
 			//Draw the entities of this plan

@@ -97,7 +97,10 @@ Application::Application(bool debugMode):
 	sf::View view{m_window.getDefaultView()};
 	sf::Event::SizeEvent se{m_window.getSize().x, m_window.getSize().y};
 	view.setViewport(handleResize(se));
-	m_window.setView(view);
+	if(m_parameters.bloomEnabled)
+		m_postEffectsTexture.setView(view);
+	else
+		m_window.setView(view);
 	m_gui.setView(view);
 }
 
@@ -173,7 +176,14 @@ int Application::run()
 		while(m_window.isOpen())
 		{
 			processInput();
-			timeSinceLastUpdate += clock.restart();
+			sf::Time dt = clock.restart();
+			m_FPSTimer += dt;
+			if(m_FPSTimer > m_FPSRefreshRate)
+			{
+				m_debugDraw.setFPS(1.f/dt.asSeconds());
+				m_FPSTimer %= m_FPSRefreshRate;
+			}
+			timeSinceLastUpdate += dt;
 			while(timeSinceLastUpdate > m_frameTime)
 			{
 				timeSinceLastUpdate -= m_frameTime;
@@ -211,7 +221,10 @@ void Application::processInput()
 		{
 			sf::View view{m_window.getDefaultView()};
 			view.setViewport(handleResize(event.size));
-			m_window.setView(view);
+			if(m_parameters.bloomEnabled)
+				m_postEffectsTexture.setView(view);
+			else
+				m_window.setView(view);
 			m_gui.setView(view);
 		}
 		m_stateStack.handleEvent(event);
@@ -222,12 +235,6 @@ void Application::processInput()
 void Application::update(sf::Time dt)
 {
 	m_stateStack.update(dt);
-	m_FPSTimer += dt;
-	if(m_FPSTimer > m_FPSRefreshRate)
-	{
-		m_debugDraw.setFPS(1.f/dt.asSeconds());
-		m_FPSTimer %= m_FPSRefreshRate;
-	}
 }
 
 void Application::render()

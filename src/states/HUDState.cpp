@@ -112,7 +112,11 @@ bool HUDState::update(sf::Time dt)
 	//Get the wind strength and compute the wind ath
 	const float scale{getContext().parameters.scale};
 	const float windStrength{cap(getContext().systemManager.system<TimeSystem>()->getWindStrength()/5.f, -1.f, 1.f)};
-	const sf::RenderWindow& window(getContext().window);
+	sf::Vector2f viewPos;
+	if(getContext().parameters.bloomEnabled)
+		viewPos = getContext().postEffectsTexture.getView().getCenter() - getContext().postEffectsTexture.getDefaultView().getCenter();
+	else
+		viewPos = getContext().window.getView().getCenter() - getContext().window.getDefaultView().getCenter();
 
 	for(auto& barPair : m_healthBars)
 		barPair.second.timer += dt;
@@ -169,7 +173,7 @@ bool HUDState::update(sf::Time dt)
 			{
 				sf::Vector2f position(transforms.at("main").x, transforms.at("main").y);
 				position *= scale;
-				position -= window.getView().getCenter() - window.getDefaultView().getCenter();
+				position -= viewPos;
 				barPair.second.canvas->setPosition(position);
 			}
 		}

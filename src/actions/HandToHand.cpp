@@ -20,7 +20,8 @@ void HandToHand::operator()(entityx::Entity entity, double) const
 {
 	if(not entity)
 		return;
-	if(entity.has_component<DirectionComponent>() and entity.has_component<HandToHandComponent>())
+	if(entity.has_component<DirectionComponent>() and entity.has_component<HandToHandComponent>()
+		and (not entity.has_component<WalkComponent>() or entity.component<WalkComponent>()->effectiveMovement == Direction::None))
 	{
 		HandToHandComponent::Handle handToHandComponent{entity.component<HandToHandComponent>()};
 		handToHandComponent->lastShoot += handToHandComponent->timer.restart();
