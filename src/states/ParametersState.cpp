@@ -1,4 +1,5 @@
 #include <SFML/Window/Event.hpp>
+#include <SFML/Window/VideoMode.hpp>
 #include <TGUI/Gui.hpp>
 
 #include <TheLostGirl/LangManager.h>
@@ -46,10 +47,8 @@ ParametersState::ParametersState(StateStack& stack) :
 	m_resolutionComboBox->setSize(bindWidth(m_background, 0.4f), 30.f);
 	m_background->add(m_resolutionComboBox);
 
-	m_langLabel = tgui::Label::create();
-	m_langLabel->setTextSize(30);
-	m_langLabel->setPosition(10.f, bindHeight(m_background, 0.4f));
-	m_langLabel->setTextColor(sf::Color::Black);
+	m_langLabel = tgui::Label::copy(m_resolutionLabel);
+	m_langLabel->setPosition(10.f, bindHeight(m_background, 0.3666f));
 	m_background->add(m_langLabel);
 
 	m_langComboBox = tgui::ComboBox::create();
@@ -58,22 +57,81 @@ ParametersState::ParametersState(StateStack& stack) :
 	m_langComboBox->addItem(toString(IT));
 	m_langComboBox->addItem(toString(NL));
 	m_langComboBox->setSelectedItem(toString(getContext().langManager.getLang()));
-	m_langComboBox->setPosition(bindWidth(m_background, 0.5f), bindHeight(m_background, 0.4f));
+	m_langComboBox->setPosition(bindWidth(m_background, 0.5f), bindHeight(m_background, 0.3666f));
 	m_langComboBox->setSize(bindWidth(m_background, 0.4f), 30.f);
 	m_background->add(m_langComboBox);
 
-	m_bloomLabel = tgui::Label::create();
-	m_bloomLabel->setTextSize(30);
-	m_bloomLabel->setPosition(10.f, bindHeight(m_background, 0.5f));
-	m_bloomLabel->setTextColor(sf::Color::Black);
+	m_bloomLabel = tgui::Label::copy(m_resolutionLabel);
+	m_bloomLabel->setPosition(10.f, bindHeight(m_background, 0.4333f));
 	m_background->add(m_bloomLabel);
 
 	m_bloomCheckbox = tgui::Checkbox::create();
 	if(getContext().parameters.bloomEnabled)
 		m_bloomCheckbox->check();
-	m_bloomCheckbox->setPosition(bindWidth(m_background, 0.5f), bindHeight(m_background, 0.5f));
+	m_bloomCheckbox->setPosition(bindWidth(m_background, 0.5f), bindHeight(m_background, 0.4333f));
 	m_background->add(m_bloomCheckbox);
 
+	m_fullscreenLabel = tgui::Label::copy(m_resolutionLabel);
+	m_fullscreenLabel->setPosition(10.f, bindHeight(m_background, 0.5f));
+	m_background->add(m_fullscreenLabel);
+
+	m_fullscreenCheckbox = tgui::Checkbox::create();
+	m_fullscreenCheckbox->setPosition(bindWidth(m_background, 0.5f), bindHeight(m_background, 0.5));
+	m_background->add(m_fullscreenCheckbox);
+
+	m_fullscreenComboBox = tgui::ComboBox::create();
+	for(sf::VideoMode videoMode : sf::VideoMode::getFullscreenModes())
+		if(std::abs(float(videoMode.width)/float(videoMode.height) - 1920.f/1080.f) < 0.01f)
+			m_fullscreenComboBox->addItem(std::to_string(videoMode.width) + "x" + std::to_string(videoMode.height));
+	m_fullscreenComboBox->setPosition(bindWidth(m_background, 0.6f), bindHeight(m_background, 0.5));
+	m_fullscreenComboBox->setSize(bindWidth(m_background, 0.3f), 30.f);
+	m_background->add(m_fullscreenComboBox);
+
+	m_mainVolumeLabel = tgui::Label::copy(m_resolutionLabel);
+	m_mainVolumeLabel->setPosition(10.f, bindHeight(m_background, 0.5666f));
+	m_background->add(m_mainVolumeLabel);
+
+	m_mainVolumeSlider = tgui::Slider::create();
+	m_mainVolumeSlider->setMaximum(100);
+	m_mainVolumeSlider->setPosition(bindWidth(m_background, 0.5f), bindHeight(m_background, 0.5666f));
+	m_mainVolumeSlider->setSize(bindWidth(m_background, 0.4f), 20.f);
+	m_background->add(m_mainVolumeSlider);
+
+	m_musicVolumeLabel = tgui::Label::copy(m_resolutionLabel);
+	m_musicVolumeLabel->setPosition(10.f, bindHeight(m_background, 0.6333f));
+	m_background->add(m_musicVolumeLabel);
+
+	m_musicVolumeSlider = tgui::Slider::copy(m_mainVolumeSlider);
+	m_musicVolumeSlider->setPosition(bindWidth(m_background, 0.5f), bindHeight(m_background, 0.6333f));
+	m_background->add(m_musicVolumeSlider);
+
+	m_effectsVolumeLabel = tgui::Label::copy(m_resolutionLabel);
+	m_effectsVolumeLabel->setPosition(10.f, bindHeight(m_background, 0.7f));
+	m_background->add(m_effectsVolumeLabel);
+
+	m_effectsVolumeSlider = tgui::Slider::copy(m_mainVolumeSlider);
+	m_effectsVolumeSlider->setPosition(bindWidth(m_background, 0.5f), bindHeight(m_background, 0.7f));
+	m_background->add(m_effectsVolumeSlider);
+
+	m_ambianceVolumeLabel = tgui::Label::copy(m_resolutionLabel);
+	m_ambianceVolumeLabel->setPosition(10.f, bindHeight(m_background, 0.7666f));
+	m_background->add(m_ambianceVolumeLabel);
+
+	m_ambianceVolumeSlider = tgui::Slider::copy(m_mainVolumeSlider);
+	m_ambianceVolumeSlider->setPosition(bindWidth(m_background, 0.5f), bindHeight(m_background, 0.7666f));
+	m_background->add(m_ambianceVolumeSlider);
+
+	m_controlsLabel = tgui::Label::copy(m_resolutionLabel);
+	m_controlsLabel->setPosition(10.f, bindHeight(m_background, 0.8333f));
+	m_background->add(m_controlsLabel);
+
+	m_controlsButton = tgui::Button::create();
+	m_controlsButton->setPosition(bindWidth(m_background, 0.5f), bindHeight(m_background, 0.8333f));
+	m_controlsButton->setSize(bindWidth(m_background, 0.4f), 30.f);
+	prettifyButton(m_controlsButton);
+	m_background->add(m_controlsButton);
+
+	//Buttons
 	m_applyButton = tgui::Button::create();
 	m_applyButton->setPosition(bindWidth(m_background, 0.f), bindHeight(m_background, 0.9f));
 	m_applyButton->setSize(bindWidth(m_background, 1.f/3.f), bindHeight(m_background, 0.1f));
@@ -81,18 +139,14 @@ ParametersState::ParametersState(StateStack& stack) :
 	prettifyButton(m_applyButton);
 	m_background->add(m_applyButton);
 
-	m_cancelButton = tgui::Button::create();
+	m_cancelButton = tgui::Button::copy(m_applyButton);
 	m_cancelButton->setPosition(bindWidth(m_background, 1.f/3.f), bindHeight(m_background, 0.9f));
-	m_cancelButton->setSize(bindWidth(m_background, 1.f/3.f), bindHeight(m_background, 0.1f));
 	m_cancelButton->connect("pressed", &ParametersState::backToPause, this);
-	prettifyButton(m_cancelButton);
 	m_background->add(m_cancelButton);
 
-	m_okButton = tgui::Button::create();
+	m_okButton = tgui::Button::copy(m_applyButton);
 	m_okButton->setPosition(bindWidth(m_background, 2.f/3.f), bindHeight(m_background, 0.9f));
-	m_okButton->setSize(bindWidth(m_background, 1.f/3.f), bindHeight(m_background, 0.1f));
 	m_okButton->connect("pressed", [this](){applyChanges(); backToPause();});
-	prettifyButton(m_okButton);
 	m_background->add(m_okButton);
 
 	resetTexts();
@@ -152,10 +206,8 @@ void ParametersState::applyChanges()
 		}
 		getContext().parameters.bloomEnabled = m_bloomCheckbox->isChecked();
 	}
-	if(resolutionChanged)
-		getContext().parameters.scaleIndex = scaleIndex;
 	if(langChanged or bloomEnabledChanged or resolutionChanged)
-		getContext().eventManager.emit<ParametersChange>(langChanged, bloomEnabledChanged, resolutionChanged);
+		getContext().eventManager.emit<ParametersChange>(langChanged, bloomEnabledChanged, resolutionChanged, scaleIndex);
 }
 
 void ParametersState::resetTexts()
@@ -168,6 +220,20 @@ void ParametersState::resetTexts()
 		m_langLabel->setText(getContext().langManager.tr("Lang"));
 	if(m_bloomLabel)
 		m_bloomLabel->setText(getContext().langManager.tr("Bloom effect"));
+	if(m_fullscreenLabel)
+		m_fullscreenLabel->setText(getContext().langManager.tr("Fullscreen"));
+	if(m_mainVolumeLabel)
+		m_mainVolumeLabel->setText(getContext().langManager.tr("Main volume"));
+	if(m_musicVolumeLabel)
+		m_musicVolumeLabel->setText(getContext().langManager.tr("Music volume"));
+	if(m_effectsVolumeLabel)
+		m_effectsVolumeLabel->setText(getContext().langManager.tr("Effects volume"));
+	if(m_ambianceVolumeLabel)
+		m_ambianceVolumeLabel->setText(getContext().langManager.tr("Ambiance volume"));
+	if(m_controlsLabel)
+		m_controlsLabel->setText(getContext().langManager.tr("Controls"));
+	if(m_controlsButton)
+		m_controlsButton->setText(getContext().langManager.tr("Configure"));
 	if(m_applyButton)
 		m_applyButton->setText(getContext().langManager.tr("Apply"));
 	if(m_cancelButton)

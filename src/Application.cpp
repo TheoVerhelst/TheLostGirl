@@ -7,6 +7,7 @@
 #include <TheLostGirl/functions.h>
 #include <TheLostGirl/Command.h>
 #include <TheLostGirl/LangManager.h>
+#include <TheLostGirl/events.h>
 
 #include <TheLostGirl/Application.h>
 
@@ -29,8 +30,10 @@ Application::Application(bool debugMode):
 	m_debugDraw(m_stateStack.getContext()),
 	m_FPSTimer(),
 	m_FPSRefreshRate(sf::milliseconds(50)),
-	m_frameTime{sf::seconds(1.f/60.f)}
+	m_frameTime{sf::seconds(1.f/60.f)},
+	m_newScaleIndex{m_parameters.scaleIndex}
 {
+	m_eventManager.subscribe<ParametersChange>(*this);
 	std::string file("settings.json");
 	Json::Value settings;//Will contains the root value after parsing.
 	Json::Value model;
@@ -117,7 +120,7 @@ Application::~Application()
 	else if(m_langManager.getLang() == EN)
 		settings["lang"] = "EN";
 
-	switch(m_parameters.scaleIndex)
+	switch(m_newScaleIndex)
 	{
 		case 0:
 			settings["resolution"] = 360;
@@ -207,6 +210,12 @@ int Application::run()
 		return 2;
 	}
 	return 0;
+}
+
+void Application::receive(const ParametersChange& parametersChange)
+{
+	if(parametersChange.resolutionChanged)
+		m_newScaleIndex = parametersChange.newScaleIndex;
 }
 
 void Application::processInput()

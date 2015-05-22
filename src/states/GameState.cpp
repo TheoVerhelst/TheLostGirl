@@ -37,7 +37,12 @@
 #include <TheLostGirl/states/GameState.h>
 
 //TODO Faire un système multi texture pour une même partie d'entité (soit chunker une grande image, soit faire plusieurs images).
-//TODO Checker les headers pour ne pas avoir d'include redondants.
+//TODO Component pour la position de combat (parade, attaque, tir, ...).
+//TODO Sound manager.
+//TODO Formule de dégats.
+//TODO Faire un item pour l'arc
+//TODO Retirer la fleche pendant le CAC
+//TODO Differents CAC en fonction du déplacement.
 
 GameState::GameState(StateStack& stack, std::string file) :
 	State(stack),

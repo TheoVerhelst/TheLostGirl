@@ -21,9 +21,11 @@ namespace entityx
 	class SystemManager;
 }
 
+struct ParametersChange;
+
 /// Main game class.
 /// That class holds all the components needed to execute the game (states stack, entity manager, physics engine, ...).
-class Application
+class Application : public entityx::Receiver<Application>
 {
 	public:
 		/// Constructor.
@@ -42,6 +44,10 @@ class Application
         /// This function contains the main game loop.
         /// \return 0 on succes, 1 on undefined program failure or 2 on level loading failure.
 		int run();
+
+		/// Receive an event about a change in the parameters.
+		/// \param parametersChange The data about the change.
+		void receive(const ParametersChange& parametersChange);
 
 	private:
 		/// Various input handling.
@@ -75,7 +81,7 @@ class Application
 		sf::Time m_FPSTimer;                   ///< Count time since last FPS ath update.
 		sf::Time m_FPSRefreshRate;             ///< Refresh rate of the FPS ath.
 		sf::Time m_frameTime;                  ///< The target frame time (1/FPS).
-
+		unsigned int m_newScaleIndex;          ///< The scale index that will be saved in the settings file at the end of the application.
 };
 
 #endif//APPLICATION_H

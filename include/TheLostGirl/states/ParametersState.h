@@ -2,6 +2,7 @@
 #define PARAMETERSSTATE_H
 
 #include <TGUI/Scrollbar.hpp>
+#include <TGUI/Slider.hpp>
 #include <TGUI/Checkbox.hpp>
 #include <TGUI/ComboBox.hpp>
 #include <TGUI/Canvas.hpp>
@@ -58,12 +59,29 @@ class ParametersState : public State
 	private:
 		tgui::Panel::Ptr m_background;           ///< The background of the menu.
 		tgui::Label::Ptr m_title;                ///< The title label of the menu
+
+		//Options
 		tgui::Label::Ptr m_resolutionLabel;      ///< The label of the resolution combo box.
 		tgui::ComboBox::Ptr m_resolutionComboBox;///< The resolution combo box.
 		tgui::Label::Ptr m_langLabel;            ///< The label of the lang combo box.
 		tgui::ComboBox::Ptr m_langComboBox;      ///< The lang combo box.
 		tgui::Label::Ptr m_bloomLabel;           ///< The label of the bloom checkbox.
 		tgui::Checkbox::Ptr m_bloomCheckbox;     ///< The bloom checkbox.
+		tgui::Label::Ptr m_mainVolumeLabel;
+		tgui::Slider::Ptr m_mainVolumeSlider;
+		tgui::Label::Ptr m_musicVolumeLabel;
+		tgui::Slider::Ptr m_musicVolumeSlider;
+		tgui::Label::Ptr m_effectsVolumeLabel;
+		tgui::Slider::Ptr m_effectsVolumeSlider;
+		tgui::Label::Ptr m_ambianceVolumeLabel;
+		tgui::Slider::Ptr m_ambianceVolumeSlider;
+		tgui::Label::Ptr m_fullscreenLabel;
+		tgui::Checkbox::Ptr m_fullscreenCheckbox;
+		tgui::ComboBox::Ptr m_fullscreenComboBox;
+		tgui::Label::Ptr m_controlsLabel;
+		tgui::Button::Ptr m_controlsButton;
+
+		//Buttons
 		tgui::Button::Ptr m_applyButton;         ///< The apply button, at the bottom.
 		tgui::Button::Ptr m_cancelButton;        ///< The cancel button, at the bottom.
 		tgui::Button::Ptr m_okButton;            ///< The ok button, at the bottom.
