@@ -105,8 +105,7 @@ void LoadingState::receive(const LoadingStateChange &loadingStateChange)
 
 void LoadingState::resetTexts()
 {
-	if(m_sentenceLabel)
-		m_sentenceLabel->setText(getContext().langManager.tr(m_sentence) + L"...");
+	m_sentenceLabel->setText(getContext().langManager.tr(m_sentence) + L"...");
 }
 
 

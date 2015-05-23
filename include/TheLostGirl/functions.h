@@ -14,8 +14,6 @@
 //Forward declarations
 namespace sf
 {
-	template <typename T>
-	class Vector2;
 	typedef Vector2<unsigned int> Vector2u;
 	class Color;
 	class Time;
@@ -28,11 +26,16 @@ namespace entityx
 
 /// \file functions.h
 
-/// Calculate a new viewport at each resize of the window.
+/// Calculate a new view for the new size of the window.
+/// Then apply this view to the window or the bloom texture,
+/// depending of whether the bloom is enabled, and to the gui.
 /// That allows the game to keep a 16:9 display ratio.
 /// \param size Resizing event of the window.
-/// \return  A new right sized viewport to apply to the view.
-sf::FloatRect handleResize(sf::Event::SizeEvent size);
+/// \param window The window that has been resized.
+/// \param bloomEnabled Indicates whether the bloom effect is enabled.
+/// \param bloomTexture The texture for rendering the bloom.
+/// \param gui The gui.
+void handleResize(sf::Event::SizeEvent size, sf::RenderWindow& window, bool bloomEnabled, float scale, sf::RenderTexture& bloomTexture, tgui::Gui& gui);
 
 /// Return \a value capped between \a min and \a max.
 /// That function is useful to keep a number between bounds, e.g. the life of a character between 0 and 100.

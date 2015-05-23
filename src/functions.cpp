@@ -6,6 +6,7 @@
 #include <SFML/Graphics/Rect.hpp>
 #include <SFML/System/Time.hpp>
 #include <SFML/Window/Event.hpp>
+#include <TGUI/Gui.hpp>
 #include <dist/json/json.h>
 #include <entityx/Entity.h>
 
@@ -15,12 +16,11 @@
 
 using namespace sf;
 
-FloatRect handleResize(Event::SizeEvent size)
+void handleResize(Event::SizeEvent size, sf::RenderWindow& window, bool bloomEnabled, float scale, sf::RenderTexture& bloomTexture, tgui::Gui& gui)
 {
-	float iw{static_cast<float>(size.width)};
-	float ih{static_cast<float>(size.height)};
+	const float iw{static_cast<float>(size.width)};
+	const float ih{static_cast<float>(size.height)};
 	float fh(ih), fw(iw);//If size is in a 16:9 ratio, it won't change.
-
 	if(iw / 16.f < ih / 9.f) //Taller than a 16:9 ratio
 	{
 		fh = iw * (9.0f / 16.0f);
@@ -31,10 +31,16 @@ FloatRect handleResize(Event::SizeEvent size)
 		fw = ih * (16.0f / 9.0f);
 		fh = ih;
 	}
-
-	float scalex{fw / iw};
-	float scaley{fh / ih};
-	return FloatRect((1 - scalex) / 2.0f, (1 - scaley) / 2.0f, scalex, scaley);
+	const float scalex{fw / iw}, scaley{fh / ih};
+	sf::View view{window.getView()};
+	view.setViewport(FloatRect((1 - scalex) / 2.0f, (1 - scaley) / 2.0f, scalex, scaley));
+	view.setSize(1920.f*scale, 1080.f*scale);
+	if(bloomEnabled)
+		bloomTexture.setView(view);
+	else
+		window.setView(view);
+	view.setSize(1920.f*scale, 1080.f*scale);
+	gui.setView(view);
 }
 
 Color fadingColor(Time dt, Time fadingLength, bool in)

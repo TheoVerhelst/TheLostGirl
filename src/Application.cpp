@@ -46,6 +46,9 @@ Application::Application(bool debugMode):
 				  << "Loaded default settings.\n";
 		m_window.create({640, 360}, "The Lost Girl");
 		m_postEffectsTexture.create(640, 360);
+		m_parameters.scaleIndex = 0;
+		m_parameters.fullscreen = false;
+		m_parameters.bloomEnabled = false;
 	}
 	else if(!reader.parse(modelFile, model))//report to the user the failure and their locations in the document.
 	{
@@ -53,59 +56,35 @@ Application::Application(bool debugMode):
 				  << "Loaded default settings.\n";
 		m_window.create({640, 360}, "The Lost Girl");
 		m_postEffectsTexture.create(640, 360);
+		m_parameters.scaleIndex = 0;
+		m_parameters.fullscreen = false;
+		m_parameters.bloomEnabled = false;
 	}
 	else
 	{
 		//SuperMegaMagic parsing of the settings file from the model file
 		parse(settings, model, "root", "root");
-		sf::VideoMode mode;
+		sf::VideoMode mode{settings["window size"]["w"].asUInt(), settings["window size"]["h"].asUInt()};
 		if(settings["lang"].asString() == "FR")
 			m_langManager.setLang(FR);
-		else if(settings["lang"].asString() == "EN")
+		else
 			m_langManager.setLang(EN);
-
-		switch(settings["resolution"].asInt())
-		{
-			case 360:
-				m_parameters.scaleIndex = 0;
-				mode = {640, 360};
-				break;
-			case 576:
-				m_parameters.scaleIndex = 1;
-				mode = {1024, 576};
-				break;
-			case 720:
-				m_parameters.scaleIndex = 2;
-				mode = {1280, 720};
-				break;
-			case 900:
-				m_parameters.scaleIndex = 3;
-				mode = {1600, 900};
-				break;
-			case 1080:
-			default:
-				m_parameters.scaleIndex = 4;
-				mode = {1900, 1080};
-				break;
-		}
-		m_window.create(mode, "The Lost Girl");
-		m_postEffectsTexture.create(mode.width, mode.height);
-		m_window.setSize({settings["window size"]["w"].asUInt(), settings["window size"]["h"].asUInt()});
+		std::map<int, unsigned int> scaleMap{{360, 0}, {576, 1}, {720, 2}, {900, 3}, {1080, 4}};
+		m_parameters.scaleIndex = scaleMap[settings["resolution"].asInt()];
+		m_newScaleIndex = m_parameters.scaleIndex;
+		m_parameters.fullscreen = settings["fullscreen"].asBool();
 		m_parameters.bloomEnabled = settings["enable bloom"].asBool();
+		uint32 style{m_parameters.fullscreen ? sf::Style::Fullscreen : sf::Style::Default};
+		m_window.create(mode, "The Lost Girl", style);
+		m_postEffectsTexture.create(mode.width, mode.height);
 	}
 	m_parameters.scale = scales[m_parameters.scaleIndex];
 	m_parameters.scaledPixelByMeter = m_parameters.scale*m_parameters.pixelByMeter;
 	m_parameters.debugMode = debugMode;
 	m_gui.setWindow(m_window);
 
-	sf::View view{m_window.getDefaultView()};
 	sf::Event::SizeEvent se{m_window.getSize().x, m_window.getSize().y};
-	view.setViewport(handleResize(se));
-	if(m_parameters.bloomEnabled)
-		m_postEffectsTexture.setView(view);
-	else
-		m_window.setView(view);
-	m_gui.setView(view);
+	handleResize(se, m_window, m_parameters.bloomEnabled, m_parameters.scale, m_postEffectsTexture, m_gui);
 }
 
 Application::~Application()
@@ -143,6 +122,7 @@ Application::~Application()
 	settings["window size"]["w"] = m_window.getSize().x;
 	settings["window size"]["h"] = m_window.getSize().y;
 	settings["enable bloom"] = m_parameters.bloomEnabled;
+	settings["fullscreen"] = m_parameters.fullscreen;
 
 	settingsFileStream << writer.write(settings);
 	settingsFileStream.close();
@@ -155,7 +135,7 @@ int Application::init()
 		srand(static_cast<unsigned int>(time(nullptr)));//Init random numbers
 		registerSystems();
 		m_window.setKeyRepeatEnabled(false);//Desactive the key repeating
-		m_fontManager.load("menu", m_parameters.textFont);//Load the GUI font
+		m_fontManager.load("menu", "resources/fonts/euphorigenic.ttf");//Load the GUI font
 		m_fontManager.load("debug", "resources/fonts/FreeMonoBold.ttf");//Load the debug font
 		m_gui.setGlobalFont(std::make_shared<sf::Font>(m_fontManager.get("menu")));//Set the GUI font
 		m_world.SetDebugDraw(&m_debugDraw);//Set the debug drawer
@@ -228,15 +208,7 @@ void Application::processInput()
 		else if(event.type == sf::Event::KeyPressed and event.key.code == sf::Keyboard::F2)
 			m_parameters.debugMode = not m_parameters.debugMode;//Switch the debug mode
 		else if(event.type == sf::Event::Resized)
-		{
-			sf::View view{m_window.getDefaultView()};
-			view.setViewport(handleResize(event.size));
-			if(m_parameters.bloomEnabled)
-				m_postEffectsTexture.setView(view);
-			else
-				m_window.setView(view);
-			m_gui.setView(view);
-		}
+			handleResize(event.size, m_window, m_parameters.bloomEnabled, m_parameters.scale, m_postEffectsTexture, m_gui);
 		m_stateStack.handleEvent(event);
 		m_gui.handleEvent(event);
 	}

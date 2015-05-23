@@ -23,14 +23,14 @@ const std::string paths[5] = {"resources/images/360p/",
 /// Structure that hold various informations about the application.
 struct Parameters
 {
-	bool debugMode = false;                                   ///< True if the DebugDrawing must be activated.
-	unsigned int scaleIndex = 0;                              ///< The index of the current scale, in the range [0, 5[
-	float scale = scales[scaleIndex];                         ///< Current scale of graphics and  images.
-	float pixelByMeter = 120.f;                               ///< Original pixels/meter scale.
-	float scaledPixelByMeter = scale*pixelByMeter;            ///< Scaled pixels/meter scale, equal to scale*pixelByMeter
-	b2Vec2 gravity = {0.0f, 9.80665f};                        ///< The gravity vector.
-	std::string textFont = "resources/fonts/euphorigenic.ttf";///< Path of the main font.
-	bool bloomEnabled = false;                                ///< Indicates if the bloom effect is enabled.
+	bool debugMode = false;                       ///< True if the DebugDrawing must be activated.
+	unsigned int scaleIndex = 0;                  ///< The index of the current scale, in the range [0, 5[
+	float scale = scales[scaleIndex];             ///< Current scale of graphics and  images.
+	float pixelByMeter = 120.f;                   ///< Original pixels/meter scale.
+	float scaledPixelByMeter = scale*pixelByMeter;///< Scaled pixels/meter scale, equal to scale*pixelByMeter
+	b2Vec2 gravity = {0.0f, 9.80665f};            ///< The gravity vector.
+	bool bloomEnabled = false;                    ///< Indicates if the bloom effect is enabled.
+	bool fullscreen;                              ///< Indicates whether the window is in fullscreen mode.
 };
 
 #endif//PARAMETERS_H

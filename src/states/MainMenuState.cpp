@@ -93,12 +93,9 @@ void MainMenuState::receive(const ParametersChange& parametersChange)
 
 void MainMenuState::resetTexts()
 {
-	if(m_newButton)
-		m_newButton->setText(getContext().langManager.tr("New game"));
-	if(m_loadButton)
-		m_loadButton->setText(getContext().langManager.tr("Load game"));
-	if(m_exitButton)
-		m_exitButton->setText(getContext().langManager.tr("Exit"));
+	m_newButton->setText(getContext().langManager.tr("New game"));
+	m_loadButton->setText(getContext().langManager.tr("Load game"));
+	m_exitButton->setText(getContext().langManager.tr("Exit"));
 }
 
 

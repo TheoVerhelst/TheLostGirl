@@ -11,6 +11,11 @@
             "required" : true
         },
         {
+            "name" : "fullscreen",
+            "type" : "bool",
+            "required" : true
+        },
+        {
             "name" : "lang",
             "type" : "string",
             "required" : true,

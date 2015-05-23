@@ -76,15 +76,23 @@ ParametersState::ParametersState(StateStack& stack) :
 	m_background->add(m_fullscreenLabel);
 
 	m_fullscreenCheckbox = tgui::Checkbox::create();
+	if(getContext().parameters.fullscreen)
+		m_fullscreenCheckbox->check();
 	m_fullscreenCheckbox->setPosition(bindWidth(m_background, 0.5f), bindHeight(m_background, 0.5));
+	m_fullscreenCheckbox->connect("checked", [this](){m_fullscreenComboBox->enable();});
+	m_fullscreenCheckbox->connect("unchecked", [this](){m_fullscreenComboBox->disable();});
 	m_background->add(m_fullscreenCheckbox);
 
 	m_fullscreenComboBox = tgui::ComboBox::create();
-	for(sf::VideoMode videoMode : sf::VideoMode::getFullscreenModes())
-		if(std::abs(float(videoMode.width)/float(videoMode.height) - 1920.f/1080.f) < 0.01f)
-			m_fullscreenComboBox->addItem(std::to_string(videoMode.width) + "x" + std::to_string(videoMode.height));
+	const auto& videoModes(sf::VideoMode::getFullscreenModes());
+	unsigned int desktopDepth{sf::VideoMode::getDesktopMode().bitsPerPixel};
+	for(size_t i{0}; i < videoModes.size(); ++i)
+		if(videoModes[i].bitsPerPixel == desktopDepth)
+			m_fullscreenComboBox->addItem(std::to_string(videoModes[i].width) + "x" + std::to_string(videoModes[i].height), std::to_string(i));
 	m_fullscreenComboBox->setPosition(bindWidth(m_background, 0.6f), bindHeight(m_background, 0.5));
 	m_fullscreenComboBox->setSize(bindWidth(m_background, 0.3f), 30.f);
+	if(getContext().parameters.fullscreen)
+		m_fullscreenComboBox->disable();
 	m_background->add(m_fullscreenComboBox);
 
 	m_mainVolumeLabel = tgui::Label::copy(m_resolutionLabel);
@@ -188,6 +196,7 @@ void ParametersState::applyChanges()
 {
 	bool langChanged{getContext().langManager.getLang() != fromString(m_langComboBox->getSelectedItem())};
 	bool bloomEnabledChanged{getContext().parameters.bloomEnabled != m_bloomCheckbox->isChecked()};
+	bool fullscreenChanged{getContext().parameters.fullscreen != m_fullscreenCheckbox->isChecked()};
 	const unsigned int scaleIndex{unsigned(std::stoi(m_resolutionComboBox->getSelectedItemId().toAnsiString()))};
 	bool resolutionChanged{getContext().parameters.scaleIndex != scaleIndex};
 	if(langChanged)
@@ -206,40 +215,42 @@ void ParametersState::applyChanges()
 		}
 		getContext().parameters.bloomEnabled = m_bloomCheckbox->isChecked();
 	}
+	if(fullscreenChanged)
+	{
+		sf::VideoMode videoMode;
+		uint32 style{sf::Style::Default};
+		if(m_fullscreenCheckbox->isChecked())
+		{
+			style = sf::Style::Fullscreen;
+			videoMode = sf::VideoMode::getFullscreenModes()[std::stoul(m_fullscreenComboBox->getSelectedItemId().toAnsiString())];
+		}
+		else
+			videoMode = {unsigned(1920.f*getContext().parameters.scale), unsigned(1080.f*getContext().parameters.scale)};
+		getContext().window.create(videoMode, "The Lost Girl", style);
+		getContext().parameters.fullscreen = m_fullscreenCheckbox->isChecked();
+		sf::Event::SizeEvent se{getContext().window.getSize().x, getContext().window.getSize().y};
+		handleResize(se, getContext().window, getContext().parameters.bloomEnabled, getContext().parameters.scale, getContext().postEffectsTexture, getContext().gui);
+	}
 	if(langChanged or bloomEnabledChanged or resolutionChanged)
-		getContext().eventManager.emit<ParametersChange>(langChanged, bloomEnabledChanged, resolutionChanged, scaleIndex);
+		getContext().eventManager.emit<ParametersChange>(langChanged, bloomEnabledChanged, resolutionChanged, scaleIndex, fullscreenChanged);
 }
 
 void ParametersState::resetTexts()
 {
-	if(m_title)
-		m_title->setText(getContext().langManager.tr("Parameters"));
-	if(m_resolutionLabel)
-		m_resolutionLabel->setText(getContext().langManager.tr("Resolution"));
-	if(m_langLabel)
-		m_langLabel->setText(getContext().langManager.tr("Lang"));
-	if(m_bloomLabel)
-		m_bloomLabel->setText(getContext().langManager.tr("Bloom effect"));
-	if(m_fullscreenLabel)
-		m_fullscreenLabel->setText(getContext().langManager.tr("Fullscreen"));
-	if(m_mainVolumeLabel)
-		m_mainVolumeLabel->setText(getContext().langManager.tr("Main volume"));
-	if(m_musicVolumeLabel)
-		m_musicVolumeLabel->setText(getContext().langManager.tr("Music volume"));
-	if(m_effectsVolumeLabel)
-		m_effectsVolumeLabel->setText(getContext().langManager.tr("Effects volume"));
-	if(m_ambianceVolumeLabel)
-		m_ambianceVolumeLabel->setText(getContext().langManager.tr("Ambiance volume"));
-	if(m_controlsLabel)
-		m_controlsLabel->setText(getContext().langManager.tr("Controls"));
-	if(m_controlsButton)
-		m_controlsButton->setText(getContext().langManager.tr("Configure"));
-	if(m_applyButton)
-		m_applyButton->setText(getContext().langManager.tr("Apply"));
-	if(m_cancelButton)
-		m_cancelButton->setText(getContext().langManager.tr("Cancel"));
-	if(m_okButton)
-		m_okButton->setText(getContext().langManager.tr("OK"));
+	m_title->setText(getContext().langManager.tr("Parameters"));
+	m_resolutionLabel->setText(getContext().langManager.tr("Resolution"));
+	m_langLabel->setText(getContext().langManager.tr("Lang"));
+	m_bloomLabel->setText(getContext().langManager.tr("Bloom effect"));
+	m_fullscreenLabel->setText(getContext().langManager.tr("Fullscreen"));
+	m_mainVolumeLabel->setText(getContext().langManager.tr("Main volume"));
+	m_musicVolumeLabel->setText(getContext().langManager.tr("Music volume"));
+	m_effectsVolumeLabel->setText(getContext().langManager.tr("Effects volume"));
+	m_ambianceVolumeLabel->setText(getContext().langManager.tr("Ambiance volume"));
+	m_controlsLabel->setText(getContext().langManager.tr("Controls"));
+	m_controlsButton->setText(getContext().langManager.tr("Configure"));
+	m_applyButton->setText(getContext().langManager.tr("Apply"));
+	m_cancelButton->setText(getContext().langManager.tr("Cancel"));
+	m_okButton->setText(getContext().langManager.tr("OK"));
 }
 
 sf::String ParametersState::toString(Lang lang)

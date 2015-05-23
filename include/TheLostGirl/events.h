@@ -66,17 +66,19 @@ struct ParametersChange : public entityx::Event<ParametersChange>
 	/// \param _bloomEnabledChanged Indicates whether the bloom option has been toggled.
 	/// \param _resolutionChanged Indicates whether the resolution has been changed.
 	/// \param _newScaleIndex The new scale index.
-	ParametersChange(bool _langChanged, bool _bloomEnabledChanged, bool _resolutionChanged, unsigned int _newScaleIndex):
+	ParametersChange(bool _langChanged, bool _bloomEnabledChanged, bool _resolutionChanged, unsigned int _newScaleIndex, bool _fullscreenChanged):
 		langChanged{_langChanged},
 		bloomEnabledChanged{_bloomEnabledChanged},
 		resolutionChanged{_resolutionChanged},
-		newScaleIndex{_newScaleIndex}
+		newScaleIndex{_newScaleIndex},
+		fullscreenChanged{_fullscreenChanged}
 	{}
 
 	bool langChanged;          ///< Indicates whether the lang has been changed.
 	bool bloomEnabledChanged;  ///< Indicates whether the bloom option has been toggled.
 	bool resolutionChanged;    ///< Indicates whether the resolution has been changed.
 	unsigned int newScaleIndex;///< The new scale index.
+	bool fullscreenChanged;
 };
 
 #endif//EVENTS_H
