@@ -16,30 +16,24 @@
 
 using namespace sf;
 
-void handleResize(Event::SizeEvent size, sf::RenderWindow& window, bool bloomEnabled, float scale, sf::RenderTexture& bloomTexture, tgui::Gui& gui)
+void handleResize(sf::RenderWindow& window, bool bloomEnabled, float scale, sf::RenderTexture& bloomTexture, tgui::Gui& gui)
 {
-	const float iw{static_cast<float>(size.width)};
-	const float ih{static_cast<float>(size.height)};
+	const float iw{float(window.getSize().x)};
+	const float ih{float(window.getSize().y)};
 	float fh(ih), fw(iw);//If size is in a 16:9 ratio, it won't change.
 	if(iw / 16.f < ih / 9.f) //Taller than a 16:9 ratio
-	{
 		fh = iw * (9.0f / 16.0f);
-		fw = iw;
-	}
 	else if(iw / 16.f > ih / 9.f) //Larger than a 16:9 ratio
-	{
 		fw = ih * (16.0f / 9.0f);
-		fh = ih;
-	}
 	const float scalex{fw / iw}, scaley{fh / ih};
 	sf::View view{window.getView()};
-	view.setViewport(FloatRect((1 - scalex) / 2.0f, (1 - scaley) / 2.0f, scalex, scaley));
+	view.setViewport({(1 - scalex) / 2.0f, (1 - scaley) / 2.0f, scalex, scaley});
 	view.setSize(1920.f*scale, 1080.f*scale);
 	if(bloomEnabled)
 		bloomTexture.setView(view);
 	else
 		window.setView(view);
-	view.setSize(1920.f*scale, 1080.f*scale);
+	view.setCenter({960.f*scale, 540.f*scale});
 	gui.setView(view);
 }
 

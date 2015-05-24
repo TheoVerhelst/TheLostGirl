@@ -83,8 +83,7 @@ Application::Application(bool debugMode):
 	m_parameters.debugMode = debugMode;
 	m_gui.setWindow(m_window);
 
-	sf::Event::SizeEvent se{m_window.getSize().x, m_window.getSize().y};
-	handleResize(se, m_window, m_parameters.bloomEnabled, m_parameters.scale, m_postEffectsTexture, m_gui);
+	handleResize(m_window, m_parameters.bloomEnabled, m_parameters.scale, m_postEffectsTexture, m_gui);
 }
 
 Application::~Application()
@@ -208,7 +207,7 @@ void Application::processInput()
 		else if(event.type == sf::Event::KeyPressed and event.key.code == sf::Keyboard::F2)
 			m_parameters.debugMode = not m_parameters.debugMode;//Switch the debug mode
 		else if(event.type == sf::Event::Resized)
-			handleResize(event.size, m_window, m_parameters.bloomEnabled, m_parameters.scale, m_postEffectsTexture, m_gui);
+			handleResize(m_window, m_parameters.bloomEnabled, m_parameters.scale, m_postEffectsTexture, m_gui);
 		m_stateStack.handleEvent(event);
 		m_gui.handleEvent(event);
 	}

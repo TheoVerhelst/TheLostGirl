@@ -194,26 +194,27 @@ void ParametersState::backToPause()
 
 void ParametersState::applyChanges()
 {
-	bool langChanged{getContext().langManager.getLang() != fromString(m_langComboBox->getSelectedItem())};
-	bool bloomEnabledChanged{getContext().parameters.bloomEnabled != m_bloomCheckbox->isChecked()};
-	bool fullscreenChanged{getContext().parameters.fullscreen != m_fullscreenCheckbox->isChecked()};
+	StateStack::Context context{getContext()};
+	bool langChanged{context.langManager.getLang() != fromString(m_langComboBox->getSelectedItem())};
+	bool bloomEnabledChanged{context.parameters.bloomEnabled != m_bloomCheckbox->isChecked()};
+	bool fullscreenChanged{context.parameters.fullscreen != m_fullscreenCheckbox->isChecked()};
 	const unsigned int scaleIndex{unsigned(std::stoi(m_resolutionComboBox->getSelectedItemId().toAnsiString()))};
-	bool resolutionChanged{getContext().parameters.scaleIndex != scaleIndex};
+	bool resolutionChanged{context.parameters.scaleIndex != scaleIndex};
 	if(langChanged)
-		getContext().langManager.setLang(fromString(m_langComboBox->getSelectedItem()));
+		context.langManager.setLang(fromString(m_langComboBox->getSelectedItem()));
 	if(bloomEnabledChanged)
 	{
 		if(m_bloomCheckbox->isChecked())
 		{
-			getContext().postEffectsTexture.setView(getContext().window.getView());
-			getContext().window.setView(getContext().window.getDefaultView());
+			context.postEffectsTexture.setView(context.window.getView());
+			context.window.setView(context.window.getDefaultView());
 		}
 		else
 		{
-			getContext().window.setView(getContext().postEffectsTexture.getView());
-			getContext().postEffectsTexture.setView(getContext().postEffectsTexture.getDefaultView());
+			context.window.setView(context.postEffectsTexture.getView());
+			context.postEffectsTexture.setView(context.postEffectsTexture.getDefaultView());
 		}
-		getContext().parameters.bloomEnabled = m_bloomCheckbox->isChecked();
+		context.parameters.bloomEnabled = m_bloomCheckbox->isChecked();
 	}
 	if(fullscreenChanged)
 	{
@@ -225,14 +226,13 @@ void ParametersState::applyChanges()
 			videoMode = sf::VideoMode::getFullscreenModes()[std::stoul(m_fullscreenComboBox->getSelectedItemId().toAnsiString())];
 		}
 		else
-			videoMode = {unsigned(1920.f*getContext().parameters.scale), unsigned(1080.f*getContext().parameters.scale)};
-		getContext().window.create(videoMode, "The Lost Girl", style);
-		getContext().parameters.fullscreen = m_fullscreenCheckbox->isChecked();
-		sf::Event::SizeEvent se{getContext().window.getSize().x, getContext().window.getSize().y};
-		handleResize(se, getContext().window, getContext().parameters.bloomEnabled, getContext().parameters.scale, getContext().postEffectsTexture, getContext().gui);
+			videoMode = {unsigned(1920.f*context.parameters.scale), unsigned(1080.f*context.parameters.scale)};
+		context.window.create(videoMode, "The Lost Girl", style);
+		context.parameters.fullscreen = m_fullscreenCheckbox->isChecked();
+		handleResize(context.window, context.parameters.bloomEnabled, context.parameters.scale, context.postEffectsTexture, context.gui);
 	}
 	if(langChanged or bloomEnabledChanged or resolutionChanged)
-		getContext().eventManager.emit<ParametersChange>(langChanged, bloomEnabledChanged, resolutionChanged, scaleIndex, fullscreenChanged);
+		context.eventManager.emit<ParametersChange>(langChanged, bloomEnabledChanged, resolutionChanged, scaleIndex, fullscreenChanged);
 }
 
 void ParametersState::resetTexts()

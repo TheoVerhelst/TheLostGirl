@@ -30,12 +30,11 @@ namespace entityx
 /// Then apply this view to the window or the bloom texture,
 /// depending of whether the bloom is enabled, and to the gui.
 /// That allows the game to keep a 16:9 display ratio.
-/// \param size Resizing event of the window.
 /// \param window The window that has been resized.
 /// \param bloomEnabled Indicates whether the bloom effect is enabled.
 /// \param bloomTexture The texture for rendering the bloom.
 /// \param gui The gui.
-void handleResize(sf::Event::SizeEvent size, sf::RenderWindow& window, bool bloomEnabled, float scale, sf::RenderTexture& bloomTexture, tgui::Gui& gui);
+void handleResize(sf::RenderWindow& window, bool bloomEnabled, float scale, sf::RenderTexture& bloomTexture, tgui::Gui& gui);
 
 /// Return \a value capped between \a min and \a max.
 /// That function is useful to keep a number between bounds, e.g. the life of a character between 0 and 100.
