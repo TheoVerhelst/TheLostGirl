@@ -8,7 +8,6 @@
 #include <SFML/Window/Event.hpp>
 #include <Box2D/Common/b2Math.h>
 #include <Box2D/Common/b2Draw.h>
-#include <dist/json/json.h>
 #include <TGUI/Button.hpp>
 
 //Forward declarations
@@ -32,6 +31,7 @@ namespace entityx
 /// That allows the game to keep a 16:9 display ratio.
 /// \param window The window that has been resized.
 /// \param bloomEnabled Indicates whether the bloom effect is enabled.
+/// \param scale The current pixel scale.
 /// \param bloomTexture The texture for rendering the bloom.
 /// \param gui The gui.
 void handleResize(sf::RenderWindow& window, bool bloomEnabled, float scale, sf::RenderTexture& bloomTexture, tgui::Gui& gui);
@@ -62,71 +62,6 @@ T cap(T value, T min, T max)
 /// \param in Direction of the fading.
 /// \return A color between white and transparent.
 sf::Color fadingColor(sf::Time dt = sf::seconds(0), sf::Time fadingLength = sf::seconds(1), bool in = true);
-
-/// Return a string depending of the given \a type.
-/// \param type Type to encode in a string.
-/// \return A formated string.
-std::string typeToStr(Json::ValueType type);
-
-/// Return a Json::ValueType from the the given \a string.
-/// \param str String to decode.
-/// \return A Json type.
-Json::ValueType strToType(std::string str);
-
-/// Check if every element in \a objects corresponds to one element in \a valuesTypes, throw an exception otherwise.
-/// If all elements in the object don't have the right type, an exception is raised.
-/// \param object A Json value containing the data, it must be an object.
-/// \param name The name of the object.
-/// \param valuesTypes The mapping between elements names and their types.
-void parseObject(const Json::Value& object, const std::string name, std::map<std::string, Json::ValueType> valuesTypes);
-
-/// Check if every element listed in \a valuesTypes exists in \a object and has the right type.
-/// If all elements are not found in the object, an exception is raised.
-/// \param object A Json value containing the data, it must be an object.
-/// \param name The name of the object.
-/// \param valuesTypes The mapping between elements names and their types.
-void requireValues(const Json::Value& object, const std::string name, std::map<std::string, Json::ValueType> valuesTypes);
-
-/// Check if every element in \a value have the type \a type.
-/// If all elements in the object don't have the right type, an exception is raised.
-/// \param object A Json value containing the data, it must be an object.
-/// \param name The name of the object.
-/// \param type The expected type of every element in \a object.
-void parseObject(const Json::Value& object, const std::string name, Json::ValueType type);
-
-/// Check if \a value corresponds to one element in \a values, throw an exception otherwise.
-/// \param value A Json value.
-/// \param name The name of the value.
-/// \param values The list of every possible value of \a value.
-void parseValue(const Json::Value& value, const std::string name, std::vector<Json::Value> values);
-
-/// Check if \a value have the type \a type.
-/// If value don't have the right type, an exception is raised.
-/// \param value A Json value.
-/// \param name The name of the value.
-/// \param type The expected type of \a value.
-void parseValue(const Json::Value& value, const std::string name, Json::ValueType type);
-
-/// Check if every element in \a array corresponds to one element in \a values, throw an exception otherwise.
-/// \param array A Json value containing the data, it must be an array.
-/// \param name The name of the array.
-/// \param values The elements expecteds in \a array.
-void parseArray(const Json::Value& array, const std::string name, std::vector<Json::Value> values);
-
-/// Check if every element in \a value have the type \a type.
-/// If all elements in the array don't have the right type, an exception is raised.
-/// \param array A Json value containing the data, it must be an array.
-/// \param name The name of the array.
-/// \param type The expected type of every element in \a array.
-void parseArray(const Json::Value& array, const std::string name, Json::ValueType type);
-
-/// Check if the \a value is conformant to \a model.
-/// If not, raise an exception.
-/// \param value Value to check.
-/// \param model Description model.
-/// \param valueName The name of the value.
-/// \param modelName The name of the model value.
-void parse(Json::Value& value, const Json::Value& model, const std::string& valueName, const std::string& modelName);
 
 /// Check if the given string contains at least one whitespace.
 /// \param str String to check.

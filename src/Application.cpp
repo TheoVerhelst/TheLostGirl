@@ -8,6 +8,7 @@
 #include <TheLostGirl/Command.h>
 #include <TheLostGirl/LangManager.h>
 #include <TheLostGirl/events.h>
+#include <TheLostGirl/serialization.h>
 
 #include <TheLostGirl/Application.h>
 
@@ -35,25 +36,20 @@ Application::Application(bool debugMode):
 {
 	m_eventManager.subscribe<ParametersChange>(*this);
 	std::string file("settings.json");
-	Json::Value settings;//Will contains the root value after parsing.
+	Json::Value settings;//Will contains the root value after parsing
 	Json::Value model;
 	Json::Reader reader;
 	std::ifstream settingsFile(file, std::ifstream::binary);
 	std::ifstream modelFile("settingsModel.json", std::ifstream::binary);
-	if(!reader.parse(settingsFile, settings))//report to the user the failure and their locations in the document.
+	bool settingsOk{true}, modelOk{true};
+	if(not (settingsOk = reader.parse(settingsFile, settings)))
+		//report to the user the failure and its location in the document
+		std::cerr << "\"" + file + "\": " + reader.getFormattedErrorMessages() << "\nLoaded default settings.\n";
+	else if(not (modelOk = reader.parse(modelFile, model)))
+		std::cerr << "\"settingsModel.json\": " + reader.getFormattedErrorMessages() << "\nLoaded default settings.\n";
+	if(not settingsOk or not modelOk)
 	{
-		std::cerr << "\"" + file + "\": " + reader.getFormattedErrorMessages() << "\n"
-				  << "Loaded default settings.\n";
-		m_window.create({640, 360}, "The Lost Girl");
-		m_postEffectsTexture.create(640, 360);
-		m_parameters.scaleIndex = 0;
-		m_parameters.fullscreen = false;
-		m_parameters.bloomEnabled = false;
-	}
-	else if(!reader.parse(modelFile, model))//report to the user the failure and their locations in the document.
-	{
-		std::cerr << "\"settingsModel.json\": " + reader.getFormattedErrorMessages() << "\n"
-				  << "Loaded default settings.\n";
+		//Load default settings
 		m_window.create({640, 360}, "The Lost Girl");
 		m_postEffectsTexture.create(640, 360);
 		m_parameters.scaleIndex = 0;
@@ -62,7 +58,7 @@ Application::Application(bool debugMode):
 	}
 	else
 	{
-		//SuperMegaMagic parsing of the settings file from the model file
+		//Parsing of the settings file from the model file
 		parse(settings, model, "root", "root");
 		sf::VideoMode mode{settings["window size"]["w"].asUInt(), settings["window size"]["h"].asUInt()};
 		if(settings["lang"].asString() == "FR")
@@ -82,7 +78,6 @@ Application::Application(bool debugMode):
 	m_parameters.scaledPixelByMeter = m_parameters.scale*m_parameters.pixelByMeter;
 	m_parameters.debugMode = debugMode;
 	m_gui.setWindow(m_window);
-
 	handleResize(m_window, m_parameters.bloomEnabled, m_parameters.scale, m_postEffectsTexture, m_gui);
 }
 
@@ -97,27 +92,7 @@ Application::~Application()
 		settings["lang"] = "FR";
 	else if(m_langManager.getLang() == EN)
 		settings["lang"] = "EN";
-
-	switch(m_newScaleIndex)
-	{
-		case 0:
-			settings["resolution"] = 360;
-			break;
-		case 1:
-			settings["resolution"] = 576;
-			break;
-		case 2:
-			settings["resolution"] = 720;
-			break;
-		case 3:
-			settings["resolution"] = 900;
-			break;
-		case 4:
-		default:
-			settings["resolution"] = 1080;
-			break;
-	}
-
+	settings["resolution"] = int(1080.f*m_parameters.scale);
 	settings["window size"]["w"] = m_window.getSize().x;
 	settings["window size"]["h"] = m_window.getSize().y;
 	settings["enable bloom"] = m_parameters.bloomEnabled;
@@ -131,7 +106,6 @@ int Application::init()
 {
 	try
 	{
-		srand(static_cast<unsigned int>(time(nullptr)));//Init random numbers
 		registerSystems();
 		m_window.setKeyRepeatEnabled(false);//Desactive the key repeating
 		m_fontManager.load("menu", "resources/fonts/euphorigenic.ttf");//Load the GUI font

@@ -87,8 +87,14 @@ ParametersState::ParametersState(StateStack& stack) :
 	const auto& videoModes(sf::VideoMode::getFullscreenModes());
 	unsigned int desktopDepth{sf::VideoMode::getDesktopMode().bitsPerPixel};
 	for(size_t i{0}; i < videoModes.size(); ++i)
+	{
 		if(videoModes[i].bitsPerPixel == desktopDepth)
+		{
 			m_fullscreenComboBox->addItem(std::to_string(videoModes[i].width) + "x" + std::to_string(videoModes[i].height), std::to_string(i));
+			if(m_fullscreenComboBox->getSelectedItem() == "")
+				m_fullscreenComboBox->setSelectedItemById(std::to_string(i));
+		}
+	}
 	m_fullscreenComboBox->setPosition(bindWidth(m_background, 0.6f), bindHeight(m_background, 0.5));
 	m_fullscreenComboBox->setSize(bindWidth(m_background, 0.3f), 30.f);
 	if(getContext().parameters.fullscreen)
