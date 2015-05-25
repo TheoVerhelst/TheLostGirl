@@ -94,7 +94,7 @@ class TimeSystem : public entityx::System<TimeSystem>
 		std::uniform_real_distribution<float> m_transitionLenghtDis;///< Distribute the sequence uniformely.
 		std::uniform_real_distribution<float> m_strengthDis;///< Same as above.
 
-		const LangManager& m_langManager;
+		const LangManager& m_langManager; ///< Reference to the lang manager, to display formatted date/time.
 };
 
 #endif//TIMESYSTEM_H

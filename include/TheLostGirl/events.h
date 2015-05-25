@@ -66,6 +66,7 @@ struct ParametersChange : public entityx::Event<ParametersChange>
 	/// \param _bloomEnabledChanged Indicates whether the bloom option has been toggled.
 	/// \param _resolutionChanged Indicates whether the resolution has been changed.
 	/// \param _newScaleIndex The new scale index.
+	/// \param _fullscreenChanged Indicates wheter the fullscreen state has been toggled.
 	ParametersChange(bool _langChanged, bool _bloomEnabledChanged, bool _resolutionChanged, unsigned int _newScaleIndex, bool _fullscreenChanged):
 		langChanged{_langChanged},
 		bloomEnabledChanged{_bloomEnabledChanged},
@@ -78,7 +79,7 @@ struct ParametersChange : public entityx::Event<ParametersChange>
 	bool bloomEnabledChanged;  ///< Indicates whether the bloom option has been toggled.
 	bool resolutionChanged;    ///< Indicates whether the resolution has been changed.
 	unsigned int newScaleIndex;///< The new scale index.
-	bool fullscreenChanged;
+	bool fullscreenChanged;    ///< Indicates wheter the fullscreen state has been toggled.
 };
 
 #endif//EVENTS_H

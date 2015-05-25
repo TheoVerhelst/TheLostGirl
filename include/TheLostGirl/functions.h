@@ -71,13 +71,14 @@ bool hasWhiteSpace(const std::string str);
 /// Convert a Box2D vector to a SFML vector
 /// \param vec A Box2D vector.
 /// \return A SFML vector.
+/// \see sftob2
 sf::Vector2f b2tosf(const b2Vec2& vec);
 
 /// Convert a SFML vector to a Box2D vector
 /// \param vec A SFML vector.
 /// \return A Box2D vector.
+/// \see b2tosf
 b2Vec2 sftob2(const sf::Vector2f& vec);
-
 
 /// Convert a Box2D color to a SFML color;
 /// \param color A Box2D color;
@@ -121,8 +122,14 @@ Key getKey(std::map<Key, Value> map, Value& value)
 	return it->first;
 }
 
+/// Checks if the given \a entity is played by the player.
+/// \param entity The entity to check.
+/// \return True if the entity is played by the player, false otherwise.
 bool isPlayer(entityx::Entity entity);
 
+/// Makes the look of the given \a button cleaner,
+/// by removing background and adding nive hover effects.
+/// \param button A pointer to the button to prettify.
 void prettifyButton(tgui::Button::Ptr button);
 
 #endif//FUNCTIONS_H

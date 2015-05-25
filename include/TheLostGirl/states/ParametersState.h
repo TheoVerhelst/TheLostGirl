@@ -67,19 +67,19 @@ class ParametersState : public State
 		tgui::ComboBox::Ptr m_langComboBox;      ///< The lang combo box.
 		tgui::Label::Ptr m_bloomLabel;           ///< The label of the bloom checkbox.
 		tgui::Checkbox::Ptr m_bloomCheckbox;     ///< The bloom checkbox.
-		tgui::Label::Ptr m_mainVolumeLabel;
-		tgui::Slider::Ptr m_mainVolumeSlider;
-		tgui::Label::Ptr m_musicVolumeLabel;
-		tgui::Slider::Ptr m_musicVolumeSlider;
-		tgui::Label::Ptr m_effectsVolumeLabel;
-		tgui::Slider::Ptr m_effectsVolumeSlider;
-		tgui::Label::Ptr m_ambianceVolumeLabel;
-		tgui::Slider::Ptr m_ambianceVolumeSlider;
-		tgui::Label::Ptr m_fullscreenLabel;
-		tgui::Checkbox::Ptr m_fullscreenCheckbox;
-		tgui::ComboBox::Ptr m_fullscreenComboBox;
-		tgui::Label::Ptr m_controlsLabel;
-		tgui::Button::Ptr m_controlsButton;
+		tgui::Label::Ptr m_mainVolumeLabel;      ///< The label of the main volume slider.
+		tgui::Slider::Ptr m_mainVolumeSlider;    ///< The main volume slider.
+		tgui::Label::Ptr m_musicVolumeLabel;     ///< The label of the music volume slider.
+		tgui::Slider::Ptr m_musicVolumeSlider;   ///< The music volume slider.
+		tgui::Label::Ptr m_effectsVolumeLabel;   ///< The label of the effects volume slider.
+		tgui::Slider::Ptr m_effectsVolumeSlider; ///< The effects volume slider.
+		tgui::Label::Ptr m_ambianceVolumeLabel;  ///< The label of the ambiance volume slider.
+		tgui::Slider::Ptr m_ambianceVolumeSlider;///< The ambiance volume slider.
+		tgui::Label::Ptr m_fullscreenLabel;      ///< The fulscreen label.
+		tgui::Checkbox::Ptr m_fullscreenCheckbox;///< The fullscreen checkbox.
+		tgui::ComboBox::Ptr m_fullscreenComboBox;///< The fulscreen combo box.
+		tgui::Label::Ptr m_controlsLabel;        ///< The label of the controls button.
+		tgui::Button::Ptr m_controlsButton;      ///< The controls button.
 
 		//Buttons
 		tgui::Button::Ptr m_applyButton;         ///< The apply button, at the bottom.

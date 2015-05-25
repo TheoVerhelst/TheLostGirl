@@ -54,7 +54,7 @@ class Tree
 		size_t childrenNumber() const;
 
 		/// Checks if the tree has children.
-		/// \return True if the tree has some children, false otherwhise.
+		/// \return True if the tree has some children, false otherwise.
 		bool noChildren() const;
 
 		/// Add a child after other childs.

@@ -48,11 +48,11 @@ class HUDState : public State
 		virtual bool handleEvent(const sf::Event& event);
 
 		/// Receive an event indicating that the health of an entity changed.
-		/// \param playerHealthChange Structure containing data about the change.
+		/// \param entityHealthChange Structure containing data about the change.
 		void receive(const EntityHealthChange& entityHealthChange);
 
 		/// Receive an event indicating that the health of an entity changed.
-		/// \param playerStaminaChange Structure containing data about the change.
+		/// \param entityStaminaChange Structure containing data about the change.
 		void receive(const EntityStaminaChange& entityStaminaChange);
 
 	private:

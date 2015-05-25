@@ -38,7 +38,7 @@ class DragAndDropSystem : public entityx::System<DragAndDropSystem>
 
 		/// Set the activation of the drag and drop.
 		/// The line will be drawn only if the drag and drop is active.
-		/// \param isActive True if the drag and drop is active, false otherwhise.
+		/// \param isActive True if the drag and drop is active, false otherwise.
 		void setDragAndDropActivation(bool isActive);
 
 	private:

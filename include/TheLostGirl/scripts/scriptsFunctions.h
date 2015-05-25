@@ -153,7 +153,7 @@ Data print(const std::vector<Data>& args, StateStack::Context context);
 /// First argument must be a valid entity.
 /// \param args Entity that is searching for ennemies.
 /// \param context Current context of the application.
-/// \return The nearest entity if found, Entity() otherwhise.
+/// \return The nearest entity if found, Entity() otherwise.
 entityx::Entity nearestFoe(const std::vector<Data>& args, StateStack::Context context);
 
 /// Compute the distance between two entities.
@@ -211,7 +211,7 @@ class NearestFoeQueryCallback : public b2QueryCallback
 /// The fist argument must be a valid entity.
 /// \param args Entities that want to move.
 /// \param context Current context of the application.
-/// \return True if the entity can move, false otherwhise.
+/// \return True if the entity can move, false otherwise.
 bool canMove(const std::vector<Data>& args, StateStack::Context context);
 
 /// Make that the entity move to the given direction.
@@ -230,7 +230,7 @@ int stop(const std::vector<Data>& args, StateStack::Context context);
 /// The fist argument must be a valid entity.
 /// \param args Entities that want to jump.
 /// \param context Current context of the application.
-/// \return True if the entity can jump, false otherwhise.
+/// \return True if the entity can jump, false otherwise.
 bool canJump(const std::vector<Data>& args, StateStack::Context context);
 
 /// Make that the entity performs a jump.
