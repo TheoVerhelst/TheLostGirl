@@ -238,4 +238,15 @@ struct HandToHandComponent : public entityx::Component<HandToHandComponent>
 	sf::Clock timer;   ///< Timer to compute elapsed time, its value is added to lastShoot at each attack try.
 };
 
+/// Store all information that every actor must have, like resistance (because every actor can take damages).
+struct ActorComponent : public entityx::Component<ActorComponent>
+{
+	float handToHandResistance;///< The resistance to hand to hand attacks.
+	float magicResistance;     ///< The resistance to magic attacks
+	float arrowResistance;     ///< The resistance to flying arrows
+	float fireResistance;      ///< The resistance to fire.
+	float frostResistance;     ///< The resistance to frost.
+	float poisonResistance;    ///< The resistance to poison attacks.
+};
+
 #endif //COMPONENTS_H

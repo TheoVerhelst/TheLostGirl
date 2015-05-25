@@ -259,7 +259,7 @@
                         "children":
                         {
                             "type" : "string",
-                            "possible values" : ["player", "scene", "actor", "passive", "aggressive"]
+                            "possible values" : ["player", "scene", "passive", "aggressive"]
                         }
                     },
                     {
@@ -387,6 +387,45 @@
 							},
 							{
 								"name" : "last shoot",
+								"type" : "real",
+								"required" : true
+							}
+						]
+					},
+					{
+						"name" : "actor",
+						"type" : "object",
+						"required" : false,
+						"free children names" : false,
+						"children" : 
+						[
+							{
+								"name" : "hand to hand resistance",
+								"type" : "real",
+								"required" : true
+							},
+							{
+								"name" : "magic resistance",
+								"type" : "real",
+								"required" : true
+							},
+							{
+								"name" : "arrow resistance",
+								"type" : "real",
+								"required" : true
+							},
+							{
+								"name" : "fire resistance",
+								"type" : "real",
+								"required" : true
+							},
+							{
+								"name" : "frost resistance",
+								"type" : "real",
+								"required" : true
+							},
+							{
+								"name" : "poison resistance",
 								"type" : "real",
 								"required" : true
 							}

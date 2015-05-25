@@ -90,8 +90,7 @@ bool HandToHandQueryCallback::ReportFixture(b2Fixture* fixture)
 	// -this is not the attacker itself
 	// -this is an actor
 	// -attacker and current entity are not both aggressive
-	if(entity != m_attacker and entity.has_component<CategoryComponent>()
-			and entity.component<CategoryComponent>()->category & Category::Actor
+	if(entity != m_attacker and entity.has_component<ActorComponent>()
 			and not (m_attacker.has_component<CategoryComponent>()
 				and m_attacker.component<CategoryComponent>()->category & Category::Aggressive
 				and entity.component<CategoryComponent>()->category & Category::Aggressive))

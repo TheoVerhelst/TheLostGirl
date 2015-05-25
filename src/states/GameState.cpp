@@ -158,6 +158,8 @@ void GameState::saveWorld(const std::string& file)
 				root["entities"][entity.first]["name"] = serialize(entity.second.component<NameComponent>());
 			if(entity.second.has_component<HandToHandComponent>())
 				root["entities"][entity.first]["hand to hand"]= serialize(entity.second.component<HandToHandComponent>());
+			if(entity.second.has_component<ActorComponent>())
+				root["entities"][entity.first]["actor"]= serialize(entity.second.component<ActorComponent>());
 		}
 
 		//time
@@ -558,6 +560,8 @@ void GameState::initWorld(const std::string& file)
 					deserialize(entity["name"], m_entities[entityName].assign<NameComponent>());
 				if(entity.isMember("hand to hand"))
 					deserialize(entity["hand to hand"], m_entities[entityName].assign<HandToHandComponent>());
+				if(entity.isMember("actor"))
+					deserialize(entity["actor"], m_entities[entityName].assign<ActorComponent>());
 			}
 		}
 

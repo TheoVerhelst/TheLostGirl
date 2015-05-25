@@ -120,6 +120,11 @@ Json::Value serialize(entityx::ComponentHandle<NameComponent> component);
 /// \return A Json value.
 Json::Value serialize(entityx::ComponentHandle<HandToHandComponent> component);
 
+/// Serialize the given component.
+/// \param component Component to serialize.
+/// \return A Json value.
+Json::Value serialize(entityx::ComponentHandle<ActorComponent> component);
+
 /// Deserialize the given \a value in the given \a component.
 /// \param component Component in wich deserialize the data.
 /// \param pixelByMeter Number of pixel by meter.
@@ -230,6 +235,11 @@ void deserialize(const Json::Value& value, entityx::ComponentHandle<NameComponen
 /// \param component Component in wich deserialize the data.
 /// \param value The Json value containing the data.
 void deserialize(const Json::Value& value, entityx::ComponentHandle<HandToHandComponent> component);
+
+/// Deserialize the given \a value in the given \a component.
+/// \param component Component in wich deserialize the data.
+/// \param value The Json value containing the data.
+void deserialize(const Json::Value& value, entityx::ComponentHandle<ActorComponent> component);
 
 /// Return a string depending of the given \a type.
 /// \param type Type to encode in a string.

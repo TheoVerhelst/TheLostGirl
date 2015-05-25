@@ -244,8 +244,6 @@ Json::Value serialize(entityx::ComponentHandle<CategoryComponent> component)
 		ret.append("player");
 	if(component->category & Category::Scene)
 		ret.append("scene");
-	if(component->category & Category::Actor)
-		ret.append("actor");
 	if(component->category & Category::Passive)
 		ret.append("passive");
 	if(component->category & Category::Aggressive)
@@ -409,6 +407,18 @@ Json::Value serialize(entityx::ComponentHandle<HandToHandComponent> component)
 	ret["damages"] = component->damages;
 	ret["delay"] = component->delay.asSeconds();
 	ret["last shoot"] = component->lastShoot.asSeconds();
+	return ret;
+}
+
+Json::Value serialize(entityx::ComponentHandle<ActorComponent> component)
+{
+	Json::Value ret;
+	ret["hand to hand resistance"] = component->handToHandResistance;
+	ret["magic resistance"] = component->magicResistance;
+	ret["arrow resistance"] = component->arrowResistance;
+	ret["fire resistance"] = component->fireResistance;
+	ret["frost resistance"] = component->frostResistance;
+	ret["poison resistance"] = component->poisonResistance;
 	return ret;
 }
 
@@ -724,8 +734,6 @@ void deserialize(const Json::Value& value, entityx::ComponentHandle<CategoryComp
 			category |= Category::Player;
 		else if(value[i] == "scene")
 			category |= Category::Scene;
-		else if(value[i] == "actor")
-			category |= Category::Actor;
 		else if(value[i] == "passive")
 			category |= Category::Passive;
 		else if(value[i] == "aggressive")
@@ -850,6 +858,16 @@ void deserialize(const Json::Value& value, entityx::ComponentHandle<HandToHandCo
 	component->damages = value["damages"].asFloat();
 	component->delay = sf::seconds(value["delay"].asFloat());
 	component->lastShoot = sf::seconds(value["last shoot"].asFloat());
+}
+
+void deserialize(const Json::Value& value, entityx::ComponentHandle<ActorComponent> component)
+{
+	component->handToHandResistance = value["hand to hand resistance"].asFloat();
+	component->magicResistance = value["magic resistance"].asFloat();
+	component->arrowResistance = value["arrow resistance"].asFloat();
+	component->fireResistance = value["fire resistance"].asFloat();
+	component->frostResistance = value["frost resistance"].asFloat();
+	component->poisonResistance = value["poison resistance"].asFloat();
 }
 
 std::string typeToStr(Json::ValueType type)

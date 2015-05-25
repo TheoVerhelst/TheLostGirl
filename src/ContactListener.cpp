@@ -45,10 +45,7 @@ bool ContactListener::collide(b2Contact* contact, const b2Manifold*)
 		return false;
 
 	//The contact do not occurs if both entities are actors
-	if(entityA.has_component<CategoryComponent>()
-		and entityA.component<CategoryComponent>()->category & Category::Actor
-		and entityB.has_component<CategoryComponent>()
-		and entityB.component<CategoryComponent>()->category & Category::Actor)
+	if(entityA.has_component<ActorComponent>() and entityB.has_component<ActorComponent>())
 		return false;
 
 	//If the two entities are not in the same plan
