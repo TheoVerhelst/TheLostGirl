@@ -50,7 +50,7 @@ class StateStack : private sf::NonCopyable
         /// they can then use these various resources managers.
 		struct Context
 		{
-			/// Default constructor
+			/// Constructor
 			/// \param _parameters Structure containing all the game parameters.
 			/// \param _window The main window.
 			/// \param _postEffectsTexture Texture for rendering posteffects.

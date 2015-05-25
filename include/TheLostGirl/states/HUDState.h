@@ -61,6 +61,10 @@ class HUDState : public State
 		/// A fading to transparent is done when the entity's stat is full.
 		struct Bar
 		{
+			/// Constructor.
+			Bar()
+			{}
+
 			/// Destructor.
 			~Bar()
 			{}
