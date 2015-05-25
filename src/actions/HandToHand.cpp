@@ -53,8 +53,12 @@ void HandToHand::operator()(entityx::Entity entity, double) const
 					world->QueryAABB(&callback, handToHandBox);
 
 					for(entityx::Entity foundEntity : callback.foundEntities)
-						if(foundEntity.valid() and foundEntity.has_component<HealthComponent>())
-							foundEntity.component<HealthComponent>()->current -= entity.component<HandToHandComponent>()->damages;
+						if(foundEntity.valid() and foundEntity.has_component<HealthComponent>() and foundEntity.has_component<ActorComponent>())
+						{
+							float damages{entity.component<HandToHandComponent>()->damages};
+							damages -= foundEntity.component<ActorComponent>()->handToHandResistance;
+							foundEntity.component<HealthComponent>()->current -= damages;
+						}
 				}
 			}
 			if(entity.has_component<AnimationsComponent<SpriteSheetAnimation>>())

@@ -68,8 +68,13 @@ void ArrowHitListener::PostSolve(b2Contact* contact, const b2ContactImpulse* imp
 				m_context.systemManager.system<PendingChangesSystem>()->jointsToCreate.push(weldJointDef);
 				entityA.component<ArrowComponent>()->state = ArrowComponent::Sticked;
 			}
-			if(entityB.has_component<HealthComponent>())
-				entityB.component<HealthComponent>()->current -= impulse->normalImpulses[0]*entityA.component<ArrowComponent>()->damage;
+			if(entityB.has_component<HealthComponent>() and entityB.has_component<ActorComponent>())
+			{
+				float damages{impulse->normalImpulses[0]*10};
+                damages *= entityA.component<ArrowComponent>()->damage;
+                damages -= entityB.component<ActorComponent>()->arrowResistance;
+				entityB.component<HealthComponent>()->current -= damages;
+			}
 		}
 	}
 }

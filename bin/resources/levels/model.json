@@ -318,6 +318,11 @@
                         "children":
                         [
                             {
+                                "name" : "damages",
+                                "type" : "real",
+                                "required" : true
+                            },
+                            {
                                 "name" : "maximum power",
                                 "type" : "real",
                                 "required" : true

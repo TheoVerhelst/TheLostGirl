@@ -139,6 +139,7 @@ struct BowComponent : public entityx::Component<BowComponent>
 {
 	float maxPower;                   ///< The maximum power of the bending of the bow.
 	float power;                      ///< The current power of the bending of the bow.
+	float damages;                    ///< The damages that make a shoot.
 	float angle;                      ///< The current angle of the bow, in radians.
 	std::list<entityx::Entity> arrows;///< List of all stocked arrows.
 	entityx::Entity notchedArrow;     ///< Current arrow notched in the bow.
