@@ -6,3 +6,4 @@ if foe
 		attack(self)
 	endif
 endif
+jump(self)

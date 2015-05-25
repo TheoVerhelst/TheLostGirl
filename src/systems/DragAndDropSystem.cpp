@@ -35,7 +35,7 @@ void DragAndDropSystem::update(entityx::EntityManager&, entityx::EventManager&, 
 		float delta_y{m_line[1].position.y- m_line[0].position.y};
 		float power{std::hypot(delta_x, delta_y)};//Distance between the two points
 		float angle{std::atan2(delta_x, delta_y)};//Angle of the line with the horizontal axis
-		angle += b2_pi/2.f;//Turn the angle of 90 degrees to fit with the gameplay requirements
+		angle += b2_pi/2.f;//Turn the angle of 90 degrees to fit the gameplay requirements
 //		if(angle > b2_pi + b2_pi/4.f)//Keep the angle in the range [-pi, pi]
 //			angle = angle - 2*b2_pi;
 		//Send a command to player's entities to bend them bows according to the drag and drop data

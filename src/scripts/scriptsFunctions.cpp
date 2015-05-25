@@ -281,7 +281,7 @@ Data moduloOp(const std::vector<Data>& args, StateStack::Context)
 		cast<float>(rhs);
 		if(boost::get<float>(rhs) == 0.f)
 			throw std::runtime_error("modulo by zero");
-		return static_cast<float>(fmod(boost::get<float>(lhs), boost::get<float>(rhs)));
+		return std::fmod(boost::get<float>(lhs), boost::get<float>(rhs));
 	}
 	else if(lhs.which() == 1 or rhs.which() == 1)
 	{

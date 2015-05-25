@@ -296,7 +296,7 @@ Json::Value serialize(entityx::ComponentHandle<BowComponent> component, const st
 	Json::Value ret;
 	ret["power"] = component->power;
 	ret["damages"] = component->damages;
-	ret["maximum power"] = component->maxPower;
+	ret["initial speed"] = component->initialSpeed;
 	ret["angle"] = component->angle;
 	ret["quiver capacity"] = component->quiverCapacity;
 	if(isMember(entitiesMap, component->notchedArrow) and component->notchedArrow.valid())
@@ -777,7 +777,7 @@ void deserialize(const Json::Value& value, entityx::ComponentHandle<BowComponent
 	component->power = value["power"].asFloat();
 	component->angle = value["angle"].asFloat();
 	component->damages = value["damages"].asFloat();
-	component->maxPower = value["maximum power"].asFloat();
+	component->initialSpeed = value["initial speed"].asFloat();
 	component->arrows.clear();
 	for(Json::ArrayIndex i{0}; i < value["arrows"].size(); ++i)
 		if(entitiesMap.find(value["arrows"][i].asString()) != entitiesMap.end())

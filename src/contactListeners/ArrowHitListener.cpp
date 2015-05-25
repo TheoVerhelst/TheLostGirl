@@ -70,7 +70,7 @@ void ArrowHitListener::PostSolve(b2Contact* contact, const b2ContactImpulse* imp
 			}
 			if(entityB.has_component<HealthComponent>() and entityB.has_component<ActorComponent>())
 			{
-				float damages{impulse->normalImpulses[0]*10};
+				float damages{impulse->normalImpulses[0]*4};
                 damages *= entityA.component<ArrowComponent>()->damage;
                 damages -= entityB.component<ActorComponent>()->arrowResistance;
 				entityB.component<HealthComponent>()->current -= damages;

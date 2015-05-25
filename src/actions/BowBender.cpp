@@ -34,8 +34,8 @@ void BowBender::operator()(entityx::Entity entity, double) const
 			bowComponent->angle = cap(angle - b2_pi, -b2_pi, b2_pi/2.f);
 		else if(directionComponent->direction == Direction::Right)
 			bowComponent->angle = cap(angle, -b2_pi/2.f, b2_pi);
-		//Set the bending power
-		bowComponent->power = cap(power, 0.f, bowComponent->maxPower);
+		//Set the bending power, limited to 500px of drag and drop
+		bowComponent->power = cap(power, 0.f, 500.f)/500.f;
 
 		//If the entity has animation, set the right animation and play it accoring to the bending state
 		if(entity.has_component<AnimationsComponent<SpriteSheetAnimation>>())
@@ -45,7 +45,6 @@ void BowBender::operator()(entityx::Entity entity, double) const
 				directionStr = " left";
 			else if(directionComponent->direction == Direction::Right)
 				directionStr = " right";
-			float animationPower{bowComponent->power / bowComponent->maxPower};//The progress of the bending, in the range [0, 1]
 			//Get all the animations managers of the entity
 			auto& animationsManagers(entity.component<AnimationsComponent<SpriteSheetAnimation>>()->animationsManagers);
 			//For each animations manager of the entity
@@ -54,7 +53,7 @@ void BowBender::operator()(entityx::Entity entity, double) const
 				AnimationsManager<SpriteSheetAnimation>& animations(animationsPair.second);
 				//If the animations manager have the required animation
 				if(animations.isRegistred("bend"+directionStr))
-					animations.setProgress("bend"+directionStr, animationPower);
+					animations.setProgress("bend"+directionStr, bowComponent->power);
 			}
 		}
 		//Notch an arrow if there is no one

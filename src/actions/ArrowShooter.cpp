@@ -35,15 +35,12 @@ void ArrowShooter::operator()(entityx::Entity entity, double) const
 			for(b2JointEdge* jointEdge{arrowBody->GetJointList()}; jointEdge; jointEdge = jointEdge->next)
 				arrowBody->GetWorld()->DestroyJoint(jointEdge->joint);
 
-			float shootForceX{bowComponent->power*static_cast<float>(cos(bowComponent->angle))};
-			float shootForceY{-bowComponent->power*static_cast<float>(sin(bowComponent->angle))};
+			b2Vec2 shootImpulse{bowComponent->power*std::cos(bowComponent->angle),
+							 -bowComponent->power*std::sin(bowComponent->angle)};
 			if(directionComponent->direction == Direction::Left)
-			{
-				shootForceX = bowComponent->power*static_cast<float>(cos(bowComponent->angle+b2_pi));
-				shootForceY = -bowComponent->power*static_cast<float>(sin(bowComponent->angle+b2_pi));
-			}
-			b2Vec2 shootForce{static_cast<float32>(shootForceX), static_cast<float32>(shootForceY)};
-			arrowBody->ApplyLinearImpulse((arrowBody->GetMass()/20.f)*shootForce, arrowBody->GetWorldCenter(), true);
+				shootImpulse = {bowComponent->power*std::cos(bowComponent->angle+b2_pi),
+							 -bowComponent->power*std::sin(bowComponent->angle+b2_pi)};
+			arrowBody->ApplyLinearImpulse(arrowBody->GetMass()*bowComponent->initialSpeed*shootImpulse, arrowBody->GetWorldCenter(), true);
 			bowComponent->notchedArrow = entityx::Entity();
 			notchedArrow.component<ArrowComponent>()->state = ArrowComponent::Fired;
 		}

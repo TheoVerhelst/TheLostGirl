@@ -323,7 +323,7 @@
                                 "required" : true
                             },
                             {
-                                "name" : "maximum power",
+                                "name" : "initial speed",
                                 "type" : "real",
                                 "required" : true
                             },

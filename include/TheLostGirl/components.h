@@ -137,8 +137,8 @@ struct JumpComponent : public entityx::Component<JumpComponent>
 /// Bending component that hold all stats about the ability to use bows and arrows.
 struct BowComponent : public entityx::Component<BowComponent>
 {
-	float maxPower;                   ///< The maximum power of the bending of the bow.
-	float power;                      ///< The current power of the bending of the bow.
+	float initialSpeed;               ///< The initial speed of the arrow when fired at maximum bending, in m/s.
+	float power;                      ///< The current beding ratio of the bow, in [0, 1].
 	float damages;                    ///< The damages that make a shoot.
 	float angle;                      ///< The current angle of the bow, in radians.
 	std::list<entityx::Entity> arrows;///< List of all stocked arrows.

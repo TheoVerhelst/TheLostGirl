@@ -39,10 +39,11 @@
 //TODO Faire un système multi texture pour une même partie d'entité (soit chunker une grande image, soit faire plusieurs images).
 //TODO Component pour la position de combat (parade, attaque, tir, ...).
 //TODO Sound manager.
-//TODO Formule de dégats.
-//TODO Faire un item pour l'arc
-//TODO Retirer la fleche pendant le CAC
+//TODO Faire un item pour l'arc.
+//TODO Retirer la fleche pendant le CAC.
+//TODO Mettre le carquois de l'autre coté quand dirigé vers la gauche.
 //TODO Differents CAC en fonction du déplacement.
+//TODO Optimiser ContactListener::collide
 
 GameState::GameState(StateStack& stack, std::string file) :
 	State(stack),
