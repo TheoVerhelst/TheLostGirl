@@ -43,7 +43,7 @@
 //TODO Retirer la fleche pendant le CAC.
 //TODO Mettre le carquois de l'autre coté quand dirigé vers la gauche.
 //TODO Differents CAC en fonction du déplacement.
-//TODO Optimiser ContactListener::collide
+//TODO Sauvegarde en fonction des includes.
 
 GameState::GameState(StateStack& stack, std::string file) :
 	State(stack),
@@ -468,18 +468,14 @@ void GameState::initWorld(const std::string& file)
 			{
 				//Parse the level data
 				Json::Value includeRoot;//Will contains the root value after parsing.
-				Json::Value includeModel;
 				std::ifstream includeFile("resources/levels/" + includes[i].asString(), std::ifstream::binary);
-				std::ifstream includeModelFile("resources/levels/includeModel.json", std::ifstream::binary);
 				if(not reader.parse(includeFile, includeRoot))//report to the user the failure and their locations in the document.
 					throw std::runtime_error("included file \"resources/levels/" + includes[i].asString() + "\" : " + reader.getFormattedErrorMessages());
-				if(not reader.parse(includeModelFile, includeModel))
-					throw std::runtime_error("included model file \"resources/levels/includeModel.json\": " + reader.getFormattedErrorMessages());
 
 				//Parsing of the included file from the model file
-				parse(includeRoot, includeModel, "root", "root");
+				parse(includeRoot, model, "root", "root");
 				//Add generic entities to others
-				Json::Value currentGenericEntities{includeRoot["generic entities"]};
+				Json::Value currentGenericEntities{includeRoot["entities"]};
 				for(const std::string& genericEntityName : currentGenericEntities.getMemberNames())
 					genericEntities[genericEntityName] = currentGenericEntities[genericEntityName];
 			}

@@ -17,7 +17,7 @@
         {
             "name" : "time",
             "type" : "object",
-            "required" : true,
+            "required" : false,
             "free children names" : false,
             "children" :
             [
@@ -38,7 +38,7 @@
         {
             "name" : "level",
             "type" : "object",
-            "required" : true,
+            "required" : false,
             "free children names" : false,
             "children" :
             [

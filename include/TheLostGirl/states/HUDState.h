@@ -78,7 +78,7 @@ class HUDState : public State
 
 		std::unordered_map<entityx::Entity, Bar, HashEntity> m_healthBars; ///< Store all entities health bars.
 		std::unordered_map<entityx::Entity, Bar, HashEntity> m_staminaBars;///< Store all entities stamina bars.
-		std::list<tgui::Canvas::Ptr> m_loadedCanvas;              ///< Store some canvas that will be assigned to an entity later.
+		std::list<tgui::Canvas::Ptr> m_loadedCanvas;                       ///< Store some canvas that will be assigned to an entity later.
 		tgui::Canvas::Ptr m_playerHealthCanvas;                            ///< A preloaded canvas for the player health bar.
 		tgui::Canvas::Ptr m_playerStaminaCanvas;                           ///< A preloaded canvas for the player stamina bar.
 
