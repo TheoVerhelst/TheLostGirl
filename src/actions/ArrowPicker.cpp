@@ -70,6 +70,7 @@ void ArrowPicker::operator()(entityx::Entity entity, double) const
 				//Add the arrow to the quiver
 				entity.component<BowComponent>()->arrows.push_back(callback.foundEntity);
 				callback.foundEntity.component<ArrowComponent>()->state = ArrowComponent::Stored;
+				callback.foundEntity.component<ArrowComponent>()->shooter = entity;
 			}
 		}
 	}

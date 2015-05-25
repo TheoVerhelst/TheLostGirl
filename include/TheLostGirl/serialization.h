@@ -87,8 +87,9 @@ Json::Value serialize(entityx::ComponentHandle<StaminaComponent> component);
 
 /// Serialize the given component.
 /// \param component Component to serialize.
+/// \param entitiesMap The map containing all entities (to find name - entity correspondance).
 /// \return A Json value.
-Json::Value serialize(entityx::ComponentHandle<ArrowComponent> component);
+Json::Value serialize(entityx::ComponentHandle<ArrowComponent> component, const std::map<std::string, entityx::Entity>& entitiesMap);
 
 /// Serialize the given component.
 /// \param component Component to serialize.
@@ -202,8 +203,9 @@ void deserialize(const Json::Value& value, entityx::ComponentHandle<StaminaCompo
 
 /// Deserialize the given \a value in the given \a component.
 /// \param component Component in wich deserialize the data.
+/// \param entitiesMap The map containing all entities (to find name - entity correspondance).
 /// \param value The Json value containing the data.
-void deserialize(const Json::Value& value, entityx::ComponentHandle<ArrowComponent> component);
+void deserialize(const Json::Value& value, entityx::ComponentHandle<ArrowComponent> component, const std::map<std::string, entityx::Entity>& entitiesMap);
 
 /// Deserialize the given \a value in the given \a component.
 /// \param component Component in wich deserialize the data.

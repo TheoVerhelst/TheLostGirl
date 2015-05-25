@@ -182,6 +182,7 @@ struct ArrowComponent : public entityx::Component<ArrowComponent>
 	float penetrance;               ///< Indicates how much the arrow can stick into hard targets.
 	float damage;                   ///< Indicates the damage that the arrow can do on the target.
 	ArrowState state;               ///< Indicates the current state of the arrow.
+	entityx::Entity shooter;        ///< The entity that shooted the arrow at last, invalid of the arrow was never shooted.
 };
 
 /// Target hardness component that indicates the treshold of stucking of the arrow into the object.

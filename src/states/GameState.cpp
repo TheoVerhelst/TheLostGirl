@@ -146,7 +146,7 @@ void GameState::saveWorld(const std::string& file)
 			if(entity.second.has_component<StaminaComponent>())
 				root["entities"][entity.first]["stamina"] = serialize(entity.second.component<StaminaComponent>());
 			if(entity.second.has_component<ArrowComponent>())
-				root["entities"][entity.first]["arrow"] = serialize(entity.second.component<ArrowComponent>());
+				root["entities"][entity.first]["arrow"] = serialize(entity.second.component<ArrowComponent>(), m_entities);
 			if(entity.second.has_component<HardnessComponent>())
 				root["entities"][entity.first]["hardness"] = serialize(entity.second.component<HardnessComponent>());
 			if(entity.second.has_component<ScriptsComponent>())
@@ -544,7 +544,7 @@ void GameState::initWorld(const std::string& file)
 				if(entity.isMember("fall"))
 					deserialize(entity["fall"], m_entities[entityName].assign<FallComponent>());
 				if(entity.isMember("arrow"))
-					deserialize(entity["arrow"], m_entities[entityName].assign<ArrowComponent>());
+					deserialize(entity["arrow"], m_entities[entityName].assign<ArrowComponent>(), m_entities);
 				if(entity.isMember("hardness"))
 					deserialize(entity["hardness"], m_entities[entityName].assign<HardnessComponent>());
 				if(entity.isMember("scripts"))

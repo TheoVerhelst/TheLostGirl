@@ -482,6 +482,11 @@
                                 "type" : "real",
                                 "required" : true
                             },
+							{
+								"name" : "shooter",
+								"type" : "string",
+								"required" : false
+							},
                             {
                                 "name" : "state",
                                 "type" : "string",

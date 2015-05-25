@@ -229,11 +229,12 @@ Json::Value serialize(entityx::ComponentHandle<DirectionComponent> component)
 			break;
 		case Direction::None:
 		default:
-			ret["direction"] = "none";
 			break;
 	}
-	ret["move to left"] = component->moveToLeft;
-	ret["move to right"] = component->moveToRight;
+	if(component->moveToLeft)
+		ret["move to left"] = true;
+	if(component->moveToRight)
+		ret["move to right"] = true;
 	return ret;
 }
 
@@ -329,7 +330,7 @@ Json::Value serialize(entityx::ComponentHandle<StaminaComponent> component)
 	return ret;
 }
 
-Json::Value serialize(entityx::ComponentHandle<ArrowComponent> component)
+Json::Value serialize(entityx::ComponentHandle<ArrowComponent> component, const std::map<std::string, entityx::Entity>& entitiesMap)
 {
 	Json::Value ret;
 	ret["friction"] = component->friction;
@@ -339,6 +340,8 @@ Json::Value serialize(entityx::ComponentHandle<ArrowComponent> component)
 	ret["local friction point"]["y"] = component->localFrictionPoint.y;
 	ret["local stick point"]["x"] = component->localStickPoint.x;
 	ret["local stick point"]["y"] = component->localStickPoint.y;
+	if(component->shooter and isMember(entitiesMap, component->shooter))
+		ret["shooter"] = getKey(entitiesMap, component->shooter);
 	switch(component->state)
 	{
 		case ArrowComponent::Fired:
@@ -801,7 +804,7 @@ void deserialize(const Json::Value& value, entityx::ComponentHandle<StaminaCompo
 	component->regeneration = value["regeneration"].asFloat();
 }
 
-void deserialize(const Json::Value& value, entityx::ComponentHandle<ArrowComponent> component)
+void deserialize(const Json::Value& value, entityx::ComponentHandle<ArrowComponent> component, const std::map<std::string, entityx::Entity>& entitiesMap)
 {
 	component->friction = value["friction"].asFloat();
 	component->penetrance = value["penetrance"].asFloat();
@@ -810,6 +813,8 @@ void deserialize(const Json::Value& value, entityx::ComponentHandle<ArrowCompone
 	component->localFrictionPoint.y = value["local friction point"]["y"].asFloat();
 	component->localStickPoint.x = value["local stick point"]["x"].asFloat();
 	component->localStickPoint.y = value["local stick point"]["y"].asFloat();
+	if(value.isMember("shooter") and entitiesMap.find(value["shooter"].asString()) != entitiesMap.end())
+		component->shooter = entitiesMap.at(value["shooter"].asString());
 	if(value["state"] == "fired")
 		component->state = ArrowComponent::Fired;
 	else if(value["state"] == "sticked")
