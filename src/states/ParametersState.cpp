@@ -79,8 +79,16 @@ ParametersState::ParametersState(StateStack& stack) :
 	if(getContext().parameters.fullscreen)
 		m_fullscreenCheckbox->check();
 	m_fullscreenCheckbox->setPosition(bindWidth(m_background, 0.5f), bindHeight(m_background, 0.5));
-	m_fullscreenCheckbox->connect("checked", [this](){m_fullscreenComboBox->enable();});
-	m_fullscreenCheckbox->connect("unchecked", [this](){m_fullscreenComboBox->disable();});
+	m_fullscreenCheckbox->connect("checked", [this](){
+								m_fullscreenComboBox->enable();
+								m_fullscreenComboBox->getRenderer()->setProperty("backgroundcolor", "(255, 255, 255, 255)");
+								m_fullscreenComboBox->getRenderer()->setProperty("arrowbackgroundcolor", "(255, 255, 255, 255)");
+								});
+	m_fullscreenCheckbox->connect("unchecked", [this](){
+								m_fullscreenComboBox->disable();
+								m_fullscreenComboBox->getRenderer()->setProperty("backgroundcolor", "(200, 200, 200, 255)");
+								m_fullscreenComboBox->getRenderer()->setProperty("arrowbackgroundcolor", "(200, 200, 200, 255)");
+								});
 	m_background->add(m_fullscreenCheckbox);
 
 	m_fullscreenComboBox = tgui::ComboBox::create();
@@ -97,8 +105,12 @@ ParametersState::ParametersState(StateStack& stack) :
 	}
 	m_fullscreenComboBox->setPosition(bindWidth(m_background, 0.6f), bindHeight(m_background, 0.5));
 	m_fullscreenComboBox->setSize(bindWidth(m_background, 0.3f), 30.f);
-	if(getContext().parameters.fullscreen)
+	if(not getContext().parameters.fullscreen)
+	{
 		m_fullscreenComboBox->disable();
+		m_fullscreenComboBox->getRenderer()->setProperty("backgroundcolor", "(200, 200, 200, 255)");
+		m_fullscreenComboBox->getRenderer()->setProperty("arrowbackgroundcolor", "(200, 200, 200, 255)");
+	}
 	m_background->add(m_fullscreenComboBox);
 
 	m_mainVolumeLabel = tgui::Label::copy(m_resolutionLabel);

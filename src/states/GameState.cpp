@@ -522,14 +522,10 @@ void GameState::initWorld(const std::string& file)
 					for(auto& bodyPair : m_entities[entityName].component<BodyComponent>()->bodies)
 						bodyPair.second->SetUserData(&m_entities[entityName]);
 				}
-				//Update the ScrollingSystem in order to directly display the sprite at the right position
-				getContext().systemManager.update<ScrollingSystem>(0.f);
 				//spritesheet animations
 				if(entity.isMember("spritesheet animations"))
 					deserialize(entity["spritesheet animations"], m_entities[entityName].assign<AnimationsComponent<SpriteSheetAnimation>>(),
 									m_entities[entityName].component<SpriteComponent>(), getContext());
-				//Update the AnimationSystem in order to don't show the whole tileset of every entity on the screen when loading the level
-				getContext().systemManager.update<AnimationsSystem>(0.f);
 				if(entity.isMember("inventory"))
 					deserialize(entity["inventory"], m_entities[entityName].assign<InventoryComponent>(), m_entities);
 				if(entity.isMember("bow"))
@@ -634,8 +630,6 @@ void GameState::initWorld(const std::string& file)
 						trsfComp->transforms = transforms;
 						CategoryComponent::Handle catComp{m_sceneEntities[replaceIdentifier].assign<CategoryComponent>()};
 						catComp->category = Category::Scene;
-						//Update the ScrollingSystem in order to directly display the sprite at the right position
-						getContext().systemManager.update<ScrollingSystem>(0.f);
 					}
 					planData.push_back(replacesData);
 				}
@@ -677,7 +671,6 @@ void GameState::initWorld(const std::string& file)
 					CategoryComponent::Handle catComp{m_sceneEntities[textureIdentifier].assign<CategoryComponent>()};
 					catComp->category = Category::Scene;
 					//Update the ScrollingSystem in order to directly display the sprite at the right position
-					getContext().systemManager.update<ScrollingSystem>(0.f);
 				}
 			}
 		}
@@ -1052,6 +1045,8 @@ void GameState::initWorld(const std::string& file)
 		}
 
 		getContext().systemManager.system<ScrollingSystem>()->searchPlayer(getContext().entityManager);
+		getContext().systemManager.update<ScrollingSystem>(0.f);
+		getContext().systemManager.update<AnimationsSystem>(0.f);
 		getContext().player.handleInitialInputState();
 		getContext().world.SetContactListener(&m_contactListener);
 		requestStackPop();
