@@ -151,10 +151,9 @@ void DebugDraw::drawDebugAth()
 		tgui::Label::Ptr positionLabel{m_context.gui.get<tgui::Label>("positionLabel")};
 		if(positionLabel == nullptr)
 		{
-			positionLabel = tgui::Label::create();
+			positionLabel = tgui::Label::create("resources/gui.conf");
 			positionLabel->setPosition(tgui::bindWidth(m_context.gui, 0.01f), tgui::bindHeight(m_context.gui, 0.01f));
 			positionLabel->setTextSize(20);
-			positionLabel->setTextColor(sf::Color::Black);
 			positionLabel->setTextFont(std::make_shared<sf::Font>(m_context.fontManager.get("debug")));
 			m_context.gui.add(positionLabel, "positionLabel");
 		}
@@ -166,10 +165,9 @@ void DebugDraw::drawDebugAth()
 		tgui::Label::Ptr bendingLabel{m_context.gui.get<tgui::Label>("bendingLabel")};
 		if(bendingLabel == nullptr)
 		{
-			bendingLabel = tgui::Label::create();
+			bendingLabel = tgui::Label::create("resources/gui.conf");
 			bendingLabel->setPosition(tgui::bindWidth(m_context.gui, 0.35f), tgui::bindHeight(m_context.gui, 0.01f));
 			bendingLabel->setTextSize(20);
-			bendingLabel->setTextColor(sf::Color::Black);
 			bendingLabel->setTextFont(std::make_shared<sf::Font>(m_context.fontManager.get("debug")));
 			m_context.gui.add(bendingLabel, "bendingLabel");
 		}
@@ -179,10 +177,9 @@ void DebugDraw::drawDebugAth()
 		tgui::Label::Ptr FPSLabel{m_context.gui.get<tgui::Label>("FPSLabel")};
 		if(FPSLabel == nullptr)
 		{
-			FPSLabel = tgui::Label::create();
+			FPSLabel = tgui::Label::create("resources/gui.conf");
 			FPSLabel->setPosition(tgui::bindWidth(m_context.gui, 0.7f), tgui::bindHeight(m_context.gui, 0.01f));
 			FPSLabel->setTextSize(20);
-			FPSLabel->setTextColor(sf::Color::Black);
 			FPSLabel->setTextFont(std::make_shared<sf::Font>(m_context.fontManager.get("debug")));
 			m_context.gui.add(FPSLabel, "FPSLabel");
 		}

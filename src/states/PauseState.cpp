@@ -33,25 +33,19 @@ PauseState::PauseState(StateStack& stack) :
 
 	// Left:   25% of window width
 	// Top:    10% of window height
-	m_pauseLabel = tgui::Label::create();
+	m_pauseLabel = tgui::Label::create("resources/gui.conf");
 	m_pauseLabel->setPosition((bindWidth(gui) - bindWidth(m_pauseLabel))/2, bindHeight(gui, 0.1f));
 	m_pauseLabel->setTextSize(80);
-	m_pauseLabel->setTextColor(sf::Color::Black);
 	gui.add(m_pauseLabel);
 
 	// Left:   25% of window width
 	// Top:    40% of window height
 	// Width:  50% of window width
 	// Height: 15% of window height
-	m_backToGameButton = tgui::Button::create();
+	m_backToGameButton = tgui::Button::create("resources/gui.conf");
 	m_backToGameButton->setPosition(bindWidth(gui, 0.25f), bindHeight(gui, 0.4f));
 	m_backToGameButton->setSize(bindWidth(gui, 0.5f), bindHeight(gui, 0.15f));
 	m_backToGameButton->setTextSize(50);
-	m_backToGameButton->getRenderer()->setBorders(0.f, 0.f);
-	m_backToGameButton->getRenderer()->setProperty("backgroundcolor", "(255, 255, 255, 0)");
-	m_backToGameButton->getRenderer()->setProperty("backgroundcolorhover", "(255, 255, 255, 55)");
-	m_backToGameButton->getRenderer()->setProperty("backgroundcolordown", "(255, 255, 255, 90)");
-	m_backToGameButton->getRenderer()->setProperty("textcolornormal", "(0, 0, 0)");
 	unsigned int backToGameSignal{m_backToGameButton->connect("pressed", &PauseState::backToGame, this)};
 	gui.add(m_backToGameButton);
 

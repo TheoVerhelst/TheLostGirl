@@ -38,10 +38,9 @@ MainMenuState::MainMenuState(StateStack& stack):
 	// Top:    40% of window height
 	// Width:  50% of window width
 	// Height: 15% of window height
-	m_newButton = tgui::Button::create();
+	m_newButton = tgui::Button::create("resources/gui.conf");
 	m_newButton->setPosition(bindWidth(gui, 0.25f), bindHeight(gui, 0.4f));
 	m_newButton->setSize(bindWidth(gui, 0.5f), bindHeight(gui, 0.15f));
-	prettifyButton(m_newButton);
 	unsigned int playGameSignal{m_newButton->connect("pressed", &MainMenuState::playGame, this)};
 	gui.add(m_newButton);
 

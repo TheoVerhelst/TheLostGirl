@@ -1,11 +1,11 @@
 {
 	"enable bloom" : false,
 	"fullscreen" : false,
-	"lang" : "EN",
+	"lang" : "FR",
 	"resolution" : 720,
 	"window size" : 
 	{
 		"h" : 668,
-		"w" : 1190
+		"w" : 1221
 	}
 }

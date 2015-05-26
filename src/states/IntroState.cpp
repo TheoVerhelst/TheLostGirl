@@ -31,10 +31,9 @@ IntroState::IntroState(StateStack& stack):
 	m_logo->setPosition((bindWidth(gui) - bindWidth(m_logo))/2, bindHeight(gui, 0.f));
 	gui.add(m_logo);
 
-	m_sentence = tgui::Label::create();
+	m_sentence = tgui::Label::create("resources/gui.conf");
 	m_sentence->setTextSize(30);
 	m_sentence->setPosition((bindWidth(gui) - bindWidth(m_sentence))/2, bindHeight(gui, 0.5));
-	m_sentence->setTextColor(sf::Color::Black);
 	gui.add(m_sentence);
 	resetTexts();
 }

@@ -127,9 +127,4 @@ Key getKey(std::map<Key, Value> map, Value& value)
 /// \return True if the entity is played by the player, false otherwise.
 bool isPlayer(entityx::Entity entity);
 
-/// Makes the look of the given \a button cleaner,
-/// by removing background and adding nive hover effects.
-/// \param button A pointer to the button to prettify.
-void prettifyButton(tgui::Button::Ptr button);
-
 #endif//FUNCTIONS_H

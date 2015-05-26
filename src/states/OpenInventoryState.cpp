@@ -30,8 +30,7 @@ OpenInventoryState::OpenInventoryState(StateStack& stack, entityx::Entity entity
 	m_background->setBackgroundColor(sf::Color(255, 255, 255, 100));
 	gui.add(m_background);
 
-	m_entityName = tgui::Label::create();
-	m_entityName->setTextColor(sf::Color::Black);
+	m_entityName = tgui::Label::create("resources/gui.conf");
 	m_entityName->setTextSize(35);
 	m_entityName->setPosition(bindWidth(m_background, 0.5f) - bindWidth(m_entityName, 0.5f), bindHeight(m_background, 0.125f));
 	m_background->add(m_entityName);
@@ -52,8 +51,7 @@ OpenInventoryState::OpenInventoryState(StateStack& stack, entityx::Entity entity
 		itemWidget.picture = tgui::Picture::create(paths[getContext().parameters.scaleIndex] + "items/" + category + "/" + type + ".png");
 		itemWidget.background->add(itemWidget.picture);
 		itemWidget.picture->move(bindWidth(itemWidget.background, 0.08333333f), bindHeight(itemWidget.background, 0.08333333f));
-		itemWidget.caption = tgui::Label::create();
-		itemWidget.caption->setTextColor(sf::Color::Black);
+		itemWidget.caption = tgui::Label::create("resources/gui.conf");
 		itemWidget.background->add(itemWidget.caption);
 		itemWidget.item = entityItem;
 		m_grid->addWidget(itemWidget.background, rowCounter, columnCounter);
