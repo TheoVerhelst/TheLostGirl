@@ -31,10 +31,9 @@ class Player
 			FurtherView,  ///< Look further.
 			Sneak,        ///< Squat.
 			HandToHand,   ///< Give a knife hit.
-			Concentrate,  ///< The archer concetrate and have more precisison.
+			Concentrate,  ///< The archer concentrate and have more precisison.
 			ChangeArrow,  ///< Choose another arrow.
-			Inventory,    ///< Open the inventory.
-			Pause,        ///< Pause the game.
+			Inventory     ///< Open the inventory.
 		};
 
 		/// Constructor.
@@ -103,7 +102,7 @@ class Player
 		/// \return True if any of the keys binded with action is currently pressed, false otherwise.
 		bool isActived(Action action) const;
 
-		/// Add commands to the given command queue according to
+		/// Add commands to the command queue according to
 		/// the current state of the various imputs.
 		/// That allow to check the real state of e.g. the keyboard at the beginnning
 		/// of the game and move the player if the move key is pressed while the construction of the game state.

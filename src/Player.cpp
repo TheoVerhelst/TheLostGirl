@@ -36,7 +36,6 @@ Player::Player(StateStack& stateStack):
 	m_keyBinding[sf::Keyboard::Comma]     = Action::HandToHand;
 	m_keyBinding[sf::Keyboard::Tab]       = Action::Inventory;
 	m_keyBinding[sf::Keyboard::L]         = Action::Inventory;
-	m_keyBinding[sf::Keyboard::Escape]    = Action::Pause;
 
 	m_mouseButtonBinding[sf::Mouse::Button::Left]  = Action::Bend;
 	m_mouseButtonBinding[sf::Mouse::Button::Right] = Action::Concentrate;
