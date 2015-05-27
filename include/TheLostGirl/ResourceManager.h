@@ -7,7 +7,6 @@
 #include <stdexcept>
 #include <cassert>
 #include <mutex>
-
 #include <TheLostGirl/scripts/Interpreter.h>
 
 //Forward declarations

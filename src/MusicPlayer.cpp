@@ -1,8 +1,7 @@
 #include <stdexcept>
-
 #include <SFML/Audio/Music.hpp>
 
-#include "MusicPlayer.h"
+#include <TheLostGirl/MusicPlayer.h>
 
 MusicPlayer::MusicPlayer():
 	m_volume{100.f},

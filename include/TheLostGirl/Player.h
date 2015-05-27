@@ -4,7 +4,6 @@
 #include <map>
 #include <queue>
 #include <SFML/Window/Event.hpp>
-
 #include <TheLostGirl/State.h>
 
 //Forward declarations

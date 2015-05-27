@@ -2,7 +2,6 @@
 #define DEBUGDRAW_H
 
 #include <Box2D/Common/b2Draw.h>
-
 #include <TheLostGirl/StateStack.h>
 
 //Forward declarations

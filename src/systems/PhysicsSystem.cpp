@@ -1,17 +1,14 @@
 #include <cmath>
 #include <iostream>
-
 #include <SFML/Graphics/Sprite.hpp>
 #include <entityx/entityx.h>
 #include <Box2D/Box2D.h>
-
 #include <TheLostGirl/components.h>
 #include <TheLostGirl/Category.h>
 #include <TheLostGirl/Parameters.h>
 #include <TheLostGirl/functions.h>
 #include <TheLostGirl/JointRoles.h>
 #include <TheLostGirl/systems/TimeSystem.h>
-
 #include <TheLostGirl/systems/PhysicsSystem.h>
 
 PhysicsSystem::PhysicsSystem(StateStack::Context context):

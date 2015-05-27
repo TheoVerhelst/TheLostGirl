@@ -1,6 +1,5 @@
 #include <algorithm>
 #include <stack>
-
 #include <TheLostGirl/scripts/Interpreter.h>
 #include <TheLostGirl/scripts/scriptsFunctions.h>
 #include <TheLostGirl/scripts/ScriptError.h>

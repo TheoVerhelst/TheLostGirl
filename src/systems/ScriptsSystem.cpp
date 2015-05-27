@@ -1,9 +1,7 @@
 #include <entityx/entityx.h>
-
 #include <TheLostGirl/components.h>
 #include <TheLostGirl/scripts/Interpreter.h>
 #include <TheLostGirl/ResourceManager.h>
-
 #include <TheLostGirl/systems/ScriptsSystem.h>
 
 ScriptsSystem::ScriptsSystem(StateStack::Context context):

@@ -3,7 +3,6 @@
 
 #include <vector>
 #include <memory>
-
 #include <SFML/System/NonCopyable.hpp>
 
 //Forward declarations

@@ -1,16 +1,13 @@
 #include <cmath>
 #include <iostream>
-
 #include <SFML/Graphics/RenderWindow.hpp>
 #include <SFML/Window/Event.hpp>
 #include <Box2D/Common/b2Math.h>
-
 #include <TheLostGirl/components.h>
 #include <TheLostGirl/Command.h>
 #include <TheLostGirl/actions.h>
 #include <TheLostGirl/Category.h>
 #include <TheLostGirl/systems/PendingChangesSystem.h>
-
 #include <TheLostGirl/systems/DragAndDropSystem.h>
 
 

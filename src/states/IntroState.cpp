@@ -1,13 +1,11 @@
 #include <SFML/System/Time.hpp>
 #include <SFML/Window/Event.hpp>
 #include <TGUI/Gui.hpp>
-
 #include <TheLostGirl/State.h>
 #include <TheLostGirl/states/MainMenuState.h>
 #include <TheLostGirl/StateStack.h>
 #include <TheLostGirl/Parameters.h>
 #include <TheLostGirl/events.h>
-
 #include <TheLostGirl/states/IntroState.h>
 
 IntroState::IntroState(StateStack& stack):
@@ -31,7 +29,7 @@ IntroState::IntroState(StateStack& stack):
 	m_logo->setPosition((bindWidth(gui) - bindWidth(m_logo))/2, bindHeight(gui, 0.f));
 	gui.add(m_logo);
 
-	m_sentence = tgui::Label::create("resources/gui.conf");
+	m_sentence = tgui::Label::create(getContext().parameters.guiConfigFile);
 	m_sentence->setTextSize(30);
 	m_sentence->setPosition((bindWidth(gui) - bindWidth(m_sentence))/2, bindHeight(gui, 0.5));
 	gui.add(m_sentence);

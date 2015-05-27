@@ -1,13 +1,10 @@
 #include <iostream>
 #include <deque>
-
 #include <SFML/Graphics/RenderWindow.hpp>
 #include <SFML/Graphics/Sprite.hpp>
 #include <entityx/entityx.h>
-
 #include <TheLostGirl/components.h>
 #include <TheLostGirl/Category.h>
-
 #include <TheLostGirl/systems/RenderSystem.h>
 
 RenderSystem::RenderSystem(StateStack::Context context):

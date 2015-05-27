@@ -1,10 +1,8 @@
 #include <SFML/Graphics/Rect.hpp>
 #include <SFML/Graphics/Sprite.hpp>
 #include <entityx/Entity.h>
-
 #include <TheLostGirl/components.h>
 #include <TheLostGirl/functions.h>
-
 #include <TheLostGirl/SkyAnimation.h>
 
 SkyAnimation::SkyAnimation(entityx::Entity entity):

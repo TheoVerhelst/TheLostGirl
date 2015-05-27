@@ -2,10 +2,8 @@
 #define DRAGANDDROPSYSTEM_H
 
 #include <queue>
-
 #include <entityx/System.h>
 #include <SFML/Graphics/Vertex.hpp>
-
 #include <TheLostGirl/StateStack.h>
 
 //Forward declarations

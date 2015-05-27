@@ -1,6 +1,5 @@
 #include <TGUI/Gui.hpp>
 #include <entityx/System.h>
-
 #include <TheLostGirl/State.h>
 #include <TheLostGirl/states/MainMenuState.h>
 #include <TheLostGirl/StateStack.h>
@@ -9,7 +8,7 @@
 #include <TheLostGirl/states/ParametersState.h>
 #include <TheLostGirl/systems/PendingChangesSystem.h>
 #include <TheLostGirl/events.h>
-
+#include <TheLostGirl/Parameters.h>
 #include <TheLostGirl/states/PauseState.h>
 
 PauseState::PauseState(StateStack& stack) :
@@ -33,7 +32,7 @@ PauseState::PauseState(StateStack& stack) :
 
 	// Left:   25% of window width
 	// Top:    10% of window height
-	m_pauseLabel = tgui::Label::create("resources/gui.conf");
+	m_pauseLabel = tgui::Label::create(getContext().parameters.guiConfigFile);
 	m_pauseLabel->setPosition((bindWidth(gui) - bindWidth(m_pauseLabel))/2, bindHeight(gui, 0.1f));
 	m_pauseLabel->setTextSize(80);
 	gui.add(m_pauseLabel);
@@ -42,7 +41,7 @@ PauseState::PauseState(StateStack& stack) :
 	// Top:    40% of window height
 	// Width:  50% of window width
 	// Height: 15% of window height
-	m_backToGameButton = tgui::Button::create("resources/gui.conf");
+	m_backToGameButton = tgui::Button::create(getContext().parameters.guiConfigFile);
 	m_backToGameButton->setPosition(bindWidth(gui, 0.25f), bindHeight(gui, 0.4f));
 	m_backToGameButton->setSize(bindWidth(gui, 0.5f), bindHeight(gui, 0.15f));
 	m_backToGameButton->setTextSize(50);

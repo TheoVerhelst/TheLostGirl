@@ -3,7 +3,6 @@
 #include <Box2D/Dynamics/b2World.h>
 #include <Box2D/Dynamics/Joints/b2WeldJoint.h>
 #include <Box2D/Dynamics/b2Fixture.h>
-
 #include <TheLostGirl/components.h>
 
 #include <TheLostGirl/actions/ArrowPicker.h>

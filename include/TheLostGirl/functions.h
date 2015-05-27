@@ -3,7 +3,6 @@
 
 #include <string>
 #include <map>
-
 #include <SFML/Graphics/Rect.hpp>
 #include <SFML/Window/Event.hpp>
 #include <Box2D/Common/b2Math.h>

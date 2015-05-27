@@ -2,7 +2,6 @@
 #define MAINMENUSTATE_H
 
 #include <memory>
-
 #include <TGUI/Button.hpp>
 #include <TGUI/Picture.hpp>
 #include <TGUI/Panel.hpp>

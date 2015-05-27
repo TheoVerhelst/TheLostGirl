@@ -1,5 +1,4 @@
 #include <functional>
-
 #include <entityx/Entity.h>
 
 #include <TheLostGirl/HashEntity.h>

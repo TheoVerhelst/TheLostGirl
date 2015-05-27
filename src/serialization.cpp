@@ -6,12 +6,10 @@
 #include <Box2D/Collision/Shapes/b2PolygonShape.h>
 #include <Box2D/Dynamics/b2World.h>
 #include <SFML/Graphics/Texture.hpp>
-
 #include <TheLostGirl/components.h>
 #include <TheLostGirl/ResourceManager.h>
 #include <TheLostGirl/FixtureRoles.h>
 #include <TheLostGirl/functions.h>
-
 #include <TheLostGirl/serialization.h>
 
   //////////             ///////////

@@ -2,6 +2,7 @@
 #define STATES_H
 
 #include <TheLostGirl/states/MainMenuState.h>
+#include <TheLostGirl/states/KeyConfigurationState.h>
 #include <TheLostGirl/states/ParametersState.h>
 #include <TheLostGirl/states/IntroState.h>
 #include <TheLostGirl/states/LoadingState.h>

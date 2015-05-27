@@ -2,7 +2,6 @@
 #define ANIMATIONSSYSTEM_H
 
 #include <entityx/System.h>
-
 #include <SFML/Graphics/Vertex.hpp>
 
 //Forward declarations

@@ -2,14 +2,12 @@
 #include <SFML/Window/Event.hpp>
 #include <entityx/entityx.h>
 #include <TGUI/Gui.hpp>
-
 #include <TheLostGirl/State.h>
 #include <TheLostGirl/events.h>
 #include <TheLostGirl/Parameters.h>
 #include <TheLostGirl/Player.h>
 #include <TheLostGirl/components.h>
 #include <TheLostGirl/events.h>
-
 #include <TheLostGirl/states/OpenInventoryState.h>
 
 OpenInventoryState::OpenInventoryState(StateStack& stack, entityx::Entity entity) :
@@ -30,7 +28,7 @@ OpenInventoryState::OpenInventoryState(StateStack& stack, entityx::Entity entity
 	m_background->setBackgroundColor(sf::Color(255, 255, 255, 100));
 	gui.add(m_background);
 
-	m_entityName = tgui::Label::create("resources/gui.conf");
+	m_entityName = tgui::Label::create(getContext().parameters.guiConfigFile);
 	m_entityName->setTextSize(35);
 	m_entityName->setPosition(bindWidth(m_background, 0.5f) - bindWidth(m_entityName, 0.5f), bindHeight(m_background, 0.125f));
 	m_background->add(m_entityName);
@@ -51,7 +49,7 @@ OpenInventoryState::OpenInventoryState(StateStack& stack, entityx::Entity entity
 		itemWidget.picture = tgui::Picture::create(paths[getContext().parameters.scaleIndex] + "items/" + category + "/" + type + ".png");
 		itemWidget.background->add(itemWidget.picture);
 		itemWidget.picture->move(bindWidth(itemWidget.background, 0.08333333f), bindHeight(itemWidget.background, 0.08333333f));
-		itemWidget.caption = tgui::Label::create("resources/gui.conf");
+		itemWidget.caption = tgui::Label::create(getContext().parameters.guiConfigFile);
 		itemWidget.background->add(itemWidget.caption);
 		itemWidget.item = entityItem;
 		m_grid->addWidget(itemWidget.background, rowCounter, columnCounter);

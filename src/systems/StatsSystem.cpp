@@ -1,13 +1,11 @@
 #include <entityx/entityx.h>
 #include <Box2D/Dynamics/b2Body.h>
-
 #include <TheLostGirl/components.h>
 #include <TheLostGirl/functions.h>
 #include <TheLostGirl/events.h>
 #include <TheLostGirl/Command.h>
 #include <TheLostGirl/actions.h>
 #include <TheLostGirl/systems/PendingChangesSystem.h>
-
 #include <TheLostGirl/systems/StatsSystem.h>
 
 StatsSystem::StatsSystem(StateStack::Context context):

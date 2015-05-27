@@ -3,12 +3,10 @@
 #include <Box2D/Dynamics/b2World.h>
 #include <Box2D/Dynamics/Joints/b2PrismaticJoint.h>
 #include <Box2D/Dynamics/b2Fixture.h>
-
 #include <TheLostGirl/components.h>
 #include <TheLostGirl/functions.h>
 #include <TheLostGirl/JointRoles.h>
 #include <TheLostGirl/FixtureRoles.h>
-
 #include <TheLostGirl/actions/BowBender.h>
 
 BowBender::BowBender(float _angle, float _power):

@@ -1,16 +1,13 @@
 #include <algorithm>
 #include <cmath>
 #include <iostream>
-
 #include <entityx/entityx.h>
 #include <Box2D/Dynamics/b2World.h>
 #include <Box2D/Dynamics/b2Body.h>
 #include <Box2D/Dynamics/Joints/b2Joint.h>
-
 #include <TheLostGirl/Category.h>
 #include <TheLostGirl/components.h>
 #include <TheLostGirl/Command.h>
-
 #include <TheLostGirl/systems/PendingChangesSystem.h>
 
 PendingChangesSystem::PendingChangesSystem(StateStack::Context context):

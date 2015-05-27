@@ -1,6 +1,5 @@
 #include <SFML/Graphics/RenderTexture.hpp>
 #include <Box2D/Box2D.h>
-
 #include <TheLostGirl/states/IntroState.h>
 #include <TheLostGirl/components.h>
 #include <TheLostGirl/systems.h>
@@ -9,7 +8,6 @@
 #include <TheLostGirl/LangManager.h>
 #include <TheLostGirl/events.h>
 #include <TheLostGirl/serialization.h>
-
 #include <TheLostGirl/Application.h>
 
 Application::Application(bool debugMode):

@@ -2,7 +2,6 @@
 #define SCROLLINGSYSTEM_H
 
 #include <entityx/System.h>
-
 #include <TheLostGirl/StateStack.h>
 
 //Forward declarations

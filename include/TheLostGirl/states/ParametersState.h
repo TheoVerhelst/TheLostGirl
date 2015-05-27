@@ -9,7 +9,6 @@
 #include <TGUI/Label.hpp>
 #include <TGUI/Panel.hpp>
 #include <TGUI/Grid.hpp>
-
 #include <TheLostGirl/State.h>
 
 //Forward declarations

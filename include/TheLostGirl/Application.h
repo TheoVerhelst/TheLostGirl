@@ -5,7 +5,6 @@
 #include <TGUI/Gui.hpp>
 #include <entityx/entityx.h>
 #include <Box2D/Dynamics/b2World.h>
-
 #include <TheLostGirl/ResourceManager.h>
 #include <TheLostGirl/State.h>
 #include <TheLostGirl/StateStack.h>

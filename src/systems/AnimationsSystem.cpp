@@ -1,13 +1,10 @@
 #include <iostream>
-
 #include <SFML/System/Time.hpp>
 #include <entityx/entityx.h>
 #include <Box2D/Box2D.h>
-
 #include <TheLostGirl/components.h>
 #include <TheLostGirl/AnimationsManager.h>
 #include <TheLostGirl/SkyAnimation.h>
-
 #include <TheLostGirl/systems/AnimationsSystem.h>
 
 AnimationsSystem::AnimationsSystem(StateStack::Context)

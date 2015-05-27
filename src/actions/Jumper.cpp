@@ -1,5 +1,4 @@
 #include <entityx/Entity.h>
-
 #include <TheLostGirl/components.h>
 
 #include <TheLostGirl/actions/Jumper.h>

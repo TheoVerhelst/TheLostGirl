@@ -1,15 +1,12 @@
 #include <iostream>
-
 #include <SFML/Graphics/RenderWindow.hpp>
 #include <SFML/Graphics/Sprite.hpp>
 #include <entityx/entityx.h>
 #include <Box2D/Box2D.h>
-
 #include <TheLostGirl/components.h>
 #include <TheLostGirl/Category.h>
 #include <TheLostGirl/Parameters.h>
 #include <TheLostGirl/functions.h>
-
 #include <TheLostGirl/systems/ScrollingSystem.h>
 
 ScrollingSystem::ScrollingSystem(StateStack::Context context):

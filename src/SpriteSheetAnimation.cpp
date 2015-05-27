@@ -1,10 +1,8 @@
 #include <SFML/Graphics/Rect.hpp>
 #include <SFML/Graphics/Sprite.hpp>
 #include <entityx/Entity.h>
-
 #include <TheLostGirl/components.h>
 #include <TheLostGirl/functions.h>
-
 #include <TheLostGirl/SpriteSheetAnimation.h>
 
 SpriteSheetAnimation::SpriteSheetAnimation(sf::Sprite& sprite, StateStack::Context context) :

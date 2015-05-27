@@ -2,7 +2,6 @@
 #include <Box2D/Dynamics/Joints/b2Joint.h>
 #include <Box2D/Dynamics/b2Body.h>
 #include <Box2D/Dynamics/b2World.h>
-
 #include <TheLostGirl/components.h>
 
 #include <TheLostGirl/actions/ArrowShooter.h>

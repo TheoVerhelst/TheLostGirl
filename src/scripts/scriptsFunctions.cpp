@@ -1,17 +1,14 @@
 #include <algorithm>
 #include <iostream>
-
 #include <Box2D/Dynamics/b2Body.h>
 #include <Box2D/Dynamics/b2World.h>
 #include <Box2D/Dynamics/b2Fixture.h>
 #include <Box2D/Collision/b2Distance.h>
 #include <entityx/System.h>
-
 #include <TheLostGirl/components.h>
 #include <TheLostGirl/Command.h>
 #include <TheLostGirl/actions.h>
 #include <TheLostGirl/FixtureRoles.h>
-
 #include <TheLostGirl/scripts/scriptsFunctions.h>
 #include <TheLostGirl/scripts/ScriptError.h>
 #include <TheLostGirl/systems/PendingChangesSystem.h>

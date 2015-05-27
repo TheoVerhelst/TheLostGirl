@@ -4,7 +4,6 @@
 #include <TGUI/Button.hpp>
 #include <TGUI/Label.hpp>
 #include <TGUI/Panel.hpp>
-
 #include <TheLostGirl/State.h>
 
 //Forward declarations

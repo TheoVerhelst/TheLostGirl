@@ -15,7 +15,6 @@
 #include <Box2D/Dynamics/Joints/b2MotorJoint.h>
 #include <entityx/entityx.h>
 #include <dist/json/json.h>
-
 #include <TheLostGirl/State.h>
 #include <TheLostGirl/states/PauseState.h>
 #include <TheLostGirl/states/HUDState.h>
@@ -33,7 +32,6 @@
 #include <TheLostGirl/FixtureRoles.h>
 #include <TheLostGirl/JointRoles.h>
 #include <TheLostGirl/serialization.h>
-
 #include <TheLostGirl/states/GameState.h>
 
 //TODO Faire un système multi texture pour une même partie d'entité (soit chunker une grande image, soit faire plusieurs images).

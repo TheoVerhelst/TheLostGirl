@@ -2,10 +2,8 @@
 #define BLOOMEFFECT_H
 
 #include <array>
-
 #include <SFML/Graphics/RenderTexture.hpp>
 #include <SFML/Graphics/Shader.hpp>
-
 #include <TheLostGirl/PostEffect.h>
 #include <TheLostGirl/ResourceManager.h>
 

@@ -1,13 +1,10 @@
 #include <iostream>
-
 #include <SFML/Graphics/RenderWindow.hpp>
 #include <entityx/entityx.h>
-
 #include <TheLostGirl/Command.h>
 #include <TheLostGirl/components.h>
 #include <TheLostGirl/actions.h>
 #include <TheLostGirl/systems/PendingChangesSystem.h>
-
 #include <TheLostGirl/Player.h>
 
 Player::Player(StateStack& stateStack):

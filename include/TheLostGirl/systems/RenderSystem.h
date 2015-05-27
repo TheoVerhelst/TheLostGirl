@@ -2,7 +2,6 @@
 #define RENDERSYSTEM_H
 
 #include <entityx/System.h>
-
 #include <TheLostGirl/BloomEffect.h>
 #include <TheLostGirl/StateStack.h>
 

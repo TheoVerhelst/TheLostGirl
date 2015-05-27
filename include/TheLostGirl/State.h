@@ -3,7 +3,6 @@
 
 #include <memory>
 #include <entityx/Event.h>
-
 #include <TheLostGirl/StateStack.h>
 
 namespace sf

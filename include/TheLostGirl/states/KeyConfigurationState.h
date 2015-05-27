@@ -1,9 +1,6 @@
-#ifndef INTROSTATE_H
-#define INTROSTATE_H
+#ifndef KEYCONFIGURATIONSTATE_H
+#define KEYCONFIGURATIONSTATE_H
 
-#include <TGUI/Picture.hpp>
-#include <TGUI/Panel.hpp>
-#include <TGUI/Label.hpp>
 #include <TheLostGirl/State.h>
 
 //Forward declarations
@@ -12,20 +9,20 @@ namespace sf
 	class Event;
 	class Time;
 }
-class Context;
-class StateStack;
-struct ParametersChange;
 
-/// Introduction at the launching of the game.
-class IntroState : public State
+class StateStack;
+
+/// State that effectively play the game.
+/// The game become really interesting here.
+class KeyConfigurationState : public State
 {
 	public:
-        /// Constructor.
+        /// Default constructor.
         /// \param stack StateStack wherein the State is added.
-		IntroState(StateStack& stack);
+		KeyConfigurationState(StateStack& stack);
 
-		/// Destructor.
-		~IntroState();
+		/// Default destructor.
+		~KeyConfigurationState();
 
         /// The drawing function.
         /// \return virtual void
@@ -33,9 +30,9 @@ class IntroState : public State
 		virtual void draw();
 
         /// The logic update function.
+        /// This function call e.g. the physic update function, the AI function, etc...
         /// \param dt Elapsed time in the last game frame.
         /// \return Return true if the state under this one in the stack must be also updated.
-        /// This function call e.g. the physic update function, the AI function, etc...
 		virtual bool update(sf::Time dt);
 
         /// The event handling function.
@@ -44,17 +41,8 @@ class IntroState : public State
         /// \note The closing window and resinzing window events are already handled by the Application class.
 		virtual bool handleEvent(const sf::Event& event);
 
-		/// Receive an event about a change in the parameters.
-		/// \param parametersChange The data about the change.
-		void receive(const ParametersChange& parametersChange);
-
 	private:
-		/// Reset all texts in the buttons and other widgets.
-		void resetTexts();
-
-		tgui::Panel::Ptr m_background; ///< The background of the menu.
-		tgui::Picture::Ptr m_logo;     ///< The Lost Girl logo.
-		tgui::Label::Ptr m_sentence;   ///< The sentence under the logo.
 };
 
-#endif//INTROSTATE_H
+#endif//KEYCONFIGURATIONSTATE_H
+

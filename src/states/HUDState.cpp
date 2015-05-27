@@ -3,7 +3,6 @@
 #include <TGUI/Gui.hpp>
 #include <entityx/System.h>
 #include <entityx/Entity.h>
-
 #include <TheLostGirl/State.h>
 #include <TheLostGirl/LangManager.h>
 #include <TheLostGirl/events.h>
@@ -12,7 +11,6 @@
 #include <TheLostGirl/functions.h>
 #include <TheLostGirl/components.h>
 #include <TheLostGirl/systems/TimeSystem.h>
-
 #include <TheLostGirl/states/HUDState.h>
 
 HUDState::HUDState(StateStack& stack, size_t entitiesNumber):

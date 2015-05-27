@@ -1,5 +1,4 @@
 #include <TGUI/Gui.hpp>
-
 #include <TheLostGirl/State.h>
 #include <TheLostGirl/states/GameState.h>
 #include <TheLostGirl/states/LoadingState.h>
@@ -8,7 +7,6 @@
 #include <TheLostGirl/functions.h>
 #include <TheLostGirl/Parameters.h>
 #include <TheLostGirl/events.h>
-
 #include <TheLostGirl/states/MainMenuState.h>
 
 MainMenuState::MainMenuState(StateStack& stack):
@@ -38,7 +36,7 @@ MainMenuState::MainMenuState(StateStack& stack):
 	// Top:    40% of window height
 	// Width:  50% of window width
 	// Height: 15% of window height
-	m_newButton = tgui::Button::create("resources/gui.conf");
+	m_newButton = tgui::Button::create(getContext().parameters.guiConfigFile);
 	m_newButton->setPosition(bindWidth(gui, 0.25f), bindHeight(gui, 0.4f));
 	m_newButton->setSize(bindWidth(gui, 0.5f), bindHeight(gui, 0.15f));
 	unsigned int playGameSignal{m_newButton->connect("pressed", &MainMenuState::playGame, this)};

@@ -1,16 +1,13 @@
 #include <iostream>
-
 #include <SFML/Graphics.hpp>
 #include <entityx/Entity.h>
 #include <Box2D/Box2D.h>
 #include <TGUI/Label.hpp>
 #include <TGUI/Gui.hpp>
-
 #include <TheLostGirl/Parameters.h>
 #include <TheLostGirl/components.h>
 #include <TheLostGirl/ResourceManager.h>
 #include <TheLostGirl/functions.h>
-
 #include <TheLostGirl/DebugDraw.h>
 
 DebugDraw::DebugDraw(StateStack::Context context):
@@ -151,7 +148,7 @@ void DebugDraw::drawDebugAth()
 		tgui::Label::Ptr positionLabel{m_context.gui.get<tgui::Label>("positionLabel")};
 		if(positionLabel == nullptr)
 		{
-			positionLabel = tgui::Label::create("resources/gui.conf");
+			positionLabel = tgui::Label::create(m_context.parameters.guiConfigFile);
 			positionLabel->setPosition(tgui::bindWidth(m_context.gui, 0.01f), tgui::bindHeight(m_context.gui, 0.01f));
 			positionLabel->setTextSize(20);
 			positionLabel->setTextFont(std::make_shared<sf::Font>(m_context.fontManager.get("debug")));
@@ -165,7 +162,7 @@ void DebugDraw::drawDebugAth()
 		tgui::Label::Ptr bendingLabel{m_context.gui.get<tgui::Label>("bendingLabel")};
 		if(bendingLabel == nullptr)
 		{
-			bendingLabel = tgui::Label::create("resources/gui.conf");
+			bendingLabel = tgui::Label::create(m_context.parameters.guiConfigFile);
 			bendingLabel->setPosition(tgui::bindWidth(m_context.gui, 0.35f), tgui::bindHeight(m_context.gui, 0.01f));
 			bendingLabel->setTextSize(20);
 			bendingLabel->setTextFont(std::make_shared<sf::Font>(m_context.fontManager.get("debug")));
@@ -177,7 +174,7 @@ void DebugDraw::drawDebugAth()
 		tgui::Label::Ptr FPSLabel{m_context.gui.get<tgui::Label>("FPSLabel")};
 		if(FPSLabel == nullptr)
 		{
-			FPSLabel = tgui::Label::create("resources/gui.conf");
+			FPSLabel = tgui::Label::create(m_context.parameters.guiConfigFile);
 			FPSLabel->setPosition(tgui::bindWidth(m_context.gui, 0.7f), tgui::bindHeight(m_context.gui, 0.01f));
 			FPSLabel->setTextSize(20);
 			FPSLabel->setTextFont(std::make_shared<sf::Font>(m_context.fontManager.get("debug")));

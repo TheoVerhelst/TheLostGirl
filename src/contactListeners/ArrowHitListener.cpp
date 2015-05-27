@@ -7,14 +7,12 @@
 #include <Box2D/Dynamics/b2World.h>
 #include <entityx/Entity.h>
 #include <entityx/System.h>
-
 #include <TheLostGirl/components.h>
 #include <TheLostGirl/AnimationsManager.h>
 #include <TheLostGirl/events.h>
 #include <TheLostGirl/functions.h>
 #include <TheLostGirl/FixtureRoles.h>
 #include <TheLostGirl/systems/PendingChangesSystem.h>
-
 #include <TheLostGirl/contactListeners/ArrowHitListener.h>
 
 ArrowHitListener::ArrowHitListener(StateStack::Context context):

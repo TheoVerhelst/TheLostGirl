@@ -8,10 +8,8 @@
 #include <cassert>
 #include <algorithm>
 #include <iostream>
-
 #include <SFML/System/Time.hpp>
 #include <dist/json/json.h>
-
 #include <TheLostGirl/StateStack.h>
 
 //Forward declarations

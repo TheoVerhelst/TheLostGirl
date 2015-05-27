@@ -4,12 +4,10 @@
 #include <Box2D/Dynamics/b2Body.h>
 #include <Box2D/Dynamics/b2World.h>
 #include <Box2D/Dynamics/b2Fixture.h>
-
 #include <TheLostGirl/components.h>
 #include <TheLostGirl/functions.h>
 #include <TheLostGirl/JointRoles.h>
 #include <TheLostGirl/FixtureRoles.h>
-
 #include <TheLostGirl/actions/Mover.h>
 
 Mover::Mover(Direction _direction, bool _start):

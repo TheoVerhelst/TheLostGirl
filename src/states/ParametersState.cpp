@@ -2,13 +2,11 @@
 #include <SFML/Window/VideoMode.hpp>
 #include <TGUI/Gui.hpp>
 #include <TGUI/MessageBox.hpp>
-
 #include <TheLostGirl/LangManager.h>
 #include <TheLostGirl/states/PauseState.h>
 #include <TheLostGirl/Parameters.h>
 #include <TheLostGirl/functions.h>
 #include <TheLostGirl/events.h>
-
 #include <TheLostGirl/states/ParametersState.h>
 
 ParametersState::ParametersState(StateStack& stack) :
@@ -25,17 +23,17 @@ ParametersState::ParametersState(StateStack& stack) :
 	m_background->setBackgroundColor(sf::Color(255, 255, 255, 100));
 	gui.add(m_background);
 
-	m_title = tgui::Label::create("resources/gui.conf");
+	m_title = tgui::Label::create(getContext().parameters.guiConfigFile);
 	m_title->setPosition((bindWidth(m_background) - bindWidth(m_title))/2.f, bindHeight(m_background, 0.1f));
 	m_title->setTextSize(80);
 	m_background->add(m_title);
 
-	m_resolutionLabel = tgui::Label::create("resources/gui.conf");
+	m_resolutionLabel = tgui::Label::create(getContext().parameters.guiConfigFile);
 	m_resolutionLabel->setTextSize(30);
 	m_resolutionLabel->setPosition(10.f, bindHeight(m_background, 0.3f));
 	m_background->add(m_resolutionLabel);
 
-	m_resolutionComboBox = tgui::ComboBox::create("resources/gui.conf");
+	m_resolutionComboBox = tgui::ComboBox::create(getContext().parameters.guiConfigFile);
 	m_resolutionComboBox->addItem("360p", "0");
 	m_resolutionComboBox->addItem("576p", "1");
 	m_resolutionComboBox->addItem("720p", "2");
@@ -45,7 +43,7 @@ ParametersState::ParametersState(StateStack& stack) :
 	m_resolutionComboBox->setPosition(bindWidth(m_background, 0.5f), bindHeight(m_background, 0.3f));
 	m_resolutionComboBox->setSize(bindWidth(m_background, 0.4f), 30.f);
 	m_resolutionComboBox->connect("itemSelected", [this](){
-								tgui::MessageBox::Ptr box = tgui::MessageBox::create("resources/gui.conf");
+								tgui::MessageBox::Ptr box = tgui::MessageBox::create(getContext().parameters.guiConfigFile);
 								box->setText("Takes effects only after restart");
 								box->setTextSize(15);
 								box->setPosition(bindWidth(m_background, 0.25f), bindHeight(m_background, 0.4f));
@@ -58,7 +56,7 @@ ParametersState::ParametersState(StateStack& stack) :
 	m_langLabel->setPosition(10.f, bindHeight(m_background, 0.3666f));
 	m_background->add(m_langLabel);
 
-	m_langComboBox = tgui::ComboBox::create("resources/gui.conf");
+	m_langComboBox = tgui::ComboBox::create(getContext().parameters.guiConfigFile);
 	m_langComboBox->addItem(toString(FR));
 	m_langComboBox->addItem(toString(EN));
 	m_langComboBox->addItem(toString(IT));
@@ -72,7 +70,7 @@ ParametersState::ParametersState(StateStack& stack) :
 	m_bloomLabel->setPosition(10.f, bindHeight(m_background, 0.4333f));
 	m_background->add(m_bloomLabel);
 
-	m_bloomCheckbox = tgui::Checkbox::create("resources/gui.conf");
+	m_bloomCheckbox = tgui::Checkbox::create(getContext().parameters.guiConfigFile);
 	if(getContext().parameters.bloomEnabled)
 		m_bloomCheckbox->check();
 	m_bloomCheckbox->setPosition(bindWidth(m_background, 0.5f), bindHeight(m_background, 0.4333f));
@@ -82,7 +80,7 @@ ParametersState::ParametersState(StateStack& stack) :
 	m_fullscreenLabel->setPosition(10.f, bindHeight(m_background, 0.5f));
 	m_background->add(m_fullscreenLabel);
 
-	m_fullscreenCheckbox = tgui::Checkbox::create("resources/gui.conf");
+	m_fullscreenCheckbox = tgui::Checkbox::create(getContext().parameters.guiConfigFile);
 	if(getContext().parameters.fullscreen)
 		m_fullscreenCheckbox->check();
 	m_fullscreenCheckbox->setPosition(bindWidth(m_background, 0.5f), bindHeight(m_background, 0.5));
@@ -98,7 +96,7 @@ ParametersState::ParametersState(StateStack& stack) :
 								});
 	m_background->add(m_fullscreenCheckbox);
 
-	m_fullscreenComboBox = tgui::ComboBox::create("resources/gui.conf");
+	m_fullscreenComboBox = tgui::ComboBox::create(getContext().parameters.guiConfigFile);
 	const auto& videoModes(sf::VideoMode::getFullscreenModes());
 	unsigned int desktopDepth{sf::VideoMode::getDesktopMode().bitsPerPixel};
 	for(size_t i{0}; i < videoModes.size(); ++i)
@@ -124,7 +122,7 @@ ParametersState::ParametersState(StateStack& stack) :
 	m_mainVolumeLabel->setPosition(10.f, bindHeight(m_background, 0.5666f));
 	m_background->add(m_mainVolumeLabel);
 
-	m_mainVolumeSlider = tgui::Slider::create("resources/gui.conf");
+	m_mainVolumeSlider = tgui::Slider::create(getContext().parameters.guiConfigFile);
 	m_mainVolumeSlider->setMaximum(100);
 	m_mainVolumeSlider->setPosition(bindWidth(m_background, 0.5f), bindHeight(m_background, 0.5666f));
 	m_mainVolumeSlider->setSize(bindWidth(m_background, 0.4f), 20.f);
@@ -158,13 +156,13 @@ ParametersState::ParametersState(StateStack& stack) :
 	m_controlsLabel->setPosition(10.f, bindHeight(m_background, 0.8333f));
 	m_background->add(m_controlsLabel);
 
-	m_controlsButton = tgui::Button::create("resources/gui.conf");
+	m_controlsButton = tgui::Button::create(getContext().parameters.guiConfigFile);
 	m_controlsButton->setPosition(bindWidth(m_background, 0.5f), bindHeight(m_background, 0.8333f));
 	m_controlsButton->setSize(bindWidth(m_background, 0.4f), 30.f);
 	m_background->add(m_controlsButton);
 
 	//Buttons
-	m_applyButton = tgui::Button::create("resources/gui.conf");
+	m_applyButton = tgui::Button::create(getContext().parameters.guiConfigFile);
 	m_applyButton->setPosition(bindWidth(m_background, 0.f), bindHeight(m_background, 0.9f));
 	m_applyButton->setSize(bindWidth(m_background, 1.f/3.f), bindHeight(m_background, 0.1f));
 	m_applyButton->connect("pressed", &ParametersState::applyChanges, this);

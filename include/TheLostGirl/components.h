@@ -2,11 +2,9 @@
 #define COMPONENTS_H
 
 #include <string>
-
 #include <SFML/Graphics/Sprite.hpp>
 #include <SFML/System/Clock.hpp>
 #include <entityx/Entity.h>
-
 #include <TheLostGirl/Category.h>
 #include <TheLostGirl/AnimationsManager.h>
 

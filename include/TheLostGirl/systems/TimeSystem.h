@@ -2,7 +2,6 @@
 #define TIMESYSTEM_H
 
 #include <random>
-
 #include <entityx/System.h>
 
 #include <TheLostGirl/StateStack.h>

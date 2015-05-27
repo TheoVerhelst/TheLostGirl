@@ -2,7 +2,6 @@
 #define CORPSESEARCHER_H
 
 #include <Box2D/Dynamics/b2WorldCallbacks.h>
-
 #include <TheLostGirl/Action.h>
 #include <TheLostGirl/StateStack.h>
 

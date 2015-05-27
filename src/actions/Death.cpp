@@ -1,8 +1,6 @@
 #include <entityx/Entity.h>
-
 #include <TheLostGirl/components.h>
 #include <TheLostGirl/scripts/scriptsFunctions.h>
-
 #include <TheLostGirl/actions/Death.h>
 
 Death::Death(StateStack::Context context):

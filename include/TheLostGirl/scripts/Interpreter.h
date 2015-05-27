@@ -3,10 +3,8 @@
 
 #include <map>
 #include <fstream>
-
 #include <boost/variant.hpp>
 #include <entityx/Entity.h>
-
 #include <TheLostGirl/scripts/Tree.h>
 #include <TheLostGirl/StateStack.h>
 

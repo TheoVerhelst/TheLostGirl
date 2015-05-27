@@ -2,7 +2,6 @@
 #define HUDSTATE_H
 
 #include <TGUI/Canvas.hpp>
-
 #include <TheLostGirl/HashEntity.h>
 
 //Forward declarations

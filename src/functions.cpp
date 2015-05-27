@@ -1,14 +1,12 @@
 #include <algorithm>
 #include <iostream>
 #include <cmath>
-
 #include <SFML/Graphics/Color.hpp>
 #include <SFML/Graphics/Rect.hpp>
 #include <SFML/System/Time.hpp>
 #include <SFML/Window/Event.hpp>
 #include <TGUI/Gui.hpp>
 #include <entityx/Entity.h>
-
 #include <TheLostGirl/components.h>
 
 #include <TheLostGirl/functions.h>

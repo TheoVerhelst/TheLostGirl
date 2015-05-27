@@ -6,7 +6,6 @@
 #include <TGUI/Picture.hpp>
 #include <TGUI/Label.hpp>
 #include <TGUI/Grid.hpp>
-
 #include <SFML/Graphics/Sprite.hpp>
 #include <TheLostGirl/AnimationsManager.h>
 #include <TheLostGirl/ContactListener.h>

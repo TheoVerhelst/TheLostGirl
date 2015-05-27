@@ -2,7 +2,6 @@
 #define COMMAND_H
 
 #include <functional>
-
 #include <TheLostGirl/Category.h>
 
 //Forward declarations

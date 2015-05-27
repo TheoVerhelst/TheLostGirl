@@ -4,7 +4,6 @@
 #include <thread>
 #include <SFML/Graphics/Rect.hpp>
 #include <entityx/Entity.h>
-
 #include <TheLostGirl/AnimationsManager.h>
 #include <TheLostGirl/ContactListener.h>
 

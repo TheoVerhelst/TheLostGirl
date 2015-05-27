@@ -1,10 +1,8 @@
 #include <cmath>
 #include <iostream>
-
 #include <SFML/System/Time.hpp>
 
 #include <TheLostGirl/LangManager.h>
-
 #include <TheLostGirl/systems/TimeSystem.h>
 
 TimeSystem::TimeSystem(StateStack::Context context):
