@@ -33,47 +33,42 @@ PauseState::PauseState(StateStack& stack) :
 	// Left:   25% of window width
 	// Top:    10% of window height
 	m_pauseLabel = tgui::Label::create(getContext().parameters.guiConfigFile);
-	m_pauseLabel->setPosition((bindWidth(gui) - bindWidth(m_pauseLabel))/2, bindHeight(gui, 0.1f));
+	m_pauseLabel->setPosition((bindWidth(m_background) - bindWidth(m_pauseLabel))/2.f, bindHeight(m_background, 0.1f));
 	m_pauseLabel->setTextSize(80);
-	gui.add(m_pauseLabel);
+	m_background->add(m_pauseLabel);
 
 	// Left:   25% of window width
 	// Top:    40% of window height
 	// Width:  50% of window width
 	// Height: 15% of window height
 	m_backToGameButton = tgui::Button::create(getContext().parameters.guiConfigFile);
-	m_backToGameButton->setPosition(bindWidth(gui, 0.25f), bindHeight(gui, 0.4f));
-	m_backToGameButton->setSize(bindWidth(gui, 0.5f), bindHeight(gui, 0.15f));
+	m_backToGameButton->setPosition(0.f, bindHeight(m_background, 0.4f));
+	m_backToGameButton->setSize(bindWidth(m_background), bindHeight(m_background, 0.15f));
 	m_backToGameButton->setTextSize(50);
 	unsigned int backToGameSignal{m_backToGameButton->connect("pressed", &PauseState::backToGame, this)};
-	gui.add(m_backToGameButton);
+	m_background->add(m_backToGameButton);
 
 	// Left:   25% of window width
 	// Top:    55% of window height
 	m_goToOptionsButton = tgui::Button::copy(m_backToGameButton);
-	m_goToOptionsButton->setPosition(bindWidth(gui, 0.25f), bindHeight(gui, 0.55f));
-	m_goToOptionsButton->connect("pressed", &PauseState::goToOptions, this);
+	m_goToOptionsButton->setPosition(0.f, bindHeight(m_background, 0.55f));
+	m_goToOptionsButton->connect("pressed", [this]{m_background->hide(); requestStackPush<ParametersState>();});
 	m_goToOptionsButton->disconnect(backToGameSignal);
-	gui.add(m_goToOptionsButton);
+	m_background->add(m_goToOptionsButton);
 
 	// Left:   25% of window width
 	// Top:    70% of window height
 	m_backToMainMenuButton = tgui::Button::copy(m_backToGameButton);
-	m_backToMainMenuButton->setPosition(bindWidth(gui, 0.25f), bindHeight(gui, 0.7f));
+	m_backToMainMenuButton->setPosition(0.f, bindHeight(m_background, 0.7f));
 	m_backToMainMenuButton->connect("pressed", &PauseState::backToMainMenu, this);
 	m_backToMainMenuButton->disconnect(backToGameSignal);
-	gui.add(m_backToMainMenuButton);
+	m_background->add(m_backToMainMenuButton);
 	resetTexts();
 }
 
 PauseState::~PauseState()
 {
-	tgui::Gui& gui(getContext().gui);
-	gui.remove(m_background);
-	gui.remove(m_pauseLabel);
-	gui.remove(m_backToGameButton);
-	gui.remove(m_goToOptionsButton);
-	gui.remove(m_backToMainMenuButton);
+	getContext().gui.remove(m_background);
 }
 
 void PauseState::draw()
@@ -89,6 +84,9 @@ bool PauseState::handleEvent(const sf::Event& event)
 {
 	if(event.type == sf::Event::KeyPressed and event.key.code == sf::Keyboard::Escape)
 		backToGame();
+	//If the background was hidden, then a state was pushed on top of this one.
+	//But if the code here is executed , that means that this state is again at the top.
+	m_background->show();
 	return false;
 }
 
@@ -100,10 +98,14 @@ void PauseState::receive(const ParametersChange& parametersChange)
 
 void PauseState::resetTexts()
 {
-	m_pauseLabel->setText(getContext().langManager.tr("Pause"));
-	m_backToGameButton->setText(getContext().langManager.tr("Back to game"));
-	m_goToOptionsButton->setText(getContext().langManager.tr("Parameters"));
-	m_backToMainMenuButton->setText(getContext().langManager.tr("Back to main menu"));
+	if(m_pauseLabel)
+		m_pauseLabel->setText(getContext().langManager.tr("Pause"));
+	if(m_backToGameButton)
+		m_backToGameButton->setText(getContext().langManager.tr("Back to game"));
+	if(m_goToOptionsButton)
+		m_goToOptionsButton->setText(getContext().langManager.tr("Parameters"));
+	if(m_backToMainMenuButton)
+		m_backToMainMenuButton->setText(getContext().langManager.tr("Back to main menu"));
 }
 
 
@@ -111,12 +113,6 @@ inline void PauseState::backToGame()
 {
 	requestStackPop();
 	getContext().player.handleInitialInputState();
-}
-
-inline void PauseState::goToOptions()
-{
-	requestStackPop();
-	requestStackPush<ParametersState>();
 }
 
 inline void PauseState::backToMainMenu()

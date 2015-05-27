@@ -1,6 +1,8 @@
 #ifndef KEYCONFIGURATIONSTATE_H
 #define KEYCONFIGURATIONSTATE_H
 
+#include <TGUI/Label.hpp>
+#include <TGUI/Panel.hpp>
 #include <TheLostGirl/State.h>
 
 //Forward declarations
@@ -42,6 +44,11 @@ class KeyConfigurationState : public State
 		virtual bool handleEvent(const sf::Event& event);
 
 	private:
+		/// Reset all texts in the buttons and other widgets.
+		void resetTexts();
+
+		tgui::Panel::Ptr m_background;           ///< The background of the menu.
+		tgui::Label::Ptr m_title;                ///< The title label of the menu
 };
 
 #endif//KEYCONFIGURATIONSTATE_H

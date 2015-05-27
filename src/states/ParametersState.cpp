@@ -7,6 +7,7 @@
 #include <TheLostGirl/Parameters.h>
 #include <TheLostGirl/functions.h>
 #include <TheLostGirl/events.h>
+#include <TheLostGirl/states/KeyConfigurationState.h>
 #include <TheLostGirl/states/ParametersState.h>
 
 ParametersState::ParametersState(StateStack& stack) :
@@ -159,23 +160,24 @@ ParametersState::ParametersState(StateStack& stack) :
 	m_controlsButton = tgui::Button::create(getContext().parameters.guiConfigFile);
 	m_controlsButton->setPosition(bindWidth(m_background, 0.5f), bindHeight(m_background, 0.8333f));
 	m_controlsButton->setSize(bindWidth(m_background, 0.4f), 30.f);
+	m_controlsButton->connect("pressed", [this]{m_background->hide(); requestStackPush<KeyConfigurationState>();});
 	m_background->add(m_controlsButton);
 
 	//Buttons
 	m_applyButton = tgui::Button::create(getContext().parameters.guiConfigFile);
 	m_applyButton->setPosition(bindWidth(m_background, 0.f), bindHeight(m_background, 0.9f));
 	m_applyButton->setSize(bindWidth(m_background, 1.f/3.f), bindHeight(m_background, 0.1f));
-	m_applyButton->connect("pressed", &ParametersState::applyChanges, this);
+	m_applyButton->connect("pressed", [this]{applyChanges();});
 	m_background->add(m_applyButton);
 
 	m_cancelButton = tgui::Button::copy(m_applyButton);
 	m_cancelButton->setPosition(bindWidth(m_background, 1.f/3.f), bindHeight(m_background, 0.9f));
-	m_cancelButton->connect("pressed", &ParametersState::backToPause, this);
+	m_cancelButton->connect("pressed", [this]{requestStackPop();});
 	m_background->add(m_cancelButton);
 
 	m_okButton = tgui::Button::copy(m_applyButton);
 	m_okButton->setPosition(bindWidth(m_background, 2.f/3.f), bindHeight(m_background, 0.9f));
-	m_okButton->connect("pressed", [this](){applyChanges(); backToPause();});
+	m_okButton->connect("pressed", [this](){applyChanges(); requestStackPop();});
 	m_background->add(m_okButton);
 
 	resetTexts();
@@ -197,7 +199,10 @@ bool ParametersState::update(sf::Time)
 bool ParametersState::handleEvent(const sf::Event& event)
 {
 	if(event.type == sf::Event::KeyPressed and event.key.code == sf::Keyboard::Escape)
-		backToPause();
+		requestStackPop();
+	//If the background was hidden, then a state was pushed on top of this one.
+	//But if the code here is executed , that means that this state is again at the top.
+	m_background->show();
 	return false;
 }
 
@@ -205,12 +210,6 @@ void ParametersState::receive(const ParametersChange& parametersChange)
 {
 	if(parametersChange.langChanged)
 		resetTexts();
-}
-
-void ParametersState::backToPause()
-{
-	requestStackPop();
-	requestStackPush<PauseState>();
 }
 
 void ParametersState::applyChanges()

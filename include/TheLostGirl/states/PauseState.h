@@ -52,9 +52,6 @@ class PauseState : public State
 		/// Return to the GameState state and delete this one.
 		inline void backToGame();
 
-		/// Add an OptionsState state in top of this one.
-		inline void goToOptions();
-
 		/// Go back to the main menu, delete this state and the GameState state.
 		inline void backToMainMenu();
 
