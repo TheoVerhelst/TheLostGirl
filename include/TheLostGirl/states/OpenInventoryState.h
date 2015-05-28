@@ -3,6 +3,9 @@
 
 #include <Box2D/Dynamics/Joints/b2Joint.h>
 #include <TGUI/Panel.hpp>
+#include <TGUI/Canvas.hpp>
+#include <TGUI/Scrollbar.hpp>
+#include <TGUI/ChildWindow.hpp>
 #include <TGUI/Picture.hpp>
 #include <TGUI/Label.hpp>
 #include <TGUI/Grid.hpp>
@@ -63,21 +66,36 @@ class OpenInventoryState : public State
 		/// Reset all texts in the buttons and other widgets.
 		void resetTexts();
 
+		void scrollGrid(int newScrollValue);
+
 		/// Hold GUI widgets to represent an item in the inventory.
-		struct ItemWidget
+		struct ItemGridWidget
 		{
 			/// Destructor.
-			~ItemWidget();
+			~ItemGridWidget()
+			{}
+
 			tgui::Panel::Ptr background;///< The background of the item.
 			tgui::Picture::Ptr picture; ///< The image of the item.
 			tgui::Label::Ptr caption;   ///< A label with the naim of the item.
 			entityx::Entity item;       ///< The represented item.
 		};
-		entityx::Entity m_entity;           ///< Entity of which open the inventory.
-		tgui::Panel::Ptr m_background;      ///< Background of the whole inventory window.
-		tgui::Label::Ptr m_entityName;      ///< Label with the name of the entity.
-		tgui::Grid::Ptr m_grid;             ///< Grid to organize all items.
-		std::list<ItemWidget> m_itemWidgets;///< List of all items to display.
+		entityx::Entity m_entity;               ///< Entity of which open the inventory.
+		tgui::ChildWindow::Ptr m_background;    ///< Background of the whole inventory window.
+		tgui::Label::Ptr m_entityName;          ///< Label with the name of the entity.
+
+		tgui::Panel::Ptr m_gridPanel;
+		tgui::Scrollbar::Ptr m_gridScrollbar;
+		tgui::Grid::Ptr m_grid;                 ///< Grid to organize all items.
+		std::list<ItemGridWidget> m_itemWidgets;///< List of all items to display.
+
+		tgui::Panel::Ptr m_listPanel;
+		std::list<sf::String> m_columns;
+		std::map<sf::String, tgui::Label::Ptr> m_columnsTitles;
+		tgui::Scrollbar::Ptr m_listScrollbar;
+		tgui::Grid::Ptr m_listGrid;
+		std::map<sf::String, std::list<tgui::Label::Ptr>> m_columnsContent;
+
 };
 
 #endif//OPENINVENTORYSTATE_H

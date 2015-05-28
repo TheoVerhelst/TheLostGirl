@@ -177,7 +177,7 @@ void Application::processInput()
 		if(event.type == sf::Event::Closed)
 			m_window.close();
 		else if(event.type == sf::Event::KeyPressed and event.key.code == sf::Keyboard::F2)
-			m_parameters.debugMode = not m_parameters.debugMode;//Switch the debug mode
+			m_parameters.debugMode = not m_parameters.debugMode;//Toggle the debug mode
 		else if(event.type == sf::Event::Resized)
 			handleResize(m_window, m_parameters.bloomEnabled, m_parameters.scale, m_postEffectsTexture, m_gui);
 		m_stateStack.handleEvent(event);
@@ -193,7 +193,7 @@ void Application::update(sf::Time dt)
 void Application::render()
 {
 	//Clear the texture, draw on it and display
-	m_window.clear({197, 182, 108});
+	m_window.clear({155, 155, 155});
 	m_stateStack.draw();
 
 	if(m_parameters.debugMode)

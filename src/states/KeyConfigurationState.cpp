@@ -156,7 +156,7 @@ void KeyConfigurationState::resetTexts()
 
 void KeyConfigurationState::scrollArea(int newScrollValue)
 {
-	if(m_scrollbar and m_actionsPanel)
+	if(m_actionsPanel)
 	{
 		float i{0.f};
 		for(auto& actionPair : m_actionStrings)

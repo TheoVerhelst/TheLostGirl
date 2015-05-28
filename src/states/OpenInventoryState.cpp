@@ -22,10 +22,10 @@ OpenInventoryState::OpenInventoryState(StateStack& stack, entityx::Entity entity
 	using tgui::bindTop;
 	tgui::Gui& gui(getContext().gui);
 
-	m_background = tgui::Panel::create();
+	m_background = tgui::ChildWindow::create(getContext().parameters.guiConfigFile);
 	m_background->setPosition(bindWidth(gui, 0.25f), bindHeight(gui, 0.125f));
-	m_background->setSize(bindWidth(gui, 0.5f), bindHeight(gui, 0.75f));
-	m_background->setBackgroundColor(sf::Color(255, 255, 255, 100));
+	m_background->setSize(bindWidth(gui, 0.5f/0.98f), bindHeight(gui, 0.75f));//Larger background for scrolling bar
+	m_background->connect("closed", [this]{requestStackPop(); getContext().player.handleInitialInputState();});
 	gui.add(m_background);
 
 	m_entityName = tgui::Label::create(getContext().parameters.guiConfigFile);
@@ -33,16 +33,28 @@ OpenInventoryState::OpenInventoryState(StateStack& stack, entityx::Entity entity
 	m_entityName->setPosition(bindWidth(m_background, 0.5f) - bindWidth(m_entityName, 0.5f), bindHeight(m_background, 0.125f));
 	m_background->add(m_entityName);
 
+	m_gridPanel = tgui::Panel::create();
+	m_gridPanel->setPosition(0.f, bindHeight(m_background, 0.2f));
+	m_gridPanel->setSize(bindWidth(m_background), bindHeight(m_background, 0.8f));
+	m_gridPanel->setBackgroundColor(sf::Color::Transparent);
+	m_background->add(m_gridPanel);
+
+	m_gridScrollbar = tgui::Scrollbar::create(getContext().parameters.guiConfigFile);
+	m_gridScrollbar->setPosition(bindWidth(m_gridPanel, 0.98f), 0.f);
+	m_gridScrollbar->setSize(bindWidth(m_gridPanel, 0.02f), bindHeight(m_gridPanel));
+    m_gridScrollbar->setArrowScrollAmount(30);
+    m_gridScrollbar->connect("valuechanged", &OpenInventoryState::scrollGrid, this);
+    m_gridPanel->add(m_gridScrollbar);
+
 	m_grid = tgui::Grid::create();
-	m_grid->setPosition(0.f, bindHeight(m_background, 0.25f));
-	m_grid->setSize(bindWidth(m_background), bindHeight(m_background, 0.5f));
-	m_background->add(m_grid);
+	m_grid->setSize(bindWidth(m_gridPanel, 0.98f), bindHeight(m_gridPanel));
+	m_gridPanel->add(m_grid);
 	unsigned int rowCounter{0}, columnCounter{0}, itemCounter{0};
 	for(auto& entityItem : m_entity.component<InventoryComponent>()->items)
 	{
 		std::string type{entityItem.component<ItemComponent>()->type};
 		std::string category{entityItem.component<ItemComponent>()->category};
-		ItemWidget itemWidget;
+		ItemGridWidget itemWidget;
 		itemWidget.background = tgui::Panel::create();
 		itemWidget.background->setBackgroundColor(sf::Color(255, 255, 255, 100));
 		itemWidget.background->setSize(120*getContext().parameters.scale, 120*getContext().parameters.scale);
@@ -57,6 +69,11 @@ OpenInventoryState::OpenInventoryState(StateStack& stack, entityx::Entity entity
 		rowCounter = (++itemCounter) / 8;
 		columnCounter = itemCounter % 8;
 	}
+	//Set rowCounter to the total number of rows
+	rowCounter = ((--itemCounter) / 8)+1;
+    m_gridScrollbar->setLowValue(int(m_gridPanel->getSize().y));
+    //Set the maximum value to 120*scale*number of rows
+    m_gridScrollbar->setMaximum(int(120.f*getContext().parameters.scale*float(rowCounter)));
 	resetTexts();
 }
 
@@ -99,11 +116,13 @@ void OpenInventoryState::resetTexts()
 		else
 			m_entityName->setText("");
 	}
-	for(ItemWidget& itemWidget : m_itemWidgets)
+	for(ItemGridWidget& itemWidget : m_itemWidgets)
 		if(itemWidget.caption)
 			itemWidget.caption->setText(getContext().langManager.tr(itemWidget.item.component<ItemComponent>()->type));
 }
 
-
-OpenInventoryState::ItemWidget::~ItemWidget()
-{}
+void OpenInventoryState::scrollGrid(int newScrollValue)
+{
+	if(m_grid)
+		m_grid->setPosition(m_grid->getPosition().x, -newScrollValue);
+}
