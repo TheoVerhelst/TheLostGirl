@@ -91,7 +91,7 @@ KeyConfigurationState::KeyConfigurationState(StateStack& stack) :
 		m_actionLabels.emplace(actionPair.first, label);
 		label->setText(actionPair.second);
 		label->setTextSize(25);
-		label->setPosition(0.f, bindHeight(m_actionsPanel, i*0.1f));
+		label->setPosition(0.f, bindHeight(m_actionsPanel, i*0.1f+0.05f)-bindHeight(label, 0.5f));
 		m_actionsPanel->add(label);
 		const auto keyBindings = getContext().player.getAssignedKeys(actionPair.first);
 		const auto mouseBindings = getContext().player.getAssignedMouseButtons(actionPair.first);
@@ -107,7 +107,7 @@ KeyConfigurationState::KeyConfigurationState(StateStack& stack) :
 		m_key2Buttons.emplace(actionPair.first, key2Button);
 		key2Button->setSize(bindWidth(m_actionsPanel, 0.15f), bindHeight(m_actionsPanel, 0.1f));
 		key2Button->setPosition(bindWidth(m_actionsPanel, 0.475f), bindHeight(m_actionsPanel, i*0.1f));
-		key2Button->setText(getContext().langManager.tr(keyBindings.size() < 1 ? "[None]" : toString(keyBindings[1])));
+		key2Button->setText(getContext().langManager.tr(keyBindings.size() < 2 ? "[None]" : toString(keyBindings[1])));
 		m_actionsPanel->add(key2Button);
 
 		tgui::Button::Ptr mouseButton = tgui::Button::create(getContext().parameters.guiConfigFile);
@@ -161,7 +161,7 @@ void KeyConfigurationState::scrollArea(int newScrollValue)
 		float i{0.f};
 		for(auto& actionPair : m_actionStrings)
 		{
-			m_actionLabels[actionPair.first]->setPosition(0.f, bindHeight(m_actionsPanel, i*0.1f)-newScrollValue);
+			m_actionLabels[actionPair.first]->setPosition(0.f, bindHeight(m_actionsPanel, i*0.1f+0.05f)-bindHeight(m_actionLabels[actionPair.first], 0.5f)-newScrollValue);
 			m_key1Buttons[actionPair.first]->setPosition(bindWidth(m_actionsPanel, 0.3f), bindHeight(m_actionsPanel, i*0.1f)-newScrollValue);
 			m_key2Buttons[actionPair.first]->setPosition(bindWidth(m_actionsPanel, 0.475f), bindHeight(m_actionsPanel, i*0.1f)-newScrollValue);
 			m_mouseButtons[actionPair.first]->setPosition(bindWidth(m_actionsPanel, 0.65f), bindHeight(m_actionsPanel, i*0.1f)-newScrollValue);
