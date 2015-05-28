@@ -53,6 +53,9 @@ class KeyConfigurationState : public State
 		/// Scroll the area with labels and buttons.
 		void scrollArea(int newScrollValue);
 
+		sf::String toString(sf::Keyboard::Key key);
+		sf::String toString(sf::Mouse::Button button);
+
 		tgui::Panel::Ptr m_background;                                ///< The background of the menu.
 		tgui::Label::Ptr m_title;                                     ///< The title label of the menu.
 		tgui::Label::Ptr m_nameLabel;                                 ///< The label of the name column.
