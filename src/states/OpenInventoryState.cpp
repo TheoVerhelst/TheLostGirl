@@ -46,10 +46,8 @@ OpenInventoryState::OpenInventoryState(StateStack& stack, entityx::Entity entity
     m_gridScrollbar->connect("valuechanged", &OpenInventoryState::scrollGrid, this);
     m_gridPanel->add(m_gridScrollbar);
 
-	m_grid = tgui::Grid::create();
-	m_grid->setSize(bindWidth(m_gridPanel, 0.98f), bindHeight(m_gridPanel));
-	m_gridPanel->add(m_grid);
 	unsigned int rowCounter{0}, columnCounter{0}, itemCounter{0};
+	const float itemSize{120.f*getContext().parameters.scale};
 	for(auto& entityItem : m_entity.component<InventoryComponent>()->items)
 	{
 		std::string type{entityItem.component<ItemComponent>()->type};
@@ -57,14 +55,20 @@ OpenInventoryState::OpenInventoryState(StateStack& stack, entityx::Entity entity
 		ItemGridWidget itemWidget;
 		itemWidget.background = tgui::Panel::create();
 		itemWidget.background->setBackgroundColor(sf::Color(255, 255, 255, 100));
-		itemWidget.background->setSize(120*getContext().parameters.scale, 120*getContext().parameters.scale);
+		itemWidget.background->setSize(itemSize, itemSize);
+		itemWidget.background->setPosition(itemSize*columnCounter, itemSize*rowCounter);
+
 		itemWidget.picture = tgui::Picture::create(paths[getContext().parameters.scaleIndex] + "items/" + category + "/" + type + ".png");
+		itemWidget.picture->setPosition(itemSize/6.f, 0.f);
 		itemWidget.background->add(itemWidget.picture);
-		itemWidget.picture->move(bindWidth(itemWidget.background, 0.08333333f), bindHeight(itemWidget.background, 0.08333333f));
+
 		itemWidget.caption = tgui::Label::create(getContext().parameters.guiConfigFile);
+		itemWidget.caption->setPosition(bindWidth(itemWidget.background, 0.5f)-bindWidth(itemWidget.caption, 0.5f), itemSize/1.2f);
+		itemWidget.caption->setTextSize(15.f);
 		itemWidget.background->add(itemWidget.caption);
+
 		itemWidget.item = entityItem;
-		m_grid->addWidget(itemWidget.background, rowCounter, columnCounter);
+		m_gridPanel->add(itemWidget.background);
 		m_itemWidgets.push_back(itemWidget);
 		rowCounter = (++itemCounter) / 8;
 		columnCounter = itemCounter % 8;
@@ -73,7 +77,7 @@ OpenInventoryState::OpenInventoryState(StateStack& stack, entityx::Entity entity
 	rowCounter = ((--itemCounter) / 8)+1;
     m_gridScrollbar->setLowValue(int(m_gridPanel->getSize().y));
     //Set the maximum value to 120*scale*number of rows
-    m_gridScrollbar->setMaximum(int(120.f*getContext().parameters.scale*float(rowCounter)));
+    m_gridScrollbar->setMaximum(int(itemSize*float(rowCounter)));
 	resetTexts();
 }
 
@@ -123,6 +127,12 @@ void OpenInventoryState::resetTexts()
 
 void OpenInventoryState::scrollGrid(int newScrollValue)
 {
-	if(m_grid)
-		m_grid->setPosition(m_grid->getPosition().x, -newScrollValue);
+	unsigned int rowCounter{0}, columnCounter{0}, itemCounter{0};
+	const float itemSize{120.f*getContext().parameters.scale};
+	for(auto& itemWidget : m_itemWidgets)
+	{
+		itemWidget.background->setPosition(itemSize*columnCounter, itemSize*rowCounter-newScrollValue);
+		rowCounter = (++itemCounter) / 8;
+		columnCounter = itemCounter % 8;
+	}
 }
