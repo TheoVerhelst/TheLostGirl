@@ -7,6 +7,7 @@
 #include <TGUI/Scrollbar.hpp>
 #include <TGUI/ChildWindow.hpp>
 #include <TGUI/Picture.hpp>
+#include <TGUI/Tab.hpp>
 #include <TGUI/Label.hpp>
 #include <TGUI/Grid.hpp>
 #include <SFML/Graphics/Sprite.hpp>
@@ -68,7 +69,11 @@ class OpenInventoryState : public State
 
 		void scrollGrid(int newScrollValue);
 
-		/// Hold GUI widgets to represent an item in the inventory.
+		void scrollList(int newScrollValue);
+
+		void switchDisplay(sf::String selectedTab);
+
+		/// Hold GUI widgets to represent an item in the grid inventory.
 		struct ItemGridWidget
 		{
 			/// Destructor.
@@ -83,18 +88,26 @@ class OpenInventoryState : public State
 		entityx::Entity m_entity;               ///< Entity of which open the inventory.
 		tgui::ChildWindow::Ptr m_background;    ///< Background of the whole inventory window.
 		tgui::Label::Ptr m_entityName;          ///< Label with the name of the entity.
+		tgui::Tab::Ptr m_displayTab;
+		tgui::Tab::Ptr m_categoryTab;
 
 		tgui::Panel::Ptr m_gridPanel;
 		tgui::Scrollbar::Ptr m_gridScrollbar;
-		tgui::Grid::Ptr m_grid;                 ///< Grid to organize all items.
 		std::list<ItemGridWidget> m_itemWidgets;///< List of all items to display.
+
+		/// Hold GUI widgets to represent an item in the list inventory.
+		struct ItemListWidget
+		{
+			std::map<sf::String, tgui::Label::Ptr> labels;
+			entityx::Entity item;                         ///< The represented item.
+		};
 
 		tgui::Panel::Ptr m_listPanel;
 		std::list<sf::String> m_columns;
 		std::map<sf::String, tgui::Label::Ptr> m_columnsTitles;
+		std::list<ItemListWidget> m_columnsContent;
 		tgui::Scrollbar::Ptr m_listScrollbar;
 		tgui::Grid::Ptr m_listGrid;
-		std::map<sf::String, std::list<tgui::Label::Ptr>> m_columnsContent;
 
 };
 

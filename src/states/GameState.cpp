@@ -42,6 +42,7 @@
 //TODO Mettre le carquois de l'autre coté quand dirigé vers la gauche.
 //TODO Differents CAC en fonction du déplacement.
 //TODO Sauvegarde en fonction des includes.
+//TODO Changer les ath en pictures+panel pour le clipping.
 
 GameState::GameState(StateStack& stack, std::string file) :
 	State(stack),

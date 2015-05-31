@@ -195,10 +195,10 @@ void Application::render()
 	//Clear the texture, draw on it and display
 	m_window.clear({155, 155, 155});
 	m_stateStack.draw();
-	m_window.pushGLStates();
 	if(m_parameters.debugMode)
 		m_world.DrawDebugData();
 	m_debugDraw.drawDebugAth();
+	m_window.pushGLStates();
 	m_gui.draw();
 	m_window.display();
 }
