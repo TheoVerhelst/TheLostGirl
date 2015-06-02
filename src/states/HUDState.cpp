@@ -15,7 +15,6 @@
 
 HUDState::HUDState(StateStack& stack, size_t entitiesNumber):
 	State(stack),
-	m_windBar{nullptr},
 	m_windIsFading{true}
 {
 	getContext().eventManager.subscribe<EntityHealthChange>(*this);

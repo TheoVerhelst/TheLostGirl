@@ -11,15 +11,6 @@
 #include <TheLostGirl/Application.h>
 
 Application::Application(bool debugMode):
-	m_parameters{},
-	m_window{},
-	m_postEffectsTexture{},
-	m_gui{},
-	m_textureManager{},
-	m_fontManager{},
-	m_scriptManager{},
-	m_langManager{},
-	m_eventManager{},
 	m_entityManager{m_eventManager},
 	m_systemManager{m_entityManager, m_eventManager},
 	m_world{m_parameters.gravity},
@@ -27,7 +18,6 @@ Application::Application(bool debugMode):
 									m_langManager, m_gui, m_eventManager, m_entityManager, m_systemManager, m_world, m_player}},
 	m_player(m_stateStack),
 	m_debugDraw(m_stateStack.getContext()),
-	m_FPSTimer(),
 	m_FPSRefreshRate(sf::milliseconds(50)),
 	m_frameTime{sf::seconds(1.f/60.f)},
 	m_newScaleIndex{m_parameters.scaleIndex}

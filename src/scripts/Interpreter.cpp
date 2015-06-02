@@ -7,7 +7,6 @@
 #include <TheLostGirl/functions.h>
 
 Interpreter::Interpreter():
-	m_file(),
 	m_precedence{{"or", 1},
 				{"and", 2},
 				{"is", 3},

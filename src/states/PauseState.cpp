@@ -12,12 +12,7 @@
 #include <TheLostGirl/states/PauseState.h>
 
 PauseState::PauseState(StateStack& stack) :
-	State(stack),
-	m_background{nullptr},
-	m_pauseLabel{nullptr},
-	m_backToGameButton{nullptr},
-	m_goToOptionsButton{nullptr},
-	m_backToMainMenuButton{nullptr}
+	State(stack)
 {
 	getContext().eventManager.subscribe<ParametersChange>(*this);
 	using tgui::bindWidth;
@@ -32,9 +27,13 @@ PauseState::PauseState(StateStack& stack) :
 
 	m_background->addSpace();
 
+	tgui::Panel::Ptr titlePanel = tgui::Panel::create();
+	titlePanel->setBackgroundColor(sf::Color::Transparent);
+	m_background->add(titlePanel);
 	m_pauseLabel = tgui::Label::create(getContext().parameters.guiConfigFile);
+	titlePanel->add(m_pauseLabel);
 	m_pauseLabel->setTextSize(80);
-	m_background->add(m_pauseLabel);
+	m_pauseLabel->setPosition((bindWidth(titlePanel)-bindWidth(m_pauseLabel))/2, 0.f);
 
 	m_background->addSpace();
 

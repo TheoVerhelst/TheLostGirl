@@ -9,10 +9,7 @@
 #include <TheLostGirl/states/LoadingState.h>
 
 LoadingState::LoadingState(StateStack& stack):
-	State(stack),
-	m_sentenceLabel{nullptr},
-	m_sentence{""},
-	m_hintLabel{nullptr}
+	State(stack)
 {
 	getContext().eventManager.subscribe<LoadingStateChange>(*this);
 	getContext().eventManager.subscribe<ParametersChange>(*this);

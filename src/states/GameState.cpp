@@ -46,12 +46,8 @@
 
 GameState::GameState(StateStack& stack, std::string file) :
 	State(stack),
-	m_entities(),
-	m_sceneEntities(),
-	m_sceneEntitiesData(),
 	m_contactListener(getContext()),
 	m_timeSpeed{1.f},
-	m_threadLoad(),
 	m_loading{true},
 	m_levelIdentifier{""},
 	m_numberOfPlans{1},

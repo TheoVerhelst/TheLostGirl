@@ -9,10 +9,7 @@
 #include <TheLostGirl/states/IntroState.h>
 
 IntroState::IntroState(StateStack& stack):
-	State(stack),
-	m_background{nullptr},
-	m_logo{nullptr},
-	m_sentence{nullptr}
+	State(stack)
 {
 	getContext().eventManager.subscribe<ParametersChange>(*this);
 	using tgui::bindWidth;

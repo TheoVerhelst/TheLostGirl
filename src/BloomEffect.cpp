@@ -1,10 +1,6 @@
 #include <TheLostGirl/BloomEffect.h>
 
-BloomEffect::BloomEffect():
-	m_shaders(),
-	m_brightnessTexture(),
-	m_firstPassTextures(),
-	m_secondPassTextures()
+BloomEffect::BloomEffect()
 {
 	m_shaders.load("brightness pass","resources/shaders/Fullpass.vert", "resources/shaders/Brightness.frag");
 	m_shaders.load("down sample pass","resources/shaders/Fullpass.vert", "resources/shaders/DownSample.frag");

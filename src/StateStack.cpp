@@ -6,8 +6,6 @@
 #include <TheLostGirl/StateStack.h>
 
 StateStack::StateStack(Context context) :
-	m_stack(),
-	m_pendingList(),
 	m_context(context)
 {
 }

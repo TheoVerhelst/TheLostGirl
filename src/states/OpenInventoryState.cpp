@@ -12,8 +12,7 @@
 
 OpenInventoryState::OpenInventoryState(StateStack& stack, entityx::Entity entity) :
 	State(stack),
-	m_entity(entity),
-	m_background{nullptr}
+	m_entity(entity)
 {
 	getContext().eventManager.subscribe<ParametersChange>(*this);
 	using tgui::bindWidth;
