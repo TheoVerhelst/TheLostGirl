@@ -5,11 +5,13 @@
 #include <TGUI/Slider.hpp>
 #include <TGUI/Checkbox.hpp>
 #include <TGUI/ComboBox.hpp>
+#include <TGUI/Button.hpp>
 #include <TGUI/Canvas.hpp>
 #include <TGUI/Label.hpp>
 #include <TGUI/Panel.hpp>
 #include <TGUI/Grid.hpp>
 #include <TheLostGirl/State.h>
+#include <TheLostGirl/LangManager.h>
 
 //Forward declarations
 namespace sf

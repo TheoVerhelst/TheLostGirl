@@ -22,7 +22,7 @@ MainMenuState::MainMenuState(StateStack& stack):
 	using tgui::bindHeight;
 	tgui::Gui& gui(getContext().gui);
 
-	m_background = tgui::Panel::create();
+	m_background = tgui::VerticalLayout::create();
 	m_background->setPosition(bindWidth(gui, 0.25f), bindHeight(gui, 0.f));
 	m_background->setSize(bindWidth(gui, 0.5f), bindHeight(gui));
 	m_background->setBackgroundColor(sf::Color(255, 255, 255, 100));
@@ -32,29 +32,20 @@ MainMenuState::MainMenuState(StateStack& stack):
 	m_logo->setPosition((bindWidth(gui) - bindWidth(m_logo))/2, bindHeight(gui, 0.f));
 	gui.add(m_logo);
 
-	// Left:   25% of window width
-	// Top:    40% of window height
-	// Width:  50% of window width
-	// Height: 15% of window height
 	m_newButton = tgui::Button::create(getContext().parameters.guiConfigFile);
-	m_newButton->setPosition(bindWidth(gui, 0.25f), bindHeight(gui, 0.4f));
-	m_newButton->setSize(bindWidth(gui, 0.5f), bindHeight(gui, 0.15f));
-	unsigned int playGameSignal{m_newButton->connect("pressed", &MainMenuState::playGame, this)};
-	gui.add(m_newButton);
+	m_newButton->connect("pressed", &MainMenuState::playGame, this);
+	m_background->add(m_newButton);
 
-	// Left:   0% of window width
-	// Top:    55% of window height
-	m_loadButton = tgui::Button::copy(m_newButton);
-	m_loadButton->setPosition(bindWidth(gui, 0.25f), bindHeight(gui, 0.55f));
-	gui.add(m_loadButton);
+	m_loadButton = tgui::Button::create(getContext().parameters.guiConfigFile);
+	m_loadButton->connect("pressed", &MainMenuState::playGame, this);
+	m_background->add(m_loadButton);
 
-	// Left:   0% of window width
-	// Top:    70% of window height
-	m_exitButton = tgui::Button::copy(m_newButton);
-	m_exitButton->setPosition(bindWidth(gui, 0.25f), bindHeight(gui, 0.7f));
+	m_exitButton = tgui::Button::create(getContext().parameters.guiConfigFile);
 	m_exitButton->connect("pressed", &MainMenuState::exitGame, this);
-	m_exitButton->disconnect(playGameSignal);
-	gui.add(m_exitButton);
+	m_background->add(m_exitButton);
+
+    m_background->insertSpace(0, 8.f/3.f);//Add a space before widgets
+    m_background->addSpace();//And another space after
 	resetTexts();
 }
 
@@ -63,9 +54,6 @@ MainMenuState::~MainMenuState()
 	tgui::Gui& gui(getContext().gui);
 	gui.remove(m_background);
 	gui.remove(m_logo);
-	gui.remove(m_newButton);
-	gui.remove(m_loadButton);
-	gui.remove(m_exitButton);
 }
 
 void MainMenuState::draw()
@@ -99,7 +87,6 @@ void MainMenuState::resetTexts()
 void MainMenuState::playGame()
 {
 	requestStackPop();//The main mainu
-//	requestStackPop();//The empty level
 	requestStackPush<GameState>("resources/levels/S.json");
 	requestStackPush<LoadingState>();
 }
@@ -107,5 +94,4 @@ void MainMenuState::playGame()
 void MainMenuState::exitGame()
 {
 	requestStackPop();//The main menu
-//	requestStackPop();//The empty level in the background
 }

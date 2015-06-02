@@ -3,7 +3,7 @@
 
 #include <TGUI/Button.hpp>
 #include <TGUI/Label.hpp>
-#include <TGUI/Panel.hpp>
+#include <TGUI/VerticalLayout.hpp>
 #include <TheLostGirl/State.h>
 
 //Forward declarations
@@ -58,7 +58,7 @@ class PauseState : public State
 		/// Reset all texts in the buttons and other widgets.
 		void resetTexts();
 
-		tgui::Panel::Ptr m_background;           ///< The background of the menu.
+		tgui::VerticalLayout::Ptr m_background;  ///< The background of the menu.
 		tgui::Label::Ptr m_pauseLabel;           ///< The pause label.
 		tgui::Button::Ptr m_backToGameButton;    ///< The Back to game button.
 		tgui::Button::Ptr m_goToOptionsButton;   ///< The Go to options button.

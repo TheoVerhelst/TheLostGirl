@@ -1,6 +1,7 @@
 #include <SFML/Window/Event.hpp>
 #include <SFML/Window/VideoMode.hpp>
 #include <TGUI/Gui.hpp>
+#include <TGUI/HorizontalLayout.hpp>
 #include <TGUI/MessageBox.hpp>
 #include <TheLostGirl/LangManager.h>
 #include <TheLostGirl/states/PauseState.h>
@@ -24,15 +25,25 @@ ParametersState::ParametersState(StateStack& stack) :
 	m_background->setBackgroundColor(sf::Color(255, 255, 255, 100));
 	gui.add(m_background);
 
-	m_title = tgui::Label::create(getContext().parameters.guiConfigFile);
-	m_title->setPosition((bindWidth(m_background) - bindWidth(m_title))/2.f, bindHeight(m_background, 0.1f));
-	m_title->setTextSize(80);
-	m_background->add(m_title);
+	tgui::VerticalLayout::Ptr mainLayout = tgui::VerticalLayout::create();
+	mainLayout->setPosition(bindWidth(m_background, 0.1f), 0.f);
+	mainLayout->setSize(bindWidth(m_background, 0.8f), bindHeight(m_background));
+	mainLayout->setBackgroundColor(sf::Color::Transparent);
+	m_background->add(mainLayout);
 
-	m_resolutionLabel = tgui::Label::create(getContext().parameters.guiConfigFile);
+	mainLayout->addSpace(0.5f);
+
+	m_title = tgui::Label::create(getContext().parameters.guiConfigFile);
+	m_title->setTextSize(80);
+	mainLayout->add(m_title);
+	mainLayout->setRatio(m_title, 3.f);
+
+	mainLayout->addSpace(0.5f);
+
+	tgui::HorizontalLayout::Ptr layout = tgui::HorizontalLayout::create();
+	m_resolutionLabel = tgui::Label::copy(m_title);
 	m_resolutionLabel->setTextSize(30);
-	m_resolutionLabel->setPosition(10.f, bindHeight(m_background, 0.3f));
-	m_background->add(m_resolutionLabel);
+	layout->add(m_resolutionLabel);
 
 	m_resolutionComboBox = tgui::ComboBox::create(getContext().parameters.guiConfigFile);
 	m_resolutionComboBox->addItem("360p", "0");
@@ -41,8 +52,6 @@ ParametersState::ParametersState(StateStack& stack) :
 	m_resolutionComboBox->addItem("900p", "3");
 	m_resolutionComboBox->addItem("1080p", "4");
 	m_resolutionComboBox->setSelectedItemById(std::to_string(getContext().parameters.scaleIndex));
-	m_resolutionComboBox->setPosition(bindWidth(m_background, 0.5f), bindHeight(m_background, 0.3f));
-	m_resolutionComboBox->setSize(bindWidth(m_background, 0.4f), 30.f);
 	m_resolutionComboBox->connect("itemSelected", [this](){
 								tgui::MessageBox::Ptr box = tgui::MessageBox::create(getContext().parameters.guiConfigFile);
 								box->setText("Takes effects only after restart");
@@ -51,11 +60,14 @@ ParametersState::ParametersState(StateStack& stack) :
 								box->setSize(bindWidth(m_background, 0.5f), bindHeight(m_background, 0.2f));
 								m_background->add(box);
 								});
-	m_background->add(m_resolutionComboBox);
+	layout->add(m_resolutionComboBox);
+	mainLayout->add(layout);
 
+	mainLayout->addSpace(0.5f);
+
+	layout = tgui::HorizontalLayout::create();
 	m_langLabel = tgui::Label::copy(m_resolutionLabel);
-	m_langLabel->setPosition(10.f, bindHeight(m_background, 0.3666f));
-	m_background->add(m_langLabel);
+	layout->add(m_langLabel);
 
 	m_langComboBox = tgui::ComboBox::create(getContext().parameters.guiConfigFile);
 	m_langComboBox->addItem(toString(FR));
@@ -63,28 +75,31 @@ ParametersState::ParametersState(StateStack& stack) :
 	m_langComboBox->addItem(toString(IT));
 	m_langComboBox->addItem(toString(NL));
 	m_langComboBox->setSelectedItem(toString(getContext().langManager.getLang()));
-	m_langComboBox->setPosition(bindWidth(m_background, 0.5f), bindHeight(m_background, 0.3666f));
-	m_langComboBox->setSize(bindWidth(m_background, 0.4f), 30.f);
-	m_background->add(m_langComboBox);
+	layout->add(m_langComboBox);
+	mainLayout->add(layout);
 
+	mainLayout->addSpace(0.5f);
+
+	layout = tgui::HorizontalLayout::create();
 	m_bloomLabel = tgui::Label::copy(m_resolutionLabel);
-	m_bloomLabel->setPosition(10.f, bindHeight(m_background, 0.4333f));
-	m_background->add(m_bloomLabel);
+	layout->add(m_bloomLabel);
 
 	m_bloomCheckbox = tgui::Checkbox::create(getContext().parameters.guiConfigFile);
 	if(getContext().parameters.bloomEnabled)
 		m_bloomCheckbox->check();
-	m_bloomCheckbox->setPosition(bindWidth(m_background, 0.5f), bindHeight(m_background, 0.4333f));
-	m_background->add(m_bloomCheckbox);
+	layout->add(m_bloomCheckbox);
+	mainLayout->add(layout);
 
+	mainLayout->addSpace(0.5f);
+
+	layout = tgui::HorizontalLayout::create();
 	m_fullscreenLabel = tgui::Label::copy(m_resolutionLabel);
-	m_fullscreenLabel->setPosition(10.f, bindHeight(m_background, 0.5f));
-	m_background->add(m_fullscreenLabel);
+	layout->add(m_fullscreenLabel);
+	layout->setRatio(m_fullscreenLabel, 0.5f);
 
 	m_fullscreenCheckbox = tgui::Checkbox::create(getContext().parameters.guiConfigFile);
 	if(getContext().parameters.fullscreen)
 		m_fullscreenCheckbox->check();
-	m_fullscreenCheckbox->setPosition(bindWidth(m_background, 0.5f), bindHeight(m_background, 0.5));
 	m_fullscreenCheckbox->connect("checked", [this](){
 								m_fullscreenComboBox->enable();
 								m_fullscreenComboBox->getRenderer()->setProperty("backgroundcolor", "(255, 255, 255, 255)");
@@ -95,7 +110,8 @@ ParametersState::ParametersState(StateStack& stack) :
 								m_fullscreenComboBox->getRenderer()->setProperty("backgroundcolor", "(200, 200, 200, 255)");
 								m_fullscreenComboBox->getRenderer()->setProperty("arrowbackgroundcolor", "(200, 200, 200, 255)");
 								});
-	m_background->add(m_fullscreenCheckbox);
+	layout->add(m_fullscreenCheckbox);
+	layout->setRatio(m_fullscreenCheckbox, 0.1f);
 
 	m_fullscreenComboBox = tgui::ComboBox::create(getContext().parameters.guiConfigFile);
 	const auto& videoModes(sf::VideoMode::getFullscreenModes());
@@ -109,76 +125,85 @@ ParametersState::ParametersState(StateStack& stack) :
 				m_fullscreenComboBox->setSelectedItemById(std::to_string(i));
 		}
 	}
-	m_fullscreenComboBox->setPosition(bindWidth(m_background, 0.6f), bindHeight(m_background, 0.5));
-	m_fullscreenComboBox->setSize(bindWidth(m_background, 0.3f), 30.f);
 	if(not getContext().parameters.fullscreen)
 	{
 		m_fullscreenComboBox->disable();
 		m_fullscreenComboBox->getRenderer()->setProperty("backgroundcolor", "(200, 200, 200, 255)");
 		m_fullscreenComboBox->getRenderer()->setProperty("arrowbackgroundcolor", "(200, 200, 200, 255)");
 	}
-	m_background->add(m_fullscreenComboBox);
+	layout->add(m_fullscreenComboBox);
+	layout->setRatio(m_fullscreenComboBox, 0.4f);
+	mainLayout->add(layout);
 
+	mainLayout->addSpace(0.5f);
+
+	layout = tgui::HorizontalLayout::create();
 	m_mainVolumeLabel = tgui::Label::copy(m_resolutionLabel);
-	m_mainVolumeLabel->setPosition(10.f, bindHeight(m_background, 0.5666f));
-	m_background->add(m_mainVolumeLabel);
+	layout->add(m_mainVolumeLabel);
 
 	m_mainVolumeSlider = tgui::Slider::create(getContext().parameters.guiConfigFile);
 	m_mainVolumeSlider->setMaximum(100);
-	m_mainVolumeSlider->setPosition(bindWidth(m_background, 0.5f), bindHeight(m_background, 0.5666f));
-	m_mainVolumeSlider->setSize(bindWidth(m_background, 0.4f), 20.f);
-	m_background->add(m_mainVolumeSlider);
+	layout->add(m_mainVolumeSlider);
+	mainLayout->add(layout);
 
+	mainLayout->addSpace(0.5f);
+
+	layout = tgui::HorizontalLayout::create();
 	m_musicVolumeLabel = tgui::Label::copy(m_resolutionLabel);
-	m_musicVolumeLabel->setPosition(10.f, bindHeight(m_background, 0.6333f));
-	m_background->add(m_musicVolumeLabel);
+	layout->add(m_musicVolumeLabel);
 
 	m_musicVolumeSlider = tgui::Slider::copy(m_mainVolumeSlider);
-	m_musicVolumeSlider->setPosition(bindWidth(m_background, 0.5f), bindHeight(m_background, 0.6333f));
-	m_background->add(m_musicVolumeSlider);
+	layout->add(m_musicVolumeSlider);
+	mainLayout->add(layout);
 
+	mainLayout->addSpace(0.5f);
+
+	layout = tgui::HorizontalLayout::create();
 	m_effectsVolumeLabel = tgui::Label::copy(m_resolutionLabel);
-	m_effectsVolumeLabel->setPosition(10.f, bindHeight(m_background, 0.7f));
-	m_background->add(m_effectsVolumeLabel);
+	layout->add(m_effectsVolumeLabel);
 
 	m_effectsVolumeSlider = tgui::Slider::copy(m_mainVolumeSlider);
-	m_effectsVolumeSlider->setPosition(bindWidth(m_background, 0.5f), bindHeight(m_background, 0.7f));
-	m_background->add(m_effectsVolumeSlider);
+	layout->add(m_effectsVolumeSlider);
+	mainLayout->add(layout);
 
+	mainLayout->addSpace(0.5f);
+
+	layout = tgui::HorizontalLayout::create();
 	m_ambianceVolumeLabel = tgui::Label::copy(m_resolutionLabel);
-	m_ambianceVolumeLabel->setPosition(10.f, bindHeight(m_background, 0.7666f));
-	m_background->add(m_ambianceVolumeLabel);
+	layout->add(m_ambianceVolumeLabel);
 
 	m_ambianceVolumeSlider = tgui::Slider::copy(m_mainVolumeSlider);
-	m_ambianceVolumeSlider->setPosition(bindWidth(m_background, 0.5f), bindHeight(m_background, 0.7666f));
-	m_background->add(m_ambianceVolumeSlider);
+	layout->add(m_ambianceVolumeSlider);
+	mainLayout->add(layout);
 
+	mainLayout->addSpace(0.5f);
+
+	layout = tgui::HorizontalLayout::create();
 	m_controlsLabel = tgui::Label::copy(m_resolutionLabel);
-	m_controlsLabel->setPosition(10.f, bindHeight(m_background, 0.8333f));
-	m_background->add(m_controlsLabel);
+	layout->add(m_controlsLabel);
 
 	m_controlsButton = tgui::Button::create(getContext().parameters.guiConfigFile);
-	m_controlsButton->setPosition(bindWidth(m_background, 0.5f), bindHeight(m_background, 0.8333f));
-	m_controlsButton->setSize(bindWidth(m_background, 0.4f), 30.f);
 	m_controlsButton->connect("pressed", [this]{m_background->hide(); requestStackPush<KeyConfigurationState>();});
-	m_background->add(m_controlsButton);
+	layout->add(m_controlsButton);
+	mainLayout->add(layout);
+
+	mainLayout->addSpace(0.5f);
 
 	//Buttons
-	m_applyButton = tgui::Button::create(getContext().parameters.guiConfigFile);
-	m_applyButton->setPosition(bindWidth(m_background, 0.f), bindHeight(m_background, 0.9f));
-	m_applyButton->setSize(bindWidth(m_background, 1.f/3.f), bindHeight(m_background, 0.1f));
+	layout = tgui::HorizontalLayout::create();
+	m_applyButton = tgui::Button::copy(m_controlsButton);
 	m_applyButton->connect("pressed", [this]{applyChanges();});
-	m_background->add(m_applyButton);
+	layout->add(m_applyButton);
 
-	m_cancelButton = tgui::Button::copy(m_applyButton);
-	m_cancelButton->setPosition(bindWidth(m_background, 1.f/3.f), bindHeight(m_background, 0.9f));
+	m_cancelButton = tgui::Button::copy(m_controlsButton);
 	m_cancelButton->connect("pressed", [this]{requestStackPop();});
-	m_background->add(m_cancelButton);
+	layout->add(m_cancelButton);
 
-	m_okButton = tgui::Button::copy(m_applyButton);
-	m_okButton->setPosition(bindWidth(m_background, 2.f/3.f), bindHeight(m_background, 0.9f));
+	m_okButton = tgui::Button::copy(m_controlsButton);
 	m_okButton->connect("pressed", [this](){applyChanges(); requestStackPop();});
-	m_background->add(m_okButton);
+	layout->add(m_okButton);
+	mainLayout->add(layout);
+	mainLayout->setRatio(layout, 3.f);
 
 	resetTexts();
 }

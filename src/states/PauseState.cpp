@@ -24,45 +24,36 @@ PauseState::PauseState(StateStack& stack) :
 	using tgui::bindHeight;
 	tgui::Gui& gui(getContext().gui);
 
-	m_background = tgui::Panel::create();
+	m_background = tgui::VerticalLayout::create();
 	m_background->setPosition(bindWidth(gui, 0.25f), bindHeight(gui, 0.f));
 	m_background->setSize(bindWidth(gui, 0.5f), bindHeight(gui));
 	m_background->setBackgroundColor(sf::Color(255, 255, 255, 100));
 	gui.add(m_background);
 
-	// Left:   25% of window width
-	// Top:    10% of window height
+	m_background->addSpace();
+
 	m_pauseLabel = tgui::Label::create(getContext().parameters.guiConfigFile);
-	m_pauseLabel->setPosition((bindWidth(m_background) - bindWidth(m_pauseLabel))/2.f, bindHeight(m_background, 0.1f));
 	m_pauseLabel->setTextSize(80);
 	m_background->add(m_pauseLabel);
 
-	// Left:   25% of window width
-	// Top:    40% of window height
-	// Width:  50% of window width
-	// Height: 15% of window height
+	m_background->addSpace();
+
 	m_backToGameButton = tgui::Button::create(getContext().parameters.guiConfigFile);
-	m_backToGameButton->setPosition(0.f, bindHeight(m_background, 0.4f));
-	m_backToGameButton->setSize(bindWidth(m_background), bindHeight(m_background, 0.15f));
 	m_backToGameButton->setTextSize(50);
-	unsigned int backToGameSignal{m_backToGameButton->connect("pressed", &PauseState::backToGame, this)};
+	m_backToGameButton->connect("pressed", &PauseState::backToGame, this);
 	m_background->add(m_backToGameButton);
 
-	// Left:   25% of window width
-	// Top:    55% of window height
-	m_goToOptionsButton = tgui::Button::copy(m_backToGameButton);
-	m_goToOptionsButton->setPosition(0.f, bindHeight(m_background, 0.55f));
+	m_goToOptionsButton = tgui::Button::create(getContext().parameters.guiConfigFile);
+	m_goToOptionsButton->setTextSize(50);
 	m_goToOptionsButton->connect("pressed", [this]{m_background->hide(); requestStackPush<ParametersState>();});
-	m_goToOptionsButton->disconnect(backToGameSignal);
 	m_background->add(m_goToOptionsButton);
 
-	// Left:   25% of window width
-	// Top:    70% of window height
-	m_backToMainMenuButton = tgui::Button::copy(m_backToGameButton);
-	m_backToMainMenuButton->setPosition(0.f, bindHeight(m_background, 0.7f));
+	m_backToMainMenuButton = tgui::Button::create(getContext().parameters.guiConfigFile);
+	m_backToMainMenuButton->setTextSize(50);
 	m_backToMainMenuButton->connect("pressed", &PauseState::backToMainMenu, this);
-	m_backToMainMenuButton->disconnect(backToGameSignal);
 	m_background->add(m_backToMainMenuButton);
+
+	m_background->addSpace();
 	resetTexts();
 }
 

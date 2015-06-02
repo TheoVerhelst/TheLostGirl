@@ -198,7 +198,7 @@ void Application::render()
 	if(m_parameters.debugMode)
 		m_world.DrawDebugData();
 	m_debugDraw.drawDebugAth();
-	m_window.pushGLStates();
+	m_window.resetGLStates();
 	m_gui.draw();
 	m_window.display();
 }

@@ -53,7 +53,7 @@ OpenInventoryState::OpenInventoryState(StateStack& stack, entityx::Entity entity
 	m_gridPanel = tgui::Panel::create();
 	m_gridPanel->setPosition(0.f, bindHeight(m_background, 0.3f));
 	m_gridPanel->setSize(bindWidth(m_background), bindHeight(m_background, 0.8f));
-	m_gridPanel->setBackgroundColor(sf::Color::Transparent);
+	m_gridPanel->setBackgroundColor(sf::Color(255, 255, 255, 100));
 	m_background->add(m_gridPanel);
 
 	m_gridScrollbar = tgui::Scrollbar::create(getContext().parameters.guiConfigFile);
@@ -71,7 +71,7 @@ OpenInventoryState::OpenInventoryState(StateStack& stack, entityx::Entity entity
 		std::string category{entityItem.component<ItemComponent>()->category};
 		ItemGridWidget itemWidget;
 		itemWidget.background = tgui::Panel::create();
-		itemWidget.background->setBackgroundColor(sf::Color(255, 255, 255, 100));
+		itemWidget.background->setBackgroundColor(sf::Color::Transparent);
 		itemWidget.background->setSize(itemSize, itemSize);
 		itemWidget.background->setPosition(itemSize*columnCounter, itemSize*rowCounter);
 
@@ -100,11 +100,11 @@ OpenInventoryState::OpenInventoryState(StateStack& stack, entityx::Entity entity
 	m_listPanel = tgui::Panel::create();
 	m_listPanel->setPosition(0.f, bindHeight(m_background, 0.3f));
 	m_listPanel->setSize(bindWidth(m_background), bindHeight(m_background, 0.8f));
-	m_listPanel->setBackgroundColor(sf::Color::Transparent);
+	m_listPanel->setBackgroundColor(sf::Color(255, 255, 255, 100));
 	m_background->add(m_listPanel);
 
 	m_listGrid = tgui::Grid::create();
-	m_listGrid->setPosition(0.f, 20.f);
+	m_listGrid->setPosition(0.f, 30.f);
 	m_listGrid->setSize(bindWidth(m_listPanel, 0.98f), bindHeight(m_listPanel, 0.9f));
 	m_listPanel->add(m_listGrid);
 
@@ -126,7 +126,7 @@ OpenInventoryState::OpenInventoryState(StateStack& stack, entityx::Entity entity
 	{
 		tgui::Label::Ptr title = tgui::Label::create(getContext().parameters.guiConfigFile);
 		title->setTextSize(20);
-		title->setPosition(bindWidth(m_listPanel)/m_columns.size()*columnCounter, 0);
+		title->setPosition(bindWidth(m_listPanel)/m_columns.size()*columnCounter, 5.f);
 		m_listPanel->add(title);
 		m_columnsTitles.emplace(columnStr, title);
 		++columnCounter;
@@ -141,18 +141,18 @@ OpenInventoryState::OpenInventoryState(StateStack& stack, entityx::Entity entity
 		{
 			tgui::Label::Ptr label = tgui::Label::create(getContext().parameters.guiConfigFile);
 			label->setTextSize(15);
-			label->setText("LOL");
-			m_listGrid->add(label);
 			m_listGrid->addWidget(label, rowCounter, columnCounter, tgui::Borders(1, 1, 1, 1), tgui::Grid::Alignment::Left);
+			m_listGrid->add(label);
 			itemWidget.labels.emplace(columnStr, label);
 			++columnCounter;
 		}
+		m_columnsContent.push_back(itemWidget);
 		++rowCounter;
 	}
+	resetTexts();
     m_listScrollbar->setLowValue(int(m_gridPanel->getSize().y));
     m_listScrollbar->setMaximum(15*rowCounter);
 	m_listPanel->hide();
-	resetTexts();
 }
 
 OpenInventoryState::~OpenInventoryState()
