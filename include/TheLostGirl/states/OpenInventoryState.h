@@ -9,7 +9,8 @@
 #include <TGUI/Picture.hpp>
 #include <TGUI/Tab.hpp>
 #include <TGUI/Label.hpp>
-#include <TGUI/Grid.hpp>
+#include <TGUI/HorizontalLayout.hpp>
+#include <TGUI/VerticalLayout.hpp>
 #include <SFML/Graphics/Sprite.hpp>
 #include <TheLostGirl/AnimationsManager.h>
 #include <TheLostGirl/ContactListener.h>
@@ -72,42 +73,39 @@ class OpenInventoryState : public State
 		void scrollList(int newScrollValue);
 
 		void switchDisplay(sf::String selectedTab);
-
-		/// Hold GUI widgets to represent an item in the grid inventory.
-		struct ItemGridWidget
-		{
-			/// Destructor.
-			~ItemGridWidget()
-			{}
-
-			tgui::Panel::Ptr background;///< The background of the item.
-			tgui::Picture::Ptr picture; ///< The image of the item.
-			tgui::Label::Ptr caption;   ///< A label with the naim of the item.
-			entityx::Entity item;       ///< The represented item.
-		};
 		entityx::Entity m_entity;               ///< Entity of which open the inventory.
 		tgui::ChildWindow::Ptr m_background;    ///< Background of the whole inventory window.
 		tgui::Label::Ptr m_entityName;          ///< Label with the name of the entity.
 		tgui::Tab::Ptr m_displayTab;
 		tgui::Tab::Ptr m_categoryTab;
 
+		//Widgets for the grid display
+		/// Hold GUI widgets to represent an item in the grid inventory.
+		struct ItemGridWidget
+		{
+			tgui::Panel::Ptr background;///< The background of the item.
+			tgui::Picture::Ptr picture; ///< The image of the item.
+			tgui::Label::Ptr caption;   ///< A label with the naim of the item.
+			entityx::Entity item;       ///< The represented item.
+		};
 		tgui::Panel::Ptr m_gridPanel;
 		tgui::Scrollbar::Ptr m_gridScrollbar;
 		std::list<ItemGridWidget> m_itemWidgets;///< List of all items to display.
 
+		//Widget for the list display
 		/// Hold GUI widgets to represent an item in the list inventory.
 		struct ItemListWidget
 		{
+			tgui::HorizontalLayout::Ptr layout;
 			std::map<sf::String, tgui::Label::Ptr> labels;
 			entityx::Entity item;                         ///< The represented item.
 		};
-
 		tgui::Panel::Ptr m_listPanel;
-		std::list<sf::String> m_columns;
-		std::map<sf::String, tgui::Label::Ptr> m_columnsTitles;
-		std::list<ItemListWidget> m_columnsContent;
+		std::list<sf::String> m_listColumnsNames;
+		ItemListWidget m_listColumnTitles;
+		tgui::VerticalLayout::Ptr m_listContentLayout;
+		std::list<ItemListWidget> m_listContent;
 		tgui::Scrollbar::Ptr m_listScrollbar;
-		tgui::Grid::Ptr m_listGrid;
 
 };
 

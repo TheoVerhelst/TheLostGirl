@@ -128,7 +128,7 @@ void DebugDraw::drawDebugAth()
 					//Find the main body
 					auto& bodies(entity.component<BodyComponent>()->bodies);
 					//If there is a main body
-					if(bodies.find("main") != bodies.end())
+					if(bodies.count("main"))
 						position = bodies["main"]->GetPosition();
 					//Else, take the first that come in hand
 					else if(not bodies.empty())

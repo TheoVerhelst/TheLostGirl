@@ -27,7 +27,7 @@ void PhysicsSystem::update(entityx::EntityManager& entityManager, entityx::Event
 	BodyComponent::Handle bodyComponent;
 	for(auto entity : entityManager.entities_with_components(bodyComponent))
 	{
-		b2Body* body{bodyComponent->bodies.find("main") != bodyComponent->bodies.end() ? bodyComponent->bodies.at("main") : nullptr};
+		b2Body* body{bodyComponent->bodies.count("main") ? bodyComponent->bodies.at("main") : nullptr};
 		//Update the walkers
 		if(body and entity.has_component<WalkComponent>())
 		{
@@ -60,7 +60,7 @@ void PhysicsSystem::update(entityx::EntityManager& entityManager, entityx::Event
 			const float angleTarget{-bowComponent->angle};
 			const float32 gain{20.f};
 			float32 differenceAngle;
-			if(bodyComponent->bodies.find("arms") != bodyComponent->bodies.end())
+			if(bodyComponent->bodies.count("arms"))
 			{
 				b2Body* bodyArms{bodyComponent->bodies["arms"]};
 				//Iterate over all joints
@@ -76,7 +76,7 @@ void PhysicsSystem::update(entityx::EntityManager& entityManager, entityx::Event
 				}
 			}
 
-			if(bodyComponent->bodies.find("bow") != bodyComponent->bodies.end())
+			if(bodyComponent->bodies.count("bow"))
 			{
 				b2Body* bodyBow{bodyComponent->bodies["bow"]};
 				//Iterate over all joints
@@ -98,7 +98,7 @@ void PhysicsSystem::update(entityx::EntityManager& entityManager, entityx::Event
 				//If the notched arrow has a b2Body,
 				//Set the translation of the joint between bow and arrow
 				if(notchedArrow.valid() and notchedArrow.has_component<BodyComponent>()
-					and notchedArrow.component<BodyComponent>()->bodies.find("main") != notchedArrow.component<BodyComponent>()->bodies.end())
+					and notchedArrow.component<BodyComponent>()->bodies.count("main"))
 				{
 					b2Body* arrowBody{notchedArrow.component<BodyComponent>()->bodies["main"]};
 					float translationTarget{bowComponent->power};

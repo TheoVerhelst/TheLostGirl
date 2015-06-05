@@ -100,7 +100,7 @@ void Mover::operator()(entityx::Entity entity, double) const
 					entityx::Entity notchedArrow{bowComponent->notchedArrow};
 					//If the notched arrow has a b2Body
 					if(notchedArrow.valid() and notchedArrow.has_component<BodyComponent>()
-							and notchedArrow.component<BodyComponent>()->bodies.find("main") != notchedArrow.component<BodyComponent>()->bodies.end())
+							and notchedArrow.component<BodyComponent>()->bodies.count("main"))
 					{
 						b2Body* arrowBody{notchedArrow.component<BodyComponent>()->bodies.at("main")};
 						//Iterate over all joints

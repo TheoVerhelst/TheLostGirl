@@ -16,10 +16,10 @@ void SkyAnimation::animate(float progress)
 	{
 		SpriteComponent::Handle spriteComponent{m_entity.component<SpriteComponent>()};
 		TransformComponent::Handle transformComponent{m_entity.component<TransformComponent>()};
-		if(spriteComponent->sprites.find("day") != spriteComponent->sprites.end()
-			and spriteComponent->sprites.find("night") != spriteComponent->sprites.end()
-			and transformComponent->transforms.find("day") != transformComponent->transforms.end()
-			and transformComponent->transforms.find("night") != transformComponent->transforms.end())
+		if(spriteComponent->sprites.count("day")
+			and spriteComponent->sprites.count("night")
+			and transformComponent->transforms.count("day")
+			and transformComponent->transforms.count("night"))
 		{
 			sf::Sprite& daySpr(spriteComponent->sprites["day"]);
 			sf::Sprite& nightSpr(spriteComponent->sprites["night"]);

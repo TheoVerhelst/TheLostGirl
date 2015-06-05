@@ -26,7 +26,7 @@ void ArrowShooter::operator()(entityx::Entity entity, double) const
 		DirectionComponent::Handle directionComponent{entity.component<DirectionComponent>()};
 		//If the notched arrow has a b2Body
 		if(notchedArrow.valid() and notchedArrow.has_component<BodyComponent>() and notchedArrow.has_component<ArrowComponent>()
-			and notchedArrow.component<BodyComponent>()->bodies.find("main") != notchedArrow.component<BodyComponent>()->bodies.end())
+			and notchedArrow.component<BodyComponent>()->bodies.count("main"))
 		{
 			b2Body* arrowBody{notchedArrow.component<BodyComponent>()->bodies.at("main")};
 

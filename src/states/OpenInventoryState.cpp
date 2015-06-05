@@ -102,56 +102,60 @@ OpenInventoryState::OpenInventoryState(StateStack& stack, entityx::Entity entity
 	m_listPanel->setBackgroundColor(sf::Color(255, 255, 255, 100));
 	m_background->add(m_listPanel);
 
-	m_listGrid = tgui::Grid::create();
-	m_listGrid->setPosition(0.f, 30.f);
-	m_listGrid->setSize(bindWidth(m_listPanel, 0.98f), bindHeight(m_listPanel, 0.9f));
-	m_listPanel->add(m_listGrid);
+	m_listColumnsNames.push_back("Qtty");
+	m_listColumnsNames.push_back("Name");
+	m_listColumnsNames.push_back("Category");
+	m_listColumnsNames.push_back("Weight");
+	m_listColumnsNames.push_back("Value");
+	m_listColumnsNames.push_back("Value/Weight");
+
+	m_listColumnTitles = ItemListWidget();
+	m_listColumnTitles.layout = tgui::HorizontalLayout::create();
+	m_listColumnTitles.layout->setPosition(0.f, 5.f);
+	m_listColumnTitles.layout->setSize(bindWidth(m_listPanel), 25.f);
+	m_listPanel->add(m_listColumnTitles.layout);
+	for(auto& column : m_listColumnsNames)
+	{
+		auto label = tgui::Label::create(getContext().parameters.guiConfigFile);
+		label->setText(column);
+		label->setTextSize(20);
+		m_listColumnTitles.layout->add(label);
+		m_listColumnTitles.labels.emplace(column, label);
+	}
+
+	m_listContentLayout = tgui::VerticalLayout::create();
+	m_listContentLayout->setPosition(0.f, 30.f);
+	m_listContentLayout->setSize(bindWidth(m_listPanel, 0.98f), 15*m_entity.component<InventoryComponent>()->items.size());
+    m_listPanel->add(m_listContentLayout);
+
+	//Fill the vertical content layout
+	for(auto& entityItem : m_entity.component<InventoryComponent>()->items)
+	{
+		ItemListWidget itemWidget;
+		itemWidget.item = entityItem;
+		itemWidget.layout = tgui::HorizontalLayout::create();
+		for(auto& columnStr : m_listColumnsNames)
+		{
+			tgui::Label::Ptr label = tgui::Label::create(getContext().parameters.guiConfigFile);
+			label->setTextSize(15);
+			itemWidget.layout->add(label);
+			itemWidget.labels.emplace(columnStr, label);
+		}
+		m_listContent.push_back(itemWidget);
+		m_listContentLayout->add(itemWidget.layout);
+	}
 
 	m_listScrollbar = tgui::Scrollbar::create(getContext().parameters.guiConfigFile);
 	m_listScrollbar->setPosition(bindWidth(m_listPanel, 0.98f), 0.f);
 	m_listScrollbar->setSize(bindWidth(m_listPanel, 0.02f), bindHeight(m_listPanel));
     m_listScrollbar->setArrowScrollAmount(30);
+    m_listScrollbar->setLowValue(int(m_gridPanel->getSize().y));
+    m_listScrollbar->setMaximum(int(m_listContentLayout->getSize().y));
     m_listScrollbar->connect("valuechanged", &OpenInventoryState::scrollList, this);
     m_listPanel->add(m_listScrollbar);
-
-	m_columns.push_back("Qtty");
-	m_columns.push_back("Name");
-	m_columns.push_back("Category");
-	m_columns.push_back("Weight");
-	m_columns.push_back("Value");
-	m_columns.push_back("Value/Weight");
-	columnCounter = 0;
-	for(auto& columnStr : m_columns)
-	{
-		tgui::Label::Ptr title = tgui::Label::create(getContext().parameters.guiConfigFile);
-		title->setTextSize(20);
-		title->setPosition(bindWidth(m_listPanel)/m_columns.size()*columnCounter, 5.f);
-		m_listPanel->add(title);
-		m_columnsTitles.emplace(columnStr, title);
-		++columnCounter;
-	}
-	rowCounter = 0;
-	for(auto& entityItem : m_entity.component<InventoryComponent>()->items)
-	{
-		ItemListWidget itemWidget;
-		itemWidget.item = entityItem;
-		columnCounter = 0;
-		for(auto& columnStr : m_columns)
-		{
-			tgui::Label::Ptr label = tgui::Label::create(getContext().parameters.guiConfigFile);
-			label->setTextSize(15);
-			m_listGrid->addWidget(label, rowCounter, columnCounter, tgui::Borders(1, 1, 1, 1), tgui::Grid::Alignment::Left);
-			m_listGrid->add(label);
-			itemWidget.labels.emplace(columnStr, label);
-			++columnCounter;
-		}
-		m_columnsContent.push_back(itemWidget);
-		++rowCounter;
-	}
-	resetTexts();
-    m_listScrollbar->setLowValue(int(m_gridPanel->getSize().y));
-    m_listScrollbar->setMaximum(15*rowCounter);
 	m_listPanel->hide();
+
+	resetTexts();
 }
 
 OpenInventoryState::~OpenInventoryState()
@@ -198,17 +202,16 @@ void OpenInventoryState::resetTexts()
 		if(itemWidget.caption)
 			itemWidget.caption->setText(getContext().langManager.tr(itemWidget.item.component<ItemComponent>()->type));
 
-	for(auto& labelPair : m_columnsTitles)
+	for(auto& labelPair : m_listColumnTitles.labels)
 		labelPair.second->setText(getContext().langManager.tr(labelPair.first));
 
-	for(ItemListWidget& itemWidget : m_columnsContent)
+	for(ItemListWidget& itemWidget : m_listContent)
 	{
 		if(itemWidget.labels.count("Name"))
 			itemWidget.labels["Name"]->setText(getContext().langManager.tr(itemWidget.item.component<ItemComponent>()->type));
 		if(itemWidget.labels.count("Category"))
 			itemWidget.labels["Category"]->setText(getContext().langManager.tr(itemWidget.item.component<ItemComponent>()->category));
 	}
-	m_listGrid->updateWidgets();
 }
 
 void OpenInventoryState::scrollGrid(int newScrollValue)
@@ -225,7 +228,7 @@ void OpenInventoryState::scrollGrid(int newScrollValue)
 
 void OpenInventoryState::scrollList(int newScrollValue)
 {
-	m_listGrid->setPosition(m_listGrid->getPosition().x, 20.f-newScrollValue);
+	m_listContentLayout->setPosition(m_listContentLayout->getPosition().x, 30.f-newScrollValue);
 }
 
 void OpenInventoryState::switchDisplay(sf::String selectedTab)

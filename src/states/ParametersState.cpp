@@ -83,11 +83,14 @@ ParametersState::ParametersState(StateStack& stack) :
 	layout = tgui::HorizontalLayout::create();
 	m_bloomLabel = tgui::Label::copy(m_resolutionLabel);
 	layout->add(m_bloomLabel);
+	layout->setRatio(m_bloomLabel, 0.5f);
 
 	m_bloomCheckbox = tgui::Checkbox::create(getContext().parameters.guiConfigFile);
 	if(getContext().parameters.bloomEnabled)
 		m_bloomCheckbox->check();
 	layout->add(m_bloomCheckbox);
+	layout->setRatio(m_bloomCheckbox, 0.075f);
+	layout->addSpace(0.425f);
 	mainLayout->add(layout);
 
 	mainLayout->addSpace(0.5f);
@@ -111,7 +114,8 @@ ParametersState::ParametersState(StateStack& stack) :
 								m_fullscreenComboBox->getRenderer()->setProperty("arrowbackgroundcolor", "(200, 200, 200, 255)");
 								});
 	layout->add(m_fullscreenCheckbox);
-	layout->setRatio(m_fullscreenCheckbox, 0.1f);
+	layout->setRatio(m_fullscreenCheckbox, 0.075f);
+	layout->addSpace(0.025f);
 
 	m_fullscreenComboBox = tgui::ComboBox::create(getContext().parameters.guiConfigFile);
 	const auto& videoModes(sf::VideoMode::getFullscreenModes());
@@ -183,7 +187,7 @@ ParametersState::ParametersState(StateStack& stack) :
 	layout->add(m_controlsLabel);
 
 	m_controlsButton = tgui::Button::create(getContext().parameters.guiConfigFile);
-	m_controlsButton->connect("pressed", [this]{m_background->hide(); requestStackPush<KeyConfigurationState>();});
+	unsigned int signal = m_controlsButton->connect("pressed", [this]{m_background->hide(); requestStackPush<KeyConfigurationState>();});
 	layout->add(m_controlsButton);
 	mainLayout->add(layout);
 
@@ -192,14 +196,17 @@ ParametersState::ParametersState(StateStack& stack) :
 	//Buttons
 	layout = tgui::HorizontalLayout::create();
 	m_applyButton = tgui::Button::copy(m_controlsButton);
+	m_applyButton->disconnect(signal);
 	m_applyButton->connect("pressed", [this]{applyChanges();});
 	layout->add(m_applyButton);
 
 	m_cancelButton = tgui::Button::copy(m_controlsButton);
+	m_cancelButton->disconnect(signal);
 	m_cancelButton->connect("pressed", [this]{requestStackPop();});
 	layout->add(m_cancelButton);
 
 	m_okButton = tgui::Button::copy(m_controlsButton);
+	m_okButton->disconnect(signal);
 	m_okButton->connect("pressed", [this](){applyChanges(); requestStackPop();});
 	layout->add(m_okButton);
 	mainLayout->add(layout);

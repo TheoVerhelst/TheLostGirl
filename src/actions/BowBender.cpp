@@ -69,7 +69,7 @@ void BowBender::operator()(entityx::Entity entity, double) const
 				bowComponent->arrows.erase(found);
 				auto& arrowBodies(notchedArrow.component<BodyComponent>()->bodies);
 				auto& entityBodies(entity.component<BodyComponent>()->bodies);
-				if(arrowBodies.find("main") != arrowBodies.end() and entityBodies.find("bow") != entityBodies.end())
+				if(arrowBodies.count("main") and entityBodies.count("bow"))
 				{
 					b2Body* arrowBody{arrowBodies.at("main")};
 					b2Body* bowBody{entityBodies.at("bow")};

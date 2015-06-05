@@ -308,7 +308,7 @@ entityx::Entity nearestFoe(const std::vector<Data>& args, StateStack::Context co
 	if(self.has_component<BodyComponent>() and self.has_component<DetectionRangeComponent>())
 	{
 		auto& bodies(self.component<BodyComponent>()->bodies);
-		if(bodies.find("main") != bodies.end())
+		if(bodies.count("main"))
 		{
 			float range{self.component<DetectionRangeComponent>()->detectionRange/context.parameters.pixelByMeter};
 			b2Body* body{bodies["main"]};
@@ -338,7 +338,7 @@ float distanceFrom(const std::vector<Data>& args, StateStack::Context)
 	{
 		auto& selfBodies(self.component<BodyComponent>()->bodies);
 		auto& targetBodies(target.component<BodyComponent>()->bodies);
-		if(selfBodies.find("main") != selfBodies.end() and targetBodies.find("main") != targetBodies.end())
+		if(selfBodies.count("main") and targetBodies.count("main"))
 		{
 			b2Body* selfBody{selfBodies["main"]};
 			b2Fixture* selfFixture{nullptr};

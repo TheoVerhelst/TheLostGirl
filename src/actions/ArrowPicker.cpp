@@ -25,7 +25,7 @@ void ArrowPicker::operator()(entityx::Entity entity, double) const
 	{
 		DirectionComponent::Handle directionComponent{entity.component<DirectionComponent>()};
 		BodyComponent::Handle bodyComponent{entity.component<BodyComponent>()};
-		if(bodyComponent->bodies.find("main") != bodyComponent->bodies.end())
+		if(bodyComponent->bodies.count("main"))
 		{
 			b2Body* body{bodyComponent->bodies.at("main")};
 			b2World* world{body->GetWorld()};

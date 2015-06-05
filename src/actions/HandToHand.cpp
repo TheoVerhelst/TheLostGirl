@@ -29,7 +29,7 @@ void HandToHand::operator()(entityx::Entity entity, double) const
 			if(entity.has_component<BodyComponent>())
 			{
 				BodyComponent::Handle bodyComponent{entity.component<BodyComponent>()};
-				if(bodyComponent->bodies.find("main") != bodyComponent->bodies.end())
+				if(bodyComponent->bodies.count("main"))
 				{
 					b2Body* body{bodyComponent->bodies.at("main")};
 					b2World* world{body->GetWorld()};
