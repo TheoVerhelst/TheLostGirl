@@ -1047,11 +1047,7 @@ void GameState::initWorld(const std::string& file)
 		getContext().world.SetContactListener(&m_contactListener);
 		requestStackPop();
 		getContext().eventManager.emit<LoadingStateChange>("Loading HUD");
-		size_t entitiesNumber{0};
-		for(auto& entity : m_entities)
-			if(entity.second.has_component<HealthComponent>() and not isPlayer(entity.second))
-				entitiesNumber++;
-		requestStackPush<HUDState>(entitiesNumber);
+		requestStackPush<HUDState>();
 		m_loading = false;
 	}
 	catch(std::runtime_error& e)

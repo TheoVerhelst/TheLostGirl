@@ -13,7 +13,7 @@
 #include <TheLostGirl/systems/TimeSystem.h>
 #include <TheLostGirl/states/HUDState.h>
 
-HUDState::HUDState(StateStack& stack, size_t entitiesNumber):
+HUDState::HUDState(StateStack& stack):
 	State(stack),
 	m_windIsFading{true}
 {
@@ -27,36 +27,25 @@ HUDState::HUDState(StateStack& stack, size_t entitiesNumber):
 	TextureManager& texManager(getContext().textureManager);
 
 	//Load textures
-	texManager.load("entity health bar borders", paths[getContext().parameters.scaleIndex] + "entityHealthBarBorders.png");
-	texManager.load("entity health bar", paths[getContext().parameters.scaleIndex] + "entityHealthBar.png");
-	texManager.load("health ath", paths[getContext().parameters.scaleIndex] + "healthAth.png");
-	texManager.load("health border ath", paths[getContext().parameters.scaleIndex] + "healthBorderAth.png");
-	texManager.load("stamina ath", paths[getContext().parameters.scaleIndex] + "staminaAth.png");
-	texManager.load("stamina border ath", paths[getContext().parameters.scaleIndex] + "staminaBorderAth.png");
 	texManager.load("wind arrow ath", paths[getContext().parameters.scaleIndex] + "windArrowAth.png");
 	texManager.load("wind bar ath", paths[getContext().parameters.scaleIndex] + "windBarAth.png");
 
-	//Set textures to sprites
+	//Create the wind bar
 	m_windStrengthSpr.setTexture(texManager.get("wind arrow ath"));
 	m_windStrengthSpr.setPosition(120.f*scale, 0);
 	m_windStrengthBarSpr.setTexture(texManager.get("wind bar ath"));
 	m_windBar = tgui::Canvas::create({std::ceil(240.f*scale), std::ceil(20.f*scale)});
 	m_windBar->setPosition(bindWidth(gui, 0.99f) - bindWidth(m_windBar), bindHeight(gui, 0.95f) - bindHeight(m_windBar));
 	gui.add(m_windBar);
-
-	for(size_t i{0}; i < entitiesNumber; ++i)
-		m_loadedCanvas.push_back(tgui::Canvas::create({std::ceil(100.f*scale), std::ceil(10.f*scale)}));
-	m_playerHealthCanvas = tgui::Canvas::create({std::ceil(240.f*scale), std::ceil(20.f*scale)});
-	m_playerStaminaCanvas = tgui::Canvas::create({std::ceil(240.f*scale), std::ceil(20.f*scale)});
 }
 
 HUDState::~HUDState()
 {
 	tgui::Gui& gui(getContext().gui);
 	for(auto& barPair : m_healthBars)
-		gui.remove(barPair.second.canvas);
+		gui.remove(barPair.second.panel);
 	for(auto& barPair : m_staminaBars)
-		gui.remove(barPair.second.canvas);
+		gui.remove(barPair.second.panel);
 	gui.remove(m_windBar);
 }
 
@@ -67,17 +56,11 @@ void HUDState::draw()
 	{
 		if(barPair.first.has_component<DeathComponent>() and barPair.first.component<DeathComponent>()->dead)
 		{
-			getContext().gui.remove(barPair.second.canvas);
+			getContext().gui.remove(barPair.second.panel);
 			entitiesToRemove.push_back(barPair.first);
 		}
-		else
-		{
-			barPair.second.canvas->clear(sf::Color::Transparent);
-			barPair.second.canvas->draw(barPair.second.sprite);
-			barPair.second.canvas->draw(barPair.second.borderSprite);
-			barPair.second.canvas->display();
-		}
 	}
+
 	for(auto& entity : entitiesToRemove)
 		m_healthBars.erase(entity);
 	entitiesToRemove.clear();
@@ -85,23 +68,17 @@ void HUDState::draw()
 	{
 		if(barPair.first.has_component<DeathComponent>() and barPair.first.component<DeathComponent>()->dead)
 		{
-			getContext().gui.remove(barPair.second.canvas);
+			getContext().gui.remove(barPair.second.panel);
 			entitiesToRemove.push_back(barPair.first);
-		}
-		else
-		{
-			barPair.second.canvas->clear(sf::Color::Transparent);
-			barPair.second.canvas->draw(barPair.second.sprite);
-			barPair.second.canvas->draw(barPair.second.borderSprite);
-			barPair.second.canvas->display();
 		}
 	}
 	for(auto& entity : entitiesToRemove)
 		m_staminaBars.erase(entity);
-	m_windBar->clear(sf::Color::Transparent);
-	m_windBar->draw(m_windStrengthBarSpr);
-	m_windBar->draw(m_windStrengthSpr);
-	m_windBar->display();
+
+//	m_windBar->clear(sf::Color::Transparent);
+//	m_windBar->draw(m_windStrengthBarSpr);
+//	m_windBar->draw(m_windStrengthSpr);
+//	m_windBar->display();
 }
 
 bool HUDState::update(sf::Time dt)
@@ -157,11 +134,10 @@ bool HUDState::update(sf::Time dt)
 	{
 		if(barPair.second.isFull)
 		{
-			//This time will be equal to 0 2 seconds after the start of the fading and then will grow normally
-			const sf::Time time{cap(barPair.second.timer-sf::seconds(2), sf::seconds(0), sf::seconds(3))};
-			const sf::Color color{fadingColor(time, sf::seconds(3), false)};
-			barPair.second.sprite.setColor(color);
-			barPair.second.borderSprite.setColor(color);
+			//This time will be equal to 0 while 2 seconds after the start of the fading and then will grow normally
+			const float time{cap(barPair.second.timer.asSeconds()-2.f, 0.f, 3.f)};
+			const unsigned char alpha{(unsigned char)(765.f - time*255.f)};
+			barPair.second.panel->setTransparency(alpha);
 		}
 		if(barPair.first.has_component<TransformComponent>() and not isPlayer(barPair.first))
 		{
@@ -171,7 +147,7 @@ bool HUDState::update(sf::Time dt)
 				sf::Vector2f position(transforms.at("main").x, transforms.at("main").y);
 				position *= scale;
 				position -= viewPos;
-				barPair.second.canvas->setPosition(position);
+				barPair.second.panel->setPosition(position);
 			}
 		}
 	}
@@ -179,11 +155,10 @@ bool HUDState::update(sf::Time dt)
 	{
 		if(barPair.second.isFull)
 		{
-			//This time will be equal to 0 2 seconds after the start of the fading and then will grow normally
-			const sf::Time time{cap(barPair.second.timer-sf::seconds(2), sf::seconds(0), sf::seconds(3))};
-			const sf::Color color{fadingColor(time, sf::seconds(3), false)};
-			barPair.second.sprite.setColor(color);
-			barPair.second.borderSprite.setColor(color);
+			//This time will be equal to 0 while 2 seconds after the start of the fading and then will grow normally
+			const float time{cap(barPair.second.timer.asSeconds()-2.f, 0.f, 3.f)};
+			const unsigned char alpha{(unsigned char)(765.f - time*255.f)};
+			barPair.second.panel->setTransparency(alpha);
 		}
 	}
 	return true;
@@ -203,49 +178,39 @@ void HUDState::receive(const EntityHealthChange& entityHealthChange)
 	const float scale{getContext().parameters.scale};
 	entityx::Entity entity{entityHealthChange.entity};
 
-	if(m_healthBars.find(entity) == m_healthBars.end())
+	if(not m_healthBars.count(entity))
 	{
 		Bar bar;
 		if(isPlayer(entity))
 		{
-			bar.sprite.setTexture(texManager.get("health ath"));
-			bar.sprite.setTextureRect({0, 0, int(std::ceil(240.f*scale)), int(std::ceil(20.f*scale))});
-			bar.borderSprite.setTexture(texManager.get("health border ath"));
-			bar.canvas = m_playerHealthCanvas;
-			bar.canvas->setPosition(bindWidth(gui, 0.01f), bindHeight(gui, 0.99f) - bindHeight(bar.canvas));
+			bar.bar = tgui::Picture::create(paths[getContext().parameters.scaleIndex] + "healthAth.png");
+			bar.borders = tgui::Picture::create(paths[getContext().parameters.scaleIndex] + "healthBorderAth.png");
+			bar.panel = tgui::Panel::create({std::ceil(240.f*scale), std::ceil(20.f*scale)});
+			bar.panel->setPosition(bindWidth(gui, 0.01f), bindHeight(gui, 0.99f) - bindHeight(bar.panel));
 		}
 		else
 		{
-			bar.sprite.setTexture(texManager.get("entity health bar"));
-			bar.sprite.setTextureRect({0, 0, int(std::ceil(100.f*scale)), int(std::ceil(10.f*scale))});
-			bar.borderSprite.setTexture(texManager.get("entity health bar borders"));
-			if(not m_loadedCanvas.empty())
-			{
-				bar.canvas = *m_loadedCanvas.begin();
-				m_loadedCanvas.erase(m_loadedCanvas.begin());
-			}
-			else
-				bar.canvas = tgui::Canvas::create({std::ceil(100.f*scale), std::ceil(10.f*scale)});
-			bar.canvas->setPosition(bindWidth(gui, 0.5f), bindHeight(gui, 0.99f) - bindHeight(bar.canvas));
+			bar.bar = tgui::Picture::create(paths[getContext().parameters.scaleIndex] + "entityHealthBar.png");
+			bar.borders = tgui::Picture::create(paths[getContext().parameters.scaleIndex] + "entityHealthBarBorders.png");
+			bar.panel = tgui::Panel::create({std::ceil(100.f*scale), std::ceil(10.f*scale)});
 		}
-		gui.add(bar.canvas);
+		bar.panel->setBackgroundColor(sf::Color::Transparent);
+		bar.panel->add(bar.bar);
+		bar.panel->add(bar.borders);
+		gui.add(bar.panel);
 		m_healthBars.emplace(entity, bar);
 	}
-	Bar& bar(m_healthBars[entity]);
-	const bool oldfFullState{bar.isFull};
+	Bar& bar(m_healthBars.at(entity));
+	const bool barWasFull{bar.isFull};
 	bar.isFull = entityHealthChange.normalizedHealth >= 1.f;
 	//If the fading ends now
-	if(oldfFullState and not bar.isFull)
-	{
-		//Reset sprite colors
-		bar.sprite.setColor(sf::Color::White);
-		bar.borderSprite.setColor(sf::Color::White);
-	}
+	if(barWasFull and not bar.isFull)
+		bar.panel->setTransparency(255);
 	bar.timer = sf::Time::Zero;//In all cases, the timer should reset when the health change
 	if(isPlayer(entity))
-		bar.sprite.setTextureRect({int(std::ceil((240.f - 240.f*entityHealthChange.normalizedHealth)*scale)), 0, int(std::ceil(240.f*scale)), int(std::ceil(20.f*scale))});
+		bar.bar->setPosition(-240.f*(1-entityHealthChange.normalizedHealth)*scale, 0.f);
 	else
-		bar.sprite.setTextureRect({int(std::ceil((100.f - 100.f*entityHealthChange.normalizedHealth)*scale)), 0, int(std::ceil(100.f*scale)), int(std::ceil(10.f*scale))});
+		bar.bar->setPosition(-100.f*(1-entityHealthChange.normalizedHealth)*scale, 0.f);
 }
 
 void HUDState::receive(const EntityStaminaChange& entityStaminaChange)
@@ -259,28 +224,25 @@ void HUDState::receive(const EntityStaminaChange& entityStaminaChange)
 
 	if(isPlayer(entity))
 	{
-		if(m_staminaBars.find(entity) == m_staminaBars.end())
+		if(not m_staminaBars.count(entity))
 		{
 			Bar bar;
-			bar.sprite.setTexture(texManager.get("stamina ath"));
-			bar.sprite.setTextureRect({0, 0, int(std::ceil(240.f*scale)), int(std::ceil(20.f*scale))});
-			bar.borderSprite.setTexture(texManager.get("stamina border ath"));
-			bar.canvas = m_playerStaminaCanvas;
-			bar.canvas->setPosition(bindWidth(gui, 0.99f) - bindWidth(bar.canvas), bindHeight(gui, 0.99f) - bindHeight(bar.canvas));
-			gui.add(bar.canvas);
+			bar.bar = tgui::Picture::create(paths[getContext().parameters.scaleIndex] + "staminaAth.png");
+			bar.borders = tgui::Picture::create(paths[getContext().parameters.scaleIndex] + "staminaBorderAth.png");
+			bar.panel = tgui::Panel::create({std::ceil(240.f*scale), std::ceil(20.f*scale)});
+			bar.panel->setPosition(bindWidth(gui, 0.99f) - bindWidth(bar.panel), bindHeight(gui, 0.99f) - bindHeight(bar.panel));
+			bar.panel->setBackgroundColor(sf::Color::Transparent);
+			bar.panel->add(bar.bar);
+			bar.panel->add(bar.borders);
 			m_staminaBars.emplace(entity, bar);
 		}
-		Bar& bar(m_staminaBars[entity]);
-		const bool oldfFullState{bar.isFull};
+		Bar& bar(m_staminaBars.at(entity));
+		const bool barWasFull{bar.isFull};
 		bar.isFull = entityStaminaChange.normalizedStamina >= 1.f;
 		//If the fading ends now
-		if(oldfFullState and not bar.isFull)
-		{
-			//Reset sprite colors
-			bar.sprite.setColor(sf::Color::White);
-			bar.borderSprite.setColor(sf::Color::White);
-		}
+		if(barWasFull and not bar.isFull)
+			bar.panel->setTransparency(255);
 		bar.timer = sf::Time::Zero;//In all cases, the timer should reset when the health change
-		bar.sprite.setTextureRect({int(std::ceil((240.f - 240.f*entityStaminaChange.normalizedStamina)*scale)), 0, int(std::ceil(240.f*scale)), int(std::ceil(20.f*scale))});
+		bar.bar->setPosition(-240.f*(1-entityStaminaChange.normalizedStamina)*scale, 0.f);
 	}
 }

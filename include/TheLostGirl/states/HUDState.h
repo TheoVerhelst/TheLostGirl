@@ -1,7 +1,9 @@
 #ifndef HUDSTATE_H
 #define HUDSTATE_H
 
+#include <TGUI/Panel.hpp>
 #include <TGUI/Canvas.hpp>
+#include <TGUI/Picture.hpp>
 #include <TheLostGirl/HashEntity.h>
 
 //Forward declarations
@@ -24,8 +26,7 @@ class HUDState : public State
         /// The role of the entitiesNumber parameter is to load some tgui::Canvas
         /// in order to do not load them on the fly during the game, when entities health change.
         /// \param stack StateStack wherein the State is added.
-        /// \param entitiesNumber Number of entities that will be in the level.
-		HUDState(StateStack& stack, size_t entitiesNumber);
+		HUDState(StateStack& stack);
 
 		/// Destructor.
 		~HUDState();
@@ -60,26 +61,15 @@ class HUDState : public State
 		/// A fading to transparent is done when the entity's stat is full.
 		struct Bar
 		{
-			/// Constructor.
-			Bar()
-			{}
-
-			/// Destructor.
-			~Bar()
-			{}
-
-			tgui::Canvas::Ptr canvas;///< Canvas to draw the sprites.
-			sf::Sprite sprite;       ///< The sprite of the bar.
-			sf::Sprite borderSprite; ///< The sprite of the borders of the bar.
-			bool isFull;             ///< Indicates whether the bar is full.
-			sf::Time timer;          ///< Timer of the fading animation.
+			tgui::Panel::Ptr panel;    ///< The container for clipping the bar.
+			tgui::Picture::Ptr bar;    ///< The sprite of the bar.
+			tgui::Picture::Ptr borders;///< The sprite of the bar.
+			bool isFull;               ///< Indicates whether the bar is full.
+			sf::Time timer;            ///< Timer of the fading animation.
 		};
 
 		std::unordered_map<entityx::Entity, Bar, HashEntity> m_healthBars; ///< Store all entities health bars.
 		std::unordered_map<entityx::Entity, Bar, HashEntity> m_staminaBars;///< Store all entities stamina bars.
-		std::list<tgui::Canvas::Ptr> m_loadedCanvas;                       ///< Store some canvas that will be assigned to an entity later.
-		tgui::Canvas::Ptr m_playerHealthCanvas;                            ///< A preloaded canvas for the player health bar.
-		tgui::Canvas::Ptr m_playerStaminaCanvas;                           ///< A preloaded canvas for the player stamina bar.
 
 		//Player wind HUD
 		tgui::Canvas::Ptr m_windBar;       ///< The wind arrow.

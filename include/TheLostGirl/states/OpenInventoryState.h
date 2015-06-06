@@ -68,44 +68,51 @@ class OpenInventoryState : public State
 		/// Reset all texts in the buttons and other widgets.
 		void resetTexts();
 
+		/// Function called by the scrollbar, used to scroll the grid display.
+		/// \param newScrollValue the new value of the scrollbar.
 		void scrollGrid(int newScrollValue);
 
+		/// Function called by the scrollbar, used to scroll the list display.
+		/// \param newScrollValue the new value of the scrollbar.
 		void scrollList(int newScrollValue);
 
+		/// Function called by the tab for switching the diplay mode.
+		/// \param selectedTab The name of the new selected tab.
 		void switchDisplay(sf::String selectedTab);
-		entityx::Entity m_entity;               ///< Entity of which open the inventory.
-		tgui::ChildWindow::Ptr m_background;    ///< Background of the whole inventory window.
-		tgui::Label::Ptr m_entityName;          ///< Label with the name of the entity.
-		tgui::Tab::Ptr m_displayTab;
-		tgui::Tab::Ptr m_categoryTab;
+
+		entityx::Entity m_entity;                         ///< Entity of which open the inventory.
+		tgui::ChildWindow::Ptr m_background;              ///< Background of the whole inventory window.
+		tgui::Label::Ptr m_entityName;                    ///< Label with the name of the entity.
+		tgui::Tab::Ptr m_displayTab;                      ///< Tab used for switching the display mode.
+		tgui::Tab::Ptr m_categoryTab;                     ///< Tab used for switching the shown category.
 
 		//Widgets for the grid display
 		/// Hold GUI widgets to represent an item in the grid inventory.
 		struct ItemGridWidget
 		{
-			tgui::Panel::Ptr background;///< The background of the item.
-			tgui::Picture::Ptr picture; ///< The image of the item.
-			tgui::Label::Ptr caption;   ///< A label with the naim of the item.
-			entityx::Entity item;       ///< The represented item.
+			tgui::Panel::Ptr background;                  ///< The background of the item.
+			tgui::Picture::Ptr picture;                   ///< The image of the item.
+			tgui::Label::Ptr caption;                     ///< A label with the naim of the item.
+			entityx::Entity item;                         ///< The represented item.
 		};
-		tgui::Panel::Ptr m_gridPanel;
-		tgui::Scrollbar::Ptr m_gridScrollbar;
-		std::list<ItemGridWidget> m_itemWidgets;///< List of all items to display.
+		tgui::Panel::Ptr m_gridPanel;                     ///< Background of the whole grid display.
+		tgui::Scrollbar::Ptr m_gridScrollbar;             ///< Scrollbar for scrolling the grid.
+		std::list<ItemGridWidget> m_itemWidgets;          ///< List of all items to display.
 
 		//Widget for the list display
 		/// Hold GUI widgets to represent an item in the list inventory.
 		struct ItemListWidget
 		{
-			tgui::HorizontalLayout::Ptr layout;
-			std::map<sf::String, tgui::Label::Ptr> labels;
+			tgui::HorizontalLayout::Ptr layout;           ///< Layout for organizing the labels below.
+			std::map<sf::String, tgui::Label::Ptr> labels;///< A label for each information about the item.
 			entityx::Entity item;                         ///< The represented item.
 		};
-		tgui::Panel::Ptr m_listPanel;
-		std::list<sf::String> m_listColumnsNames;
-		ItemListWidget m_listColumnTitles;
-		tgui::VerticalLayout::Ptr m_listContentLayout;
-		std::list<ItemListWidget> m_listContent;
-		tgui::Scrollbar::Ptr m_listScrollbar;
+		tgui::Panel::Ptr m_listPanel;                     ///< Background for the whole list diplay.
+		std::list<sf::String> m_listColumnsNames;         ///< The name of each kind of data in the list
+		ItemListWidget m_listColumnTitles;                ///< Contains all title labels.
+		tgui::VerticalLayout::Ptr m_listContentLayout;    ///< Main layout for the content of the list display.
+		std::list<ItemListWidget> m_listContent;          ///< All the widgets for the content of the list display.
+		tgui::Scrollbar::Ptr m_listScrollbar;             ///< The scrollbar for the list display.
 
 };
 

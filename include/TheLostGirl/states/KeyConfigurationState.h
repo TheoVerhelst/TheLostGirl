@@ -51,9 +51,17 @@ class KeyConfigurationState : public State
 		void resetTexts();
 
 		/// Scroll the area with labels and buttons.
+		/// \param newScrollValue the new value of the scrollbar.
 		void scrollArea(int newScrollValue);
 
+		/// Return a string representing the given key.
+		/// \param key The key to convert.
+		/// \return A string representing the given key.
 		sf::String toString(sf::Keyboard::Key key);
+
+		/// Return a string representing the given mouse button.
+		/// \param button The mouse button to convert.
+		/// \return A string representing the given mouse button.
 		sf::String toString(sf::Mouse::Button button);
 
 		tgui::Panel::Ptr m_background;                                ///< The background of the menu.
