@@ -75,10 +75,10 @@ void HUDState::draw()
 	for(auto& entity : entitiesToRemove)
 		m_staminaBars.erase(entity);
 
-//	m_windBar->clear(sf::Color::Transparent);
-//	m_windBar->draw(m_windStrengthBarSpr);
-//	m_windBar->draw(m_windStrengthSpr);
-//	m_windBar->display();
+	m_windBar->clear(sf::Color::Transparent);
+	m_windBar->draw(m_windStrengthBarSpr);
+	m_windBar->draw(m_windStrengthSpr);
+	m_windBar->display();
 }
 
 bool HUDState::update(sf::Time dt)
@@ -185,14 +185,14 @@ void HUDState::receive(const EntityHealthChange& entityHealthChange)
 		{
 			bar.bar = tgui::Picture::create(paths[getContext().parameters.scaleIndex] + "healthAth.png");
 			bar.borders = tgui::Picture::create(paths[getContext().parameters.scaleIndex] + "healthBorderAth.png");
-			bar.panel = tgui::Panel::create({std::ceil(240.f*scale), std::ceil(20.f*scale)});
+			bar.panel = tgui::Panel::create({std::ceil(240.f*scale)+1, std::ceil(20.f*scale)+1});
 			bar.panel->setPosition(bindWidth(gui, 0.01f), bindHeight(gui, 0.99f) - bindHeight(bar.panel));
 		}
 		else
 		{
 			bar.bar = tgui::Picture::create(paths[getContext().parameters.scaleIndex] + "entityHealthBar.png");
 			bar.borders = tgui::Picture::create(paths[getContext().parameters.scaleIndex] + "entityHealthBarBorders.png");
-			bar.panel = tgui::Panel::create({std::ceil(100.f*scale), std::ceil(10.f*scale)});
+			bar.panel = tgui::Panel::create({std::ceil(100.f*scale)+1, std::ceil(10.f*scale)+1});
 		}
 		bar.panel->setBackgroundColor(sf::Color::Transparent);
 		bar.panel->add(bar.bar);
@@ -208,9 +208,9 @@ void HUDState::receive(const EntityHealthChange& entityHealthChange)
 		bar.panel->setTransparency(255);
 	bar.timer = sf::Time::Zero;//In all cases, the timer should reset when the health change
 	if(isPlayer(entity))
-		bar.bar->setPosition(-240.f*(1-entityHealthChange.normalizedHealth)*scale, 0.f);
+		bar.bar->setPosition(std::ceil(-240.f*(1-entityHealthChange.normalizedHealth)*scale), 0.f);
 	else
-		bar.bar->setPosition(-100.f*(1-entityHealthChange.normalizedHealth)*scale, 0.f);
+		bar.bar->setPosition(std::ceil(-100.f*(1-entityHealthChange.normalizedHealth)*scale), 0.f);
 }
 
 void HUDState::receive(const EntityStaminaChange& entityStaminaChange)
@@ -229,7 +229,7 @@ void HUDState::receive(const EntityStaminaChange& entityStaminaChange)
 			Bar bar;
 			bar.bar = tgui::Picture::create(paths[getContext().parameters.scaleIndex] + "staminaAth.png");
 			bar.borders = tgui::Picture::create(paths[getContext().parameters.scaleIndex] + "staminaBorderAth.png");
-			bar.panel = tgui::Panel::create({std::ceil(240.f*scale), std::ceil(20.f*scale)});
+			bar.panel = tgui::Panel::create({std::ceil(240.f*scale), std::ceil(20.f*scale)+1});
 			bar.panel->setPosition(bindWidth(gui, 0.99f) - bindWidth(bar.panel), bindHeight(gui, 0.99f) - bindHeight(bar.panel));
 			bar.panel->setBackgroundColor(sf::Color::Transparent);
 			bar.panel->add(bar.bar);
@@ -243,6 +243,6 @@ void HUDState::receive(const EntityStaminaChange& entityStaminaChange)
 		if(barWasFull and not bar.isFull)
 			bar.panel->setTransparency(255);
 		bar.timer = sf::Time::Zero;//In all cases, the timer should reset when the health change
-		bar.bar->setPosition(-240.f*(1-entityStaminaChange.normalizedStamina)*scale, 0.f);
+		bar.bar->setPosition(std::ceil(-240.f*(1-entityStaminaChange.normalizedStamina)*scale), 0.f);
 	}
 }
