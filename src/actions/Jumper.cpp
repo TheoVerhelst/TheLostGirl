@@ -17,8 +17,7 @@ void Jumper::operator()(entityx::Entity entity, double) const
 		return;
 	if(entity.has_component<JumpComponent>() and entity.has_component<FallComponent>())
 	{
-		FallComponent::Handle fallComponent{entity.component<FallComponent>()};
-		if(not fallComponent->inAir)
+		if(not entity.component<FallComponent>()->inAir)
 		{
 			entity.component<JumpComponent>()->mustJump = true;//The physics system will do the physic jump job
 			if(entity.has_component<AnimationsComponent<SpriteSheetAnimation>>()

@@ -747,6 +747,8 @@ void deserialize(const Json::Value& value, entityx::ComponentHandle<CategoryComp
 void deserialize(const Json::Value& value, entityx::ComponentHandle<FallComponent> component)
 {
 	component->fallingResistance = value["falling resistance"].asFloat();
+	component->contactCount = 0;
+	component->inAir = true;
 }
 
 void deserialize(const Json::Value& value, entityx::ComponentHandle<WalkComponent> component)
