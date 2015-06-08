@@ -207,10 +207,12 @@ void OpenInventoryState::resetTexts()
 
 	for(ItemListWidget& itemWidget : m_listContent)
 	{
-		if(itemWidget.labels.count("Name"))
-			itemWidget.labels["Name"]->setText(getContext().langManager.tr(itemWidget.item.component<ItemComponent>()->type));
-		if(itemWidget.labels.count("Category"))
-			itemWidget.labels["Category"]->setText(getContext().langManager.tr(itemWidget.item.component<ItemComponent>()->category));
+		auto nameIt(itemWidget.labels.find("Name"));
+		if(nameIt != itemWidget.labels.end())
+			nameIt->second->setText(getContext().langManager.tr(itemWidget.item.component<ItemComponent>()->type));
+		auto cetegoryIt(itemWidget.labels.find("Category"));
+		if(cetegoryIt != itemWidget.labels.end())
+			cetegoryIt->second->setText(getContext().langManager.tr(itemWidget.item.component<ItemComponent>()->category));
 	}
 }
 

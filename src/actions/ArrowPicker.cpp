@@ -24,16 +24,15 @@ void ArrowPicker::operator()(entityx::Entity entity, double) const
 		and entity.has_component<BowComponent>())
 	{
 		DirectionComponent::Handle directionComponent{entity.component<DirectionComponent>()};
-		BodyComponent::Handle bodyComponent{entity.component<BodyComponent>()};
-		if(bodyComponent->bodies.count("main"))
+		auto bodyIt(entity.component<BodyComponent>()->bodies.find("main"));
+		if(bodyIt != entity.component<BodyComponent>()->bodies.end())
 		{
-			b2Body* body{bodyComponent->bodies.at("main")};
-			b2World* world{body->GetWorld()};
+			b2World* world{bodyIt->second->GetWorld()};
 
 			//Do the querying
 			b2AABB pickBox;
-			pickBox.lowerBound = body->GetWorldCenter() - b2Vec2(2, 2);
-			pickBox.upperBound = body->GetWorldCenter() + b2Vec2(2, 2);
+			pickBox.lowerBound = bodyIt->second->GetWorldCenter() - b2Vec2(2, 2);
+			pickBox.upperBound = bodyIt->second->GetWorldCenter() + b2Vec2(2, 2);
 			StickedArrowQueryCallback callback;
 			world->QueryAABB(&callback, pickBox);
 

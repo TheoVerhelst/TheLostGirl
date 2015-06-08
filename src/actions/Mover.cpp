@@ -99,53 +99,55 @@ void Mover::operator()(entityx::Entity entity, double) const
 					BowComponent::Handle bowComponent{entity.component<BowComponent>()};
 					entityx::Entity notchedArrow{bowComponent->notchedArrow};
 					//If the notched arrow has a b2Body
-					if(notchedArrow.valid() and notchedArrow.has_component<BodyComponent>()
-							and notchedArrow.component<BodyComponent>()->bodies.count("main"))
+					if(notchedArrow.valid() and notchedArrow.has_component<BodyComponent>())
 					{
-						b2Body* arrowBody{notchedArrow.component<BodyComponent>()->bodies.at("main")};
-						//Iterate over all joints
-						for(b2JointEdge* jointEdge{arrowBody->GetJointList()}; jointEdge; jointEdge = jointEdge->next)
+						auto arrowBodyIt(notchedArrow.component<BodyComponent>()->bodies.find("main"));
+						if(arrowBodyIt != notchedArrow.component<BodyComponent>()->bodies.end())
 						{
-							//If this is a bending translation joint
-							if(jointHasRole(jointEdge->joint, JointRole::BendingPower))
+							//Iterate over all joints
+							for(b2JointEdge* jointEdge{arrowBodyIt->second->GetJointList()}; jointEdge; jointEdge = jointEdge->next)
 							{
-								//Copy the joint and create a new one
-								b2PrismaticJoint* joint{static_cast<b2PrismaticJoint*>(jointEdge->joint)};
-								b2PrismaticJointDef jointDef;
-								jointDef.bodyA = joint->GetBodyA();
-								jointDef.bodyB = joint->GetBodyB();
-								jointDef.localAxisA = joint->GetLocalAxisA();
-								jointDef.enableLimit = joint->IsLimitEnabled();
-								jointDef.lowerTranslation = joint->GetLowerLimit();
-								jointDef.upperTranslation = joint->GetUpperLimit();
-								jointDef.enableMotor = joint->IsMotorEnabled();
-								jointDef.maxMotorForce = joint->GetMaxMotorForce();
-								jointDef.motorSpeed = joint->GetMotorSpeed();
-								jointDef.userData = joint->GetUserData();
-								//Get the AABB of the arrow, to compute where place anchor of the joint
-								b2AABB arrowBox;
-								b2Transform identity;
-								identity.SetIdentity();
-								for(b2Fixture* fixture{arrowBody->GetFixtureList()}; fixture; fixture = fixture->GetNext())
-									if(fixtureHasRole(fixture, FixtureRole::Main))
-										fixture->GetShape()->ComputeAABB(&arrowBox, identity, 0);
-								b2Vec2 arrowSize{arrowBox.upperBound - arrowBox.lowerBound};
-								if(directionComponent->direction == Direction::Left)
+								//If this is a bending translation joint
+								if(jointHasRole(jointEdge->joint, JointRole::BendingPower))
 								{
-									jointDef.referenceAngle = b2_pi;
-									jointDef.localAnchorA = {-0.1f, 0.41f};
-									jointDef.localAnchorB = {arrowSize.x, arrowSize.y*0.5f};
-								}
-								else if(directionComponent->direction == Direction::Right)
-								{
-									jointDef.referenceAngle = 0.f;
-									jointDef.localAnchorA = {0.625f, 0.41f};
-									jointDef.localAnchorB = {0.f, arrowSize.y*0.5f};
-								}
+									//Copy the joint and create a new one
+									b2PrismaticJoint* joint{static_cast<b2PrismaticJoint*>(jointEdge->joint)};
+									b2PrismaticJointDef jointDef;
+									jointDef.bodyA = joint->GetBodyA();
+									jointDef.bodyB = joint->GetBodyB();
+									jointDef.localAxisA = joint->GetLocalAxisA();
+									jointDef.enableLimit = joint->IsLimitEnabled();
+									jointDef.lowerTranslation = joint->GetLowerLimit();
+									jointDef.upperTranslation = joint->GetUpperLimit();
+									jointDef.enableMotor = joint->IsMotorEnabled();
+									jointDef.maxMotorForce = joint->GetMaxMotorForce();
+									jointDef.motorSpeed = joint->GetMotorSpeed();
+									jointDef.userData = joint->GetUserData();
+									//Get the AABB of the arrow, to compute where place anchor of the joint
+									b2AABB arrowBox;
+									b2Transform identity;
+									identity.SetIdentity();
+									for(b2Fixture* fixture{arrowBodyIt->second->GetFixtureList()}; fixture; fixture = fixture->GetNext())
+										if(fixtureHasRole(fixture, FixtureRole::Main))
+											fixture->GetShape()->ComputeAABB(&arrowBox, identity, 0);
+									b2Vec2 arrowSize{arrowBox.upperBound - arrowBox.lowerBound};
+									if(directionComponent->direction == Direction::Left)
+									{
+										jointDef.referenceAngle = b2_pi;
+										jointDef.localAnchorA = {-0.1f, 0.41f};
+										jointDef.localAnchorB = {arrowSize.x, arrowSize.y*0.5f};
+									}
+									else if(directionComponent->direction == Direction::Right)
+									{
+										jointDef.referenceAngle = 0.f;
+										jointDef.localAnchorA = {0.625f, 0.41f};
+										jointDef.localAnchorB = {0.f, arrowSize.y*0.5f};
+									}
 
-								b2World* world{jointEdge->joint->GetBodyA()->GetWorld()};
-								world->CreateJoint(&jointDef);
-								world->DestroyJoint(jointEdge->joint);
+									b2World* world{jointEdge->joint->GetBodyA()->GetWorld()};
+									world->CreateJoint(&jointDef);
+									world->DestroyJoint(jointEdge->joint);
+								}
 							}
 						}
 					}

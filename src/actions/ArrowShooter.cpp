@@ -24,11 +24,12 @@ void ArrowShooter::operator()(entityx::Entity entity, double) const
 		BowComponent::Handle bowComponent{entity.component<BowComponent>()};
 		entityx::Entity notchedArrow{bowComponent->notchedArrow};
 		DirectionComponent::Handle directionComponent{entity.component<DirectionComponent>()};
+		auto arrowBodyIt(notchedArrow.component<BodyComponent>()->bodies.find("main"));
 		//If the notched arrow has a b2Body
 		if(notchedArrow.valid() and notchedArrow.has_component<BodyComponent>() and notchedArrow.has_component<ArrowComponent>()
-			and notchedArrow.component<BodyComponent>()->bodies.count("main"))
+			and arrowBodyIt != notchedArrow.component<BodyComponent>()->bodies.end())
 		{
-			b2Body* arrowBody{notchedArrow.component<BodyComponent>()->bodies.at("main")};
+			b2Body* arrowBody{arrowBodyIt->second};
 
 			//Destroy all joints (e.g. the bow/arrow joint)
 			for(b2JointEdge* jointEdge{arrowBody->GetJointList()}; jointEdge; jointEdge = jointEdge->next)

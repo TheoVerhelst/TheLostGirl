@@ -307,11 +307,11 @@ entityx::Entity nearestFoe(const std::vector<Data>& args, StateStack::Context co
 
 	if(self.has_component<BodyComponent>() and self.has_component<DetectionRangeComponent>())
 	{
-		auto& bodies(self.component<BodyComponent>()->bodies);
-		if(bodies.count("main"))
+		auto bodyIt(self.component<BodyComponent>()->bodies.find("main"));
+		if(bodyIt != self.component<BodyComponent>()->bodies.end())
 		{
 			float range{self.component<DetectionRangeComponent>()->detectionRange/context.parameters.pixelByMeter};
-			b2Body* body{bodies["main"]};
+			b2Body* body{bodyIt->second};
             b2World* world{body->GetWorld()};
             NearestFoeQueryCallback callback(self, context);
 			b2AABB aabb;
@@ -336,18 +336,19 @@ float distanceFrom(const std::vector<Data>& args, StateStack::Context)
 		return 0.f;
 	if(self.has_component<BodyComponent>() and target.has_component<BodyComponent>())
 	{
-		auto& selfBodies(self.component<BodyComponent>()->bodies);
-		auto& targetBodies(target.component<BodyComponent>()->bodies);
-		if(selfBodies.count("main") and targetBodies.count("main"))
+		auto selfBodyIt(self.component<BodyComponent>()->bodies.find("main"));
+		auto targetBodyIt(target.component<BodyComponent>()->bodies.find("main"));
+		if(selfBodyIt != self.component<BodyComponent>()->bodies.end()
+			 and targetBodyIt != target.component<BodyComponent>()->bodies.end())
 		{
-			b2Body* selfBody{selfBodies["main"]};
+			b2Body* selfBody{selfBodyIt->second};
 			b2Fixture* selfFixture{nullptr};
 			//Check all fixtures untill a main fixture is found.
 			for(b2Fixture* fixture{selfBody->GetFixtureList()}; fixture and not selfFixture; fixture = fixture->GetNext())
 				if(fixtureHasRole(fixture, FixtureRole::Main))
 					selfFixture = fixture;
 
-			b2Body* targetBody{targetBodies["main"]};
+			b2Body* targetBody{targetBodyIt->second};
 			b2Fixture* targetFixture{nullptr};
 			//Check all fixtures untill a main fixture is found.
 			for(b2Fixture* fixture{targetBody->GetFixtureList()}; fixture and not targetFixture; fixture = fixture->GetNext())

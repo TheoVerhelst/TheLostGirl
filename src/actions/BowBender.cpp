@@ -67,12 +67,13 @@ void BowBender::operator()(entityx::Entity entity, double) const
 				bowComponent->notchedArrow = *found;
 				notchedArrow = *found;
 				bowComponent->arrows.erase(found);
-				auto& arrowBodies(notchedArrow.component<BodyComponent>()->bodies);
-				auto& entityBodies(entity.component<BodyComponent>()->bodies);
-				if(arrowBodies.count("main") and entityBodies.count("bow"))
+				auto arrowBodyIt(notchedArrow.component<BodyComponent>()->bodies.find("main"));
+				auto entityBodyIt(entity.component<BodyComponent>()->bodies.find("bow"));
+				if(arrowBodyIt != notchedArrow.component<BodyComponent>()->bodies.end()
+					 and entityBodyIt != entity.component<BodyComponent>()->bodies.end())
 				{
-					b2Body* arrowBody{arrowBodies.at("main")};
-					b2Body* bowBody{entityBodies.at("bow")};
+					b2Body* arrowBody{arrowBodyIt->second};
+					b2Body* bowBody{entityBodyIt->second};
 
 					//Destroy all joints (e.g. the quiver/arrow joint)
 					for(b2JointEdge* jointEdge{arrowBody->GetJointList()}; jointEdge; jointEdge = jointEdge->next)

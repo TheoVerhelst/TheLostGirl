@@ -141,10 +141,10 @@ bool HUDState::update(sf::Time dt)
 		}
 		if(barPair.first.has_component<TransformComponent>() and not isPlayer(barPair.first))
 		{
-			const auto& transforms(barPair.first.component<TransformComponent>()->transforms);
-			if(transforms.count("main"))
+			auto transformIt(barPair.first.component<TransformComponent>()->transforms.find("main"));
+			if(transformIt != barPair.first.component<TransformComponent>()->transforms.end())
 			{
-				sf::Vector2f position(transforms.at("main").x, transforms.at("main").y);
+				sf::Vector2f position(transformIt->second.x, transformIt->second.y);
 				position *= scale;
 				position -= viewPos;
 				barPair.second.panel->setPosition(position);

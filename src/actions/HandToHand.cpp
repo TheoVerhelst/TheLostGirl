@@ -28,10 +28,10 @@ void HandToHand::operator()(entityx::Entity entity, double) const
 			DirectionComponent::Handle directionComponent{entity.component<DirectionComponent>()};
 			if(entity.has_component<BodyComponent>())
 			{
-				BodyComponent::Handle bodyComponent{entity.component<BodyComponent>()};
-				if(bodyComponent->bodies.count("main"))
+				auto bodyIt(entity.component<BodyComponent>()->bodies.find("main"));
+				if(bodyIt != entity.component<BodyComponent>()->bodies.end())
 				{
-					b2Body* body{bodyComponent->bodies.at("main")};
+					b2Body* body{bodyIt->second};
 					b2World* world{body->GetWorld()};
 
 					//Compute a box in front of the character; first, compute the transform of the box

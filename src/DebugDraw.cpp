@@ -125,14 +125,13 @@ void DebugDraw::drawDebugAth()
 			{
 				if(entity.has_component<BodyComponent>() and entity.has_component<WalkComponent>())
 				{
-					//Find the main body
-					auto& bodies(entity.component<BodyComponent>()->bodies);
 					//If there is a main body
-					if(bodies.count("main"))
-						position = bodies["main"]->GetPosition();
+					auto it(entity.component<BodyComponent>()->bodies.find("main"));
+					if(it != entity.component<BodyComponent>()->bodies.end())
+						position = it->second->GetPosition();
 					//Else, take the first that come in hand
-					else if(not bodies.empty())
-						position = bodies.begin()->second->GetPosition();
+					else if(not entity.component<BodyComponent>()->bodies.empty())
+						position = entity.component<BodyComponent>()->bodies.begin()->second->GetPosition();
 				}
 				if(entity.has_component<BowComponent>())
 				{

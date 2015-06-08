@@ -25,11 +25,10 @@ void AnimationsSystem::update(entityx::EntityManager& entityManager, entityx::Ev
 															directionComponent,
 															fallComponent))
 	{
-		auto& bodies(bodyComponent->bodies);
 		for(auto& animationsPair : animationsComponent->animationsManagers)
 		{
 			AnimationsManager<SpriteSheetAnimation>& animations(animationsPair.second);
-			b2Body* body{bodies[animationsPair.first]};
+			b2Body* body{bodyComponent->bodies.at(animationsPair.first)};
 			if(fallComponent->inAir and body->GetLinearVelocity().y > 2.f
 				and animations.isRegistred("fall left") and animations.isRegistred("fall right"))
 			{
