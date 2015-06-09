@@ -29,12 +29,12 @@ void AnimationsSystem::update(entityx::EntityManager& entityManager, entityx::Ev
 			AnimationsManager<SpriteSheetAnimation>& animations(animationsPair.second);
 			b2Body* body{bodyComponent->bodies.at(animationsPair.first)};
 			if(fallComponent->inAir and body->GetLinearVelocity().y > 2.f
-				and animations.isRegistred("fall left") and animations.isRegistred("fall right"))
+				and animations.isRegistred("jump left") and animations.isRegistred("jump right"))
 			{
 				if(directionComponent->direction == Direction::Left)
-					animations.play("fall left");
+					animations.stop("jump left");
 				else if(directionComponent->direction == Direction::Right)
-					animations.play("fall right");
+					animations.stop("jump right");
 			}
 		}
 	}

@@ -40,23 +40,27 @@ void FallingListener::BeginContact(b2Contact* contact)
 		FallComponent::Handle fallComponent(entityA.component<FallComponent>());
 		if(fixtureHasRole(fixtureA, FixtureRole::Foot) and fallComponent)
 		{
-			AnimationsComponent<SpriteSheetAnimation>::Handle animationsComponent(entityA.component<AnimationsComponent<SpriteSheetAnimation>>());
-			if(animationsComponent)
+			//If the entity was in air, now it touch the ground so we stop its animations.
+			if(fallComponent->inAir)
 			{
-				//For each animations manager of the entity
-				for(auto& animationsPair : animationsComponent->animationsManagers)
+				AnimationsComponent<SpriteSheetAnimation>::Handle animationsComponent(entityA.component<AnimationsComponent<SpriteSheetAnimation>>());
+				if(animationsComponent)
 				{
-					AnimationsManager<SpriteSheetAnimation>& animations(animationsPair.second);
-					//If the animations manager have the required animation
-					if(animations.isRegistred("fall left") and animations.isRegistred("fall right"))
+					//For each animations manager of the entity
+					for(auto& animationsPair : animationsComponent->animationsManagers)
 					{
-						animations.stop("fall left");
-						animations.stop("fall right");
-					}
-					if(animations.isRegistred("jump left") and animations.isRegistred("jump right"))
-					{
-						animations.stop("jump left");
-						animations.stop("jump right");
+						AnimationsManager<SpriteSheetAnimation>& animations(animationsPair.second);
+						//If the animations manager have the required animation
+						if(animations.isRegistred("fall left") and animations.isRegistred("fall right"))
+						{
+							animations.stop("fall left");
+							animations.stop("fall right");
+						}
+						if(animations.isRegistred("jump left") and animations.isRegistred("jump right"))
+						{
+							animations.stop("jump left");
+							animations.stop("jump right");
+						}
 					}
 				}
 			}
@@ -88,21 +92,25 @@ void FallingListener::EndContact(b2Contact* contact)
 		FallComponent::Handle fallComponent(entityA.component<FallComponent>());
 		if(fixtureHasRole(fixtureA, FixtureRole::Foot) and fallComponent)
 		{
-			AnimationsComponent<SpriteSheetAnimation>::Handle animationsComponent(entityA.component<AnimationsComponent<SpriteSheetAnimation>>());
-			const DirectionComponent::Handle directionComponent(entityA.component<DirectionComponent>());
-			if(animationsComponent and directionComponent)
+			//If this ground was the last one the entity was touching, now the entity is in air so we play its animations.
+			if(fallComponent->contactCount == 1)
 			{
-				//For each animations manager of the entity
-				for(auto& animationsPair : animationsComponent->animationsManagers)
+				AnimationsComponent<SpriteSheetAnimation>::Handle animationsComponent(entityA.component<AnimationsComponent<SpriteSheetAnimation>>());
+				const DirectionComponent::Handle directionComponent(entityA.component<DirectionComponent>());
+				if(animationsComponent and directionComponent)
 				{
-					AnimationsManager<SpriteSheetAnimation>& animations(animationsPair.second);
-					//If the animations manager have the required animation
-					if(animations.isRegistred("fall left") and animations.isRegistred("fall right"))
+					//For each animations manager of the entity
+					for(auto& animationsPair : animationsComponent->animationsManagers)
 					{
-						if(directionComponent->direction == Direction::Left)
-							animations.play("fall left");
-						else if(directionComponent->direction == Direction::Right)
-							animations.play("fall right");
+						AnimationsManager<SpriteSheetAnimation>& animations(animationsPair.second);
+						//If the animations manager have the required animation
+						if(animations.isRegistred("fall left") and animations.isRegistred("fall right"))
+						{
+							if(directionComponent->direction == Direction::Left)
+								animations.play("fall left");
+							else if(directionComponent->direction == Direction::Right)
+								animations.play("fall right");
+						}
 					}
 				}
 			}
