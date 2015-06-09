@@ -1,4 +1,3 @@
-#include <iostream>
 #include <utility> //std::swap
 
 #include <Box2D/Dynamics/b2Body.h>

@@ -1,4 +1,3 @@
-#include <iostream>
 #include <utility> //std::swap
 
 #include <Box2D/Dynamics/b2Body.h>
@@ -53,11 +52,11 @@ void FallingListener::BeginContact(b2Contact* contact)
 					{
 						animations.stop("fall left");
 						animations.stop("fall right");
-						if(animations.isRegistred("jump left") and animations.isRegistred("jump right"))
-						{
-							animations.stop("jump left");
-							animations.stop("jump right");
-						}
+					}
+					if(animations.isRegistred("jump left") and animations.isRegistred("jump right"))
+					{
+						animations.stop("jump left");
+						animations.stop("jump right");
 					}
 				}
 			}

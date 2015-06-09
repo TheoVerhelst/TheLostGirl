@@ -1,4 +1,3 @@
-#include <iostream>
 #include <SFML/System/Time.hpp>
 #include <entityx/entityx.h>
 #include <Box2D/Box2D.h>

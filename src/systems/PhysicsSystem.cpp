@@ -1,5 +1,4 @@
 #include <cmath>
-#include <iostream>
 #include <SFML/Graphics/Sprite.hpp>
 #include <entityx/entityx.h>
 #include <Box2D/Box2D.h>

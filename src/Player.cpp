@@ -1,4 +1,3 @@
-#include <iostream>
 #include <SFML/Graphics/RenderWindow.hpp>
 #include <entityx/entityx.h>
 #include <TheLostGirl/Command.h>

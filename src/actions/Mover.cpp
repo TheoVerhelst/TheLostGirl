@@ -65,8 +65,6 @@ void Mover::operator()(entityx::Entity entity, double) const
 	if(moveIsHorizontal)
 	{
 		DirectionComponent::Handle directionComponent(entity.component<DirectionComponent>());
-		AnimationsComponent<SpriteSheetAnimation>::Handle animationsComponent(entity.component<AnimationsComponent<SpriteSheetAnimation>>());
-		BowComponent::Handle bowComponent(entity.component<BowComponent>());
 		//For all entities
 		if(directionComponent)
 		{
@@ -87,6 +85,7 @@ void Mover::operator()(entityx::Entity entity, double) const
 					directionComponent->direction = oppDirection;
 			}
 			//Flip the bend componnent if there is one and if the entity has flip
+			BowComponent::Handle bowComponent(entity.component<BowComponent>());
 			if(bowComponent and directionComponent->direction != initialDirection)
 			{
 				//Flip the angle
@@ -153,96 +152,98 @@ void Mover::operator()(entityx::Entity entity, double) const
 					}
 				}
 			}
-		}
-		//If the entity have animations
-		if(animationsComponent and directionComponent)
-		{
-			bool moveToOppDirection{direction == Direction::Right ? directionComponent->moveToLeft : directionComponent->moveToRight};
-			//For each animations manager of the entity
-			for(auto& animationsPair :animationsComponent->animationsManagers)
+
+			AnimationsComponent<SpriteSheetAnimation>::Handle animationsComponent(entity.component<AnimationsComponent<SpriteSheetAnimation>>());
+			//If the entity have animations
+			if(animationsComponent)
 			{
-				AnimationsManager<SpriteSheetAnimation>& animations(animationsPair.second);
-				//If the animations manager have bending animations
-				if(animations.isRegistred("bend" + directionStr)
-					and animations.isRegistred("bend" + oppDirectionStr))
+				bool moveToOppDirection{direction == Direction::Right ? directionComponent->moveToLeft : directionComponent->moveToRight};
+				//For each animations manager of the entity
+				for(auto& animationsPair : animationsComponent->animationsManagers)
 				{
-					if(start)
+					AnimationsManager<SpriteSheetAnimation>& animations(animationsPair.second);
+					//If the animations manager have bending animations
+					if(animations.isRegistred("bend" + directionStr)
+						and animations.isRegistred("bend" + oppDirectionStr))
 					{
-						float progress{animations.getProgress("bend" + oppDirectionStr)};
-						animations.stop("bend" + oppDirectionStr);
-						animations.activate("bend" + directionStr);
-						animations.setProgress("bend" + directionStr, progress);
-					}
-					else if(moveToOppDirection)
-					{
-						float progress{animations.getProgress("bend" + directionStr)};
-						animations.stop("bend" + directionStr);
-						animations.activate("bend" + oppDirectionStr);
-						animations.setProgress("bend" + oppDirectionStr, progress);
-					}
-				}
-				//If the animations manager falling animations
-				if(animations.isRegistred("fall" + directionStr)
-					and animations.isRegistred("fall" + oppDirectionStr))
-				{
-					//If falling and diriged to the opposite side
-					if(animations.isActive("fall" + oppDirectionStr))
-					{
-						float progress{animations.getProgress("fall" + oppDirectionStr)};
-						animations.stop("fall" + oppDirectionStr);
-						animations.play("fall" + directionStr);
-						animations.setProgress("fall" + directionStr, progress);
-					}
-				}
-				//If the animations manager have jump animations
-				if(animations.isRegistred("jump" + directionStr)
-					and animations.isRegistred("jump" + oppDirectionStr))
-				{
-					//If jumping and diriged to the opposite side
-					if(animations.isActive("jump" + oppDirectionStr))
-					{
-						float progress{animations.getProgress("jump" + oppDirectionStr)};
-						animations.stop("jump" + oppDirectionStr);
-						animations.play("jump" + directionStr);
-						animations.setProgress("jump" + directionStr, progress);
-					}
-				}
-				//If the animations manager have walk animations
-				if(animations.isRegistred("stay" + directionStr)
-					and animations.isRegistred("stay" + oppDirectionStr)
-					and animations.isRegistred("move" + directionStr)
-					and animations.isRegistred("move" + oppDirectionStr))
-				{
-					WalkComponent::Handle walkComponent{entity.component<WalkComponent>()};
-					if(start)
-					{
-						//Force to set the right animations
-						animations.stop("stay" + oppDirectionStr);
-						animations.play("stay" + directionStr);
-						animations.stop("move" + oppDirectionStr);
-						animations.play("move" + directionStr);
-						if(moveToOppDirection)
+						if(start)
 						{
-							//Stop the entity
-							walkComponent->effectiveMovement = Direction::None;//Stop the entity
+							float progress{animations.getProgress("bend" + oppDirectionStr)};
+							animations.stop("bend" + oppDirectionStr);
+							animations.activate("bend" + directionStr);
+							animations.setProgress("bend" + directionStr, progress);
+						}
+						else if(moveToOppDirection)
+						{
+							float progress{animations.getProgress("bend" + directionStr)};
+							animations.stop("bend" + directionStr);
+							animations.activate("bend" + oppDirectionStr);
+							animations.setProgress("bend" + oppDirectionStr, progress);
+						}
+					}
+					//If the animations manager falling animations
+					if(animations.isRegistred("fall" + directionStr)
+						and animations.isRegistred("fall" + oppDirectionStr))
+					{
+						//If falling and diriged to the opposite side
+						if(animations.isActive("fall" + oppDirectionStr))
+						{
+							float progress{animations.getProgress("fall" + oppDirectionStr)};
+							animations.stop("fall" + oppDirectionStr);
+							animations.play("fall" + directionStr);
+							animations.setProgress("fall" + directionStr, progress);
+						}
+					}
+					//If the animations manager have jump animations
+					if(animations.isRegistred("jump" + directionStr)
+						and animations.isRegistred("jump" + oppDirectionStr))
+					{
+						//If jumping and diriged to the opposite side
+						if(animations.isActive("jump" + oppDirectionStr))
+						{
+							float progress{animations.getProgress("jump" + oppDirectionStr)};
+							animations.stop("jump" + oppDirectionStr);
+							animations.play("jump" + directionStr);
+							animations.setProgress("jump" + directionStr, progress);
+						}
+					}
+					//If the animations manager have walk animations
+					if(animations.isRegistred("stay" + directionStr)
+						and animations.isRegistred("stay" + oppDirectionStr)
+						and animations.isRegistred("move" + directionStr)
+						and animations.isRegistred("move" + oppDirectionStr))
+					{
+						WalkComponent::Handle walkComponent{entity.component<WalkComponent>()};
+						if(start)
+						{
+							//Force to set the right animations
+							animations.stop("stay" + oppDirectionStr);
+							animations.play("stay" + directionStr);
+							animations.stop("move" + oppDirectionStr);
+							animations.play("move" + directionStr);
+							if(moveToOppDirection)
+							{
+								//Stop the entity
+								walkComponent->effectiveMovement = Direction::None;//Stop the entity
+								animations.stop("move" + directionStr);
+							}
+							else
+								walkComponent->effectiveMovement = direction;
+						}
+						else
+						{
 							animations.stop("move" + directionStr);
+							if(moveToOppDirection)
+							{
+								//Force to play the opposite direction animations
+								animations.play("move" + oppDirectionStr);
+								animations.stop("stay" + directionStr);
+								animations.play("stay" + oppDirectionStr);
+								walkComponent->effectiveMovement = oppDirection;
+							}
+							else
+								walkComponent->effectiveMovement = Direction::None;//Stop the player
 						}
-						else
-							walkComponent->effectiveMovement = direction;
-					}
-					else
-					{
-						animations.stop("move" + directionStr);
-						if(moveToOppDirection)
-						{
-							//Force to play the opposite direction animations
-							animations.play("move" + oppDirectionStr);
-							animations.stop("stay" + directionStr);
-							animations.play("stay" + oppDirectionStr);
-							walkComponent->effectiveMovement = oppDirection;
-						}
-						else
-							walkComponent->effectiveMovement = Direction::None;//Stop the player
 					}
 				}
 			}

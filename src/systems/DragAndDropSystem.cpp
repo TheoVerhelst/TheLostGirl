@@ -1,5 +1,4 @@
 #include <cmath>
-#include <iostream>
 #include <SFML/Graphics/RenderWindow.hpp>
 #include <SFML/Window/Event.hpp>
 #include <Box2D/Common/b2Math.h>

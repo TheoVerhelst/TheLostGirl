@@ -1,5 +1,4 @@
 #include <cmath>
-#include <iostream>
 #include <SFML/System/Time.hpp>
 
 #include <TheLostGirl/LangManager.h>

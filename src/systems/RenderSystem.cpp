@@ -1,4 +1,3 @@
-#include <iostream>
 #include <deque>
 #include <SFML/Graphics/RenderWindow.hpp>
 #include <SFML/Graphics/Sprite.hpp>
