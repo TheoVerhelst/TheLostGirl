@@ -48,37 +48,41 @@ bool ContactListener::collide(b2Contact* contact, const b2Manifold*)
 		return false;
 
 	//If the two entities are not in the same plan
-	if(entityA.has_component<TransformComponent>() and entityB.has_component<TransformComponent>())
+	const TransformComponent::Handle entityATransformComponent(entityA.component<TransformComponent>());
+	const TransformComponent::Handle entityBTransformComponent(entityB.component<TransformComponent>());
+	if(entityATransformComponent and entityBTransformComponent)
 	{
 		//Nearest rounding of the plan of the body/sprite A
-		const long int zA{lround(entityA.component<TransformComponent>()->transforms[getKey(entityA.component<BodyComponent>()->bodies, bodyA)].z)};
+		const long int zA{lround(entityATransformComponent->transforms.at(getKey(entityA.component<BodyComponent>()->bodies, bodyA)).z)};
 		//Nearest rounding of the plan of the body/sprite B
-		const long int zB{lround(entityB.component<TransformComponent>()->transforms[getKey(entityB.component<BodyComponent>()->bodies, bodyB)].z)};
+		const long int zB{lround(entityBTransformComponent->transforms.at(getKey(entityB.component<BodyComponent>()->bodies, bodyB)).z)};
 		//The contact do not occurs if the entities are not in the same plan
 		if(zA != zB)
 			return false;
 	}
 
-	const bool AIsArrow{entityA.has_component<ArrowComponent>()};
-	const bool BIsArrow{entityB.has_component<ArrowComponent>()};
+	const ArrowComponent::Handle entityAArrowComponent{entityA.component<ArrowComponent>()};
+	const ArrowComponent::Handle entityBArrowComponent{entityB.component<ArrowComponent>()};
 	//The contact do not occurs if both entities are arrows
-	if(AIsArrow and BIsArrow)
+	if(entityAArrowComponent and entityBArrowComponent)
 		return false;
 
 	//The contact do not occurs if the entity A is an arrow wich is not fired
-	if(AIsArrow and entityA.component<ArrowComponent>()->state != ArrowComponent::Fired)
+	if(entityAArrowComponent and entityAArrowComponent->state != ArrowComponent::Fired)
 			return false;
 
 	//The contact do not occurs if the entity B is an arrow wich is not fired
-	if(BIsArrow and entityB.component<ArrowComponent>()->state != ArrowComponent::Fired)
+	if(entityBArrowComponent and entityBArrowComponent->state != ArrowComponent::Fired)
 		return false;
 
 	//The contact do not occurs if the entity A is a corpse and the entity B is an arrow
-	if(entityA.has_component<DeathComponent>() and entityA.component<DeathComponent>()->dead and BIsArrow)
+	const DeathComponent::Handle entityADeathComponent{entityA.component<DeathComponent>()};
+	if(entityADeathComponent and entityADeathComponent->dead and entityBArrowComponent)
 		return false;
 
 	//The contact do not occurs if the entity B is a corpse and the entity A is an arrow
-	if(entityB.has_component<DeathComponent>() and entityB.component<DeathComponent>()->dead and AIsArrow)
+	const DeathComponent::Handle entityBDeathComponent{entityB.component<DeathComponent>()};
+	if(entityBDeathComponent and entityBDeathComponent->dead and entityAArrowComponent)
 		return false;
 
 	//If none of the previous case is verified, then the collision occurs
