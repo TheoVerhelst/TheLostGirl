@@ -49,8 +49,8 @@ void ArrowHitListener::PostSolve(b2Contact* contact, const b2ContactImpulse* imp
 			std::swap(bodyA, bodyB);
 			std::swap(entityA, entityB);
 		}
-		auto arrowComponent(entityA.component<ArrowComponent>());
-		auto hardnessComponent(entityB.component<HardnessComponent>());
+		ArrowComponent::Handle arrowComponent(entityA.component<ArrowComponent>());
+		HardnessComponent::Handle hardnessComponent(entityB.component<HardnessComponent>());
 		if(arrowComponent and hardnessComponent)
 		{
 			//If the impact multiplied by the penetrance of the arrow is greater than the hardness of the other object
@@ -68,8 +68,8 @@ void ArrowHitListener::PostSolve(b2Contact* contact, const b2ContactImpulse* imp
 				m_context.systemManager.system<PendingChangesSystem>()->jointsToCreate.push(weldJointDef);
 				arrowComponent->state = ArrowComponent::Sticked;
 			}
-			auto healthComponent(entityB.component<HealthComponent>());
-			auto actorComponent(entityB.component<ActorComponent>());
+			HealthComponent::Handle healthComponent(entityB.component<HealthComponent>());
+			ActorComponent::Handle actorComponent(entityB.component<ActorComponent>());
 			if(healthComponent and actorComponent)
 			{
 

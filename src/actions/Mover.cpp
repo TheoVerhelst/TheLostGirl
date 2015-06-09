@@ -64,9 +64,9 @@ void Mover::operator()(entityx::Entity entity, double) const
 	}
 	if(moveIsHorizontal)
 	{
-		auto directionComponent(entity.component<DirectionComponent>());
-		auto animationsComponent(entity.component<AnimationsComponent<SpriteSheetAnimation>>());
-		auto bowComponent(entity.component<BowComponent>());
+		DirectionComponent::Handle directionComponent(entity.component<DirectionComponent>());
+		AnimationsComponent<SpriteSheetAnimation>::Handle animationsComponent(entity.component<AnimationsComponent<SpriteSheetAnimation>>());
+		BowComponent::Handle bowComponent(entity.component<BowComponent>());
 		//For all entities
 		if(directionComponent)
 		{

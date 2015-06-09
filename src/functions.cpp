@@ -65,7 +65,7 @@ bool isPlayer(entityx::Entity entity)
 {
 	if(entity.valid())
 	{
-		auto categoryComponent(entity.component<CategoryComponent>());
+		CategoryComponent::Handle categoryComponent(entity.component<CategoryComponent>());
 		return categoryComponent and categoryComponent->category & Category::Player;
 	}
 	return false;

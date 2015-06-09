@@ -38,10 +38,10 @@ void FallingListener::BeginContact(b2Contact* contact)
 			std::swap(entityA, entityB);
 		}
 		//Now we are sure that A is an actor that fall on the ground B
-		auto fallComponent(entityA.component<FallComponent>());
+		FallComponent::Handle fallComponent(entityA.component<FallComponent>());
 		if(fixtureHasRole(fixtureA, FixtureRole::Foot) and fallComponent)
 		{
-			auto animationsComponent(entityA.component<AnimationsComponent<SpriteSheetAnimation>>());
+			AnimationsComponent<SpriteSheetAnimation>::Handle animationsComponent(entityA.component<AnimationsComponent<SpriteSheetAnimation>>());
 			if(animationsComponent)
 			{
 				//For each animations manager of the entity
@@ -86,11 +86,11 @@ void FallingListener::EndContact(b2Contact* contact)
 			std::swap(entityA, entityB);
 		}
 		//Now we are sure that A is an actor that fall from the ground B
-		auto fallComponent(entityA.component<FallComponent>());
+		FallComponent::Handle fallComponent(entityA.component<FallComponent>());
 		if(fixtureHasRole(fixtureA, FixtureRole::Foot) and fallComponent)
 		{
-			auto animationsComponent(entityA.component<AnimationsComponent<SpriteSheetAnimation>>());
-			const auto directionComponent(entityA.component<DirectionComponent>());
+			AnimationsComponent<SpriteSheetAnimation>::Handle animationsComponent(entityA.component<AnimationsComponent<SpriteSheetAnimation>>());
+			const DirectionComponent::Handle directionComponent(entityA.component<DirectionComponent>());
 			if(animationsComponent and directionComponent)
 			{
 				//For each animations manager of the entity
@@ -122,8 +122,8 @@ void FallingListener::PostSolve(b2Contact* contact, const b2ContactImpulse* impu
 	if(entityA != entityB)
 	{
 		//Sum the impact
-		auto healthComponent(entityA.component<HealthComponent>());
-		auto fallComponent(entityA.component<FallComponent>());
+		HealthComponent::Handle healthComponent(entityA.component<HealthComponent>());
+		FallComponent::Handle fallComponent(entityA.component<FallComponent>());
 		if(healthComponent and fallComponent and impulse->normalImpulses[0] > fallComponent->fallingResistance)
 //		{
 //			std::cout << "impact = " << (impulse->normalImpulses[0] - fallComponent->fallingResistance)*10.f << std::endl;

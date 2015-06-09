@@ -23,10 +23,10 @@ void RenderSystem::update(entityx::EntityManager& entityManager, entityx::EventM
 	//A map containing all sprites grouped and sorted by z-order
 	std::map<float, std::deque<const sf::Sprite*>> orderedEntities;
 	//Add the sprites in the map
-	for(const entityx::Entity& entity : entityManager.entities_with_components(spriteComponent, transformComponent))
+	for(entityx::Entity entity : entityManager.entities_with_components(spriteComponent, transformComponent))
 	{
-		const auto categoryComponent(entity.component<CategoryComponent>());
-		bool scene{categoryComponent and categoryComponent->category & Category::Scene};
+		const CategoryComponent::Handle categoryComponent(entity.component<CategoryComponent>());
+		const bool scene{categoryComponent and categoryComponent->category & Category::Scene};
 		for(const auto& spritePair : spriteComponent->sprites)
 		{
 			//If this is a scene entity, add its sprites beyond the others entities in this plan

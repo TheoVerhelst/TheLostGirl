@@ -19,9 +19,9 @@ void ArrowPicker::operator()(entityx::Entity entity, double) const
 {
 	if(not entity.valid())
 		return;
-	const auto directionComponent(entity.component<DirectionComponent>());
-	const auto bodyComponent(entity.component<BodyComponent>());
-	auto bowComponent(entity.component<BowComponent>());
+	const DirectionComponent::Handle directionComponent(entity.component<DirectionComponent>());
+	const BodyComponent::Handle bodyComponent(entity.component<BodyComponent>());
+	BowComponent::Handle bowComponent(entity.component<BowComponent>());
 	if(bodyComponent and directionComponent and bowComponent)
 	{
 		auto bodyIt(bodyComponent->bodies.find("main"));
@@ -77,7 +77,7 @@ bool StickedArrowQueryCallback::ReportFixture(b2Fixture* fixture)
 {
 	entityx::Entity entity{*static_cast<entityx::Entity*>(fixture->GetBody()->GetUserData())};
 	//Return false (and so stop) only if this is a arrow and if this one is sticked.
-	const auto arrowComponent(entity.component<ArrowComponent>());
+	const ArrowComponent::Handle arrowComponent(entity.component<ArrowComponent>());
 	bool found{arrowComponent and arrowComponent->state == ArrowComponent::Sticked};
 	if(found)
 		foundEntity = entity;

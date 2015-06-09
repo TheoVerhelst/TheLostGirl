@@ -21,7 +21,7 @@ void StatsSystem::update(entityx::EntityManager& entityManager, entityx::EventMa
 	for(auto entity : entityManager.entities_with_components(healthComponent))
 	{
 		//Damage all entities that fall in the void
-		const auto bodyComponent(entity.component<BodyComponent>());
+		const BodyComponent::Handle bodyComponent(entity.component<BodyComponent>());
 		if(bodyComponent)
 		{
 			for(auto& pair : bodyComponent->bodies)
@@ -34,7 +34,7 @@ void StatsSystem::update(entityx::EntityManager& entityManager, entityx::EventMa
 				}
 			}
 		}
-		const auto deathComponent(entity.component<DeathComponent>());
+		const DeathComponent::Handle deathComponent(entity.component<DeathComponent>());
 		bool isDead{deathComponent and deathComponent->dead};
 		if(not isPlayer(entity) and healthComponent->current <= 0.f and not isDead)
 		{
@@ -56,7 +56,7 @@ void StatsSystem::update(entityx::EntityManager& entityManager, entityx::EventMa
 	for(auto entity : entityManager.entities_with_components(staminaComponent))
 	{
 		//Substract stamina if the entity bend his bow
-		const auto bowComponent(entity.component<BowComponent>());
+		const BowComponent::Handle bowComponent(entity.component<BowComponent>());
 		if(bowComponent)
 		{
 			float oldStamina{staminaComponent->current};

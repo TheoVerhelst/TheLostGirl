@@ -304,8 +304,8 @@ entityx::Entity nearestFoe(const std::vector<Data>& args, StateStack::Context co
 	entityx::Entity self(boost::get<entityx::Entity>(args[0]));
 	if(not self)
 		throw ScriptError("nearest foe(): first argument is an invalid entity.");
-	auto bodyComponent(self.component<BodyComponent>());
-	auto detectionRangeComponent(self.component<DetectionRangeComponent>());
+	BodyComponent::Handle bodyComponent(self.component<BodyComponent>());
+	DetectionRangeComponent::Handle detectionRangeComponent(self.component<DetectionRangeComponent>());
 	if(bodyComponent and detectionRangeComponent)
 	{
 		auto bodyIt(bodyComponent->bodies.find("main"));
@@ -335,8 +335,8 @@ float distanceFrom(const std::vector<Data>& args, StateStack::Context)
 		throw ScriptError("distance from(): second argument is an invalid entity.");
 	if(self == target)
 		return 0.f;
-	auto selfBodyComponent(self.component<BodyComponent>());
-	auto targetBodyComponent(target.component<BodyComponent>());
+	BodyComponent::Handle selfBodyComponent(self.component<BodyComponent>());
+	BodyComponent::Handle targetBodyComponent(target.component<BodyComponent>());
 	if(selfBodyComponent and targetBodyComponent)
 	{
 		auto selfBodyIt(selfBodyComponent->bodies.find("main"));
@@ -392,8 +392,8 @@ int directionTo(const std::vector<Data>& args, StateStack::Context)
 		throw ScriptError("direction to(): first argument is an invalid entity.");
 	if(not target)
 		throw ScriptError("direction to(): second argument is an invalid entity.");
-	auto selfTransformComponent(self.component<TransformComponent>());
-	auto targetTransformComponent(target.component<TransformComponent>());
+	TransformComponent::Handle selfTransformComponent(self.component<TransformComponent>());
+	TransformComponent::Handle targetTransformComponent(target.component<TransformComponent>());
 	if(selfTransformComponent and targetTransformComponent)
 	{
 		if(selfTransformComponent->transforms["main"].x < targetTransformComponent->transforms["main"].x)
@@ -409,7 +409,7 @@ int directionOf(const std::vector<Data>& args, StateStack::Context)
 	entityx::Entity self(boost::get<entityx::Entity>(args[0]));
 	if(not self)
 		throw ScriptError("direction of(): first argument is an invalid entity.");
-	auto directionComponent(self.component<DirectionComponent>());
+	DirectionComponent::Handle directionComponent(self.component<DirectionComponent>());
 	if(directionComponent)
 		return static_cast<int>(directionComponent->direction);
 	return static_cast<int>(Direction::None);
@@ -437,7 +437,7 @@ NearestFoeQueryCallback::NearestFoeQueryCallback(entityx::Entity self, StateStac
 bool NearestFoeQueryCallback::ReportFixture(b2Fixture* fixture)
 {
 	entityx::Entity currentEntity{*static_cast<entityx::Entity*>(fixture->GetBody()->GetUserData())};
-	auto categoryComponent(currentEntity.component<CategoryComponent>());
+	CategoryComponent::Handle categoryComponent(currentEntity.component<CategoryComponent>());
 	if(categoryComponent and currentEntity.component<CategoryComponent>()->category & Category::Passive)//currentEntity must be passive
 	{
 		if(currentEntity != m_self)
@@ -478,8 +478,8 @@ int stop(const std::vector<Data>& args, StateStack::Context context)
 	entityx::Entity self(boost::get<entityx::Entity>(args[0]));
 	if(not self)
 		throw ScriptError("stop(): first argument is an invalid entity.");
-	const auto directionComponent(self.component<DirectionComponent>());
-	const auto walkComponent(self.component<WalkComponent>());
+	const DirectionComponent::Handle directionComponent(self.component<DirectionComponent>());
+	const WalkComponent::Handle walkComponent(self.component<WalkComponent>());
 	if(directionComponent and walkComponent)
 	{
 		if(directionComponent->moveToLeft and directionComponent->moveToRight)
@@ -513,7 +513,7 @@ bool canJump(const std::vector<Data>& args, StateStack::Context)
 	entityx::Entity self(boost::get<entityx::Entity>(args[0]));
 	if(not self)
 		throw ScriptError("can jump(): first argument is an invalid entity.");
-	const auto fallComponent(self.component<FallComponent>());
+	const FallComponent::Handle fallComponent(self.component<FallComponent>());
 	return self.has_component<JumpComponent>() and fallComponent and not fallComponent->inAir;
 }
 

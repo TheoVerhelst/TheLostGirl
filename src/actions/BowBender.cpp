@@ -23,9 +23,9 @@ void BowBender::operator()(entityx::Entity entity, double) const
 {
 	if(not entity)
 		return;
-	auto bowComponent(entity.component<BowComponent>());
-	auto bodyComponent(entity.component<BodyComponent>());
-	auto directionComponent(entity.component<DirectionComponent>());
+	BowComponent::Handle bowComponent(entity.component<BowComponent>());
+	BodyComponent::Handle bodyComponent(entity.component<BodyComponent>());
+	DirectionComponent::Handle directionComponent(entity.component<DirectionComponent>());
 	if(bowComponent and bodyComponent and directionComponent)
 	{
 		//Set the bending angle
@@ -37,7 +37,7 @@ void BowBender::operator()(entityx::Entity entity, double) const
 		bowComponent->power = cap(power, 0.f, 500.f)/500.f;
 
 		//If the entity has animation, set the right animation and play it accoring to the bending state
-		auto animationComponent(entity.component<AnimationsComponent<SpriteSheetAnimation>>());
+		AnimationsComponent<SpriteSheetAnimation>::Handle animationComponent(entity.component<AnimationsComponent<SpriteSheetAnimation>>());
 		if(animationComponent)
 		{
 			std::string directionStr;//Find the right animation string, and set the angle
@@ -61,7 +61,7 @@ void BowBender::operator()(entityx::Entity entity, double) const
 		{
 			//Find the first valid arrow in the quiver
 			auto found = std::find_if(bowComponent->arrows.begin(), bowComponent->arrows.end(),
-										[](const entityx::Entity& e){return e.valid();});
+										[](entityx::Entity e){return e.valid();});
 			if(found != bowComponent->arrows.end())
 			{
 				bowComponent->notchedArrow = *found;

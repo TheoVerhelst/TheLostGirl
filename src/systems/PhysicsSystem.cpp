@@ -32,7 +32,7 @@ void PhysicsSystem::update(entityx::EntityManager& entityManager, entityx::Event
 		if(bodyIt != bodyComponent->bodies.end())
 			body = bodyIt->second;
 		//Update the walkers
-		const auto walkComponent(entity.component<WalkComponent>());
+		const WalkComponent::Handle walkComponent(entity.component<WalkComponent>());
 		if(body and walkComponent)
 		{
 			float targetVelocity{0.f};
@@ -49,7 +49,7 @@ void PhysicsSystem::update(entityx::EntityManager& entityManager, entityx::Event
 		}
 
 		//Update the jumpers
-		auto jumpComponent(entity.component<JumpComponent>());
+		JumpComponent::Handle jumpComponent(entity.component<JumpComponent>());
 		if(body and jumpComponent and jumpComponent->mustJump)
 		{
 			const float targetVelocity{-jumpComponent->jumpStrength/m_pixelByMeter};
@@ -58,7 +58,7 @@ void PhysicsSystem::update(entityx::EntityManager& entityManager, entityx::Event
 		}
 
 		//Update the archers
-		auto bowComponent(entity.component<BowComponent>());
+		BowComponent::Handle bowComponent(entity.component<BowComponent>());
 		if(bowComponent)
 		{
 			const float angleTarget{-bowComponent->angle};
@@ -95,7 +95,7 @@ void PhysicsSystem::update(entityx::EntityManager& entityManager, entityx::Event
 				}
 			}
 
-			const auto directionComponent(entity.component<DirectionComponent>());
+			const DirectionComponent::Handle directionComponent(entity.component<DirectionComponent>());
 			if(directionComponent)
 			{
 				entityx::Entity notchedArrow{bowComponent->notchedArrow};
@@ -103,7 +103,7 @@ void PhysicsSystem::update(entityx::EntityManager& entityManager, entityx::Event
 				//Set the translation of the joint between bow and arrow
 				if(notchedArrow.valid())
 				{
-					auto arrowBodyComponent(notchedArrow.component<BodyComponent>());
+					BodyComponent::Handle arrowBodyComponent(notchedArrow.component<BodyComponent>());
 					if(arrowBodyComponent)
 					{
 						auto arrowBodyIt(arrowBodyComponent->bodies.find("main"));
@@ -132,7 +132,7 @@ void PhysicsSystem::update(entityx::EntityManager& entityManager, entityx::Event
 		}
 
 		//Update the arrows
-		const auto arrowComponent(entity.component<ArrowComponent>());
+		const ArrowComponent::Handle arrowComponent(entity.component<ArrowComponent>());
 		if(body and arrowComponent)
 		{
 			if(arrowComponent->state == ArrowComponent::Fired)
@@ -157,7 +157,7 @@ void PhysicsSystem::update(entityx::EntityManager& entityManager, entityx::Event
 		}
 
 		//Update the transformations according to the one of the b2Body.
-		auto transformComponent(entity.component<TransformComponent>());
+		TransformComponent::Handle transformComponent(entity.component<TransformComponent>());
 		if(transformComponent)
 		{
 			for(auto& bodyPair : bodyComponent->bodies)

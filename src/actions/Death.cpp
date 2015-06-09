@@ -17,14 +17,14 @@ void Death::operator()(entityx::Entity entity, double) const
 	if(not entity)
 		return;
 	//Play death animation.
-	auto spriteSheetComponent(entity.component<AnimationsComponent<SpriteSheetAnimation>>());
+	AnimationsComponent<SpriteSheetAnimation>::Handle spriteSheetComponent(entity.component<AnimationsComponent<SpriteSheetAnimation>>());
 	if(spriteSheetComponent)
 		for(auto& animationsPair : spriteSheetComponent->animationsManagers)
 			if(animationsPair.second.isRegistred("death"))
 				animationsPair.second.play("death");
 	//Set the death component
 	entity.component<DeathComponent>()->dead = true;
-	auto inventoryComponent(entity.component<InventoryComponent>());
+	InventoryComponent::Handle inventoryComponent(entity.component<InventoryComponent>());
 	if(inventoryComponent)
 	{
 		//Drop items

@@ -17,10 +17,10 @@ void HandToHand::operator()(entityx::Entity entity, double) const
 {
 	if(not entity)
 		return;
-	auto handToHandComponent(entity.component<HandToHandComponent>());
-	const auto directionComponent(entity.component<DirectionComponent>());
-	const auto walkComponent(entity.component<WalkComponent>());
-	auto bodyComponent(entity.component<BodyComponent>());
+	HandToHandComponent::Handle handToHandComponent(entity.component<HandToHandComponent>());
+	const DirectionComponent::Handle directionComponent(entity.component<DirectionComponent>());
+	const WalkComponent::Handle walkComponent(entity.component<WalkComponent>());
+	BodyComponent::Handle bodyComponent(entity.component<BodyComponent>());
 	if(directionComponent and handToHandComponent and bodyComponent
 		and (not walkComponent or walkComponent->effectiveMovement == Direction::None))
 	{
@@ -53,8 +53,8 @@ void HandToHand::operator()(entityx::Entity entity, double) const
 				{
 					if(foundEntity.valid())
 					{
-						auto healthComponent(foundEntity.component<HealthComponent>());
-						const auto actorComponent(foundEntity.component<ActorComponent>());
+						HealthComponent::Handle healthComponent(foundEntity.component<HealthComponent>());
+						const ActorComponent::Handle actorComponent(foundEntity.component<ActorComponent>());
 						if(healthComponent and actorComponent)
 						{
 							float damages{handToHandComponent->damages};
@@ -65,7 +65,7 @@ void HandToHand::operator()(entityx::Entity entity, double) const
 				}
 			}
 
-			auto animationComponent(entity.component<AnimationsComponent<SpriteSheetAnimation>>());
+			AnimationsComponent<SpriteSheetAnimation>::Handle animationComponent(entity.component<AnimationsComponent<SpriteSheetAnimation>>());
 			if(animationComponent)
 			{
 				//For each animations manager of the entity
@@ -97,8 +97,8 @@ bool HandToHandQueryCallback::ReportFixture(b2Fixture* fixture)
 	// -this is not the attacker itself
 	// -this is an actor
 	// -attacker and current entity are not both aggressive
-	const auto actorComponent(entity.component<ActorComponent>());
-	const auto entityCategoryComponent(entity.component<CategoryComponent>());
+	const ActorComponent::Handle actorComponent(entity.component<ActorComponent>());
+	const CategoryComponent::Handle entityCategoryComponent(entity.component<CategoryComponent>());
 	const auto attackerCategoryComponent(m_attacker.component<CategoryComponent>());
 	if(entity != m_attacker and actorComponent
 			and not (attackerCategoryComponent and attackerCategoryComponent->category & Category::Aggressive

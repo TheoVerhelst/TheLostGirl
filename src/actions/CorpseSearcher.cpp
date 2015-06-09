@@ -19,7 +19,7 @@ void CorpseSearcher::operator()(entityx::Entity entity, double) const
 {
 	if(not entity)
 		return;
-	auto bodyComponent(entity.component<BodyComponent>());
+	BodyComponent::Handle bodyComponent(entity.component<BodyComponent>());
 	if(bodyComponent)
 	{
 		auto bodyIt(bodyComponent->bodies.find("main"));
@@ -41,7 +41,7 @@ void CorpseSearcher::operator()(entityx::Entity entity, double) const
 bool CorpseQueryCallback::ReportFixture(b2Fixture* fixture)
 {
 	entityx::Entity entity{*static_cast<entityx::Entity*>(fixture->GetBody()->GetUserData())};
-	const auto deathComponent(entity.component<DeathComponent>());
+	const DeathComponent::Handle deathComponent(entity.component<DeathComponent>());
 	//Return false (and so stop) only if this is a corpse with an inventory
 	if(entity.has_component<InventoryComponent>() and deathComponent and deathComponent->dead)
 	{

@@ -18,8 +18,8 @@ void ArrowShooter::operator()(entityx::Entity entity, double) const
 {
 	if(not entity)
 		return;
-	auto bowComponent(entity.component<BowComponent>());
-	const auto directionComponent(entity.component<DirectionComponent>());
+	BowComponent::Handle bowComponent(entity.component<BowComponent>());
+	const DirectionComponent::Handle directionComponent(entity.component<DirectionComponent>());
 	if(bowComponent and directionComponent)
 	{
 		//If the notched arrow has a b2Body
