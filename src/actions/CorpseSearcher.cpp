@@ -19,10 +19,11 @@ void CorpseSearcher::operator()(entityx::Entity entity, double) const
 {
 	if(not entity)
 		return;
-	if(entity.has_component<TransformComponent>() and entity.has_component<BodyComponent>())
+	auto bodyComponent(entity.component<BodyComponent>());
+	if(bodyComponent)
 	{
-		auto bodyIt(entity.component<BodyComponent>()->bodies.find("main"));
-		if(bodyIt != entity.component<BodyComponent>()->bodies.end())
+		auto bodyIt(bodyComponent->bodies.find("main"));
+		if(bodyIt != bodyComponent->bodies.end())
 		{
 			//Do the querying
 			b2AABB searchBox;
@@ -40,11 +41,13 @@ void CorpseSearcher::operator()(entityx::Entity entity, double) const
 bool CorpseQueryCallback::ReportFixture(b2Fixture* fixture)
 {
 	entityx::Entity entity{*static_cast<entityx::Entity*>(fixture->GetBody()->GetUserData())};
-	//Return false (and so stop) only if this is a arrow and if this one is sticked.
-	bool found{entity.has_component<InventoryComponent>()
-			and entity.has_component<DeathComponent>()
-			and entity.component<DeathComponent>()->dead};
-	if(found)
+	const auto deathComponent(entity.component<DeathComponent>());
+	//Return false (and so stop) only if this is a corpse with an inventory
+	if(entity.has_component<InventoryComponent>() and deathComponent and deathComponent->dead)
+	{
 		foundEntity = entity;
-	return not found;
+		return true;
+	}
+	else
+		return false;
 }

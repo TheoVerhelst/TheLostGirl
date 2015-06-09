@@ -64,10 +64,12 @@ void Mover::operator()(entityx::Entity entity, double) const
 	}
 	if(moveIsHorizontal)
 	{
+		auto directionComponent(entity.component<DirectionComponent>());
+		auto animationsComponent(entity.component<AnimationsComponent<SpriteSheetAnimation>>());
+		auto bowComponent(entity.component<BowComponent>());
 		//For all entities
-		if(entity.has_component<DirectionComponent>())
+		if(directionComponent)
 		{
-			DirectionComponent::Handle directionComponent{entity.component<DirectionComponent>()};
 			//References to the moveToLeft or moveToRight data in directionComponent
 			bool& moveToDirection(direction == Direction::Left ? directionComponent->moveToLeft : directionComponent->moveToRight);
 			bool& moveToOppDirection(direction == Direction::Right ? directionComponent->moveToLeft : directionComponent->moveToRight);
@@ -85,24 +87,22 @@ void Mover::operator()(entityx::Entity entity, double) const
 					directionComponent->direction = oppDirection;
 			}
 			//Flip the bend componnent if there is one and if the entity has flip
-			if(entity.has_component<BowComponent>() and directionComponent->direction != initialDirection)
+			if(bowComponent and directionComponent->direction != initialDirection)
 			{
 				//Flip the angle
 				if(directionComponent->direction == Direction::Left)
-					entity.component<BowComponent>()->angle = cap(std::remainder(entity.component<BowComponent>()->angle - b2_pi, 2.f*b2_pi), -b2_pi, b2_pi/2.f);
+					bowComponent->angle = cap(std::remainder(entity.component<BowComponent>()->angle - b2_pi, 2.f*b2_pi), -b2_pi, b2_pi/2.f);
 				else if(directionComponent->direction == Direction::Right)
-					entity.component<BowComponent>()->angle = cap(std::remainder(entity.component<BowComponent>()->angle - b2_pi, 2.f*b2_pi), -b2_pi/2.f, b2_pi);
+					bowComponent->angle = cap(std::remainder(entity.component<BowComponent>()->angle - b2_pi, 2.f*b2_pi), -b2_pi/2.f, b2_pi);
 
-				//If the entity has a quiver
-				if(entity.has_component<BowComponent>())
+				if(bowComponent->notchedArrow.valid())
 				{
-					BowComponent::Handle bowComponent{entity.component<BowComponent>()};
-					entityx::Entity notchedArrow{bowComponent->notchedArrow};
-					//If the notched arrow has a b2Body
-					if(notchedArrow.valid() and notchedArrow.has_component<BodyComponent>())
+					//If the notched arrow has a body
+					auto arrowBodyComponent(bowComponent->notchedArrow.component<BodyComponent>());
+					if(arrowBodyComponent)
 					{
-						auto arrowBodyIt(notchedArrow.component<BodyComponent>()->bodies.find("main"));
-						if(arrowBodyIt != notchedArrow.component<BodyComponent>()->bodies.end())
+						auto arrowBodyIt(arrowBodyComponent->bodies.find("main"));
+						if(arrowBodyIt != arrowBodyComponent->bodies.end())
 						{
 							//Iterate over all joints
 							for(b2JointEdge* jointEdge{arrowBodyIt->second->GetJointList()}; jointEdge; jointEdge = jointEdge->next)
@@ -155,12 +155,11 @@ void Mover::operator()(entityx::Entity entity, double) const
 			}
 		}
 		//If the entity have animations
-		if(entity.has_component<AnimationsComponent<SpriteSheetAnimation>>()
-			and entity.has_component<DirectionComponent>())
+		if(animationsComponent and directionComponent)
 		{
-			bool moveToOppDirection{direction == Direction::Right ? entity.component<DirectionComponent>()->moveToLeft : entity.component<DirectionComponent>()->moveToRight};
+			bool moveToOppDirection{direction == Direction::Right ? directionComponent->moveToLeft : directionComponent->moveToRight};
 			//For each animations manager of the entity
-			for(auto& animationsPair : entity.component<AnimationsComponent<SpriteSheetAnimation>>()->animationsManagers)
+			for(auto& animationsPair :animationsComponent->animationsManagers)
 			{
 				AnimationsManager<SpriteSheetAnimation>& animations(animationsPair.second);
 				//If the animations manager have bending animations

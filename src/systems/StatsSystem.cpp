@@ -21,9 +21,10 @@ void StatsSystem::update(entityx::EntityManager& entityManager, entityx::EventMa
 	for(auto entity : entityManager.entities_with_components(healthComponent))
 	{
 		//Damage all entities that fall in the void
-		if(entity.has_component<BodyComponent>())
+		const auto bodyComponent(entity.component<BodyComponent>());
+		if(bodyComponent)
 		{
-			for(auto& pair : entity.component<BodyComponent>()->bodies)
+			for(auto& pair : bodyComponent->bodies)
 			{
 				if(pair.second->GetPosition().y > 300)
 				{
@@ -33,7 +34,8 @@ void StatsSystem::update(entityx::EntityManager& entityManager, entityx::EventMa
 				}
 			}
 		}
-		bool isDead{entity.has_component<DeathComponent>() and entity.component<DeathComponent>()->dead};
+		const auto deathComponent(entity.component<DeathComponent>());
+		bool isDead{deathComponent and deathComponent->dead};
 		if(not isPlayer(entity) and healthComponent->current <= 0.f and not isDead)
 		{
 			Command deathCommand;
@@ -54,10 +56,11 @@ void StatsSystem::update(entityx::EntityManager& entityManager, entityx::EventMa
 	for(auto entity : entityManager.entities_with_components(staminaComponent))
 	{
 		//Substract stamina if the entity bend his bow
-		if(entity.has_component<BowComponent>())
+		const auto bowComponent(entity.component<BowComponent>());
+		if(bowComponent)
 		{
 			float oldStamina{staminaComponent->current};
-			staminaComponent->current = cap(staminaComponent->current - entity.component<BowComponent>()->power*float(dt)*3.f/100.f, 0.f, staminaComponent->maximum);
+			staminaComponent->current = cap(staminaComponent->current - bowComponent->power*float(dt)*3.f/100.f, 0.f, staminaComponent->maximum);
 			if(staminaComponent->current < oldStamina)
 				eventManager.emit<EntityStaminaChange>(entity, staminaComponent->current, staminaComponent->current/staminaComponent->maximum);
 		}

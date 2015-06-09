@@ -17,13 +17,15 @@ void Death::operator()(entityx::Entity entity, double) const
 	if(not entity)
 		return;
 	//Play death animation.
-	if(entity.has_component<AnimationsComponent<SpriteSheetAnimation>>())
-		for(auto& animationsPair : entity.component<AnimationsComponent<SpriteSheetAnimation>>()->animationsManagers)
+	auto spriteSheetComponent(entity.component<AnimationsComponent<SpriteSheetAnimation>>());
+	if(spriteSheetComponent)
+		for(auto& animationsPair : spriteSheetComponent->animationsManagers)
 			if(animationsPair.second.isRegistred("death"))
 				animationsPair.second.play("death");
 	//Set the death component
 	entity.component<DeathComponent>()->dead = true;
-	if(entity.has_component<InventoryComponent>())
+	auto inventoryComponent(entity.component<InventoryComponent>());
+	if(inventoryComponent)
 	{
 		//Drop items
 		std::random_device randomDevice;
@@ -42,12 +44,11 @@ void Death::operator()(entityx::Entity entity, double) const
 					ItemComponent::Handle itemComponent = item.assign<ItemComponent>();
 					itemComponent->category = drop.category;
 					itemComponent->type = drop.type;
-					entity.component<InventoryComponent>()->items.push_back(item);
+					inventoryComponent->items.push_back(item);
 				}
 			}
 		}
 	}
-
 	//Send a stop command
 	stop({entity}, m_context);
 }

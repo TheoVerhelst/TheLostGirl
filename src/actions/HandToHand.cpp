@@ -17,53 +17,59 @@ void HandToHand::operator()(entityx::Entity entity, double) const
 {
 	if(not entity)
 		return;
-	if(entity.has_component<DirectionComponent>() and entity.has_component<HandToHandComponent>()
-		and (not entity.has_component<WalkComponent>() or entity.component<WalkComponent>()->effectiveMovement == Direction::None))
+	auto handToHandComponent(entity.component<HandToHandComponent>());
+	const auto directionComponent(entity.component<DirectionComponent>());
+	const auto walkComponent(entity.component<WalkComponent>());
+	auto bodyComponent(entity.component<BodyComponent>());
+	if(directionComponent and handToHandComponent and bodyComponent
+		and (not walkComponent or walkComponent->effectiveMovement == Direction::None))
 	{
-		HandToHandComponent::Handle handToHandComponent{entity.component<HandToHandComponent>()};
 		handToHandComponent->lastShoot += handToHandComponent->timer.restart();
 		if(handToHandComponent->lastShoot >= handToHandComponent->delay)
 		{
 			handToHandComponent->lastShoot = sf::Time::Zero;
-			DirectionComponent::Handle directionComponent{entity.component<DirectionComponent>()};
-			if(entity.has_component<BodyComponent>())
+			auto bodyIt(bodyComponent->bodies.find("main"));
+			if(bodyIt != bodyComponent->bodies.end())
 			{
-				auto bodyIt(entity.component<BodyComponent>()->bodies.find("main"));
-				if(bodyIt != entity.component<BodyComponent>()->bodies.end())
+				b2Body* body{bodyIt->second};
+				b2World* world{body->GetWorld()};
+
+				//Compute a box in front of the character; first, compute the transform of the box
+				b2Transform bodyTransform;
+				if(directionComponent->direction == Direction::Left)
+					bodyTransform = b2Transform(body->GetPosition() + b2Vec2(-0.5f, 0), b2Rot(body->GetAngle()));
+				else
+					bodyTransform = b2Transform(body->GetPosition() + b2Vec2(0.5f, 0), b2Rot(body->GetAngle()));
+				//Then get the AABB of the main fixture and apply the transform
+				b2AABB handToHandBox;
+				for(b2Fixture* fixture{body->GetFixtureList()}; fixture; fixture = fixture->GetNext())
+					if(fixtureHasRole(fixture, FixtureRole::Main))
+						fixture->GetShape()->ComputeAABB(&handToHandBox, bodyTransform, 0);
+				//Do the query
+				HandToHandQueryCallback callback(entity);
+				world->QueryAABB(&callback, handToHandBox);
+
+				for(entityx::Entity foundEntity : callback.foundEntities)
 				{
-					b2Body* body{bodyIt->second};
-					b2World* world{body->GetWorld()};
-
-					//Compute a box in front of the character; first, compute the transform of the box
-					b2Transform bodyTransform;
-					if(directionComponent->direction == Direction::Left)
-						bodyTransform = b2Transform(body->GetPosition() + b2Vec2(-0.5f, 0), b2Rot(body->GetAngle()));
-					else
-						bodyTransform = b2Transform(body->GetPosition() + b2Vec2(0.5f, 0), b2Rot(body->GetAngle()));
-					//Then get the AABB of the main fixture and apply the transform
-					b2AABB handToHandBox;
-					for(b2Fixture* fixture{body->GetFixtureList()}; fixture; fixture = fixture->GetNext())
-						if(fixtureHasRole(fixture, FixtureRole::Main))
-							fixture->GetShape()->ComputeAABB(&handToHandBox, bodyTransform, 0);
-					//Do the query
-					HandToHandQueryCallback callback(entity);
-					world->QueryAABB(&callback, handToHandBox);
-
-					for(entityx::Entity foundEntity : callback.foundEntities)
-						if(foundEntity.valid() and foundEntity.has_component<HealthComponent>() and foundEntity.has_component<ActorComponent>())
+					if(foundEntity.valid())
+					{
+						auto healthComponent(foundEntity.component<HealthComponent>());
+						const auto actorComponent(foundEntity.component<ActorComponent>());
+						if(healthComponent and actorComponent)
 						{
-							float damages{entity.component<HandToHandComponent>()->damages};
-							damages -= foundEntity.component<ActorComponent>()->handToHandResistance;
-							foundEntity.component<HealthComponent>()->current -= damages;
+							float damages{handToHandComponent->damages};
+							damages -= actorComponent->handToHandResistance;
+							healthComponent->current -= damages;
 						}
+					}
 				}
 			}
-			if(entity.has_component<AnimationsComponent<SpriteSheetAnimation>>())
+
+			auto animationComponent(entity.component<AnimationsComponent<SpriteSheetAnimation>>());
+			if(animationComponent)
 			{
-				//Get all the animations managers of the entity
-				auto& animationsManagers(entity.component<AnimationsComponent<SpriteSheetAnimation>>()->animationsManagers);
 				//For each animations manager of the entity
-				for(auto& animationsPair : animationsManagers)
+				for(auto& animationsPair : animationComponent->animationsManagers)
 				{
 					AnimationsManager<SpriteSheetAnimation>& animations(animationsPair.second);
 					//If the animations manager have the required animations
@@ -91,10 +97,12 @@ bool HandToHandQueryCallback::ReportFixture(b2Fixture* fixture)
 	// -this is not the attacker itself
 	// -this is an actor
 	// -attacker and current entity are not both aggressive
-	if(entity != m_attacker and entity.has_component<ActorComponent>()
-			and not (m_attacker.has_component<CategoryComponent>()
-				and m_attacker.component<CategoryComponent>()->category & Category::Aggressive
-				and entity.component<CategoryComponent>()->category & Category::Aggressive))
+	const auto actorComponent(entity.component<ActorComponent>());
+	const auto entityCategoryComponent(entity.component<CategoryComponent>());
+	const auto attackerCategoryComponent(m_attacker.component<CategoryComponent>());
+	if(entity != m_attacker and actorComponent
+			and not (attackerCategoryComponent and attackerCategoryComponent->category & Category::Aggressive
+				and entityCategoryComponent and entityCategoryComponent->category & Category::Aggressive))
 		foundEntities.insert(entity);
 	return true;
 }

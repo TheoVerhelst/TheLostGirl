@@ -304,13 +304,14 @@ entityx::Entity nearestFoe(const std::vector<Data>& args, StateStack::Context co
 	entityx::Entity self(boost::get<entityx::Entity>(args[0]));
 	if(not self)
 		throw ScriptError("nearest foe(): first argument is an invalid entity.");
-
-	if(self.has_component<BodyComponent>() and self.has_component<DetectionRangeComponent>())
+	auto bodyComponent(self.component<BodyComponent>());
+	auto detectionRangeComponent(self.component<DetectionRangeComponent>());
+	if(bodyComponent and detectionRangeComponent)
 	{
-		auto bodyIt(self.component<BodyComponent>()->bodies.find("main"));
-		if(bodyIt != self.component<BodyComponent>()->bodies.end())
+		auto bodyIt(bodyComponent->bodies.find("main"));
+		if(bodyIt != bodyComponent->bodies.end())
 		{
-			float range{self.component<DetectionRangeComponent>()->detectionRange/context.parameters.pixelByMeter};
+			const float range{detectionRangeComponent->detectionRange/context.parameters.pixelByMeter};
 			b2Body* body{bodyIt->second};
             b2World* world{body->GetWorld()};
             NearestFoeQueryCallback callback(self, context);
@@ -334,12 +335,14 @@ float distanceFrom(const std::vector<Data>& args, StateStack::Context)
 		throw ScriptError("distance from(): second argument is an invalid entity.");
 	if(self == target)
 		return 0.f;
-	if(self.has_component<BodyComponent>() and target.has_component<BodyComponent>())
+	auto selfBodyComponent(self.component<BodyComponent>());
+	auto targetBodyComponent(target.component<BodyComponent>());
+	if(selfBodyComponent and targetBodyComponent)
 	{
-		auto selfBodyIt(self.component<BodyComponent>()->bodies.find("main"));
-		auto targetBodyIt(target.component<BodyComponent>()->bodies.find("main"));
-		if(selfBodyIt != self.component<BodyComponent>()->bodies.end()
-			 and targetBodyIt != target.component<BodyComponent>()->bodies.end())
+		auto selfBodyIt(selfBodyComponent->bodies.find("main"));
+		auto targetBodyIt(targetBodyComponent->bodies.find("main"));
+		if(selfBodyIt != selfBodyComponent->bodies.end()
+			 and targetBodyIt != targetBodyComponent->bodies.end())
 		{
 			b2Body* selfBody{selfBodyIt->second};
 			b2Fixture* selfFixture{nullptr};
@@ -389,9 +392,11 @@ int directionTo(const std::vector<Data>& args, StateStack::Context)
 		throw ScriptError("direction to(): first argument is an invalid entity.");
 	if(not target)
 		throw ScriptError("direction to(): second argument is an invalid entity.");
-	if(self and target and self.has_component<TransformComponent>() and target.has_component<TransformComponent>())
+	auto selfTransformComponent(self.component<TransformComponent>());
+	auto targetTransformComponent(target.component<TransformComponent>());
+	if(selfTransformComponent and targetTransformComponent)
 	{
-		if(self.component<TransformComponent>()->transforms["main"].x < target.component<TransformComponent>()->transforms["main"].x)
+		if(selfTransformComponent->transforms["main"].x < targetTransformComponent->transforms["main"].x)
 			return static_cast<int>(Direction::Right);
 		else
 			return static_cast<int>(Direction::Left);
@@ -404,8 +409,9 @@ int directionOf(const std::vector<Data>& args, StateStack::Context)
 	entityx::Entity self(boost::get<entityx::Entity>(args[0]));
 	if(not self)
 		throw ScriptError("direction of(): first argument is an invalid entity.");
-	if(self and self.has_component<DirectionComponent>())
-		return static_cast<int>(self.component<DirectionComponent>()->direction);
+	auto directionComponent(self.component<DirectionComponent>());
+	if(directionComponent)
+		return static_cast<int>(directionComponent->direction);
 	return static_cast<int>(Direction::None);
 }
 
@@ -431,8 +437,8 @@ NearestFoeQueryCallback::NearestFoeQueryCallback(entityx::Entity self, StateStac
 bool NearestFoeQueryCallback::ReportFixture(b2Fixture* fixture)
 {
 	entityx::Entity currentEntity{*static_cast<entityx::Entity*>(fixture->GetBody()->GetUserData())};
-	if(currentEntity.has_component<CategoryComponent>()
-			and currentEntity.component<CategoryComponent>()->category & Category::Passive)//currentEntity must be passive
+	auto categoryComponent(currentEntity.component<CategoryComponent>());
+	if(categoryComponent and currentEntity.component<CategoryComponent>()->category & Category::Passive)//currentEntity must be passive
 	{
 		if(currentEntity != m_self)
 		{
@@ -472,9 +478,10 @@ int stop(const std::vector<Data>& args, StateStack::Context context)
 	entityx::Entity self(boost::get<entityx::Entity>(args[0]));
 	if(not self)
 		throw ScriptError("stop(): first argument is an invalid entity.");
-	if(self.has_component<DirectionComponent>() and self.has_component<WalkComponent>())
+	const auto directionComponent(self.component<DirectionComponent>());
+	const auto walkComponent(self.component<WalkComponent>());
+	if(directionComponent and walkComponent)
 	{
-		DirectionComponent::Handle directionComponent = self.component<DirectionComponent>();
 		if(directionComponent->moveToLeft and directionComponent->moveToRight)
 		{
 			Command moveCommand1;
@@ -506,22 +513,18 @@ bool canJump(const std::vector<Data>& args, StateStack::Context)
 	entityx::Entity self(boost::get<entityx::Entity>(args[0]));
 	if(not self)
 		throw ScriptError("can jump(): first argument is an invalid entity.");
-	return self.has_component<JumpComponent>()
-		and self.has_component<FallComponent>()
-		and not self.component<FallComponent>()->inAir;
+	const auto fallComponent(self.component<FallComponent>());
+	return self.has_component<JumpComponent>() and fallComponent and not fallComponent->inAir;
 }
 
 int jump(const std::vector<Data>& args, StateStack::Context context)
 {
-	entityx::Entity self(boost::get<entityx::Entity>(args[0]));
-	if(not self)
-		throw ScriptError("jump(): first argument is an invalid entity.");
-	if(canJump({self}, context))
+	if(canJump(args, context))
 	{
 		//Simply push a jump command on the command queue
 		Command jumpCommand;
 		jumpCommand.targetIsSpecific = true;
-		jumpCommand.entity = self;
+		jumpCommand.entity = boost::get<entityx::Entity>(args[0]);
 		jumpCommand.action = Jumper();
 		context.systemManager.system<PendingChangesSystem>()->commandQueue.push(jumpCommand);
 	}

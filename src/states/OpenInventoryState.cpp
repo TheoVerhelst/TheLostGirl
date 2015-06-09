@@ -192,8 +192,9 @@ void OpenInventoryState::resetTexts()
 {
 	if(m_entityName)
 	{
-		if(m_entity.has_component<NameComponent>())
-			m_entityName->setText(getContext().langManager.tr(m_entity.component<NameComponent>()->name));
+		const auto nameComponent(m_entity.component<NameComponent>());
+		if(nameComponent)
+			m_entityName->setText(getContext().langManager.tr(nameComponent->name));
 		else
 			m_entityName->setText("");
 	}

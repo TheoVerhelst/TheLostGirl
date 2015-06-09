@@ -114,30 +114,25 @@ void DebugDraw::drawDebugAth()
 	{
 		m_debugMode = true;
 		CategoryComponent::Handle categoryComponent;
+		BodyComponent::Handle bodyComponent;
+		BowComponent::Handle bowComponent;
 		//Find out position and bending
 		b2Vec2 position{0, 0};
-		float bendPower{0};
-		float bendAngle{0};
-		for(auto entity : m_context.entityManager.entities_with_components(categoryComponent))
+		float bendPower{0}, bendAngle{0};
+		for(auto entity : m_context.entityManager.entities_with_components(categoryComponent, bodyComponent, bowComponent))
 		{
 			//We found the player
 			if(categoryComponent->category & Category::Player)
 			{
-				if(entity.has_component<BodyComponent>() and entity.has_component<WalkComponent>())
-				{
-					//If there is a main body
-					auto it(entity.component<BodyComponent>()->bodies.find("main"));
-					if(it != entity.component<BodyComponent>()->bodies.end())
-						position = it->second->GetPosition();
-					//Else, take the first that come in hand
-					else if(not entity.component<BodyComponent>()->bodies.empty())
-						position = entity.component<BodyComponent>()->bodies.begin()->second->GetPosition();
-				}
-				if(entity.has_component<BowComponent>())
-				{
-					bendPower = entity.component<BowComponent>()->power;
-					bendAngle = entity.component<BowComponent>()->angle;
-				}
+				//If there is a main body
+				auto it(bodyComponent->bodies.find("main"));
+				if(it != bodyComponent->bodies.end())
+					position = it->second->GetPosition();
+				//Else, take the first that come in hand
+				else if(not bodyComponent->bodies.empty())
+					position = bodyComponent->bodies.begin()->second->GetPosition();
+				bendPower = entity.component<BowComponent>()->power;
+				bendAngle = entity.component<BowComponent>()->angle;
 				break;
 			}
 		}

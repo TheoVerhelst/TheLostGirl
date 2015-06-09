@@ -32,9 +32,9 @@ void PhysicsSystem::update(entityx::EntityManager& entityManager, entityx::Event
 		if(bodyIt != bodyComponent->bodies.end())
 			body = bodyIt->second;
 		//Update the walkers
-		if(body and entity.has_component<WalkComponent>())
+		const auto walkComponent(entity.component<WalkComponent>());
+		if(body and walkComponent)
 		{
-			WalkComponent::Handle walkComponent(entity.component<WalkComponent>());
 			float targetVelocity{0.f};
 			const float walkVelocity{walkComponent->walkSpeed/m_pixelByMeter};
 			const Direction walkDirection{walkComponent->effectiveMovement};
@@ -49,17 +49,18 @@ void PhysicsSystem::update(entityx::EntityManager& entityManager, entityx::Event
 		}
 
 		//Update the jumpers
-		if(body and entity.has_component<JumpComponent>() and entity.component<JumpComponent>()->mustJump)
+		auto jumpComponent(entity.component<JumpComponent>());
+		if(body and jumpComponent and jumpComponent->mustJump)
 		{
-			const float targetVelocity{-entity.component<JumpComponent>()->jumpStrength/m_pixelByMeter};
+			const float targetVelocity{-jumpComponent->jumpStrength/m_pixelByMeter};
 			body->ApplyLinearImpulse({0.f, targetVelocity*body->GetMass()}, body->GetWorldCenter(), true);
-			entity.component<JumpComponent>()->mustJump = false;
+			jumpComponent->mustJump = false;
 		}
 
 		//Update the archers
-		if(entity.has_component<BowComponent>())
+		auto bowComponent(entity.component<BowComponent>());
+		if(bowComponent)
 		{
-			BowComponent::Handle bowComponent(entity.component<BowComponent>());
 			const float angleTarget{-bowComponent->angle};
 			const float32 gain{20.f};
 			float32 differenceAngle;
@@ -93,31 +94,36 @@ void PhysicsSystem::update(entityx::EntityManager& entityManager, entityx::Event
 					}
 				}
 			}
-			if(entity.has_component<DirectionComponent>())
+
+			const auto directionComponent(entity.component<DirectionComponent>());
+			if(directionComponent)
 			{
-				Direction direction{entity.component<DirectionComponent>()->direction};
 				entityx::Entity notchedArrow{bowComponent->notchedArrow};
 				//If the notched arrow has a b2Body,
 				//Set the translation of the joint between bow and arrow
-				if(notchedArrow.valid() and notchedArrow.has_component<BodyComponent>())
+				if(notchedArrow.valid())
 				{
-					auto arrowBodyIt(notchedArrow.component<BodyComponent>()->bodies.find("main"));
-					if(arrowBodyIt != notchedArrow.component<BodyComponent>()->bodies.end())
+					auto arrowBodyComponent(notchedArrow.component<BodyComponent>());
+					if(arrowBodyComponent)
 					{
-						float translationTarget{bowComponent->power};
-						if(direction == Direction::Left)
-							translationTarget = 1 - translationTarget;
-						float32 differenceTranslation;
-						//Iterate over all joints
-						for(b2JointEdge* jointEdge{arrowBodyIt->second->GetJointList()}; jointEdge; jointEdge = jointEdge->next)
+						auto arrowBodyIt(arrowBodyComponent->bodies.find("main"));
+						if(arrowBodyIt != arrowBodyComponent->bodies.end())
 						{
-							//If this is a bending translation joint
-							if(jointHasRole(jointEdge->joint, JointRole::BendingPower))
+							float translationTarget{bowComponent->power};
+							if(directionComponent->direction == Direction::Left)
+								translationTarget = 1 - translationTarget;
+							float32 differenceTranslation;
+							//Iterate over all joints
+							for(b2JointEdge* jointEdge{arrowBodyIt->second->GetJointList()}; jointEdge; jointEdge = jointEdge->next)
 							{
-								b2PrismaticJoint* joint{static_cast<b2PrismaticJoint*>(jointEdge->joint)};
-								//The final target is equal to the joint's lower limit when the translationTarget is equal to 1.
-								differenceTranslation = translationTarget*joint->GetLowerLimit() - joint->GetJointTranslation();
-								joint->SetMotorSpeed(gain * differenceTranslation);
+								//If this is a bending translation joint
+								if(jointHasRole(jointEdge->joint, JointRole::BendingPower))
+								{
+									b2PrismaticJoint* joint{static_cast<b2PrismaticJoint*>(jointEdge->joint)};
+									//The final target is equal to the joint's lower limit when the translationTarget is equal to 1.
+									differenceTranslation = translationTarget*joint->GetLowerLimit() - joint->GetJointTranslation();
+									joint->SetMotorSpeed(gain * differenceTranslation);
+								}
 							}
 						}
 					}
@@ -126,9 +132,9 @@ void PhysicsSystem::update(entityx::EntityManager& entityManager, entityx::Event
 		}
 
 		//Update the arrows
-		if(body and entity.has_component<ArrowComponent>())
+		const auto arrowComponent(entity.component<ArrowComponent>());
+		if(body and arrowComponent)
 		{
-			ArrowComponent::Handle arrowComponent(entity.component<ArrowComponent>());
 			if(arrowComponent->state == ArrowComponent::Fired)
 			{
 				body->ApplyForce({windStrength*body->GetMass(), 0}, body->GetWorldCenter(), true);
@@ -151,13 +157,14 @@ void PhysicsSystem::update(entityx::EntityManager& entityManager, entityx::Event
 		}
 
 		//Update the transformations according to the one of the b2Body.
-		if(entity.has_component<TransformComponent>())
+		auto transformComponent(entity.component<TransformComponent>());
+		if(transformComponent)
 		{
 			for(auto& bodyPair : bodyComponent->bodies)
 			{
-				auto transformIt(entity.component<TransformComponent>()->transforms.find(bodyPair.first));
+				auto transformIt(transformComponent->transforms.find(bodyPair.first));
 				//If the name of the body exists in the transforms maps
-				if(transformIt != entity.component<TransformComponent>()->transforms.end())
+				if(transformIt != transformComponent->transforms.end())
 				{
 					b2Vec2 pos{bodyPair.second->GetPosition()};
 					float32 angle{bodyPair.second->GetAngle()};

@@ -23,10 +23,11 @@ void BowBender::operator()(entityx::Entity entity, double) const
 {
 	if(not entity)
 		return;
-	if(entity.has_component<BowComponent>() and entity.has_component<DirectionComponent>() and entity.has_component<BodyComponent>())
+	auto bowComponent(entity.component<BowComponent>());
+	auto bodyComponent(entity.component<BodyComponent>());
+	auto directionComponent(entity.component<DirectionComponent>());
+	if(bowComponent and bodyComponent and directionComponent)
 	{
-		BowComponent::Handle bowComponent{entity.component<BowComponent>()};
-		DirectionComponent::Handle directionComponent{entity.component<DirectionComponent>()};
 		//Set the bending angle
 		if(directionComponent->direction == Direction::Left)
 			bowComponent->angle = cap(angle - b2_pi, -b2_pi, b2_pi/2.f);
@@ -36,17 +37,16 @@ void BowBender::operator()(entityx::Entity entity, double) const
 		bowComponent->power = cap(power, 0.f, 500.f)/500.f;
 
 		//If the entity has animation, set the right animation and play it accoring to the bending state
-		if(entity.has_component<AnimationsComponent<SpriteSheetAnimation>>())
+		auto animationComponent(entity.component<AnimationsComponent<SpriteSheetAnimation>>());
+		if(animationComponent)
 		{
 			std::string directionStr;//Find the right animation string, and set the angle
 			if(directionComponent->direction == Direction::Left)
 				directionStr = " left";
 			else if(directionComponent->direction == Direction::Right)
 				directionStr = " right";
-			//Get all the animations managers of the entity
-			auto& animationsManagers(entity.component<AnimationsComponent<SpriteSheetAnimation>>()->animationsManagers);
 			//For each animations manager of the entity
-			for(auto& animationsPair : animationsManagers)
+			for(auto& animationsPair : animationComponent->animationsManagers)
 			{
 				AnimationsManager<SpriteSheetAnimation>& animations(animationsPair.second);
 				//If the animations manager have the required animation
@@ -68,9 +68,9 @@ void BowBender::operator()(entityx::Entity entity, double) const
 				notchedArrow = *found;
 				bowComponent->arrows.erase(found);
 				auto arrowBodyIt(notchedArrow.component<BodyComponent>()->bodies.find("main"));
-				auto entityBodyIt(entity.component<BodyComponent>()->bodies.find("bow"));
+				auto entityBodyIt(bodyComponent->bodies.find("bow"));
 				if(arrowBodyIt != notchedArrow.component<BodyComponent>()->bodies.end()
-					 and entityBodyIt != entity.component<BodyComponent>()->bodies.end())
+					 and entityBodyIt != bodyComponent->bodies.end())
 				{
 					b2Body* arrowBody{arrowBodyIt->second};
 					b2Body* bowBody{entityBodyIt->second};

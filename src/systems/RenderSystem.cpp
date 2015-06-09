@@ -25,7 +25,8 @@ void RenderSystem::update(entityx::EntityManager& entityManager, entityx::EventM
 	//Add the sprites in the map
 	for(const entityx::Entity& entity : entityManager.entities_with_components(spriteComponent, transformComponent))
 	{
-		bool scene{entity.has_component<CategoryComponent>() and entity.component<CategoryComponent>()->category & Category::Scene};
+		const auto categoryComponent(entity.component<CategoryComponent>());
+		bool scene{categoryComponent and categoryComponent->category & Category::Scene};
 		for(const auto& spritePair : spriteComponent->sprites)
 		{
 			//If this is a scene entity, add its sprites beyond the others entities in this plan

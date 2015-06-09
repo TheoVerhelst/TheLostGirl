@@ -63,5 +63,10 @@ sf::Color b2ColorToSf(const b2Color& color)
 
 bool isPlayer(entityx::Entity entity)
 {
-	return entity.valid() and entity.has_component<CategoryComponent>() and entity.component<CategoryComponent>()->category & Category::Player;
+	if(entity.valid())
+	{
+		auto categoryComponent(entity.component<CategoryComponent>());
+		return categoryComponent and categoryComponent->category & Category::Player;
+	}
+	return false;
 }

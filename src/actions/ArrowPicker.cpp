@@ -17,15 +17,15 @@ ArrowPicker::~ArrowPicker()
 
 void ArrowPicker::operator()(entityx::Entity entity, double) const
 {
-	if(not entity)
+	if(not entity.valid())
 		return;
-	if(entity.has_component<BodyComponent>()
-		and entity.has_component<DirectionComponent>()
-		and entity.has_component<BowComponent>())
+	const auto directionComponent(entity.component<DirectionComponent>());
+	const auto bodyComponent(entity.component<BodyComponent>());
+	auto bowComponent(entity.component<BowComponent>());
+	if(bodyComponent and directionComponent and bowComponent)
 	{
-		DirectionComponent::Handle directionComponent{entity.component<DirectionComponent>()};
-		auto bodyIt(entity.component<BodyComponent>()->bodies.find("main"));
-		if(bodyIt != entity.component<BodyComponent>()->bodies.end())
+		auto bodyIt(bodyComponent->bodies.find("main"));
+		if(bodyIt != bodyComponent->bodies.end())
 		{
 			b2World* world{bodyIt->second->GetWorld()};
 
@@ -39,7 +39,6 @@ void ArrowPicker::operator()(entityx::Entity entity, double) const
 			if(callback.foundEntity.valid())
 			{
 				b2Body* arrowBody{callback.foundEntity.component<BodyComponent>()->bodies.at("main")};
-				b2Body* characterBody{entity.component<BodyComponent>()->bodies.at("main")};
 
 				//Destroy all joints (e.g. the ground/arrow weld joint)
 				for(b2JointEdge* jointEdge{arrowBody->GetJointList()}; jointEdge; jointEdge = jointEdge->next)
@@ -47,7 +46,7 @@ void ArrowPicker::operator()(entityx::Entity entity, double) const
 
 				//Set the joint
 				b2WeldJointDef jointDef;
-				jointDef.bodyA = characterBody;
+				jointDef.bodyA = bodyIt->second;
 				jointDef.bodyB = arrowBody;
 				if(directionComponent->direction == Direction::Left)
 				{
@@ -66,7 +65,7 @@ void ArrowPicker::operator()(entityx::Entity entity, double) const
 				world->CreateJoint(&jointDef);
 
 				//Add the arrow to the quiver
-				entity.component<BowComponent>()->arrows.push_back(callback.foundEntity);
+				bowComponent->arrows.push_back(callback.foundEntity);
 				callback.foundEntity.component<ArrowComponent>()->state = ArrowComponent::Stored;
 				callback.foundEntity.component<ArrowComponent>()->shooter = entity;
 			}
@@ -78,7 +77,8 @@ bool StickedArrowQueryCallback::ReportFixture(b2Fixture* fixture)
 {
 	entityx::Entity entity{*static_cast<entityx::Entity*>(fixture->GetBody()->GetUserData())};
 	//Return false (and so stop) only if this is a arrow and if this one is sticked.
-	bool found{entity.has_component<ArrowComponent>() and entity.component<ArrowComponent>()->state == ArrowComponent::Sticked};
+	const auto arrowComponent(entity.component<ArrowComponent>());
+	bool found{arrowComponent and arrowComponent->state == ArrowComponent::Sticked};
 	if(found)
 		foundEntity = entity;
 	return not found;

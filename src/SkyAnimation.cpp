@@ -12,10 +12,11 @@ SkyAnimation::SkyAnimation(entityx::Entity entity):
 
 void SkyAnimation::animate(float progress)
 {
-	if(m_entity.has_component<SpriteComponent>() and m_entity.has_component<TransformComponent>())
+	auto spriteComponent(m_entity.component<SpriteComponent>());
+	auto transformComponent(m_entity.component<TransformComponent>());
+	if(spriteComponent and transformComponent)
 	{
-		SpriteComponent::Handle spriteComponent{m_entity.component<SpriteComponent>()};
-		TransformComponent::Handle transformComponent{m_entity.component<TransformComponent>()};
+
 		auto daySpr(spriteComponent->sprites.find("day"));
 		auto nightSpr(spriteComponent->sprites.find("night"));
 		auto dayTrsf(transformComponent->transforms.find("day"));

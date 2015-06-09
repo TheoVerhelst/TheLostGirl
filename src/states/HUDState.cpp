@@ -54,7 +54,8 @@ void HUDState::draw()
 	std::list<entityx::Entity> entitiesToRemove;
 	for(auto& barPair : m_healthBars)
 	{
-		if(barPair.first.has_component<DeathComponent>() and barPair.first.component<DeathComponent>()->dead)
+		const auto deathComponent(barPair.first.component<DeathComponent>());
+		if(deathComponent and deathComponent->dead)
 		{
 			getContext().gui.remove(barPair.second.panel);
 			entitiesToRemove.push_back(barPair.first);
@@ -66,7 +67,8 @@ void HUDState::draw()
 	entitiesToRemove.clear();
 	for(auto& barPair : m_staminaBars)
 	{
-		if(barPair.first.has_component<DeathComponent>() and barPair.first.component<DeathComponent>()->dead)
+		const auto deathComponent(barPair.first.component<DeathComponent>());
+		if(deathComponent and deathComponent->dead)
 		{
 			getContext().gui.remove(barPair.second.panel);
 			entitiesToRemove.push_back(barPair.first);
@@ -139,10 +141,11 @@ bool HUDState::update(sf::Time dt)
 			const unsigned char alpha{(unsigned char)(765.f - time*255.f)};
 			barPair.second.panel->setTransparency(alpha);
 		}
-		if(barPair.first.has_component<TransformComponent>() and not isPlayer(barPair.first))
+		const auto transformComponent(barPair.first.component<TransformComponent>());
+		if(transformComponent and not isPlayer(barPair.first))
 		{
-			auto transformIt(barPair.first.component<TransformComponent>()->transforms.find("main"));
-			if(transformIt != barPair.first.component<TransformComponent>()->transforms.end())
+			auto transformIt(transformComponent->transforms.find("main"));
+			if(transformIt != transformComponent->transforms.end())
 			{
 				sf::Vector2f position(transformIt->second.x, transformIt->second.y);
 				position *= scale;

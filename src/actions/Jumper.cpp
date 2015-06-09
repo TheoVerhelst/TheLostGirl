@@ -15,19 +15,19 @@ void Jumper::operator()(entityx::Entity entity, double) const
 {
 	if(not entity)
 		return;
-	if(entity.has_component<JumpComponent>() and entity.has_component<FallComponent>())
+	auto jumpComponent(entity.component<JumpComponent>());
+	const auto fallComponent(entity.component<FallComponent>());
+	auto animationsComponent(entity.component<AnimationsComponent<SpriteSheetAnimation>>());
+	const auto directionComponent(entity.component<DirectionComponent>());
+	if(jumpComponent and fallComponent)
 	{
-		if(not entity.component<FallComponent>()->inAir)
+		if(not fallComponent->inAir)
 		{
-			entity.component<JumpComponent>()->mustJump = true;//The physics system will do the physic jump job
-			if(entity.has_component<AnimationsComponent<SpriteSheetAnimation>>()
-				and entity.has_component<DirectionComponent>())
+			jumpComponent->mustJump = true;//The physics system will do the physic jump job
+			if(animationsComponent and directionComponent)
 			{
-				DirectionComponent::Handle directionComponent{entity.component<DirectionComponent>()};
-				//Get all the animations managers of the entity
-				auto& animationsManagers(entity.component<AnimationsComponent<SpriteSheetAnimation>>()->animationsManagers);
 				//For each animations manager of the entity
-				for(auto& animationsPair : animationsManagers)
+				for(auto& animationsPair : animationsComponent->animationsManagers)
 				{
 					AnimationsManager<SpriteSheetAnimation>& animations(animationsPair.second);
 					//If the animations manager have the required animations

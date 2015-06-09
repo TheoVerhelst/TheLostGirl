@@ -42,19 +42,20 @@ void ArrowHitListener::PostSolve(b2Contact* contact, const b2ContactImpulse* imp
 	entityx::Entity entityB{*static_cast<entityx::Entity*>(bodyB->GetUserData())};
 	if(entityA != entityB)
 	{
-		if(entityB.has_component<ArrowComponent>() and entityA.has_component<HardnessComponent>())
+		if(entityB.has_component<ArrowComponent>())
 		{
 			//Swap the pointers
 			std::swap(fixtureA, fixtureB);
 			std::swap(bodyA, bodyB);
 			std::swap(entityA, entityB);
 		}
-		if(entityA.has_component<ArrowComponent>() and entityB.has_component<HardnessComponent>())
+		auto arrowComponent(entityA.component<ArrowComponent>());
+		auto hardnessComponent(entityB.component<HardnessComponent>());
+		if(arrowComponent and hardnessComponent)
 		{
-			ArrowComponent::Handle arrowComponent{entityA.component<ArrowComponent>()};
 			//If the impact multiplied by the penetrance of the arrow is greater than the hardness of the other object
 			if(arrowComponent->state == ArrowComponent::Fired and
-				impulse->normalImpulses[0]*arrowComponent->penetrance > entityB.component<HardnessComponent>()->hardness)
+				impulse->normalImpulses[0]*arrowComponent->penetrance > hardnessComponent->hardness)
 			{
 				b2Vec2 localStickPoint{sftob2(arrowComponent->localStickPoint/m_context.parameters.pixelByMeter)};
 				b2Vec2 globalStickPoint{bodyA->GetWorldPoint(localStickPoint)};
@@ -67,15 +68,17 @@ void ArrowHitListener::PostSolve(b2Contact* contact, const b2ContactImpulse* imp
 				m_context.systemManager.system<PendingChangesSystem>()->jointsToCreate.push(weldJointDef);
 				arrowComponent->state = ArrowComponent::Sticked;
 			}
-			if(entityB.has_component<HealthComponent>() and entityB.has_component<ActorComponent>())
+			auto healthComponent(entityB.component<HealthComponent>());
+			auto actorComponent(entityB.component<ActorComponent>());
+			if(healthComponent and actorComponent)
 			{
 
 				float damages{impulse->normalImpulses[0]*4};
                 damages *= arrowComponent->damage;
-                damages -= entityB.component<ActorComponent>()->arrowResistance;
+                damages -= actorComponent->arrowResistance;
                 if(arrowComponent->shooter and arrowComponent->shooter.has_component<BowComponent>())
 					damages += arrowComponent->shooter.component<BowComponent>()->damages;
-				entityB.component<HealthComponent>()->current -= damages;
+				healthComponent->current -= damages;
 			}
 		}
 	}
