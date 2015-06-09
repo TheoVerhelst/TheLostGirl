@@ -1,5 +1,6 @@
 #include <cmath>
 #include <SFML/Graphics/RenderWindow.hpp>
+#include <SFML/Graphics/RenderTexture.hpp>
 #include <SFML/Window/Event.hpp>
 #include <Box2D/Common/b2Math.h>
 #include <TheLostGirl/components.h>
@@ -12,6 +13,8 @@
 
 DragAndDropSystem::DragAndDropSystem(StateStack::Context context):
 	m_window(context.window),
+	m_texture(context.postEffectsTexture),
+	m_bloomEnabled(context.parameters.bloomEnabled),
 	m_commandQueue(context.systemManager.system<PendingChangesSystem>()->commandQueue),
 	m_origin{0, 0},
 	m_line{sf::Vertex({0, 0}, sf::Color::Black), sf::Vertex({0, 0}, sf::Color::Black)},
@@ -23,9 +26,18 @@ void DragAndDropSystem::update(entityx::EntityManager&, entityx::EventManager&, 
 	//If the drag and drop is active and effective
 	if(m_isActive and m_origin != sf::Mouse::getPosition(m_window))
 	{
-		m_line[0].position = m_window.mapPixelToCoords(m_origin);
-		m_line[1].position = m_window.mapPixelToCoords(sf::Mouse::getPosition(m_window));
-		m_window.draw(m_line, 2, sf::Lines);
+		if(m_bloomEnabled)
+		{
+			m_line[0].position = m_texture.mapPixelToCoords(m_origin);
+			m_line[1].position = m_texture.mapPixelToCoords(sf::Mouse::getPosition(m_window));
+			m_texture.draw(m_line, 2, sf::Lines);
+		}
+		else
+		{
+			m_line[0].position = m_window.mapPixelToCoords(m_origin);
+			m_line[1].position = m_window.mapPixelToCoords(sf::Mouse::getPosition(m_window));
+			m_window.draw(m_line, 2, sf::Lines);
+		}
 		//Compute the drag and drop data
 		float delta_x{m_line[1].position.x- m_line[0].position.x};
 		float delta_y{m_line[1].position.y- m_line[0].position.y};
@@ -40,7 +52,6 @@ void DragAndDropSystem::update(entityx::EntityManager&, entityx::EventManager&, 
 		bendCommand.category = Category::Player;
 		bendCommand.action = BowBender(float(angle), float(power));
 		m_commandQueue.push(bendCommand);
-		m_window.draw(m_line, 2, sf::Lines);
 	}
 }
 

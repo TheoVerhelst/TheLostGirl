@@ -7,6 +7,7 @@
 #include <Box2D/Dynamics/b2World.h>
 #include <TheLostGirl/ResourceManager.h>
 #include <TheLostGirl/State.h>
+#include <TheLostGirl/BloomEffect.h>
 #include <TheLostGirl/StateStack.h>
 #include <TheLostGirl/Player.h>
 #include <TheLostGirl/Parameters.h>
@@ -64,7 +65,8 @@ class Application : public entityx::Receiver<Application>
 
 		Parameters m_parameters;               ///< Structure containing all the game parameters.
 		sf::RenderWindow m_window;             ///< The main window.
-		sf::RenderTexture m_postEffectsTexture;///< Texture for rendering posteffects.
+		sf::RenderTexture m_postEffectsTexture;///< Texture for rendering post effects.
+		BloomEffect m_bloomEffect;             ///< The shader to apply on m_postEffectsTexture.
 		tgui::Gui m_gui;                       ///< All the gui.
 		TextureManager m_textureManager;       ///< The texture manager.
 		FontManager m_fontManager;             ///< The fonts manager.

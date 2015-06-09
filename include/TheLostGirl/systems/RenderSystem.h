@@ -2,7 +2,6 @@
 #define RENDERSYSTEM_H
 
 #include <entityx/System.h>
-#include <TheLostGirl/BloomEffect.h>
 #include <TheLostGirl/StateStack.h>
 
 //Forward declarations
@@ -35,7 +34,6 @@ class RenderSystem : public entityx::System<RenderSystem>
 		sf::RenderWindow& m_window;  ///< SFML's window on wich render the entities.
 		sf::RenderTexture& m_texture;///< Render texture on wich render the entities, if bloom is enabled.
 		bool& m_bloomEnabled;        ///< Indicates if the bloom effect i enabled.
-		BloomEffect m_bloomEffect;   ///< The shader to apply on m_texture.
 		bool m_postEffectSupported;  ///< Indicates if post effects are supported (avoid useless calls of PostEffect::isSupported())
 };
 

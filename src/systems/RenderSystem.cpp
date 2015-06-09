@@ -1,16 +1,17 @@
 #include <deque>
 #include <SFML/Graphics/RenderWindow.hpp>
+#include <SFML/Graphics/RenderTexture.hpp>
 #include <SFML/Graphics/Sprite.hpp>
 #include <entityx/entityx.h>
 #include <TheLostGirl/components.h>
 #include <TheLostGirl/Category.h>
+#include <TheLostGirl/PostEffect.h>
 #include <TheLostGirl/systems/RenderSystem.h>
 
 RenderSystem::RenderSystem(StateStack::Context context):
 	m_window(context.window),
 	m_texture(context.postEffectsTexture),
 	m_bloomEnabled(context.parameters.bloomEnabled),
-	m_bloomEffect{},
 	m_postEffectSupported{PostEffect::isSupported()}
 {
 }
@@ -35,28 +36,14 @@ void RenderSystem::update(entityx::EntityManager& entityManager, entityx::EventM
 				orderedEntities[transformComponent->transforms.at(spritePair.first).z].push_back(&spritePair.second);
 		}
 	}
-	//Draw the texture and the GUI on the window and display
-	if(m_postEffectSupported and m_bloomEnabled)
-	{
-		m_texture.clear({197, 182, 108});
-		//For each plan, in the reverse order
-		for(auto it(orderedEntities.crbegin()); it != orderedEntities.crend(); it++)
-			//Draw the entities of this plan
-			for(auto sprite : it->second)
-				//Draw on the texture
+	//Draw sprites on the texture or on the window
+	//For each plan, in the reverse order
+	for(auto it(orderedEntities.crbegin()); it != orderedEntities.crend(); it++)
+		//Draw the entities of this plan
+		for(auto sprite : it->second)
+			if(m_postEffectSupported and m_bloomEnabled)
 				m_texture.draw(*sprite);
-		m_texture.display();
-		//Draw the texture on the window trough the bloom effect
-		m_bloomEffect.apply(m_texture, m_window);
-	}
-	else
-	{
-		//For each plan, in the reverse order
-		for(auto it(orderedEntities.crbegin()); it != orderedEntities.crend(); it++)
-			//Draw the entities of this plan
-			for(auto sprite : it->second)
-				//Draw on the texture
+			else
 				m_window.draw(*sprite);
-	}
 
 }

@@ -184,11 +184,21 @@ void Application::render()
 {
 	//Clear the texture, draw on it and display
 	m_window.clear({155, 155, 155});
+	if(m_parameters.bloomEnabled)
+		m_postEffectsTexture.clear({155, 155, 155});
 	m_stateStack.draw();
 	if(m_parameters.debugMode)
+	{
 		m_world.DrawDebugData();
-	m_debugDraw.drawDebugAth();
+		m_debugDraw.drawDebugAth();
+	}
 	m_window.resetGLStates();
+	if(m_parameters.bloomEnabled)
+	{
+		m_postEffectsTexture.display();
+		//Draw the texture on the window trough the bloom effect
+		m_bloomEffect.apply(m_postEffectsTexture, m_window);
+	}
 	m_gui.draw();
 	m_window.display();
 }
