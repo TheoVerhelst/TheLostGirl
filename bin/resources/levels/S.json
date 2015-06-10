@@ -1,0 +1,520 @@
+{
+	"include" : ["player.json", "mobs.json", "items.json"],
+	"entities" : 
+	{
+		"archer" : 
+		{
+			"base" : "player",
+			"bow" : 
+			{
+				"angle" : 0.0808405876159668,
+				"arrows" : [ "arrow 1", "arrow 2", "arrow 4" ],
+				"initial speed" : 60,
+				"notched arrow" : "arrow 3",
+				"power" : 0,
+				"damages" : 1800,
+				"quiver capacity" : 100
+			},
+			"death" : 
+			{
+				"dead" : false,
+				"drops" : []
+			},
+			"direction" : 
+			{
+				"direction" : "right",
+				"move to left" : false,
+				"move to right" : false
+			},
+			"fall" : 
+			{
+				"falling resistance" : 10
+			},
+			"hand to hand" : 
+			{
+				"damages" : 400,
+				"delay" : 0.1000000014901161,
+				"last shoot" : 0.1000000014901161
+			},
+			"hardness" : 0.1000000089406967,
+			"health" : 
+			{
+				"current" : 100,
+				"maximum" : 100,
+				"regeneration" : 10
+			},
+			"inventory" : 
+			{
+				"items" : [],
+				"maximum weight" : 100
+			},
+			"jump" : 
+			{
+				"strength" : 600
+			},
+			"name" : "archer",
+			"stamina" : 
+			{
+				"current" : 100,
+				"maximum" : 100,
+				"regeneration" : 2
+			},
+			"transforms" : 
+			{
+				"arms" : 
+				{
+					"transform" : 
+					{
+						"angle" : -4.631768226623535,
+						"x" : 535.3424072265625,
+						"y" : 405.2977905273438,
+						"z" : 1
+					}
+				},
+				"bow" : 
+				{
+					"transform" : 
+					{
+						"angle" : -4.631782531738281,
+						"x" : 534.9387817382812,
+						"y" : 400.314208984375,
+						"z" : 1
+					}
+				},
+				"main" : 
+				{
+					"transform" : 
+					{
+						"angle" : 0,
+						"x" : 536.6326293945312,
+						"y" : 351.201416015625,
+						"z" : 1
+					}
+				}
+			},
+			"walk" : 
+			{
+				"effective movement" : "none",
+				"speed" : 350
+			}
+		},
+		"arrow 1" : 
+		{
+			"base" : "arrow"
+		},
+		"arrow 2" : 
+		{
+			"base" : "arrow"
+		},
+		"arrow 3" : 
+		{
+			"base" : "arrow"
+		},
+		"arrow 4" : 
+		{
+			"base" : "arrow"
+		},
+		"ground" : 
+		{
+			"body" : 
+			{
+				"main" : 
+				{
+					"active" : true,
+					"allow sleep" : true,
+					"angular damping" : 0,
+					"angular velocity" : 0,
+					"awake" : true,
+					"bullet" : false,
+					"chain fixtures" : 
+					[
+						{
+							"density" : 0,
+							"friction" : 0.5,
+							"is sensor" : false,
+							"restitution" : 0,
+							"vertices" : 
+							[
+								{
+									"x" : 0,
+									"y" : 0
+								},
+								{
+									"x" : 0,
+									"y" : 299.9999694824219
+								},
+								{
+									"x" : 49.99998092651367,
+									"y" : 799.9996948242188
+								},
+								{
+									"x" : 599.9999389648438,
+									"y" : 799.9996948242188
+								},
+								{
+									"x" : 899.9996948242188,
+									"y" : 739.99951171875
+								},
+								{
+									"x" : 1149.999755859375,
+									"y" : 799.9996948242188
+								},
+								{
+									"x" : 19199.998046875,
+									"y" : 799.9996948242188
+								},
+								{
+									"x" : 19199.998046875,
+									"y" : 0
+								}
+							]
+						}
+					],
+					"fixed rotation" : false,
+					"gravity scale" : 1,
+					"linear damping" : 0,
+					"linear velocity" : 
+					{
+						"x" : 0,
+						"y" : 0
+					},
+					"type" : "static"
+				}
+			},
+			"hardness" : 0.5,
+			"transforms" : 
+			{
+				"main" : 
+				{
+					"transform" : 
+					{
+						"angle" : 0,
+						"x" : 0,
+						"y" : 0,
+						"z" : 1
+					}
+				}
+			}
+		},
+		"wolf 1" : 
+		{
+			"base" : "wood wolf",
+			"transforms" : 
+			{
+				"main" : 
+				{
+					"transform" : 
+					{
+						"angle" : 0,
+						"x" : 1743.572509765625,
+						"y" : 672.1998291015625,
+						"z" : 1
+					}
+				}
+			}
+		},
+		"wolf 2" : 
+		{
+			"base" : "wood wolf",
+			"transforms" : 
+			{
+				"main" : 
+				{
+					"transform" : 
+					{
+						"angle" : 0,
+						"x" : 1943.572509765625,
+						"y" : 672.1998291015625,
+						"z" : 1
+					}
+				}
+			}
+		},
+		"wolf 3" : 
+		{
+			"base" : "wood wolf",
+			"transforms" : 
+			{
+				"main" : 
+				{
+					"transform" : 
+					{
+						"angle" : 0,
+						"x" : 1543.572509765625,
+						"y" : 672.1998291015625,
+						"z" : 1
+					}
+				}
+			}
+		},
+		"wolf 4" : 
+		{
+			"base" : "wood wolf",
+			"transforms" : 
+			{
+				"main" : 
+				{
+					"transform" : 
+					{
+						"angle" : 0,
+						"x" : 2143.572509765625,
+						"y" : 672.1998291015625,
+						"z" : 1
+					}
+				}
+			}
+		},
+		"sky" : 
+		{
+			"sprites" :
+			{
+				"day" :
+				{
+					"identifier" : "day.png",
+					"origin" :
+					{
+						"x" : 1450,
+						"y" : 1450
+					}
+				},
+				"night" :
+				{
+					"identifier" : "night.png",
+					"origin" :
+					{
+						"x" : 1450,
+						"y" : 1450
+					}
+				}
+			},
+			"transforms" :
+			{
+				"day" :
+				{
+					"transform" :
+					{
+						"x" : 960,
+						"y" : 1080,
+						"z" : infinity,
+						"angle" : 0
+					}
+				},
+				"night" :
+				{
+					"transform":
+					{
+						"x" : 960,
+						"y" : 1080,
+						"z" : infinity,
+						"angle" : 0
+					}
+				}
+			},
+			"categories" : ["scene"]
+		}
+	},
+	"joints" : 
+	{
+		"prismatic joints" : 
+		[
+			{
+				"enable limit" : true,
+				"enable motor" : true,
+				"entity A" : "archer",
+				"entity B" : "arrow 3",
+				"local anchor A" : 
+				{
+					"x" : 75.00000762939453,
+					"y" : 50.00000381469727
+				},
+				"local anchor B" : 
+				{
+					"x" : 3.000000238418579,
+					"y" : 6.000000476837158
+				},
+				"local axis A" : 
+				{
+					"x" : 120,
+					"y" : 0
+				},
+				"lower translation" : -37,
+				"maximum motor force" : 1200.000244140625,
+				"motor speed" : -9.241314546670765e-05,
+				"part A" : "bow",
+				"part B" : "main",
+				"reference angle" : 0,
+				"roles" : [ "bending power" ],
+				"upper translation" : 0
+			}
+		],
+		"revolute joints" : 
+		[
+			{
+				"enable limit" : false,
+				"enable motor" : true,
+				"entity A" : "archer",
+				"entity B" : "archer",
+				"local anchor A" : 
+				{
+					"x" : 50.00000762939453,
+					"y" : 68.00002288818359
+				},
+				"local anchor B" : 
+				{
+					"x" : 50.00000762939453,
+					"y" : 18
+				},
+				"lower angle" : 0,
+				"maximum motor torque" : 1200.000366210938,
+				"motor speed" : -0.002342462539672852,
+				"part A" : "main",
+				"part B" : "arms",
+				"roles" : [ "bending angle" ],
+				"upper angle" : 0
+			},
+			{
+				"enable limit" : false,
+				"enable motor" : true,
+				"entity A" : "archer",
+				"entity B" : "archer",
+				"local anchor A" : 
+				{
+					"x" : 50.00000762939453,
+					"y" : 68.00002288818359
+				},
+				"local anchor B" : 
+				{
+					"x" : 50.00000762939453,
+					"y" : 23.0000057220459
+				},
+				"lower angle" : 0,
+				"maximum motor torque" : 1200.000366210938,
+				"motor speed" : -0.001752376556396484,
+				"part A" : "main",
+				"part B" : "bow",
+				"roles" : [ "bending angle" ],
+				"upper angle" : 0
+			}
+		],
+		"weld joints" : 
+		[
+			{
+				"damping ratio" : 0,
+				"entity A" : "archer",
+				"entity B" : "arrow 1",
+				"frequency Hz" : 0,
+				"local anchor A" : 
+				{
+					"x" : 44,
+					"y" : 59.00000762939453
+				},
+				"local anchor B" : 
+				{
+					"x" : 48.00000762939453,
+					"y" : 13.00000095367432
+				},
+				"part A" : "main",
+				"part B" : "main",
+				"reference angle" : -90.00000762939453
+			},
+			{
+				"damping ratio" : 0,
+				"entity A" : "archer",
+				"entity B" : "arrow 4",
+				"frequency Hz" : 0,
+				"local anchor A" : 
+				{
+					"x" : 44,
+					"y" : 59.0000114440918
+				},
+				"local anchor B" : 
+				{
+					"x" : 48.0000114440918,
+					"y" : 13.00000286102295
+				},
+				"part A" : "main",
+				"part B" : "main",
+				"reference angle" : -80.00002288818359
+			},
+			{
+				"damping ratio" : 0,
+				"entity A" : "archer",
+				"entity B" : "arrow 2",
+				"frequency Hz" : 0,
+				"local anchor A" : 
+				{
+					"x" : 44,
+					"y" : 59.0000114440918
+				},
+				"local anchor B" : 
+				{
+					"x" : 48.0000114440918,
+					"y" : 13.00000286102295
+				},
+				"part A" : "main",
+				"part B" : "main",
+				"reference angle" : -80.00002288818359
+			}
+		]
+	},
+	"level" : 
+	{
+		"box" : 
+		{
+			"h" : 1080,
+			"w" : 14200,
+			"x" : 0,
+			"y" : 0
+		},
+		"identifier" : "1",
+		"number of plans" : 4,
+		"reference plan" : 1,
+		"replaces" : 
+		{
+			"a" : 
+			[
+				{
+					"origin" : 
+					{
+						"h" : 1080,
+						"w" : 1000,
+						"x" : 0,
+						"y" : 0
+					},
+					"replaces" : 
+					[
+						{
+							"angle" : 0,
+							"x" : 10000,
+							"y" : 0,
+							"z" : 0
+						}
+					]
+				},
+				{
+					"origin" : 
+					{
+						"h" : 1080,
+						"w" : 1000,
+						"x" : 5000,
+						"y" : 0
+					},
+					"replaces" : 
+					[
+						{
+							"angle" : 0,
+							"x" : 6000,
+							"y" : 0,
+							"z" : 0
+						}
+					]
+				}
+			]
+		}
+	},
+	"time" : 
+	{
+		"date" : 90,
+		"speed" : 4
+	}
+}

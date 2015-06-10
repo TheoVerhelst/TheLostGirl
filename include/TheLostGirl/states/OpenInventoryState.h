@@ -27,7 +27,6 @@ namespace entityx
 	class Entity;
 }
 class StateStack;
-struct Transform;
 struct ParametersChange;
 
 /// State that effectively play the game.
