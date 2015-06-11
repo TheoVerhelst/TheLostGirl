@@ -1,9 +1,7 @@
 #ifndef OPENINVENTORYSTATE_H
 #define OPENINVENTORYSTATE_H
 
-#include <Box2D/Dynamics/Joints/b2Joint.h>
 #include <TGUI/Panel.hpp>
-#include <TGUI/Canvas.hpp>
 #include <TGUI/Scrollbar.hpp>
 #include <TGUI/ChildWindow.hpp>
 #include <TGUI/Picture.hpp>
@@ -11,9 +9,6 @@
 #include <TGUI/Label.hpp>
 #include <TGUI/HorizontalLayout.hpp>
 #include <TGUI/VerticalLayout.hpp>
-#include <SFML/Graphics/Sprite.hpp>
-#include <TheLostGirl/AnimationsManager.h>
-#include <TheLostGirl/ContactListener.h>
 #include <TheLostGirl/State.h>
 
 //Forward declarations
@@ -79,6 +74,13 @@ class OpenInventoryState : public State
 		/// \param selectedTab The name of the new selected tab.
 		void switchDisplay(sf::String selectedTab);
 
+		/// Checks if the two entities represents the same item.
+		/// This is used to display similar items in a single line/square in the inventory display.
+		/// \param left The item component of the item to compare.
+		/// \param right The item component of the other entity to compare.
+		/// \return True if the two entities represents the same item, false otherwhise.
+		bool itemsAreEquals(const ItemComponent::Handle& left, const ItemComponent::Handle& right) const;
+
 		entityx::Entity m_entity;                         ///< Entity of which open the inventory.
 		tgui::ChildWindow::Ptr m_background;              ///< Background of the whole inventory window.
 		tgui::Label::Ptr m_entityName;                    ///< Label with the name of the entity.
@@ -104,7 +106,7 @@ class OpenInventoryState : public State
 		{
 			tgui::HorizontalLayout::Ptr layout;           ///< Layout for organizing the labels below.
 			std::map<sf::String, tgui::Label::Ptr> labels;///< A label for each information about the item.
-			entityx::Entity item;                         ///< The represented item.
+			std::list<entityx::Entity> items;             ///< The represented item.
 		};
 		tgui::Panel::Ptr m_listPanel;                     ///< Background for the whole list diplay.
 		std::list<sf::String> m_listColumnsNames;         ///< The name of each kind of data in the list

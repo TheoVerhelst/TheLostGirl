@@ -89,7 +89,9 @@
 						"category" : "skins",
 						"max drops" : 2,
 						"probability" : 0.7,
-						"type" : "wolf fur"
+						"type" : "wolf fur",
+						"weight" : 2,
+						"value" : 20
 					}
 				]
 			},

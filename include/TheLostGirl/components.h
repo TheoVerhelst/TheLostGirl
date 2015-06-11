@@ -95,6 +95,8 @@ struct ItemComponent : public entityx::Component<ItemComponent>
 {
 	std::string category;///< Category of item (bow, knife, helmet, ...).
 	std::string type;    ///< Type of item (dark bow, simple wood arrow, ...).
+	float weight;        ///< Weight of the item.
+	float value;         ///< Value of the item.
 };
 
 /// The inventory component.
@@ -216,6 +218,8 @@ struct DeathComponent : public entityx::Component<DeathComponent>
 		std::string category; ///< Category of item (bow, knife, helmet, ...).
 		std::string type;     ///< Type of item (dark bow, simple wood arrow, ...).
 		float probability;    ///< The probability that one item is dropped.
+		float weight;         ///< Weight of the item.
+		float value;          ///< Value of the item.
 		unsigned int maxDrops;///< The maximum number of items that can be dropped.
 	};
 	bool dead;            ///< Indicate if the entity is dead or not.

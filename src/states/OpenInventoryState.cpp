@@ -113,6 +113,7 @@ OpenInventoryState::OpenInventoryState(StateStack& stack, entityx::Entity entity
 	m_listColumnTitles.layout = tgui::HorizontalLayout::create();
 	m_listColumnTitles.layout->setPosition(0.f, 5.f);
 	m_listColumnTitles.layout->setSize(bindWidth(m_listPanel), 25.f);
+	m_listColumnTitles.layout->addSpace(0.1f);
 	m_listPanel->add(m_listColumnTitles.layout);
 	for(auto& column : m_listColumnsNames)
 	{
@@ -131,18 +132,33 @@ OpenInventoryState::OpenInventoryState(StateStack& stack, entityx::Entity entity
 	//Fill the vertical content layout
 	for(auto& entityItem : m_entity.component<InventoryComponent>()->items)
 	{
-		ItemListWidget itemWidget;
-		itemWidget.item = entityItem;
-		itemWidget.layout = tgui::HorizontalLayout::create();
-		for(auto& columnStr : m_listColumnsNames)
+		const ItemComponent::Handle itemComponent(entityItem.component<ItemComponent>());
+		bool foundSimilarItem{false};
+		for(auto& itemWidget : m_listContent)
 		{
-			tgui::Label::Ptr label = tgui::Label::create(getContext().parameters.guiConfigFile);
-			label->setTextSize(15);
-			itemWidget.layout->add(label);
-			itemWidget.labels.emplace(columnStr, label);
+			if(itemsAreEquals(itemComponent, itemWidget.items.front().component<ItemComponent>()))
+			{
+				itemWidget.items.push_back(entityItem);
+				foundSimilarItem = true;
+				break;
+			}
 		}
-		m_listContent.push_back(itemWidget);
-		m_listContentLayout->add(itemWidget.layout);
+		if(not foundSimilarItem)
+		{
+			ItemListWidget itemWidget;
+			itemWidget.items = {entityItem};
+			itemWidget.layout = tgui::HorizontalLayout::create();
+			itemWidget.layout->addSpace(0.1f);
+			for(auto& columnStr : m_listColumnsNames)
+			{
+				tgui::Label::Ptr label = tgui::Label::create(getContext().parameters.guiConfigFile);
+				label->setTextSize(15);
+				itemWidget.layout->add(label);
+				itemWidget.labels.emplace(columnStr, label);
+			}
+			m_listContent.push_back(itemWidget);
+			m_listContentLayout->add(itemWidget.layout);
+		}
 	}
 
 	m_listScrollbar = tgui::Scrollbar::create(getContext().parameters.guiConfigFile);
@@ -208,12 +224,25 @@ void OpenInventoryState::resetTexts()
 
 	for(ItemListWidget& itemWidget : m_listContent)
 	{
-		auto nameIt(itemWidget.labels.find("Name"));
-		if(nameIt != itemWidget.labels.end())
-			nameIt->second->setText(getContext().langManager.tr(itemWidget.item.component<ItemComponent>()->type));
-		auto cetegoryIt(itemWidget.labels.find("Category"));
-		if(cetegoryIt != itemWidget.labels.end())
-			cetegoryIt->second->setText(getContext().langManager.tr(itemWidget.item.component<ItemComponent>()->category));
+		const ItemComponent::Handle itemComponent(itemWidget.items.front().component<ItemComponent>());
+		auto it(itemWidget.labels.find("Qtty"));
+		if(it != itemWidget.labels.end())
+			it->second->setText(std::to_wstring(itemWidget.items.size()));
+		it = itemWidget.labels.find("Category");
+		if(it != itemWidget.labels.end())
+			it->second->setText(getContext().langManager.tr(itemComponent->category));
+		it = itemWidget.labels.find("Name");
+		if(it != itemWidget.labels.end())
+			it->second->setText(getContext().langManager.tr(itemComponent->type));
+		it = itemWidget.labels.find("Weight");
+		if(it != itemWidget.labels.end())
+			it->second->setText(std::to_wstring(itemComponent->weight));
+		it = itemWidget.labels.find("Value");
+		if(it != itemWidget.labels.end())
+			it->second->setText(std::to_wstring(itemComponent->value));
+		it = itemWidget.labels.find("Value/Weight");
+		if(it != itemWidget.labels.end())
+			it->second->setText(std::to_wstring(itemComponent->value/itemComponent->weight));
 	}
 }
 
@@ -242,4 +271,9 @@ void OpenInventoryState::switchDisplay(sf::String selectedTab)
 		m_gridPanel->show();
 	else if(selectedTab == "List")
 		m_listPanel->show();
+}
+
+bool OpenInventoryState::itemsAreEquals(const ItemComponent::Handle& left, const ItemComponent::Handle& right) const
+{
+	return left->type == right->type and left->category == right->category and left->weight - right->weight < 0.0001f and left->value - right->value < 0.0001f;
 }

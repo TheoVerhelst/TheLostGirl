@@ -391,6 +391,8 @@ Json::Value serialize(entityx::ComponentHandle<DeathComponent> component)
 		Json::Value dropJson;
 		dropJson["category"] = drop.category;
 		dropJson["type"] = drop.type;
+		dropJson["weight"] = drop.weight;
+		dropJson["value"] = drop.value;
 		dropJson["probability"] = drop.probability;
 		dropJson["max drops"] = drop.maxDrops;
 		ret["drops"].append(dropJson);
@@ -852,6 +854,8 @@ void deserialize(const Json::Value& value, entityx::ComponentHandle<DeathCompone
 		component->drops.push_back({value["drops"][i]["category"].asString(),
 									value["drops"][i]["type"].asString(),
 									value["drops"][i]["probability"].asFloat(),
+									value["drops"][i]["weight"].asFloat(),
+									value["drops"][i]["value"].asFloat(),
 									value["drops"][i]["max drops"].asUInt()});
 }
 

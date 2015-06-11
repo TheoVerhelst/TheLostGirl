@@ -46,8 +46,8 @@ bool CorpseQueryCallback::ReportFixture(b2Fixture* fixture)
 	if(entity.has_component<InventoryComponent>() and deathComponent and deathComponent->dead)
 	{
 		foundEntity = entity;
-		return true;
+		return false;
 	}
 	else
-		return false;
+		return true;
 }

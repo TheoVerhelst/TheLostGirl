@@ -44,6 +44,8 @@ void Death::operator()(entityx::Entity entity, double) const
 					ItemComponent::Handle itemComponent = item.assign<ItemComponent>();
 					itemComponent->category = drop.category;
 					itemComponent->type = drop.type;
+					itemComponent->weight = drop.weight;
+					itemComponent->value = drop.value;
 					inventoryComponent->items.push_back(item);
 				}
 			}

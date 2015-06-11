@@ -556,6 +556,11 @@
 											"name" : "weight",
 											"type" : "real",
 											"required" : true
+										},
+										{
+											"name" : "value",
+											"type" : "real",
+											"required" : true
 										}
 									]
                                 }
@@ -615,6 +620,16 @@
 										{
 											"type" : "string",
 											"name" : "type",
+											"required" : true
+										},
+										{
+											"name" : "value",
+											"type" : "real",
+											"required" : true
+										},
+										{
+											"name" : "weight",
+											"type" : "real",
 											"required" : true
 										},
 										{
