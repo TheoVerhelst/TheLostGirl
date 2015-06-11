@@ -19,7 +19,7 @@ class AnimationsManager;
 /// The BodyComponent component store a pointer to a b2Body and is used to simulate physics in the game world.
 struct BodyComponent : public entityx::Component<BodyComponent>
 {
-	std::map<std::string, b2Body*> bodies;///< Pointers to the physic body.
+	b2Body body;///< Pointer to the physic body.
 };
 
 /// Sprite component.
@@ -27,7 +27,7 @@ struct BodyComponent : public entityx::Component<BodyComponent>
 /// For more information about sprites, see the SFML doc.
 struct SpriteComponent : public entityx::Component<SpriteComponent>
 {
-	std::map<std::string, sf::Sprite> sprites;///< Sprites to draw.
+	sf::Sprite sprite;///< Sprite to draw.
 };
 
 /// Data about the world position of an entity.
@@ -41,23 +41,22 @@ struct Transform
 };
 
 /// World transform component.
-/// It indicates where the entity should be located in the world, for each part of the entity,
+/// It indicates where the entity should be located in the world,
 /// and the angle of the entity.
 /// The real position of the sprite is computed by the ScrollingSystem.
 /// This bind position and angle between sprites and b2Body, but an entity can have only one of them.
-/// In all case, if an entity have a SpriteComponent or a BodyComponent, it must have a TransformComponent,
-/// and a transform must exists in the transforms map for every body/sprite of the entity.
+/// In all case, if an entity have a SpriteComponent or a BodyComponent, it must have a TransformComponent.
 struct TransformComponent : public entityx::Component<TransformComponent>
 {
-	std::map<std::string, Transform> transforms;///< Indicates the target position in the world, the layer the sprite should be drawn and the angle.
+	Transform transform;///< Indicates the target position in the world, the layer the sprite should be drawn and the angle.
 };
 
-/// AnimationsManager component.
-/// Essential for every dynamic entity in the game.
+/// Animations manager component.
+/// Essential for every animated entity in the game.
 template<typename A>
 struct AnimationsComponent : public entityx::Component<AnimationsComponent<A>>
 {
-	std::map<std::string, AnimationsManager<A>> animationsManagers;///< AnimationsManager managers.
+	AnimationsManager<A> animationsManager;///< Managers for animations of any type.
 };
 
 /// Enumeration of every possible direction.
@@ -85,7 +84,7 @@ struct CategoryComponent : public entityx::Component<CategoryComponent>
 	unsigned int category;///< Category of the entity.
 };
 
-/// The Item component.
+/// The item component.
 /// An item is just an entity with this component.
 /// The category represents what class of item it is.
 /// The type represents what model of item it is.
@@ -141,6 +140,7 @@ struct BowComponent : public entityx::Component<BowComponent>
 	float angle;                      ///< The current angle of the bow, in radians.
 	std::list<entityx::Entity> arrows;///< List of all stocked arrows.
 	entityx::Entity notchedArrow;     ///< Current arrow notched in the bow.
+	b2PrismaticJoint* joint;          ///< The joint that hold the arrow notched.
 	unsigned int quiverCapacity;      ///< Maximum number of arrows in the quiver.
 };
 
