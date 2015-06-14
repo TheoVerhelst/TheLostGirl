@@ -16,11 +16,11 @@ class SkyAnimation
 		/// Constructor.
 		/// \param entity Entity that represents the sky.
 		SkyAnimation(entityx::Entity entity);
-		
+
 		/// Apply the animation to the entity passed as argument in the constructor.
 		/// \param progress Progress of the animation to apply.
 		void animate(float progress);
-		
+
 	private:
 		entityx::Entity m_entity;///< The entity to animate.
 };
