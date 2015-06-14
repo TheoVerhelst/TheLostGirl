@@ -22,17 +22,10 @@ void StatsSystem::update(entityx::EntityManager& entityManager, entityx::EventMa
 	{
 		//Damage all entities that fall in the void
 		const BodyComponent::Handle bodyComponent(entity.component<BodyComponent>());
-		if(bodyComponent)
+		if(bodyComponent and bodyComponent->body->GetPosition().y > 300)
 		{
-			for(auto& pair : bodyComponent->bodies)
-			{
-				if(pair.second->GetPosition().y > 300)
-				{
-					healthComponent->current = cap(healthComponent->current - 50.f*float(dt), 0.f, healthComponent->maximum);
-					eventManager.emit<EntityHealthChange>(entity, healthComponent->current, healthComponent->current/healthComponent->maximum);
-					break;
-				}
-			}
+			healthComponent->current = cap(healthComponent->current - 50.f*float(dt), 0.f, healthComponent->maximum);
+			eventManager.emit<EntityHealthChange>(entity, healthComponent->current, healthComponent->current/healthComponent->maximum);
 		}
 		const DeathComponent::Handle deathComponent(entity.component<DeathComponent>());
 		bool isDead{deathComponent and deathComponent->dead};
