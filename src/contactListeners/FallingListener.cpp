@@ -46,21 +46,17 @@ void FallingListener::BeginContact(b2Contact* contact)
 				AnimationsComponent<SpriteSheetAnimation>::Handle animationsComponent(entityA.component<AnimationsComponent<SpriteSheetAnimation>>());
 				if(animationsComponent)
 				{
-					//For each animations manager of the entity
-					for(auto& animationsPair : animationsComponent->animationsManagers)
+					AnimationsManager<SpriteSheetAnimation>& animations(animationsComponent->animationsManager);
+					//If the animations manager have the required animation
+					if(animations.isRegistred("fall left") and animations.isRegistred("fall right"))
 					{
-						AnimationsManager<SpriteSheetAnimation>& animations(animationsPair.second);
-						//If the animations manager have the required animation
-						if(animations.isRegistred("fall left") and animations.isRegistred("fall right"))
-						{
-							animations.stop("fall left");
-							animations.stop("fall right");
-						}
-						if(animations.isRegistred("jump left") and animations.isRegistred("jump right"))
-						{
-							animations.stop("jump left");
-							animations.stop("jump right");
-						}
+						animations.stop("fall left");
+						animations.stop("fall right");
+					}
+					if(animations.isRegistred("jump left") and animations.isRegistred("jump right"))
+					{
+						animations.stop("jump left");
+						animations.stop("jump right");
 					}
 				}
 			}
@@ -99,18 +95,14 @@ void FallingListener::EndContact(b2Contact* contact)
 				const DirectionComponent::Handle directionComponent(entityA.component<DirectionComponent>());
 				if(animationsComponent and directionComponent)
 				{
-					//For each animations manager of the entity
-					for(auto& animationsPair : animationsComponent->animationsManagers)
+					AnimationsManager<SpriteSheetAnimation>& animations(animationsComponent->animationsManager);
+					//If the animations manager have the required animation
+					if(animations.isRegistred("fall left") and animations.isRegistred("fall right"))
 					{
-						AnimationsManager<SpriteSheetAnimation>& animations(animationsPair.second);
-						//If the animations manager have the required animation
-						if(animations.isRegistred("fall left") and animations.isRegistred("fall right"))
-						{
-							if(directionComponent->direction == Direction::Left)
-								animations.play("fall left");
-							else if(directionComponent->direction == Direction::Right)
-								animations.play("fall right");
-						}
+						if(directionComponent->direction == Direction::Left)
+							animations.play("fall left");
+						else if(directionComponent->direction == Direction::Right)
+							animations.play("fall right");
 					}
 				}
 			}
