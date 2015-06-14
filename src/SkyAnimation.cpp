@@ -28,7 +28,6 @@ void SkyAnimation::animate(float progress)
 				spriteComponent->sprite.setColor(sf::Color::White);
 			else if(progress >= 0.6875f and progress < 0.8125f)//Twilight
 				spriteComponent->sprite.setColor(sf::Color(255, 255, 255, sf::Uint8( 255.f * (1 - 8.f * (progress - 0.6875f)))));
-			transformComponent->transform.angle = progress*360.f;
 		}
 		else if(nameComponent->name == "night sky")
 		{
@@ -41,7 +40,7 @@ void SkyAnimation::animate(float progress)
 				spriteComponent->sprite.setColor(sf::Color::Transparent);
 			else if(progress >= 0.6875f and progress < 0.8125f)//Twilight
 				spriteComponent->sprite.setColor(sf::Color(255, 255, 255,sf::Uint8(8.f * 255.f * (progress - 0.6875f))));
-			transformComponent->transform.angle = progress*360.f;
 		}
+		transformComponent->transform.angle = progress * 360.f;
 	}
 }

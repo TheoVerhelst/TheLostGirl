@@ -955,13 +955,13 @@ void GameState::initWorld(const std::string& file)
 			}
 		}
 
+		const float daySeconds{std::remainder(getContext().systemManager.system<TimeSystem>()->getRealTime().asSeconds(), 600.f)};
 		//Add sky animations.
 		if(m_entities.find("day sky") != m_entities.end() and m_entities["day sky"].valid())
 		{
 			AnimationsComponent<SkyAnimation>::Handle skyAnimationsComp{m_entities["day sky"].assign<AnimationsComponent<SkyAnimation>>()};
 			//Add the animation, this is a sky animation, the importance is equal to zero, the duration is 600 seconds (1 day), and it loops.
 			skyAnimationsComp->animationsManager.addAnimation("day/night cycle", SkyAnimation(m_entities["day sky"]), 0, sf::seconds(600), true);
-			const float daySeconds{std::remainder(getContext().systemManager.system<TimeSystem>()->getRealTime().asSeconds(), 600.f)};
 			skyAnimationsComp->animationsManager.setProgress("day/night cycle", daySeconds/600.f);
 			skyAnimationsComp->animationsManager.play("day/night cycle");
 		}
@@ -972,7 +972,6 @@ void GameState::initWorld(const std::string& file)
 			AnimationsComponent<SkyAnimation>::Handle skyAnimationsComp{m_entities["night sky"].assign<AnimationsComponent<SkyAnimation>>()};
 			//Add the animation, this is a sky animation, the importance is equal to zero, the duration is 600 seconds (1 day), and it loops.
 			skyAnimationsComp->animationsManager.addAnimation("day/night cycle", SkyAnimation(m_entities["night sky"]), 0, sf::seconds(600), true);
-			const float daySeconds{std::remainder(getContext().systemManager.system<TimeSystem>()->getRealTime().asSeconds(), 600.f)};
 			skyAnimationsComp->animationsManager.setProgress("day/night cycle", daySeconds/600.f);
 			skyAnimationsComp->animationsManager.play("day/night cycle");
 		}

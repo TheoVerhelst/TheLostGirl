@@ -47,7 +47,7 @@ void ScrollingSystem::update(entityx::EntityManager& entityManager, entityx::Eve
 			const Transform& transform(transformComponent->transform);
 			//The abscissa of the entity on the screen, relatively to the reference plan and the position of the player
 			const sf::Vector2f scaledPos{sf::Vector2f(transform.x, transform.y) + viewPos - (viewPos * std::pow(1.5f, m_referencePlan - transform.z))};
-			spriteComponent->sprite.setPosition(scaledPos.x*m_scale, scaledPos.y*m_scale);
+			spriteComponent->sprite.setPosition(scaledPos*m_scale);
 			spriteComponent->sprite.setRotation(transform.angle);
 		}
 	}
@@ -63,7 +63,7 @@ void ScrollingSystem::searchPlayer(entityx::EntityManager& entityManager)
 {
 	CategoryComponent::Handle categoryComponent;
 	TransformComponent::Handle transformComponent;
-	for(auto entity : entityManager.entities_with_components(categoryComponent))
+	for(auto entity : entityManager.entities_with_components(categoryComponent, transformComponent))
 	{
 		//We found the player
 		if(categoryComponent->category & Category::Player)

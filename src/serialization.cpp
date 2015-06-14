@@ -640,10 +640,10 @@ void deserialize(const Json::Value& value, entityx::ComponentHandle<SpriteCompon
 
 void deserialize(const Json::Value& value, entityx::ComponentHandle<TransformComponent> component)
 {
-	component->transform.x = value["transform"]["x"].asFloat();
-	component->transform.y = value["transform"]["y"].asFloat();
-	component->transform.z = value["transform"]["z"].asFloat();
-	component->transform.angle = value["transform"]["angle"].asFloat();
+	component->transform.x = value["x"].asFloat();
+	component->transform.y = value["y"].asFloat();
+	component->transform.z = value["z"].asFloat();
+	component->transform.angle = value["angle"].asFloat();
 }
 
 void deserialize(const Json::Value& value, entityx::ComponentHandle<InventoryComponent> component, const std::map<std::string, entityx::Entity>& entitiesMap)
