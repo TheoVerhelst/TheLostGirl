@@ -42,7 +42,6 @@
 //TODO Mettre le carquois de l'autre coté quand dirigé vers la gauche.
 //TODO Differents CAC en fonction du déplacement.
 //TODO Sauvegarde en fonction des includes.
-//TODO Changer les ath en pictures+panel pour le clipping.
 
 GameState::GameState(StateStack& stack, std::string file) :
 	State(stack),
@@ -117,9 +116,9 @@ void GameState::saveWorld(const std::string& file)
 			if(entity.second.has_component<BodyComponent>())
 				root["entities"][entity.first]["body"] = serialize(entity.second.component<BodyComponent>(), pixelByMeter);
 			if(entity.second.has_component<SpriteComponent>())
-				root["entities"][entity.first]["sprites"] = serialize(entity.second.component<SpriteComponent>(), getContext().textureManager, scale);
+				root["entities"][entity.first]["sprite"] = serialize(entity.second.component<SpriteComponent>(), getContext().textureManager, scale);
 			if(entity.second.has_component<TransformComponent>())
-				root["entities"][entity.first]["transforms"] = serialize(entity.second.component<TransformComponent>());
+				root["entities"][entity.first]["transform"] = serialize(entity.second.component<TransformComponent>());
 			if(entity.second.has_component<InventoryComponent>())
 				root["entities"][entity.first]["inventory"] = serialize(entity.second.component<InventoryComponent>(), m_entities);
 			if(entity.second.has_component<BowComponent>())
@@ -197,15 +196,11 @@ void GameState::saveWorld(const std::string& file)
 			entityx::Entity entityA{*static_cast<entityx::Entity*>(bodyA->GetUserData())};//Get the entity A from the user data
 			assert(isMember(m_entities, entityA));
 			std::string entityAName{getKey(m_entities, entityA)};//Get the name of the entity A
-			assert(isMember(entityA.component<BodyComponent>()->bodies, bodyA));//Assert that the body A is in the body component of the entity A
-			std::string partAName{getKey(entityA.component<BodyComponent>()->bodies, bodyA)};//Get the name of the part A
 
 			b2Body* bodyB{joint->GetBodyB()};//Get the body B
 			entityx::Entity entityB{*static_cast<entityx::Entity*>(bodyB->GetUserData())};//Get the entity B from the user data
 			assert(isMember(m_entities, entityB));
 			std::string entityBName{getKey(m_entities, entityB)};//Get the name of the entity B
-			assert(isMember(entityB.component<BodyComponent>()->bodies, bodyB));//Assert that the body B is in the body component of entity B
-			std::string partBName{getKey(entityB.component<BodyComponent>()->bodies, bodyB)};//Get the name of the part B
 			switch(joint->GetType())
 			{
 				case e_revoluteJoint:
@@ -215,8 +210,6 @@ void GameState::saveWorld(const std::string& file)
 					Json::ArrayIndex last{root["joints"]["revolute joints"].size()-1};
 					root["joints"]["revolute joints"][last]["entity A"] = entityAName;
 					root["joints"]["revolute joints"][last]["entity B"] = entityBName;
-					root["joints"]["revolute joints"][last]["part A"] = partAName;
-					root["joints"]["revolute joints"][last]["part B"] = partBName;
 					root["joints"]["revolute joints"][last]["local anchor A"]["x"] = castedJoint->GetLocalAnchorA().x*pixelByMeter;
 					root["joints"]["revolute joints"][last]["local anchor A"]["y"] = castedJoint->GetLocalAnchorA().y*pixelByMeter;
 					root["joints"]["revolute joints"][last]["local anchor B"]["x"] = castedJoint->GetLocalAnchorB().x*pixelByMeter;
@@ -239,8 +232,6 @@ void GameState::saveWorld(const std::string& file)
 					Json::ArrayIndex last{root["joints"]["prismatic joints"].size()-1};
 					root["joints"]["prismatic joints"][last]["entity A"] = entityAName;
 					root["joints"]["prismatic joints"][last]["entity B"] = entityBName;
-					root["joints"]["prismatic joints"][last]["part A"] = partAName;
-					root["joints"]["prismatic joints"][last]["part B"] = partBName;
 					root["joints"]["prismatic joints"][last]["local anchor A"]["x"] = castedJoint->GetLocalAnchorA().x*pixelByMeter;
 					root["joints"]["prismatic joints"][last]["local anchor A"]["y"] = castedJoint->GetLocalAnchorA().y*pixelByMeter;
 					root["joints"]["prismatic joints"][last]["local anchor B"]["x"] = castedJoint->GetLocalAnchorB().x*pixelByMeter;
@@ -266,8 +257,6 @@ void GameState::saveWorld(const std::string& file)
 					Json::ArrayIndex last{root["joints"]["distance joints"].size()-1};
 					root["joints"]["distance joints"][last]["entity A"] = entityAName;
 					root["joints"]["distance joints"][last]["entity B"] = entityBName;
-					root["joints"]["distance joints"][last]["part A"] = partAName;
-					root["joints"]["distance joints"][last]["part B"] = partBName;
 					root["joints"]["distance joints"][last]["local anchor A"]["x"] = castedJoint->GetLocalAnchorA().x*pixelByMeter;
 					root["joints"]["distance joints"][last]["local anchor A"]["y"] = castedJoint->GetLocalAnchorA().y*pixelByMeter;
 					root["joints"]["distance joints"][last]["local anchor B"]["x"] = castedJoint->GetLocalAnchorB().x*pixelByMeter;
@@ -285,13 +274,11 @@ void GameState::saveWorld(const std::string& file)
 					Json::ArrayIndex last{root["joints"]["pulley joints"].size()-1};
 					root["joints"]["pulley joints"][last]["entity A"] = entityAName;
 					root["joints"]["pulley joints"][last]["entity B"] = entityBName;
-					root["joints"]["pulley joints"][last]["part A"] = partAName;
-					root["joints"]["pulley joints"][last]["part B"] = partBName;
 					root["joints"]["pulley joints"][last]["local anchor A"]["x"] = castedJoint->GetBodyA()->GetLocalPoint(castedJoint->GetAnchorA()).x*pixelByMeter;
 					root["joints"]["pulley joints"][last]["local anchor A"]["y"] = castedJoint->GetBodyA()->GetLocalPoint(castedJoint->GetAnchorA()).y*pixelByMeter;
 					root["joints"]["pulley joints"][last]["local anchor B"]["x"] = castedJoint->GetBodyB()->GetLocalPoint(castedJoint->GetAnchorB()).x*pixelByMeter;
 					root["joints"]["pulley joints"][last]["local anchor B"]["y"] = castedJoint->GetBodyB()->GetLocalPoint(castedJoint->GetAnchorB()).y*pixelByMeter;
-		root["joints"]["pulley joints"][last]["ground anchor A"]["x"] = castedJoint->GetGroundAnchorA().x*pixelByMeter;
+					root["joints"]["pulley joints"][last]["ground anchor A"]["x"] = castedJoint->GetGroundAnchorA().x*pixelByMeter;
 					root["joints"]["pulley joints"][last]["ground anchor A"]["y"] = castedJoint->GetGroundAnchorA().y*pixelByMeter;
 					root["joints"]["pulley joints"][last]["ground anchor B"]["x"] = castedJoint->GetGroundAnchorB().x*pixelByMeter;
 					root["joints"]["pulley joints"][last]["ground anchor B"]["y"] = castedJoint->GetGroundAnchorB().y*pixelByMeter;
@@ -313,8 +300,6 @@ void GameState::saveWorld(const std::string& file)
 					Json::ArrayIndex last{root["joints"]["wheel joints"].size()-1};
 					root["joints"]["wheel joints"][last]["entity A"] = entityAName;
 					root["joints"]["wheel joints"][last]["entity B"] = entityBName;
-					root["joints"]["wheel joints"][last]["part A"] = partAName;
-					root["joints"]["wheel joints"][last]["part B"] = partBName;
 					root["joints"]["wheel joints"][last]["local anchor A"]["x"] = castedJoint->GetLocalAnchorA().x*pixelByMeter;
 					root["joints"]["wheel joints"][last]["local anchor A"]["y"] = castedJoint->GetLocalAnchorA().y*pixelByMeter;
 					root["joints"]["wheel joints"][last]["local anchor B"]["x"] = castedJoint->GetLocalAnchorB().x*pixelByMeter;
@@ -335,8 +320,6 @@ void GameState::saveWorld(const std::string& file)
 					Json::ArrayIndex last{root["joints"]["weld joints"].size()-1};
 					root["joints"]["weld joints"][last]["entity A"] = entityAName;
 					root["joints"]["weld joints"][last]["entity B"] = entityBName;
-					root["joints"]["weld joints"][last]["part A"] = partAName;
-					root["joints"]["weld joints"][last]["part B"] = partBName;
 					root["joints"]["weld joints"][last]["local anchor A"]["x"] = castedJoint->GetLocalAnchorA().x*pixelByMeter;
 					root["joints"]["weld joints"][last]["local anchor A"]["y"] = castedJoint->GetLocalAnchorA().y*pixelByMeter;
 					root["joints"]["weld joints"][last]["local anchor B"]["x"] = castedJoint->GetLocalAnchorB().x*pixelByMeter;
@@ -354,8 +337,6 @@ void GameState::saveWorld(const std::string& file)
 					Json::ArrayIndex last{root["joints"]["friction joints"].size()-1};
 					root["joints"]["friction joints"][last]["entity A"] = entityAName;
 					root["joints"]["friction joints"][last]["entity B"] = entityBName;
-					root["joints"]["friction joints"][last]["part A"] = partAName;
-					root["joints"]["friction joints"][last]["part B"] = partBName;
 					root["joints"]["friction joints"][last]["local anchor A"]["x"] = castedJoint->GetLocalAnchorA().x*pixelByMeter;
 					root["joints"]["friction joints"][last]["local anchor A"]["y"] = castedJoint->GetLocalAnchorA().y*pixelByMeter;
 					root["joints"]["friction joints"][last]["local anchor B"]["x"] = castedJoint->GetLocalAnchorB().x*pixelByMeter;
@@ -372,8 +353,6 @@ void GameState::saveWorld(const std::string& file)
 					Json::ArrayIndex last{root["joints"]["rope joints"].size()-1};
 					root["joints"]["rope joints"][last]["entity A"] = entityAName;
 					root["joints"]["rope joints"][last]["entity B"] = entityBName;
-					root["joints"]["rope joints"][last]["part A"] = partAName;
-					root["joints"]["rope joints"][last]["part B"] = partBName;
 					root["joints"]["rope joints"][last]["local anchor A"]["x"] = castedJoint->GetLocalAnchorA().x*pixelByMeter;
 					root["joints"]["rope joints"][last]["local anchor A"]["y"] = castedJoint->GetLocalAnchorA().y*pixelByMeter;
 					root["joints"]["rope joints"][last]["local anchor B"]["x"] = castedJoint->GetLocalAnchorB().x*pixelByMeter;
@@ -389,8 +368,6 @@ void GameState::saveWorld(const std::string& file)
 					Json::ArrayIndex last{root["joints"]["motor joints"].size()-1};
 					root["joints"]["motor joints"][last]["entity A"] = entityAName;
 					root["joints"]["motor joints"][last]["entity B"] = entityBName;
-					root["joints"]["motor joints"][last]["part A"] = partAName;
-					root["joints"]["motor joints"][last]["part B"] = partBName;
 					root["joints"]["motor joints"][last]["linear offset"]["x"] = castedJoint->GetLinearOffset().x*pixelByMeter;
 					root["joints"]["motor joints"][last]["linear offset"]["y"] = castedJoint->GetLinearOffset().y*pixelByMeter;
 					root["joints"]["motor joints"][last]["angular offset"] = castedJoint->GetAngularOffset();
@@ -504,17 +481,16 @@ void GameState::initWorld(const std::string& file)
 					getContext().eventManager.emit<LoadingStateChange>("Loading " + entity["name"].asString());
 				else
 					getContext().eventManager.emit<LoadingStateChange>("Loading " + entityName);
-				if(entity.isMember("transforms"))
-					deserialize(entity["transforms"], m_entities[entityName].assign<TransformComponent>());
-				if(entity.isMember("sprites"))
-					deserialize(entity["sprites"], m_entities[entityName].assign<SpriteComponent>(), texManager, paths[getContext().parameters.scaleIndex], scale);
+				if(entity.isMember("transform"))
+					deserialize(entity["transform"], m_entities[entityName].assign<TransformComponent>());
+				if(entity.isMember("sprite"))
+					deserialize(entity["sprite"], m_entities[entityName].assign<SpriteComponent>(), texManager, paths[getContext().parameters.scaleIndex], scale);
 				//body
 				if(entity.isMember("body"))
 				{
 					deserialize(entity["body"], m_entities[entityName].assign<BodyComponent>(), m_entities[entityName].component<TransformComponent>(), getContext().world, pixelByMeter);
-					//Assign user data to every body of the entity
-					for(auto& bodyPair : m_entities[entityName].component<BodyComponent>()->bodies)
-						bodyPair.second->SetUserData(&m_entities[entityName]);
+					//Assign user data to the body of the entity
+					m_entities[entityName].component<BodyComponent>()->body->SetUserData(&m_entities[entityName]);
 				}
 				//spritesheet animations
 				if(entity.isMember("spritesheet animations"))
@@ -618,12 +594,10 @@ void GameState::initWorld(const std::string& file)
 						sf::Sprite replaceSpr(texManager.get(textureIdentifier));
 						replaceSpr.setPosition(replaceTransform.x, replaceTransform.y);
 						replaceSpr.setRotation(replaceTransform.angle);
-						std::map<std::string, sf::Sprite> sprites{{"main", replaceSpr}};
-						std::map<std::string, Transform> transforms{{"main", replaceTransform}};
 						SpriteComponent::Handle sprComp{m_sceneEntities[replaceIdentifier].assign<SpriteComponent>()};
-						sprComp->sprites = sprites;
+						sprComp->sprite = replaceSpr;
 						TransformComponent::Handle trsfComp{m_sceneEntities[replaceIdentifier].assign<TransformComponent>()};
-						trsfComp->transforms = transforms;
+						trsfComp->transform = replaceTransform;
 						CategoryComponent::Handle catComp{m_sceneEntities[replaceIdentifier].assign<CategoryComponent>()};
 						catComp->category = Category::Scene;
 					}
@@ -658,12 +632,10 @@ void GameState::initWorld(const std::string& file)
 					//Assign the sprite to the entity
 					sf::Sprite chunkSpr(texManager.get(textureIdentifier));
 					chunkSpr.setPosition(float(j*chunkSize), 0);
-					std::map<std::string, sf::Sprite> sprites{{"main", chunkSpr}};
-					std::map<std::string, Transform> transforms{{"main", {static_cast<float>(j*chunkSize), 0, static_cast<float>(i), 0}}};
 					SpriteComponent::Handle sprComp{m_sceneEntities[textureIdentifier].assign<SpriteComponent>()};
-					sprComp->sprites = sprites;
+					sprComp->sprite = chunkSpr;
 					TransformComponent::Handle trsfComp{m_sceneEntities[textureIdentifier].assign<TransformComponent>()};
-					trsfComp->transforms = transforms;
+					trsfComp->transform = {static_cast<float>(j*chunkSize), 0, static_cast<float>(i), 0};
 					CategoryComponent::Handle catComp{m_sceneEntities[textureIdentifier].assign<CategoryComponent>()};
 					catComp->category = Category::Scene;
 					//Update the ScrollingSystem in order to directly display the sprite at the right position
@@ -684,22 +656,17 @@ void GameState::initWorld(const std::string& file)
 					const Json::Value joint{revoluteJoints[i]};
 					const std::string entityA{joint["entity A"].asString()};
 					const std::string entityB{joint["entity B"].asString()};
-					const std::string partA{joint["part A"].asString()};
-					const std::string partB{joint["part B"].asString()};
 					//Assert that somes entities exists
 					requireValues(root, "root", {{"entities", Json::objectValue}});
 					//Assert that the given entities exist
 					requireValues(root["entities"], "entities", {{entityA, Json::objectValue}, {entityB, Json::objectValue}});
-					//Assert that that entities have some bodies
+					//Assert that that entities have a body
 					requireValues(root["entities"][entityA], "entities." + entityA, {{"body", Json::objectValue}});
 					requireValues(root["entities"][entityB], "entities." + entityB, {{"body", Json::objectValue}});
-					//Assert that that entities have the givens parts
-					requireValues(root["entities"][entityA]["body"], "entities." + entityA + ".body", {{partA, Json::objectValue}});
-					requireValues(root["entities"][entityB]["body"], "entities." + entityB + ".body", {{partB, Json::objectValue}});
 
 					b2RevoluteJointDef jointDef;
-					jointDef.bodyA = m_entities[entityA].component<BodyComponent>()->bodies[partA];
-					jointDef.bodyB = m_entities[entityB].component<BodyComponent>()->bodies[partB];
+					jointDef.bodyA = m_entities[entityA].component<BodyComponent>()->body;
+					jointDef.bodyB = m_entities[entityB].component<BodyComponent>()->body;
 					jointDef.localAnchorA.x = joint["local anchor A"]["x"].asFloat()/pixelByMeter;
 					jointDef.localAnchorA.y = joint["local anchor A"]["y"].asFloat()/pixelByMeter;
 					jointDef.localAnchorB.x = joint["local anchor B"]["x"].asFloat()/pixelByMeter;
@@ -729,22 +696,18 @@ void GameState::initWorld(const std::string& file)
 					const Json::Value joint{distanceJoints[i]};
 					const std::string entityA{joint["entity A"].asString()};
 					const std::string entityB{joint["entity B"].asString()};
-					const std::string partA{joint["part A"].asString()};
-					const std::string partB{joint["part B"].asString()};
+					const std::string entityB{joint["entity B"].asString()};
 					//Assert that somes entities exists
 					requireValues(root, "root", {{"entities", Json::objectValue}});
 					//Assert that the given entities exist
 					requireValues(root["entities"], "entities", {{entityA, Json::objectValue}, {entityB, Json::objectValue}});
-					//Assert that that entities have some bodies
+					//Assert that that entities have a body
 					requireValues(root["entities"][entityA], "entities." + entityA, {{"body", Json::objectValue}});
 					requireValues(root["entities"][entityB], "entities." + entityB, {{"body", Json::objectValue}});
-					//Assert that that entities have the givens parts
-					requireValues(root["entities"][entityA]["body"], "entities." + entityA + ".body", {{partA, Json::objectValue}});
-					requireValues(root["entities"][entityB]["body"], "entities." + entityB + ".body", {{partB, Json::objectValue}});
 
 					b2DistanceJointDef jointDef;
-					jointDef.bodyA = m_entities[entityA].component<BodyComponent>()->bodies[partA];
-					jointDef.bodyB = m_entities[entityB].component<BodyComponent>()->bodies[partB];
+					jointDef.bodyA = m_entities[entityA].component<BodyComponent>()->body;
+					jointDef.bodyB = m_entities[entityB].component<BodyComponent>()->body;
 					jointDef.localAnchorA.x = joint["local anchor A"]["x"].asFloat()/pixelByMeter;
 					jointDef.localAnchorA.y = joint["local anchor A"]["y"].asFloat()/pixelByMeter;
 					jointDef.localAnchorB.x = joint["local anchor B"]["x"].asFloat()/pixelByMeter;
@@ -764,22 +727,17 @@ void GameState::initWorld(const std::string& file)
 					const Json::Value joint{frictionJoints[i]};
 					const std::string entityA{joint["entity A"].asString()};
 					const std::string entityB{joint["entity B"].asString()};
-					const std::string partA{joint["part A"].asString()};
-					const std::string partB{joint["part B"].asString()};
 					//Assert that somes entities exists
 					requireValues(root, "root", {{"entities", Json::objectValue}});
 					//Assert that the given entities exist
 					requireValues(root["entities"], "entities", {{entityA, Json::objectValue}, {entityB, Json::objectValue}});
-					//Assert that that entities have some bodies
+					//Assert that that entities have a body
 					requireValues(root["entities"][entityA], "entities." + entityA, {{"body", Json::objectValue}});
 					requireValues(root["entities"][entityB], "entities." + entityB, {{"body", Json::objectValue}});
-					//Assert that that entities have the givens parts
-					requireValues(root["entities"][entityA]["body"], "entities." + entityA + ".body", {{partA, Json::objectValue}});
-					requireValues(root["entities"][entityB]["body"], "entities." + entityB + ".body", {{partB, Json::objectValue}});
 
 					b2FrictionJointDef jointDef;
-					jointDef.bodyA = m_entities[entityA].component<BodyComponent>()->bodies[partA];
-					jointDef.bodyB = m_entities[entityB].component<BodyComponent>()->bodies[partB];
+					jointDef.bodyA = m_entities[entityA].component<BodyComponent>()->body;
+					jointDef.bodyB = m_entities[entityB].component<BodyComponent>()->body;
 					jointDef.localAnchorA.x = joint["local anchor A"]["x"].asFloat()/pixelByMeter;
 					jointDef.localAnchorA.y = joint["local anchor A"]["y"].asFloat()/pixelByMeter;
 					jointDef.localAnchorB.x = joint["local anchor B"]["x"].asFloat()/pixelByMeter;
@@ -806,22 +764,17 @@ void GameState::initWorld(const std::string& file)
 					const Json::Value joint{motorJoints[i]};
 					const std::string entityA{joint["entity A"].asString()};
 					const std::string entityB{joint["entity B"].asString()};
-					const std::string partA{joint["part A"].asString()};
-					const std::string partB{joint["part B"].asString()};
 					//Assert that somes entities exists
 					requireValues(root, "root", {{"entities", Json::objectValue}});
 					//Assert that the given entities exist
 					requireValues(root["entities"], "entities", {{entityA, Json::objectValue}, {entityB, Json::objectValue}});
-					//Assert that that entities have some bodies
+					//Assert that that entities have a body
 					requireValues(root["entities"][entityA], "entities." + entityA, {{"body", Json::objectValue}});
 					requireValues(root["entities"][entityB], "entities." + entityB, {{"body", Json::objectValue}});
-					//Assert that that entities have the givens parts
-					requireValues(root["entities"][entityA]["body"], "entities." + entityA + ".body", {{partA, Json::objectValue}});
-					requireValues(root["entities"][entityB]["body"], "entities." + entityB + ".body", {{partB, Json::objectValue}});
 
 					b2MotorJointDef jointDef;
-					jointDef.bodyA = m_entities[entityA].component<BodyComponent>()->bodies[partA];
-					jointDef.bodyB = m_entities[entityB].component<BodyComponent>()->bodies[partB];
+					jointDef.bodyA = m_entities[entityA].component<BodyComponent>()->body;
+					jointDef.bodyB = m_entities[entityB].component<BodyComponent>()->body;
 					jointDef.maxTorque = joint["maximum torque"].asFloat()/pixelByMeter;
 					jointDef.maxForce = joint["maximum force"].asFloat()/pixelByMeter;
 					jointDef.linearOffset.x = joint["linear offset"]["x"].asFloat()/pixelByMeter;
@@ -840,22 +793,17 @@ void GameState::initWorld(const std::string& file)
 					const Json::Value joint{prismaticJoints[i]};
 					const std::string entityA{joint["entity A"].asString()};
 					const std::string entityB{joint["entity B"].asString()};
-					const std::string partA{joint["part A"].asString()};
-					const std::string partB{joint["part B"].asString()};
 					//Assert that somes entities exists
 					requireValues(root, "root", {{"entities", Json::objectValue}});
 					//Assert that the given entities exist
 					requireValues(root["entities"], "entities", {{entityA, Json::objectValue}, {entityB, Json::objectValue}});
-					//Assert that that entities have some bodies
+					//Assert that that entities have a body
 					requireValues(root["entities"][entityA], "entities." + entityA, {{"body", Json::objectValue}});
 					requireValues(root["entities"][entityB], "entities." + entityB, {{"body", Json::objectValue}});
-					//Assert that that entities have the givens parts
-					requireValues(root["entities"][entityA]["body"], "entities." + entityA + ".body", {{partA, Json::objectValue}});
-					requireValues(root["entities"][entityB]["body"], "entities." + entityB + ".body", {{partB, Json::objectValue}});
 
 					b2PrismaticJointDef jointDef;
-					jointDef.bodyA = m_entities[entityA].component<BodyComponent>()->bodies[partA];
-					jointDef.bodyB = m_entities[entityB].component<BodyComponent>()->bodies[partB];
+					jointDef.bodyA = m_entities[entityA].component<BodyComponent>()->body;
+					jointDef.bodyB = m_entities[entityB].component<BodyComponent>()->body;
 					jointDef.localAnchorA.x = joint["local anchor A"]["x"].asFloat()/pixelByMeter;
 					jointDef.localAnchorA.y = joint["local anchor A"]["y"].asFloat()/pixelByMeter;
 					jointDef.localAnchorB.x = joint["local anchor B"]["x"].asFloat()/pixelByMeter;
@@ -888,22 +836,17 @@ void GameState::initWorld(const std::string& file)
 					const Json::Value joint{pulleyJoints[i]};
 					const std::string entityA{joint["entity A"].asString()};
 					const std::string entityB{joint["entity B"].asString()};
-					const std::string partA{joint["part A"].asString()};
-					const std::string partB{joint["part B"].asString()};
 					//Assert that somes entities exists
 					requireValues(root, "root", {{"entities", Json::objectValue}});
 					//Assert that the given entities exist
 					requireValues(root["entities"], "entities", {{entityA, Json::objectValue}, {entityB, Json::objectValue}});
-					//Assert that that entities have some bodies
+					//Assert that that entities have a body
 					requireValues(root["entities"][entityA], "entities." + entityA, {{"body", Json::objectValue}});
 					requireValues(root["entities"][entityB], "entities." + entityB, {{"body", Json::objectValue}});
-					//Assert that that entities have the givens parts
-					requireValues(root["entities"][entityA]["body"], "entities." + entityA + ".body", {{partA, Json::objectValue}});
-					requireValues(root["entities"][entityB]["body"], "entities." + entityB + ".body", {{partB, Json::objectValue}});
 
 					b2PulleyJointDef jointDef;
-					jointDef.bodyA = m_entities[entityA].component<BodyComponent>()->bodies[partA];
-					jointDef.bodyB = m_entities[entityB].component<BodyComponent>()->bodies[partB];
+					jointDef.bodyA = m_entities[entityA].component<BodyComponent>()->body;
+					jointDef.bodyB = m_entities[entityB].component<BodyComponent>()->body;
 					jointDef.localAnchorA.x = joint["local anchor A"]["x"].asFloat()/pixelByMeter;
 					jointDef.localAnchorA.y = joint["local anchor A"]["y"].asFloat()/pixelByMeter;
 					jointDef.localAnchorB.x = joint["local anchor B"]["x"].asFloat()/pixelByMeter;
@@ -927,22 +870,17 @@ void GameState::initWorld(const std::string& file)
 					const Json::Value joint{ropeJoints[i]};
 					const std::string entityA{joint["entity A"].asString()};
 					const std::string entityB{joint["entity B"].asString()};
-					const std::string partA{joint["part A"].asString()};
-					const std::string partB{joint["part B"].asString()};
 					//Assert that somes entities exists
 					requireValues(root, "root", {{"entities", Json::objectValue}});
 					//Assert that the given entities exist
 					requireValues(root["entities"], "entities", {{entityA, Json::objectValue}, {entityB, Json::objectValue}});
-					//Assert that that entities have some bodies
+					//Assert that that entities have a body
 					requireValues(root["entities"][entityA], "entities." + entityA, {{"body", Json::objectValue}});
 					requireValues(root["entities"][entityB], "entities." + entityB, {{"body", Json::objectValue}});
-					//Assert that that entities have the givens parts
-					requireValues(root["entities"][entityA]["body"], "entities." + entityA + ".body", {{partA, Json::objectValue}});
-					requireValues(root["entities"][entityB]["body"], "entities." + entityB + ".body", {{partB, Json::objectValue}});
 
 					b2RopeJointDef jointDef;
-					jointDef.bodyA = m_entities[entityA].component<BodyComponent>()->bodies[partA];
-					jointDef.bodyB = m_entities[entityB].component<BodyComponent>()->bodies[partB];
+					jointDef.bodyA = m_entities[entityA].component<BodyComponent>()->body;
+					jointDef.bodyB = m_entities[entityB].component<BodyComponent>()->body;
 					jointDef.localAnchorA.x = joint["local anchor A"]["x"].asFloat()/pixelByMeter;
 					jointDef.localAnchorA.y = joint["local anchor A"]["y"].asFloat()/pixelByMeter;
 					jointDef.localAnchorB.x = joint["local anchor B"]["x"].asFloat()/pixelByMeter;
@@ -960,22 +898,17 @@ void GameState::initWorld(const std::string& file)
 					const Json::Value joint{weldJoints[i]};
 					const std::string entityA{joint["entity A"].asString()};
 					const std::string entityB{joint["entity B"].asString()};
-					const std::string partA{joint["part A"].asString()};
-					const std::string partB{joint["part B"].asString()};
 					//Assert that somes entities exists
 					requireValues(root, "root", {{"entities", Json::objectValue}});
 					//Assert that the given entities exist
 					requireValues(root["entities"], "entities", {{entityA, Json::objectValue}, {entityB, Json::objectValue}});
-					//Assert that that entities have some bodies
+					//Assert that that entities have a body
 					requireValues(root["entities"][entityA], "entities." + entityA, {{"body", Json::objectValue}});
 					requireValues(root["entities"][entityB], "entities." + entityB, {{"body", Json::objectValue}});
-					//Assert that that entities have the givens parts
-					requireValues(root["entities"][entityA]["body"], "entities." + entityA + ".body", {{partA, Json::objectValue}});
-					requireValues(root["entities"][entityB]["body"], "entities." + entityB + ".body", {{partB, Json::objectValue}});
 
 					b2WeldJointDef jointDef;
-					jointDef.bodyA = m_entities[entityA].component<BodyComponent>()->bodies[partA];
-					jointDef.bodyB = m_entities[entityB].component<BodyComponent>()->bodies[partB];
+					jointDef.bodyA = m_entities[entityA].component<BodyComponent>()->body;
+					jointDef.bodyB = m_entities[entityB].component<BodyComponent>()->body;
 					jointDef.localAnchorA.x = joint["local anchor A"]["x"].asFloat()/pixelByMeter;
 					jointDef.localAnchorA.y = joint["local anchor A"]["y"].asFloat()/pixelByMeter;
 					jointDef.localAnchorB.x = joint["local anchor B"]["x"].asFloat()/pixelByMeter;
@@ -995,22 +928,17 @@ void GameState::initWorld(const std::string& file)
 					const Json::Value joint{wheelJoints[i]};
 					const std::string entityA{joint["entity A"].asString()};
 					const std::string entityB{joint["entity B"].asString()};
-					const std::string partA{joint["part A"].asString()};
-					const std::string partB{joint["part B"].asString()};
 					//Assert that somes entities exists
 					requireValues(root, "root", {{"entities", Json::objectValue}});
 					//Assert that the given entities exist
 					requireValues(root["entities"], "entities", {{entityA, Json::objectValue}, {entityB, Json::objectValue}});
-					//Assert that that entities have some bodies
+					//Assert that that entities have a body
 					requireValues(root["entities"][entityA], "entities." + entityA, {{"body", Json::objectValue}});
 					requireValues(root["entities"][entityB], "entities." + entityB, {{"body", Json::objectValue}});
-					//Assert that that entities have the givens parts
-					requireValues(root["entities"][entityA]["body"], "entities." + entityA + ".body", {{partA, Json::objectValue}});
-					requireValues(root["entities"][entityB]["body"], "entities." + entityB + ".body", {{partB, Json::objectValue}});
 
 					b2WheelJointDef jointDef;
-					jointDef.bodyA = m_entities[entityA].component<BodyComponent>()->bodies[partA];
-					jointDef.bodyB = m_entities[entityB].component<BodyComponent>()->bodies[partB];
+					jointDef.bodyA = m_entities[entityA].component<BodyComponent>()->body;
+					jointDef.bodyB = m_entities[entityB].component<BodyComponent>()->body;
 					jointDef.localAnchorA.x = joint["local anchor A"]["x"].asFloat()/pixelByMeter;
 					jointDef.localAnchorA.y = joint["local anchor A"]["y"].asFloat()/pixelByMeter;
 					jointDef.localAnchorB.x = joint["local anchor B"]["x"].asFloat()/pixelByMeter;
@@ -1029,15 +957,25 @@ void GameState::initWorld(const std::string& file)
 		}
 
 		//Add sky animations.
-		if(m_entities.find("sky") != m_entities.end() and m_entities["sky"].valid())
+		if(m_entities.find("day sky") != m_entities.end() and m_entities["day sky"].valid())
 		{
-			AnimationsComponent<SkyAnimation>::Handle skyAnimationsComp{m_entities["sky"].assign<AnimationsComponent<SkyAnimation>>()};
-			skyAnimationsComp->animationsManagers.emplace("main", AnimationsManager<SkyAnimation>());
+			AnimationsComponent<SkyAnimation>::Handle skyAnimationsComp{m_entities["day sky"].assign<AnimationsComponent<SkyAnimation>>()};
 			//Add the animation, this is a sky animation, the importance is equal to zero, the duration is 600 seconds (1 day), and it loops.
-			skyAnimationsComp->animationsManagers["main"].addAnimation("day/night cycle", SkyAnimation(m_entities["sky"]), 0, sf::seconds(600), true);
+			skyAnimationsComp->animationsManager.addAnimation("day/night cycle", SkyAnimation(m_entities["day sky"]), 0, sf::seconds(600), true);
 			const float daySeconds{std::remainder(getContext().systemManager.system<TimeSystem>()->getRealTime().asSeconds(), 600.f)};
-			skyAnimationsComp->animationsManagers["main"].setProgress("day/night cycle", daySeconds/600.f);
-			skyAnimationsComp->animationsManagers["main"].play("day/night cycle");
+			skyAnimationsComp->animationsManager.setProgress("day/night cycle", daySeconds/600.f);
+			skyAnimationsComp->animationsManager.play("day/night cycle");
+		}
+
+		//Add sky animations.
+		if(m_entities.find("night sky") != m_entities.end() and m_entities["night sky"].valid())
+		{
+			AnimationsComponent<SkyAnimation>::Handle skyAnimationsComp{m_entities["night sky"].assign<AnimationsComponent<SkyAnimation>>()};
+			//Add the animation, this is a sky animation, the importance is equal to zero, the duration is 600 seconds (1 day), and it loops.
+			skyAnimationsComp->animationsManager.addAnimation("day/night cycle", SkyAnimation(m_entities["night sky"]), 0, sf::seconds(600), true);
+			const float daySeconds{std::remainder(getContext().systemManager.system<TimeSystem>()->getRealTime().asSeconds(), 600.f)};
+			skyAnimationsComp->animationsManager.setProgress("day/night cycle", daySeconds/600.f);
+			skyAnimationsComp->animationsManager.play("day/night cycle");
 		}
 
 		getContext().systemManager.system<ScrollingSystem>()->searchPlayer(getContext().entityManager);
@@ -1063,8 +1001,7 @@ void GameState::clear()
     for(auto& entity : m_entities)
     {
         if(entity.second.has_component<BodyComponent>())
-            for(auto& partBody : entity.second.component<BodyComponent>()->bodies)
-                getContext().world.DestroyBody(partBody.second);
+                getContext().world.DestroyBody(entity.second.component<BodyComponent>()->body);
 
         entity.second.destroy();
     }
