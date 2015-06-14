@@ -2,6 +2,28 @@
 	"include" : ["player.json", "mobs.json", "items.json"],
 	"entities" : 
 	{
+		"bow"
+		{
+			"base" : "bow",
+			"transform" : 
+			{
+				"angle" : -4.631782531738281,
+				"x" : 534.9387817382812,
+				"y" : 400.314208984375,
+				"z" : 1
+			}
+		},
+		"archer arms"
+		{
+			"base" : "archer arms",
+			"transform" : 
+			{
+				"angle" : -4.631768226623535,
+				"x" : 535.3424072265625,
+				"y" : 405.2977905273438,
+				"z" : 1
+			}
+		},
 		"archer" : 
 		{
 			"base" : "player",
@@ -59,38 +81,12 @@
 				"maximum" : 100,
 				"regeneration" : 2
 			},
-			"transforms" : 
+			"transform" : 
 			{
-				"arms" : 
-				{
-					"transform" : 
-					{
-						"angle" : -4.631768226623535,
-						"x" : 535.3424072265625,
-						"y" : 405.2977905273438,
-						"z" : 1
-					}
-				},
-				"bow" : 
-				{
-					"transform" : 
-					{
-						"angle" : -4.631782531738281,
-						"x" : 534.9387817382812,
-						"y" : 400.314208984375,
-						"z" : 1
-					}
-				},
-				"main" : 
-				{
-					"transform" : 
-					{
-						"angle" : 0,
-						"x" : 536.6326293945312,
-						"y" : 351.201416015625,
-						"z" : 1
-					}
-				}
+				"angle" : 0,
+				"x" : 536.6326293945312,
+				"y" : 351.201416015625,
+				"z" : 1
 			},
 			"walk" : 
 			{
@@ -118,197 +114,156 @@
 		{
 			"body" : 
 			{
-				"main" : 
-				{
-					"active" : true,
-					"allow sleep" : true,
-					"angular damping" : 0,
-					"angular velocity" : 0,
-					"awake" : true,
-					"bullet" : false,
-					"chain fixtures" : 
-					[
-						{
-							"density" : 0,
-							"friction" : 0.5,
-							"is sensor" : false,
-							"restitution" : 0,
-							"vertices" : 
-							[
-								{
-									"x" : 0,
-									"y" : 0
-								},
-								{
-									"x" : 0,
-									"y" : 299.9999694824219
-								},
-								{
-									"x" : 49.99998092651367,
-									"y" : 799.9996948242188
-								},
-								{
-									"x" : 599.9999389648438,
-									"y" : 799.9996948242188
-								},
-								{
-									"x" : 899.9996948242188,
-									"y" : 739.99951171875
-								},
-								{
-									"x" : 1149.999755859375,
-									"y" : 799.9996948242188
-								},
-								{
-									"x" : 19199.998046875,
-									"y" : 799.9996948242188
-								},
-								{
-									"x" : 19199.998046875,
-									"y" : 0
-								}
-							]
-						}
-					],
-					"fixed rotation" : false,
-					"gravity scale" : 1,
-					"linear damping" : 0,
-					"linear velocity" : 
+				"active" : true,
+				"allow sleep" : true,
+				"angular damping" : 0,
+				"angular velocity" : 0,
+				"awake" : true,
+				"bullet" : false,
+				"chain fixtures" : 
+				[
 					{
-						"x" : 0,
-						"y" : 0
-					},
-					"type" : "static"
-				}
+						"density" : 0,
+						"friction" : 0.5,
+						"is sensor" : false,
+						"restitution" : 0,
+						"vertices" : 
+						[
+							{
+								"x" : 0,
+								"y" : 0
+							},
+							{
+								"x" : 0,
+								"y" : 299.9999694824219
+							},
+							{
+								"x" : 49.99998092651367,
+								"y" : 799.9996948242188
+							},
+							{
+								"x" : 599.9999389648438,
+								"y" : 799.9996948242188
+							},
+							{
+								"x" : 899.9996948242188,
+								"y" : 739.99951171875
+							},
+							{
+								"x" : 1149.999755859375,
+								"y" : 799.9996948242188
+							},
+							{
+								"x" : 19199.998046875,
+								"y" : 799.9996948242188
+							},
+							{
+								"x" : 19199.998046875,
+								"y" : 0
+							}
+						]
+					}
+				],
+				"fixed rotation" : false,
+				"gravity scale" : 1,
+				"linear damping" : 0,
+				"linear velocity" : 
+				{
+					"x" : 0,
+					"y" : 0
+				},
+				"type" : "static"
 			},
 			"hardness" : 0.5,
-			"transforms" : 
+			"transform" : 
 			{
-				"main" : 
-				{
-					"transform" : 
-					{
-						"angle" : 0,
-						"x" : 0,
-						"y" : 0,
-						"z" : 1
-					}
-				}
+				"angle" : 0,
+				"x" : 0,
+				"y" : 0,
+				"z" : 1
 			}
 		},
 		"wolf 1" : 
 		{
 			"base" : "wood wolf",
-			"transforms" : 
+			"transform" : 
 			{
-				"main" : 
-				{
-					"transform" : 
-					{
-						"angle" : 0,
-						"x" : 1743.572509765625,
-						"y" : 672.1998291015625,
-						"z" : 1
-					}
-				}
+				"angle" : 0,
+				"x" : 1743.572509765625,
+				"y" : 672.1998291015625,
+				"z" : 1
 			}
 		},
 		"wolf 2" : 
 		{
 			"base" : "wood wolf",
-			"transforms" : 
+			"transform" : 
 			{
-				"main" : 
-				{
-					"transform" : 
-					{
-						"angle" : 0,
-						"x" : 1943.572509765625,
-						"y" : 672.1998291015625,
-						"z" : 1
-					}
-				}
+				"angle" : 0,
+				"x" : 1943.572509765625,
+				"y" : 672.1998291015625,
+				"z" : 1
 			}
 		},
 		"wolf 3" : 
 		{
 			"base" : "wood wolf",
-			"transforms" : 
+			"transform" : 
 			{
-				"main" : 
-				{
-					"transform" : 
-					{
-						"angle" : 0,
-						"x" : 1543.572509765625,
-						"y" : 672.1998291015625,
-						"z" : 1
-					}
-				}
+				"angle" : 0,
+				"x" : 1543.572509765625,
+				"y" : 672.1998291015625,
+				"z" : 1
 			}
 		},
 		"wolf 4" : 
 		{
 			"base" : "wood wolf",
-			"transforms" : 
+			"transform" : 
 			{
-				"main" : 
-				{
-					"transform" : 
-					{
-						"angle" : 0,
-						"x" : 2143.572509765625,
-						"y" : 672.1998291015625,
-						"z" : 1
-					}
-				}
+				"angle" : 0,
+				"x" : 2143.572509765625,
+				"y" : 672.1998291015625,
+				"z" : 1
 			}
 		},
-		"sky" : 
+		"day sky" : 
 		{
-			"sprites" :
+			"sprite" :
 			{
-				"day" :
+				"identifier" : "day.png",
+				"origin" :
 				{
-					"identifier" : "day.png",
-					"origin" :
-					{
-						"x" : 1450,
-						"y" : 1450
-					}
-				},
-				"night" :
-				{
-					"identifier" : "night.png",
-					"origin" :
-					{
-						"x" : 1450,
-						"y" : 1450
-					}
+					"x" : 1450,
+					"y" : 1450
 				}
 			},
-			"transforms" :
+			"transform" :
 			{
-				"day" :
+				"x" : 960,
+				"y" : 1080,
+				"z" : infinity,
+				"angle" : 0
+			},
+			"categories" : ["scene"]
+		},
+		"night sky" : 
+		{
+			"sprite" :
+			{
+				"identifier" : "night.png",
+				"origin" :
 				{
-					"transform" :
-					{
-						"x" : 960,
-						"y" : 1080,
-						"z" : infinity,
-						"angle" : 0
-					}
-				},
-				"night" :
-				{
-					"transform":
-					{
-						"x" : 960,
-						"y" : 1080,
-						"z" : infinity,
-						"angle" : 0
-					}
+					"x" : 1450,
+					"y" : 1450
 				}
+			},
+			"transform" :
+			{
+				"x" : 960,
+				"y" : 1080,
+				"z" : infinity,
+				"angle" : 0
 			},
 			"categories" : ["scene"]
 		}
