@@ -24,32 +24,24 @@ void AnimationsSystem::update(entityx::EntityManager& entityManager, entityx::Ev
 															directionComponent,
 															fallComponent))
 	{
-		for(auto& animationsPair : animationsComponent->animationsManagers)
+		AnimationsManager<SpriteSheetAnimation>& animations(animationsComponent->animationsManager);
+		if(fallComponent->inAir and bodyComponent->body->GetLinearVelocity().y > 2.f
+			and animations.isRegistred("jump left") and animations.isRegistred("jump right"))
 		{
-			AnimationsManager<SpriteSheetAnimation>& animations(animationsPair.second);
-			b2Body* body{bodyComponent->bodies.at(animationsPair.first)};
-			if(fallComponent->inAir and body->GetLinearVelocity().y > 2.f
-				and animations.isRegistred("jump left") and animations.isRegistred("jump right"))
-			{
-				if(directionComponent->direction == Direction::Left)
-					animations.stop("jump left");
-				else if(directionComponent->direction == Direction::Right)
-					animations.stop("jump right");
-			}
+			if(directionComponent->direction == Direction::Left)
+				animations.stop("jump left");
+			else if(directionComponent->direction == Direction::Right)
+				animations.stop("jump right");
 		}
 	}
 
 	//Update the AnimationsManager components
 	for(auto entity : entityManager.entities_with_components(animationsComponent))
-		//For each animations manager of the entity
-		for(auto& animationsPair : animationsComponent->animationsManagers)
-			animationsPair.second.update(sf::seconds(float(dt)));
+		animationsComponent->animationsManager.update(sf::seconds(float(dt)));
 
 	//Update the AnimationsManager components of the sky entities
 	for(auto entity : entityManager.entities_with_components(skyAnimationsComponent))
-		//For each animations manager of the entity
-		for(auto& animationsPair : skyAnimationsComponent->animationsManagers)
-			animationsPair.second.update(sf::seconds(float(dt)*m_timeSpeed));
+		animationsComponent->animationsManager.update(sf::seconds(float(dt)*m_timeSpeed));
 }
 
 void AnimationsSystem::setTimeSpeed(float timeSpeed)
