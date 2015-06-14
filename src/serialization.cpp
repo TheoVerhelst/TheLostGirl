@@ -155,10 +155,10 @@ Json::Value serialize(entityx::ComponentHandle<SpriteComponent> component, Textu
 	Json::Value ret;
 	const sf::Texture* tex{component->sprite.getTexture()};//Get the associated texture
 	ret["identifier"] = textureManager.getIdentifier(*tex);//Get the identifier of the texture
-	if(component->sprite.second.getOrigin() != sf::Vector2f(0, 0))
+	if(component->sprite.getOrigin() != sf::Vector2f(0, 0))
 	{
-		ret["origin"]["x"] = component->sprite.second.getOrigin().x/scale;
-		ret["origin"]["y"] = component->sprite.second.getOrigin().y/scale;
+		ret["origin"]["x"] = component->sprite.getOrigin().x/scale;
+		ret["origin"]["y"] = component->sprite.getOrigin().y/scale;
 	}
 	return ret;
 }

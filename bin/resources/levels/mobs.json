@@ -139,10 +139,7 @@
 			},
 			"sprite" : 
 			{
-				"main" : 
-				{
-					"identifier" : "wolf.png"
-				}
+				"identifier" : "wolf.png"
 			},
 			"spritesheet animations" : 
 			{

@@ -153,7 +153,6 @@ void Mover::operator()(entityx::Entity entity, double) const
 			//If the entity have animations
 			if(animationsComponent)
 			{
-				bool moveToOppDirection{direction == Direction::Right ? directionComponent->moveToLeft : directionComponent->moveToRight};
 				AnimationsManager<SpriteSheetAnimation>& animations(animationsComponent->animationsManager);
 				//If the animations manager have bending animations
 				if(animations.isRegistred("bend" + directionStr)

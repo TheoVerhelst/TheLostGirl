@@ -672,36 +672,27 @@
                         "required" : false,
                         "children":
 						[
-							{
-								"name" : "transform",
-								"type" : "object",
-								"free children names" : false,
-								"required" : false,
-								"children" :
-								[
-									{
-										"name" : "x",
-										"type" : "real",
-										"required" : true
-									},
-									{
-										"name" : "y",
-										"type" : "real",
-										"required" : true
-									},
-									{
-										"name" : "z",
-										"type" : "real",
-										"required" : true
-									},
-									{
-										"name" : "angle",
-										"type" : "real",
-										"required" : false,
-										"default value" : 0
-									}
-								]
-							}
+								{
+									"name" : "x",
+									"type" : "real",
+									"required" : true
+								},
+								{
+									"name" : "y",
+									"type" : "real",
+									"required" : true
+								},
+								{
+									"name" : "z",
+									"type" : "real",
+									"required" : true
+								},
+								{
+									"name" : "angle",
+									"type" : "real",
+									"required" : false,
+									"default value" : 0
+								}
 						]
                     },
                     {

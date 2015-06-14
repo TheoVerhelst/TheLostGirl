@@ -696,7 +696,6 @@ void GameState::initWorld(const std::string& file)
 					const Json::Value joint{distanceJoints[i]};
 					const std::string entityA{joint["entity A"].asString()};
 					const std::string entityB{joint["entity B"].asString()};
-					const std::string entityB{joint["entity B"].asString()};
 					//Assert that somes entities exists
 					requireValues(root, "root", {{"entities", Json::objectValue}});
 					//Assert that the given entities exist

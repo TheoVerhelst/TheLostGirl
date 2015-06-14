@@ -2,7 +2,7 @@
 	"include" : ["archer.json", "mobs.json", "items.json"],
 	"entities" : 
 	{
-		"bow"
+		"player bow" :
 		{
 			"base" : "bow",
 			"transform" : 
@@ -13,7 +13,7 @@
 				"z" : 1
 			}
 		},
-		"player arms"
+		"player arms" :
 		{
 			"base" : "archer arms",
 			"transform" : 

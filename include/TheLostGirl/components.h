@@ -19,7 +19,7 @@ class AnimationsManager;
 /// The BodyComponent component store a pointer to a b2Body and is used to simulate physics in the game world.
 struct BodyComponent : public entityx::Component<BodyComponent>
 {
-	b2Body body;///< Pointer to the physic body.
+	b2Body* body;///< Pointer to the physic body.
 };
 
 /// Sprite component.
@@ -140,7 +140,6 @@ struct BowComponent : public entityx::Component<BowComponent>
 	float angle;                      ///< The current angle of the bow, in radians.
 	std::list<entityx::Entity> arrows;///< List of all stocked arrows.
 	entityx::Entity notchedArrow;     ///< Current arrow notched in the bow.
-	b2PrismaticJoint* joint;          ///< The joint that hold the arrow notched.
 	unsigned int quiverCapacity;      ///< Maximum number of arrows in the quiver.
 };
 
