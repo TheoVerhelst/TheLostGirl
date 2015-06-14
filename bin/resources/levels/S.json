@@ -1,5 +1,5 @@
 {
-	"include" : ["player.json", "mobs.json", "items.json"],
+	"include" : ["archer.json", "mobs.json", "items.json"],
 	"entities" : 
 	{
 		"bow"
@@ -13,7 +13,7 @@
 				"z" : 1
 			}
 		},
-		"archer arms"
+		"player arms"
 		{
 			"base" : "archer arms",
 			"transform" : 
@@ -24,9 +24,9 @@
 				"z" : 1
 			}
 		},
-		"archer" : 
+		"player" : 
 		{
-			"base" : "player",
+			"base" : "archer",
 			"bow" : 
 			{
 				"angle" : 0.0808405876159668,
@@ -275,7 +275,7 @@
 			{
 				"enable limit" : true,
 				"enable motor" : true,
-				"entity A" : "archer",
+				"entity A" : "player arms",
 				"entity B" : "arrow 3",
 				"local anchor A" : 
 				{
@@ -295,8 +295,6 @@
 				"lower translation" : -37,
 				"maximum motor force" : 1200.000244140625,
 				"motor speed" : -9.241314546670765e-05,
-				"part A" : "bow",
-				"part B" : "main",
 				"reference angle" : 0,
 				"roles" : [ "bending power" ],
 				"upper translation" : 0
@@ -307,8 +305,8 @@
 			{
 				"enable limit" : false,
 				"enable motor" : true,
-				"entity A" : "archer",
-				"entity B" : "archer",
+				"entity A" : "player arms",
+				"entity B" : "player",
 				"local anchor A" : 
 				{
 					"x" : 50.00000762939453,
@@ -322,16 +320,14 @@
 				"lower angle" : 0,
 				"maximum motor torque" : 1200.000366210938,
 				"motor speed" : -0.002342462539672852,
-				"part A" : "main",
-				"part B" : "arms",
 				"roles" : [ "bending angle" ],
 				"upper angle" : 0
 			},
 			{
 				"enable limit" : false,
 				"enable motor" : true,
-				"entity A" : "archer",
-				"entity B" : "archer",
+				"entity A" : "player",
+				"entity B" : "player bow",
 				"local anchor A" : 
 				{
 					"x" : 50.00000762939453,
@@ -345,8 +341,6 @@
 				"lower angle" : 0,
 				"maximum motor torque" : 1200.000366210938,
 				"motor speed" : -0.001752376556396484,
-				"part A" : "main",
-				"part B" : "bow",
 				"roles" : [ "bending angle" ],
 				"upper angle" : 0
 			}
@@ -355,7 +349,7 @@
 		[
 			{
 				"damping ratio" : 0,
-				"entity A" : "archer",
+				"entity A" : "player",
 				"entity B" : "arrow 1",
 				"frequency Hz" : 0,
 				"local anchor A" : 
@@ -368,13 +362,11 @@
 					"x" : 48.00000762939453,
 					"y" : 13.00000095367432
 				},
-				"part A" : "main",
-				"part B" : "main",
 				"reference angle" : -90.00000762939453
 			},
 			{
 				"damping ratio" : 0,
-				"entity A" : "archer",
+				"entity A" : "player",
 				"entity B" : "arrow 4",
 				"frequency Hz" : 0,
 				"local anchor A" : 
@@ -387,13 +379,11 @@
 					"x" : 48.0000114440918,
 					"y" : 13.00000286102295
 				},
-				"part A" : "main",
-				"part B" : "main",
 				"reference angle" : -80.00002288818359
 			},
 			{
 				"damping ratio" : 0,
-				"entity A" : "archer",
+				"entity A" : "player",
 				"entity B" : "arrow 2",
 				"frequency Hz" : 0,
 				"local anchor A" : 
@@ -406,8 +396,6 @@
 					"x" : 48.0000114440918,
 					"y" : 13.00000286102295
 				},
-				"part A" : "main",
-				"part B" : "main",
 				"reference angle" : -80.00002288818359
 			}
 		]
