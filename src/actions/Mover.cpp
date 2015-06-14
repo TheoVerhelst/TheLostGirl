@@ -157,7 +157,6 @@ void Mover::operator()(entityx::Entity entity, double) const
 			//If the entity have animations
 			if(animationsComponent)
 			{
-				bool moveToOppDirection{direction == Direction::Right ? directionComponent->moveToLeft : directionComponent->moveToRight};
 				//For each animations manager of the entity
 				for(auto& animationsPair : animationsComponent->animationsManagers)
 				{
