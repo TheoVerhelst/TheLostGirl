@@ -145,15 +145,9 @@ void DebugDraw::drawDebugAth()
 		//We found the player
 		if(categoryComponent->category & Category::Player)
 		{
-			//If there is a main body
-			auto it(bodyComponent->bodies.find("main"));
-			if(it != bodyComponent->bodies.end())
-				position = it->second->GetPosition();
-			//Else, take the first that come in hand
-			else if(not bodyComponent->bodies.empty())
-				position = bodyComponent->bodies.begin()->second->GetPosition();
-			bendPower = entity.component<BowComponent>()->power;
-			bendAngle = entity.component<BowComponent>()->angle;
+			position = bodyComponent->body->GetPosition();
+			bendPower = bowComponent->power;
+			bendAngle = bowComponent->angle;
 			break;
 		}
 	}
@@ -221,7 +215,7 @@ std::string DebugDraw::roundOutput(float x)
 {
 	std::string output{std::to_string(x)};
 	std::size_t pointPosition{output.find(".")};
-	if(pointPosition < output.size()-3)
+	if(output.size() >= 3 and pointPosition < output.size()-3)
 		output = output.substr(0, pointPosition+3);
 	return output;
 }
