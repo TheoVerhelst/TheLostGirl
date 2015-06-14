@@ -47,19 +47,12 @@ bool ContactListener::collide(b2Contact* contact, const b2Manifold*)
 	if(entityA.has_component<ActorComponent>() and entityB.has_component<ActorComponent>())
 		return false;
 
-	//If the two entities are not in the same plan
 	const TransformComponent::Handle entityATransformComponent(entityA.component<TransformComponent>());
 	const TransformComponent::Handle entityBTransformComponent(entityB.component<TransformComponent>());
-	if(entityATransformComponent and entityBTransformComponent)
-	{
-		//Nearest rounding of the plan of the body/sprite A
-		const long int zA{lround(entityATransformComponent->transforms.at(getKey(entityA.component<BodyComponent>()->bodies, bodyA)).z)};
-		//Nearest rounding of the plan of the body/sprite B
-		const long int zB{lround(entityBTransformComponent->transforms.at(getKey(entityB.component<BodyComponent>()->bodies, bodyB)).z)};
 		//The contact do not occurs if the entities are not in the same plan
-		if(zA != zB)
+	if(entityATransformComponent and entityBTransformComponent
+		and lround(entityATransformComponent->transform.z) != lround(entityBTransformComponent->transform.z))
 			return false;
-	}
 
 	const ArrowComponent::Handle entityAArrowComponent{entityA.component<ArrowComponent>()};
 	const ArrowComponent::Handle entityBArrowComponent{entityB.component<ArrowComponent>()};
