@@ -19,137 +19,132 @@
 Json::Value serialize(entityx::ComponentHandle<BodyComponent> component, float pixelByMeter)
 {
 	Json::Value ret;
-	for(auto& bodyPair : component->bodies)
+	switch(component->body->GetType())
 	{
-		const std::string partName{bodyPair.first};
-		b2Body* body{bodyPair.second};
-		switch(body->GetType())
+		case b2_kinematicBody:
+			ret["type"] = "kinematic";
+			break;
+		case b2_dynamicBody:
+			ret["type"] = "dynamic";
+			break;
+		case b2_staticBody:
+		default:
+			ret["type"] = "static";
+			break;
+	}
+
+	ret["linear velocity"]["x"] = component->body->GetLinearVelocity().x*pixelByMeter;
+	ret["linear velocity"]["y"] = component->body->GetLinearVelocity().y*pixelByMeter;
+	ret["angular velocity"] = component->body->GetAngularVelocity();
+	ret["linear damping"] = component->body->GetLinearDamping();
+	ret["angular damping"] = component->body->GetAngularDamping();
+	ret["allow sleep"] = component->body->IsSleepingAllowed();
+	ret["awake"] = component->body->IsAwake();
+	ret["fixed rotation"] = component->body->IsFixedRotation();
+	ret["bullet"] = component->body->IsBullet();
+	ret["active"] = component->body->IsActive();
+	ret["gravity scale"] = component->body->GetGravityScale();
+
+	//For each fixture of the component->body
+	for(b2Fixture* fix{component->body->GetFixtureList()}; fix; fix = fix->GetNext())
+	{
+		Json::Value fixtureObj;
+		b2Shape::Type type{fix->GetType()};
+		switch(type)
 		{
-			case b2_kinematicBody:
-				ret[partName]["type"] = "kinematic";
+			case b2Shape::e_circle:
+			{
+				b2CircleShape* shape{static_cast<b2CircleShape*>(fix->GetShape())};
+				fixtureObj["position"]["x"] = shape->m_p.x*pixelByMeter;
+				fixtureObj["position"]["y"] = shape->m_p.y*pixelByMeter;
+				fixtureObj["radius"] = shape->m_radius*pixelByMeter;
 				break;
-			case b2_dynamicBody:
-				ret[partName]["type"] = "dynamic";
+			}
+			case b2Shape::e_edge:
+			{
+				b2EdgeShape* shape{static_cast<b2EdgeShape*>(fix->GetShape())};
+				//Copy all vertices
+				if(shape->m_hasVertex0)
+				{
+					fixtureObj["0"]["x"] = shape->m_vertex0.x*pixelByMeter;
+					fixtureObj["0"]["y"] = shape->m_vertex0.y*pixelByMeter;
+				}
+				fixtureObj["1"]["x"] = shape->m_vertex1.x*pixelByMeter;
+				fixtureObj["1"]["y"] = shape->m_vertex1.y*pixelByMeter;
+				fixtureObj["2"]["x"] = shape->m_vertex2.x*pixelByMeter;
+				fixtureObj["2"]["y"] = shape->m_vertex2.y*pixelByMeter;
+				if(shape->m_hasVertex3)
+				{
+					fixtureObj["3"]["x"] = shape->m_vertex3.x*pixelByMeter;
+					fixtureObj["3"]["y"] = shape->m_vertex3.y*pixelByMeter;
+				}
 				break;
-			case b2_staticBody:
+			}
+			case b2Shape::e_polygon:
+			{
+				b2PolygonShape* shape{static_cast<b2PolygonShape*>(fix->GetShape())};
+				//Copy all vertices
+				for(int32 j{0}; j < shape->GetVertexCount(); ++j)
+				{
+					fixtureObj["vertices"][j]["x"] = shape->m_vertices[j].x*pixelByMeter;
+					fixtureObj["vertices"][j]["y"] = shape->m_vertices[j].y*pixelByMeter;
+				}
+				break;
+			}
 			default:
-				ret[partName]["type"] = "static";
+			case b2Shape::e_chain:
+			{
+				b2ChainShape* shape{static_cast<b2ChainShape*>(fix->GetShape())};
+				//Copy all vertices
+				if(shape->m_hasPrevVertex)
+				{
+					fixtureObj["previous vertex"]["x"] = shape->m_prevVertex.x*pixelByMeter;
+					fixtureObj["previous vertex"]["y"] = shape->m_prevVertex.y*pixelByMeter;
+				}
+				for(int32 j{0}; j < shape->m_count; ++j)
+				{
+					fixtureObj["vertices"][j]["x"] = shape->m_vertices[j].x*pixelByMeter;
+					fixtureObj["vertices"][j]["y"] = shape->m_vertices[j].y*pixelByMeter;
+				}
+				if(shape->m_hasNextVertex)
+				{
+					fixtureObj["next vertex"]["x"] = shape->m_nextVertex.x*pixelByMeter;
+					fixtureObj["next vertex"]["y"] = shape->m_nextVertex.y*pixelByMeter;
+				}
 				break;
+			}
 		}
-
-		ret[partName]["linear velocity"]["x"] = body->GetLinearVelocity().x*pixelByMeter;
-		ret[partName]["linear velocity"]["y"] = body->GetLinearVelocity().y*pixelByMeter;
-		ret[partName]["angular velocity"] = body->GetAngularVelocity();
-		ret[partName]["linear damping"] = body->GetLinearDamping();
-		ret[partName]["angular damping"] = body->GetAngularDamping();
-		ret[partName]["allow sleep"] = body->IsSleepingAllowed();
-		ret[partName]["awake"] = body->IsAwake();
-		ret[partName]["fixed rotation"] = body->IsFixedRotation();
-		ret[partName]["bullet"] = body->IsBullet();
-		ret[partName]["active"] = body->IsActive();
-		ret[partName]["gravity scale"] = body->GetGravityScale();
-
-		//For each fixture of the body
-		for(b2Fixture* fix{body->GetFixtureList()}; fix; fix = fix->GetNext())
+		fixtureObj["density"] = fix->GetDensity();
+		fixtureObj["friction"] = fix->GetFriction();
+		fixtureObj["restitution"] = fix->GetRestitution();
+		fixtureObj["is sensor"] = fix->IsSensor();
+		//If the fixture is a foot sensor
+		if(fixtureHasRole(fix, FixtureRole::Foot))
+			fixtureObj["roles"].append("foot sensor");
+		if(fixtureHasRole(fix, FixtureRole::Main))
+			fixtureObj["roles"].append("main");
+		//Add the fixture in the right array
+		switch(type)
 		{
-			Json::Value fixtureObj;
-			b2Shape::Type type{fix->GetType()};
-			switch(type)
-			{
-				case b2Shape::e_circle:
-				{
-					b2CircleShape* shape{static_cast<b2CircleShape*>(fix->GetShape())};
-					fixtureObj["position"]["x"] = shape->m_p.x*pixelByMeter;
-					fixtureObj["position"]["y"] = shape->m_p.y*pixelByMeter;
-					fixtureObj["radius"] = shape->m_radius*pixelByMeter;
-					break;
-				}
-				case b2Shape::e_edge:
-				{
-					b2EdgeShape* shape{static_cast<b2EdgeShape*>(fix->GetShape())};
-					//Copy all vertices
-					if(shape->m_hasVertex0)
-					{
-						fixtureObj["0"]["x"] = shape->m_vertex0.x*pixelByMeter;
-						fixtureObj["0"]["y"] = shape->m_vertex0.y*pixelByMeter;
-					}
-					fixtureObj["1"]["x"] = shape->m_vertex1.x*pixelByMeter;
-					fixtureObj["1"]["y"] = shape->m_vertex1.y*pixelByMeter;
-					fixtureObj["2"]["x"] = shape->m_vertex2.x*pixelByMeter;
-					fixtureObj["2"]["y"] = shape->m_vertex2.y*pixelByMeter;
-					if(shape->m_hasVertex3)
-					{
-						fixtureObj["3"]["x"] = shape->m_vertex3.x*pixelByMeter;
-						fixtureObj["3"]["y"] = shape->m_vertex3.y*pixelByMeter;
-					}
-					break;
-				}
-				case b2Shape::e_polygon:
-				{
-					b2PolygonShape* shape{static_cast<b2PolygonShape*>(fix->GetShape())};
-					//Copy all vertices
-					for(int32 j{0}; j < shape->GetVertexCount(); ++j)
-					{
-						fixtureObj["vertices"][j]["x"] = shape->m_vertices[j].x*pixelByMeter;
-						fixtureObj["vertices"][j]["y"] = shape->m_vertices[j].y*pixelByMeter;
-					}
-					break;
-				}
-				default:
-				case b2Shape::e_chain:
-				{
-					b2ChainShape* shape{static_cast<b2ChainShape*>(fix->GetShape())};
-					//Copy all vertices
-					if(shape->m_hasPrevVertex)
-					{
-						fixtureObj["previous vertex"]["x"] = shape->m_prevVertex.x*pixelByMeter;
-						fixtureObj["previous vertex"]["y"] = shape->m_prevVertex.y*pixelByMeter;
-					}
-					for(int32 j{0}; j < shape->m_count; ++j)
-					{
-						fixtureObj["vertices"][j]["x"] = shape->m_vertices[j].x*pixelByMeter;
-						fixtureObj["vertices"][j]["y"] = shape->m_vertices[j].y*pixelByMeter;
-					}
-					if(shape->m_hasNextVertex)
-					{
-						fixtureObj["next vertex"]["x"] = shape->m_nextVertex.x*pixelByMeter;
-						fixtureObj["next vertex"]["y"] = shape->m_nextVertex.y*pixelByMeter;
-					}
-					break;
-				}
-			}
-			fixtureObj["density"] = fix->GetDensity();
-			fixtureObj["friction"] = fix->GetFriction();
-			fixtureObj["restitution"] = fix->GetRestitution();
-			fixtureObj["is sensor"] = fix->IsSensor();
-			//If the fixture is a foot sensor
-			if(fixtureHasRole(fix, FixtureRole::Foot))
-				fixtureObj["roles"].append("foot sensor");
-			if(fixtureHasRole(fix, FixtureRole::Main))
-				fixtureObj["roles"].append("main");
-			//Add the fixture in the right array
-			switch(type)
-			{
-				case b2Shape::e_circle:
-					ret[partName]["circle fixtures"].append(fixtureObj);
-					break;
+			case b2Shape::e_circle:
+				ret["circle fixtures"].append(fixtureObj);
+				break;
 
-				case b2Shape::e_edge:
-					ret[partName]["edge fixtures"].append(fixtureObj);
-					break;
+			case b2Shape::e_edge:
+				ret["edge fixtures"].append(fixtureObj);
+				break;
 
-				case b2Shape::e_polygon:
-					ret[partName]["polygon fixtures"].append(fixtureObj);
-					break;
+			case b2Shape::e_polygon:
+				ret["polygon fixtures"].append(fixtureObj);
+				break;
 
-				case b2Shape::e_chain:
-					ret[partName]["chain fixtures"].append(fixtureObj);
-					break;
+			case b2Shape::e_chain:
+				ret["chain fixtures"].append(fixtureObj);
+				break;
 
-				case b2Shape::e_typeCount:
-				default:
-					throw std::runtime_error("Invalid shape type.");
-			}
+			case b2Shape::e_typeCount:
+			default:
+				throw std::runtime_error("Invalid shape type.");
 		}
 	}
 	return ret;
@@ -158,16 +153,12 @@ Json::Value serialize(entityx::ComponentHandle<BodyComponent> component, float p
 Json::Value serialize(entityx::ComponentHandle<SpriteComponent> component, TextureManager& textureManager, float scale)
 {
 	Json::Value ret;
-	for(auto& spritePair : component->sprites)
+	const sf::Texture* tex{component->sprite.getTexture()};//Get the associated texture
+	ret["identifier"] = textureManager.getIdentifier(*tex);//Get the identifier of the texture
+	if(component->sprite.second.getOrigin() != sf::Vector2f(0, 0))
 	{
-		const std::string partName{spritePair.first};//Get the name of the entity's part
-		const sf::Texture* tex{spritePair.second.getTexture()};//Get the associated texture
-		ret[partName]["identifier"] = textureManager.getIdentifier(*tex);//Get the identifier of the texture and put it in Json
-		if(spritePair.second.getOrigin() != sf::Vector2f(0, 0))
-		{
-			ret[partName]["origin"]["x"] = spritePair.second.getOrigin().x/scale;
-			ret[partName]["origin"]["y"] = spritePair.second.getOrigin().y/scale;
-		}
+		ret["origin"]["x"] = component->sprite.second.getOrigin().x/scale;
+		ret["origin"]["y"] = component->sprite.second.getOrigin().y/scale;
 	}
 	return ret;
 }
@@ -175,14 +166,10 @@ Json::Value serialize(entityx::ComponentHandle<SpriteComponent> component, Textu
 Json::Value serialize(entityx::ComponentHandle<TransformComponent> component)
 {
 	Json::Value ret;
-	for(auto& transformPair : component->transforms)
-	{
-		const std::string partName{transformPair.first};
-		ret[partName]["transform"]["x"] = transformPair.second.x;
-		ret[partName]["transform"]["y"] = transformPair.second.y;
-		ret[partName]["transform"]["z"] = transformPair.second.z;
-		ret[partName]["transform"]["angle"] = transformPair.second.angle;
-	}
+	ret["x"] = component->transform.x;
+	ret["y"] = component->transform.y;
+	ret["z"] = component->transform.z;
+	ret["angle"] = component->transform.angle;
 	return ret;
 }
 
@@ -202,10 +189,7 @@ Json::Value serialize(entityx::ComponentHandle<InventoryComponent> component, co
 
 Json::Value serialize(entityx::ComponentHandle<AnimationsComponent<SpriteSheetAnimation>> component)
 {
-	Json::Value ret;
-	for(auto& animationsPair : component->animationsManagers)
-		ret[animationsPair.first] = animationsPair.second.serialize();
-	return ret;
+	return component->animationsManager.serialize();
 }
 
 Json::Value serialize(entityx::ComponentHandle<DirectionComponent> component)
@@ -673,7 +657,7 @@ void deserialize(const Json::Value& value, entityx::ComponentHandle<InventoryCom
 
 void deserialize(const Json::Value& value, entityx::ComponentHandle<AnimationsComponent<SpriteSheetAnimation>> component, entityx::ComponentHandle<SpriteComponent> spriteComponent, StateStack::Context context)
 {
-	component->animationsManagers.deserialize(value, spriteComponent->sprite, context);
+	component->animationsManager.deserialize(value, spriteComponent->sprite, context);
 }
 
 void deserialize(const Json::Value& value, entityx::ComponentHandle<DirectionComponent> component)
