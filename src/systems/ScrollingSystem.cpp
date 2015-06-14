@@ -21,9 +21,7 @@ void ScrollingSystem::update(entityx::EntityManager& entityManager, entityx::Eve
 	if(m_levelRect != sf::IntRect(0, 0, 0, 0) and m_player.valid())
 	{
 		TransformComponent::Handle transformComponent(m_player.component<TransformComponent>());
-		sf::Vector2f playerPosition;
-		//Find the main body
-		playerPosition = {transformComponent->transforms.at("main").x, transformComponent->transforms.at("main").y};
+		sf::Vector2f playerPosition{transformComponent->transform.x, transformComponent->transform.y};
 		sf::View view{m_bloomEnabled ? m_texture.getView() : m_window.getView()};
 		sf::Vector2f halfViewSize{view.getSize()/(m_scale*2.f)};
 		//Compute the maximum and minimum center coordinates that the view can have
@@ -46,15 +44,11 @@ void ScrollingSystem::update(entityx::EntityManager& entityManager, entityx::Eve
 		SpriteComponent::Handle spriteComponent;
 		for(auto entitySecond : entityManager.entities_with_components(spriteComponent, transformComponent))
 		{
-			//For each transform in the map
-			for(const auto& transformPair : transformComponent->transforms)
-			{
-				const sf::Vector2f transform{transformPair.second.x, transformPair.second.y};
-				//The abscissa of the entity on the screen, relatively to the reference plan and the position of the player
-				const sf::Vector2f scaledPos{transform + viewPos - (viewPos * std::pow(1.5f, m_referencePlan - transformPair.second.z))};
-				spriteComponent->sprites.at(transformPair.first).setPosition(scaledPos.x*m_scale, scaledPos.y*m_scale);
-				spriteComponent->sprites.at(transformPair.first).setRotation(transformPair.second.angle);
-			}
+			const Transform& transform(transformComponent->transform);
+			//The abscissa of the entity on the screen, relatively to the reference plan and the position of the player
+			const sf::Vector2f scaledPos{{transform.x, transform.y} + viewPos - (viewPos * std::pow(1.5f, m_referencePlan - transform.z))};
+			spriteComponent->sprites.at(transformPair.first).setPosition(scaledPos.x*m_scale, scaledPos.y*m_scale);
+			spriteComponent->sprites.at(transformPair.first).setRotation(transform.angle);
 		}
 	}
 }
@@ -69,10 +63,10 @@ void ScrollingSystem::searchPlayer(entityx::EntityManager& entityManager)
 {
 	CategoryComponent::Handle categoryComponent;
 	TransformComponent::Handle transformComponent;
-	for(auto entity : entityManager.entities_with_components(transformComponent, categoryComponent))
+	for(auto entity : entityManager.entities_with_components(categoryComponent))
 	{
 		//We found the player
-		if(categoryComponent->category & Category::Player and transformComponent->transforms.count("main"))
+		if(categoryComponent->category & Category::Player)
 		{
 			m_player = entity;
 			break;
