@@ -307,19 +307,15 @@ entityx::Entity nearestFoe(const std::vector<Data>& args, StateStack::Context co
 	DetectionRangeComponent::Handle detectionRangeComponent(self.component<DetectionRangeComponent>());
 	if(bodyComponent and detectionRangeComponent)
 	{
-		auto bodyIt(bodyComponent->bodies.find("main"));
-		if(bodyIt != bodyComponent->bodies.end())
-		{
-			const float range{detectionRangeComponent->detectionRange/context.parameters.pixelByMeter};
-			b2Body* body{bodyIt->second};
-            b2World* world{body->GetWorld()};
-            NearestFoeQueryCallback callback(self, context);
-			b2AABB aabb;
-			aabb.lowerBound = b2Vec2(-range, -range) + body->GetWorldCenter();
-			aabb.upperBound = b2Vec2(range, range) + body->GetWorldCenter();
-			world->QueryAABB(&callback, aabb);
-			return callback.entity;
-		}
+		const float range{detectionRangeComponent->detectionRange/context.parameters.pixelByMeter};
+		b2Body* body{bodyComponent->body};
+		b2World* world{body->GetWorld()};
+		NearestFoeQueryCallback callback(self, context);
+		b2AABB aabb;
+		aabb.lowerBound = b2Vec2(-range, -range) + body->GetWorldCenter();
+		aabb.upperBound = b2Vec2(range, range) + body->GetWorldCenter();
+		world->QueryAABB(&callback, aabb);
+		return callback.entity;
 	}
 	return entityx::Entity();
 }
@@ -338,46 +334,40 @@ float distanceFrom(const std::vector<Data>& args, StateStack::Context)
 	BodyComponent::Handle targetBodyComponent(target.component<BodyComponent>());
 	if(selfBodyComponent and targetBodyComponent)
 	{
-		auto selfBodyIt(selfBodyComponent->bodies.find("main"));
-		auto targetBodyIt(targetBodyComponent->bodies.find("main"));
-		if(selfBodyIt != selfBodyComponent->bodies.end()
-			 and targetBodyIt != targetBodyComponent->bodies.end())
+		b2Body* selfBody{selfBodyComponent->body};
+		b2Fixture* selfFixture{nullptr};
+		//Check all fixtures untill a main fixture is found.
+		for(b2Fixture* fixture{selfBody->GetFixtureList()}; fixture and not selfFixture; fixture = fixture->GetNext())
+			if(fixtureHasRole(fixture, FixtureRole::Main))
+				selfFixture = fixture;
+
+		b2Body* targetBody{targetBodyComponent->body};
+		b2Fixture* targetFixture{nullptr};
+		//Check all fixtures untill a main fixture is found.
+		for(b2Fixture* fixture{targetBody->GetFixtureList()}; fixture and not targetFixture; fixture = fixture->GetNext())
+			if(fixtureHasRole(fixture, FixtureRole::Main))
+				targetFixture = fixture;
+
+		if(selfFixture and targetFixture)
 		{
-			b2Body* selfBody{selfBodyIt->second};
-			b2Fixture* selfFixture{nullptr};
-			//Check all fixtures untill a main fixture is found.
-			for(b2Fixture* fixture{selfBody->GetFixtureList()}; fixture and not selfFixture; fixture = fixture->GetNext())
-				if(fixtureHasRole(fixture, FixtureRole::Main))
-					selfFixture = fixture;
+			b2DistanceProxy selfProxy;
+			selfProxy.Set(selfFixture->GetShape(), 1);
+			b2DistanceProxy targetProxy;
+			targetProxy.Set(targetFixture->GetShape(), 1);
 
-			b2Body* targetBody{targetBodyIt->second};
-			b2Fixture* targetFixture{nullptr};
-			//Check all fixtures untill a main fixture is found.
-			for(b2Fixture* fixture{targetBody->GetFixtureList()}; fixture and not targetFixture; fixture = fixture->GetNext())
-				if(fixtureHasRole(fixture, FixtureRole::Main))
-					targetFixture = fixture;
+			b2DistanceInput distanceInput;
+			distanceInput.transformA = selfBody->GetTransform();
+			distanceInput.transformB = targetBody->GetTransform();
+			distanceInput.proxyA = selfProxy;
+			distanceInput.proxyB = targetProxy;
+			distanceInput.useRadii = false;
 
-			if(selfFixture and targetFixture)
-			{
-				b2DistanceProxy selfProxy;
-				selfProxy.Set(selfFixture->GetShape(), 1);
-				b2DistanceProxy targetProxy;
-				targetProxy.Set(targetFixture->GetShape(), 1);
+			b2SimplexCache cache;
+			cache.count = 0;
 
-				b2DistanceInput distanceInput;
-				distanceInput.transformA = selfBody->GetTransform();
-				distanceInput.transformB = targetBody->GetTransform();
-				distanceInput.proxyA = selfProxy;
-				distanceInput.proxyB = targetProxy;
-				distanceInput.useRadii = false;
-
-				b2SimplexCache cache;
-				cache.count = 0;
-
-				b2DistanceOutput distance;
-				b2Distance(&distance, &cache, &distanceInput);
-				return distance.distance;
-			}
+			b2DistanceOutput distance;
+			b2Distance(&distance, &cache, &distanceInput);
+			return distance.distance;
 		}
 	}
 	return 0.f;
@@ -395,7 +385,7 @@ int directionTo(const std::vector<Data>& args, StateStack::Context)
 	TransformComponent::Handle targetTransformComponent(target.component<TransformComponent>());
 	if(selfTransformComponent and targetTransformComponent)
 	{
-		if(selfTransformComponent->transforms["main"].x < targetTransformComponent->transforms["main"].x)
+		if(selfTransformComponent->transform.x < targetTransformComponent->transform.x)
 			return static_cast<int>(Direction::Right);
 		else
 			return static_cast<int>(Direction::Left);
