@@ -326,37 +326,32 @@
                                 "name" : "initial speed",
                                 "type" : "real",
                                 "required" : true
-                            },
-                            {
-                                "name" : "power",
-                                "type" : "real",
-                                "required" : true
-                            },
-                            {
-                                "name" : "angle",
-                                "type" : "real",
-                                "required" : false,
-                                "default value" : 0
-                            },
-                            {
-                                "name" : "quiver capacity",
-                                "type" : "int",
-                                "required" : true
-                            },
-                            {
-                                "name" : "arrows",
-                                "type" : "array",
-                                "required" : true,
-                                "children" :
-                                {
-                                    "type" : "string"
-                                }
-                            },
-                            {
-                                "name" : "notched arrow",
-                                "type" : "string",
-                                "required" : false
                             }
+							{
+								"name" : "quiver",
+								"type" : "string",
+								"required" : true
+							},
+							{
+								"name" : "local anchor",
+								"type" : "object",
+								"required" : true,
+								"free children names" : false,
+								"children" : 
+								[
+                                    {
+                                        "name" : "x",
+                                        "type" : "real",
+                                        "required" : true
+                                    },
+                                    {
+                                        "name" : "y",
+                                        "type" : "real",
+                                        "required" : true
+                                    }
+								]
+							}
+
                         ]
                     },
                     {
@@ -437,12 +432,36 @@
 						]
 					},
 					{
-						"name" : "hold weapon",
+						"name" : "hold item",
 						"type" : "object",
 						"required" : false,
 						"free children names" : false,
 						"children" : 
 						[
+							{
+								"name" : "item",
+								"type" : "string",
+								"required" : true
+							},
+							{
+								"name" : "local anchor",
+								"type" : "object",
+								"required" : true,
+								"free children names" : false,
+								"children" : 
+								[
+                                    {
+                                        "name" : "x",
+                                        "type" : "real",
+                                        "required" : true
+                                    },
+                                    {
+                                        "name" : "y",
+                                        "type" : "real",
+                                        "required" : true
+                                    }
+								]
+							}
 						]
 					},
 					{
@@ -452,6 +471,51 @@
 						"free children names" : false,
 						"children" : 
 						[
+							{
+								"name" : "arms",
+								"type" : "string",
+								"required" : true
+							},
+							{
+								"name" : "upper angle",
+								"type" : "real",
+								"required" : true
+							},
+							{
+								"name" : "lower angle",
+								"type" : "real",
+								"required" : true
+							},
+							{
+								"name" : "current angle",
+								"type" : "real",
+								"required" : true
+							},
+							{
+								"name" : "target angle",
+								"type" : "real",
+								"required" : true
+							},
+							{
+								"name" : "local anchor",
+								"type" : "object",
+								"required" : true,
+								"free children names" : false,
+								"children" : 
+								[
+                                    {
+                                        "name" : "x",
+                                        "type" : "real",
+                                        "required" : true
+                                    },
+                                    {
+                                        "name" : "y",
+                                        "type" : "real",
+                                        "required" : true
+                                    }
+								]
+							}
+
 						]
 					},
 					{
@@ -461,6 +525,50 @@
 						"free children names" : false,
 						"children" : 
 						[
+							{
+								"name" : "notched arrow",
+								"type" : "string",
+								"required" : true
+							},
+							{
+								"name" : "upper translation",
+								"type" : "real",
+								"required" : true
+							},
+							{
+								"name" : "lower translation",
+								"type" : "real",
+								"required" : true
+							},
+							{
+								"name" : "current translation",
+								"type" : "real",
+								"required" : true
+							},
+							{
+								"name" : "target translation",
+								"type" : "real",
+								"required" : true
+							},
+							{
+								"name" : "local anchor",
+								"type" : "object",
+								"required" : true,
+								"free children names" : false,
+								"children" : 
+								[
+                                    {
+                                        "name" : "x",
+                                        "type" : "real",
+                                        "required" : true
+                                    },
+                                    {
+                                        "name" : "y",
+                                        "type" : "real",
+                                        "required" : true
+                                    }
+								]
+							}
 						]
 					},
 					{
@@ -470,6 +578,20 @@
 						"free children names" : false,
 						"children" : 
 						[
+                            {
+                                "name" : "quiver capacity",
+                                "type" : "int",
+                                "required" : true
+                            },
+                            {
+                                "name" : "arrows",
+                                "type" : "array",
+                                "required" : true,
+                                "children" :
+                                {
+                                    "type" : "string"
+                                }
+                            }
 						]
 					},
                     {

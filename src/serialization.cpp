@@ -408,7 +408,7 @@ Json::Value serialize(entityx::ComponentHandle<ActorComponent> component)
 	return ret;
 }
 
-Json::Value serialize(entityx::ComponentHandle<HoldWeaponComponent> component)
+Json::Value serialize(entityx::ComponentHandle<HoldItemComponent> component)
 {
 }
 
@@ -844,7 +844,7 @@ void deserialize(const Json::Value& value, entityx::ComponentHandle<ActorCompone
 	component->poisonResistance = value["poison resistance"].asFloat();
 }
 
-void deserialize(const Json::Value& value, entityx::ComponentHandle<HoldWeaponComponent> component)
+void deserialize(const Json::Value& value, entityx::ComponentHandle<HoldItemComponent> component)
 {
 }
 

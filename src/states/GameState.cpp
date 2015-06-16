@@ -155,8 +155,8 @@ void GameState::saveWorld(const std::string& file)
 				root["entities"][entity.first]["hand to hand"] = serialize(entity.second.component<HandToHandComponent>());
 			if(entity.second.has_component<ActorComponent>())
 				root["entities"][entity.first]["actor"] = serialize(entity.second.component<ActorComponent>());
-			if(entity.second.has_component<HoldWeaponComponent>())
-				root["entities"][entity.first]["hold weapon"] = serialize(entity.second.component<HoldWeaponComponent>());
+			if(entity.second.has_component<HoldItemComponent>())
+				root["entities"][entity.first]["hold item"] = serialize(entity.second.component<HoldItemComponent>());
 			if(entity.second.has_component<ArticuledArmsComponent>())
 				root["entities"][entity.first]["articuled arms"] = serialize(entity.second.component<ArticuledArmsComponent>());
 			if(entity.second.has_component<BowComponent>())
@@ -539,8 +539,8 @@ void GameState::initWorld(const std::string& file)
 					deserialize(entity["hand to hand"], m_entities[entityName].assign<HandToHandComponent>());
 				if(entity.isMember("actor"))
 					deserialize(entity["actor"], m_entities[entityName].assign<ActorComponent>());
-				if(entity.isMember("hold weapon"))
-					deserialize(entity["hold weapon"], m_entities[entityName].assign<HoldWeaponComponent>());
+				if(entity.isMember("hold item"))
+					deserialize(entity["hold item"], m_entities[entityName].assign<HoldItemComponent>());
 				if(entity.isMember("articuled arms"))
 					deserialize(entity["articuled arms"], m_entities[entityName].assign<ArticuledArmsComponent>());
 				if(entity.isMember("bow"))

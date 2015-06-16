@@ -129,7 +129,7 @@ Json::Value serialize(entityx::ComponentHandle<ActorComponent> component);
 /// Serialize the given component.
 /// \param component Component to serialize.
 /// \return A Json value.
-Json::Value serialize(entityx::ComponentHandle<HoldWeaponComponent> component);
+Json::Value serialize(entityx::ComponentHandle<HoldItemComponent> component);
 
 /// Serialize the given component.
 /// \param component Component to serialize.
@@ -268,7 +268,7 @@ void deserialize(const Json::Value& value, entityx::ComponentHandle<ActorCompone
 /// Deserialize the given \a value in the given \a component.
 /// \param component Component in wich deserialize the data.
 /// \param value The Json value containing the data.
-void deserialize(const Json::Value& value, entityx::ComponentHandle<HoldWeaponComponent> component);
+void deserialize(const Json::Value& value, entityx::ComponentHandle<HoldItemComponent> component);
 
 /// Deserialize the given \a value in the given \a component.
 /// \param component Component in wich deserialize the data.
