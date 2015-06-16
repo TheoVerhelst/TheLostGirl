@@ -136,7 +136,7 @@ void DebugDraw::drawDebugAth()
 	m_debugMode = true;
 	CategoryComponent::Handle categoryComponent;
 	BodyComponent::Handle bodyComponent;
-	BowComponent::Handle bowComponent;
+	ArcherComponent::Handle bowComponent;
 	//Find out position and bending
 	b2Vec2 position{0, 0};
 	float bendPower{0}, bendAngle{0};

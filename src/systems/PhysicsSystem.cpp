@@ -54,7 +54,7 @@ void PhysicsSystem::update(entityx::EntityManager& entityManager, entityx::Event
 		}
 
 		//Update the archers
-		BowComponent::Handle bowComponent(entity.component<BowComponent>());
+		ArcherComponent::Handle bowComponent(entity.component<ArcherComponent>());
 		const DirectionComponent::Handle directionComponent(entity.component<DirectionComponent>());
 		if(bowComponent)
 		{

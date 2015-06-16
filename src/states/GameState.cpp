@@ -121,8 +121,8 @@ void GameState::saveWorld(const std::string& file)
 				root["entities"][entity.first]["transform"] = serialize(entity.second.component<TransformComponent>());
 			if(entity.second.has_component<InventoryComponent>())
 				root["entities"][entity.first]["inventory"] = serialize(entity.second.component<InventoryComponent>(), m_entities);
-			if(entity.second.has_component<BowComponent>())
-				root["entities"][entity.first]["bow"] = serialize(entity.second.component<BowComponent>(), m_entities);
+			if(entity.second.has_component<ArcherComponent>())
+				root["entities"][entity.first]["archer"] = serialize(entity.second.component<ArcherComponent>(), m_entities);
 			if(entity.second.has_component<AnimationsComponent<SpriteSheetAnimation>>())
 				root["entities"][entity.first]["spritesheet animations"] = serialize(entity.second.component<AnimationsComponent<SpriteSheetAnimation>>());
 			if(entity.second.has_component<DirectionComponent>())
@@ -152,9 +152,18 @@ void GameState::saveWorld(const std::string& file)
 			if(entity.second.has_component<NameComponent>())
 				root["entities"][entity.first]["name"] = serialize(entity.second.component<NameComponent>());
 			if(entity.second.has_component<HandToHandComponent>())
-				root["entities"][entity.first]["hand to hand"]= serialize(entity.second.component<HandToHandComponent>());
+				root["entities"][entity.first]["hand to hand"] = serialize(entity.second.component<HandToHandComponent>());
 			if(entity.second.has_component<ActorComponent>())
-				root["entities"][entity.first]["actor"]= serialize(entity.second.component<ActorComponent>());
+				root["entities"][entity.first]["actor"] = serialize(entity.second.component<ActorComponent>());
+			if(entity.second.has_component<HoldWeaponComponent>())
+				root["entities"][entity.first]["hold weapon"] = serialize(entity.second.component<HoldWeaponComponent>());
+			if(entity.second.has_component<ArticuledArmsComponent>())
+				root["entities"][entity.first]["articuled arms"] = serialize(entity.second.component<ArticuledArmsComponent>());
+			if(entity.second.has_component<BowComponent>())
+				root["entities"][entity.first]["bow"] = serialize(entity.second.component<BowComponent>());
+			if(entity.second.has_component<QuiverComponent>())
+				root["entities"][entity.first]["quiver"] = serialize(entity.second.component<QuiverComponent>());
+			//End serialize
 		}
 
 		//time
@@ -498,8 +507,8 @@ void GameState::initWorld(const std::string& file)
 									m_entities[entityName].component<SpriteComponent>(), getContext());
 				if(entity.isMember("inventory"))
 					deserialize(entity["inventory"], m_entities[entityName].assign<InventoryComponent>(), m_entities);
-				if(entity.isMember("bow"))
-					deserialize(entity["bow"], m_entities[entityName].assign<BowComponent>(), m_entities);
+				if(entity.isMember("archer"))
+					deserialize(entity["archer"], m_entities[entityName].assign<ArcherComponent>(), m_entities);
 				if(entity.isMember("categories"))
 					deserialize(entity["categories"], m_entities[entityName].assign<CategoryComponent>());
 				if(entity.isMember("walk"))
@@ -530,6 +539,15 @@ void GameState::initWorld(const std::string& file)
 					deserialize(entity["hand to hand"], m_entities[entityName].assign<HandToHandComponent>());
 				if(entity.isMember("actor"))
 					deserialize(entity["actor"], m_entities[entityName].assign<ActorComponent>());
+				if(entity.isMember("hold weapon"))
+					deserialize(entity["hold weapon"], m_entities[entityName].assign<HoldWeaponComponent>());
+				if(entity.isMember("articuled arms"))
+					deserialize(entity["articuled arms"], m_entities[entityName].assign<ArticuledArmsComponent>());
+				if(entity.isMember("bow"))
+					deserialize(entity["bow"], m_entities[entityName].assign<BowComponent>());
+				if(entity.isMember("quiver"))
+					deserialize(entity["quiver"], m_entities[entityName].assign<QuiverComponent>());
+				//End serialize
 			}
 		}
 

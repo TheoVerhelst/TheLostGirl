@@ -10,6 +10,9 @@
 
 //Forward declarations
 class b2Body;
+class b2RevoluteJoint;
+class b2WeldJoint;
+class b2PrismaticJoint;
 template<typename T>
 class AnimationsManager;
 
@@ -131,18 +134,6 @@ struct JumpComponent : public entityx::Component<JumpComponent>
 	bool mustJump;     ///< Indicate if the entity have received a jump command, and the jump is not yet handled by the physic system. Similar to moveToLeft in directionComponent.
 };
 
-/// Bending component that hold all stats about the ability to use bows and arrows.
-struct BowComponent : public entityx::Component<BowComponent>
-{
-	float initialSpeed;               ///< The initial speed of the arrow when fired at maximum bending, in m/s.
-	float power;                      ///< The current beding ratio of the bow, in [0, 1].
-	float damages;                    ///< The damages that make a shoot.
-	float angle;                      ///< The current angle of the bow, in radians.
-	std::list<entityx::Entity> arrows;///< List of all stocked arrows.
-	entityx::Entity notchedArrow;     ///< Current arrow notched in the bow.
-	unsigned int quiverCapacity;      ///< Maximum number of arrows in the quiver.
-};
-
 /// Health component.
 struct HealthComponent : public entityx::Component<HealthComponent>
 {
@@ -246,6 +237,45 @@ struct ActorComponent : public entityx::Component<ActorComponent>
 	float fireResistance;      ///< The resistance to fire.
 	float frostResistance;     ///< The resistance to frost.
 	float poisonResistance;    ///< The resistance to poison attacks.
+};
+
+/// Bending component that hold all stats about the ability to use bows and arrows.
+struct ArcherComponent : public entityx::Component<ArcherComponent>
+{
+	float initialSpeed;      ///< The initial speed of the arrow when fired at maximum bending, in m/s.
+	float damages;           ///< The damages that make a shoot.
+	entityx::Entity quiver;  ///<
+	b2WeldJoint* quiverJoint;///<
+};
+
+/// Description here.
+struct HoldWeaponComponent : public entityx::Component<HoldWeaponComponent>
+{
+	entityx::Entity weapon;
+	b2WeldJoint* joint;
+};
+
+/// Description here.
+struct ArticuledArmsComponent : public entityx::Component<ArticuledArmsComponent>
+{
+	entityx::Entity arms;
+	b2RevoluteJoint* armsJoint;
+	float targetAngle;
+};
+
+/// Description here.
+struct BowComponent : public entityx::Component<BowComponent>
+{
+	entityx::Entity notchedArrow;
+	b2PrismaticJoint* notchedArrowJoint;
+	float targetTranslation;
+};
+
+/// Description here.
+struct QuiverComponent : public entityx::Component<QuiverComponent>
+{
+	unsigned int capacity;            ///< Maximum number of arrows in the quiver.
+	std::list<entityx::Entity> arrows;///< List of all stocked arrows.
 };
 
 #endif //COMPONENTS_H

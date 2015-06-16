@@ -85,14 +85,14 @@ void Mover::operator()(entityx::Entity entity, double) const
 					directionComponent->direction = oppDirection;
 			}
 			//Flip the bend componnent if there is one and if the entity has flip
-			BowComponent::Handle bowComponent(entity.component<BowComponent>());
+			ArcherComponent::Handle bowComponent(entity.component<ArcherComponent>());
 			if(bowComponent and directionComponent->direction != initialDirection)
 			{
 				//Flip the angle
 				if(directionComponent->direction == Direction::Left)
-					bowComponent->angle = cap(std::remainder(entity.component<BowComponent>()->angle - b2_pi, 2.f*b2_pi), -b2_pi, b2_pi/2.f);
+					bowComponent->angle = cap(std::remainder(entity.component<ArcherComponent>()->angle - b2_pi, 2.f*b2_pi), -b2_pi, b2_pi/2.f);
 				else if(directionComponent->direction == Direction::Right)
-					bowComponent->angle = cap(std::remainder(entity.component<BowComponent>()->angle - b2_pi, 2.f*b2_pi), -b2_pi/2.f, b2_pi);
+					bowComponent->angle = cap(std::remainder(entity.component<ArcherComponent>()->angle - b2_pi, 2.f*b2_pi), -b2_pi/2.f, b2_pi);
 
 				if(bowComponent->notchedArrow.valid())
 				{

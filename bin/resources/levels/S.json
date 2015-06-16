@@ -27,7 +27,7 @@
 		"player" : 
 		{
 			"base" : "archer",
-			"bow" : 
+			"archer" : 
 			{
 				"angle" : 0.0808405876159668,
 				"arrows" : [ "arrow 1", "arrow 2", "arrow 4" ],

@@ -23,7 +23,7 @@ void BowBender::operator()(entityx::Entity entity, double) const
 {
 	if(not entity)
 		return;
-	BowComponent::Handle bowComponent(entity.component<BowComponent>());
+	ArcherComponent::Handle bowComponent(entity.component<ArcherComponent>());
 	BodyComponent::Handle bodyComponent(entity.component<BodyComponent>());
 	DirectionComponent::Handle directionComponent(entity.component<DirectionComponent>());
 	if(bowComponent and bodyComponent and directionComponent)

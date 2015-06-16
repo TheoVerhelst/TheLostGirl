@@ -274,7 +274,7 @@ Json::Value serialize(entityx::ComponentHandle<JumpComponent> component)
 	return ret;
 }
 
-Json::Value serialize(entityx::ComponentHandle<BowComponent> component, const std::map<std::string, entityx::Entity>& entitiesMap)
+Json::Value serialize(entityx::ComponentHandle<ArcherComponent> component, const std::map<std::string, entityx::Entity>& entitiesMap)
 {
 	Json::Value ret;
 	ret["power"] = component->power;
@@ -407,6 +407,24 @@ Json::Value serialize(entityx::ComponentHandle<ActorComponent> component)
 	ret["poison resistance"] = component->poisonResistance;
 	return ret;
 }
+
+Json::Value serialize(entityx::ComponentHandle<HoldWeaponComponent> component)
+{
+}
+
+Json::Value serialize(entityx::ComponentHandle<ArticuledArmsComponent> component)
+{
+}
+
+Json::Value serialize(entityx::ComponentHandle<BowComponent> component)
+{
+}
+
+Json::Value serialize(entityx::ComponentHandle<QuiverComponent> component)
+{
+}
+
+//End serialize
 
   //////////               //////////
  ////////// Deserializing //////////
@@ -724,7 +742,7 @@ void deserialize(const Json::Value& value, entityx::ComponentHandle<JumpComponen
 	component->mustJump = false;
 }
 
-void deserialize(const Json::Value& value, entityx::ComponentHandle<BowComponent> component, const std::map<std::string, entityx::Entity>& entitiesMap)
+void deserialize(const Json::Value& value, entityx::ComponentHandle<ArcherComponent> component, const std::map<std::string, entityx::Entity>& entitiesMap)
 {
 	component->power = value["power"].asFloat();
 	component->angle = value["angle"].asFloat();
@@ -825,6 +843,24 @@ void deserialize(const Json::Value& value, entityx::ComponentHandle<ActorCompone
 	component->frostResistance = value["frost resistance"].asFloat();
 	component->poisonResistance = value["poison resistance"].asFloat();
 }
+
+void deserialize(const Json::Value& value, entityx::ComponentHandle<HoldWeaponComponent> component)
+{
+}
+
+void deserialize(const Json::Value& value, entityx::ComponentHandle<ArticuledArmsComponent> component)
+{
+}
+
+void deserialize(const Json::Value& value, entityx::ComponentHandle<BowComponent> component)
+{
+}
+
+void deserialize(const Json::Value& value, entityx::ComponentHandle<QuiverComponent> component)
+{
+}
+
+//End deserialize
 
 std::string typeToStr(Json::ValueType type)
 {

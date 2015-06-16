@@ -21,7 +21,7 @@ void ArrowPicker::operator()(entityx::Entity entity, double) const
 		return;
 	const DirectionComponent::Handle directionComponent(entity.component<DirectionComponent>());
 	const BodyComponent::Handle bodyComponent(entity.component<BodyComponent>());
-	BowComponent::Handle bowComponent(entity.component<BowComponent>());
+	ArcherComponent::Handle bowComponent(entity.component<ArcherComponent>());
 	if(bodyComponent and directionComponent and bowComponent)
 	{
 		b2World* world{bodyComponent->body->GetWorld()};

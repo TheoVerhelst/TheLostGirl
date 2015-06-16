@@ -73,7 +73,7 @@ Json::Value serialize(entityx::ComponentHandle<JumpComponent> component);
 /// \param component Component to serialize.
 /// \param entitiesMap The map containing all entities (to find name - entity correspondance).
 /// \return A Json value.
-Json::Value serialize(entityx::ComponentHandle<BowComponent> component, const std::map<std::string, entityx::Entity>& entitiesMap);
+Json::Value serialize(entityx::ComponentHandle<ArcherComponent> component, const std::map<std::string, entityx::Entity>& entitiesMap);
 
 /// Serialize the given component.
 /// \param component Component to serialize.
@@ -125,6 +125,28 @@ Json::Value serialize(entityx::ComponentHandle<HandToHandComponent> component);
 /// \param component Component to serialize.
 /// \return A Json value.
 Json::Value serialize(entityx::ComponentHandle<ActorComponent> component);
+
+/// Serialize the given component.
+/// \param component Component to serialize.
+/// \return A Json value.
+Json::Value serialize(entityx::ComponentHandle<HoldWeaponComponent> component);
+
+/// Serialize the given component.
+/// \param component Component to serialize.
+/// \return A Json value.
+Json::Value serialize(entityx::ComponentHandle<ArticuledArmsComponent> component);
+
+/// Serialize the given component.
+/// \param component Component to serialize.
+/// \return A Json value.
+Json::Value serialize(entityx::ComponentHandle<BowComponent> component);
+
+/// Serialize the given component.
+/// \param component Component to serialize.
+/// \return A Json value.
+Json::Value serialize(entityx::ComponentHandle<QuiverComponent> component);
+
+//End serialize
 
 /// Deserialize the given \a value in the given \a component.
 /// \param component Component in wich deserialize the data.
@@ -189,7 +211,7 @@ void deserialize(const Json::Value& value, entityx::ComponentHandle<JumpComponen
 /// \param component Component in wich deserialize the data.
 /// \param entitiesMap The map containing all entities (to find name - entity correspondance).
 /// \param value The Json value containing the data.
-void deserialize(const Json::Value& value, entityx::ComponentHandle<BowComponent> component, const std::map<std::string, entityx::Entity>& entitiesMap);
+void deserialize(const Json::Value& value, entityx::ComponentHandle<ArcherComponent> component, const std::map<std::string, entityx::Entity>& entitiesMap);
 
 /// Deserialize the given \a value in the given \a component.
 /// \param component Component in wich deserialize the data.
@@ -242,6 +264,28 @@ void deserialize(const Json::Value& value, entityx::ComponentHandle<HandToHandCo
 /// \param component Component in wich deserialize the data.
 /// \param value The Json value containing the data.
 void deserialize(const Json::Value& value, entityx::ComponentHandle<ActorComponent> component);
+
+/// Deserialize the given \a value in the given \a component.
+/// \param component Component in wich deserialize the data.
+/// \param value The Json value containing the data.
+void deserialize(const Json::Value& value, entityx::ComponentHandle<HoldWeaponComponent> component);
+
+/// Deserialize the given \a value in the given \a component.
+/// \param component Component in wich deserialize the data.
+/// \param value The Json value containing the data.
+void deserialize(const Json::Value& value, entityx::ComponentHandle<ArticuledArmsComponent> component);
+
+/// Deserialize the given \a value in the given \a component.
+/// \param component Component in wich deserialize the data.
+/// \param value The Json value containing the data.
+void deserialize(const Json::Value& value, entityx::ComponentHandle<BowComponent> component);
+
+/// Deserialize the given \a value in the given \a component.
+/// \param component Component in wich deserialize the data.
+/// \param value The Json value containing the data.
+void deserialize(const Json::Value& value, entityx::ComponentHandle<QuiverComponent> component);
+
+//End deserialize
 
 /// Return a string depending of the given \a type.
 /// \param type Type to encode in a string.

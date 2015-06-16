@@ -311,7 +311,7 @@
                         ]
                     },
                     {
-                        "name" : "bow",
+                        "name" : "archer",
                         "type" : "object",
                         "free children names" : false,
                         "required" : false,
@@ -434,6 +434,42 @@
 								"type" : "real",
 								"required" : true
 							}
+						]
+					},
+					{
+						"name" : "hold weapon",
+						"type" : "object",
+						"required" : false,
+						"free children names" : false,
+						"children" : 
+						[
+						]
+					},
+					{
+						"name" : "articuled arms",
+						"type" : "object",
+						"required" : false,
+						"free children names" : false,
+						"children" : 
+						[
+						]
+					},
+					{
+						"name" : "bow",
+						"type" : "object",
+						"required" : false,
+						"free children names" : false,
+						"children" : 
+						[
+						]
+					},
+					{
+						"name" : "quiver",
+						"type" : "object",
+						"required" : false,
+						"free children names" : false,
+						"children" : 
+						[
 						]
 					},
                     {
