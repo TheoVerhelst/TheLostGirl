@@ -258,22 +258,22 @@ class Serializer
 		/// Deserialize the given \a value in the given \a component.
 		/// \param component Component in wich deserialize the data.
 		/// \param value The Json value containing the data.
-		void deserialize(const Json::Value& value, entityx::ComponentHandle<HoldItemComponent> component);
+		void deserialize(const Json::Value& value, entityx::ComponentHandle<HoldItemComponent> component, entityx::ComponentHandle<BodyComponent> bodyComponent);
 
 		/// Deserialize the given \a value in the given \a component.
 		/// \param component Component in wich deserialize the data.
 		/// \param value The Json value containing the data.
-		void deserialize(const Json::Value& value, entityx::ComponentHandle<ArticuledArmsComponent> component);
+		void deserialize(const Json::Value& value, entityx::ComponentHandle<ArticuledArmsComponent> component, entityx::ComponentHandle<BodyComponent> bodyComponent);
 
 		/// Deserialize the given \a value in the given \a component.
 		/// \param component Component in wich deserialize the data.
 		/// \param value The Json value containing the data.
-		void deserialize(const Json::Value& value, entityx::ComponentHandle<BowComponent> component);
+		void deserialize(const Json::Value& value, entityx::ComponentHandle<BowComponent> component, entityx::ComponentHandle<BodyComponent> bodyComponent);
 
 		/// Deserialize the given \a value in the given \a component.
 		/// \param component Component in wich deserialize the data.
 		/// \param value The Json value containing the data.
-		void deserialize(const Json::Value& value, entityx::ComponentHandle<QuiverComponent> component);
+		void deserialize(const Json::Value& value, entityx::ComponentHandle<QuiverComponent> component, entityx::ComponentHandle<BodyComponent> bodyComponent);
 
 		//End deserialize
 
