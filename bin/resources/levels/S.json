@@ -21,8 +21,8 @@
 			"transform" : 
 			{
 				"angle" : -4.631782531738281,
-				"x" : 74.9387817382812,
-				"y" : 410.314208984375,
+				"x" : 535.3487817382812,
+				"y" : 405.314208984375,
 				"z" : 1
 			}
 		},
@@ -75,6 +75,19 @@
 				},
 				"damages" : 180,
 				"initial speed" : 60
+			},
+			"articuled arms" :
+			{
+				"arms" : "player arms",
+				"upper angle" : 180,
+				"lower angle" : -90,
+				"current angle" : 0,
+				"target angle" : 0,
+				"local anchor" : 
+				{
+					"x" : 50,
+					"y" : 68
+				}
 			},
 			"death" : 
 			{
@@ -135,19 +148,48 @@
 		},
 		"arrow 1" : 
 		{
-			"base" : "arrow"
+			"base" : "arrow",
+			"transform" : 
+			{
+				"angle" : 0,
+				"x" : 536.6326293945312,
+				"y" : 351.201416015625,
+				"z" : 1
+			}
+
 		},
 		"arrow 2" : 
 		{
-			"base" : "arrow"
+			"base" : "arrow",
+			"transform" : 
+			{
+				"angle" : 0,
+				"x" : 536.6326293945312,
+				"y" : 351.201416015625,
+				"z" : 1
+			}
 		},
 		"arrow 3" : 
 		{
-			"base" : "arrow"
+			"base" : "arrow",
+			"transform" : 
+			{
+				"angle" : 0,
+				"x" : 536.6326293945312,
+				"y" : 351.201416015625,
+				"z" : 1
+			}
 		},
 		"arrow 4" : 
 		{
-			"base" : "arrow"
+			"base" : "arrow",
+			"transform" : 
+			{
+				"angle" : 0,
+				"x" : 536.6326293945312,
+				"y" : 351.201416015625,
+				"z" : 1
+			}
 		},
 		"ground" : 
 		{

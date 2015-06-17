@@ -329,13 +329,6 @@
 			"sprite" : 
 			{
 				"identifier" : "arrow.png"
-			},
-			"transform" : 
-			{
-				"angle" : -80,
-				"x" : 559.4951171875,
-				"y" : 655.2147827148438,
-				"z" : 1
 			}
 		}
 	}
