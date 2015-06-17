@@ -113,56 +113,57 @@ void GameState::saveWorld(const std::string& file)
 		std::ofstream saveFileStream(file, std::ofstream::binary);
 		for(auto& entity : m_entities)
 		{
+			Serializer s(getContext(), m_entities);
 			if(entity.second.has_component<BodyComponent>())
-				root["entities"][entity.first]["body"] = serialize(entity.second.component<BodyComponent>(), pixelByMeter);
+				root["entities"][entity.first]["body"] = s.serialize(entity.second.component<BodyComponent>(),);
 			if(entity.second.has_component<SpriteComponent>())
-				root["entities"][entity.first]["sprite"] = serialize(entity.second.component<SpriteComponent>(), getContext().textureManager, scale);
+				root["entities"][entity.first]["sprite"] = s.serialize(entity.second.component<SpriteComponent>());
 			if(entity.second.has_component<TransformComponent>())
-				root["entities"][entity.first]["transform"] = serialize(entity.second.component<TransformComponent>());
+				root["entities"][entity.first]["transform"] = s.serialize(entity.second.component<TransformComponent>());
 			if(entity.second.has_component<InventoryComponent>())
-				root["entities"][entity.first]["inventory"] = serialize(entity.second.component<InventoryComponent>(), m_entities);
+				root["entities"][entity.first]["inventory"] = s.serialize(entity.second.component<InventoryComponent>());
 			if(entity.second.has_component<ArcherComponent>())
-				root["entities"][entity.first]["archer"] = serialize(entity.second.component<ArcherComponent>(), m_entities);
+				root["entities"][entity.first]["archer"] = s.serialize(entity.second.component<ArcherComponent>());
 			if(entity.second.has_component<AnimationsComponent<SpriteSheetAnimation>>())
-				root["entities"][entity.first]["spritesheet animations"] = serialize(entity.second.component<AnimationsComponent<SpriteSheetAnimation>>());
+				root["entities"][entity.first]["spritesheet animations"] = s.serialize(entity.second.component<AnimationsComponent<SpriteSheetAnimation>>());
 			if(entity.second.has_component<DirectionComponent>())
-				root["entities"][entity.first]["direction"] = serialize(entity.second.component<DirectionComponent>());
+				root["entities"][entity.first]["direction"] = s.serialize(entity.second.component<DirectionComponent>());
 			if(entity.second.has_component<CategoryComponent>())
-				root["entities"][entity.first]["categories"] = serialize(entity.second.component<CategoryComponent>());
+				root["entities"][entity.first]["categories"] = s.serialize(entity.second.component<CategoryComponent>());
 			if(entity.second.has_component<FallComponent>())
-				root["entities"][entity.first]["fall"] = serialize(entity.second.component<FallComponent>());
+				root["entities"][entity.first]["fall"] = s.serialize(entity.second.component<FallComponent>());
 			if(entity.second.has_component<WalkComponent>())
-				root["entities"][entity.first]["walk"] = serialize(entity.second.component<WalkComponent>());
+				root["entities"][entity.first]["walk"] = s.serialize(entity.second.component<WalkComponent>());
 			if(entity.second.has_component<JumpComponent>())
-				root["entities"][entity.first]["jump"] = serialize(entity.second.component<JumpComponent>());
+				root["entities"][entity.first]["jump"] = s.serialize(entity.second.component<JumpComponent>());
 			if(entity.second.has_component<HealthComponent>())
-				root["entities"][entity.first]["health"] = serialize(entity.second.component<HealthComponent>());
+				root["entities"][entity.first]["health"] = s.serialize(entity.second.component<HealthComponent>());
 			if(entity.second.has_component<StaminaComponent>())
-				root["entities"][entity.first]["stamina"] = serialize(entity.second.component<StaminaComponent>());
+				root["entities"][entity.first]["stamina"] = s.serialize(entity.second.component<StaminaComponent>());
 			if(entity.second.has_component<ArrowComponent>())
-				root["entities"][entity.first]["arrow"] = serialize(entity.second.component<ArrowComponent>(), m_entities);
+				root["entities"][entity.first]["arrow"] = s.serialize(entity.second.component<ArrowComponent>());
 			if(entity.second.has_component<HardnessComponent>())
-				root["entities"][entity.first]["hardness"] = serialize(entity.second.component<HardnessComponent>());
+				root["entities"][entity.first]["hardness"] = s.serialize(entity.second.component<HardnessComponent>());
 			if(entity.second.has_component<ScriptsComponent>())
-				root["entities"][entity.first]["scripts"] = serialize(entity.second.component<ScriptsComponent>());
+				root["entities"][entity.first]["scripts"] = s.serialize(entity.second.component<ScriptsComponent>());
 			if(entity.second.has_component<DetectionRangeComponent>())
-				root["entities"][entity.first]["detection range"] = serialize(entity.second.component<DetectionRangeComponent>());
+				root["entities"][entity.first]["detection range"] = s.serialize(entity.second.component<DetectionRangeComponent>());
 			if(entity.second.has_component<DeathComponent>())
-				root["entities"][entity.first]["death"] = serialize(entity.second.component<DeathComponent>());
+				root["entities"][entity.first]["death"] = s.serialize(entity.second.component<DeathComponent>());
 			if(entity.second.has_component<NameComponent>())
-				root["entities"][entity.first]["name"] = serialize(entity.second.component<NameComponent>());
+				root["entities"][entity.first]["name"] = s.serialize(entity.second.component<NameComponent>());
 			if(entity.second.has_component<HandToHandComponent>())
-				root["entities"][entity.first]["hand to hand"] = serialize(entity.second.component<HandToHandComponent>());
+				root["entities"][entity.first]["hand to hand"] = s.serialize(entity.second.component<HandToHandComponent>());
 			if(entity.second.has_component<ActorComponent>())
-				root["entities"][entity.first]["actor"] = serialize(entity.second.component<ActorComponent>());
+				root["entities"][entity.first]["actor"] = s.serialize(entity.second.component<ActorComponent>());
 			if(entity.second.has_component<HoldItemComponent>())
-				root["entities"][entity.first]["hold item"] = serialize(entity.second.component<HoldItemComponent>());
+				root["entities"][entity.first]["hold item"] = s.serialize(entity.second.component<HoldItemComponent>());
 			if(entity.second.has_component<ArticuledArmsComponent>())
-				root["entities"][entity.first]["articuled arms"] = serialize(entity.second.component<ArticuledArmsComponent>());
+				root["entities"][entity.first]["articuled arms"] = s.serialize(entity.second.component<ArticuledArmsComponent>());
 			if(entity.second.has_component<BowComponent>())
-				root["entities"][entity.first]["bow"] = serialize(entity.second.component<BowComponent>());
+				root["entities"][entity.first]["bow"] = s.serialize(entity.second.component<BowComponent>());
 			if(entity.second.has_component<QuiverComponent>())
-				root["entities"][entity.first]["quiver"] = serialize(entity.second.component<QuiverComponent>());
+				root["entities"][entity.first]["quiver"] = s.serialize(entity.second.component<QuiverComponent>());
 			//End serialize
 		}
 
@@ -490,63 +491,64 @@ void GameState::initWorld(const std::string& file)
 					getContext().eventManager.emit<LoadingStateChange>("Loading " + entity["name"].asString());
 				else
 					getContext().eventManager.emit<LoadingStateChange>("Loading " + entityName);
+
+				Serializer s(getContext(), m_entities);
 				if(entity.isMember("transform"))
-					deserialize(entity["transform"], m_entities[entityName].assign<TransformComponent>());
+					s.deserialize(entity["transform"], m_entities[entityName].assign<TransformComponent>());
 				if(entity.isMember("sprite"))
-					deserialize(entity["sprite"], m_entities[entityName].assign<SpriteComponent>(), texManager, paths[getContext().parameters.scaleIndex], scale);
+					s.deserialize(entity["sprite"], m_entities[entityName].assign<SpriteComponent>());
 				//body
 				if(entity.isMember("body"))
 				{
-					deserialize(entity["body"], m_entities[entityName].assign<BodyComponent>(), m_entities[entityName].component<TransformComponent>(), getContext().world, pixelByMeter);
+					s.deserialize(entity["body"], m_entities[entityName].assign<BodyComponent>(), m_entities.at(entityName).component<TransformComponent>());
 					//Assign user data to the body of the entity
 					m_entities[entityName].component<BodyComponent>()->body->SetUserData(&m_entities[entityName]);
 				}
 				//spritesheet animations
 				if(entity.isMember("spritesheet animations"))
-					deserialize(entity["spritesheet animations"], m_entities[entityName].assign<AnimationsComponent<SpriteSheetAnimation>>(),
-									m_entities[entityName].component<SpriteComponent>(), getContext());
+					s.deserialize(entity["spritesheet animations"], m_entities[entityName].assign<AnimationsComponent<SpriteSheetAnimation>>(), m_entities[entityName].component<SpriteComponent>());
 				if(entity.isMember("inventory"))
-					deserialize(entity["inventory"], m_entities[entityName].assign<InventoryComponent>(), m_entities);
+					s.deserialize(entity["inventory"], m_entities[entityName].assign<InventoryComponent>());
 				if(entity.isMember("archer"))
-					deserialize(entity["archer"], m_entities[entityName].assign<ArcherComponent>(), m_entities);
+					s.deserialize(entity["archer"], m_entities[entityName].assign<ArcherComponent>());
 				if(entity.isMember("categories"))
-					deserialize(entity["categories"], m_entities[entityName].assign<CategoryComponent>());
+					s.deserialize(entity["categories"], m_entities[entityName].assign<CategoryComponent>());
 				if(entity.isMember("walk"))
-					deserialize(entity["walk"], m_entities[entityName].assign<WalkComponent>());
+					s.deserialize(entity["walk"], m_entities[entityName].assign<WalkComponent>());
 				if(entity.isMember("jump"))
-					deserialize(entity["jump"], m_entities[entityName].assign<JumpComponent>());
+					s.deserialize(entity["jump"], m_entities[entityName].assign<JumpComponent>());
 				if(entity.isMember("health"))
-					deserialize(entity["health"], m_entities[entityName].assign<HealthComponent>());
+					s.deserialize(entity["health"], m_entities[entityName].assign<HealthComponent>());
 				if(entity.isMember("stamina"))
-					deserialize(entity["stamina"], m_entities[entityName].assign<StaminaComponent>());
+					s.deserialize(entity["stamina"], m_entities[entityName].assign<StaminaComponent>());
 				if(entity.isMember("direction"))
-					deserialize(entity["direction"], m_entities[entityName].assign<DirectionComponent>());
+					s.deserialize(entity["direction"], m_entities[entityName].assign<DirectionComponent>());
 				if(entity.isMember("fall"))
-					deserialize(entity["fall"], m_entities[entityName].assign<FallComponent>());
+					s.deserialize(entity["fall"], m_entities[entityName].assign<FallComponent>());
 				if(entity.isMember("arrow"))
-					deserialize(entity["arrow"], m_entities[entityName].assign<ArrowComponent>(), m_entities);
+					s.deserialize(entity["arrow"], m_entities[entityName].assign<ArrowComponent>());
 				if(entity.isMember("hardness"))
-					deserialize(entity["hardness"], m_entities[entityName].assign<HardnessComponent>());
+					s.deserialize(entity["hardness"], m_entities[entityName].assign<HardnessComponent>());
 				if(entity.isMember("scripts"))
-					deserialize(entity["scripts"], m_entities[entityName].assign<ScriptsComponent>(), getContext().scriptManager);
+					s.deserialize(entity["scripts"], m_entities[entityName].assign<ScriptsComponent>());
 				if(entity.isMember("detection range"))
-					deserialize(entity["detection range"], m_entities[entityName].assign<DetectionRangeComponent>());
+					s.deserialize(entity["detection range"], m_entities[entityName].assign<DetectionRangeComponent>());
 				if(entity.isMember("death"))
-					deserialize(entity["death"], m_entities[entityName].assign<DeathComponent>());
+					s.deserialize(entity["death"], m_entities[entityName].assign<DeathComponent>());
 				if(entity.isMember("name"))
-					deserialize(entity["name"], m_entities[entityName].assign<NameComponent>());
+					s.deserialize(entity["name"], m_entities[entityName].assign<NameComponent>());
 				if(entity.isMember("hand to hand"))
-					deserialize(entity["hand to hand"], m_entities[entityName].assign<HandToHandComponent>());
+					s.deserialize(entity["hand to hand"], m_entities[entityName].assign<HandToHandComponent>());
 				if(entity.isMember("actor"))
-					deserialize(entity["actor"], m_entities[entityName].assign<ActorComponent>());
+					s.deserialize(entity["actor"], m_entities[entityName].assign<ActorComponent>());
 				if(entity.isMember("hold item"))
-					deserialize(entity["hold item"], m_entities[entityName].assign<HoldItemComponent>());
+					s.deserialize(entity["hold item"], m_entities[entityName].assign<HoldItemComponent>());
 				if(entity.isMember("articuled arms"))
-					deserialize(entity["articuled arms"], m_entities[entityName].assign<ArticuledArmsComponent>());
+					s.deserialize(entity["articuled arms"], m_entities[entityName].assign<ArticuledArmsComponent>());
 				if(entity.isMember("bow"))
-					deserialize(entity["bow"], m_entities[entityName].assign<BowComponent>());
+					s.deserialize(entity["bow"], m_entities[entityName].assign<BowComponent>());
 				if(entity.isMember("quiver"))
-					deserialize(entity["quiver"], m_entities[entityName].assign<QuiverComponent>());
+					s.deserialize(entity["quiver"], m_entities[entityName].assign<QuiverComponent>());
 				//End serialize
 			}
 		}
