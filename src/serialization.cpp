@@ -278,20 +278,8 @@ Json::Value Serializer::serialize(entityx::ComponentHandle<JumpComponent> compon
 Json::Value Serializer::serialize(entityx::ComponentHandle<ArcherComponent> component)
 {
 	Json::Value ret;
-	ret["power"] = component->power;
 	ret["damages"] = component->damages;
 	ret["initial speed"] = component->initialSpeed;
-	ret["angle"] = component->angle;
-	ret["quiver capacity"] = component->quiverCapacity;
-	if(isMember(m_entitiesMap, component->notchedArrow) and component->notchedArrow.valid())
-		ret["notched arrow"] = getKey(m_entitiesMap, component->notchedArrow);
-	ret["arrows"] = Json::Value(Json::arrayValue);
-	//For each arrow of the quiver
-	for(entityx::Entity arrow : component->arrows)
-		//If the arrow is in the entity list
-		if(isMember(m_entitiesMap, arrow) and arrow.valid())
-			//Add it to the value
-			ret["arrows"].append(getKey(m_entitiesMap, arrow));
 	return ret;
 }
 
@@ -411,18 +399,59 @@ Json::Value Serializer::serialize(entityx::ComponentHandle<ActorComponent> compo
 
 Json::Value Serializer::serialize(entityx::ComponentHandle<HoldItemComponent> component)
 {
+	Json::Value ret;
+	if(isMember(m_entitiesMap, component->item))
+		ret["item"] = getKey(m_entitiesMap, component->item);
+	const b2Vec2 localAnchor{component->armsJoint->GetLocalAnchorA()*m_context.parameters.pixelByMeter};
+	ret["local anchor"]["x"] = localAnchor.x;
+	ret["local anchor"]["y"] = localAnchor.y;
+	return ret;
 }
 
 Json::Value Serializer::serialize(entityx::ComponentHandle<ArticuledArmsComponent> component)
 {
+	const float pixelByMeter{m_context.parameters.pixelByMeter};
+	Json::Value ret;
+	if(isMember(m_entitiesMap, component->arms))
+		ret["arms"] = getKey(m_entitiesMap, component->arms);
+	ret["target angle"] = component->targetAngle * 180.f / b2_pi;
+	ret["upper angle"] = component->armsJoint->GetUpperLimit() * 180.f / b2_pi;
+	ret["lower angle"] = component->armsJoint->GetLowerLimit() * 180.f / b2_pi;
+	ret["current angle"] = component->armsJoint->GetJointAngle() * 180.f / b2_pi;
+	const b2Vec2 localAnchor{component->armsJoint->GetLocalAnchorA()*pixelByMeter};
+	ret["local anchor"]["x"] = localAnchor.x;
+	ret["local anchor"]["y"] = localAnchor.y;
+	return ret;
 }
 
 Json::Value Serializer::serialize(entityx::ComponentHandle<BowComponent> component)
 {
+	const float pixelByMeter{m_context.parameters.pixelByMeter};
+	Json::Value ret;
+	if(isMember(m_entitiesMap, component->notchedArrow) and component->notchedArrow.valid())
+		ret["notched arrow"] = getKey(m_entitiesMap, component->notchedArrow);
+	ret["target translation"] = component->targetTranslation;
+	ret["upper translation"] = component->notchedArrowJoint->GetUpperLimit()*pixelByMeter;
+	ret["lower translation"] = component->notchedArrowJoint->GetLowerLimit()*pixelByMeter;
+	ret["current translation"] = component->notchedArrowJoint->GetJointTranslation()*pixelByMeter;
+	const b2Vec2 localAnchor{component->notchedArrowJoint->GetLocalAnchorA()*pixelByMeter};
+	ret["local anchor"]["x"] = localAnchor.x;
+	ret["local anchor"]["y"] = localAnchor.y;
+	return ret;
 }
 
 Json::Value Serializer::serialize(entityx::ComponentHandle<QuiverComponent> component)
 {
+	Json::Value ret;
+	ret["capacity"] = component->capacity;
+	ret["arrows"] = Json::Value(Json::arrayValue);
+	//For each arrow of the quiver
+	for(entityx::Entity arrow : component->arrows)
+		//If the arrow is in the entity list
+		if(isMember(m_entitiesMap, arrow) and arrow.valid())
+			//Add it to the value
+			ret["arrows"].append(getKey(m_entitiesMap, arrow));
+	return ret;
 }
 
 //End serialize
@@ -746,17 +775,8 @@ void Serializer::deserialize(const Json::Value& value, entityx::ComponentHandle<
 
 void Serializer::deserialize(const Json::Value& value, entityx::ComponentHandle<ArcherComponent> component, const std::map<std::string, entityx::Entity>& m_entitiesMap)
 {
-	component->power = value["power"].asFloat();
-	component->angle = value["angle"].asFloat();
 	component->damages = value["damages"].asFloat();
 	component->initialSpeed = value["initial speed"].asFloat();
-	component->arrows.clear();
-	for(Json::ArrayIndex i{0}; i < value["arrows"].size(); ++i)
-		if(m_entitiesMap.find(value["arrows"][i].asString()) != m_entitiesMap.end())
-			component->arrows.push_back(m_entitiesMap.at(value["arrows"][i].asString()));
-	if(m_entitiesMap.find(value["notched arrow"].asString()) != m_entitiesMap.end())
-		component->notchedArrow = m_entitiesMap.at(value["notched arrow"].asString());
-	component->quiverCapacity = value["quiver capacity"].asUInt();
 }
 
 void Serializer::deserialize(const Json::Value& value, entityx::ComponentHandle<HealthComponent> component)
