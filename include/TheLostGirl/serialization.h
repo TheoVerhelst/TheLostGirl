@@ -203,7 +203,7 @@ class Serializer
 		/// Deserialize the given \a value in the given \a component.
 		/// \param component Component in wich deserialize the data.
 		/// \param value The Json value containing the data.
-		void deserialize(const Json::Value& value, entityx::ComponentHandle<ArcherComponent> component);
+		void deserialize(const Json::Value& value, entityx::ComponentHandle<ArcherComponent> component, entityx::ComponentHandle<BodyComponent> bodyComponent);
 
 		/// Deserialize the given \a value in the given \a component.
 		/// \param component Component in wich deserialize the data.
@@ -279,8 +279,8 @@ class Serializer
 
 	private:
 		StateStack::Context m_context;
-		const std::map<std::string, entityx::Entity>& m_entitiesMap
-}
+		const std::map<std::string, entityx::Entity>& m_entitiesMap;
+};
 
 /// Return a string depending of the given \a type.
 /// \param type Type to encode in a string.

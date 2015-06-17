@@ -50,13 +50,13 @@ void StatsSystem::update(entityx::EntityManager& entityManager, entityx::EventMa
 	{
 		const float initialStamina{staminaComponent->current};
 		//Substract stamina if the entity bend his bow
-		const ArticuledArmsComponent::Handle armsComponent(entity.component<ArticuledArmsComponent>());
+		ArticuledArmsComponent::Handle armsComponent(entity.component<ArticuledArmsComponent>());
 		if(armsComponent and armsComponent->arms.valid())
 		{
-			HoldItemComponent::Handle holdItemComponent{armsComponent->arms.component<HoldItemComponent>()};
+			HoldItemComponent::Handle holdItemComponent(armsComponent->arms.component<HoldItemComponent>());
 			if(holdItemComponent and holdItemComponent->item.valid())
 			{
-				BowComponent::Handle bowComponent{holdItemComponent->item.component<BowComponent>()};
+				const BowComponent::Handle bowComponent(holdItemComponent->item.component<BowComponent>());
 				if(bowComponent)
 					staminaComponent->current = cap(staminaComponent->current - bowComponent->targetTranslation*float(dt)*3.f/100.f, 0.f, staminaComponent->maximum);
 			}

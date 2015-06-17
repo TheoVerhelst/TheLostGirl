@@ -1,5 +1,5 @@
 #include <entityx/Entity.h>
-#include <Box2D/Dynamics/Joints/b2Joint.h>
+#include <Box2D/Dynamics/Joints/b2RevoluteJoint.h>
 #include <Box2D/Dynamics/b2Body.h>
 #include <Box2D/Dynamics/b2World.h>
 #include <TheLostGirl/components.h>
@@ -22,7 +22,7 @@ void ArrowShooter::operator()(entityx::Entity entity, double) const
 	ArticuledArmsComponent::Handle armsComponent(entity.component<ArticuledArmsComponent>());
 	ArcherComponent::Handle archerComponent(entity.component<ArcherComponent>());
 	const DirectionComponent::Handle directionComponent(entity.component<DirectionComponent>());
-	if(not (armsComponent and archerComponent->notchedArrow.valid() and directionComponent))
+	if(not (armsComponent and armsComponent->arms.valid() and directionComponent))
 		return;
 	HoldItemComponent::Handle holdItemComponent{armsComponent->arms.component<HoldItemComponent>()};
 	if(not (holdItemComponent and holdItemComponent->item.valid()))
@@ -33,8 +33,8 @@ void ArrowShooter::operator()(entityx::Entity entity, double) const
 
 	const float angle{armsComponent->armsJoint->GetJointAngle()};
 	const float power{bowComponent->targetTranslation};
-	BodyComponent::Handle notchedArrowBodyComponent(archerComponent->notchedArrow.component<BodyComponent>());
-	ArrowComponent::Handle notchedArrowArrowComponent(archerComponent->notchedArrow.component<ArrowComponent>());
+	BodyComponent::Handle notchedArrowBodyComponent(bowComponent->notchedArrow.component<BodyComponent>());
+	ArrowComponent::Handle notchedArrowArrowComponent(bowComponent->notchedArrow.component<ArrowComponent>());
 	if(notchedArrowBodyComponent and notchedArrowArrowComponent)
 	{
 		b2Body* arrowBody{notchedArrowBodyComponent->body};

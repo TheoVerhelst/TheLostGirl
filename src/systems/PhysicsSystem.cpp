@@ -56,7 +56,7 @@ void PhysicsSystem::update(entityx::EntityManager& entityManager, entityx::Event
 		//Update the rotating arms
 		ArticuledArmsComponent::Handle armsComponent(entity.component<ArticuledArmsComponent>());
 		if(armsComponent)
-			armsComponent->armsJoint->setMotorSpeed(gain * (armsComponent->targetAngle - armsComponent->armsJoint->GetJointAngle()));
+			armsComponent->armsJoint->SetMotorSpeed(gain * (armsComponent->targetAngle - armsComponent->armsJoint->GetJointAngle()));
 
 		//Update the notched translating arrows
 		const DirectionComponent::Handle directionComponent(entity.component<DirectionComponent>());
@@ -65,8 +65,8 @@ void PhysicsSystem::update(entityx::EntityManager& entityManager, entityx::Event
 		{
 			float targetTranslation{bowComponent->targetTranslation};
 			if(directionComponent and directionComponent->direction == Direction::Left)
-				targetTranslation = 1 - translationTarget;
-				//The final target is equal to the joint's lower limit when the translationTarget is equal to 1.
+				targetTranslation = 1 - targetTranslation;
+				//The final target is equal to the joint's lower limit when the targetTranslation is equal to 1.
 				bowComponent->notchedArrowJoint->SetMotorSpeed(gain * (targetTranslation * bowComponent->notchedArrowJoint->GetLowerLimit() - bowComponent->notchedArrowJoint->GetJointTranslation()));
 		}
 

@@ -114,7 +114,7 @@ void GameState::saveWorld(const std::string& file)
 		{
 			Serializer s(getContext(), m_entities);
 			if(entity.second.has_component<BodyComponent>())
-				root["entities"][entity.first]["body"] = s.serialize(entity.second.component<BodyComponent>(),);
+				root["entities"][entity.first]["body"] = s.serialize(entity.second.component<BodyComponent>());
 			if(entity.second.has_component<SpriteComponent>())
 				root["entities"][entity.first]["sprite"] = s.serialize(entity.second.component<SpriteComponent>());
 			if(entity.second.has_component<TransformComponent>())
@@ -275,10 +275,29 @@ void GameState::initWorld(const std::string& file)
 		if(root.isMember("entities"))
 		{
 			const Json::Value entities{root["entities"]};
-			//First add all entities without add components, that's for component that need
-			//that m_entities is complete to be assigned (such as InventoryComponent).
+			//First add all entities with some needed components, that's for component that need
+			//that m_entities is complete and bodies already created to be assigned (such as InventoryComponent).
 			for(const std::string& entityName : entities.getMemberNames())
+			{
+				Json::Value entity{entities[entityName]};
+				//If the entity is derivated from a generic entities, add components of the base to the entity
+				if(entity.isMember("base"))
+				{
+					const Json::Value base{genericEntities[entity["base"].asString()]};
+					for(const std::string& componentName : base.getMemberNames())
+						entity[componentName] = base[componentName];
+				}
 				m_entities.emplace(entityName, getContext().entityManager.create());
+				Serializer s(getContext(), m_entities);
+				if(entity.isMember("transform"))
+					s.deserialize(entity["transform"], m_entities[entityName].assign<TransformComponent>());
+				if(entity.isMember("body"))
+				{
+					s.deserialize(entity["body"], m_entities[entityName].assign<BodyComponent>(), m_entities[entityName].component<TransformComponent>());
+					//Assign user data to the body of the entity
+					m_entities[entityName].component<BodyComponent>()->body->SetUserData(&m_entities[entityName]);
+				}
+			}
 
 			for(const std::string& entityName : entities.getMemberNames())
 			{
@@ -298,24 +317,14 @@ void GameState::initWorld(const std::string& file)
 					getContext().eventManager.emit<LoadingStateChange>("Loading " + entityName);
 
 				Serializer s(getContext(), m_entities);
-				if(entity.isMember("transform"))
-					s.deserialize(entity["transform"], m_entities[entityName].assign<TransformComponent>());
 				if(entity.isMember("sprite"))
 					s.deserialize(entity["sprite"], m_entities[entityName].assign<SpriteComponent>());
-				//body
-				if(entity.isMember("body"))
-				{
-					s.deserialize(entity["body"], m_entities[entityName].assign<BodyComponent>(), m_entities.at(entityName).component<TransformComponent>());
-					//Assign user data to the body of the entity
-					m_entities[entityName].component<BodyComponent>()->body->SetUserData(&m_entities[entityName]);
-				}
-				//spritesheet animations
 				if(entity.isMember("spritesheet animations"))
-					s.deserialize(entity["spritesheet animations"], m_entities.at(entityName).assign<AnimationsComponent<SpriteSheetAnimation>>(), m_entities[entityName].component<SpriteComponent>());
+					s.deserialize(entity["spritesheet animations"], m_entities[entityName].assign<AnimationsComponent<SpriteSheetAnimation>>(), m_entities[entityName].component<SpriteComponent>());
 				if(entity.isMember("inventory"))
 					s.deserialize(entity["inventory"], m_entities[entityName].assign<InventoryComponent>());
 				if(entity.isMember("archer"))
-					s.deserialize(entity["archer"], m_entities[entityName].assign<ArcherComponent>());
+					s.deserialize(entity["archer"], m_entities[entityName].assign<ArcherComponent>(), m_entities[entityName].component<BodyComponent>());
 				if(entity.isMember("categories"))
 					s.deserialize(entity["categories"], m_entities[entityName].assign<CategoryComponent>());
 				if(entity.isMember("walk"))
@@ -347,13 +356,13 @@ void GameState::initWorld(const std::string& file)
 				if(entity.isMember("actor"))
 					s.deserialize(entity["actor"], m_entities[entityName].assign<ActorComponent>());
 				if(entity.isMember("hold item"))
-					s.deserialize(entity["hold item"], m_entities[entityName].assign<HoldItemComponent>(), m_entities.at(entityName).component<BodyComponent>());
+					s.deserialize(entity["hold item"], m_entities[entityName].assign<HoldItemComponent>(), m_entities[entityName].component<BodyComponent>());
 				if(entity.isMember("articuled arms"))
-					s.deserialize(entity["articuled arms"], m_entities[entityName].assign<ArticuledArmsComponent>(), m_entities.at(entityName).component<BodyComponent>());
+					s.deserialize(entity["articuled arms"], m_entities[entityName].assign<ArticuledArmsComponent>(), m_entities[entityName].component<BodyComponent>());
 				if(entity.isMember("bow"))
-					s.deserialize(entity["bow"], m_entities[entityName].assign<BowComponent>(), m_entities.at(entityName).component<BodyComponent>());
+					s.deserialize(entity["bow"], m_entities[entityName].assign<BowComponent>(), m_entities[entityName].component<BodyComponent>());
 				if(entity.isMember("quiver"))
-					s.deserialize(entity["quiver"], m_entities[entityName].assign<QuiverComponent>(), m_entities.at(entityName).component<BodyComponent>());
+					s.deserialize(entity["quiver"], m_entities[entityName].assign<QuiverComponent>(), m_entities[entityName].component<BodyComponent>());
 				//End serialize
 			}
 		}

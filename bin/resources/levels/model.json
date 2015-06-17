@@ -326,7 +326,7 @@
                                 "name" : "initial speed",
                                 "type" : "real",
                                 "required" : true
-                            }
+                            },
 							{
 								"name" : "quiver",
 								"type" : "string",
@@ -579,7 +579,7 @@
 						"children" : 
 						[
                             {
-                                "name" : "quiver capacity",
+                                "name" : "capacity",
                                 "type" : "int",
                                 "required" : true
                             },

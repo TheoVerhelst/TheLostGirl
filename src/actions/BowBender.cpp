@@ -55,7 +55,7 @@ void BowBender::operator()(entityx::Entity entity, double) const
 			directionStr = " right";
 		//If the animations manager have the required animation
 		if(animationComponent->animationsManager.isRegistred("bend"+directionStr))
-			animationComponent->animationsManager.setProgress("bend"+directionStr, armsComponent->power);
+			animationComponent->animationsManager.setProgress("bend"+directionStr, bowComponent->targetTranslation);
 	}
 	//Notch an arrow if there is no one
 	entityx::Entity notchedArrow{bowComponent->notchedArrow};
@@ -109,8 +109,7 @@ void BowBender::operator()(entityx::Entity entity, double) const
 			jointDef.upperTranslation = 0.f;
 			jointDef.enableMotor = true;
 			jointDef.maxMotorForce = 10.f;
-			jointDef.userData = add(jointDef.userData, static_cast<long unsigned int>(JointRole::BendingPower));
-			bowComponent->joint = world->CreateJoint(&jointDef);
+			bowComponent->notchedArrowJoint = static_cast<b2PrismaticJoint*>(world->CreateJoint(&jointDef));
 			notchedArrow.component<ArrowComponent>()->state = ArrowComponent::Notched;
 		}
 	}

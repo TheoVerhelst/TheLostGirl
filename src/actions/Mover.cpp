@@ -92,7 +92,6 @@ void Mover::operator()(entityx::Entity entity, double) const
 					armsComponent->targetAngle = cap(std::remainder(armsComponent->targetAngle - b2_pi, 2.f*b2_pi), -b2_pi, b2_pi/2.f);
 				else if(directionComponent->direction == Direction::Right)
 					armsComponent->targetAngle = cap(std::remainder(armsComponent->targetAngle - b2_pi, 2.f*b2_pi), -b2_pi/2.f, b2_pi);
-				}
 			}
 
 			AnimationsComponent<SpriteSheetAnimation>::Handle animationsComponent(entity.component<AnimationsComponent<SpriteSheetAnimation>>());
