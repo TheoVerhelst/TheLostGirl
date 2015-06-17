@@ -30,7 +30,6 @@
 #include <TheLostGirl/functions.h>
 #include <TheLostGirl/events.h>
 #include <TheLostGirl/FixtureRoles.h>
-#include <TheLostGirl/JointRoles.h>
 #include <TheLostGirl/serialization.h>
 #include <TheLostGirl/states/GameState.h>
 

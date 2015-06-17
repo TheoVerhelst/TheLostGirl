@@ -49,11 +49,11 @@ void StatsSystem::update(entityx::EntityManager& entityManager, entityx::EventMa
 	for(auto entity : entityManager.entities_with_components(staminaComponent))
 	{
 		//Substract stamina if the entity bend his bow
-		const ArcherComponent::Handle bowComponent(entity.component<ArcherComponent>());
-		if(bowComponent)
+		const ArcherComponent::Handle archerComponent(entity.component<ArcherComponent>());
+		if(archerComponent)
 		{
 			float oldStamina{staminaComponent->current};
-			staminaComponent->current = cap(staminaComponent->current - bowComponent->power*float(dt)*3.f/100.f, 0.f, staminaComponent->maximum);
+			staminaComponent->current = cap(staminaComponent->current - archerComponent->power*float(dt)*3.f/100.f, 0.f, staminaComponent->maximum);
 			if(staminaComponent->current < oldStamina)
 				eventManager.emit<EntityStaminaChange>(entity, staminaComponent->current, staminaComponent->current/staminaComponent->maximum);
 		}

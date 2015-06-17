@@ -21,8 +21,8 @@ void ArrowPicker::operator()(entityx::Entity entity, double) const
 		return;
 	const DirectionComponent::Handle directionComponent(entity.component<DirectionComponent>());
 	const BodyComponent::Handle bodyComponent(entity.component<BodyComponent>());
-	ArcherComponent::Handle bowComponent(entity.component<ArcherComponent>());
-	if(bodyComponent and directionComponent and bowComponent)
+	ArcherComponent::Handle archerComponent(entity.component<ArcherComponent>());
+	if(bodyComponent and directionComponent and archerComponent)
 	{
 		b2World* world{bodyComponent->body->GetWorld()};
 
@@ -62,7 +62,7 @@ void ArrowPicker::operator()(entityx::Entity entity, double) const
 			world->CreateJoint(&jointDef);
 
 			//Add the arrow to the quiver
-			bowComponent->arrows.push_back(callback.foundEntity);
+			archerComponent->arrows.push_back(callback.foundEntity);
 			callback.foundEntity.component<ArrowComponent>()->state = ArrowComponent::Stored;
 			callback.foundEntity.component<ArrowComponent>()->shooter = entity;
 		}

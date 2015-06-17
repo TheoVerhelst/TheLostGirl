@@ -6,7 +6,6 @@
 #include <Box2D/Dynamics/b2Fixture.h>
 #include <TheLostGirl/components.h>
 #include <TheLostGirl/functions.h>
-#include <TheLostGirl/JointRoles.h>
 #include <TheLostGirl/FixtureRoles.h>
 #include <TheLostGirl/actions/Mover.h>
 
@@ -84,68 +83,15 @@ void Mover::operator()(entityx::Entity entity, double) const
 				if(moveToOppDirection)
 					directionComponent->direction = oppDirection;
 			}
-			//Flip the bend componnent if there is one and if the entity has flip
-			ArcherComponent::Handle bowComponent(entity.component<ArcherComponent>());
-			if(bowComponent and directionComponent->direction != initialDirection)
+			//Flip the arms component if there is one and if the entity has flip
+			ArticuledArmsComponent::Handle armsComponent(entity.component<ArticuledArmsComponent>());
+			if(armsComponent and directionComponent->direction != initialDirection)
 			{
 				//Flip the angle
 				if(directionComponent->direction == Direction::Left)
-					bowComponent->angle = cap(std::remainder(entity.component<ArcherComponent>()->angle - b2_pi, 2.f*b2_pi), -b2_pi, b2_pi/2.f);
+					armsComponent->targetAngle = cap(std::remainder(armsComponent->targetAngle - b2_pi, 2.f*b2_pi), -b2_pi, b2_pi/2.f);
 				else if(directionComponent->direction == Direction::Right)
-					bowComponent->angle = cap(std::remainder(entity.component<ArcherComponent>()->angle - b2_pi, 2.f*b2_pi), -b2_pi/2.f, b2_pi);
-
-				if(bowComponent->notchedArrow.valid())
-				{
-					//If the notched arrow has a body
-					BodyComponent::Handle arrowBodyComponent(bowComponent->notchedArrow.component<BodyComponent>());
-					if(arrowBodyComponent)
-					{
-						//Iterate over all joints
-						for(b2JointEdge* jointEdge{arrowBodyComponent->body->GetJointList()}; jointEdge; jointEdge = jointEdge->next)
-						{
-							//If this is a bending translation joint
-							if(jointHasRole(jointEdge->joint, JointRole::BendingPower))
-							{
-								//Copy the joint and create a new one
-								b2PrismaticJoint* joint{static_cast<b2PrismaticJoint*>(jointEdge->joint)};
-								b2PrismaticJointDef jointDef;
-								jointDef.bodyA = joint->GetBodyA();
-								jointDef.bodyB = joint->GetBodyB();
-								jointDef.localAxisA = joint->GetLocalAxisA();
-								jointDef.enableLimit = joint->IsLimitEnabled();
-								jointDef.lowerTranslation = joint->GetLowerLimit();
-								jointDef.upperTranslation = joint->GetUpperLimit();
-								jointDef.enableMotor = joint->IsMotorEnabled();
-								jointDef.maxMotorForce = joint->GetMaxMotorForce();
-								jointDef.motorSpeed = joint->GetMotorSpeed();
-								jointDef.userData = joint->GetUserData();
-								//Get the AABB of the arrow, to compute where place anchor of the joint
-								b2AABB arrowBox;
-								b2Transform identity;
-								identity.SetIdentity();
-								for(b2Fixture* fixture{arrowBodyComponent->body->GetFixtureList()}; fixture; fixture = fixture->GetNext())
-									if(fixtureHasRole(fixture, FixtureRole::Main))
-										fixture->GetShape()->ComputeAABB(&arrowBox, identity, 0);
-								b2Vec2 arrowSize{arrowBox.upperBound - arrowBox.lowerBound};
-								if(directionComponent->direction == Direction::Left)
-								{
-									jointDef.referenceAngle = b2_pi;
-									jointDef.localAnchorA = {-0.1f, 0.41f};
-									jointDef.localAnchorB = {arrowSize.x, arrowSize.y*0.5f};
-								}
-								else if(directionComponent->direction == Direction::Right)
-								{
-									jointDef.referenceAngle = 0.f;
-									jointDef.localAnchorA = {0.625f, 0.41f};
-									jointDef.localAnchorB = {0.f, arrowSize.y*0.5f};
-								}
-
-								b2World* world{jointEdge->joint->GetBodyA()->GetWorld()};
-								world->CreateJoint(&jointDef);
-								world->DestroyJoint(jointEdge->joint);
-							}
-						}
-					}
+					armsComponent->targetAngle = cap(std::remainder(armsComponent->targetAngle - b2_pi, 2.f*b2_pi), -b2_pi/2.f, b2_pi);
 				}
 			}
 

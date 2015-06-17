@@ -6,7 +6,6 @@
 #include <TheLostGirl/Category.h>
 #include <TheLostGirl/Parameters.h>
 #include <TheLostGirl/functions.h>
-#include <TheLostGirl/JointRoles.h>
 #include <TheLostGirl/systems/TimeSystem.h>
 #include <TheLostGirl/systems/PhysicsSystem.h>
 
@@ -53,36 +52,22 @@ void PhysicsSystem::update(entityx::EntityManager& entityManager, entityx::Event
 			jumpComponent->mustJump = false;
 		}
 
-		//Update the archers
-		ArcherComponent::Handle bowComponent(entity.component<ArcherComponent>());
+		const float32 gain{20.f};
+		//Update the rotating arms
+		ArticuledArmsComponent::Handle armsComponent(entity.component<ArticuledArmsComponent>());
+		if(armsComponent)
+			armsComponent->armsJoint->setMotorSpeed(gain * (armsComponent->targetAngle - armsComponent->armsJoint->GetJointAngle()));
+
+		//Update the notched translating arrows
 		const DirectionComponent::Handle directionComponent(entity.component<DirectionComponent>());
-		if(bowComponent)
+		BowComponent::Handle bowComponent(entity.component<BowComponent>());
+		if(bowComponent and directionComponent)
 		{
-			const float angleTarget{-bowComponent->angle};
-			const float32 gain{20.f};
-
-			float translationTarget{bowComponent->power};
+			float targetTranslation{bowComponent->targetTranslation};
 			if(directionComponent and directionComponent->direction == Direction::Left)
-				translationTarget = 1 - translationTarget;
-
-			//Iterate over all joints
-			for(b2JointEdge* jointEdge{body->GetJointList()}; jointEdge; jointEdge = jointEdge->next)
-			{
-				//If this is a bending joint
-				if(jointHasRole(jointEdge->joint, JointRole::BendingAngle))
-				{
-					b2RevoluteJoint* joint{static_cast<b2RevoluteJoint*>(jointEdge->joint)};
-					joint->SetMotorSpeed(gain * (angleTarget - joint->GetJointAngle()));
-				}
-
-				//If this is a bending translation joint
-				if(jointHasRole(jointEdge->joint, JointRole::BendingPower) and directionComponent)
-				{
-					b2PrismaticJoint* joint{static_cast<b2PrismaticJoint*>(jointEdge->joint)};
-					//The final target is equal to the joint's lower limit when the translationTarget is equal to 1.
-					joint->SetMotorSpeed(gain * (translationTarget*joint->GetLowerLimit() - joint->GetJointTranslation()));
-				}
-			}
+				targetTranslation = 1 - translationTarget;
+				//The final target is equal to the joint's lower limit when the translationTarget is equal to 1.
+				bowComponent->notchedArrowJoint->SetMotorSpeed(gain * (targetTranslation * bowComponent->notchedArrowJoint->GetLowerLimit() - bowComponent->notchedArrowJoint->GetJointTranslation()));
 		}
 
 		//Update the arrows

@@ -136,18 +136,18 @@ void DebugDraw::drawDebugAth()
 	m_debugMode = true;
 	CategoryComponent::Handle categoryComponent;
 	BodyComponent::Handle bodyComponent;
-	ArcherComponent::Handle bowComponent;
+	ArcherComponent::Handle archerComponent;
 	//Find out position and bending
 	b2Vec2 position{0, 0};
 	float bendPower{0}, bendAngle{0};
-	for(auto entity : m_context.entityManager.entities_with_components(categoryComponent, bodyComponent, bowComponent))
+	for(auto entity : m_context.entityManager.entities_with_components(categoryComponent, bodyComponent, archerComponent))
 	{
 		//We found the player
 		if(categoryComponent->category & Category::Player)
 		{
 			position = bodyComponent->body->GetPosition();
-			bendPower = bowComponent->power;
-			bendAngle = bowComponent->angle;
+			bendPower = archerComponent->power;
+			bendAngle = archerComponent->angle;
 			break;
 		}
 	}
