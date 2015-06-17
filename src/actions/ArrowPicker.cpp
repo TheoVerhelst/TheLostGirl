@@ -22,7 +22,7 @@ void ArrowPicker::operator()(entityx::Entity entity, double) const
 	const DirectionComponent::Handle directionComponent(entity.component<DirectionComponent>());
 	const BodyComponent::Handle bodyComponent(entity.component<BodyComponent>());
 	ArcherComponent::Handle archerComponent(entity.component<ArcherComponent>());
-	if(bodyComponent and directionComponent and archerComponent)
+	if(bodyComponent and directionComponent and archerComponent and archerComponent->quiver.valid())
 	{
 		b2World* world{bodyComponent->body->GetWorld()};
 
@@ -43,26 +43,17 @@ void ArrowPicker::operator()(entityx::Entity entity, double) const
 
 			//Set the joint
 			b2WeldJointDef jointDef;
-			jointDef.bodyA = bodyComponent->body;
+			jointDef.bodyA = archerComponent->quiver.component<BodyComponent>()->body;
 			jointDef.bodyB = arrowBody;
-			if(directionComponent->direction == Direction::Left)
-			{
-				jointDef.referenceAngle = -b2_pi/2.f;
-				jointDef.localAnchorA = {0.36666667f, 0.49166667f};
-				jointDef.localAnchorB = {0.4f, 0.10833333f};
-			}
-			else if(directionComponent->direction == Direction::Right)
-			{
-				jointDef.referenceAngle = -b2_pi/2.f;
-				jointDef.localAnchorA = {0.36666667f, 0.49166667f};
-				jointDef.localAnchorB = {0.4f, 0.10833333f};
-			}
+			jointDef.referenceAngle = -b2_pi/2.f;
+			jointDef.localAnchorA = {0.36666667f, 0.49166667f};
+			jointDef.localAnchorB = {0.4f, 0.10833333f};
 			jointDef.frequencyHz = 0.f;
 			jointDef.dampingRatio = 0.f;
 			world->CreateJoint(&jointDef);
 
 			//Add the arrow to the quiver
-			archerComponent->arrows.push_back(callback.foundEntity);
+			archerComponent->quiver.component<QuiverComponent>()->arrows.push_back(callback.foundEntity);
 			callback.foundEntity.component<ArrowComponent>()->state = ArrowComponent::Stored;
 			callback.foundEntity.component<ArrowComponent>()->shooter = entity;
 		}

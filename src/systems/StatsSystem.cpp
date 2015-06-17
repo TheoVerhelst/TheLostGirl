@@ -48,21 +48,25 @@ void StatsSystem::update(entityx::EntityManager& entityManager, entityx::EventMa
 
 	for(auto entity : entityManager.entities_with_components(staminaComponent))
 	{
+		const float initialStamina{staminaComponent->current};
 		//Substract stamina if the entity bend his bow
-		const ArcherComponent::Handle archerComponent(entity.component<ArcherComponent>());
-		if(archerComponent)
+		const ArticuledArmsComponent::Handle armsComponent(entity.component<ArticuledArmsComponent>());
+		if(armsComponent and armsComponent->arms.valid())
 		{
-			float oldStamina{staminaComponent->current};
-			staminaComponent->current = cap(staminaComponent->current - archerComponent->power*float(dt)*3.f/100.f, 0.f, staminaComponent->maximum);
-			if(staminaComponent->current < oldStamina)
-				eventManager.emit<EntityStaminaChange>(entity, staminaComponent->current, staminaComponent->current/staminaComponent->maximum);
+			HoldItemComponent::Handle holdItemComponent{armsComponent->arms.component<HoldItemComponent>()};
+			if(holdItemComponent and holdItemComponent->item.valid())
+			{
+				BowComponent::Handle bowComponent{holdItemComponent->item.component<BowComponent>()};
+				if(bowComponent)
+					staminaComponent->current = cap(staminaComponent->current - bowComponent->targetTranslation*float(dt)*3.f/100.f, 0.f, staminaComponent->maximum);
+			}
 		}
 
 		//Regen stamina
 		if(staminaComponent->current < staminaComponent->maximum)
-		{
 			staminaComponent->current = cap(staminaComponent->current + staminaComponent->regeneration*float(dt), 0.f, staminaComponent->maximum);
+
+		if(std::abs(staminaComponent->current - initialStamina) > 0.001f)
 			eventManager.emit<EntityStaminaChange>(entity, staminaComponent->current, staminaComponent->current/staminaComponent->maximum);
-		}
 	}
 }

@@ -136,21 +136,32 @@ void DebugDraw::drawDebugAth()
 	m_debugMode = true;
 	CategoryComponent::Handle categoryComponent;
 	BodyComponent::Handle bodyComponent;
-	ArcherComponent::Handle archerComponent;
+	BowComponent::Handle bowComponent;
+	ArticuledArmsComponent::Handle armsComponent;
 	//Find out position and bending
 	b2Vec2 position{0, 0};
 	float bendPower{0}, bendAngle{0};
-	for(auto entity : m_context.entityManager.entities_with_components(categoryComponent, bodyComponent, archerComponent))
-	{
+	for(auto entity : m_context.entityManager.entities_with_components(categoryComponent, bodyComponent))
 		//We found the player
 		if(categoryComponent->category & Category::Player)
 		{
 			position = bodyComponent->body->GetPosition();
-			bendPower = archerComponent->power;
-			bendAngle = archerComponent->angle;
 			break;
 		}
-	}
+	for(auto entity : m_context.entityManager.entities_with_components(categoryComponent, bowComponent))
+		//We found the player
+		if(categoryComponent->category & Category::Player)
+		{
+			bendPower = bowComponent->targetTranslation;
+			break;
+		}
+	for(auto entity : m_context.entityManager.entities_with_components(categoryComponent, armsComponent))
+		//We found the player
+		if(categoryComponent->category & Category::Player)
+		{
+			bendAngle = armsComponent->targetAngle;
+			break;
+		}
 
 	//Draw GUI
 	//Position
