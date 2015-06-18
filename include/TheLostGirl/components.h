@@ -244,6 +244,7 @@ struct ArcherComponent : public entityx::Component<ArcherComponent>
 {
 	float initialSpeed;      ///< The initial speed of the arrow when fired at maximum bending, in m/s.
 	float damages;           ///< The damages that make a shoot.
+	b2Vec2 localAnchor;
 	entityx::Entity quiver;  ///< The quiver that the entity holds on his back.
 	b2WeldJoint* quiverJoint;///< The joint that maintains the quiver on the entity.
 };
@@ -252,6 +253,7 @@ struct ArcherComponent : public entityx::Component<ArcherComponent>
 struct HoldItemComponent : public entityx::Component<HoldItemComponent>
 {
 	entityx::Entity item;///< The held item.
+	b2Vec2 localAnchor;
 	b2WeldJoint* joint;  ///< The joint that maintains both entities together.
 };
 
@@ -260,8 +262,11 @@ struct HoldItemComponent : public entityx::Component<HoldItemComponent>
 struct ArticuledArmsComponent : public entityx::Component<ArticuledArmsComponent>
 {
 	entityx::Entity arms;      ///< The entity representing the arms.
-	b2RevoluteJoint* armsJoint;///< The joint that maintains both entities together.
+	float upperAngle;
+	float lowerAngle;
 	float targetAngle;         ///< The angle that the arms should have (rotation isn't instantaneous, for physics reasons).
+	b2Vec2 localAnchor;
+	b2RevoluteJoint* armsJoint;///< The joint that maintains both entities together.
 };
 
 /// This component should be added to every entity that is a bow.
@@ -270,8 +275,11 @@ struct ArticuledArmsComponent : public entityx::Component<ArticuledArmsComponent
 struct BowComponent : public entityx::Component<BowComponent>
 {
 	entityx::Entity notchedArrow;       ///< The notched arrow.
-	b2PrismaticJoint* notchedArrowJoint;///< The joint that maintains the bow with the arrow.
+	float upperTranslation;
+	float lowerTranslation;
 	float targetTranslation;            ///< The translation that the arrow should have (translation isn't instantaneous, for physics reasons).
+	b2Vec2 localAnchor;
+	b2PrismaticJoint* notchedArrowJoint;///< The joint that maintains the bow with the arrow.
 };
 
 /// This component should be added to every entity that is a quiver.

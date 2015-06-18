@@ -33,14 +33,15 @@
 #include <TheLostGirl/serialization.h>
 #include <TheLostGirl/states/GameState.h>
 
-//TODO Faire un système multi texture pour une même partie d'entité (soit chunker une grande image, soit faire plusieurs images).
-//TODO Component pour la position de combat (parade, attaque, tir, ...).
-//TODO Sound manager.
-//TODO Faire un item pour l'arc.
-//TODO Retirer la fleche pendant le CAC.
 //TODO Mettre le carquois de l'autre coté quand dirigé vers la gauche.
-//TODO Differents CAC en fonction du déplacement.
 //TODO Sauvegarde en fonction des includes.
+//TODO Retirer la fleche pendant le CAC.
+//TODO Sound manager.
+//TODO Faire un système multi texture pour une même partie d'entité (soit chunker une grande image, soit faire plusieurs images).
+
+// À discuter, à propos du gameplay :
+//TODO Component pour la position de combat (parade, attaque, tir, ...).
+//TODO Differents CAC en fonction du déplacement.
 
 GameState::GameState(StateStack& stack, std::string file) :
 	State(stack),
@@ -105,8 +106,6 @@ void GameState::receive(const ParametersChange&)
 
 void GameState::saveWorld(const std::string& file)
 {
-		const float scale{getContext().parameters.scale};
-		const float pixelByMeter{getContext().parameters.pixelByMeter};//The pixel/meters scale at the maximum resolution, about 1.f/120.f
 		Json::Value root;//Will contains the root value after serializing.
 		Json::StyledWriter writer;
 		std::ofstream saveFileStream(file, std::ofstream::binary);
@@ -204,8 +203,6 @@ void GameState::saveWorld(const std::string& file)
 
 void GameState::initWorld(const std::string& file)
 {
-	const float scale{getContext().parameters.scale};
-	const float pixelByMeter{getContext().parameters.pixelByMeter};//The pixel/meters scale at the maximum resolution, about 120.f
 	TextureManager& texManager(getContext().textureManager);
 	getContext().eventManager.emit<LoadingStateChange>("Loading save file");
 	try

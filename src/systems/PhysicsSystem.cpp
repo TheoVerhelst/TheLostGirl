@@ -63,11 +63,12 @@ void PhysicsSystem::update(entityx::EntityManager& entityManager, entityx::Event
 		BowComponent::Handle bowComponent(entity.component<BowComponent>());
 		if(bowComponent and directionComponent)
 		{
+			b2PrismaticJoint* joint{bowComponent->notchedArrowJoint};
 			float targetTranslation{bowComponent->targetTranslation};
 			if(directionComponent and directionComponent->direction == Direction::Left)
 				targetTranslation = 1 - targetTranslation;
-				//The final target is equal to the joint's lower limit when the targetTranslation is equal to 1.
-				bowComponent->notchedArrowJoint->SetMotorSpeed(gain * (targetTranslation * bowComponent->notchedArrowJoint->GetLowerLimit() - bowComponent->notchedArrowJoint->GetJointTranslation()));
+			//The final target is equal to the joint's lower limit when the targetTranslation is equal to 1.
+			joint->SetMotorSpeed(gain * (targetTranslation * joint->GetLowerLimit() - joint->GetJointTranslation()));
 		}
 
 		//Update the arrows

@@ -890,12 +890,14 @@ void Serializer::deserialize(const Json::Value& value, entityx::ComponentHandle<
 
 void Serializer::deserialize(const Json::Value& value, entityx::ComponentHandle<HoldItemComponent> component, entityx::ComponentHandle<BodyComponent> bodyComponent)
 {
+	const float pixelByMeter{m_context.parameters.pixelByMeter};
 	component->item = m_entitiesMap.at(value["item"].asString());
-	const b2Vec2 localAnchor(value["local anchor"]["x"].asFloat(), value["local anchor"]["y"].asFloat());
+	component->localAnchor = {value["local anchor"]["x"].asFloat()/pixelByMeter,
+							  value["local anchor"]["y"].asFloat()/pixelByMeter};
 	b2WeldJointDef jointDef;
 	jointDef.bodyA = bodyComponent->body;
 	jointDef.bodyB = component->item.component<BodyComponent>()->body;
-	jointDef.localAnchorA = (1.f/m_context.parameters.pixelByMeter) * localAnchor;
+	jointDef.localAnchorA = component->localAnchor;
 	jointDef.localAnchorB = jointDef.bodyB->GetLocalPoint(jointDef.bodyA->GetWorldPoint(jointDef.localAnchorA));
 	jointDef.referenceAngle = jointDef.bodyB->GetAngle() - jointDef.bodyA->GetAngle();
 	jointDef.frequencyHz = 0.f;
@@ -905,16 +907,20 @@ void Serializer::deserialize(const Json::Value& value, entityx::ComponentHandle<
 
 void Serializer::deserialize(const Json::Value& value, entityx::ComponentHandle<ArticuledArmsComponent> component, entityx::ComponentHandle<BodyComponent> bodyComponent)
 {
+	const float pixelByMeter{m_context.parameters.pixelByMeter};
 	component->arms = m_entitiesMap.at(value["arms"].asString());
 	component->targetAngle = value["target angle"].asFloat() * b2_pi / 180.f;
-	const b2Vec2 localAnchor(value["local anchor"]["x"].asFloat(), value["local anchor"]["y"].asFloat());
+	component->lowerAngle = value["lower angle"].asFloat() * b2_pi / 180.f;
+	component->upperAngle = value["upper angle"].asFloat() * b2_pi / 180.f;
+	component->localAnchor = {value["local anchor"]["x"].asFloat()/pixelByMeter,
+							  value["local anchor"]["y"].asFloat()/pixelByMeter};
 	b2RevoluteJointDef jointDef;
 	jointDef.bodyA = bodyComponent->body;
 	jointDef.bodyB = component->arms.component<BodyComponent>()->body;
-	jointDef.localAnchorA = (1.f/m_context.parameters.pixelByMeter) * localAnchor;
+	jointDef.localAnchorA = component->localAnchor;
 	jointDef.localAnchorB = jointDef.bodyB->GetLocalPoint(jointDef.bodyA->GetWorldPoint(jointDef.localAnchorA));
-	jointDef.lowerAngle = value["lower angle"].asFloat() * b2_pi / 180.f;
-	jointDef.upperAngle = value["upper angle"].asFloat() * b2_pi / 180.f;
+	jointDef.lowerAngle = component->lowerAngle;
+	jointDef.upperAngle = component->upperAngle;
 	jointDef.referenceAngle = value["current angle"].asFloat() * b2_pi / 180.f;
 	jointDef.enableLimit = true;
 	jointDef.maxMotorTorque = 10.f;
@@ -925,18 +931,28 @@ void Serializer::deserialize(const Json::Value& value, entityx::ComponentHandle<
 
 void Serializer::deserialize(const Json::Value& value, entityx::ComponentHandle<BowComponent> component, entityx::ComponentHandle<BodyComponent> bodyComponent)
 {
+	const float pixelByMeter{m_context.parameters.pixelByMeter};
 	component->notchedArrow = m_entitiesMap.at(value["notched arrow"].asString());
 	component->targetTranslation = value["target translation"].asFloat();
-	const b2Vec2 localAnchor(value["local anchor"]["x"].asFloat(), value["local anchor"]["y"].asFloat());
-
+	component->lowerTranslation = value["lower translation"].asFloat()/pixelByMeter;
+	component->upperTranslation = value["upper translation"].asFloat()/pixelByMeter;
+	component->localAnchor = {value["local anchor"]["x"].asFloat()/pixelByMeter,
+							  value["local anchor"]["y"].asFloat()/pixelByMeter};
 	b2PrismaticJointDef jointDef;
 	jointDef.bodyA = bodyComponent->body;
 	jointDef.bodyB = component->notchedArrow.component<BodyComponent>()->body;
-	jointDef.localAnchorA = (1.f/m_context.parameters.pixelByMeter) * localAnchor;
-	jointDef.localAnchorB = jointDef.bodyB->GetLocalPoint(jointDef.bodyA->GetWorldPoint(jointDef.localAnchorA));
+	jointDef.localAnchorA = component->localAnchor;
+	//Get the AABB of the arrow, to compute where to place the anchor of the joint
+	b2AABB arrowBox;
+	b2Transform identity;
+	identity.SetIdentity();
+	for(b2Fixture* fixture{jointDef.bodyB->GetFixtureList()}; fixture; fixture = fixture->GetNext())
+		if(fixtureHasRole(fixture, FixtureRole::Main))
+			fixture->GetShape()->ComputeAABB(&arrowBox, identity, 0);
+	jointDef.localAnchorB = {0.f, (arrowBox.upperBound.y - arrowBox.lowerBound.y)*0.5f};
 	jointDef.localAxisA = {1.f, 0.f};
-	jointDef.lowerTranslation = value["lower translation"].asFloat()/m_context.parameters.pixelByMeter;
-	jointDef.upperTranslation = value["upper translation"].asFloat()/m_context.parameters.pixelByMeter;
+	jointDef.lowerTranslation = component->lowerTranslation;
+	jointDef.upperTranslation = component->upperTranslation;
 	jointDef.enableLimit = true;
 	jointDef.maxMotorForce = 10.f;
 	jointDef.motorSpeed = 0.f;
@@ -959,7 +975,7 @@ void Serializer::deserialize(const Json::Value& value, entityx::ComponentHandle<
 			jointDef.bodyB = arrow.component<BodyComponent>()->body;
 			jointDef.localAnchorA = {0, 0};
 			jointDef.localAnchorB = jointDef.bodyB->GetLocalPoint(jointDef.bodyA->GetWorldPoint(jointDef.localAnchorA));
-			jointDef.referenceAngle = jointDef.bodyB->GetAngle() - jointDef.bodyA->GetAngle();
+			jointDef.referenceAngle = b2_pi/2.f;
 			jointDef.frequencyHz = 0.f;
 			jointDef.dampingRatio = 0.f;
 			m_context.world.CreateJoint(&jointDef);

@@ -28,7 +28,7 @@ void ArrowShooter::operator()(entityx::Entity entity, double) const
 	if(not (holdItemComponent and holdItemComponent->item.valid()))
 		return;
 	BowComponent::Handle bowComponent{holdItemComponent->item.component<BowComponent>()};
-	if(not bowComponent)
+	if(not (bowComponent and bowComponent->notchedArrow.valid()))
 		return;
 
 	const float angle{armsComponent->armsJoint->GetJointAngle()};
