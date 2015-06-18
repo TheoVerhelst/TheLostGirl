@@ -10,6 +10,9 @@
 
 //Forward declarations
 class b2Body;
+class b2RevoluteJoint;
+class b2WeldJoint;
+class b2PrismaticJoint;
 template<typename T>
 class AnimationsManager;
 
@@ -19,7 +22,7 @@ class AnimationsManager;
 /// The BodyComponent component store a pointer to a b2Body and is used to simulate physics in the game world.
 struct BodyComponent : public entityx::Component<BodyComponent>
 {
-	std::map<std::string, b2Body*> bodies;///< Pointers to the physic body.
+	b2Body* body;///< Pointer to the physic body.
 };
 
 /// Sprite component.
@@ -27,7 +30,7 @@ struct BodyComponent : public entityx::Component<BodyComponent>
 /// For more information about sprites, see the SFML doc.
 struct SpriteComponent : public entityx::Component<SpriteComponent>
 {
-	std::map<std::string, sf::Sprite> sprites;///< Sprites to draw.
+	sf::Sprite sprite;///< Sprite to draw.
 };
 
 /// Data about the world position of an entity.
@@ -41,23 +44,22 @@ struct Transform
 };
 
 /// World transform component.
-/// It indicates where the entity should be located in the world, for each part of the entity,
+/// It indicates where the entity should be located in the world,
 /// and the angle of the entity.
 /// The real position of the sprite is computed by the ScrollingSystem.
 /// This bind position and angle between sprites and b2Body, but an entity can have only one of them.
-/// In all case, if an entity have a SpriteComponent or a BodyComponent, it must have a TransformComponent,
-/// and a transform must exists in the transforms map for every body/sprite of the entity.
+/// In all case, if an entity have a SpriteComponent or a BodyComponent, it must have a TransformComponent.
 struct TransformComponent : public entityx::Component<TransformComponent>
 {
-	std::map<std::string, Transform> transforms;///< Indicates the target position in the world, the layer the sprite should be drawn and the angle.
+	Transform transform;///< Indicates the target position in the world, the layer the sprite should be drawn and the angle.
 };
 
-/// AnimationsManager component.
-/// Essential for every dynamic entity in the game.
+/// Animations manager component.
+/// Essential for every animated entity in the game.
 template<typename A>
 struct AnimationsComponent : public entityx::Component<AnimationsComponent<A>>
 {
-	std::map<std::string, AnimationsManager<A>> animationsManagers;///< AnimationsManager managers.
+	AnimationsManager<A> animationsManager;///< Managers for animations of any type.
 };
 
 /// Enumeration of every possible direction.
@@ -85,7 +87,7 @@ struct CategoryComponent : public entityx::Component<CategoryComponent>
 	unsigned int category;///< Category of the entity.
 };
 
-/// The Item component.
+/// The item component.
 /// An item is just an entity with this component.
 /// The category represents what class of item it is.
 /// The type represents what model of item it is.
@@ -134,18 +136,6 @@ struct JumpComponent : public entityx::Component<JumpComponent>
 	bool mustJump;     ///< Indicate if the entity have received a jump command, and the jump is not yet handled by the physic system. Similar to moveToLeft in directionComponent.
 };
 
-/// Bending component that hold all stats about the ability to use bows and arrows.
-struct BowComponent : public entityx::Component<BowComponent>
-{
-	float initialSpeed;               ///< The initial speed of the arrow when fired at maximum bending, in m/s.
-	float power;                      ///< The current beding ratio of the bow, in [0, 1].
-	float damages;                    ///< The damages that make a shoot.
-	float angle;                      ///< The current angle of the bow, in radians.
-	std::list<entityx::Entity> arrows;///< List of all stocked arrows.
-	entityx::Entity notchedArrow;     ///< Current arrow notched in the bow.
-	unsigned int quiverCapacity;      ///< Maximum number of arrows in the quiver.
-};
-
 /// Health component.
 struct HealthComponent : public entityx::Component<HealthComponent>
 {
@@ -162,7 +152,7 @@ struct StaminaComponent : public entityx::Component<StaminaComponent>
 	float regeneration;///< The regeneration of stamina (in units/s).
 };
 
-/// Arrow component that hold all stats about an arrow.
+/// Arrow component that holds all stats about an arrow.
 /// The friction is applied in order to set the angle of the body tangent to the arrow trajectory.
 /// The penetrance indicates how much the arrow can stick into hard targets, and so make damages.
 struct ArrowComponent : public entityx::Component<ArrowComponent>
@@ -192,22 +182,22 @@ struct HardnessComponent : public entityx::Component<HardnessComponent>
 	float hardness;///< Indicates the treshold of stucking of the arrow into the object.
 };
 
-/// Script component that hold scripts names to execute on the entity.
+/// Script component that holds scripts names to execute on the entity.
 /// The scripts are stored in the ressource manager.
 /// They are executed each frame.
-/// More documentation about scripting will be released soon.
+/// More informations about scripting is available in a separate document.
 struct ScriptsComponent : public entityx::Component<ScriptsComponent>
 {
     std::list<std::string> scriptsNames;///< Names of scripts that the entity must execute,
 };
 
-/// Component that define the behavior of aggressive entities.
+/// Component that defines the behavior of aggressive entities.
 struct DetectionRangeComponent : public entityx::Component<DetectionRangeComponent>
 {
 	float detectionRange;///< Distance from wich the entitie will detect and attack foes.
 };
 
-/// Component that indicate if the entity is dead or not.
+/// Component that indicates if the entity is dead or not.
 struct DeathComponent : public entityx::Component<DeathComponent>
 {
 	/// Store informations about the drop of an item on an entity when this one dead.
@@ -227,13 +217,13 @@ struct DeathComponent : public entityx::Component<DeathComponent>
 };
 
 
-/// Store the name of an entity that will be displayed to the player.
+/// Stores the name of an entity that will be displayed to the player.
 struct NameComponent : public entityx::Component<NameComponent>
 {
 	std::string name;///< There is stored the english version of the name, translation is done by the LangManager.
 };
 
-/// Store data about hand to hand abilities.
+/// Stores data about hand to hand abilities.
 struct HandToHandComponent : public entityx::Component<HandToHandComponent>
 {
 	float damages;     ///< Damages that generates an attack.
@@ -251,6 +241,57 @@ struct ActorComponent : public entityx::Component<ActorComponent>
 	float fireResistance;      ///< The resistance to fire.
 	float frostResistance;     ///< The resistance to frost.
 	float poisonResistance;    ///< The resistance to poison attacks.
+};
+
+/// Bending component that hold all stats about the ability to use bows and arrows.
+struct ArcherComponent : public entityx::Component<ArcherComponent>
+{
+	float initialSpeed;      ///< The initial speed of the arrow when fired at maximum bending, in m/s.
+	float damages;           ///< The damages that make a shoot.
+	b2Vec2 localAnchor;
+	entityx::Entity quiver;  ///< The quiver that the entity holds on his back.
+	b2WeldJoint* quiverJoint;///< The joint that maintains the quiver on the entity.
+};
+
+/// Stores data about an entity representing some arms that holds an item in its hands.
+struct HoldItemComponent : public entityx::Component<HoldItemComponent>
+{
+	entityx::Entity item;///< The held item.
+	b2Vec2 localAnchor;
+	b2WeldJoint* joint;  ///< The joint that maintains both entities together.
+};
+
+/// Stores data about an entity that have articuled arms that can rotate around its shoulders.
+/// The arms are a separate entity.
+struct ArticuledArmsComponent : public entityx::Component<ArticuledArmsComponent>
+{
+	entityx::Entity arms;      ///< The entity representing the arms.
+	float upperAngle;
+	float lowerAngle;
+	float targetAngle;         ///< The angle that the arms should have (rotation isn't instantaneous, for physics reasons).
+	b2Vec2 localAnchor;
+	b2RevoluteJoint* armsJoint;///< The joint that maintains both entities together.
+};
+
+/// This component should be added to every entity that is a bow.
+/// A bow is an item that can be used as weapon and is joined to an arrow (the notched arrow).
+/// The notched arrow translates alongside an axis to simulate the bow bending.
+struct BowComponent : public entityx::Component<BowComponent>
+{
+	entityx::Entity notchedArrow;       ///< The notched arrow.
+	float upperTranslation;
+	float lowerTranslation;
+	float targetTranslation;            ///< The translation that the arrow should have (translation isn't instantaneous, for physics reasons).
+	b2Vec2 localAnchor;
+	b2PrismaticJoint* notchedArrowJoint;///< The joint that maintains the bow with the arrow.
+};
+
+/// This component should be added to every entity that is a quiver.
+/// A quiver is an item that is joined to the back of an entity and hold some arrows.
+struct QuiverComponent : public entityx::Component<QuiverComponent>
+{
+	unsigned int capacity;            ///< Maximum number of arrows in the quiver.
+	std::list<entityx::Entity> arrows;///< List of all stocked arrows.
 };
 
 #endif //COMPONENTS_H

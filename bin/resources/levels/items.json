@@ -1,7 +1,266 @@
 {
 	"entities":
 	{
-		"arrow":
+		"quiver" :
+		{
+			"body" :
+			{
+				"active" : true,
+				"allow sleep" : true,
+				"angular damping" : 10,
+				"angular velocity" : 0,
+				"awake" : true,
+				"bullet" : true,
+				"fixed rotation" : false,
+				"gravity scale" : 1,
+				"linear damping" : 0,
+				"linear velocity" : 
+				{
+					"x" : 0,
+					"y" : 0
+				},
+				"polygon fixtures" : 
+				[
+					{
+						"density" : 0.7,
+						"friction" : 0.8,
+						"is sensor" : false,
+						"restitution" : 0.2,
+						"roles" : ["main"],
+						"vertices" : 
+						[
+							{
+								"x" : 0,
+								"y" : 0
+							},
+							{
+								"x" : 10,
+								"y" : 0
+							},
+							{
+								"x" : 10,
+								"y" : 50
+							},
+							{
+								"x" : 0,
+								"y" : 50
+							}
+						]
+					}
+				],
+				"type" : "dynamic"
+			}
+		},
+		"bow" :
+		{
+			"body" :
+			{
+				"active" : true,
+				"allow sleep" : true,
+				"angular damping" : 0,
+				"angular velocity" : 0,
+				"awake" : true,
+				"bullet" : false,
+				"fixed rotation" : false,
+				"gravity scale" : 1,
+				"linear damping" : 0,
+				"linear velocity" : 
+				{
+					"x" : 0,
+					"y" : 0
+				},
+				"polygon fixtures" : 
+				[
+					{
+						"density" : 0.01,
+						"friction" : 0.2,
+						"is sensor" : true,
+						"restitution" : 0,
+						"vertices" : 
+						[
+							{
+								"x" : 100,
+								"y" : 0
+							},
+							{
+								"x" : 100,
+								"y" : 100
+							},
+							{
+								"x" : 0,
+								"y" : 100
+							},
+							{
+								"x" : 0,
+								"y" : 0
+							}
+						]
+					}
+				],
+				"type" : "dynamic"
+			},
+			"sprite" : 
+			{
+				"identifier" : "bow.png"
+			},
+			"spritesheet animations" : 
+			{
+				"hand to hand right" :
+				{
+					"data" :
+					[
+						{
+							"h" : 0,
+							"relative duration" : 1,
+							"w" : 0,
+							"x" : 0,
+							"y" : 0
+						}
+					],
+					"duration" : 0.3,
+					"importance" : 10,
+					"is active" : false,
+					"is paused" : true,
+					"loops" : false,
+					"progress" : 0,
+					"stop at end" : true
+				},
+				"hand to hand left" :
+				{
+					"data" :
+					[
+						{
+							"h" : 0,
+							"relative duration" : 1,
+							"w" : 0,
+							"x" : 0,
+							"y" : 0
+						}
+					],
+					"duration" : 0.3,
+					"importance" : 10,
+					"is active" : false,
+					"is paused" : true,
+					"loops" : false,
+					"progress" : 0,
+					"stop at end" : true
+				},
+				"bend left" : 
+				{
+					"data" : 
+					[
+						{
+							"h" : 100,
+							"relative duration" : 0.2,
+							"w" : 100,
+							"x" : 0,
+							"y" : 245
+						},
+						{
+							"h" : 100,
+							"relative duration" : 0.2,
+							"w" : 100,
+							"x" : 100,
+							"y" : 245
+						},
+						{
+							"h" : 100,
+							"relative duration" : 0.2,
+							"w" : 100,
+							"x" : 200,
+							"y" : 245
+						},
+						{
+							"h" : 100,
+							"relative duration" : 0.2,
+							"w" : 100,
+							"x" : 300,
+							"y" : 245
+						},
+						{
+							"h" : 100,
+							"relative duration" : 0.2,
+							"w" : 100,
+							"x" : 400,
+							"y" : 245
+						}
+					],
+					"duration" : 1,
+					"importance" : 0,
+					"is active" : false,
+					"is paused" : true,
+					"loops" : false,
+					"progress" : 0
+				},
+				"bend right" : 
+				{
+					"data" : 
+					[
+						{
+							"h" : 100,
+							"relative duration" : 0.2,
+							"w" : 100,
+							"x" : 0,
+							"y" : 45
+						},
+						{
+							"h" : 100,
+							"relative duration" : 0.2,
+							"w" : 100,
+							"x" : 100,
+							"y" : 45
+						},
+						{
+							"h" : 100,
+							"relative duration" : 0.2,
+							"w" : 100,
+							"x" : 200,
+							"y" : 45
+						},
+						{
+							"h" : 100,
+							"relative duration" : 0.2,
+							"w" : 100,
+							"x" : 300,
+							"y" : 45
+						},
+						{
+							"h" : 100,
+							"relative duration" : 0.25,
+							"w" : 100,
+							"x" : 400,
+							"y" : 45
+						}
+					],
+					"duration" : 1,
+					"importance" : 0,
+					"is active" : true,
+					"is paused" : true,
+					"loops" : false,
+					"progress" : 0
+				},
+				"death" : 
+				{
+					"data" : 
+					[
+						{
+							"h" : 70,
+							"relative duration" : 1,
+							"w" : 100,
+							"x" : 0,
+							"y" : 245
+						}
+					],
+					"duration" : 1,
+					"importance" : 100,
+					"is active" : false,
+					"is paused" : true,
+					"loops" : false,
+					"progress" : 0
+				}
+			}
+		},
+		"arrow" :
 		{
 			"arrow" : 
 			{
@@ -22,74 +281,56 @@
 			},
 			"body" : 
 			{
-				"main" : 
+				"active" : true,
+				"allow sleep" : true,
+				"angular damping" : 10,
+				"angular velocity" : 0,
+				"awake" : true,
+				"bullet" : true,
+				"fixed rotation" : false,
+				"gravity scale" : 1,
+				"linear damping" : 0,
+				"linear velocity" : 
 				{
-					"active" : true,
-					"allow sleep" : true,
-					"angular damping" : 10,
-					"angular velocity" : 0,
-					"awake" : true,
-					"bullet" : true,
-					"fixed rotation" : false,
-					"gravity scale" : 1,
-					"linear damping" : 0,
-					"linear velocity" : 
+					"x" : 0,
+					"y" : 0
+				},
+				"polygon fixtures" : 
+				[
 					{
-						"x" : 0,
-						"y" : 0
-					},
-					"polygon fixtures" : 
-					[
-						{
-							"density" : 0.7,
-							"friction" : 0.8,
-							"is sensor" : false,
-							"restitution" : 0.2,
-							"roles" : ["main"],
-							"vertices" : 
-							[
-								{
-									"x" : 70,
-									"y" : 3
-								},
-								{
-									"x" : 35,
-									"y" : 5
-								},
-								{
-									"x" : 0,
-									"y" : 3
-								},
-								{
-									"x" : 35,
-									"y" : 0
-								}
-							]
-						}
-					],
-					"type" : "dynamic"
-				}
-			},
-			"sprites" : 
-			{
-				"main" : 
-				{
-					"identifier" : "arrow.png"
-				}
-			},
-			"transforms" : 
-			{
-				"main" : 
-				{
-					"transform" : 
-					{
-						"angle" : -80,
-						"x" : 559.4951171875,
-						"y" : 655.2147827148438,
-						"z" : 1
+						"density" : 0.7,
+						"friction" : 0.8,
+						"is sensor" : false,
+						"restitution" : 0.2,
+						"roles" : ["main"],
+						"vertices" : 
+						[
+							{
+								"x" : 70,
+								"y" : 3
+							},
+							{
+								"x" : 35,
+								"y" : 5
+							},
+							{
+								"x" : 0,
+								"y" : 3
+							},
+							{
+								"x" : 35,
+								"y" : 0
+							}
+						]
 					}
-				}
+				],
+				"type" : "dynamic"
+			},
+			"sprite" : 
+			{
+				"identifier" : "arrow.png"
 			}
 		}
 	}
 }
+

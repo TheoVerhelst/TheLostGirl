@@ -144,14 +144,10 @@ bool HUDState::update(sf::Time dt)
 		const auto transformComponent(barPair.first.component<TransformComponent>());
 		if(transformComponent and not isPlayer(barPair.first))
 		{
-			auto transformIt(transformComponent->transforms.find("main"));
-			if(transformIt != transformComponent->transforms.end())
-			{
-				sf::Vector2f position(transformIt->second.x, transformIt->second.y);
-				position *= scale;
-				position -= viewPos;
-				barPair.second.panel->setPosition(position);
-			}
+			sf::Vector2f position(transformComponent->transform.x, transformComponent->transform.y);
+			position *= scale;
+			position -= viewPos;
+			barPair.second.panel->setPosition(position);
 		}
 	}
 	for(auto& barPair : m_staminaBars)

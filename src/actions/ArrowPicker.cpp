@@ -21,54 +21,41 @@ void ArrowPicker::operator()(entityx::Entity entity, double) const
 		return;
 	const DirectionComponent::Handle directionComponent(entity.component<DirectionComponent>());
 	const BodyComponent::Handle bodyComponent(entity.component<BodyComponent>());
-	BowComponent::Handle bowComponent(entity.component<BowComponent>());
-	if(bodyComponent and directionComponent and bowComponent)
+	ArcherComponent::Handle archerComponent(entity.component<ArcherComponent>());
+	if(bodyComponent and directionComponent and archerComponent and archerComponent->quiver.valid())
 	{
-		auto bodyIt(bodyComponent->bodies.find("main"));
-		if(bodyIt != bodyComponent->bodies.end())
+		b2World* world{bodyComponent->body->GetWorld()};
+
+		//Do the querying
+		b2AABB pickBox;
+		pickBox.lowerBound = bodyComponent->body->GetWorldCenter() - b2Vec2(2, 2);
+		pickBox.upperBound = bodyComponent->body->GetWorldCenter() + b2Vec2(2, 2);
+		StickedArrowQueryCallback callback;
+		world->QueryAABB(&callback, pickBox);
+
+		if(callback.foundEntity.valid())
 		{
-			b2World* world{bodyIt->second->GetWorld()};
+			b2Body* arrowBody{callback.foundEntity.component<BodyComponent>()->body};
 
-			//Do the querying
-			b2AABB pickBox;
-			pickBox.lowerBound = bodyIt->second->GetWorldCenter() - b2Vec2(2, 2);
-			pickBox.upperBound = bodyIt->second->GetWorldCenter() + b2Vec2(2, 2);
-			StickedArrowQueryCallback callback;
-			world->QueryAABB(&callback, pickBox);
+			//Destroy all joints (e.g. the ground/arrow weld joint)
+			for(b2JointEdge* jointEdge{arrowBody->GetJointList()}; jointEdge; jointEdge = jointEdge->next)
+				arrowBody->GetWorld()->DestroyJoint(jointEdge->joint);
 
-			if(callback.foundEntity.valid())
-			{
-				b2Body* arrowBody{callback.foundEntity.component<BodyComponent>()->bodies.at("main")};
+			//Set the joint
+			b2WeldJointDef jointDef;
+			jointDef.bodyA = archerComponent->quiver.component<BodyComponent>()->body;
+			jointDef.bodyB = arrowBody;
+			jointDef.referenceAngle = -b2_pi/2.f;
+			jointDef.localAnchorA = {0.36666667f, 0.49166667f};
+			jointDef.localAnchorB = {0.4f, 0.10833333f};
+			jointDef.frequencyHz = 0.f;
+			jointDef.dampingRatio = 0.f;
+			world->CreateJoint(&jointDef);
 
-				//Destroy all joints (e.g. the ground/arrow weld joint)
-				for(b2JointEdge* jointEdge{arrowBody->GetJointList()}; jointEdge; jointEdge = jointEdge->next)
-					arrowBody->GetWorld()->DestroyJoint(jointEdge->joint);
-
-				//Set the joint
-				b2WeldJointDef jointDef;
-				jointDef.bodyA = bodyIt->second;
-				jointDef.bodyB = arrowBody;
-				if(directionComponent->direction == Direction::Left)
-				{
-					jointDef.referenceAngle = -b2_pi/2.f;
-					jointDef.localAnchorA = {0.36666667f, 0.49166667f};
-					jointDef.localAnchorB = {0.4f, 0.10833333f};
-				}
-				else if(directionComponent->direction == Direction::Right)
-				{
-					jointDef.referenceAngle = -b2_pi/2.f;
-					jointDef.localAnchorA = {0.36666667f, 0.49166667f};
-					jointDef.localAnchorB = {0.4f, 0.10833333f};
-				}
-				jointDef.frequencyHz = 0.f;
-				jointDef.dampingRatio = 0.f;
-				world->CreateJoint(&jointDef);
-
-				//Add the arrow to the quiver
-				bowComponent->arrows.push_back(callback.foundEntity);
-				callback.foundEntity.component<ArrowComponent>()->state = ArrowComponent::Stored;
-				callback.foundEntity.component<ArrowComponent>()->shooter = entity;
-			}
+			//Add the arrow to the quiver
+			archerComponent->quiver.component<QuiverComponent>()->arrows.push_back(callback.foundEntity);
+			callback.foundEntity.component<ArrowComponent>()->state = ArrowComponent::Stored;
+			callback.foundEntity.component<ArrowComponent>()->shooter = entity;
 		}
 	}
 }

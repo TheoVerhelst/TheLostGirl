@@ -26,15 +26,11 @@ void RenderSystem::update(entityx::EntityManager& entityManager, entityx::EventM
 	for(entityx::Entity entity : entityManager.entities_with_components(spriteComponent, transformComponent))
 	{
 		const CategoryComponent::Handle categoryComponent(entity.component<CategoryComponent>());
-		const bool scene{categoryComponent and categoryComponent->category & Category::Scene};
-		for(const auto& spritePair : spriteComponent->sprites)
-		{
-			//If this is a scene entity, add its sprites beyond the others entities in this plan
-			if(scene)
-				orderedEntities[transformComponent->transforms.at(spritePair.first).z].push_front(&spritePair.second);
-			else
-				orderedEntities[transformComponent->transforms.at(spritePair.first).z].push_back(&spritePair.second);
-		}
+		//If this is a scene entity, add its sprites beyond the others entities in this plan
+		if(categoryComponent and categoryComponent->category & Category::Scene)
+			orderedEntities[transformComponent->transform.z].push_front(&spriteComponent->sprite);
+		else
+			orderedEntities[transformComponent->transform.z].push_back(&spriteComponent->sprite);
 	}
 	//Draw sprites on the texture or on the window
 	//For each plan, in the reverse order

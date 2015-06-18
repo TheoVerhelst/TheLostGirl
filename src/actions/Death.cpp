@@ -19,9 +19,8 @@ void Death::operator()(entityx::Entity entity, double) const
 	//Play death animation.
 	AnimationsComponent<SpriteSheetAnimation>::Handle spriteSheetComponent(entity.component<AnimationsComponent<SpriteSheetAnimation>>());
 	if(spriteSheetComponent)
-		for(auto& animationsPair : spriteSheetComponent->animationsManagers)
-			if(animationsPair.second.isRegistred("death"))
-				animationsPair.second.play("death");
+		if(spriteSheetComponent->animationsManager.isRegistred("death"))
+			spriteSheetComponent->animationsManager.play("death");
 	//Set the death component
 	entity.component<DeathComponent>()->dead = true;
 	InventoryComponent::Handle inventoryComponent(entity.component<InventoryComponent>());

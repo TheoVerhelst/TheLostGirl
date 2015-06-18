@@ -5,79 +5,76 @@
 		{
 			"body" : 
 			{
-				"main" : 
+				"active" : true,
+				"allow sleep" : true,
+				"angular damping" : 0,
+				"angular velocity" : 0,
+				"awake" : true,
+				"bullet" : false,
+				"fixed rotation" : true,
+				"gravity scale" : 1,
+				"linear damping" : 0,
+				"linear velocity" : 
 				{
-					"active" : true,
-					"allow sleep" : true,
-					"angular damping" : 0,
-					"angular velocity" : 0,
-					"awake" : true,
-					"bullet" : false,
-					"fixed rotation" : true,
-					"gravity scale" : 1,
-					"linear damping" : 0,
-					"linear velocity" : 
+					"x" : 0,
+					"y" : 0
+				},
+				"polygon fixtures" : 
+				[
 					{
-						"x" : 0,
-						"y" : 0
+						"density" : 0.4,
+						"friction" : 0.2,
+						"is sensor" : true,
+						"restitution" : 0,
+						"roles" : [ "foot sensor" ],
+						"vertices" : 
+						[
+							{
+								"x" : 152,
+								"y" : 121
+							},
+							{
+								"x" : 152,
+								"y" : 131
+							},
+							{
+								"x" : 10,
+								"y" : 131
+							},
+							{
+								"x" : 10,
+								"y" : 121
+							}
+						]
 					},
-					"polygon fixtures" : 
-					[
-						{
-							"density" : 0.4,
-							"friction" : 0.2,
-							"is sensor" : true,
-							"restitution" : 0,
-							"roles" : [ "foot sensor" ],
-							"vertices" : 
-							[
-								{
-									"x" : 152,
-									"y" : 121
-								},
-								{
-									"x" : 152,
-									"y" : 131
-								},
-								{
-									"x" : 10,
-									"y" : 131
-								},
-								{
-									"x" : 10,
-									"y" : 121
-								}
-							]
-						},
-						{
-							"density" : 0.7,
-							"friction" : 0.1,
-							"is sensor" : false,
-							"restitution" : 0,
-							"roles" : [ "main" ],
-							"vertices" : 
-							[
-								{
-									"x" : 170,
-									"y" : 0
-								},
-								{
-									"x" : 170,
-									"y" : 126
-								},
-								{
-									"x" : 0,
-									"y" : 126
-								},
-								{
-									"x" : 0,
-									"y" : 0
-								}
-							]
-						}
-					],
-					"type" : "dynamic"
-				}
+					{
+						"density" : 0.7,
+						"friction" : 0.1,
+						"is sensor" : false,
+						"restitution" : 0,
+						"roles" : [ "main" ],
+						"vertices" : 
+						[
+							{
+								"x" : 170,
+								"y" : 0
+							},
+							{
+								"x" : 170,
+								"y" : 126
+							},
+							{
+								"x" : 0,
+								"y" : 126
+							},
+							{
+								"x" : 0,
+								"y" : 0
+							}
+						]
+					}
+				],
+				"type" : "dynamic"
 			},
 			"categories" : [ "aggressive" ],
 			"death" : 
@@ -142,257 +139,251 @@
 			{
 				"scripts" : [ "test.tlg" ]
 			},
-			"sprites" : 
+			"sprite" : 
 			{
-				"main" : 
-				{
-					"identifier" : "wolf.png"
-				}
+				"identifier" : "wolf.png"
 			},
 			"spritesheet animations" : 
 			{
-				"main" : 
+				"death" : 
 				{
-					"death" : 
-					{
-						"data" : 
-						[
-							{
-								"h" : 120,
-								"relative duration" : 0.125,
-								"w" : 200,
-								"x" : 0,
-								"y" : 240
-							},
-							{
-								"h" : 120,
-								"relative duration" : 0.125,
-								"w" : 200,
-								"x" : 200,
-								"y" : 240
-							},
-							{
-								"h" : 120,
-								"relative duration" : 0.125,
-								"w" : 200,
-								"x" : 400,
-								"y" : 240
-							},
-							{
-								"h" : 120,
-								"relative duration" : 0.125,
-								"w" : 200,
-								"x" : 600,
-								"y" : 240
-							},
-							{
-								"h" : 120,
-								"relative duration" : 0.125,
-								"w" : 200,
-								"x" : 0,
-								"y" : 360
-							},
-							{
-								"h" : 120,
-								"relative duration" : 0.125,
-								"w" : 200,
-								"x" : 200,
-								"y" : 360
-							},
-							{
-								"h" : 120,
-								"relative duration" : 0.125,
-								"w" : 200,
-								"x" : 400,
-								"y" : 360
-							},
-							{
-								"h" : 120,
-								"relative duration" : 0.125,
-								"w" : 200,
-								"x" : 600,
-								"y" : 360
-							}
-						],
-						"duration" : 0.3,
-						"importance" : 100,
-						"is active" : false,
-						"is paused" : false,
-						"loops" : false,
-						"progress" : 0
-					},
-					"hand to hand left" : 
-					{
-						"data" : 
-						[
-							{
-								"h" : 120,
-								"relative duration" : 0.5,
-								"w" : 200,
-								"x" : 0,
-								"y" : 480
-							},
-							{
-								"h" : 120,
-								"relative duration" : 0.5,
-								"w" : 200,
-								"x" : 200,
-								"y" : 480
-							}
-						],
-						"duration" : 0.2,
-						"importance" : 10,
-						"is active" : false,
-						"is paused" : false,
-						"loops" : false,
-						"progress" : 0,
-						"stop at end" : true
-					},
-					"hand to hand right" : 
-					{
-						"data" : 
-						[
-							{
-								"h" : 120,
-								"relative duration" : 0.5,
-								"w" : 200,
-								"x" : 400,
-								"y" : 480
-							},
-							{
-								"h" : 120,
-								"relative duration" : 0.5,
-								"w" : 200,
-								"x" : 600,
-								"y" : 480
-							}
-						],
-						"duration" : 0.2,
-						"importance" : 10,
-						"is active" : false,
-						"is paused" : false,
-						"loops" : false,
-						"progress" : 0,
-						"stop at end" : true
-					},
-					"move left" : 
-					{
-						"data" : 
-						[
-							{
-								"h" : 120,
-								"relative duration" : 0.25,
-								"w" : 200,
-								"x" : 0,
-								"y" : 0
-							},
-							{
-								"h" : 120,
-								"relative duration" : 0.25,
-								"w" : 200,
-								"x" : 200,
-								"y" : 0
-							},
-							{
-								"h" : 120,
-								"relative duration" : 0.25,
-								"w" : 200,
-								"x" : 400,
-								"y" : 0
-							},
-							{
-								"h" : 120,
-								"relative duration" : 0.25,
-								"w" : 200,
-								"x" : 600,
-								"y" : 0
-							}
-						],
-						"duration" : 0.5,
-						"importance" : 1,
-						"is active" : false,
-						"is paused" : false,
-						"loops" : true,
-						"progress" : 0
-					},
-					"move right" : 
-					{
-						"data" : 
-						[
-							{
-								"h" : 120,
-								"relative duration" : 0.25,
-								"w" : 200,
-								"x" : 0,
-								"y" : 120
-							},
-							{
-								"h" : 120,
-								"relative duration" : 0.25,
-								"w" : 200,
-								"x" : 200,
-								"y" : 120
-							},
-							{
-								"h" : 120,
-								"relative duration" : 0.25,
-								"w" : 200,
-								"x" : 400,
-								"y" : 120
-							},
-							{
-								"h" : 120,
-								"relative duration" : 0.25,
-								"w" : 200,
-								"x" : 600,
-								"y" : 120
-							}
-						],
-						"duration" : 0.5,
-						"importance" : 1,
-						"is active" : false,
-						"is paused" : false,
-						"loops" : true,
-						"progress" : 0
-					},
-					"stay left" : 
-					{
-						"data" : 
-						[
-							{
-								"h" : 120,
-								"relative duration" : 1,
-								"w" : 200,
-								"x" : 0,
-								"y" : 0
-							}
-						],
-						"duration" : 1,
-						"importance" : 0,
-						"is active" : false,
-						"is paused" : false,
-						"loops" : true,
-						"progress" : 0
-					},
-					"stay right" : 
-					{
-						"data" : 
-						[
-							{
-								"h" : 120,
-								"relative duration" : 1,
-								"w" : 200,
-								"x" : 0,
-								"y" : 120
-							}
-						],
-						"duration" : 1,
-						"importance" : 0,
-						"is active" : true,
-						"is paused" : false,
-						"loops" : true,
-						"progress" : 0.3224029541015625
-					}
+					"data" : 
+					[
+						{
+							"h" : 120,
+							"relative duration" : 0.125,
+							"w" : 200,
+							"x" : 0,
+							"y" : 240
+						},
+						{
+							"h" : 120,
+							"relative duration" : 0.125,
+							"w" : 200,
+							"x" : 200,
+							"y" : 240
+						},
+						{
+							"h" : 120,
+							"relative duration" : 0.125,
+							"w" : 200,
+							"x" : 400,
+							"y" : 240
+						},
+						{
+							"h" : 120,
+							"relative duration" : 0.125,
+							"w" : 200,
+							"x" : 600,
+							"y" : 240
+						},
+						{
+							"h" : 120,
+							"relative duration" : 0.125,
+							"w" : 200,
+							"x" : 0,
+							"y" : 360
+						},
+						{
+							"h" : 120,
+							"relative duration" : 0.125,
+							"w" : 200,
+							"x" : 200,
+							"y" : 360
+						},
+						{
+							"h" : 120,
+							"relative duration" : 0.125,
+							"w" : 200,
+							"x" : 400,
+							"y" : 360
+						},
+						{
+							"h" : 120,
+							"relative duration" : 0.125,
+							"w" : 200,
+							"x" : 600,
+							"y" : 360
+						}
+					],
+					"duration" : 0.3,
+					"importance" : 100,
+					"is active" : false,
+					"is paused" : false,
+					"loops" : false,
+					"progress" : 0
+				},
+				"hand to hand left" : 
+				{
+					"data" : 
+					[
+						{
+							"h" : 120,
+							"relative duration" : 0.5,
+							"w" : 200,
+							"x" : 0,
+							"y" : 480
+						},
+						{
+							"h" : 120,
+							"relative duration" : 0.5,
+							"w" : 200,
+							"x" : 200,
+							"y" : 480
+						}
+					],
+					"duration" : 0.2,
+					"importance" : 10,
+					"is active" : false,
+					"is paused" : false,
+					"loops" : false,
+					"progress" : 0,
+					"stop at end" : true
+				},
+				"hand to hand right" : 
+				{
+					"data" : 
+					[
+						{
+							"h" : 120,
+							"relative duration" : 0.5,
+							"w" : 200,
+							"x" : 400,
+							"y" : 480
+						},
+						{
+							"h" : 120,
+							"relative duration" : 0.5,
+							"w" : 200,
+							"x" : 600,
+							"y" : 480
+						}
+					],
+					"duration" : 0.2,
+					"importance" : 10,
+					"is active" : false,
+					"is paused" : false,
+					"loops" : false,
+					"progress" : 0,
+					"stop at end" : true
+				},
+				"move left" : 
+				{
+					"data" : 
+					[
+						{
+							"h" : 120,
+							"relative duration" : 0.25,
+							"w" : 200,
+							"x" : 0,
+							"y" : 0
+						},
+						{
+							"h" : 120,
+							"relative duration" : 0.25,
+							"w" : 200,
+							"x" : 200,
+							"y" : 0
+						},
+						{
+							"h" : 120,
+							"relative duration" : 0.25,
+							"w" : 200,
+							"x" : 400,
+							"y" : 0
+						},
+						{
+							"h" : 120,
+							"relative duration" : 0.25,
+							"w" : 200,
+							"x" : 600,
+							"y" : 0
+						}
+					],
+					"duration" : 0.5,
+					"importance" : 1,
+					"is active" : false,
+					"is paused" : false,
+					"loops" : true,
+					"progress" : 0
+				},
+				"move right" : 
+				{
+					"data" : 
+					[
+						{
+							"h" : 120,
+							"relative duration" : 0.25,
+							"w" : 200,
+							"x" : 0,
+							"y" : 120
+						},
+						{
+							"h" : 120,
+							"relative duration" : 0.25,
+							"w" : 200,
+							"x" : 200,
+							"y" : 120
+						},
+						{
+							"h" : 120,
+							"relative duration" : 0.25,
+							"w" : 200,
+							"x" : 400,
+							"y" : 120
+						},
+						{
+							"h" : 120,
+							"relative duration" : 0.25,
+							"w" : 200,
+							"x" : 600,
+							"y" : 120
+						}
+					],
+					"duration" : 0.5,
+					"importance" : 1,
+					"is active" : false,
+					"is paused" : false,
+					"loops" : true,
+					"progress" : 0
+				},
+				"stay left" : 
+				{
+					"data" : 
+					[
+						{
+							"h" : 120,
+							"relative duration" : 1,
+							"w" : 200,
+							"x" : 0,
+							"y" : 0
+						}
+					],
+					"duration" : 1,
+					"importance" : 0,
+					"is active" : false,
+					"is paused" : false,
+					"loops" : true,
+					"progress" : 0
+				},
+				"stay right" : 
+				{
+					"data" : 
+					[
+						{
+							"h" : 120,
+							"relative duration" : 1,
+							"w" : 200,
+							"x" : 0,
+							"y" : 120
+						}
+					],
+					"duration" : 1,
+					"importance" : 0,
+					"is active" : true,
+					"is paused" : false,
+					"loops" : true,
+					"progress" : 0.3224029541015625
 				}
 			},
 			"stamina" : 

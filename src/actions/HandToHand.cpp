@@ -28,39 +28,35 @@ void HandToHand::operator()(entityx::Entity entity, double) const
 		if(handToHandComponent->lastShoot >= handToHandComponent->delay)
 		{
 			handToHandComponent->lastShoot = sf::Time::Zero;
-			auto bodyIt(bodyComponent->bodies.find("main"));
-			if(bodyIt != bodyComponent->bodies.end())
+			b2Body* body{bodyComponent->body};
+			b2World* world{body->GetWorld()};
+
+			//Compute a box in front of the character; first, compute the transform of the box
+			b2Transform bodyTransform;
+			if(directionComponent->direction == Direction::Left)
+				bodyTransform = b2Transform(body->GetPosition() + b2Vec2(-0.5f, 0), b2Rot(body->GetAngle()));
+			else
+				bodyTransform = b2Transform(body->GetPosition() + b2Vec2(0.5f, 0), b2Rot(body->GetAngle()));
+			//Then get the AABB of the main fixture and apply the transform
+			b2AABB handToHandBox;
+			for(b2Fixture* fixture{body->GetFixtureList()}; fixture; fixture = fixture->GetNext())
+				if(fixtureHasRole(fixture, FixtureRole::Main))
+					fixture->GetShape()->ComputeAABB(&handToHandBox, bodyTransform, 0);
+			//Do the query
+			HandToHandQueryCallback callback(entity);
+			world->QueryAABB(&callback, handToHandBox);
+
+			for(entityx::Entity foundEntity : callback.foundEntities)
 			{
-				b2Body* body{bodyIt->second};
-				b2World* world{body->GetWorld()};
-
-				//Compute a box in front of the character; first, compute the transform of the box
-				b2Transform bodyTransform;
-				if(directionComponent->direction == Direction::Left)
-					bodyTransform = b2Transform(body->GetPosition() + b2Vec2(-0.5f, 0), b2Rot(body->GetAngle()));
-				else
-					bodyTransform = b2Transform(body->GetPosition() + b2Vec2(0.5f, 0), b2Rot(body->GetAngle()));
-				//Then get the AABB of the main fixture and apply the transform
-				b2AABB handToHandBox;
-				for(b2Fixture* fixture{body->GetFixtureList()}; fixture; fixture = fixture->GetNext())
-					if(fixtureHasRole(fixture, FixtureRole::Main))
-						fixture->GetShape()->ComputeAABB(&handToHandBox, bodyTransform, 0);
-				//Do the query
-				HandToHandQueryCallback callback(entity);
-				world->QueryAABB(&callback, handToHandBox);
-
-				for(entityx::Entity foundEntity : callback.foundEntities)
+				if(foundEntity.valid())
 				{
-					if(foundEntity.valid())
+					HealthComponent::Handle healthComponent(foundEntity.component<HealthComponent>());
+					const ActorComponent::Handle actorComponent(foundEntity.component<ActorComponent>());
+					if(healthComponent and actorComponent)
 					{
-						HealthComponent::Handle healthComponent(foundEntity.component<HealthComponent>());
-						const ActorComponent::Handle actorComponent(foundEntity.component<ActorComponent>());
-						if(healthComponent and actorComponent)
-						{
-							float damages{handToHandComponent->damages};
-							damages -= actorComponent->handToHandResistance;
-							healthComponent->current -= damages;
-						}
+						float damages{handToHandComponent->damages};
+						damages -= actorComponent->handToHandResistance;
+						healthComponent->current -= damages;
 					}
 				}
 			}
@@ -68,18 +64,14 @@ void HandToHand::operator()(entityx::Entity entity, double) const
 			AnimationsComponent<SpriteSheetAnimation>::Handle animationComponent(entity.component<AnimationsComponent<SpriteSheetAnimation>>());
 			if(animationComponent)
 			{
-				//For each animations manager of the entity
-				for(auto& animationsPair : animationComponent->animationsManagers)
+				AnimationsManager<SpriteSheetAnimation>& animations(animationComponent->animationsManager);
+				//If the animations manager have the required animations
+				if(animations.isRegistred("hand to hand left") and animations.isRegistred("hand to hand right"))
 				{
-					AnimationsManager<SpriteSheetAnimation>& animations(animationsPair.second);
-					//If the animations manager have the required animations
-					if(animations.isRegistred("hand to hand left") and animations.isRegistred("hand to hand right"))
-					{
-						if(directionComponent->direction == Direction::Left)
-							animations.play("hand to hand left");
-						else if(directionComponent->direction == Direction::Right)
-							animations.play("hand to hand right");
-					}
+					if(directionComponent->direction == Direction::Left)
+						animations.play("hand to hand left");
+					else if(directionComponent->direction == Direction::Right)
+						animations.play("hand to hand right");
 				}
 			}
 		}

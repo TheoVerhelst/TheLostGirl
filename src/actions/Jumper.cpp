@@ -26,18 +26,14 @@ void Jumper::operator()(entityx::Entity entity, double) const
 			jumpComponent->mustJump = true;//The physics system will do the physic jump job
 			if(animationsComponent and directionComponent)
 			{
-				//For each animations manager of the entity
-				for(auto& animationsPair : animationsComponent->animationsManagers)
+				AnimationsManager<SpriteSheetAnimation>& animations(animationsComponent->animationsManager);
+				//If the animations manager have the required animations
+				if(animations.isRegistred("jump left") and animations.isRegistred("jump right"))
 				{
-					AnimationsManager<SpriteSheetAnimation>& animations(animationsPair.second);
-					//If the animations manager have the required animations
-					if(animations.isRegistred("jump left") and animations.isRegistred("jump right"))
-					{
-						if(directionComponent->direction == Direction::Left)
-							animations.play("jump left");
-						else if(directionComponent->direction == Direction::Right)
-							animations.play("jump right");
-					}
+					if(directionComponent->direction == Direction::Left)
+						animations.play("jump left");
+					else if(directionComponent->direction == Direction::Right)
+						animations.play("jump right");
 				}
 			}
 		}

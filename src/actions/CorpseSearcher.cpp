@@ -22,19 +22,15 @@ void CorpseSearcher::operator()(entityx::Entity entity, double) const
 	BodyComponent::Handle bodyComponent(entity.component<BodyComponent>());
 	if(bodyComponent)
 	{
-		auto bodyIt(bodyComponent->bodies.find("main"));
-		if(bodyIt != bodyComponent->bodies.end())
-		{
-			//Do the querying
-			b2AABB searchBox;
-			searchBox.lowerBound = bodyIt->second->GetWorldCenter() - b2Vec2(2, 2);
-			searchBox.upperBound = bodyIt->second->GetWorldCenter() + b2Vec2(2, 2);
-			CorpseQueryCallback callback;
-			bodyIt->second->GetWorld()->QueryAABB(&callback, searchBox);
+		//Do the querying
+		b2AABB searchBox;
+		searchBox.lowerBound = bodyComponent->body->GetWorldCenter() - b2Vec2(2, 2);
+		searchBox.upperBound = bodyComponent->body->GetWorldCenter() + b2Vec2(2, 2);
+		CorpseQueryCallback callback;
+		bodyComponent->body->GetWorld()->QueryAABB(&callback, searchBox);
 
-			if(callback.foundEntity.valid())
-				m_stateStack.pushState<OpenInventoryState>(callback.foundEntity);
-		}
+		if(callback.foundEntity.valid())
+			m_stateStack.pushState<OpenInventoryState>(callback.foundEntity);
 	}
 }
 

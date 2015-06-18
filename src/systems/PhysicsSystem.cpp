@@ -6,7 +6,6 @@
 #include <TheLostGirl/Category.h>
 #include <TheLostGirl/Parameters.h>
 #include <TheLostGirl/functions.h>
-#include <TheLostGirl/JointRoles.h>
 #include <TheLostGirl/systems/TimeSystem.h>
 #include <TheLostGirl/systems/PhysicsSystem.h>
 
@@ -26,13 +25,10 @@ void PhysicsSystem::update(entityx::EntityManager& entityManager, entityx::Event
 	BodyComponent::Handle bodyComponent;
 	for(auto entity : entityManager.entities_with_components(bodyComponent))
 	{
-		b2Body* body{nullptr};
-		auto bodyIt(bodyComponent->bodies.find("main"));
-		if(bodyIt != bodyComponent->bodies.end())
-			body = bodyIt->second;
+		b2Body* body{bodyComponent->body};
 		//Update the walkers
 		const WalkComponent::Handle walkComponent(entity.component<WalkComponent>());
-		if(body and walkComponent)
+		if(walkComponent)
 		{
 			float targetVelocity{0.f};
 			const float walkVelocity{walkComponent->walkSpeed/m_pixelByMeter};
@@ -49,90 +45,35 @@ void PhysicsSystem::update(entityx::EntityManager& entityManager, entityx::Event
 
 		//Update the jumpers
 		JumpComponent::Handle jumpComponent(entity.component<JumpComponent>());
-		if(body and jumpComponent and jumpComponent->mustJump)
+		if(jumpComponent and jumpComponent->mustJump)
 		{
 			const float targetVelocity{-jumpComponent->jumpStrength/m_pixelByMeter};
 			body->ApplyLinearImpulse({0.f, targetVelocity*body->GetMass()}, body->GetWorldCenter(), true);
 			jumpComponent->mustJump = false;
 		}
 
-		//Update the archers
-		BowComponent::Handle bowComponent(entity.component<BowComponent>());
-		if(bowComponent)
-		{
-			const float angleTarget{-bowComponent->angle};
-			const float32 gain{20.f};
-			float32 differenceAngle;
-			auto armsBodyIt(bodyComponent->bodies.find("arms"));
-			if(armsBodyIt != bodyComponent->bodies.end())
-			{
-				//Iterate over all joints
-				for(b2JointEdge* jointEdge{armsBodyIt->second->GetJointList()}; jointEdge; jointEdge = jointEdge->next)
-				{
-					//If this is a bending joint
-					if(jointHasRole(jointEdge->joint, JointRole::BendingAngle))
-					{
-						b2RevoluteJoint* jointArms{static_cast<b2RevoluteJoint*>(jointEdge->joint)};
-						differenceAngle = angleTarget - jointArms->GetJointAngle();
-						jointArms->SetMotorSpeed(gain * differenceAngle);
-					}
-				}
-			}
-			auto bowBodyIt(bodyComponent->bodies.find("bow"));
-			if(bowBodyIt != bodyComponent->bodies.end())
-			{
-				//Iterate over all joints
-				for(b2JointEdge* jointEdge{bowBodyIt->second->GetJointList()}; jointEdge; jointEdge = jointEdge->next)
-				{
-					//If this is a bending joint
-					if(jointHasRole(jointEdge->joint, JointRole::BendingAngle))
-					{
-						b2RevoluteJoint* jointBow{static_cast<b2RevoluteJoint*>(jointEdge->joint)};
-						differenceAngle = angleTarget - jointBow->GetJointAngle();
-						jointBow->SetMotorSpeed(gain * differenceAngle);
-					}
-				}
-			}
+		const float32 gain{20.f};
+		//Update the rotating arms
+		ArticuledArmsComponent::Handle armsComponent(entity.component<ArticuledArmsComponent>());
+		if(armsComponent)
+			armsComponent->armsJoint->SetMotorSpeed(gain * (armsComponent->targetAngle - armsComponent->armsJoint->GetJointAngle()));
 
-			const DirectionComponent::Handle directionComponent(entity.component<DirectionComponent>());
-			if(directionComponent)
-			{
-				entityx::Entity notchedArrow{bowComponent->notchedArrow};
-				//If the notched arrow has a b2Body,
-				//Set the translation of the joint between bow and arrow
-				if(notchedArrow.valid())
-				{
-					BodyComponent::Handle arrowBodyComponent(notchedArrow.component<BodyComponent>());
-					if(arrowBodyComponent)
-					{
-						auto arrowBodyIt(arrowBodyComponent->bodies.find("main"));
-						if(arrowBodyIt != arrowBodyComponent->bodies.end())
-						{
-							float translationTarget{bowComponent->power};
-							if(directionComponent->direction == Direction::Left)
-								translationTarget = 1 - translationTarget;
-							float32 differenceTranslation;
-							//Iterate over all joints
-							for(b2JointEdge* jointEdge{arrowBodyIt->second->GetJointList()}; jointEdge; jointEdge = jointEdge->next)
-							{
-								//If this is a bending translation joint
-								if(jointHasRole(jointEdge->joint, JointRole::BendingPower))
-								{
-									b2PrismaticJoint* joint{static_cast<b2PrismaticJoint*>(jointEdge->joint)};
-									//The final target is equal to the joint's lower limit when the translationTarget is equal to 1.
-									differenceTranslation = translationTarget*joint->GetLowerLimit() - joint->GetJointTranslation();
-									joint->SetMotorSpeed(gain * differenceTranslation);
-								}
-							}
-						}
-					}
-				}
-			}
+		//Update the notched translating arrows
+		const DirectionComponent::Handle directionComponent(entity.component<DirectionComponent>());
+		BowComponent::Handle bowComponent(entity.component<BowComponent>());
+		if(bowComponent and directionComponent)
+		{
+			b2PrismaticJoint* joint{bowComponent->notchedArrowJoint};
+			float targetTranslation{bowComponent->targetTranslation};
+			if(directionComponent and directionComponent->direction == Direction::Left)
+				targetTranslation = 1 - targetTranslation;
+			//The final target is equal to the joint's lower limit when the targetTranslation is equal to 1.
+			joint->SetMotorSpeed(gain * (targetTranslation * joint->GetLowerLimit() - joint->GetJointTranslation()));
 		}
 
 		//Update the arrows
 		const ArrowComponent::Handle arrowComponent(entity.component<ArrowComponent>());
-		if(body and arrowComponent)
+		if(arrowComponent)
 		{
 			if(arrowComponent->state == ArrowComponent::Fired)
 			{
@@ -159,19 +100,10 @@ void PhysicsSystem::update(entityx::EntityManager& entityManager, entityx::Event
 		TransformComponent::Handle transformComponent(entity.component<TransformComponent>());
 		if(transformComponent)
 		{
-			for(auto& bodyPair : bodyComponent->bodies)
-			{
-				auto transformIt(transformComponent->transforms.find(bodyPair.first));
-				//If the name of the body exists in the transforms maps
-				if(transformIt != transformComponent->transforms.end())
-				{
-					b2Vec2 pos{bodyPair.second->GetPosition()};
-					float32 angle{bodyPair.second->GetAngle()};
-					transformIt->second.x = pos.x * m_pixelByMeter;
-					transformIt->second.y = pos.y * m_pixelByMeter;
-					transformIt->second.angle = angle*180/b2_pi;
-				}
-			}
+			const b2Vec2 pos{body->GetPosition()};
+			transformComponent->transform.x = pos.x * m_pixelByMeter;
+			transformComponent->transform.y = pos.y * m_pixelByMeter;
+			transformComponent->transform.angle = body->GetAngle()*180/b2_pi;
 		}
 	}
 }

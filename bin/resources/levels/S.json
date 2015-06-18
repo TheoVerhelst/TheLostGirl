@@ -1,19 +1,93 @@
 {
-	"include" : ["player.json", "mobs.json", "items.json"],
+	"include" : ["archer.json", "mobs.json", "items.json"],
 	"entities" : 
 	{
-		"archer" : 
+		"player bow" :
 		{
-			"base" : "player",
-			"bow" : 
+			"base" : "bow",
+			"bow" :
 			{
-				"angle" : 0.0808405876159668,
-				"arrows" : [ "arrow 1", "arrow 2", "arrow 4" ],
-				"initial speed" : 60,
 				"notched arrow" : "arrow 3",
-				"power" : 0,
-				"damages" : 1800,
-				"quiver capacity" : 100
+				"upper translation" : 0,
+				"lower translation" : -37,
+				"current translation" : 0,
+				"target translation" : 0,
+				"local anchor" : 
+				{
+					"x" : 75,
+					"y" : 50
+				}
+			},
+			"transform" : 
+			{
+				"angle" : -4.631782531738281,
+				"x" : 535.3487817382812,
+				"y" : 405.314208984375,
+				"z" : 1
+			}
+		},
+		"player arms" :
+		{
+			"base" : "archer arms",
+			"hold item" :
+			{
+				"item" : "player bow",
+				"local anchor" :
+				{
+					"x" : 50,
+					"y" : 70
+				}
+			},
+			"transform" : 
+			{
+				"angle" : -4.631768226623535,
+				"x" : 535.3424072265625,
+				"y" : 405.2977905273438,
+				"z" : 1
+			}
+		},
+		"player quiver" : 
+		{
+			"base" : "quiver",
+			"quiver" : 
+			{
+				"capacity" : 20,
+				"arrows" : [ "arrow 1", "arrow 2", "arrow 4" ]
+			},
+			"transform" : 
+			{
+				"angle" : 0,
+				"x" : 536.6326293945312,
+				"y" : 351.201416015625,
+				"z" : 1
+			}
+		},
+		"player" : 
+		{
+			"base" : "archer",
+			"archer" : 
+			{
+				"quiver" : "player quiver",
+				"local anchor" :
+				{
+					"x" : 0,
+					"y" : 0
+				},
+				"damages" : 180,
+				"initial speed" : 60
+			},
+			"articuled arms" :
+			{
+				"arms" : "player arms",
+				"upper angle" : 180,
+				"lower angle" : -90,
+				"current angle" : 0,
+				"target angle" : 0,
+				"local anchor" : 
+				{
+					"x" : 50,
+					"y" : 68
+				}
 			},
 			"death" : 
 			{
@@ -59,38 +133,12 @@
 				"maximum" : 100,
 				"regeneration" : 2
 			},
-			"transforms" : 
+			"transform" : 
 			{
-				"arms" : 
-				{
-					"transform" : 
-					{
-						"angle" : -4.631768226623535,
-						"x" : 535.3424072265625,
-						"y" : 405.2977905273438,
-						"z" : 1
-					}
-				},
-				"bow" : 
-				{
-					"transform" : 
-					{
-						"angle" : -4.631782531738281,
-						"x" : 534.9387817382812,
-						"y" : 400.314208984375,
-						"z" : 1
-					}
-				},
-				"main" : 
-				{
-					"transform" : 
-					{
-						"angle" : 0,
-						"x" : 536.6326293945312,
-						"y" : 351.201416015625,
-						"z" : 1
-					}
-				}
+				"angle" : 0,
+				"x" : 536.6326293945312,
+				"y" : 351.201416015625,
+				"z" : 1
 			},
 			"walk" : 
 			{
@@ -100,362 +148,208 @@
 		},
 		"arrow 1" : 
 		{
-			"base" : "arrow"
+			"base" : "arrow",
+			"transform" : 
+			{
+				"angle" : 0,
+				"x" : 536.6326293945312,
+				"y" : 351.201416015625,
+				"z" : 1
+			}
+
 		},
 		"arrow 2" : 
 		{
-			"base" : "arrow"
+			"base" : "arrow",
+			"transform" : 
+			{
+				"angle" : 0,
+				"x" : 536.6326293945312,
+				"y" : 351.201416015625,
+				"z" : 1
+			}
 		},
 		"arrow 3" : 
 		{
-			"base" : "arrow"
+			"base" : "arrow",
+			"transform" : 
+			{
+				"angle" : 0,
+				"x" : 536.6326293945312,
+				"y" : 351.201416015625,
+				"z" : 1
+			}
 		},
 		"arrow 4" : 
 		{
-			"base" : "arrow"
+			"base" : "arrow",
+			"transform" : 
+			{
+				"angle" : 0,
+				"x" : 536.6326293945312,
+				"y" : 351.201416015625,
+				"z" : 1
+			}
 		},
 		"ground" : 
 		{
 			"body" : 
 			{
-				"main" : 
-				{
-					"active" : true,
-					"allow sleep" : true,
-					"angular damping" : 0,
-					"angular velocity" : 0,
-					"awake" : true,
-					"bullet" : false,
-					"chain fixtures" : 
-					[
-						{
-							"density" : 0,
-							"friction" : 0.5,
-							"is sensor" : false,
-							"restitution" : 0,
-							"vertices" : 
-							[
-								{
-									"x" : 0,
-									"y" : 0
-								},
-								{
-									"x" : 0,
-									"y" : 299.9999694824219
-								},
-								{
-									"x" : 49.99998092651367,
-									"y" : 799.9996948242188
-								},
-								{
-									"x" : 599.9999389648438,
-									"y" : 799.9996948242188
-								},
-								{
-									"x" : 899.9996948242188,
-									"y" : 739.99951171875
-								},
-								{
-									"x" : 1149.999755859375,
-									"y" : 799.9996948242188
-								},
-								{
-									"x" : 19199.998046875,
-									"y" : 799.9996948242188
-								},
-								{
-									"x" : 19199.998046875,
-									"y" : 0
-								}
-							]
-						}
-					],
-					"fixed rotation" : false,
-					"gravity scale" : 1,
-					"linear damping" : 0,
-					"linear velocity" : 
+				"active" : true,
+				"allow sleep" : true,
+				"angular damping" : 0,
+				"angular velocity" : 0,
+				"awake" : true,
+				"bullet" : false,
+				"chain fixtures" : 
+				[
 					{
-						"x" : 0,
-						"y" : 0
-					},
-					"type" : "static"
-				}
+						"density" : 0,
+						"friction" : 0.5,
+						"is sensor" : false,
+						"restitution" : 0,
+						"vertices" : 
+						[
+							{
+								"x" : 0,
+								"y" : 0
+							},
+							{
+								"x" : 0,
+								"y" : 299.9999694824219
+							},
+							{
+								"x" : 49.99998092651367,
+								"y" : 799.9996948242188
+							},
+							{
+								"x" : 599.9999389648438,
+								"y" : 799.9996948242188
+							},
+							{
+								"x" : 899.9996948242188,
+								"y" : 739.99951171875
+							},
+							{
+								"x" : 1149.999755859375,
+								"y" : 799.9996948242188
+							},
+							{
+								"x" : 19199.998046875,
+								"y" : 799.9996948242188
+							},
+							{
+								"x" : 19199.998046875,
+								"y" : 0
+							}
+						]
+					}
+				],
+				"fixed rotation" : false,
+				"gravity scale" : 1,
+				"linear damping" : 0,
+				"linear velocity" : 
+				{
+					"x" : 0,
+					"y" : 0
+				},
+				"type" : "static"
 			},
 			"hardness" : 0.5,
-			"transforms" : 
+			"transform" : 
 			{
-				"main" : 
-				{
-					"transform" : 
-					{
-						"angle" : 0,
-						"x" : 0,
-						"y" : 0,
-						"z" : 1
-					}
-				}
+				"angle" : 0,
+				"x" : 0,
+				"y" : 0,
+				"z" : 1
 			}
 		},
 		"wolf 1" : 
 		{
 			"base" : "wood wolf",
-			"transforms" : 
+			"transform" : 
 			{
-				"main" : 
-				{
-					"transform" : 
-					{
-						"angle" : 0,
-						"x" : 1743.572509765625,
-						"y" : 672.1998291015625,
-						"z" : 1
-					}
-				}
+				"angle" : 0,
+				"x" : 1743.572509765625,
+				"y" : 672.1998291015625,
+				"z" : 1
 			}
 		},
 		"wolf 2" : 
 		{
 			"base" : "wood wolf",
-			"transforms" : 
+			"transform" : 
 			{
-				"main" : 
-				{
-					"transform" : 
-					{
-						"angle" : 0,
-						"x" : 1943.572509765625,
-						"y" : 672.1998291015625,
-						"z" : 1
-					}
-				}
+				"angle" : 0,
+				"x" : 1943.572509765625,
+				"y" : 672.1998291015625,
+				"z" : 1
 			}
 		},
 		"wolf 3" : 
 		{
 			"base" : "wood wolf",
-			"transforms" : 
+			"transform" : 
 			{
-				"main" : 
-				{
-					"transform" : 
-					{
-						"angle" : 0,
-						"x" : 1543.572509765625,
-						"y" : 672.1998291015625,
-						"z" : 1
-					}
-				}
+				"angle" : 0,
+				"x" : 1543.572509765625,
+				"y" : 672.1998291015625,
+				"z" : 1
 			}
 		},
 		"wolf 4" : 
 		{
 			"base" : "wood wolf",
-			"transforms" : 
+			"transform" : 
 			{
-				"main" : 
-				{
-					"transform" : 
-					{
-						"angle" : 0,
-						"x" : 2143.572509765625,
-						"y" : 672.1998291015625,
-						"z" : 1
-					}
-				}
+				"angle" : 0,
+				"x" : 2143.572509765625,
+				"y" : 672.1998291015625,
+				"z" : 1
 			}
 		},
-		"sky" : 
+		"day sky" : 
 		{
-			"sprites" :
+			"name" : "day sky",
+			"sprite" :
 			{
-				"day" :
+				"identifier" : "day.png",
+				"origin" :
 				{
-					"identifier" : "day.png",
-					"origin" :
-					{
-						"x" : 1450,
-						"y" : 1450
-					}
-				},
-				"night" :
-				{
-					"identifier" : "night.png",
-					"origin" :
-					{
-						"x" : 1450,
-						"y" : 1450
-					}
+					"x" : 1450,
+					"y" : 1450
 				}
 			},
-			"transforms" :
+			"transform" :
 			{
-				"day" :
+				"x" : 960,
+				"y" : 1080,
+				"z" : infinity,
+				"angle" : 0
+			},
+			"categories" : ["scene"]
+		},
+		"night sky" : 
+		{
+			"name" : "night sky",
+			"sprite" :
+			{
+				"identifier" : "night.png",
+				"origin" :
 				{
-					"transform" :
-					{
-						"x" : 960,
-						"y" : 1080,
-						"z" : infinity,
-						"angle" : 0
-					}
-				},
-				"night" :
-				{
-					"transform":
-					{
-						"x" : 960,
-						"y" : 1080,
-						"z" : infinity,
-						"angle" : 0
-					}
+					"x" : 1450,
+					"y" : 1450
 				}
+			},
+			"transform" :
+			{
+				"x" : 960,
+				"y" : 1080,
+				"z" : infinity,
+				"angle" : 0
 			},
 			"categories" : ["scene"]
 		}
-	},
-	"joints" : 
-	{
-		"prismatic joints" : 
-		[
-			{
-				"enable limit" : true,
-				"enable motor" : true,
-				"entity A" : "archer",
-				"entity B" : "arrow 3",
-				"local anchor A" : 
-				{
-					"x" : 75.00000762939453,
-					"y" : 50.00000381469727
-				},
-				"local anchor B" : 
-				{
-					"x" : 3.000000238418579,
-					"y" : 6.000000476837158
-				},
-				"local axis A" : 
-				{
-					"x" : 120,
-					"y" : 0
-				},
-				"lower translation" : -37,
-				"maximum motor force" : 1200.000244140625,
-				"motor speed" : -9.241314546670765e-05,
-				"part A" : "bow",
-				"part B" : "main",
-				"reference angle" : 0,
-				"roles" : [ "bending power" ],
-				"upper translation" : 0
-			}
-		],
-		"revolute joints" : 
-		[
-			{
-				"enable limit" : false,
-				"enable motor" : true,
-				"entity A" : "archer",
-				"entity B" : "archer",
-				"local anchor A" : 
-				{
-					"x" : 50.00000762939453,
-					"y" : 68.00002288818359
-				},
-				"local anchor B" : 
-				{
-					"x" : 50.00000762939453,
-					"y" : 18
-				},
-				"lower angle" : 0,
-				"maximum motor torque" : 1200.000366210938,
-				"motor speed" : -0.002342462539672852,
-				"part A" : "main",
-				"part B" : "arms",
-				"roles" : [ "bending angle" ],
-				"upper angle" : 0
-			},
-			{
-				"enable limit" : false,
-				"enable motor" : true,
-				"entity A" : "archer",
-				"entity B" : "archer",
-				"local anchor A" : 
-				{
-					"x" : 50.00000762939453,
-					"y" : 68.00002288818359
-				},
-				"local anchor B" : 
-				{
-					"x" : 50.00000762939453,
-					"y" : 23.0000057220459
-				},
-				"lower angle" : 0,
-				"maximum motor torque" : 1200.000366210938,
-				"motor speed" : -0.001752376556396484,
-				"part A" : "main",
-				"part B" : "bow",
-				"roles" : [ "bending angle" ],
-				"upper angle" : 0
-			}
-		],
-		"weld joints" : 
-		[
-			{
-				"damping ratio" : 0,
-				"entity A" : "archer",
-				"entity B" : "arrow 1",
-				"frequency Hz" : 0,
-				"local anchor A" : 
-				{
-					"x" : 44,
-					"y" : 59.00000762939453
-				},
-				"local anchor B" : 
-				{
-					"x" : 48.00000762939453,
-					"y" : 13.00000095367432
-				},
-				"part A" : "main",
-				"part B" : "main",
-				"reference angle" : -90.00000762939453
-			},
-			{
-				"damping ratio" : 0,
-				"entity A" : "archer",
-				"entity B" : "arrow 4",
-				"frequency Hz" : 0,
-				"local anchor A" : 
-				{
-					"x" : 44,
-					"y" : 59.0000114440918
-				},
-				"local anchor B" : 
-				{
-					"x" : 48.0000114440918,
-					"y" : 13.00000286102295
-				},
-				"part A" : "main",
-				"part B" : "main",
-				"reference angle" : -80.00002288818359
-			},
-			{
-				"damping ratio" : 0,
-				"entity A" : "archer",
-				"entity B" : "arrow 2",
-				"frequency Hz" : 0,
-				"local anchor A" : 
-				{
-					"x" : 44,
-					"y" : 59.0000114440918
-				},
-				"local anchor B" : 
-				{
-					"x" : 48.0000114440918,
-					"y" : 13.00000286102295
-				},
-				"part A" : "main",
-				"part B" : "main",
-				"reference angle" : -80.00002288818359
-			}
-		]
 	},
 	"level" : 
 	{

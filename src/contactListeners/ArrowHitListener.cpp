@@ -75,8 +75,8 @@ void ArrowHitListener::PostSolve(b2Contact* contact, const b2ContactImpulse* imp
 				float damages{impulse->normalImpulses[0]*4};
                 damages *= arrowComponent->damage;
                 damages -= actorComponent->arrowResistance;
-                if(arrowComponent->shooter and arrowComponent->shooter.has_component<BowComponent>())
-					damages += arrowComponent->shooter.component<BowComponent>()->damages;
+                if(arrowComponent->shooter and arrowComponent->shooter.has_component<ArcherComponent>())
+					damages += arrowComponent->shooter.component<ArcherComponent>()->damages;
 				healthComponent->current -= damages;
 			}
 		}
