@@ -37,6 +37,7 @@
 //TODO Sauvegarde en fonction des includes.
 //TODO Retirer la fleche pendant le CAC.
 //TODO Sound manager.
+//TODO Mettre des const sur les ComponentHandle.
 //TODO Faire un système multi texture pour une même partie d'entité (soit chunker une grande image, soit faire plusieurs images).
 
 // À discuter, à propos du gameplay :

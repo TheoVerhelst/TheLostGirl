@@ -36,7 +36,6 @@ bool ContactListener::collide(b2Contact* contact, const b2Manifold*)
 	b2Fixture* fixtureB{contact->GetFixtureB()};
 	b2Body* bodyB{fixtureB->GetBody()};
 	entityx::Entity entityB{*static_cast<entityx::Entity*>(bodyB->GetUserData())};
-
 	//Wrap all checks into this function allow to stop next checks when any of the checks is verified.
 
 	//The contact do not occurs if both entities are the same one
@@ -54,6 +53,32 @@ bool ContactListener::collide(b2Contact* contact, const b2Manifold*)
 		and lround(entityATransformComponent->transform.z) != lround(entityBTransformComponent->transform.z))
 			return false;
 
+	return checkCollide(entityA, entityB) and checkCollide(entityB, entityA);
+}
+
+bool ContactListener::checkCollide(entityx::Entity entityA, entityx::Entity entityB) const
+{
+	const ArcherComponent::Handle entityAArcherComponent(entityA.component<ArcherComponent>());
+	if(entityAArcherComponent and entityAArcherComponent->quiver == entityB)
+		return false;
+
+	ArticuledArmsComponent::Handle entityAArmsComponent(entityA.component<ArticuledArmsComponent>());
+	if(entityAArmsComponent)
+	{
+		if(entityAArmsComponent->arms == entityB)
+			return false;
+		if(entityAArmsComponent->arms.valid())
+		{
+			HoldItemComponent::Handle armsHoldItemComponent(entityAArmsComponent->arms.component<HoldItemComponent>());
+			if(armsHoldItemComponent and armsHoldItemComponent->item == entityB)
+				return false;
+		}
+	}
+
+	const HoldItemComponent::Handle entityAHoldItemComponent(entityA.component<HoldItemComponent>());
+	if(entityAHoldItemComponent and entityAHoldItemComponent->item == entityB)
+		return false;
+
 	const ArrowComponent::Handle entityAArrowComponent{entityA.component<ArrowComponent>()};
 	const ArrowComponent::Handle entityBArrowComponent{entityB.component<ArrowComponent>()};
 	//The contact do not occurs if both entities are arrows
@@ -62,10 +87,6 @@ bool ContactListener::collide(b2Contact* contact, const b2Manifold*)
 
 	//The contact do not occurs if the entity A is an arrow wich is not fired
 	if(entityAArrowComponent and entityAArrowComponent->state != ArrowComponent::Fired)
-			return false;
-
-	//The contact do not occurs if the entity B is an arrow wich is not fired
-	if(entityBArrowComponent and entityBArrowComponent->state != ArrowComponent::Fired)
 		return false;
 
 	//The contact do not occurs if the entity A is a corpse and the entity B is an arrow
@@ -73,14 +94,10 @@ bool ContactListener::collide(b2Contact* contact, const b2Manifold*)
 	if(entityADeathComponent and entityADeathComponent->dead and entityBArrowComponent)
 		return false;
 
-	//The contact do not occurs if the entity B is a corpse and the entity A is an arrow
-	const DeathComponent::Handle entityBDeathComponent{entityB.component<DeathComponent>()};
-	if(entityBDeathComponent and entityBDeathComponent->dead and entityAArrowComponent)
-		return false;
-
 	//If none of the previous case is verified, then the collision occurs
 	return true;
 }
+
 
 
 void ContactListener::BeginContact(b2Contact* contact)

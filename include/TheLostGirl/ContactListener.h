@@ -49,6 +49,8 @@ class ContactListener : public b2ContactListener
 		/// \param oldManifold Old manifold.
 		/// \return True if the contact should occurs, false otherwise.
 		bool collide(b2Contact* contact, const b2Manifold* oldManifold);
+
+		bool checkCollide(entityx::Entity entityA, entityx::Entity entityB) const;
 };
 
 #endif//CONTACTLISTENER_H

@@ -10,7 +10,7 @@
 				"angular damping" : 10,
 				"angular velocity" : 0,
 				"awake" : true,
-				"bullet" : true,
+				"bullet" : false,
 				"fixed rotation" : false,
 				"gravity scale" : 1,
 				"linear damping" : 0,
@@ -74,7 +74,7 @@
 					{
 						"density" : 0.01,
 						"friction" : 0.2,
-						"is sensor" : true,
+						"is sensor" : false,
 						"restitution" : 0,
 						"vertices" : 
 						[
