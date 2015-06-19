@@ -136,30 +136,13 @@ void DebugDraw::drawDebugAth()
 	m_debugMode = true;
 	CategoryComponent::Handle categoryComponent;
 	BodyComponent::Handle bodyComponent;
-	BowComponent::Handle bowComponent;
-	ArticuledArmsComponent::Handle armsComponent;
-	//Find out position and bending
+	//Find out position
 	b2Vec2 position{0, 0};
-	float bendPower{0}, bendAngle{0};
 	for(auto entity : m_context.entityManager.entities_with_components(categoryComponent, bodyComponent))
 		//We found the player
 		if(categoryComponent->category & Category::Player)
 		{
 			position = bodyComponent->body->GetPosition();
-			break;
-		}
-	for(auto entity : m_context.entityManager.entities_with_components(categoryComponent, bowComponent))
-		//We found the player
-		if(categoryComponent->category & Category::Player)
-		{
-			bendPower = bowComponent->targetTranslation;
-			break;
-		}
-	for(auto entity : m_context.entityManager.entities_with_components(categoryComponent, armsComponent))
-		//We found the player
-		if(categoryComponent->category & Category::Player)
-		{
-			bendAngle = armsComponent->targetAngle;
 			break;
 		}
 
@@ -177,18 +160,6 @@ void DebugDraw::drawDebugAth()
 	b2Vec2 positionPixels{m_context.parameters.pixelByMeter * position};
 	positionLabel->setText("Meters (" + roundOutput(position.x) + ", " + roundOutput(position.y) + ")\n" +
 						   "Pixels (" + roundOutput(positionPixels.x) + ", " + roundOutput(positionPixels.y) + ")");
-
-	//Bending
-	tgui::Label::Ptr bendingLabel{m_context.gui.get<tgui::Label>("bendingLabel")};
-	if(bendingLabel == nullptr)
-	{
-		bendingLabel = tgui::Label::create(m_context.parameters.guiConfigFile);
-		bendingLabel->setPosition(tgui::bindWidth(m_context.gui, 0.35f), tgui::bindHeight(m_context.gui, 0.01f));
-		bendingLabel->setTextSize(20);
-		bendingLabel->setTextFont(std::make_shared<sf::Font>(m_context.fontManager.get("debug")));
-		m_context.gui.add(bendingLabel, "bendingLabel");
-	}
-	bendingLabel->setText("Power: " + roundOutput(bendPower)+ "\nAngle: " + roundOutput(bendAngle));
 
 	//FPS
 	tgui::Label::Ptr FPSLabel{m_context.gui.get<tgui::Label>("FPSLabel")};
@@ -212,9 +183,6 @@ void DebugDraw::setFPS(float framesPerSecond)
 		tgui::Label::Ptr positionLabel{m_context.gui.get<tgui::Label>("positionLabel")};
 		if(positionLabel != nullptr)
 			m_context.gui.remove(positionLabel);
-		tgui::Label::Ptr bendingLabel{m_context.gui.get<tgui::Label>("bendingLabel")};
-		if(bendingLabel != nullptr)
-			m_context.gui.remove(bendingLabel);
 		tgui::Label::Ptr FPSLabel{m_context.gui.get<tgui::Label>("FPSLabel")};
 		if(FPSLabel != nullptr)
 			m_context.gui.remove(FPSLabel);

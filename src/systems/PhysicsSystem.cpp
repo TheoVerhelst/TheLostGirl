@@ -55,14 +55,15 @@ void PhysicsSystem::update(entityx::EntityManager& entityManager, entityx::Event
 		const float32 gain{20.f};
 		//Update the rotating arms
 		ArticuledArmsComponent::Handle armsComponent(entity.component<ArticuledArmsComponent>());
+
 		if(armsComponent)
-			armsComponent->armsJoint->SetMotorSpeed(gain * (armsComponent->targetAngle - armsComponent->armsJoint->GetJointAngle()));
+			armsComponent->armsJoint->SetMotorSpeed(gain * (-armsComponent->targetAngle - armsComponent->armsJoint->GetJointAngle()));
 
 		//Update the notched translating arrows
 		BowComponent::Handle bowComponent(entity.component<BowComponent>());
 		if(bowComponent)
 		{
-			b2PrismaticJoint* joint{};
+			b2PrismaticJoint* joint{bowComponent->notchedArrowJoint};
 			float targetTranslation{bowComponent->targetTranslation};
 			//The final target is equal to the joint's lower limit when the targetTranslation is equal to 1.
 			joint->SetMotorSpeed(gain * ((targetTranslation * joint->GetLowerLimit()) - joint->GetJointTranslation()));

@@ -58,26 +58,9 @@ bool ContactListener::collide(b2Contact* contact, const b2Manifold*)
 
 bool ContactListener::checkCollide(entityx::Entity entityA, entityx::Entity entityB) const
 {
-	const ArcherComponent::Handle entityAArcherComponent(entityA.component<ArcherComponent>());
-	if(entityAArcherComponent and entityAArcherComponent->quiver == entityB)
-		return false;
-
-	ArticuledArmsComponent::Handle entityAArmsComponent(entityA.component<ArticuledArmsComponent>());
-	if(entityAArmsComponent)
-	{
-		if(entityAArmsComponent->arms == entityB)
+	if(entityA.has_component<QuiverComponent>() or entityA.has_component<ItemComponent>() or entityA.has_component<BowComponent>()
+		or entityA.has_component<HoldItemComponent>())
 			return false;
-		if(entityAArmsComponent->arms.valid())
-		{
-			HoldItemComponent::Handle armsHoldItemComponent(entityAArmsComponent->arms.component<HoldItemComponent>());
-			if(armsHoldItemComponent and armsHoldItemComponent->item == entityB)
-				return false;
-		}
-	}
-
-	const HoldItemComponent::Handle entityAHoldItemComponent(entityA.component<HoldItemComponent>());
-	if(entityAHoldItemComponent and entityAHoldItemComponent->item == entityB)
-		return false;
 
 	const ArrowComponent::Handle entityAArrowComponent{entityA.component<ArrowComponent>()};
 	const ArrowComponent::Handle entityBArrowComponent{entityB.component<ArrowComponent>()};

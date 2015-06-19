@@ -31,7 +31,7 @@ void ArrowShooter::operator()(entityx::Entity entity, double) const
 	if(not (bowComponent and bowComponent->notchedArrow.valid()))
 		return;
 
-	const float angle{armsComponent->armsJoint->GetJointAngle()};
+	const float angle{armsComponent->targetAngle};
 	const float power{bowComponent->targetTranslation};
 	BodyComponent::Handle notchedArrowBodyComponent(bowComponent->notchedArrow.component<BodyComponent>());
 	ArrowComponent::Handle notchedArrowArrowComponent(bowComponent->notchedArrow.component<ArrowComponent>());

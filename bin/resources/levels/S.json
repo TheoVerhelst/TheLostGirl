@@ -79,7 +79,7 @@
 			"articuled arms" :
 			{
 				"arms" : "player arms",
-				"upper angle" : 180,
+				"upper angle" : 90,
 				"lower angle" : -90,
 				"current angle" : 0,
 				"target angle" : 0,
