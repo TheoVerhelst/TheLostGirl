@@ -1,6 +1,12 @@
 #include <entityx/Entity.h>
 #include <Box2D/Dynamics/Joints/b2Joint.h>
 #include <Box2D/Dynamics/Joints/b2PrismaticJoint.h>
+#include <Box2D/Dynamics/Joints/b2WeldJoint.h>
+#include <Box2D/Dynamics/Joints/b2RevoluteJoint.h>
+#include <Box2D/Collision/Shapes/b2PolygonShape.h>
+#include <Box2D/Collision/Shapes/b2EdgeShape.h>
+#include <Box2D/Collision/Shapes/b2ChainShape.h>
+#include <Box2D/Collision/Shapes/b2CircleShape.h>
 #include <Box2D/Dynamics/b2Body.h>
 #include <Box2D/Dynamics/b2World.h>
 #include <Box2D/Dynamics/b2Fixture.h>
@@ -67,32 +73,25 @@ void Mover::operator()(entityx::Entity entity, double) const
 		//For all entities
 		if(directionComponent)
 		{
-			//References to the moveToLeft or moveToRight data in directionComponent
-			bool& moveToDirection(direction == Direction::Left ? directionComponent->moveToLeft : directionComponent->moveToRight);
-			bool& moveToOppDirection(direction == Direction::Right ? directionComponent->moveToLeft : directionComponent->moveToRight);
-			Direction initialDirection{directionComponent->direction};
-			if(start)
+			bool moveToOppDirection;
+			if(direction == Direction::Left)
 			{
-				moveToDirection = true;
-				//Here in all cases, the new direction will be the same.
-				directionComponent->direction = direction;
+				moveToOppDirection = directionComponent->moveToRight;
+				directionComponent->moveToLeft = start;
 			}
 			else
 			{
-				moveToDirection = false;
-				if(moveToOppDirection)
-					directionComponent->direction = oppDirection;
+				moveToOppDirection = directionComponent->moveToLeft;
+				directionComponent->moveToRight = start;
 			}
-			//Flip the arms component if there is one and if the entity has flip
-			ArticuledArmsComponent::Handle armsComponent(entity.component<ArticuledArmsComponent>());
-			if(armsComponent and directionComponent->direction != initialDirection)
-			{
-				//Flip the angle
-				if(directionComponent->direction == Direction::Left)
-					armsComponent->targetAngle = cap(std::remainder(armsComponent->targetAngle - b2_pi, 2.f*b2_pi), -b2_pi, b2_pi/2.f);
-				else if(directionComponent->direction == Direction::Right)
-					armsComponent->targetAngle = cap(std::remainder(armsComponent->targetAngle - b2_pi, 2.f*b2_pi), -b2_pi/2.f, b2_pi);
-			}
+			const Direction initialDirection{directionComponent->direction};
+			if(start)
+				//Here in all cases, the new direction will be the same.
+				directionComponent->direction = direction;
+			else if(moveToOppDirection)
+				directionComponent->direction = oppDirection;
+			if(directionComponent->direction != initialDirection)
+				flip(entity);
 
 			AnimationsComponent<SpriteSheetAnimation>::Handle animationsComponent(entity.component<AnimationsComponent<SpriteSheetAnimation>>());
 			//If the entity have animations
@@ -185,4 +184,92 @@ void Mover::operator()(entityx::Entity entity, double) const
 			}
 		}
 	}
+}
+
+void Mover::flip(entityx::Entity entity) const
+{
+	ArcherComponent::Handle archerComponent{entity.component<ArcherComponent>()};
+	BodyComponent::Handle bodyComponent{entity.component<BodyComponent>()};
+	ArticuledArmsComponent::Handle armsComponent{entity.component<ArticuledArmsComponent>()};
+	if(bodyComponent)
+	{
+		//Flip the body and get the symmetry point
+		const float32 mid{flipFixtures(bodyComponent->body)};
+		if(archerComponent)
+			flipBody(archerComponent->quiverJoint->GetBodyB(), mid);
+		if(armsComponent)
+		{
+			flipBody(armsComponent->armsJoint->GetBodyB(), mid);
+			HoldItemComponent::Handle holdItemComponent{armsComponent->arms.component<HoldItemComponent>()};
+			if(holdItemComponent)
+			{
+				flipBody(holdItemComponent->joint->GetBodyB(), mid);
+				BowComponent::Handle bowComponent{holdItemComponent->item.component<BowComponent>()};
+				if(bowComponent)
+					flipBody(bowComponent->notchedArrowJoint->GetBodyB(), mid);
+			}
+		}
+	}
+}
+
+float32 Mover::flipFixtures(b2Body* body) const
+{
+	//Get the AABB of the arrow, to compute where place anchor of the joint
+	b2AABB box;
+	b2Transform identity;
+	identity.SetIdentity();
+	for(b2Fixture* fixture{body->GetFixtureList()}; fixture; fixture = fixture->GetNext())
+		if(fixtureHasRole(fixture, FixtureRole::Main))
+			fixture->GetShape()->ComputeAABB(&box, identity, 0);
+	const float32 mid{box.GetExtents().x*0.5f};
+	for(b2Fixture* fixture{body->GetFixtureList()}; fixture; fixture = fixture->GetNext())
+	{
+		b2Shape* shape{fixture->GetShape()};
+		switch(shape->GetType())
+		{
+			case b2Shape::e_circle:
+				flipPoint(static_cast<b2CircleShape*>(shape)->m_p, mid);
+				break;
+			case b2Shape::e_edge:
+			{
+				b2EdgeShape* edgeShape{static_cast<b2EdgeShape*>(shape)};
+				flipPoint(edgeShape->m_vertex0, mid);
+				flipPoint(edgeShape->m_vertex1, mid);
+				flipPoint(edgeShape->m_vertex2, mid);
+				flipPoint(edgeShape->m_vertex3, mid);
+				break;
+			}
+			case b2Shape::e_polygon:
+			{
+				b2PolygonShape* polygonShape{static_cast<b2PolygonShape*>(shape)};
+				for(int32 i{0}; i < polygonShape->GetVertexCount(); ++i)
+					flipPoint(polygonShape->m_vertices[i], mid);
+				break;
+			}
+			case b2Shape::e_chain:
+			{
+				b2ChainShape* chainShape{static_cast<b2ChainShape*>(shape)};
+				flipPoint(chainShape->m_prevVertex, mid);
+				for(int32 i{0}; i < chainShape->m_count; ++i)
+					flipPoint(chainShape->m_vertices[i], mid);
+				flipPoint(chainShape->m_nextVertex, mid);
+				break;
+			}
+			default:
+				break;
+		}
+	}
+	return mid;
+}
+
+inline void Mover::flipBody(b2Body* body, float32 mid) const
+{
+	b2Vec2 newPos{body->GetPosition()};
+	flipPoint(newPos, mid);
+	body->SetTransform({newPos.x - flipFixtures(body)*2, newPos.y}, body->GetAngle());
+}
+
+inline void Mover::flipPoint(b2Vec2& vec, float32 mid) const
+{
+	vec.x += mid - vec.x;
 }

@@ -25,6 +25,14 @@ struct Mover : public Action
 	/// \param dt Elapsed time in the last game frame.
 	virtual void operator()(entityx::Entity entity, double dt) const;
 
+	void flip(entityx::Entity entity) const;
+
+	float32 flipFixtures(b2Body* body) const;
+
+	inline void flipBody(b2Body* body, float32 mid) const;
+
+	inline void flipPoint(b2Vec2& vec, float32 mid) const;
+
 	Direction direction;///< Indicates the direction of the movement.
 	bool start;         ///< True if the movement starts, false if it stops.
 };

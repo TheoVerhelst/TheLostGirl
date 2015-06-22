@@ -100,7 +100,6 @@ Json::Value Serializer::serialize(entityx::ComponentHandle<BodyComponent> compon
 				}
 				break;
 			}
-			default:
 			case b2Shape::e_chain:
 			{
 				b2ChainShape* shape{static_cast<b2ChainShape*>(fix->GetShape())};
@@ -122,6 +121,8 @@ Json::Value Serializer::serialize(entityx::ComponentHandle<BodyComponent> compon
 				}
 				break;
 			}
+			default:
+				break;
 		}
 		fixtureObj["density"] = fix->GetDensity();
 		fixtureObj["friction"] = fix->GetFriction();
