@@ -1,17 +1,9 @@
 #include <entityx/Entity.h>
-#include <Box2D/Dynamics/Joints/b2Joint.h>
-#include <Box2D/Dynamics/Joints/b2PrismaticJoint.h>
-#include <Box2D/Dynamics/Joints/b2WeldJoint.h>
-#include <Box2D/Dynamics/Joints/b2RevoluteJoint.h>
 #include <Box2D/Collision/Shapes/b2PolygonShape.h>
 #include <Box2D/Collision/Shapes/b2EdgeShape.h>
 #include <Box2D/Collision/Shapes/b2ChainShape.h>
 #include <Box2D/Collision/Shapes/b2CircleShape.h>
-#include <Box2D/Dynamics/b2Body.h>
-#include <Box2D/Dynamics/b2World.h>
-#include <Box2D/Dynamics/b2Fixture.h>
 #include <TheLostGirl/components.h>
-#include <TheLostGirl/functions.h>
 #include <TheLostGirl/FixtureRoles.h>
 #include <TheLostGirl/actions/Mover.h>
 
@@ -196,17 +188,25 @@ void Mover::flip(entityx::Entity entity) const
 		//Flip the body and get the symmetry point
 		const float32 mid{flipFixtures(bodyComponent->body)};
 		if(archerComponent)
-			flipBody(archerComponent->quiverJoint->GetBodyB(), mid);
+		{
+			std::cout << "Quiver joint :\t\t";
+            archerComponent->quiverJoint = flipJoint<b2WeldJointDef>(archerComponent->quiverJoint, mid, archerComponent->quiver);
+		}
 		if(armsComponent)
 		{
-			flipBody(armsComponent->armsJoint->GetBodyB(), mid);
+			std::cout << "Arms joint :\t\t";
+            armsComponent->armsJoint = flipJoint<b2RevoluteJointDef>(armsComponent->armsJoint, mid, armsComponent->arms);
 			HoldItemComponent::Handle holdItemComponent{armsComponent->arms.component<HoldItemComponent>()};
 			if(holdItemComponent)
 			{
-				flipBody(holdItemComponent->joint->GetBodyB(), mid);
+				std::cout << "Hold item joint :\t";
+				holdItemComponent->joint = flipJoint<b2WeldJointDef>(holdItemComponent->joint, mid, holdItemComponent->item);
 				BowComponent::Handle bowComponent{holdItemComponent->item.component<BowComponent>()};
 				if(bowComponent)
-					flipBody(bowComponent->notchedArrowJoint->GetBodyB(), mid);
+				{
+					std::cout << "Notched arrow joint :\t";
+					bowComponent->notchedArrowJoint = flipJoint<b2PrismaticJointDef>(bowComponent->notchedArrowJoint, mid, bowComponent->notchedArrow);
+				}
 			}
 		}
 	}
@@ -214,14 +214,14 @@ void Mover::flip(entityx::Entity entity) const
 
 float32 Mover::flipFixtures(b2Body* body) const
 {
-	//Get the AABB of the arrow, to compute where place anchor of the joint
+	//Get the half width of the body
 	b2AABB box;
 	b2Transform identity;
 	identity.SetIdentity();
 	for(b2Fixture* fixture{body->GetFixtureList()}; fixture; fixture = fixture->GetNext())
 		if(fixtureHasRole(fixture, FixtureRole::Main))
 			fixture->GetShape()->ComputeAABB(&box, identity, 0);
-	const float32 mid{box.GetExtents().x*0.5f};
+	const float32 mid{box.GetCenter().x};
 	for(b2Fixture* fixture{body->GetFixtureList()}; fixture; fixture = fixture->GetNext())
 	{
 		b2Shape* shape{fixture->GetShape()};
@@ -242,16 +242,26 @@ float32 Mover::flipFixtures(b2Body* body) const
 			case b2Shape::e_polygon:
 			{
 				b2PolygonShape* polygonShape{static_cast<b2PolygonShape*>(shape)};
-				for(int32 i{0}; i < polygonShape->GetVertexCount(); ++i)
-					flipPoint(polygonShape->m_vertices[i], mid);
+				b2Vec2 vertices[polygonShape->m_count];
+				for(int32 i{0}; i < polygonShape->m_count; ++i)
+				{
+					vertices[i] = polygonShape->m_vertices[i];
+					flipPoint(vertices[i], mid);
+				}
+				polygonShape->Set(vertices, polygonShape->m_count);
 				break;
 			}
 			case b2Shape::e_chain:
 			{
 				b2ChainShape* chainShape{static_cast<b2ChainShape*>(shape)};
 				flipPoint(chainShape->m_prevVertex, mid);
+				b2Vec2 vertices[chainShape->m_count];
 				for(int32 i{0}; i < chainShape->m_count; ++i)
-					flipPoint(chainShape->m_vertices[i], mid);
+				{
+					vertices[i] = chainShape->m_vertices[i];
+					flipPoint(vertices[i], mid);
+				}
+				chainShape->CreateChain(vertices, chainShape->m_count);
 				flipPoint(chainShape->m_nextVertex, mid);
 				break;
 			}
@@ -262,14 +272,7 @@ float32 Mover::flipFixtures(b2Body* body) const
 	return mid;
 }
 
-inline void Mover::flipBody(b2Body* body, float32 mid) const
-{
-	b2Vec2 newPos{body->GetPosition()};
-	flipPoint(newPos, mid);
-	body->SetTransform({newPos.x - flipFixtures(body)*2, newPos.y}, body->GetAngle());
-}
-
 inline void Mover::flipPoint(b2Vec2& vec, float32 mid) const
 {
-	vec.x += mid - vec.x;
+	vec.x += 2 * (mid - vec.x);
 }

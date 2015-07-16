@@ -1,9 +1,8 @@
-#include <X11/X.h>//Thread init
+#include <X11/X.h>   //Thread init
 #include <X11/Xlib.h>//Thread init
 //The X11 library define None as 0
-//so undef it in order to don't conflict with some None in enums
+//so undef it to don't conflict with None in some enums
 #undef None
-
 #include <TheLostGirl/Application.h>
 
 /// \mainpage The Lost Girl programmer's Documentation

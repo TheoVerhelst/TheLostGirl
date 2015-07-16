@@ -520,6 +520,7 @@ void Serializer::deserialize(const Json::Value& value, entityx::ComponentHandle<
 
 			//vertices
 			const Json::Value vertices{fixtures[i]["vertices"]};
+			//TODO utiliser des c-style array plutot que vector
 			std::vector<b2Vec2> verticesVec(vertices.size());
 			for(Json::ArrayIndex j{0}; j < vertices.size(); ++j)
 			{
@@ -787,23 +788,6 @@ void Serializer::deserialize(const Json::Value& value, entityx::ComponentHandle<
 	component->mustJump = false;
 }
 
-void Serializer::deserialize(const Json::Value& value, entityx::ComponentHandle<ArcherComponent> component, entityx::ComponentHandle<BodyComponent> bodyComponent)
-{
-	component->damages = value["damages"].asFloat();
-	component->initialSpeed = value["initial speed"].asFloat();
-	component->quiver = m_entitiesMap.at(value["quiver"].asString());
-	const b2Vec2 localAnchor(value["local anchor"]["x"].asFloat(), value["local anchor"]["y"].asFloat());
-	b2WeldJointDef jointDef;
-	jointDef.bodyA = bodyComponent->body;
-	jointDef.bodyB = component->quiver.component<BodyComponent>()->body;
-	jointDef.localAnchorA = (1.f/m_context.parameters.pixelByMeter) * localAnchor;
-	jointDef.localAnchorB = jointDef.bodyB->GetLocalPoint(jointDef.bodyA->GetWorldPoint(jointDef.localAnchorA));
-	jointDef.referenceAngle = jointDef.bodyB->GetAngle() - jointDef.bodyA->GetAngle();
-	jointDef.frequencyHz = 0.f;
-	jointDef.dampingRatio = 0.f;
-	component->quiverJoint = static_cast<b2WeldJoint*>(m_context.world.CreateJoint(&jointDef));
-}
-
 void Serializer::deserialize(const Json::Value& value, entityx::ComponentHandle<HealthComponent> component)
 {
 	component->current = value["current"].asFloat();
@@ -893,21 +877,21 @@ void Serializer::deserialize(const Json::Value& value, entityx::ComponentHandle<
 	component->poisonResistance = value["poison resistance"].asFloat();
 }
 
-void Serializer::deserialize(const Json::Value& value, entityx::ComponentHandle<HoldItemComponent> component, entityx::ComponentHandle<BodyComponent> bodyComponent)
+void Serializer::deserialize(const Json::Value& value, entityx::ComponentHandle<ArcherComponent> component, entityx::ComponentHandle<BodyComponent> bodyComponent)
 {
-	const float pixelByMeter{m_context.parameters.pixelByMeter};
-	component->item = m_entitiesMap.at(value["item"].asString());
-	component->localAnchor = {value["local anchor"]["x"].asFloat()/pixelByMeter,
-							  value["local anchor"]["y"].asFloat()/pixelByMeter};
+	component->damages = value["damages"].asFloat();
+	component->initialSpeed = value["initial speed"].asFloat();
+	component->quiver = m_entitiesMap.at(value["quiver"].asString());
+	const b2Vec2 localAnchor(value["local anchor"]["x"].asFloat(), value["local anchor"]["y"].asFloat());
 	b2WeldJointDef jointDef;
 	jointDef.bodyA = bodyComponent->body;
-	jointDef.bodyB = component->item.component<BodyComponent>()->body;
-	jointDef.localAnchorA = component->localAnchor;
+	jointDef.bodyB = component->quiver.component<BodyComponent>()->body;
+	jointDef.localAnchorA = (1.f/m_context.parameters.pixelByMeter) * localAnchor;
 	jointDef.localAnchorB = jointDef.bodyB->GetLocalPoint(jointDef.bodyA->GetWorldPoint(jointDef.localAnchorA));
 	jointDef.referenceAngle = jointDef.bodyB->GetAngle() - jointDef.bodyA->GetAngle();
-	jointDef.frequencyHz = 0.f;
-	jointDef.dampingRatio = 0.f;
-	component->joint = static_cast<b2WeldJoint*>(m_context.world.CreateJoint(&jointDef));
+	jointDef.frequencyHz = 10.f;
+	jointDef.dampingRatio = 0.4f;
+	component->quiverJoint = static_cast<b2WeldJoint*>(m_context.world.CreateJoint(&jointDef));
 }
 
 void Serializer::deserialize(const Json::Value& value, entityx::ComponentHandle<ArticuledArmsComponent> component, entityx::ComponentHandle<BodyComponent> bodyComponent)
@@ -927,11 +911,28 @@ void Serializer::deserialize(const Json::Value& value, entityx::ComponentHandle<
 	jointDef.lowerAngle = component->lowerAngle;
 	jointDef.upperAngle = component->upperAngle;
 	jointDef.referenceAngle = value["current angle"].asFloat() * b2_pi / 180.f;
-	jointDef.enableLimit = true;
+	jointDef.enableLimit = false;
 	jointDef.maxMotorTorque = 10.f;
 	jointDef.motorSpeed = 0.f;
 	jointDef.enableMotor = true;
 	component->armsJoint = static_cast<b2RevoluteJoint*>(m_context.world.CreateJoint(&jointDef));
+}
+
+void Serializer::deserialize(const Json::Value& value, entityx::ComponentHandle<HoldItemComponent> component, entityx::ComponentHandle<BodyComponent> bodyComponent)
+{
+	const float pixelByMeter{m_context.parameters.pixelByMeter};
+	component->item = m_entitiesMap.at(value["item"].asString());
+	component->localAnchor = {value["local anchor"]["x"].asFloat()/pixelByMeter,
+							  value["local anchor"]["y"].asFloat()/pixelByMeter};
+	b2WeldJointDef jointDef;
+	jointDef.bodyA = bodyComponent->body;
+	jointDef.bodyB = component->item.component<BodyComponent>()->body;
+	jointDef.localAnchorA = component->localAnchor;
+	jointDef.localAnchorB = jointDef.bodyB->GetLocalPoint(jointDef.bodyA->GetWorldPoint(jointDef.localAnchorA));
+	jointDef.referenceAngle = jointDef.bodyB->GetAngle() - jointDef.bodyA->GetAngle();
+	jointDef.frequencyHz = 30.f;
+	jointDef.dampingRatio = 1.f;
+	component->joint = static_cast<b2WeldJoint*>(m_context.world.CreateJoint(&jointDef));
 }
 
 void Serializer::deserialize(const Json::Value& value, entityx::ComponentHandle<BowComponent> component, entityx::ComponentHandle<BodyComponent> bodyComponent)
