@@ -28,7 +28,7 @@ struct Mover : public Action
 
 	void flip(entityx::Entity entity) const;
 
-	float32 getMid(b2Body* body) const;
+	inline float32 getMid(b2Body* body) const;
 
 	void flipFixtures(b2Body* body, float32 mid) const;
 

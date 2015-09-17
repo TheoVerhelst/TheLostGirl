@@ -196,30 +196,30 @@ void Mover::flip(entityx::Entity entity) const
 		//Flip the body and get the symmetry point
 		const float32 mid{getMid(bodyComponent->body)}, globalMid{mid + bodyComponent->body->GetPosition().x};
 		std::cout << "mid = " << mid << "; globalMid = " << globalMid << std::endl;
-//		flipFixtures(bodyComponent->body, mid);
+		flipFixtures(bodyComponent->body, mid);
 //		flipBody(bodyComponent->body, globalMid);
 		if(archerComponent)
 		{
 			b2Body* archerBody{archerComponent->quiverJoint->GetBodyB()};
-//			flipFixtures(archerBody, getMid(archerBody));
+			flipFixtures(archerBody, getMid(archerBody));
 			flipBody(archerBody, globalMid);
 		}
 		if(armsComponent)
 		{
 			b2Body* armsBody{armsComponent->armsJoint->GetBodyB()};
-//			flipFixtures(armsBody, getMid(armsBody));
+			flipFixtures(armsBody, getMid(armsBody));
 			flipBody(armsBody, globalMid);
 			HoldItemComponent::Handle holdItemComponent{armsComponent->arms.component<HoldItemComponent>()};
 			if(holdItemComponent)
 			{
 				b2Body* itemBody{holdItemComponent->joint->GetBodyB()};
-//				flipFixtures(itemBody, getMid(itemBody));
+				flipFixtures(itemBody, getMid(itemBody));
 				flipBody(itemBody, globalMid);
 				BowComponent::Handle bowComponent{holdItemComponent->item.component<BowComponent>()};
 				if(bowComponent)
 				{
 					b2Body* bowBody{bowComponent->notchedArrowJoint->GetBodyB()};
-//					flipFixtures(bowBody, getMid(bowBody));
+					flipFixtures(bowBody, getMid(bowBody));
 					flipBody(bowBody, globalMid);
 				}
 			}
@@ -227,15 +227,9 @@ void Mover::flip(entityx::Entity entity) const
 	}
 }
 
-float32 Mover::getMid(b2Body* body) const
+inline float32 Mover::getMid(b2Body* body) const
 {
-	b2AABB box;
-	b2Transform identity;
-	identity.SetIdentity();
-	for(b2Fixture* fixture{body->GetFixtureList()}; fixture; fixture = fixture->GetNext())
-		if(fixtureHasRole(fixture, FixtureRole::Main))
-			fixture->GetShape()->ComputeAABB(&box, identity, 0);
-	return box.GetExtents().x*0.5f;
+	return body->GetLocalCenter().x;
 }
 
 void Mover::flipFixtures(b2Body* body, float32 mid) const
@@ -251,26 +245,44 @@ void Mover::flipFixtures(b2Body* body, float32 mid) const
 			case b2Shape::e_edge:
 			{
 				b2EdgeShape* edgeShape{static_cast<b2EdgeShape*>(shape)};
+				b2Vec2 v1(edgeShape->m_vertex1), v2(edgeShape->m_vertex2);
+				flipPoint(v1, mid);
+				flipPoint(v2, mid);
+				edgeShape->Set(v1, v2);
 				flipPoint(edgeShape->m_vertex0, mid);
-				flipPoint(edgeShape->m_vertex1, mid);
-				flipPoint(edgeShape->m_vertex2, mid);
 				flipPoint(edgeShape->m_vertex3, mid);
 				break;
 			}
 			case b2Shape::e_polygon:
 			{
 				b2PolygonShape* polygonShape{static_cast<b2PolygonShape*>(shape)};
-				for(int32 i{0}; i < polygonShape->GetVertexCount(); ++i)
-					flipPoint(polygonShape->m_vertices[i], mid);
+				std::vector<b2Vec2> newPoints(polygonShape->GetVertexCount());
+				for(unsigned int i{0}; i < newPoints.size(); ++i)
+				{
+					newPoints[i] = polygonShape->GetVertex(i);
+					flipPoint(newPoints[i], mid);
+				}
+				polygonShape->Set(newPoints.data(), newPoints.size());
 				break;
 			}
 			case b2Shape::e_chain:
 			{
 				b2ChainShape* chainShape{static_cast<b2ChainShape*>(shape)};
-				flipPoint(chainShape->m_prevVertex, mid);
-				for(int32 i{0}; i < chainShape->m_count; ++i)
-					flipPoint(chainShape->m_vertices[i], mid);
-				flipPoint(chainShape->m_nextVertex, mid);
+				std::vector<b2Vec2> newPoints(chainShape->m_count);
+				for(unsigned int i{0}; i < newPoints.size(); ++i)
+				{
+					newPoints[i] = chainShape->m_vertices[i];
+					flipPoint(newPoints[i], mid);
+				}
+				chainShape->CreateChain(newPoints.data(), newPoints.size());
+
+				b2Vec2 prev(chainShape->m_prevVertex), next(chainShape->m_nextVertex);
+				flipPoint(prev, mid);
+				flipPoint(next, mid);
+				if(chainShape->m_hasPrevVertex)
+					chainShape->SetPrevVertex(prev);
+				if(chainShape->m_hasNextVertex)
+					chainShape->SetNextVertex(next);
 				break;
 			}
 			default:
@@ -282,9 +294,7 @@ void Mover::flipFixtures(b2Body* body, float32 mid) const
 inline void Mover::flipBody(b2Body* body, float32 mid) const
 {
 	b2Vec2 newPos{body->GetPosition()};
-	std::cout << "flip body from " << newPos.x;
 	flipPoint(newPos, mid);
-	std::cout << " to " << newPos.x << " with mid = " << mid << std::endl;
 	body->SetTransform(newPos, body->GetAngle());
 }
 
