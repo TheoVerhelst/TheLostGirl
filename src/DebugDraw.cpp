@@ -158,8 +158,26 @@ void DebugDraw::drawDebugAth()
 		m_context.gui.add(positionLabel, "positionLabel");
 	}
 	b2Vec2 positionPixels{m_context.parameters.pixelByMeter * position};
-	positionLabel->setText("Meters (" + roundOutput(position.x) + ", " + roundOutput(position.y) + ")\n" +
-						   "Pixels (" + roundOutput(positionPixels.x) + ", " + roundOutput(positionPixels.y) + ")");
+	positionLabel->setText("(" + roundOutput(position.x) + ", " + roundOutput(position.y) + ")\n" +
+						   "(" + roundOutput(positionPixels.x) + ", " + roundOutput(positionPixels.y) + ")");
+	//Mouse position
+	sf::Vector2f mousePositionPixels, mousePosition;
+	if(m_context.parameters.bloomEnabled)
+		mousePositionPixels = m_context.postEffectsTexture.mapPixelToCoords(sf::Mouse::getPosition());
+	else
+		mousePositionPixels = m_context.window.mapPixelToCoords(sf::Mouse::getPosition(m_context.window));
+	mousePosition = mousePositionPixels / m_context.parameters.scaledPixelByMeter;
+	tgui::Label::Ptr mousePositionLabel{m_context.gui.get<tgui::Label>("mousePositionLabel")};
+	if(mousePositionLabel == nullptr)
+	{
+		mousePositionLabel = tgui::Label::create(m_context.parameters.guiConfigFile);
+		mousePositionLabel->setPosition(tgui::bindWidth(m_context.gui, 0.35f), tgui::bindHeight(m_context.gui, 0.01f));
+		mousePositionLabel->setTextSize(20);
+		mousePositionLabel->setTextFont(std::make_shared<sf::Font>(m_context.fontManager.get("debug")));
+		m_context.gui.add(mousePositionLabel, "mousePositionLabel");
+	}
+	mousePositionLabel->setText("(" + roundOutput(mousePosition.x) + ", " + roundOutput(mousePosition.y) + ")\n" +
+						   "(" + roundOutput(mousePositionPixels.x) + ", " + roundOutput(mousePositionPixels.y) + ")");
 
 	//FPS
 	tgui::Label::Ptr FPSLabel{m_context.gui.get<tgui::Label>("FPSLabel")};

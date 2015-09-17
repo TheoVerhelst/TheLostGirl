@@ -194,34 +194,52 @@ void Mover::flip(entityx::Entity entity) const
 	if(bodyComponent)
 	{
 		//Flip the body and get the symmetry point
-		const float32 mid{flipFixtures(bodyComponent->body)};
+		const float32 mid{getMid(bodyComponent->body)}, globalMid{mid + bodyComponent->body->GetPosition().x};
+		std::cout << "mid = " << mid << "; globalMid = " << globalMid << std::endl;
+//		flipFixtures(bodyComponent->body, mid);
+//		flipBody(bodyComponent->body, globalMid);
 		if(archerComponent)
-			flipBody(archerComponent->quiverJoint->GetBodyB(), mid);
+		{
+			b2Body* archerBody{archerComponent->quiverJoint->GetBodyB()};
+//			flipFixtures(archerBody, getMid(archerBody));
+			flipBody(archerBody, globalMid);
+		}
 		if(armsComponent)
 		{
-			flipBody(armsComponent->armsJoint->GetBodyB(), mid);
+			b2Body* armsBody{armsComponent->armsJoint->GetBodyB()};
+//			flipFixtures(armsBody, getMid(armsBody));
+			flipBody(armsBody, globalMid);
 			HoldItemComponent::Handle holdItemComponent{armsComponent->arms.component<HoldItemComponent>()};
 			if(holdItemComponent)
 			{
-				flipBody(holdItemComponent->joint->GetBodyB(), mid);
+				b2Body* itemBody{holdItemComponent->joint->GetBodyB()};
+//				flipFixtures(itemBody, getMid(itemBody));
+				flipBody(itemBody, globalMid);
 				BowComponent::Handle bowComponent{holdItemComponent->item.component<BowComponent>()};
 				if(bowComponent)
-					flipBody(bowComponent->notchedArrowJoint->GetBodyB(), mid);
+				{
+					b2Body* bowBody{bowComponent->notchedArrowJoint->GetBodyB()};
+//					flipFixtures(bowBody, getMid(bowBody));
+					flipBody(bowBody, globalMid);
+				}
 			}
 		}
 	}
 }
 
-float32 Mover::flipFixtures(b2Body* body) const
+float32 Mover::getMid(b2Body* body) const
 {
-	//Get the AABB of the arrow, to compute where place anchor of the joint
 	b2AABB box;
 	b2Transform identity;
 	identity.SetIdentity();
 	for(b2Fixture* fixture{body->GetFixtureList()}; fixture; fixture = fixture->GetNext())
 		if(fixtureHasRole(fixture, FixtureRole::Main))
 			fixture->GetShape()->ComputeAABB(&box, identity, 0);
-	const float32 mid{box.GetExtents().x*0.5f};
+	return box.GetExtents().x*0.5f;
+}
+
+void Mover::flipFixtures(b2Body* body, float32 mid) const
+{
 	for(b2Fixture* fixture{body->GetFixtureList()}; fixture; fixture = fixture->GetNext())
 	{
 		b2Shape* shape{fixture->GetShape()};
@@ -259,17 +277,18 @@ float32 Mover::flipFixtures(b2Body* body) const
 				break;
 		}
 	}
-	return mid;
 }
 
 inline void Mover::flipBody(b2Body* body, float32 mid) const
 {
 	b2Vec2 newPos{body->GetPosition()};
+	std::cout << "flip body from " << newPos.x;
 	flipPoint(newPos, mid);
-	body->SetTransform({newPos.x - flipFixtures(body)*2, newPos.y}, body->GetAngle());
+	std::cout << " to " << newPos.x << " with mid = " << mid << std::endl;
+	body->SetTransform(newPos, body->GetAngle());
 }
 
 inline void Mover::flipPoint(b2Vec2& vec, float32 mid) const
 {
-	vec.x += mid - vec.x;
+	vec.x = mid + (mid - vec.x);
 }

@@ -25,9 +25,12 @@ struct Mover : public Action
 	/// \param dt Elapsed time in the last game frame.
 	virtual void operator()(entityx::Entity entity, double dt) const;
 
+
 	void flip(entityx::Entity entity) const;
 
-	float32 flipFixtures(b2Body* body) const;
+	float32 getMid(b2Body* body) const;
+
+	void flipFixtures(b2Body* body, float32 mid) const;
 
 	inline void flipBody(b2Body* body, float32 mid) const;
 
