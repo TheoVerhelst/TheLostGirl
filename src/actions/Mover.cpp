@@ -195,31 +195,33 @@ void Mover::flip(entityx::Entity entity) const
 	{
 		//Flip the body and get the symmetry point
 		const float32 mid{getMid(bodyComponent->body)}, globalMid{mid + bodyComponent->body->GetPosition().x};
-		std::cout << "mid = " << mid << "; globalMid = " << globalMid << std::endl;
 		flipFixtures(bodyComponent->body, mid);
-//		flipBody(bodyComponent->body, globalMid);
 		if(archerComponent)
 		{
 			b2Body* archerBody{archerComponent->quiverJoint->GetBodyB()};
-			flipFixtures(archerBody, getMid(archerBody));
-			flipBody(archerBody, globalMid);
+			flipFixtures(archerBody, 0);
+			//Make the flipped joint
+			b2WeldJointDef jointDef{getWeldJointDef(archerComponent->quiverJoint)};
+			b2World* world{archerBody->GetWorld()};
+			world->DestroyJoint(archerComponent->quiverJoint);
+			archerComponent->quiverJoint = static_cast<b2WeldJoint*>(world->CreateJoint(&jointDef));
 		}
 		if(armsComponent)
 		{
 			b2Body* armsBody{armsComponent->armsJoint->GetBodyB()};
-			flipFixtures(armsBody, getMid(armsBody));
+			flipFixtures(armsBody, 0);
 			flipBody(armsBody, globalMid);
 			HoldItemComponent::Handle holdItemComponent{armsComponent->arms.component<HoldItemComponent>()};
 			if(holdItemComponent)
 			{
 				b2Body* itemBody{holdItemComponent->joint->GetBodyB()};
-				flipFixtures(itemBody, getMid(itemBody));
+				flipFixtures(itemBody, 0);
 				flipBody(itemBody, globalMid);
 				BowComponent::Handle bowComponent{holdItemComponent->item.component<BowComponent>()};
 				if(bowComponent)
 				{
 					b2Body* bowBody{bowComponent->notchedArrowJoint->GetBodyB()};
-					flipFixtures(bowBody, getMid(bowBody));
+					flipFixtures(bowBody, 0);
 					flipBody(bowBody, globalMid);
 				}
 			}
@@ -301,4 +303,17 @@ inline void Mover::flipBody(b2Body* body, float32 mid) const
 inline void Mover::flipPoint(b2Vec2& vec, float32 mid) const
 {
 	vec.x = mid + (mid - vec.x);
+}
+
+b2WeldJointDef Mover::getWeldJointDef(b2WeldJoint* joint) const
+{
+	b2WeldJointDef jointDef;
+	jointDef.bodyA = joint->GetBodyA();
+	jointDef.bodyB = joint->GetBodyB();
+	jointDef.localAnchorA = joint->GetLocalAnchorA();
+	jointDef.localAnchorB = joint->GetLocalAnchorB();
+	jointDef.referenceAngle = joint->GetReferenceAngle();
+	jointDef.frequencyHz = joint->GetFrequency();
+	jointDef.dampingRatio = joint->GetDampingRatio();
+	return jointDef;
 }

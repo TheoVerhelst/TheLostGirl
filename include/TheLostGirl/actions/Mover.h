@@ -8,36 +8,41 @@ namespace entityx
     class Entity;
 }
 enum class Direction;
+class b2WeldJointDef;
+class b2WeldJoint;
 
 /// Structure that move an entity to a given side.
 struct Mover : public Action
 {
-	/// Constructor.
-	/// \param _direction
-	/// \param _start True if the movement starts, false if it stops.
-	Mover(Direction _direction, bool _start = true);
+	public:
+		/// Constructor.
+		/// \param _direction
+		/// \param _start True if the movement starts, false if it stops.
+		Mover(Direction _direction, bool _start = true);
 
-	/// Destructor.
-	virtual ~Mover();
+		/// Destructor.
+		virtual ~Mover();
 
-	/// Overload of the () operator.
-	/// \param entity Entity who move.
-	/// \param dt Elapsed time in the last game frame.
-	virtual void operator()(entityx::Entity entity, double dt) const;
+		/// Overload of the () operator.
+		/// \param entity Entity who move.
+		/// \param dt Elapsed time in the last game frame.
+		virtual void operator()(entityx::Entity entity, double dt) const;
 
+		Direction direction;///< Indicates the direction of the movement.
+		bool start;         ///< True if the movement starts, false if it stops.
 
-	void flip(entityx::Entity entity) const;
+	private:
+		void flip(entityx::Entity entity) const;
 
-	inline float32 getMid(b2Body* body) const;
+		inline float32 getMid(b2Body* body) const;
 
-	void flipFixtures(b2Body* body, float32 mid) const;
+		void flipFixtures(b2Body* body, float32 mid) const;
 
-	inline void flipBody(b2Body* body, float32 mid) const;
+		inline void flipBody(b2Body* body, float32 mid) const;
 
-	inline void flipPoint(b2Vec2& vec, float32 mid) const;
+		inline void flipPoint(b2Vec2& vec, float32 mid) const;
 
-	Direction direction;///< Indicates the direction of the movement.
-	bool start;         ///< True if the movement starts, false if it stops.
+		b2WeldJointDef getWeldJointDef(b2WeldJoint* joint) const;
 };
 
 #endif//MOVER_H
