@@ -30,6 +30,7 @@
 						"friction" : 0,
 						"is sensor" : true,
 						"restitution" : 0,
+						"roles" : ["main"],
 						"vertices" : 
 						[
 							{
@@ -219,7 +220,7 @@
 				"angular damping" : 0,
 				"angular velocity" : 0,
 				"awake" : true,
-				"bullet" : false,
+				"bullet" : true,
 				"fixed rotation" : true,
 				"gravity scale" : 1,
 				"linear damping" : 0,
@@ -273,11 +274,11 @@
 								"y" : 200
 							},
 							{
-								"x" : 20,
+								"x" : 55,
 								"y" : 200
 							},
 							{
-								"x" : 20,
+								"x" : 55,
 								"y" : 170
 							},
 							{

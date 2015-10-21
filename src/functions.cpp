@@ -5,6 +5,10 @@
 #include <SFML/System/Time.hpp>
 #include <SFML/Window/Event.hpp>
 #include <TGUI/Gui.hpp>
+#include <Box2D/Dynamics/Joints/b2Joint.h>
+#include <Box2D/Dynamics/Joints/b2RevoluteJoint.h>
+#include <Box2D/Dynamics/Joints/b2PrismaticJoint.h>
+#include <Box2D/Dynamics/Joints/b2WeldJoint.h>
 #include <entityx/Entity.h>
 #include <TheLostGirl/components.h>
 
@@ -68,4 +72,97 @@ bool isPlayer(entityx::Entity entity)
 		return categoryComponent and categoryComponent->category & Category::Player;
 	}
 	return false;
+}
+
+b2BodyDef getBodyDef(b2Body* body)
+{
+	b2BodyDef bodyDef;
+	bodyDef.type = body->GetType();
+	bodyDef.position = body->GetPosition();
+	bodyDef.angle = body->GetAngle();
+	bodyDef.linearVelocity = body->GetLinearVelocity();
+	bodyDef.angularVelocity = body->GetAngularVelocity();
+	bodyDef.linearDamping = body->GetLinearDamping();
+	bodyDef.angularDamping = body->GetAngularDamping();
+	bodyDef.allowSleep = body->IsSleepingAllowed();
+	bodyDef.awake = body->IsAwake();
+	bodyDef.fixedRotation = body->IsFixedRotation();
+	bodyDef.bullet = body->IsBullet();
+	bodyDef.active = body->IsActive();
+	bodyDef.userData = body->GetUserData();
+	bodyDef.gravityScale = body->GetGravityScale();
+	return bodyDef;
+}
+
+b2FixtureDef getFixtureDef(b2Fixture* fixture)
+{
+	b2FixtureDef fixtureDef;
+	fixtureDef.shape = fixture->GetShape();
+	fixtureDef.userData = fixture->GetUserData();
+	fixtureDef.friction = fixture->GetFriction();
+	fixtureDef.restitution = fixture->GetRestitution();
+	fixtureDef.density = fixture->GetDensity();
+	fixtureDef.isSensor = fixture->IsSensor();
+	fixtureDef.filter = fixture->GetFilterData();
+	return fixtureDef;
+}
+
+b2JointDef* getJointDef(b2Joint* joint)
+{
+	b2JointDef* jointDef;
+	switch(joint->GetType())
+	{
+		case e_revoluteJoint:
+		{
+			jointDef = new b2RevoluteJointDef;
+			auto castedJointDef = static_cast<b2RevoluteJointDef*>(jointDef);
+			auto castedJoint = static_cast<b2RevoluteJoint*>(joint);
+			castedJointDef->localAnchorA = castedJoint->GetLocalAnchorA();
+			castedJointDef->localAnchorB = castedJoint->GetLocalAnchorB();
+			castedJointDef->referenceAngle = castedJoint->GetReferenceAngle();
+			castedJointDef->enableLimit = castedJoint->IsLimitEnabled();
+			castedJointDef->lowerAngle = castedJoint->GetReferenceAngle();
+			castedJointDef->upperAngle = castedJoint->GetReferenceAngle();
+			castedJointDef->enableMotor = castedJoint->IsMotorEnabled();
+			castedJointDef->motorSpeed = castedJoint->GetMotorSpeed();
+			castedJointDef->maxMotorTorque = castedJoint->GetMaxMotorTorque();
+            break;
+		}
+		case e_prismaticJoint:
+		{
+			jointDef = new b2PrismaticJointDef;
+			auto castedJointDef = static_cast<b2PrismaticJointDef*>(jointDef);
+			auto castedJoint = static_cast<b2PrismaticJoint*>(joint);
+			castedJointDef->localAnchorA = castedJoint->GetLocalAnchorA();
+			castedJointDef->localAnchorB = castedJoint->GetLocalAnchorB();
+			castedJointDef->localAxisA = castedJoint->GetLocalAxisA();
+			castedJointDef->referenceAngle = castedJoint->GetReferenceAngle();
+			castedJointDef->lowerTranslation = castedJoint->GetLowerLimit();
+			castedJointDef->upperTranslation = castedJoint->GetUpperLimit();
+			castedJointDef->enableLimit = castedJoint->IsLimitEnabled();
+			castedJointDef->maxMotorForce = castedJoint->GetMaxMotorForce();
+			castedJointDef->motorSpeed = castedJoint->GetMotorSpeed();
+			castedJointDef->enableMotor = castedJoint->IsMotorEnabled();
+            break;
+		}
+		case e_weldJoint:
+		{
+			jointDef = new b2WeldJointDef;
+			auto castedJointDef = static_cast<b2WeldJointDef*>(jointDef);
+			auto castedJoint = static_cast<b2WeldJoint*>(joint);
+			castedJointDef->localAnchorA = castedJoint->GetLocalAnchorA();
+			castedJointDef->localAnchorB = castedJoint->GetLocalAnchorB();
+			castedJointDef->referenceAngle = castedJoint->GetReferenceAngle();
+			castedJointDef->frequencyHz = castedJoint->GetFrequency();
+			castedJointDef->dampingRatio = castedJoint->GetDampingRatio();
+            break;
+		}
+		default:
+			return nullptr;
+	}
+	jointDef->bodyA = joint->GetBodyA();
+	jointDef->bodyB = joint->GetBodyB();
+	jointDef->collideConnected = true;
+	jointDef->userData = joint->GetUserData();
+	return jointDef;
 }

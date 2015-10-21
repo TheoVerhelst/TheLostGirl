@@ -273,7 +273,7 @@ class Serializer
 		/// Deserialize the given \a value in the given \a component.
 		/// \param component Component in wich deserialize the data.
 		/// \param value The Json value containing the data.
-		void deserialize(const Json::Value& value, entityx::ComponentHandle<QuiverComponent> component, entityx::ComponentHandle<ArcherComponent> archerComponent);
+		void deserialize(const Json::Value& value, entityx::ComponentHandle<QuiverComponent> component, entityx::ComponentHandle<BodyComponent> bodyComponent);
 
 		//End deserialize
 

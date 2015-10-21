@@ -5,14 +5,14 @@
 #include <map>
 #include <SFML/Graphics/Rect.hpp>
 #include <SFML/Window/Event.hpp>
-#include <Box2D/Common/b2Math.h>
 #include <Box2D/Common/b2Draw.h>
+#include <Box2D/Dynamics/b2Fixture.h>
+#include <Box2D/Dynamics/b2Body.h>
 #include <TGUI/Button.hpp>
 
 //Forward declarations
 namespace sf
 {
-	typedef Vector2<unsigned int> Vector2u;
 	class Color;
 	class Time;
 }
@@ -21,6 +21,8 @@ namespace entityx
 {
 	class Entity;
 }
+
+struct b2JointDef;
 
 /// \file functions.h
 
@@ -125,5 +127,11 @@ Key getKey(std::map<Key, Value> map, Value& value)
 /// \param entity The entity to check.
 /// \return True if the entity is played by the player, false otherwise.
 bool isPlayer(entityx::Entity entity);
+
+b2BodyDef getBodyDef(b2Body* body);
+
+b2FixtureDef getFixtureDef(b2Fixture* fixture);
+
+b2JointDef* getJointDef(b2Joint* joint);
 
 #endif//FUNCTIONS_H

@@ -1,7 +1,15 @@
 #ifndef MOVER_H
 #define MOVER_H
 
+#include <Box2D/Dynamics/Joints/b2PrismaticJoint.h>
+#include <Box2D/Dynamics/Joints/b2WeldJoint.h>
+#include <Box2D/Dynamics/Joints/b2RevoluteJoint.h>
+#include <Box2D/Dynamics/b2Body.h>
+#include <Box2D/Dynamics/b2World.h>
+#include <Box2D/Dynamics/b2Fixture.h>
+#include <Box2D/Dynamics/Joints/b2Joint.h>
 #include <TheLostGirl/Action.h>
+#include <TheLostGirl/functions.h>
 
 namespace entityx
 {

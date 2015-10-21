@@ -360,7 +360,7 @@ void GameState::initWorld(const std::string& file)
 				if(entity.isMember("bow"))
 					s.deserialize(entity["bow"], m_entities[entityName].assign<BowComponent>(), m_entities[entityName].component<BodyComponent>());
 				if(entity.isMember("quiver"))
-					s.deserialize(entity["quiver"], m_entities[entityName].assign<QuiverComponent>(), m_entities[entityName].component<ArcherComponent>());
+					s.deserialize(entity["quiver"], m_entities[entityName].assign<QuiverComponent>(), m_entities[entityName].component<BodyComponent>());
 				//End serialize
 			}
 		}

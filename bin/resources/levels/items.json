@@ -76,6 +76,7 @@
 						"friction" : 0.2,
 						"is sensor" : false,
 						"restitution" : 0,
+						"roles" : ["main"],
 						"vertices" : 
 						[
 							{
