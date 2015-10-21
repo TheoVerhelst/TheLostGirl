@@ -16,9 +16,10 @@ struct Mover : public Action
 {
 	public:
 		/// Constructor.
+		/// \param context Current context of the application.
 		/// \param _direction
 		/// \param _start True if the movement starts, false if it stops.
-		Mover(Direction _direction, bool _start = true);
+		Mover( StateStack::Context context, Direction _direction, bool _start = true);
 
 		/// Destructor.
 		virtual ~Mover();
@@ -43,6 +44,8 @@ struct Mover : public Action
 		inline void flipPoint(b2Vec2& vec, float32 mid) const;
 
 		b2WeldJointDef getWeldJointDef(b2WeldJoint* joint) const;
+
+		StateStack::Context m_context;///< Current context of the application.
 };
 
 #endif//MOVER_H

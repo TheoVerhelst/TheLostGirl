@@ -457,7 +457,7 @@ int move(const std::vector<Data>& args, StateStack::Context context)
 	moveCommand.entity = boost::get<entityx::Entity>(args[0]);
 	if(not moveCommand.entity)
 		throw ScriptError("can move(): first argument is an invalid entity.");
-	moveCommand.action = Mover(static_cast<Direction>(boost::get<int>(args[1])));
+	moveCommand.action = Mover(context, static_cast<Direction>(boost::get<int>(args[1])));
 	context.systemManager.system<PendingChangesSystem>()->commandQueue.push(moveCommand);
 	return 0;
 }
@@ -480,8 +480,8 @@ int stop(const std::vector<Data>& args, StateStack::Context context)
 			moveCommand2.targetIsSpecific = true;
 			moveCommand2.entity = self;
 			Direction opposite{directionComponent->direction == Direction::Left ? Direction::Right : Direction::Left};
-			moveCommand1.action = Mover(opposite, false);
-			moveCommand2.action = Mover(directionComponent->direction, false);
+			moveCommand1.action = Mover(context, opposite, false);
+			moveCommand2.action = Mover(context, directionComponent->direction, false);
 			context.systemManager.system<PendingChangesSystem>()->commandQueue.push(moveCommand1);
 			context.systemManager.system<PendingChangesSystem>()->commandQueue.push(moveCommand2);
 		}
@@ -490,7 +490,7 @@ int stop(const std::vector<Data>& args, StateStack::Context context)
 			Command moveCommand;
 			moveCommand.targetIsSpecific = true;
 			moveCommand.entity = self;
-			moveCommand.action = Mover(directionComponent->direction, false);
+			moveCommand.action = Mover(context, directionComponent->direction, false);
 			context.systemManager.system<PendingChangesSystem>()->commandQueue.push(moveCommand);
 		}
 	}

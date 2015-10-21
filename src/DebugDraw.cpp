@@ -201,6 +201,9 @@ void DebugDraw::setFPS(float framesPerSecond)
 		tgui::Label::Ptr positionLabel{m_context.gui.get<tgui::Label>("positionLabel")};
 		if(positionLabel != nullptr)
 			m_context.gui.remove(positionLabel);
+		tgui::Label::Ptr mousePositionLabel{m_context.gui.get<tgui::Label>("mousePositionLabel")};
+		if(mousePositionLabel != nullptr)
+			m_context.gui.remove(mousePositionLabel);
 		tgui::Label::Ptr FPSLabel{m_context.gui.get<tgui::Label>("FPSLabel")};
 		if(FPSLabel != nullptr)
 			m_context.gui.remove(FPSLabel);

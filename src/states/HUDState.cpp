@@ -170,7 +170,6 @@ bool HUDState::handleEvent(const sf::Event&)
 
 void HUDState::receive(const EntityHealthChange& entityHealthChange)
 {
-	TextureManager& texManager(getContext().textureManager);
 	using tgui::bindWidth;
 	using tgui::bindHeight;
 	tgui::Gui& gui(getContext().gui);
@@ -214,7 +213,6 @@ void HUDState::receive(const EntityHealthChange& entityHealthChange)
 
 void HUDState::receive(const EntityStaminaChange& entityStaminaChange)
 {
-	TextureManager& texManager(getContext().textureManager);
 	using tgui::bindWidth;
 	using tgui::bindHeight;
 	tgui::Gui& gui(getContext().gui);

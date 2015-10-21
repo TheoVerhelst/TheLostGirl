@@ -15,9 +15,10 @@
 #include <TheLostGirl/FixtureRoles.h>
 #include <TheLostGirl/actions/Mover.h>
 
-Mover::Mover(Direction _direction, bool _start):
+Mover::Mover(StateStack::Context context, Direction _direction, bool _start):
 	direction{_direction},
-	start{_start}
+	start{_start},
+	m_context(context)
 {
 }
 
@@ -29,6 +30,9 @@ void Mover::operator()(entityx::Entity entity, double) const
 {
 	if(not entity)
 		return;
+//	const auto fallComponent(entity.component<FallComponent>());
+//	if(fallComponent and fallComponent->inAir)
+//		return;
 	std::string directionStr;
 	std::string oppDirectionStr;
 	Direction oppDirection;
@@ -70,7 +74,6 @@ void Mover::operator()(entityx::Entity entity, double) const
 	if(moveIsHorizontal)
 	{
 		DirectionComponent::Handle directionComponent(entity.component<DirectionComponent>());
-		//For all entities
 		if(directionComponent)
 		{
 			bool moveToOppDirection;
@@ -98,51 +101,82 @@ void Mover::operator()(entityx::Entity entity, double) const
 			if(animationsComponent)
 			{
 				AnimationsManager<SpriteSheetAnimation>& animations(animationsComponent->animationsManager);
-				//If the animations manager have bending animations
-				if(animations.isRegistred("bend" + directionStr)
-					and animations.isRegistred("bend" + oppDirectionStr))
+				const std::list<std::string> animationsList = {"bend", "fall", "jump"};
+				for(const std::string& animation : animationsList)
 				{
-					if(start)
+					//If the manager has this animation
+					if(animations.isRegistred(animation + directionStr)
+							and animations.isRegistred(animation + oppDirectionStr)
+							and animations.isActive(animation + oppDirectionStr))
 					{
-						float progress{animations.getProgress("bend" + oppDirectionStr)};
-						animations.stop("bend" + oppDirectionStr);
-						animations.activate("bend" + directionStr);
-						animations.setProgress("bend" + directionStr, progress);
-					}
-					else if(moveToOppDirection)
-					{
-						float progress{animations.getProgress("bend" + directionStr)};
-						animations.stop("bend" + directionStr);
-						animations.activate("bend" + oppDirectionStr);
-						animations.setProgress("bend" + oppDirectionStr, progress);
+						if(start)
+						{
+							float progress{animations.getProgress(animation + oppDirectionStr)};
+							if(animations.isPaused(animation + oppDirectionStr))
+								animations.activate(animation + directionStr);
+							else
+								animations.play(animation + directionStr);
+							animations.setProgress(animation + directionStr, progress);
+							animations.stop(animation + oppDirectionStr);
+						}
+						else if(moveToOppDirection)
+						{
+							float progress{animations.getProgress(animation + directionStr)};
+							if(animations.isPaused(animation + directionStr))
+								animations.activate(animation + oppDirectionStr);
+							else
+								animations.play(animation + oppDirectionStr);
+							animations.setProgress(animation + oppDirectionStr, progress);
+							animations.stop(animation + directionStr);
+						}
 					}
 				}
-				//If the animations manager falling animations
-				if(animations.isRegistred("fall" + directionStr)
-					and animations.isRegistred("fall" + oppDirectionStr))
-				{
-					//If falling and diriged to the opposite side
-					if(animations.isActive("fall" + oppDirectionStr))
-					{
-						float progress{animations.getProgress("fall" + oppDirectionStr)};
-						animations.stop("fall" + oppDirectionStr);
-						animations.play("fall" + directionStr);
-						animations.setProgress("fall" + directionStr, progress);
-					}
-				}
-				//If the animations manager have jump animations
-				if(animations.isRegistred("jump" + directionStr)
-					and animations.isRegistred("jump" + oppDirectionStr))
-				{
-					//If jumping and diriged to the opposite side
-					if(animations.isActive("jump" + oppDirectionStr))
-					{
-						float progress{animations.getProgress("jump" + oppDirectionStr)};
-						animations.stop("jump" + oppDirectionStr);
-						animations.play("jump" + directionStr);
-						animations.setProgress("jump" + directionStr, progress);
-					}
-				}
+//
+//				//If the animations manager have bending animations
+//				if(animations.isRegistred("bend" + directionStr)
+//					and animations.isRegistred("bend" + oppDirectionStr))
+//				{
+//					if(start)
+//					{
+//						float progress{animations.getProgress("bend" + oppDirectionStr)};
+//						animations.stop("bend" + oppDirectionStr);
+//						animations.activate("bend" + directionStr);
+//						animations.setProgress("bend" + directionStr, progress);
+//					}
+//					else if(moveToOppDirection)
+//					{
+//						float progress{animations.getProgress("bend" + directionStr)};
+//						animations.stop("bend" + directionStr);
+//						animations.activate("bend" + oppDirectionStr);
+//						animations.setProgress("bend" + oppDirectionStr, progress);
+//					}
+//				}
+//				//If the animations manager falling animations
+//				if(animations.isRegistred("fall" + directionStr)
+//					and animations.isRegistred("fall" + oppDirectionStr))
+//				{
+//					//If falling and diriged to the opposite side
+//					if(animations.isActive("fall" + oppDirectionStr))
+//					{
+//						float progress{animations.getProgress("fall" + oppDirectionStr)};
+//						animations.stop("fall" + oppDirectionStr);
+//						animations.play("fall" + directionStr);
+//						animations.setProgress("fall" + directionStr, progress);
+//					}
+//				}
+//				//If the animations manager have jump animations
+//				if(animations.isRegistred("jump" + directionStr)
+//					and animations.isRegistred("jump" + oppDirectionStr))
+//				{
+//					//If jumping and diriged to the opposite side
+//					if(animations.isActive("jump" + oppDirectionStr))
+//					{
+//						float progress{animations.getProgress("jump" + oppDirectionStr)};
+//						animations.stop("jump" + oppDirectionStr);
+//						animations.play("jump" + directionStr);
+//						animations.setProgress("jump" + directionStr, progress);
+//					}
+//				}
 				//If the animations manager have walk animations
 				if(animations.isRegistred("stay" + directionStr)
 					and animations.isRegistred("stay" + oppDirectionStr)
@@ -188,6 +222,7 @@ void Mover::operator()(entityx::Entity entity, double) const
 
 void Mover::flip(entityx::Entity entity) const
 {
+	return;
 	ArcherComponent::Handle archerComponent{entity.component<ArcherComponent>()};
 	BodyComponent::Handle bodyComponent{entity.component<BodyComponent>()};
 	ArticuledArmsComponent::Handle armsComponent{entity.component<ArticuledArmsComponent>()};
@@ -231,6 +266,13 @@ void Mover::flip(entityx::Entity entity) const
 
 inline float32 Mover::getMid(b2Body* body) const
 {
+	entityx::Entity entity{*static_cast<entityx::Entity*>(body->GetUserData())};
+	if(entity)
+	{
+		SpriteComponent::Handle spriteComponent{entity.component<SpriteComponent>()};
+		if(spriteComponent)
+			return spriteComponent->sprite.getLocalBounds().width/(2.f*m_context.parameters.scaledPixelByMeter);
+	}
 	return body->GetLocalCenter().x;
 }
 

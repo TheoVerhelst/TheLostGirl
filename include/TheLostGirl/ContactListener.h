@@ -50,6 +50,10 @@ class ContactListener : public b2ContactListener
 		/// \return True if the contact should occurs, false otherwise.
 		bool collide(b2Contact* contact, const b2Manifold* oldManifold);
 
+		/// Do various checks just like \a collide but only on components and from A to B.
+		/// \param entityA First entity.
+		/// \param entityB Second entity.
+		/// \return True if the contact should occurs, false otherwise.
 		bool checkCollide(entityx::Entity entityA, entityx::Entity entityB) const;
 };
 

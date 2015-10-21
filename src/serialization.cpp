@@ -476,6 +476,8 @@ Json::Value Serializer::serialize(entityx::ComponentHandle<QuiverComponent> comp
 
 void Serializer::deserialize(const Json::Value& value, entityx::ComponentHandle<BodyComponent> component, entityx::ComponentHandle<TransformComponent> transformComponent)
 {
+	if(not transformComponent)
+		return;
 	const float pixelByMeter{m_context.parameters.pixelByMeter};
 	b2BodyDef bodyDef;
 	//type
@@ -720,6 +722,8 @@ void Serializer::deserialize(const Json::Value& value, entityx::ComponentHandle<
 
 void Serializer::deserialize(const Json::Value& value, entityx::ComponentHandle<AnimationsComponent<SpriteSheetAnimation>> component, entityx::ComponentHandle<SpriteComponent> spriteComponent)
 {
+	if(not spriteComponent)
+		return;
 	component->animationsManager.deserialize(value, spriteComponent->sprite, m_context);
 }
 
@@ -789,6 +793,8 @@ void Serializer::deserialize(const Json::Value& value, entityx::ComponentHandle<
 
 void Serializer::deserialize(const Json::Value& value, entityx::ComponentHandle<ArcherComponent> component, entityx::ComponentHandle<BodyComponent> bodyComponent)
 {
+	if(not bodyComponent)
+		return;
 	component->damages = value["damages"].asFloat();
 	component->initialSpeed = value["initial speed"].asFloat();
 	component->quiver = m_entitiesMap.at(value["quiver"].asString());
@@ -895,6 +901,8 @@ void Serializer::deserialize(const Json::Value& value, entityx::ComponentHandle<
 
 void Serializer::deserialize(const Json::Value& value, entityx::ComponentHandle<HoldItemComponent> component, entityx::ComponentHandle<BodyComponent> bodyComponent)
 {
+	if(not bodyComponent)
+		return;
 	const float pixelByMeter{m_context.parameters.pixelByMeter};
 	component->item = m_entitiesMap.at(value["item"].asString());
 	component->localAnchor = {value["local anchor"]["x"].asFloat()/pixelByMeter,
@@ -912,6 +920,8 @@ void Serializer::deserialize(const Json::Value& value, entityx::ComponentHandle<
 
 void Serializer::deserialize(const Json::Value& value, entityx::ComponentHandle<ArticuledArmsComponent> component, entityx::ComponentHandle<BodyComponent> bodyComponent)
 {
+	if(not bodyComponent)
+		return;
 	const float pixelByMeter{m_context.parameters.pixelByMeter};
 	component->arms = m_entitiesMap.at(value["arms"].asString());
 	component->targetAngle = value["target angle"].asFloat() * b2_pi / 180.f;
@@ -936,6 +946,8 @@ void Serializer::deserialize(const Json::Value& value, entityx::ComponentHandle<
 
 void Serializer::deserialize(const Json::Value& value, entityx::ComponentHandle<BowComponent> component, entityx::ComponentHandle<BodyComponent> bodyComponent)
 {
+	if(not bodyComponent)
+		return;
 	const float pixelByMeter{m_context.parameters.pixelByMeter};
 	component->notchedArrow = m_entitiesMap.at(value["notched arrow"].asString());
 	component->targetTranslation = value["target translation"].asFloat();
@@ -966,8 +978,10 @@ void Serializer::deserialize(const Json::Value& value, entityx::ComponentHandle<
 	component->notchedArrowJoint = static_cast<b2PrismaticJoint*>(m_context.world.CreateJoint(&jointDef));
 }
 
-void Serializer::deserialize(const Json::Value& value, entityx::ComponentHandle<QuiverComponent> component, entityx::ComponentHandle<BodyComponent> bodyComponent)
+void Serializer::deserialize(const Json::Value& value, entityx::ComponentHandle<QuiverComponent> component, entityx::ComponentHandle<ArcherComponent> archerComponent)
 {
+	if(not (archerComponent and archerComponent->quiver and archerComponent->quiver.component<BodyComponent>()))
+		return;
 	component->arrows.clear();
 	for(Json::ArrayIndex i{0}; i < value["arrows"].size(); ++i)
 	{
@@ -976,7 +990,7 @@ void Serializer::deserialize(const Json::Value& value, entityx::ComponentHandle<
 			entityx::Entity arrow{m_entitiesMap.at(value["arrows"][i].asString())};
 			component->arrows.push_back(arrow);
 			b2WeldJointDef jointDef;
-			jointDef.bodyA = bodyComponent->body;
+			jointDef.bodyA = archerComponent->quiver.component<BodyComponent>()->body;
 			jointDef.bodyB = arrow.component<BodyComponent>()->body;
 			jointDef.localAnchorA = {0, 0};
 			jointDef.localAnchorB = jointDef.bodyB->GetLocalPoint(jointDef.bodyA->GetWorldPoint(jointDef.localAnchorA));

@@ -16,8 +16,9 @@ ContactListener::ContactListener(StateStack::Context context):
 
 void ContactListener::PreSolve(b2Contact* contact, const b2Manifold* oldManifold)
 {
-	contact->SetEnabled(collide(contact, oldManifold));
-	if(contact->IsEnabled())
+	const bool collision{collide(contact, oldManifold)};
+	contact->SetEnabled(collision);
+	if(collision)
 	{
 		m_fallingListener.PreSolve(contact, oldManifold);
 		m_arrowHitListener.PreSolve(contact, oldManifold);
@@ -70,6 +71,10 @@ bool ContactListener::checkCollide(entityx::Entity entityA, entityx::Entity enti
 
 	//The contact do not occurs if the entity A is an arrow wich is not fired
 	if(entityAArrowComponent and entityAArrowComponent->state != ArrowComponent::Fired)
+		return false;
+
+	//The contact do not occurs if the entity A was fired by B
+	if(entityAArrowComponent and entityAArrowComponent->shooter == entityB)
 		return false;
 
 	//The contact do not occurs if the entity A is a corpse and the entity B is an arrow
