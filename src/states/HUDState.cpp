@@ -243,3 +243,7 @@ void HUDState::receive(const EntityStaminaChange& entityStaminaChange)
 		bar.bar->setPosition(std::ceil(-240.f*(1-entityStaminaChange.normalizedStamina)*scale), 0.f);
 	}
 }
+
+HUDState::Bar::~Bar()
+{
+}

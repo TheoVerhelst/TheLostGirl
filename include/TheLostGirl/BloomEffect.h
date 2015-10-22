@@ -15,7 +15,7 @@ class BloomEffect : public PostEffect
 		BloomEffect();
 
 		/// Destructor.
-		~BloomEffect() = default;
+		virtual ~BloomEffect();
 
 		/// Apply the bloom effect.
 		/// \param input Texture on wich the shader will be applied.

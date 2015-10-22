@@ -61,7 +61,7 @@ class HUDState : public State
 		/// A fading to transparent is done when the entity's stat is full.
 		struct Bar
 		{
-			~Bar() = default;
+			~Bar();
 			tgui::Panel::Ptr panel;    ///< The container for clipping the bar.
 			tgui::Picture::Ptr bar;    ///< The sprite of the bar.
 			tgui::Picture::Ptr borders;///< The sprite of the bar.

@@ -8,6 +8,10 @@ BloomEffect::BloomEffect()
 	m_shaders.load("add pass","resources/shaders/Fullpass.vert", "resources/shaders/Add.frag");
 }
 
+BloomEffect::~BloomEffect()
+{
+}
+
 void BloomEffect::apply(const sf::RenderTexture& input, sf::RenderTarget& output, const sf::RenderStates& states)
 {
 	prepareTextures(input.getSize());

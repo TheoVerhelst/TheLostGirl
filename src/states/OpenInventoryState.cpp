@@ -277,3 +277,7 @@ bool OpenInventoryState::itemsAreEquals(const ItemComponent::Handle& left, const
 {
 	return left->type == right->type and left->category == right->category and left->weight - right->weight < 0.0001f and left->value - right->value < 0.0001f;
 }
+
+OpenInventoryState::ItemListWidget::~ItemListWidget()
+{
+}
