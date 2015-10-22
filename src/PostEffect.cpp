@@ -3,10 +3,6 @@
 #include <SFML/Graphics/VertexArray.hpp>
 #include <TheLostGirl/PostEffect.h>
 
-PostEffect::~PostEffect()
-{
-}
-
 void PostEffect::applyShader(const sf::Shader& shader, sf::RenderTarget& output, const sf::RenderStates& states)
 {
 	sf::Vector2f outputSize = output.getDefaultView().getSize();

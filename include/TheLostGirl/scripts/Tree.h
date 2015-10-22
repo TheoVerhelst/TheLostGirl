@@ -99,6 +99,6 @@ class Tree
 		T m_data;                   ///< Stored value of the tree.
 };
 
-#include "Tree.impl"
+#include "Tree.inl"
 
 #endif

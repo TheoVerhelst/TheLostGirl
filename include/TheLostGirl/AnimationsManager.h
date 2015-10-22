@@ -74,10 +74,10 @@ class AnimationsManager
 		};
 
 		/// Constructor.
-		AnimationsManager();
+		AnimationsManager() = default;
 
 		/// Destructor.
-		~AnimationsManager();
+		~AnimationsManager() = default;
 
 		/// Add a new animation to the manager.
 		/// \param identifier Unique identifier of the animation to add.

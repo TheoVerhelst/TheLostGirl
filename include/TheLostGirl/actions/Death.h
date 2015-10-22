@@ -16,7 +16,7 @@ struct Death : public Action
 	Death(StateStack::Context context);
 
 	/// Destructor.
-	virtual ~Death();
+	virtual ~Death() = default;
 
 	/// Overload of the () operator.
 	/// \param entity Entity who dead.

@@ -20,7 +20,7 @@ struct BowBender : public Action
 	BowBender(float _angle, float _power);
 
 	/// Destructor.
-	virtual ~BowBender();
+	virtual ~BowBender() = default;
 
 	/// Overload of the () operator.
 	/// \param entity Entity who bend.

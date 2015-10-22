@@ -41,7 +41,7 @@ class Player
 		Player(StateStack& stateStack);
 
 		/// Destructor.
-		~Player();
+		~Player() = default;
 
         /// Handle the input.
         /// Then assign input to Player::Action ann then assign every Action to a specific Command.

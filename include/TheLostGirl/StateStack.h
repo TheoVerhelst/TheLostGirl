@@ -98,7 +98,7 @@ class StateStack : private sf::NonCopyable
 		explicit StateStack(StateStack::Context context);
 
 		/// Destructor;
-		~StateStack();
+		~StateStack() = default;
 
 		/// Call the update() function of all the states in the stack.
 		/// \param dt Elapsed time in the last game frame.

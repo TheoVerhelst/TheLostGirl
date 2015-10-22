@@ -33,11 +33,10 @@
 #include <TheLostGirl/serialization.h>
 #include <TheLostGirl/states/GameState.h>
 
-//TODO Mettre le carquois de l'autre coté quand dirigé vers la gauche.
+//TODO Finir la fonction flip().
 //TODO Sauvegarde en fonction des includes.
 //TODO Retirer la fleche pendant le CAC.
 //TODO Sound manager.
-//TODO Mettre des const sur les ComponentHandle.
 //TODO Faire un système multi texture pour une même partie d'entité (soit chunker une grande image, soit faire plusieurs images).
 
 // À discuter, à propos du gameplay :

@@ -16,7 +16,7 @@ class PostEffect : sf::NonCopyable
 {
 	public:
 		/// Destructor.
-		virtual ~PostEffect();
+		virtual ~PostEffect() = default;
 
 		/// Apply the effect.
 		/// \param input Texture on wich the shader will be applied.

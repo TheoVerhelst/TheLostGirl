@@ -17,10 +17,6 @@ State::State(StateStack& stack):
 {
 }
 
-State::~State()
-{
-}
-
 void State::requestStackPop()
 {
 	m_stateStack->popState();

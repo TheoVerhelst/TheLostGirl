@@ -28,7 +28,7 @@ class State: public entityx::Receiver<State>
 		State(StateStack& stack);
 
 		/// Destructor.
-		virtual ~State();
+		virtual ~State() = default;
 
         /// The drawing function.
         /// It must do all things related to drawing stuff on the screen.

@@ -104,6 +104,7 @@ class OpenInventoryState : public State
 		/// Hold GUI widgets to represent an item in the list inventory.
 		struct ItemListWidget
 		{
+			~ItemListWidget() = default;
 			tgui::HorizontalLayout::Ptr layout;           ///< Layout for organizing the labels below.
 			std::map<sf::String, tgui::Label::Ptr> labels;///< A label for each information about the item.
 			std::list<entityx::Entity> items;             ///< The represented item.

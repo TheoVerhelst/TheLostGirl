@@ -12,10 +12,10 @@ namespace entityx
 struct ArrowShooter : public Action
 {
 	/// Constructor.
-	ArrowShooter();
+	ArrowShooter() = default;
 
 	/// Destructor.
-	virtual ~ArrowShooter();
+	virtual ~ArrowShooter() = default;
 
 	/// Overload of the () operator.
 	/// \param entity Entity who shoot.

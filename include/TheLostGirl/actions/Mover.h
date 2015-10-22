@@ -30,7 +30,7 @@ struct Mover : public Action
 		Mover( StateStack::Context context, Direction _direction, bool _start = true);
 
 		/// Destructor.
-		virtual ~Mover();
+		virtual ~Mover() = default;
 
 		/// Overload of the () operator.
 		/// \param entity Entity who move.

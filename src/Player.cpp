@@ -62,10 +62,6 @@ Player::Player(StateStack& stateStack):
 	}
 }
 
-Player::~Player()
-{
-}
-
 void Player::handleEvent(const sf::Event& event)
 {
 	auto& commands(m_stateStack.getContext().systemManager.system<PendingChangesSystem>()->commandQueue);

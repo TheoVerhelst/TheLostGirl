@@ -20,7 +20,7 @@ class MusicPlayer : private sf::NonCopyable
 		MusicPlayer();
 
 		/// Destructor.
-		~MusicPlayer();
+		~MusicPlayer() = default;
 
 		/// Open and play the music with the given \a fileName.
 		/// If another music was open, it is stopped.

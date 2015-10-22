@@ -10,10 +10,6 @@ StateStack::StateStack(Context context) :
 {
 }
 
-StateStack::~StateStack()
-{
-}
-
 void StateStack::update(sf::Time dt)
 {
 	// Iterate from top to bottom, stop as soon as update() returns false

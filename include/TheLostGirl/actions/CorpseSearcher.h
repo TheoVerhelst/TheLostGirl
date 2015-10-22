@@ -18,7 +18,7 @@ struct CorpseSearcher : public Action
 	CorpseSearcher(StateStack& stateStack);
 
 	/// Destructor.
-	virtual ~CorpseSearcher();
+	virtual ~CorpseSearcher() = default;
 
 	/// Overload of the () operator.
 	/// \param entity Entity who shoot.

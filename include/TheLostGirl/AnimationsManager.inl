@@ -1,17 +1,6 @@
 #include <TheLostGirl/SpriteSheetAnimation.h>
 
 template<typename A>
-AnimationsManager<A>::AnimationsManager():
-	m_animationsMap()
-{
-}
-
-template<typename A>
-AnimationsManager<A>::~AnimationsManager()
-{
-}
-
-template<typename A>
 void AnimationsManager<A>::addAnimation(const std::string& identifier, A animation, unsigned int importance, sf::Time duration, bool loops, bool stopAtEnd)
 {
 	TimeAnimation timeAnime{animation, importance, duration, loops, stopAtEnd};

@@ -7,12 +7,6 @@ MusicPlayer::MusicPlayer():
 	m_volume{100.f},
 	m_paused{true}
 {
-
-}
-
-MusicPlayer::~MusicPlayer()
-{
-
 }
 
 void MusicPlayer::play(const std::string& fileName)

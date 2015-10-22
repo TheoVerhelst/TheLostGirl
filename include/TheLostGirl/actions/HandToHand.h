@@ -17,10 +17,10 @@ namespace entityx
 struct HandToHand : public Action
 {
 	/// Constructor.
-	HandToHand();
+	HandToHand() = default;
 
 	/// Destructor.
-	virtual ~HandToHand();
+	virtual ~HandToHand() = default;
 
 	/// Overload of the () operator.
 	/// \param entity Entity who do the action.

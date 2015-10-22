@@ -3,14 +3,6 @@
 
 #include <TheLostGirl/actions/Jumper.h>
 
-Jumper::Jumper()
-{
-}
-
-Jumper::~Jumper()
-{
-}
-
 void Jumper::operator()(entityx::Entity entity, double) const
 {
 	if(not entity)

@@ -6,14 +6,6 @@
 
 #include <TheLostGirl/actions/ArrowShooter.h>
 
-ArrowShooter::ArrowShooter()
-{
-}
-
-ArrowShooter::~ArrowShooter()
-{
-}
-
 void ArrowShooter::operator()(entityx::Entity entity, double) const
 {
 	//Perform various checks about components

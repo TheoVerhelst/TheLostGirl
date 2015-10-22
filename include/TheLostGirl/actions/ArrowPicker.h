@@ -13,10 +13,10 @@ namespace entityx
 struct ArrowPicker : public Action
 {
 	/// Constructor.
-	ArrowPicker();
+	ArrowPicker() = default;
 
 	/// Destructor.
-	virtual ~ArrowPicker();
+	virtual ~ArrowPicker() = default;
 
 	/// Overload of the () operator.
 	/// \param entity Entity who shoot.

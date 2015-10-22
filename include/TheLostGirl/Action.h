@@ -11,7 +11,7 @@ namespace entityx
 struct Action
 {
 	/// Destructor.
-	virtual ~Action();
+	virtual ~Action() = default;
 
 	/// Overload of the () operator.
 	/// \param entity Entity to do the action on.

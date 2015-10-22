@@ -11,10 +11,6 @@ CorpseSearcher::CorpseSearcher(StateStack& stateStack):
 {
 }
 
-CorpseSearcher::~CorpseSearcher()
-{
-}
-
 void CorpseSearcher::operator()(entityx::Entity entity, double) const
 {
 	if(not entity)

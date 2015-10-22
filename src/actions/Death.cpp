@@ -8,10 +8,6 @@ Death::Death(StateStack::Context context):
 {
 }
 
-Death::~Death()
-{
-}
-
 void Death::operator()(entityx::Entity entity, double) const
 {
 	if(not entity)
