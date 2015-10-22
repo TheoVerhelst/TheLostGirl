@@ -172,6 +172,7 @@ class Serializer
 
 		/// Deserialize the given \a value in the given \a component.
 		/// \param component Component in wich deserialize the data.
+		/// \param spriteComponent The sprite component of the entity.
 		/// \param value The Json value containing the data.
 		void deserialize(const Json::Value& value, entityx::ComponentHandle<AnimationsComponent<SpriteSheetAnimation>> component, entityx::ComponentHandle<SpriteComponent> spriteComponent);
 
@@ -202,6 +203,7 @@ class Serializer
 
 		/// Deserialize the given \a value in the given \a component.
 		/// \param component Component in wich deserialize the data.
+		/// \param bodyComponent The body component of the entity.
 		/// \param value The Json value containing the data.
 		void deserialize(const Json::Value& value, entityx::ComponentHandle<ArcherComponent> component, entityx::ComponentHandle<BodyComponent> bodyComponent);
 
@@ -257,29 +259,33 @@ class Serializer
 
 		/// Deserialize the given \a value in the given \a component.
 		/// \param component Component in wich deserialize the data.
+		/// \param bodyComponent The body component of the entity.
 		/// \param value The Json value containing the data.
 		void deserialize(const Json::Value& value, entityx::ComponentHandle<HoldItemComponent> component, entityx::ComponentHandle<BodyComponent> bodyComponent);
 
 		/// Deserialize the given \a value in the given \a component.
 		/// \param component Component in wich deserialize the data.
+		/// \param bodyComponent The body component of the entity.
 		/// \param value The Json value containing the data.
 		void deserialize(const Json::Value& value, entityx::ComponentHandle<ArticuledArmsComponent> component, entityx::ComponentHandle<BodyComponent> bodyComponent);
 
 		/// Deserialize the given \a value in the given \a component.
 		/// \param component Component in wich deserialize the data.
+		/// \param bodyComponent The body component of the entity.
 		/// \param value The Json value containing the data.
 		void deserialize(const Json::Value& value, entityx::ComponentHandle<BowComponent> component, entityx::ComponentHandle<BodyComponent> bodyComponent);
 
 		/// Deserialize the given \a value in the given \a component.
 		/// \param component Component in wich deserialize the data.
+		/// \param bodyComponent The body component of the entity.
 		/// \param value The Json value containing the data.
 		void deserialize(const Json::Value& value, entityx::ComponentHandle<QuiverComponent> component, entityx::ComponentHandle<BodyComponent> bodyComponent);
 
 		//End deserialize
 
 	private:
-		StateStack::Context m_context;
-		const std::map<std::string, entityx::Entity>& m_entitiesMap;
+		StateStack::Context m_context;                              ///< The current context of the application.
+		const std::map<std::string, entityx::Entity>& m_entitiesMap;///< All the entities of the application.
 };
 
 /// Return a string depending of the given \a type.

@@ -1,6 +1,5 @@
 template <typename T>
-typename Tree<T>::Ptr Tree<T>::create(const T& value,
-		const std::vector<Tree<T>::Ptr>& children)
+typename Tree<T>::Ptr Tree<T>::create(const T& value, const std::vector<Tree<T>::Ptr>& children)
 {
 	return Ptr(new Tree<T>(value, children));
 }
@@ -15,8 +14,7 @@ typename Tree<T>::Ptr Tree<T>::copy(Ptr other)
 }
 
 template <typename T>
-Tree<T>::Tree(const T& value,
-		const std::vector<Tree<T>::Ptr>& children):
+Tree<T>::Tree(const T& value, const std::vector<Tree<T>::Ptr>& children):
 	m_children(children),
 	m_data(value)
 {}

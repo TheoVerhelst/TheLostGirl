@@ -248,16 +248,17 @@ struct ArcherComponent : public entityx::Component<ArcherComponent>
 {
 	float initialSpeed;      ///< The initial speed of the arrow when fired at maximum bending, in m/s.
 	float damages;           ///< The damages that make a shoot.
-	b2Vec2 localAnchor;
 	entityx::Entity quiver;  ///< The quiver that the entity holds on his back.
+	b2Vec2 localAnchor;      ///< Indicates where the quiver is anchored in the archer's body.
 	b2WeldJoint* quiverJoint;///< The joint that maintains the quiver on the entity.
 };
 
 /// Stores data about an entity representing some arms that holds an item in its hands.
+/// This component should be added to an entity which represents arms.
 struct HoldItemComponent : public entityx::Component<HoldItemComponent>
 {
 	entityx::Entity item;///< The held item.
-	b2Vec2 localAnchor;
+	b2Vec2 localAnchor;  ///< Indicates where the item is anchored in the arms's body.
 	b2WeldJoint* joint;  ///< The joint that maintains both entities together.
 };
 
@@ -266,10 +267,10 @@ struct HoldItemComponent : public entityx::Component<HoldItemComponent>
 struct ArticuledArmsComponent : public entityx::Component<ArticuledArmsComponent>
 {
 	entityx::Entity arms;      ///< The entity representing the arms.
-	float upperAngle;
-	float lowerAngle;
+	float upperAngle;          ///< The maximum angle of the arms.
+	float lowerAngle;          ///< The minimum angle of the arms.
 	float targetAngle;         ///< The angle that the arms should have (rotation isn't instantaneous, for physics reasons).
-	b2Vec2 localAnchor;
+	b2Vec2 localAnchor;        ///< Indicates where the arms is anchored in the archer's body.
 	b2RevoluteJoint* armsJoint;///< The joint that maintains both entities together.
 };
 
@@ -279,14 +280,14 @@ struct ArticuledArmsComponent : public entityx::Component<ArticuledArmsComponent
 struct BowComponent : public entityx::Component<BowComponent>
 {
 	entityx::Entity notchedArrow;       ///< The notched arrow.
-	float upperTranslation;
-	float lowerTranslation;
+	float upperTranslation;             ///< The maximum translation of the arrow.
+	float lowerTranslation;             ///< The minimum translation of the arrow.
 	float targetTranslation;            ///< The translation that the arrow should have (translation isn't instantaneous, for physics reasons).
-	b2Vec2 localAnchor;
+	b2Vec2 localAnchor;                 ///< Indicates where the arrow is anchored in the bow's body.
 	b2PrismaticJoint* notchedArrowJoint;///< The joint that maintains the bow with the arrow.
 };
 
-/// This component should be added to every entity that is a quiver.
+/// This component should be added to every quiver entity.
 /// A quiver is an item that is joined to the back of an entity and hold some arrows.
 struct QuiverComponent : public entityx::Component<QuiverComponent>
 {

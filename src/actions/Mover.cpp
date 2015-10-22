@@ -224,10 +224,11 @@ void Mover::flip(entityx::Entity entity) const
 			b2Body* archerBody{archerComponent->quiverJoint->GetBodyB()};
 			flipFixtures(archerBody, 0);
 			//Make the flipped joint
-			b2WeldJointDef jointDef{getWeldJointDef(archerComponent->quiverJoint)};
+			b2JointDef* jointDef{getJointDef(archerComponent->quiverJoint)};
 			b2World* world{archerBody->GetWorld()};
 			world->DestroyJoint(archerComponent->quiverJoint);
-			archerComponent->quiverJoint = static_cast<b2WeldJoint*>(world->CreateJoint(&jointDef));
+			archerComponent->quiverJoint = static_cast<b2WeldJoint*>(world->CreateJoint(jointDef));
+			delete jointDef;
 		}
 		if(armsComponent)
 		{
@@ -333,17 +334,4 @@ inline void Mover::flipBody(b2Body* body, float32 mid) const
 inline void Mover::flipPoint(b2Vec2& vec, float32 mid) const
 {
 	vec.x = mid + (mid - vec.x);
-}
-
-b2WeldJointDef Mover::getWeldJointDef(b2WeldJoint* joint) const
-{
-	b2WeldJointDef jointDef;
-	jointDef.bodyA = joint->GetBodyA();
-	jointDef.bodyB = joint->GetBodyB();
-	jointDef.localAnchorA = joint->GetLocalAnchorA();
-	jointDef.localAnchorB = joint->GetLocalAnchorB();
-	jointDef.referenceAngle = joint->GetReferenceAngle();
-	jointDef.frequencyHz = joint->GetFrequency();
-	jointDef.dampingRatio = joint->GetDampingRatio();
-	return jointDef;
 }

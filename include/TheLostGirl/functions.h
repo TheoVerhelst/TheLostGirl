@@ -128,10 +128,19 @@ Key getKey(std::map<Key, Value> map, Value& value)
 /// \return True if the entity is played by the player, false otherwise.
 bool isPlayer(entityx::Entity entity);
 
+/// Generate a body definition from a real body, very useful for serialization or cloning.
+/// \param body The body to analyze.
+/// \return A definition of \a body.
 b2BodyDef getBodyDef(b2Body* body);
 
+/// Generate a fixture definition from a real fixture, very useful for serialization or cloning.
+/// \param fixture The fixture to analyze.
+/// \return A definition of \a fixture.
 b2FixtureDef getFixtureDef(b2Fixture* fixture);
 
+/// Generate a joint definition from a real joint, very useful for serialization or cloning.
+/// \param joint The joint to analyze.
+/// \return A definition of \a joint.
 b2JointDef* getJointDef(b2Joint* joint);
 
 #endif//FUNCTIONS_H
