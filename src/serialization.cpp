@@ -803,7 +803,7 @@ void Serializer::deserialize(const Json::Value& value, entityx::ComponentHandle<
 	jointDef.bodyA = bodyComponent->body;
 	jointDef.bodyB = component->quiver.component<BodyComponent>()->body;
 	jointDef.localAnchorA = (1.f/m_context.parameters.pixelByMeter) * localAnchor;
-	jointDef.localAnchorB = jointDef.bodyB->GetLocalPoint(jointDef.bodyA->GetWorldPoint(jointDef.localAnchorA));
+	jointDef.localAnchorB = {0, 0};
 	jointDef.referenceAngle = jointDef.bodyB->GetAngle() - jointDef.bodyA->GetAngle();
 	jointDef.frequencyHz = 0.f;
 	jointDef.dampingRatio = 0.f;
@@ -998,9 +998,12 @@ void Serializer::deserialize(const Json::Value& value, entityx::ComponentHandle<
 			b2WeldJointDef jointDef;
 			jointDef.bodyA = bodyComponent->body;
 			jointDef.bodyB = arrow.component<BodyComponent>()->body;
-			jointDef.localAnchorA = {0, 0};
-			jointDef.localAnchorB = jointDef.bodyB->GetLocalPoint(jointDef.bodyA->GetWorldPoint(jointDef.localAnchorA));
-			jointDef.referenceAngle = jointDef.bodyB->GetAngle() - jointDef.bodyA->GetAngle();
+//			jointDef.localAnchorA = {0, 0};
+//			jointDef.localAnchorB = jointDef.bodyB->GetLocalPoint(jointDef.bodyA->GetWorldPoint(jointDef.localAnchorA));
+//			jointDef.referenceAngle = jointDef.bodyB->GetAngle() - jointDef.bodyA->GetAngle();
+			jointDef.localAnchorA = {0.f, 0.f};
+			jointDef.localAnchorB = {0.4f, 0.10833333f};
+			jointDef.referenceAngle = -b2_pi/2.f;
 			jointDef.frequencyHz = 0.f;
 			jointDef.dampingRatio = 0.f;
 			m_context.world.CreateJoint(&jointDef);
