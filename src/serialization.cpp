@@ -522,7 +522,6 @@ void Serializer::deserialize(const Json::Value& value, entityx::ComponentHandle<
 
 			//vertices
 			const Json::Value vertices{fixtures[i]["vertices"]};
-			//TODO utiliser des c-style array plutot que vector
 			std::vector<b2Vec2> verticesVec(vertices.size());
 			for(Json::ArrayIndex j{0}; j < vertices.size(); ++j)
 			{
@@ -796,7 +795,6 @@ void Serializer::deserialize(const Json::Value& value, entityx::ComponentHandle<
 {
 	if(not bodyComponent)
 		return;
-	const float pixelByMeter{m_context.parameters.pixelByMeter};
 	component->damages = value["damages"].asFloat();
 	component->initialSpeed = value["initial speed"].asFloat();
 	component->quiver = m_entitiesMap.at(value["quiver"].asString());
@@ -907,6 +905,8 @@ void Serializer::deserialize(const Json::Value& value, entityx::ComponentHandle<
 		return;
 	const float pixelByMeter{m_context.parameters.pixelByMeter};
 	component->arms = m_entitiesMap.at(value["arms"].asString());
+	if(not component->arms.component<BodyComponent>())
+		return;
 	component->targetAngle = value["target angle"].asFloat() * b2_pi / 180.f;
 	component->lowerAngle = value["lower angle"].asFloat() * b2_pi / 180.f;
 	component->upperAngle = value["upper angle"].asFloat() * b2_pi / 180.f;
@@ -929,8 +929,12 @@ void Serializer::deserialize(const Json::Value& value, entityx::ComponentHandle<
 
 void Serializer::deserialize(const Json::Value& value, entityx::ComponentHandle<HoldItemComponent> component, entityx::ComponentHandle<BodyComponent> bodyComponent)
 {
+	if(not bodyComponent)
+		return;
 	const float pixelByMeter{m_context.parameters.pixelByMeter};
 	component->item = m_entitiesMap.at(value["item"].asString());
+	if(not component->item.component<BodyComponent>())
+		return;
 	component->localAnchor = {value["local anchor"]["x"].asFloat()/pixelByMeter,
 							  value["local anchor"]["y"].asFloat()/pixelByMeter};
 	b2WeldJointDef jointDef;
@@ -950,6 +954,8 @@ void Serializer::deserialize(const Json::Value& value, entityx::ComponentHandle<
 		return;
 	const float pixelByMeter{m_context.parameters.pixelByMeter};
 	component->notchedArrow = m_entitiesMap.at(value["notched arrow"].asString());
+	if(not component->notchedArrow.component<BodyComponent>())
+		return;
 	component->targetTranslation = value["target translation"].asFloat();
 	component->lowerTranslation = value["lower translation"].asFloat()/pixelByMeter;
 	component->upperTranslation = value["upper translation"].asFloat()/pixelByMeter;
@@ -994,13 +1000,13 @@ void Serializer::deserialize(const Json::Value& value, entityx::ComponentHandle<
 			jointDef.bodyB = arrow.component<BodyComponent>()->body;
 			jointDef.localAnchorA = {0, 0};
 			jointDef.localAnchorB = jointDef.bodyB->GetLocalPoint(jointDef.bodyA->GetWorldPoint(jointDef.localAnchorA));
-			jointDef.referenceAngle = b2_pi/2.f;
+			jointDef.referenceAngle = jointDef.bodyB->GetAngle() - jointDef.bodyA->GetAngle();
 			jointDef.frequencyHz = 0.f;
 			jointDef.dampingRatio = 0.f;
 			m_context.world.CreateJoint(&jointDef);
 		}
 	}
-	component->capacity = value["quiver capacity"].asUInt();
+	component->capacity = value["capacity"].asUInt();
 }
 
 //End deserialize

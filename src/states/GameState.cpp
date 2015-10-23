@@ -18,6 +18,7 @@
 #include <TheLostGirl/State.h>
 #include <TheLostGirl/states/PauseState.h>
 #include <TheLostGirl/states/HUDState.h>
+#include <TheLostGirl/states/MainMenuState.h>
 #include <TheLostGirl/components.h>
 #include <TheLostGirl/Category.h>
 #include <TheLostGirl/StateStack.h>
@@ -280,6 +281,8 @@ void GameState::initWorld(const std::string& file)
 				//If the entity is derivated from a generic entities, add components of the base to the entity
 				if(entity.isMember("base"))
 				{
+					if(not genericEntities.isMember(entity["base"].asString()))
+						throw std::runtime_error("\"entities." + entityName + ".base\" value is not an existing base.");
 					const Json::Value base{genericEntities[entity["base"].asString()]};
 					for(const std::string& componentName : base.getMemberNames())
 						entity[componentName] = base[componentName];
@@ -503,14 +506,16 @@ void GameState::initWorld(const std::string& file)
 		requestStackPop();
 		getContext().eventManager.emit<LoadingStateChange>("Loading HUD");
 		requestStackPush<HUDState>();
-		m_loading = false;
 	}
 	catch(std::runtime_error& e)
 	{
 		std::cerr << e.what() << "\n";
 		std::cerr << "Failed to load save file \"" << file << "\".\n";
-		clear();//Clear game content in order to prevent segmentation faults.
+		requestStackPop();
+		requestStackPop();
+		requestStackPush<MainMenuState>();
 	}
+		m_loading = false;
 }
 
 void GameState::clear()
