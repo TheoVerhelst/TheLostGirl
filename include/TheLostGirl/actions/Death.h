@@ -20,8 +20,7 @@ struct Death : public Action
 
 	/// Overload of the () operator.
 	/// \param entity Entity who dead.
-	/// \param dt Elapsed time in the last game frame.
-	virtual void operator()(entityx::Entity entity, double dt) const;
+	virtual void operator()(entityx::Entity entity) const;
 
 	private:
 		StateStack::Context m_context;///< Current context of the application.

@@ -14,10 +14,8 @@ struct Action
 	virtual ~Action() = default;
 
 	/// Overload of the () operator.
-	/// \param entity Entity to do the action on.
-	/// \param dt Elapsed time in the last game frame.
-	//TODO reflechir a la surcharge
-	virtual void operator()(entityx::Entity entity, double dt) const = 0;
+	/// \param entity Entity which do the action.
+	virtual void operator()(entityx::Entity entity) const = 0;
 };
 
 #endif//ACTION_H

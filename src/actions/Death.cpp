@@ -8,7 +8,7 @@ Death::Death(StateStack::Context context):
 {
 }
 
-void Death::operator()(entityx::Entity entity, double) const
+void Death::operator()(entityx::Entity entity) const
 {
 	if(not entity)
 		return;

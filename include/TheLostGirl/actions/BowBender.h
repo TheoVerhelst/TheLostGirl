@@ -24,8 +24,7 @@ struct BowBender : public Action
 
 	/// Overload of the () operator.
 	/// \param entity Entity who bend.
-	/// \param dt Elapsed time in the last game frame.
-	virtual void operator()(entityx::Entity entity, double dt) const;
+	virtual void operator()(entityx::Entity entity) const;
 
 	float angle;///< The angle of the bending.
 	float power;///< The power of the bending.

@@ -2,7 +2,7 @@
 #include <TheLostGirl/components.h>
 #include <TheLostGirl/actions/Jumper.h>
 
-void Jumper::operator()(entityx::Entity entity, double) const
+void Jumper::operator()(entityx::Entity entity) const
 {
 	if(not entity)
 		return;

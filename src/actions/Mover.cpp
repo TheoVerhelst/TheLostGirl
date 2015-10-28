@@ -14,7 +14,7 @@ Mover::Mover(StateStack::Context context, Direction _direction, bool _start):
 {
 }
 
-void Mover::operator()(entityx::Entity entity, double) const
+void Mover::operator()(entityx::Entity entity) const
 {
 	if(not entity)
 		return;

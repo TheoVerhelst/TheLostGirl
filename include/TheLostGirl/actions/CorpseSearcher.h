@@ -23,7 +23,7 @@ struct CorpseSearcher : public Action
 	/// Overload of the () operator.
 	/// \param entity Entity who shoot.
 	/// \param dt Elapsed time in the last game frame.
-	virtual void operator()(entityx::Entity entity, double dt) const;
+	virtual void operator()(entityx::Entity entity) const;
 
 	private:
 		StateStack& m_stateStack;///< The game state manager.

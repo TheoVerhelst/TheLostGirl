@@ -14,7 +14,7 @@ BowBender::BowBender(float _angle, float _power):
 {
 }
 
-void BowBender::operator()(entityx::Entity entity, double) const
+void BowBender::operator()(entityx::Entity entity) const
 {
 	if(not entity)
 		return;

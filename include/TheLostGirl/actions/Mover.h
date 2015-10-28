@@ -34,8 +34,7 @@ struct Mover : public Action
 
 		/// Overload of the () operator.
 		/// \param entity Entity who move.
-		/// \param dt Elapsed time in the last game frame.
-		virtual void operator()(entityx::Entity entity, double dt) const;
+		virtual void operator()(entityx::Entity entity) const;
 
 		Direction direction;///< Indicates the direction of the movement.
 		bool start;         ///< True if the movement starts, false if it stops.

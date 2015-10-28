@@ -24,11 +24,10 @@ struct Command
 	Command(const Command& other);
 
     /// Stored function.
-    /// \param entityx::Entity Entity to wich to apply the function.
-    /// \param double Elapsed time between the current and the last frame.
+    /// \param entityx::Entity Entity which do the action.
     /// That function can be a lambda expression, a functor, a pointer to a function, a member function, ...
-    /// It just need to take these two arguments in parameters.
-	std::function<void(entityx::Entity, double)> action;
+    /// It just need to take this argument as parameter.
+	std::function<void(entityx::Entity)> action;
 
 	/// Indicates if the command must be applied on a specific entity
 	/// or on a global group en entities. If true, the action must be

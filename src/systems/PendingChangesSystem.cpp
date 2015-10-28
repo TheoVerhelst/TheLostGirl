@@ -13,19 +13,19 @@ PendingChangesSystem::PendingChangesSystem(StateStack::Context context):
 	m_world(context.world)
 {}
 
-void PendingChangesSystem::update(entityx::EntityManager& entityManager, entityx::EventManager&, double dt)
+void PendingChangesSystem::update(entityx::EntityManager& entityManager, entityx::EventManager&, double)
 {
 	while(not commandQueue.empty())
 	{
 		Command& command(commandQueue.front());
 		CategoryComponent::Handle categoryComponent;
 		if(command.targetIsSpecific)
-			command.action(command.entity, dt);
+			command.action(command.entity);
 		else
 			for(auto entity : entityManager.entities_with_components(categoryComponent))
 				//On vérifie si l'entité correspond à la commande, si oui on fait l'action
 				if(categoryComponent->category & command.category)
-					command.action(entity, dt);
+					command.action(entity);
 		commandQueue.pop();
 	}
 	while(not bodiesToCreate.empty())

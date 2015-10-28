@@ -5,7 +5,7 @@
 #include <TheLostGirl/components.h>
 #include <TheLostGirl/actions/ArrowShooter.h>
 
-void ArrowShooter::operator()(entityx::Entity entity, double) const
+void ArrowShooter::operator()(entityx::Entity entity) const
 {
 	//Perform various checks about components
 	if(not entity)

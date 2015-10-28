@@ -6,7 +6,7 @@
 #include <TheLostGirl/components.h>
 #include <TheLostGirl/actions/ArrowPicker.h>
 
-void ArrowPicker::operator()(entityx::Entity entity, double) const
+void ArrowPicker::operator()(entityx::Entity entity) const
 {
 	if(not entity.valid())
 		return;

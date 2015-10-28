@@ -19,8 +19,7 @@ struct Jumper : public Action
 
 	/// Overload of the () operator.
 	/// \param entity Entity who jump.
-	/// \param dt Elapsed time in the last game frame.
-	virtual void operator()(entityx::Entity entity, double dt) const;
+	virtual void operator()(entityx::Entity entity) const;
 };
 
 #endif//JUMPER_H

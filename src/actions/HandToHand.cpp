@@ -5,7 +5,7 @@
 #include <TheLostGirl/FixtureRoles.h>
 #include <TheLostGirl/actions/HandToHand.h>
 
-void HandToHand::operator()(entityx::Entity entity, double) const
+void HandToHand::operator()(entityx::Entity entity) const
 {
 	if(not entity)
 		return;
