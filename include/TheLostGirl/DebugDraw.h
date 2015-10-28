@@ -2,6 +2,9 @@
 #define DEBUGDRAW_H
 
 #include <Box2D/Common/b2Draw.h>
+#include <TGUI/Label.hpp>
+#include <TGUI/Scrollbar.hpp>
+#include <TGUI/ChatBox.hpp>
 #include <TheLostGirl/StateStack.h>
 
 //Forward declarations
@@ -20,6 +23,9 @@ class DebugDraw : public b2Draw
 		/// Constructor.
 		/// \param context Current context of the application.
 		DebugDraw(StateStack::Context context);
+
+		/// Destructor.
+		virtual ~DebugDraw();
 
 		/// Draw a holow Box2D polygon.
 		/// \param vertices Vertices to draw.
@@ -63,15 +69,28 @@ class DebugDraw : public b2Draw
 		/// \param framesPerSecond New FPS value.
 		void setFPS(float framesPerSecond);
 
+		/// Changes the font of the text.
+		/// \param font The new font.
+		void setTextFont(std::shared_ptr<sf::Font> font);
+
 	private:
 		/// Return a string containing x with 2 decimals.
 		/// \param x Number to convert.
+		/// \param decimals Number of decimals to show
 		/// \return A formated string.
-		std::string roundOutput(float x);
+		std::string roundOutput(float x, std::size_t decimals=3);
 
 		bool m_debugMode;                   ///< Indicate if the debug ath should be drawn.
 		StateStack::Context m_context;      ///< Current context of the application.
 		float m_framesPerSecond;            ///< FPS value to display.
+		tgui::Label::Ptr m_positionLabel;
+		tgui::Label::Ptr m_mousePositionLabel;
+		tgui::Label::Ptr m_FPSLabel;
+		tgui::ChatBox::Ptr m_console;
+		std::stringstream m_outStringStream;///< String used to print standard output into the GUI.
+		std::stringstream m_errStringStream;///< String used to print standard error into the GUI.
+		std::streambuf* m_coutStreambuf;    ///< The old stream buffer of std::cout.
+		std::streambuf* m_cerrStreambuf;    ///< The old stream buffer of std::cerr.
 };
 
 #endif//DEBUGDRAW_H

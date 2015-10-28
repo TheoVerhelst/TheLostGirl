@@ -1,8 +1,8 @@
+#include <iostream>
 #include <SFML/Graphics.hpp>
+#include <TGUI/Gui.hpp>
 #include <entityx/Entity.h>
 #include <Box2D/Box2D.h>
-#include <TGUI/Label.hpp>
-#include <TGUI/Gui.hpp>
 #include <TheLostGirl/Parameters.h>
 #include <TheLostGirl/components.h>
 #include <TheLostGirl/ResourceManager.h>
@@ -10,8 +10,39 @@
 #include <TheLostGirl/DebugDraw.h>
 
 DebugDraw::DebugDraw(StateStack::Context context):
-	m_context(context)
+	m_debugMode{true},
+	m_context{context},
+	m_positionLabel{tgui::Label::create(m_context.parameters.guiConfigFile)},
+	m_mousePositionLabel{tgui::Label::create(m_context.parameters.guiConfigFile)},
+	m_FPSLabel{tgui::Label::create(m_context.parameters.guiConfigFile)},
+	m_console{tgui::ChatBox::create(m_context.parameters.guiConfigFile)},
+	m_outStringStream{},
+	m_errStringStream{},
+	m_coutStreambuf{std::cout.rdbuf(m_outStringStream.rdbuf())},
+	m_cerrStreambuf{std::cerr.rdbuf(m_errStringStream.rdbuf())}
 {
+	m_positionLabel->setPosition(tgui::bindWidth(m_context.gui, 0.01f), tgui::bindHeight(m_context.gui, 0.01f));
+	m_positionLabel->setTextSize(20);
+	m_context.gui.add(m_positionLabel);
+
+	m_mousePositionLabel->setPosition(tgui::bindWidth(m_context.gui, 0.35f), tgui::bindHeight(m_context.gui, 0.01f));
+	m_mousePositionLabel->setTextSize(20);
+	m_context.gui.add(m_mousePositionLabel);
+
+	m_FPSLabel->setPosition(tgui::bindWidth(m_context.gui, 0.7f), tgui::bindHeight(m_context.gui, 0.01f));
+	m_FPSLabel->setTextSize(20);
+	m_context.gui.add(m_FPSLabel);
+
+	m_console->setPosition(tgui::bindWidth(m_context.gui, 0.5f), tgui::bindHeight(m_context.gui, 0.7f));
+	m_console->setSize(tgui::bindWidth(m_context.gui, 0.5f), tgui::bindHeight(m_context.gui, 0.29f));
+	m_console->setTextSize(10);
+	m_context.gui.add(m_console);
+}
+
+DebugDraw::~DebugDraw()
+{
+	std::cout.rdbuf(m_coutStreambuf);
+	std::cerr.rdbuf(m_cerrStreambuf);
 }
 
 void DebugDraw::DrawPolygon(const b2Vec2* vertices, int32 vertexCount, const b2Color& color)
@@ -133,33 +164,49 @@ void DebugDraw::DrawTransform(const b2Transform& xf)
 
 void DebugDraw::drawDebugAth()
 {
-	m_debugMode = true;
+	if(m_context.parameters.debugMode != m_debugMode)
+	{
+		if(m_debugMode)
+		{
+			m_positionLabel->hide();
+			m_mousePositionLabel->hide();
+			m_FPSLabel->hide();
+			m_console->hide();
+		}
+		else
+		{
+			m_positionLabel->show();
+			m_mousePositionLabel->show();
+			m_FPSLabel->show();
+			m_console->show();
+		}
+	}
+	m_debugMode = m_context.parameters.debugMode;
+	if(not m_debugMode)
+		return;
+
+	//Draw GUI
 	CategoryComponent::Handle categoryComponent;
 	BodyComponent::Handle bodyComponent;
-	//Find out position
+	//Position
 	b2Vec2 position{0, 0};
+	bool found{false};
 	for(auto entity : m_context.entityManager.entities_with_components(categoryComponent, bodyComponent))
 		//We found the player
 		if(categoryComponent->category & Category::Player)
 		{
 			position = bodyComponent->body->GetPosition();
+			const b2Vec2 positionPixels{m_context.parameters.pixelByMeter * position};
+			m_positionLabel->show();
+			m_positionLabel->setText("(" + roundOutput(position.x) + ", " + roundOutput(position.y) + ")\n" +
+					"(" + roundOutput(positionPixels.x) + ", " + roundOutput(positionPixels.y) + ")");
+			found = true;
 			break;
 		}
 
-	//Draw GUI
-	//Position
-	tgui::Label::Ptr positionLabel{m_context.gui.get<tgui::Label>("positionLabel")};
-	if(positionLabel == nullptr)
-	{
-		positionLabel = tgui::Label::create(m_context.parameters.guiConfigFile);
-		positionLabel->setPosition(tgui::bindWidth(m_context.gui, 0.01f), tgui::bindHeight(m_context.gui, 0.01f));
-		positionLabel->setTextSize(20);
-		positionLabel->setTextFont(std::make_shared<sf::Font>(m_context.fontManager.get("debug")));
-		m_context.gui.add(positionLabel, "positionLabel");
-	}
-	b2Vec2 positionPixels{m_context.parameters.pixelByMeter * position};
-	positionLabel->setText("(" + roundOutput(position.x) + ", " + roundOutput(position.y) + ")\n" +
-						   "(" + roundOutput(positionPixels.x) + ", " + roundOutput(positionPixels.y) + ")");
+	if(not found)
+		m_positionLabel->hide();
+
 	//Mouse position
 	sf::Vector2f mousePositionPixels, mousePosition;
 	if(m_context.parameters.bloomEnabled)
@@ -167,55 +214,45 @@ void DebugDraw::drawDebugAth()
 	else
 		mousePositionPixels = m_context.window.mapPixelToCoords(sf::Mouse::getPosition(m_context.window));
 	mousePosition = mousePositionPixels / m_context.parameters.scaledPixelByMeter;
-	tgui::Label::Ptr mousePositionLabel{m_context.gui.get<tgui::Label>("mousePositionLabel")};
-	if(mousePositionLabel == nullptr)
-	{
-		mousePositionLabel = tgui::Label::create(m_context.parameters.guiConfigFile);
-		mousePositionLabel->setPosition(tgui::bindWidth(m_context.gui, 0.35f), tgui::bindHeight(m_context.gui, 0.01f));
-		mousePositionLabel->setTextSize(20);
-		mousePositionLabel->setTextFont(std::make_shared<sf::Font>(m_context.fontManager.get("debug")));
-		m_context.gui.add(mousePositionLabel, "mousePositionLabel");
-	}
-	mousePositionLabel->setText("(" + roundOutput(mousePosition.x) + ", " + roundOutput(mousePosition.y) + ")\n" +
-						   "(" + roundOutput(mousePositionPixels.x) + ", " + roundOutput(mousePositionPixels.y) + ")");
+	m_mousePositionLabel->setText("(" + roundOutput(mousePosition.x) + ", " + roundOutput(mousePosition.y) + ")\n" +
+			"(" + roundOutput(mousePositionPixels.x) + ", " + roundOutput(mousePositionPixels.y) + ")");
 
 	//FPS
-	tgui::Label::Ptr FPSLabel{m_context.gui.get<tgui::Label>("FPSLabel")};
-	if(FPSLabel == nullptr)
+	m_FPSLabel->setText("FPS: " + roundOutput(m_framesPerSecond));
+
+	//Console
+	std::string outString{m_outStringStream.str()};
+	if(not outString.empty())
 	{
-		FPSLabel = tgui::Label::create(m_context.parameters.guiConfigFile);
-		FPSLabel->setPosition(tgui::bindWidth(m_context.gui, 0.7f), tgui::bindHeight(m_context.gui, 0.01f));
-		FPSLabel->setTextSize(20);
-		FPSLabel->setTextFont(std::make_shared<sf::Font>(m_context.fontManager.get("debug")));
-		m_context.gui.add(FPSLabel, "FPSLabel");
+		m_console->addLine(m_outStringStream.str());
+		m_outStringStream.str("");
 	}
-	FPSLabel->setText("FPS: " + roundOutput(m_framesPerSecond));
+	outString = m_errStringStream.str();
+	if(not outString.empty())
+	{
+		m_console->addLine(m_errStringStream.str(), sf::Color(255, 100, 100));
+		m_errStringStream.str("");
+	}
 }
 
 void DebugDraw::setFPS(float framesPerSecond)
 {
 	m_framesPerSecond = framesPerSecond;
-	if(not m_context.parameters.debugMode and m_debugMode)
-	{
-		//Remove the ath
-		tgui::Label::Ptr positionLabel{m_context.gui.get<tgui::Label>("positionLabel")};
-		if(positionLabel != nullptr)
-			m_context.gui.remove(positionLabel);
-		tgui::Label::Ptr mousePositionLabel{m_context.gui.get<tgui::Label>("mousePositionLabel")};
-		if(mousePositionLabel != nullptr)
-			m_context.gui.remove(mousePositionLabel);
-		tgui::Label::Ptr FPSLabel{m_context.gui.get<tgui::Label>("FPSLabel")};
-		if(FPSLabel != nullptr)
-			m_context.gui.remove(FPSLabel);
-	}
-	m_debugMode = m_context.parameters.debugMode;
 }
 
-std::string DebugDraw::roundOutput(float x)
+void DebugDraw::setTextFont(std::shared_ptr<sf::Font> font)
+{
+	m_positionLabel->setTextFont(font);
+	m_mousePositionLabel->setTextFont(font);
+	m_FPSLabel->setTextFont(font);
+	m_console->setTextFont(font);
+}
+
+std::string DebugDraw::roundOutput(float x, std::size_t decimals)
 {
 	std::string output{std::to_string(x)};
 	std::size_t pointPosition{output.find(".")};
-	if(output.size() >= 3 and pointPosition < output.size()-3)
-		output = output.substr(0, pointPosition+3);
+	if(output.size() >= decimals and pointPosition < output.size() - decimals)
+		output = output.substr(0, pointPosition + decimals);
 	return output;
 }

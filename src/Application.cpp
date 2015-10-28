@@ -96,13 +96,14 @@ int Application::init()
 	{
 		registerSystems();
 		m_window.setKeyRepeatEnabled(false);//Desactive the key repeating
-		m_fontManager.load("menu", "resources/fonts/euphorigenic.ttf");//Load the GUI font
-		m_fontManager.load("debug", "resources/fonts/FreeMonoBold.ttf");//Load the debug font
-		m_gui.setGlobalFont(std::make_shared<sf::Font>(m_fontManager.get("menu")));//Set the GUI font
-		m_world.SetDebugDraw(&m_debugDraw);//Set the debug drawer
+		m_fontManager.load("menu", "resources/fonts/euphorigenic.ttf");
+		m_fontManager.load("debug", "resources/fonts/FreeMonoBold.ttf");
+		m_gui.setGlobalFont(std::make_shared<sf::Font>(m_fontManager.get("menu")));
+		m_world.SetDebugDraw(&m_debugDraw);
+		m_debugDraw.setTextFont(std::make_shared<sf::Font>(m_fontManager.get("debug")));
 		m_debugDraw.SetFlags(b2Draw::e_shapeBit|b2Draw::e_jointBit);//Debug drawing flags
-		m_systemManager.configure();//Init the manager
-		m_stateStack.pushState<IntroState>();//And add the intro state on top of it
+		m_systemManager.configure();
+		m_stateStack.pushState<IntroState>();//Add the intro state
 	}
 	catch(std::runtime_error& e)
 	{
@@ -188,10 +189,8 @@ void Application::render()
 		m_postEffectsTexture.clear({155, 155, 155});
 	m_stateStack.draw();
 	if(m_parameters.debugMode)
-	{
 		m_world.DrawDebugData();
-		m_debugDraw.drawDebugAth();
-	}
+	m_debugDraw.drawDebugAth();
 	m_window.resetGLStates();
 	if(m_parameters.bloomEnabled)
 	{
