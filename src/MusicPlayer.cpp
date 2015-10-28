@@ -1,6 +1,5 @@
 #include <stdexcept>
 #include <SFML/Audio/Music.hpp>
-
 #include <TheLostGirl/MusicPlayer.h>
 
 MusicPlayer::MusicPlayer():

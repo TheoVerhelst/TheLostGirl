@@ -16,6 +16,7 @@ struct Action
 	/// Overload of the () operator.
 	/// \param entity Entity to do the action on.
 	/// \param dt Elapsed time in the last game frame.
+	//TODO reflechir a la surcharge
 	virtual void operator()(entityx::Entity entity, double dt) const = 0;
 };
 

@@ -3,7 +3,6 @@
 
 #include <queue>
 #include <entityx/System.h>
-
 #include <TheLostGirl/StateStack.h>
 
 //Forward declarations

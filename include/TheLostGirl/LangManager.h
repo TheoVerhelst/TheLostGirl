@@ -10,13 +10,13 @@
 /// Available langages.
 enum Lang
 {
-	EN,///< The English
-	FR,///< The French
-	NL,///< The Dutch
-	IT///< The Italian
+	EN,///< English
+	FR,///< French
+	NL,///< Dutch
+	IT///< Italian
 };
 
-/// Language manager that translate strings.
+/// Language manager that translates strings.
 /// It translate a std::string in english to a std::wtring in the langage defined by setLang.
 /// If an error occurs, such as when no language is set or when no translation in found, the original string is returned.
 class LangManager
@@ -42,10 +42,11 @@ class LangManager
 	private:
 		/// Load the data related to the given lang.
 		/// \param langToLoad Lang to load.
-		static void loadLang(Lang langToLoad);
+		void loadLang(Lang langToLoad);
 
-		static Lang m_lang;                                  ///< The current lang.
-		static std::map<std::string, std::wstring> m_entries;///< Translations related to the current lang.
+		//TODO Changer les fichier de langue
+		Lang m_lang;                                  ///< The current lang.
+		std::map<std::string, std::wstring> m_entries;///< Translations related to the current lang.
 };
 
 #endif//LANGMANAGER_H

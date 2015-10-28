@@ -3,7 +3,6 @@
 #include <Box2D/Dynamics/b2Body.h>
 #include <Box2D/Dynamics/b2World.h>
 #include <TheLostGirl/components.h>
-
 #include <TheLostGirl/actions/ArrowShooter.h>
 
 void ArrowShooter::operator()(entityx::Entity entity, double) const

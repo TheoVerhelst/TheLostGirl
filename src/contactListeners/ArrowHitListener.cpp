@@ -1,5 +1,4 @@
 #include <utility> //std::swap
-
 #include <Box2D/Dynamics/b2Body.h>
 #include <Box2D/Dynamics/Contacts/b2Contact.h>
 #include <Box2D/Dynamics/Joints/b2WeldJoint.h>
@@ -71,7 +70,6 @@ void ArrowHitListener::PostSolve(b2Contact* contact, const b2ContactImpulse* imp
 			ActorComponent::Handle actorComponent(entityB.component<ActorComponent>());
 			if(healthComponent and actorComponent)
 			{
-
 				float damages{impulse->normalImpulses[0]*4};
                 damages *= arrowComponent->damage;
                 damages -= actorComponent->arrowResistance;

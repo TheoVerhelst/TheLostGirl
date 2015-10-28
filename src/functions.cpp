@@ -11,7 +11,6 @@
 #include <Box2D/Dynamics/Joints/b2WeldJoint.h>
 #include <entityx/Entity.h>
 #include <TheLostGirl/components.h>
-
 #include <TheLostGirl/functions.h>
 
 

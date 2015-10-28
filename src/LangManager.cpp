@@ -1,8 +1,5 @@
 #include <TheLostGirl/LangManager.h>
 
-Lang LangManager::m_lang;
-std::map<std::string, std::wstring> LangManager::m_entries;
-
 void LangManager::setLang(Lang newLang)
 {
 	m_lang = newLang;
@@ -12,7 +9,7 @@ void LangManager::setLang(Lang newLang)
 std::wstring LangManager::tr(const std::string& entryName) const
 {
 	if(m_entries.count(entryName) > 0)
-		return m_entries[entryName];
+		return m_entries.at(entryName);
 	else
 		return std::wstring(entryName.begin(), entryName.end());
 }
