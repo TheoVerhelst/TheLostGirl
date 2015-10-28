@@ -69,9 +69,9 @@ class DebugDraw : public b2Draw
 		/// \return A formated string.
 		std::string roundOutput(float x);
 
-		bool m_debugMode;             ///< Indicate if the debug ath should be drawn.
-		StateStack::Context m_context;///< Current context of the application.
-		float m_framesPerSecond;      ///< FPS value to display.
+		bool m_debugMode;                   ///< Indicate if the debug ath should be drawn.
+		StateStack::Context m_context;      ///< Current context of the application.
+		float m_framesPerSecond;            ///< FPS value to display.
 };
 
 #endif//DEBUGDRAW_H

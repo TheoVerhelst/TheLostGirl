@@ -1,51 +1,75 @@
-Loading save file|Loading save file
-Loading plan|Loading plan
-Loading night sky|Loading night sky
-Loading day sky|Loading day sky
-Press any key to continue...|Press any key to continue...
-New game|New game
-Load game|Load game
-Exit|Exit
-Configure|Configure
-Arcade|Arcade
-Normal|Normal
-Realistic|Realistic
-Main volume|Main volume
-Music volume|Music volume
-Effects volume|Effects volume
-Fullscreen|Fullscreen
-Controls|Controls
-Antialiasing|Antialiasing
-Realism|Realism
-Options|Options
-Resolution|Resolution
-Apply|Apply
-Back|Back
-Pause|Pause
-Back to game|Back to game
-Parameters|Parameters
-Back to main menu|Back to main menu
-Snow season|Snow season
-Flowers season|Flowers season
-Fruit season|Fruit season
-Wind season|Wind season
-snow month|snow month
-winds month|winds month
-buds month|buds month
-flowers month|flowers month
-harvests month|harvests month
-fruits month|fruits month
-mists month|mists month
-month of frost|month of frost
-st year, |st year, 
-nd year, |nd year, 
-th year, |th year, 
-st day of the |st day of the 
-nd day of the |nd day of the 
-th day of the |th day of the 
-I am a random hint.|I am a random hint.
-Drag and drop your mouse to bend your bow.|Drag and drop your mouse to bend your bow.
-Fast travel to a place is allowed only once you discovered this one.|Fast travel to a place is allowed only once you discovered this one.
-The death is very dangereous, beware of it!|The death is very dangereous, beware of it!
-God is philosophically the abstract concept representing the notion of absolute.|God is philosophically the abstract concept representing the notion of absolute.
-The weight of your inventory influences the height of your jumps.|The weight of your inventory influences the height of your jumps.
+Press any key to continue...
+Loading save file
+Loading plan
+Loading night sky
+Loading day sky
+New game
+Load game
+Exit
+Configure
+Arcade
+Normal
+Realistic
+Main volume
+Music volume
+Effects volume
+Fullscreen
+Controls
+Antialiasing
+Realism
+Options
+Resolution
+Apply
+Back
+Pause
+Back to game
+Parameters
+Bloom effect
+Lang
+Back to main menu
+Snow season
+Flowers season
+Fruit season
+Wind season
+snow month
+winds month
+buds month
+flowers month
+harvests month
+fruits month
+mists month
+month of frost
+st year, 
+nd year, 
+th year, 
+st day of the 
+nd day of the 
+th day of the 
+Key configuration
+Wood wolf
+archer
+arrow
+sky
+Bend the bow
+Change arrow
+Concentrate
+Look further
+Action
+Hand to hand
+Inventory
+Jump
+Move up
+Move down
+Move left
+Move right
+Pick up arrow
+Roulade
+Search in corpse
+Sneak
+[Void]
+I am a random hint.
+Drag and drop your mouse to bend your bow.
+Fast travel to a place is allowed only once you discovered this one.
+The death is very dangereous, beware of it!
+God is philosophically the abstract concept representing the notion of absolute.
+The weight of your inventory influences the height of your jumps.

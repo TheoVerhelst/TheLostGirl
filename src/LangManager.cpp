@@ -1,3 +1,4 @@
+#include <iostream>
 #include <TheLostGirl/LangManager.h>
 
 void LangManager::setLang(Lang newLang)
@@ -11,7 +12,10 @@ std::wstring LangManager::tr(const std::string& entryName) const
 	if(m_entries.count(entryName) > 0)
 		return m_entries.at(entryName);
 	else
+	{
+		std::cerr << "No translation available for \"" << entryName << "\" in the lang " << m_lang << std::endl;
 		return std::wstring(entryName.begin(), entryName.end());
+	}
 }
 
 Lang LangManager::getLang() const
@@ -22,43 +26,46 @@ Lang LangManager::getLang() const
 void LangManager::loadLang(Lang langToLoad)
 {
 	m_entries.clear();
-	std::string filePath;
-	std::wifstream fileStream;
+	std::string sourceFilePath("resources/lang/EN"), translationFilePath(sourceFilePath);
+	std::ifstream sourceFileStream;
+	std::wifstream translationFileStream;
 	//Things to handle wide encoding
 	std::locale loc("");
-	fileStream.imbue(loc);
+	translationFileStream.imbue(loc);
 	switch(langToLoad)//Open the right file
 	{
+		case NL:
+		case IT:
 		case EN:
-			filePath = "resources/lang/EN";
+			translationFilePath = "resources/lang/EN";
 			break;
 
 		case FR:
-			filePath = "resources/lang/FR";
-			break;
-
-		case NL:
-		case IT:
-		default:
-			filePath = "resources/lang/EN";
+			translationFilePath = "resources/lang/FR";
 			break;
 	}
-	fileStream.open(filePath);
-	if(not fileStream.is_open())//If failed to open the file
-		throw std::runtime_error("Unable to open lang file: " + filePath);//Throw an exception
+	sourceFileStream.open(sourceFilePath);
+	translationFileStream.open(translationFilePath);
+	if(not sourceFileStream.is_open())
+		throw std::runtime_error("Unable to open source lang file: " + sourceFilePath);
+	else if(not translationFileStream.is_open())
+		throw std::runtime_error("Unable to open translation lang file: " + translationFilePath);
 	else
 	{
-		while(not fileStream.eof())
+		while(not sourceFileStream.eof() and not translationFileStream.eof())
 		{
-			std::wstring line;
-			getline(fileStream, line);//fill line with the next line of filestream
-			std::size_t barPos{line.find(L"|")};
-			std::string entryNameString;
-			std::wstring entryNameWString{line.substr(0, barPos)};//All before the |
-			entryNameString.assign(entryNameWString.begin(), entryNameWString.end());//Convert wstring to string
-			std::wstring value{line.substr(barPos + 1)}; //All after the |
-			m_entries.emplace(entryNameString, value);
+			std::string sourceLine;
+			std::wstring translatedLine;
+			getline(sourceFileStream, sourceLine);//fill line with the next line of filestream
+			getline(translationFileStream, translatedLine);//fill line with the next line of filestream
+			m_entries.emplace(sourceLine, translatedLine);
 		}
 	}
-	fileStream.close();
+	if(sourceFileStream.eof() != translationFileStream.eof())
+	{
+		std::cerr << "\"" << sourceFilePath << "\" source file and \"" << translationFilePath << "\" translation file have different number of lines." << std::endl;
+		std::cerr << "Translations are probably inconsistent." << std::endl;
+	}
+	sourceFileStream.close();
+	translationFileStream.close();
 }

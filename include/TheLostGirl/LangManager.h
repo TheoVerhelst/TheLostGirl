@@ -44,7 +44,6 @@ class LangManager
 		/// \param langToLoad Lang to load.
 		void loadLang(Lang langToLoad);
 
-		//TODO Changer les fichier de langue
 		Lang m_lang;                                  ///< The current lang.
 		std::map<std::string, std::wstring> m_entries;///< Translations related to the current lang.
 };

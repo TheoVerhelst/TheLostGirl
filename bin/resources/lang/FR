@@ -1,72 +1,75 @@
-Press any key to continue...|Appuyez sur une touche pour continuer...
-Loading save file|Chargement du fichier de sauvegarde
-Loading|Chargement de
-Wood wolf|Loup des bois
-archer|archer
-arrow|flèche
-sky|ciel
-Loading plan|Chargement du plan 
-Assembling entities|Assemblage des entités
-Loading HUD|Chargement de l'ATH
-New game|Nouvelle partie
-Load game|Charger une partie
-Exit|Quitter
-Main volume|Volume principal
-Music volume|Volume de la musique
-Effects volume|Volume des effets
-Ambiance volume|Volume d'ambiance
-Fullscreen|Plein écran
-Controls|Contrôles
-Configure|Configurer
-Resolution|Résolution
-Apply|Appliquer
-OK|Valider
-Cancel|Annuler
-Pause|Pause
-Back to game|Retour au jeu
-Parameters|Paramètres
-Bloom effect|Effet bloom
-Lang|Langue
-Back to main menu|Retour au menu principal
-Snow season|Saison de la neige
-Flowers season|Saison des fleurs
-Fruit season|Saison des fruits
-Wind season|Saison de la bise
-snow month|mois des neiges
-winds month|mois des vents
-buds month|mois des bourgeons
-flowers month|mois des fleurs
-harvests month|mois des moissons
-fruits month|mois des fruits
-mists month|mois des brumes
-month of frost|mois des frimas
-st year, |ère année, 
-nd year, |ème année, 
-th year, |ème année, 
-st day of the |er jour du  
-nd day of the |ème jour du 
-th day of the |ème jour du 
-Key configuration|Configuration des touches
-Bend|Bander l'arc
-Change arrow|Changer de flèche
-Concentrate|Se concentrer
-Further view|Regarder plus loin
-Action|Action
-Hand to hand|Corps à corps
-Inventory|Inventaire
-Jump|Saut
-Move down|Déplacement bas
-Move up|Déplacement haut
-Move left|Déplacement gauche
-Move right|Déplacement droite
-Pick up arrow|Ramasser flèche
-Roulade|Roulade
-Search in corpse|Fouiller cadavre
-Sneak|Discrétion
-[None]|[Néant]
-I am a random hint.|Je suis une astuce aléatoire.
-Drag and drop your mouse to bend your bow.|Bougez votre souris pour bander votre arc.
-Fast travel to a place is allowed only once you discovered this one.|Le voyage rapide vers un lieu n'est autorisé qu'une fois que vous l'avez découvert.
-The death is very dangereous, beware of it!|La mort est très dangereuse, méfiez-vous en!
-God is philosophically the abstract concept representing the notion of absolute.|Dieu est philosophiquement le concept abstrait représentant la notion d'absolu.
-The weight of your inventory influences the height of your jumps.|Le poids de votre inventaire influence la hauteur de votre saut.
+Appuyez sur une touche pour continuer...
+Chargement du fichier de sauvegarde
+Chargement du plan
+Chargement du ciel nocturne
+chargement du ciel diurne
+Nouvelle partie
+Charger une partie
+Quitter
+Configurer
+Arcade
+Normal
+Réaliste
+Volume principal
+Volume de la musique
+Volume des effets
+Plein écran
+Contrôles
+Anticrénelage
+Réalisme
+Options
+Résolution
+Appliquer
+Annuler
+Pause
+Retour au jeu
+Paramètres
+Effet bloom
+Langue
+Retour au menu principal
+Saison de la neige
+Saison des fleurs
+Saison des fruits
+Saison de la bise
+mois des neiges
+mois des vents
+mois des bourgeons
+mois des fleurs
+mois des moissons
+mois des fruits
+mois des brumes
+mois des frimas
+ère année, 
+ème année, 
+ème année, 
+er jour du  
+ème jour du 
+ème jour du 
+Configuration des touches
+Loup des bois
+archer
+flèche
+ciel
+Bander l'arc
+Changer de flèche
+Se concentrer
+Regarder plus loin
+Action
+Corps à corps
+Inventaire
+Saut
+Déplacement bas
+Déplacement haut
+Déplacement gauche
+Déplacement droite
+Ramasser flèche
+Roulade
+Fouiller cadavre
+Discrétion
+[Néant]
+Je suis une astuce aléatoire.
+Bougez votre souris pour bander votre arc.
+Le voyage rapide vers un lieu n'est autorisé qu'une fois que vous l'avez découvert.
+La mort est très dangereuse, méfiez-vous en!
+Dieu est philosophiquement le concept abstrait représentant la notion d'absolu.
+Le poids de votre inventaire influence la hauteur de votre saut.
