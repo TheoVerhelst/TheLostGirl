@@ -254,6 +254,7 @@ void GameState::initWorld(const std::string& file)
 		//and the scrolling system replace sprite according to the player position.
 		if(root.isMember("entities"))
 		{
+			getContext().eventManager.emit<LoadingStateChange>("Loading entities");
 			const Json::Value entities{root["entities"]};
 			//First add all entities with some needed components, that's for component that need
 			//that m_entities is complete and bodies already created to be assigned (such as InventoryComponent).
@@ -293,10 +294,6 @@ void GameState::initWorld(const std::string& file)
 				}
 				//Assign to root the new entity
 				root["entities"][entityName] = entity;
-				if(entity.isMember("name"))
-					getContext().eventManager.emit<LoadingStateChange>("Loading " + entity["name"].asString());
-				else
-					getContext().eventManager.emit<LoadingStateChange>("Loading " + entityName);
 
 				Serializer s(getContext(), m_entities);
 #define DESERIALIZE(componentName, componentType)\
@@ -335,6 +332,7 @@ if(entity.isMember(componentName))\
 
 		if(not getContext().parameters.debugMode)
 		{
+			getContext().eventManager.emit<LoadingStateChange>("Loading background");
 			//level
 			//for each group of replaces
 			for(const std::string groupOfReplacesName : level["replaces"].getMemberNames())
@@ -367,7 +365,6 @@ if(entity.isMember(componentName))\
 					//Load the texture
 					//Identifier of the texture, in format "level_plan_texture"
 					const std::string textureIdentifier{fileTexture + "_" + std::to_string(i)};
-					getContext().eventManager.emit<LoadingStateChange>("Loading plan " + groupOfReplacesName);
 					texManager.load<sf::IntRect>(textureIdentifier, path, originRect);
 					//Replaces
 					const Json::Value replaces{image["replaces"]};
@@ -424,7 +421,6 @@ if(entity.isMember(componentName))\
 					int currentChunkSize{chunkSize};
 					if(j >= planLength/chunkSize)
 						currentChunkSize = planLength - chunkSize*j;
-					getContext().eventManager.emit<LoadingStateChange>("Loading plan " + std::to_string(i+1));
 					texManager.load<sf::IntRect>(textureIdentifier, path, sf::IntRect(j*chunkSize, 0, currentChunkSize, int(float(m_levelRect.height)*getContext().parameters.scale)));
 					//Create an entity
 					m_sceneEntities.emplace(textureIdentifier, getContext().entityManager.create());

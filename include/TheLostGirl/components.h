@@ -65,11 +65,11 @@ struct AnimationsComponent : public entityx::Component<AnimationsComponent<A>>
 /// Enumeration of every possible direction.
 enum class Direction : int
 {
-	None,  ///< Unhandled direction.
 	Left,  ///< Diriged to the left.
-	Right, ///< Diriged to the right.
 	Top,   ///< Diriged to the top.
-	Bottom ///< Diriged to the bottom.
+	Right, ///< Diriged to the right.
+	Bottom,///< Diriged to the bottom.
+	None   ///< Unhandled direction.
 };
 
 /// The Direction component.

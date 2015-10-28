@@ -23,6 +23,7 @@ namespace entityx
 }
 
 struct b2JointDef;
+enum class Direction;
 
 /// \file functions.h
 
@@ -142,5 +143,11 @@ b2FixtureDef getFixtureDef(b2Fixture* fixture);
 /// \param joint The joint to analyze.
 /// \return A definition of \a joint.
 b2JointDef* getJointDef(b2Joint* joint);
+
+
+/// Implements the logical opposite of a direction.
+/// \param direction The direction to negate.
+/// \return The opposite direction.
+Direction operator!(const Direction& direction);
 
 #endif//FUNCTIONS_H

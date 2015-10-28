@@ -165,3 +165,14 @@ b2JointDef* getJointDef(b2Joint* joint)
 	jointDef->userData = joint->GetUserData();
 	return jointDef;
 }
+
+Direction operator!(const Direction& direction)
+{
+	if(direction == Direction::None)
+		return Direction::None;
+	else
+	{
+		const int max{static_cast<int>(Direction::None)};
+		return Direction((static_cast<int>(direction) + (max / 2 )) % max);
+	}
+}

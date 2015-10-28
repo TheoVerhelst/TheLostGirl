@@ -16,109 +16,76 @@ Mover::Mover(StateStack::Context context, Direction _direction, bool _start):
 
 void Mover::operator()(entityx::Entity entity) const
 {
-	if(not entity)
+	if(not entity or direction == Direction::None)
 		return;
 //	const auto fallComponent(entity.component<FallComponent>());
 //	if(fallComponent and fallComponent->inAir)
 //		return;
-	std::string directionStr;
-	std::string oppDirectionStr;
-	Direction oppDirection;
-	bool moveIsHorizontal;
-	switch(direction)
+	const std::map<Direction, std::string> directionToString = {
+			{Direction::Left, " left"},
+			{Direction::Right, " right"},
+			{Direction::Top, " top"},
+			{Direction::Bottom, " bottom"}};
+	std::string directionStr{directionToString.at(direction)};
+	std::string oppDirectionStr{directionToString.at(not direction)};
+	DirectionComponent::Handle directionComponent(entity.component<DirectionComponent>());
+	if(directionComponent and (direction == Direction::Left or direction == Direction::Right))
 	{
-		case Direction::Left:
-			directionStr = " left";
-			oppDirectionStr = " right";
-			oppDirection = Direction::Right;
-			moveIsHorizontal = true;
-			break;
-
-		case Direction::Right:
-			directionStr = " right";
-			oppDirectionStr = " left";
-			oppDirection = Direction::Left;
-			moveIsHorizontal = true;
-			break;
-
-		case Direction::Top:
-			directionStr = " top";
-			oppDirectionStr = " bottom";
-			oppDirection = Direction::Bottom;
-			moveIsHorizontal = false;
-			break;
-
-		case Direction::Bottom:
-			directionStr = " bottom";
-			oppDirectionStr = " top";
-			oppDirection = Direction::Top;
-			moveIsHorizontal = false;
-			break;
-
-		case Direction::None:
-		default:
-			return;
-	}
-	if(moveIsHorizontal)
-	{
-		DirectionComponent::Handle directionComponent(entity.component<DirectionComponent>());
-		if(directionComponent)
+		bool moveToOppDirection;
+		if(direction == Direction::Left)
 		{
-			bool moveToOppDirection;
-			if(direction == Direction::Left)
-			{
-				moveToOppDirection = directionComponent->moveToRight;
-				directionComponent->moveToLeft = start;
-			}
-			else
-			{
-				moveToOppDirection = directionComponent->moveToLeft;
-				directionComponent->moveToRight = start;
-			}
-			const Direction initialDirection{directionComponent->direction};
-			if(start)
-				//Here in all cases, the new direction will be the same.
-				directionComponent->direction = direction;
-			else if(moveToOppDirection)
-				directionComponent->direction = oppDirection;
-			if(directionComponent->direction != initialDirection)
-				flip(entity);
+			moveToOppDirection = directionComponent->moveToRight;
+			directionComponent->moveToLeft = start;
+		}
+		else
+		{
+			moveToOppDirection = directionComponent->moveToLeft;
+			directionComponent->moveToRight = start;
+		}
+		const Direction initialDirection{directionComponent->direction};
+		if(start)
+			//Here in all cases, the new direction will be the same.
+			directionComponent->direction = direction;
+		else if(moveToOppDirection)
+			directionComponent->direction = not direction;
+		if(directionComponent->direction != initialDirection)
+			flip(entity);
 
-			AnimationsComponent<SpriteSheetAnimation>::Handle animationsComponent(entity.component<AnimationsComponent<SpriteSheetAnimation>>());
-			//If the entity have animations
-			if(animationsComponent)
+		AnimationsComponent<SpriteSheetAnimation>::Handle animationsComponent(entity.component<AnimationsComponent<SpriteSheetAnimation>>());
+		//If the entity have animations
+		if(animationsComponent)
+		{
+			AnimationsManager<SpriteSheetAnimation>& animations(animationsComponent->animationsManager);
+			const std::list<std::string> animationsList = {"bend", "fall", "jump"};
+			for(const std::string& animation : animationsList)
 			{
-				AnimationsManager<SpriteSheetAnimation>& animations(animationsComponent->animationsManager);
-				const std::list<std::string> animationsList = {"bend", "fall", "jump"};
-				for(const std::string& animation : animationsList)
+				//If the manager has this animation
+				if(animations.isRegistred(animation + directionStr)
+						and animations.isRegistred(animation + oppDirectionStr)
+						and animations.isActive(animation + oppDirectionStr))
 				{
-					//If the manager has this animation
-					if(animations.isRegistred(animation + directionStr)
-							and animations.isRegistred(animation + oppDirectionStr)
-							and animations.isActive(animation + oppDirectionStr))
+					if(start)
 					{
-						if(start)
-						{
-							float progress{animations.getProgress(animation + oppDirectionStr)};
-							if(animations.isPaused(animation + oppDirectionStr))
-								animations.activate(animation + directionStr);
-							else
-								animations.play(animation + directionStr);
-							animations.setProgress(animation + directionStr, progress);
-							animations.stop(animation + oppDirectionStr);
-						}
-						else if(moveToOppDirection)
-						{
-							float progress{animations.getProgress(animation + directionStr)};
-							if(animations.isPaused(animation + directionStr))
-								animations.activate(animation + oppDirectionStr);
-							else
-								animations.play(animation + oppDirectionStr);
-							animations.setProgress(animation + oppDirectionStr, progress);
-							animations.stop(animation + directionStr);
-						}
+						float progress{animations.getProgress(animation + oppDirectionStr)};
+						if(animations.isPaused(animation + oppDirectionStr))
+							animations.activate(animation + directionStr);
+						else
+							animations.play(animation + directionStr);
+						animations.setProgress(animation + directionStr, progress);
+						animations.stop(animation + oppDirectionStr);
+					}
+					else if(moveToOppDirection)
+					{
+						float progress{animations.getProgress(animation + directionStr)};
+						if(animations.isPaused(animation + directionStr))
+							animations.activate(animation + oppDirectionStr);
+						else
+							animations.play(animation + oppDirectionStr);
+						animations.setProgress(animation + oppDirectionStr, progress);
+						animations.stop(animation + directionStr);
 					}
 				}
+			}
 //
 //				//If the animations manager have bending animations
 //				if(animations.isRegistred("bend" + directionStr)
@@ -165,43 +132,42 @@ void Mover::operator()(entityx::Entity entity) const
 //						animations.setProgress("jump" + directionStr, progress);
 //					}
 //				}
-				//If the animations manager have walk animations
-				if(animations.isRegistred("stay" + directionStr)
-					and animations.isRegistred("stay" + oppDirectionStr)
-					and animations.isRegistred("move" + directionStr)
-					and animations.isRegistred("move" + oppDirectionStr))
+			//If the animations manager have walk animations
+			if(animations.isRegistred("stay" + directionStr)
+				and animations.isRegistred("stay" + oppDirectionStr)
+				and animations.isRegistred("move" + directionStr)
+				and animations.isRegistred("move" + oppDirectionStr))
+			{
+				WalkComponent::Handle walkComponent{entity.component<WalkComponent>()};
+				if(start)
 				{
-					WalkComponent::Handle walkComponent{entity.component<WalkComponent>()};
-					if(start)
+					//Force to set the right animations
+					animations.stop("stay" + oppDirectionStr);
+					animations.play("stay" + directionStr);
+					animations.stop("move" + oppDirectionStr);
+					animations.play("move" + directionStr);
+					if(moveToOppDirection)
 					{
-						//Force to set the right animations
-						animations.stop("stay" + oppDirectionStr);
-						animations.play("stay" + directionStr);
-						animations.stop("move" + oppDirectionStr);
-						animations.play("move" + directionStr);
-						if(moveToOppDirection)
-						{
-							//Stop the entity
-							walkComponent->effectiveMovement = Direction::None;//Stop the entity
-							animations.stop("move" + directionStr);
-						}
-						else
-							walkComponent->effectiveMovement = direction;
+						//Stop the entity
+						walkComponent->effectiveMovement = Direction::None;//Stop the entity
+						animations.stop("move" + directionStr);
 					}
 					else
+						walkComponent->effectiveMovement = direction;
+				}
+				else
+				{
+					animations.stop("move" + directionStr);
+					if(moveToOppDirection)
 					{
-						animations.stop("move" + directionStr);
-						if(moveToOppDirection)
-						{
-							//Force to play the opposite direction animations
-							animations.play("move" + oppDirectionStr);
-							animations.stop("stay" + directionStr);
-							animations.play("stay" + oppDirectionStr);
-							walkComponent->effectiveMovement = oppDirection;
-						}
-						else
-							walkComponent->effectiveMovement = Direction::None;//Stop the player
+						//Force to play the opposite direction animations
+						animations.play("move" + oppDirectionStr);
+						animations.stop("stay" + directionStr);
+						animations.play("stay" + oppDirectionStr);
+						walkComponent->effectiveMovement = not direction;
 					}
+					else
+						walkComponent->effectiveMovement = Direction::None;//Stop the player
 				}
 			}
 		}

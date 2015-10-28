@@ -479,8 +479,7 @@ int stop(const std::vector<Data>& args, StateStack::Context context)
 			Command moveCommand2;
 			moveCommand2.targetIsSpecific = true;
 			moveCommand2.entity = self;
-			Direction opposite{directionComponent->direction == Direction::Left ? Direction::Right : Direction::Left};
-			moveCommand1.action = Mover(context, opposite, false);
+			moveCommand1.action = Mover(context, not directionComponent->direction, false);
 			moveCommand2.action = Mover(context, directionComponent->direction, false);
 			context.systemManager.system<PendingChangesSystem>()->commandQueue.push(moveCommand1);
 			context.systemManager.system<PendingChangesSystem>()->commandQueue.push(moveCommand2);
