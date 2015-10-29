@@ -32,9 +32,8 @@ DebugDraw::DebugDraw(StateStack::Context context):
 	m_FPSLabel->setPosition(tgui::bindWidth(m_context.gui, 0.7f), tgui::bindHeight(m_context.gui, 0.01f));
 	m_FPSLabel->setTextSize(20);
 	m_context.gui.add(m_FPSLabel);
-
 	m_console->setPosition(tgui::bindWidth(m_context.gui, 0.5f), tgui::bindHeight(m_context.gui, 0.7f));
-	m_console->setSize(tgui::bindWidth(m_context.gui, 0.5f), tgui::bindHeight(m_context.gui, 0.29f));
+	m_console->setSize(tgui::bindWidth(m_context.gui, 0.5f) - 10.f, tgui::bindHeight(m_context.gui, 0.3f) - 10.f);
 	m_console->setTextSize(10);
 	m_context.gui.add(m_console);
 }
@@ -180,6 +179,8 @@ void DebugDraw::drawDebugAth()
 			m_FPSLabel->show();
 			m_console->show();
 		}
+		std::cout << "out" << std::endl;
+		std::cerr << "err" << std::endl;
 	}
 	m_debugMode = m_context.parameters.debugMode;
 	if(not m_debugMode)
@@ -192,6 +193,7 @@ void DebugDraw::drawDebugAth()
 	b2Vec2 position{0, 0};
 	bool found{false};
 	for(auto entity : m_context.entityManager.entities_with_components(categoryComponent, bodyComponent))
+	{
 		//We found the player
 		if(categoryComponent->category & Category::Player)
 		{
@@ -203,6 +205,7 @@ void DebugDraw::drawDebugAth()
 			found = true;
 			break;
 		}
+	}
 
 	if(not found)
 		m_positionLabel->hide();
@@ -221,14 +224,12 @@ void DebugDraw::drawDebugAth()
 	m_FPSLabel->setText("FPS: " + roundOutput(m_framesPerSecond));
 
 	//Console
-	std::string outString{m_outStringStream.str()};
-	if(not outString.empty())
+	if(not m_outStringStream.str().empty())
 	{
 		m_console->addLine(m_outStringStream.str());
 		m_outStringStream.str("");
 	}
-	outString = m_errStringStream.str();
-	if(not outString.empty())
+	if(not m_errStringStream.str().empty())
 	{
 		m_console->addLine(m_errStringStream.str(), sf::Color(255, 100, 100));
 		m_errStringStream.str("");

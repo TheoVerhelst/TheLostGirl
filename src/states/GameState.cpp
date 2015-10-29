@@ -39,10 +39,7 @@
 //TODO Retirer la fleche pendant le CAC.
 //TODO Sound manager.
 //TODO Faire un système multi texture pour une même partie d'entité (soit chunker une grande image, soit faire plusieurs images).
-
-// À discuter, à propos du gameplay :
-//TODO Component pour la position de combat (parade, attaque, tir, ...).
-//TODO Differents CAC en fonction du déplacement.
+//TODO CAC: statique : deux coups; en avancant: ??? ; en tombant: un puissant; en sautant : un faible; roulade : ???; en reculant : ???; en sneak : prise (egorgement/ippo sonage)
 
 GameState::GameState(StateStack& stack, std::string file) :
 	State(stack),
