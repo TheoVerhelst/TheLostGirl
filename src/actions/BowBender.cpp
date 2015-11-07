@@ -16,20 +16,23 @@ BowBender::BowBender(float _angle, float _power):
 
 void BowBender::operator()(entityx::Entity entity) const
 {
-	if(not entity)
+	if(not TEST(entity.valid()))
 		return;
 	ArcherComponent::Handle archerComponent{entity.component<ArcherComponent>()};
 	ArticuledArmsComponent::Handle armsComponent{entity.component<ArticuledArmsComponent>()};
 	BodyComponent::Handle bodyComponent{entity.component<BodyComponent>()};
 	DirectionComponent::Handle directionComponent{entity.component<DirectionComponent>()};
-	if(not (archerComponent and archerComponent->quiver.valid() and bodyComponent and directionComponent
-			and armsComponent and armsComponent->arms.valid()))
+	if(not TEST(archerComponent and archerComponent->quiver.valid())
+			and bodyComponent and directionComponent
+			and armsComponent and armsComponent->arms.valid())
 		return;
 	HoldItemComponent::Handle holdItemComponent{armsComponent->arms.component<HoldItemComponent>()};
-	if(not (holdItemComponent and holdItemComponent->item.valid()))
+	if(not TEST(holdItemComponent and holdItemComponent->item.valid()))
 		return;
 	BowComponent::Handle bowComponent{holdItemComponent->item.component<BowComponent>()};
-	if(not bowComponent)
+	QuiverComponent::Handle quiverComponent{archerComponent->quiver.component<QuiverComponent>()};
+	BodyComponent::Handle bowBodyComponent{holdItemComponent->item.component<BodyComponent>()};
+	if(not TEST(bowComponent and quiverComponent and bowBodyComponent))
 		return;
 	//Set the bending angle
 	if(directionComponent->direction == Direction::Left)
@@ -66,35 +69,31 @@ void BowBender::operator()(entityx::Entity entity) const
 		if(animationComponent->animationsManager.isRegistred("bend"+directionStr))
 			animationComponent->animationsManager.setProgress("bend"+directionStr, bowComponent->targetTranslation);
 	}
-	QuiverComponent::Handle quiverComponent{archerComponent->quiver.component<QuiverComponent>()};
 	//If there is not a notched arrow, notch antoher one
 	if(not bowComponent->notchedArrow.valid() and not quiverComponent->arrows.empty())
 	{
-		BodyComponent::Handle arrowBodyComponent;
-		entityx::Entity notchedArrow{quiverComponent->arrows.back()};
-		quiverComponent->arrows.pop_back();
+		auto notchedArrowIt(quiverComponent->arrows.begin());
+		entityx::Entity notchedArrow(notchedArrowIt->first);
+		if(not TEST(notchedArrow.valid()))
+			return;
+		quiverComponent->arrows.erase(notchedArrowIt);
 		bowComponent->notchedArrow = notchedArrow;
-		b2Body* arrowBody{notchedArrow.component<BodyComponent>()->body};
-		b2Body* bowBody{holdItemComponent->item.component<BodyComponent>()->body};
+		BodyComponent::Handle notchedArrowBodyComponent{notchedArrow.component<BodyComponent>()};
+		ArrowComponent::Handle notchedArrowComponent{notchedArrow.component<ArrowComponent>()};
+		if(not TEST(notchedArrowBodyComponent and notchedArrowComponent))
+			return;
 
-		b2World* world{bowBody->GetWorld()};
+		b2World* world{bowBodyComponent->body->GetWorld()};
 		//Destroy all joints (e.g. the quiver/arrow joint)
-		for(b2JointEdge* jointEdge{arrowBody->GetJointList()}; jointEdge; jointEdge = jointEdge->next)
+		for(b2JointEdge* jointEdge{notchedArrowBodyComponent->body->GetJointList()}; jointEdge; jointEdge = jointEdge->next)
 			world->DestroyJoint(jointEdge->joint);
 
 		//Set the joint
 		b2PrismaticJointDef jointDef;
-		jointDef.bodyA = bowBody;
-		jointDef.bodyB = arrowBody;
-		//Get the AABB of the arrow, to compute where place anchor of the joint
-		b2AABB arrowBox;
-		b2Transform identity;
-		identity.SetIdentity();
-		jointDef.localAnchorA = bowComponent->localAnchor;
-		for(b2Fixture* fixture{arrowBody->GetFixtureList()}; fixture; fixture = fixture->GetNext())
-			if(fixtureHasRole(fixture, FixtureRole::Main))
-				fixture->GetShape()->ComputeAABB(&arrowBox, identity, 0);
-		jointDef.localAnchorB = {0.f, (arrowBox.upperBound.y - arrowBox.lowerBound.y)*0.5f};
+		jointDef.bodyA = bowBodyComponent->body;
+		jointDef.bodyB = notchedArrowBodyComponent->body;
+		jointDef.localAnchorA = bowComponent->notchedArrowAnchor;
+		jointDef.localAnchorB = sftob2(notchedArrowComponent->localFrictionPoint);
 		jointDef.localAxisA = {1.f, 0.f};
 		jointDef.lowerTranslation = bowComponent->lowerTranslation;
 		jointDef.upperTranslation = bowComponent->upperTranslation;
@@ -104,6 +103,6 @@ void BowBender::operator()(entityx::Entity entity) const
 		jointDef.enableMotor = true;
 		jointDef.referenceAngle = 0.f;
 		bowComponent->notchedArrowJoint = static_cast<b2PrismaticJoint*>(world->CreateJoint(&jointDef));
-		notchedArrow.component<ArrowComponent>()->state = ArrowComponent::Notched;
+		notchedArrowComponent->state = ArrowComponent::Notched;
 	}
 }

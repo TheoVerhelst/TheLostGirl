@@ -426,6 +426,8 @@ NearestFoeQueryCallback::NearestFoeQueryCallback(entityx::Entity self, StateStac
 bool NearestFoeQueryCallback::ReportFixture(b2Fixture* fixture)
 {
 	entityx::Entity currentEntity{*static_cast<entityx::Entity*>(fixture->GetBody()->GetUserData())};
+	if(not TEST(currentEntity))
+		return true;
 	CategoryComponent::Handle categoryComponent(currentEntity.component<CategoryComponent>());
 	if(categoryComponent and currentEntity.component<CategoryComponent>()->category & Category::Passive)//currentEntity must be passive
 	{

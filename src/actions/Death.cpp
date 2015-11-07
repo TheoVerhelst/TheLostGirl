@@ -1,5 +1,6 @@
 #include <entityx/Entity.h>
 #include <TheLostGirl/components.h>
+#include <TheLostGirl/functions.h>
 #include <TheLostGirl/scripts/scriptsFunctions.h>
 #include <TheLostGirl/actions/Death.h>
 
@@ -10,7 +11,7 @@ Death::Death(StateStack::Context context):
 
 void Death::operator()(entityx::Entity entity) const
 {
-	if(not entity)
+	if(not TEST(entity))
 		return;
 	//Play death animation.
 	AnimationsComponent<SpriteSheetAnimation>::Handle spriteSheetComponent(entity.component<AnimationsComponent<SpriteSheetAnimation>>());
@@ -46,6 +47,8 @@ void Death::operator()(entityx::Entity entity) const
 			}
 		}
 	}
+	else
+		std::cerr << "An entity dead but has not inventory." << std::endl;
 	//Send a stop command
 	stop({entity}, m_context);
 }

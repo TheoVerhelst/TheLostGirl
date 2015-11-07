@@ -117,7 +117,7 @@ bool isMember(const Container& container, const Value& value)
 /// \return The key of \a value if found in the map, undefied behavior otherwise.
 /// \see isMember
 template <typename Key, typename Value>
-Key getKey(std::map<Key, Value> map, Value& value)
+Key getKey(const std::map<Key, Value>& map, const Value& value)
 {
 	auto it = map.cbegin();
 	while(it != map.cend() and it->second != value) ++it;
@@ -149,5 +149,14 @@ b2JointDef* getJointDef(b2Joint* joint);
 /// \param direction The direction to negate.
 /// \return The opposite direction.
 Direction operator!(const Direction& direction);
+
+bool printError(const std::string& expression, const std::string& filename, unsigned int line);
+
+//If this is the release build
+#ifdef NDEBUG
+ #define TEST(expression) (expression)
+#else
+ #define TEST(expression) ((expression) ? true : printError(#expression, __FILE__, __LINE__))
+#endif // NDEBUG
 
 #endif//FUNCTIONS_H

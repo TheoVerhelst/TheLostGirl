@@ -49,6 +49,18 @@
 					}
 				],
 				"type" : "dynamic"
+			},
+			"item":
+			{
+				"category" : "Quiver",
+				"type" : "Wooden quiver",
+				"weight" : 1.5,
+				"value" : 10,
+				"hold anchor":
+				{
+					"x" : 0,
+					"y" : 0
+				}
 			}
 		},
 		"bow" :
@@ -99,6 +111,18 @@
 					}
 				],
 				"type" : "dynamic"
+			},
+			"item":
+			{
+				"category" : "Bow",
+				"type" : "Wooden bow",
+				"weight" : 1.5,
+				"value" : 10,
+				"hold anchor":
+				{
+					"x" : 0,
+					"y" : 0
+				}
 			},
 			"sprite" : 
 			{
@@ -326,6 +350,18 @@
 					}
 				],
 				"type" : "dynamic"
+			},
+			"item":
+			{
+				"category" : "Arrow",
+				"type" : "Wooden arrow",
+				"weight" : 0.2,
+				"value" : 2,
+				"hold anchor":
+				{
+					"x" : 0,
+					"y" : 0
+				}
 			},
 			"sprite" : 
 			{

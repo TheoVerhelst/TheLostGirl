@@ -19,12 +19,14 @@
  ////////// Serializing ///////////
 //////////             ///////////
 
-Serializer::Serializer(StateStack::Context context, const std::map<std::string, entityx::Entity>& entitiesMap):
+Serializer::Serializer(StateStack::Context context, std::map<std::string, entityx::Entity>& entities, Json::Value& jsonEntities):
 	m_context(context),
-	m_entitiesMap(entitiesMap)
-{}
+	m_entities(entities),
+	m_jsonEntities(jsonEntities)
+{
+}
 
-Json::Value Serializer::serialize(entityx::ComponentHandle<BodyComponent> component)
+Json::Value Serializer::implSerialize(entityx::ComponentHandle<BodyComponent> component)
 {
 	const float pixelByMeter{m_context.parameters.pixelByMeter};
 	Json::Value ret;
@@ -160,7 +162,7 @@ Json::Value Serializer::serialize(entityx::ComponentHandle<BodyComponent> compon
 	return ret;
 }
 
-Json::Value Serializer::serialize(entityx::ComponentHandle<SpriteComponent> component)
+Json::Value Serializer::implSerialize(entityx::ComponentHandle<SpriteComponent> component)
 {
 	Json::Value ret;
 	const sf::Texture* tex{component->sprite.getTexture()};//Get the associated texture
@@ -173,7 +175,7 @@ Json::Value Serializer::serialize(entityx::ComponentHandle<SpriteComponent> comp
 	return ret;
 }
 
-Json::Value Serializer::serialize(entityx::ComponentHandle<TransformComponent> component)
+Json::Value Serializer::implSerialize(entityx::ComponentHandle<TransformComponent> component)
 {
 	Json::Value ret;
 	ret["x"] = component->transform.x;
@@ -183,26 +185,28 @@ Json::Value Serializer::serialize(entityx::ComponentHandle<TransformComponent> c
 	return ret;
 }
 
-Json::Value Serializer::serialize(entityx::ComponentHandle<InventoryComponent> component)
+Json::Value Serializer::implSerialize(entityx::ComponentHandle<InventoryComponent> component)
 {
 	Json::Value ret;
 	ret["maximum weight"] = component->maxWeight;
 	ret["items"] = Json::Value(Json::arrayValue);
 	//For each item of the inventory
 	for(entityx::Entity item : component->items)
-		//If the item is in the entity list
-		if(isMember(m_entitiesMap, item) and item.valid())
-			//Add it to the value
-			ret["items"].append(getKey(m_entitiesMap, item));
+	{
+		if(not TEST(isMember(m_entities, item) and item.valid()))
+			return Json::Value();
+		//Add it to the value
+		ret["items"].append(getKey(m_entities, item));
+	}
 	return ret;
 }
 
-Json::Value Serializer::serialize(entityx::ComponentHandle<AnimationsComponent<SpriteSheetAnimation>> component)
+Json::Value Serializer::implSerialize(entityx::ComponentHandle<AnimationsComponent<SpriteSheetAnimation>> component)
 {
 	return component->animationsManager.serialize();
 }
 
-Json::Value Serializer::serialize(entityx::ComponentHandle<DirectionComponent> component)
+Json::Value Serializer::implSerialize(entityx::ComponentHandle<DirectionComponent> component)
 {
 	Json::Value ret;
 	switch(component->direction)
@@ -230,7 +234,7 @@ Json::Value Serializer::serialize(entityx::ComponentHandle<DirectionComponent> c
 	return ret;
 }
 
-Json::Value Serializer::serialize(entityx::ComponentHandle<CategoryComponent> component)
+Json::Value Serializer::implSerialize(entityx::ComponentHandle<CategoryComponent> component)
 {
 	Json::Value ret;
 	if(component->category & Category::Player)
@@ -244,14 +248,14 @@ Json::Value Serializer::serialize(entityx::ComponentHandle<CategoryComponent> co
 	return ret;
 }
 
-Json::Value Serializer::serialize(entityx::ComponentHandle<FallComponent> component)
+Json::Value Serializer::implSerialize(entityx::ComponentHandle<FallComponent> component)
 {
 	Json::Value ret;
 	ret["falling resistance"] = component->fallingResistance;
 	return ret;
 }
 
-Json::Value Serializer::serialize(entityx::ComponentHandle<WalkComponent> component)
+Json::Value Serializer::implSerialize(entityx::ComponentHandle<WalkComponent> component)
 {
 	Json::Value ret;
 	switch(component->effectiveMovement)
@@ -277,25 +281,25 @@ Json::Value Serializer::serialize(entityx::ComponentHandle<WalkComponent> compon
 	return ret;
 }
 
-Json::Value Serializer::serialize(entityx::ComponentHandle<JumpComponent> component)
+Json::Value Serializer::implSerialize(entityx::ComponentHandle<JumpComponent> component)
 {
 	Json::Value ret;
 	ret["strength"] = component->jumpStrength;
 	return ret;
 }
 
-Json::Value Serializer::serialize(entityx::ComponentHandle<ArcherComponent> component)
+Json::Value Serializer::implSerialize(entityx::ComponentHandle<ArcherComponent> component)
 {
 	Json::Value ret;
 	ret["damages"] = component->damages;
 	ret["initial speed"] = component->initialSpeed;
-	ret["quiver"] = getKey(m_entitiesMap, component->quiver);
-	ret["local anchor"]["x"] = component->quiverJoint->GetLocalAnchorA().x*m_context.parameters.pixelByMeter;
-	ret["local anchor"]["y"] = component->quiverJoint->GetLocalAnchorA().y*m_context.parameters.pixelByMeter;
+	ret["quiver"] = getKey(m_entities, component->quiver);
+	ret["quiver anchor"]["x"] = component->quiverAnchor.x*m_context.parameters.pixelByMeter;
+	ret["quiver anchor"]["y"] = component->quiverAnchor.y*m_context.parameters.pixelByMeter;
 	return ret;
 }
 
-Json::Value Serializer::serialize(entityx::ComponentHandle<HealthComponent> component)
+Json::Value Serializer::implSerialize(entityx::ComponentHandle<HealthComponent> component)
 {
 	Json::Value ret;
 	ret["current"] = component->current;
@@ -304,7 +308,7 @@ Json::Value Serializer::serialize(entityx::ComponentHandle<HealthComponent> comp
 	return ret;
 }
 
-Json::Value Serializer::serialize(entityx::ComponentHandle<StaminaComponent> component)
+Json::Value Serializer::implSerialize(entityx::ComponentHandle<StaminaComponent> component)
 {
 	Json::Value ret;
 	ret["current"] = component->current;
@@ -313,7 +317,7 @@ Json::Value Serializer::serialize(entityx::ComponentHandle<StaminaComponent> com
 	return ret;
 }
 
-Json::Value Serializer::serialize(entityx::ComponentHandle<ArrowComponent> component)
+Json::Value Serializer::implSerialize(entityx::ComponentHandle<ArrowComponent> component)
 {
 	Json::Value ret;
 	ret["friction"] = component->friction;
@@ -323,8 +327,12 @@ Json::Value Serializer::serialize(entityx::ComponentHandle<ArrowComponent> compo
 	ret["local friction point"]["y"] = component->localFrictionPoint.y;
 	ret["local stick point"]["x"] = component->localStickPoint.x;
 	ret["local stick point"]["y"] = component->localStickPoint.y;
-	if(component->shooter and isMember(m_entitiesMap, component->shooter))
-		ret["shooter"] = getKey(m_entitiesMap, component->shooter);
+	if(component->shooter)
+	{
+		if(not TEST(isMember(m_entities, component->shooter)))
+			return Json::Value();
+		ret["shooter"] = getKey(m_entities, component->shooter);
+	}
 	switch(component->state)
 	{
 		case ArrowComponent::Fired:
@@ -347,12 +355,12 @@ Json::Value Serializer::serialize(entityx::ComponentHandle<ArrowComponent> compo
 	return ret;
 }
 
-Json::Value Serializer::serialize(entityx::ComponentHandle<HardnessComponent> component)
+Json::Value Serializer::implSerialize(entityx::ComponentHandle<HardnessComponent> component)
 {
 	return component->hardness;
 }
 
-Json::Value Serializer::serialize(entityx::ComponentHandle<ScriptsComponent> component)
+Json::Value Serializer::implSerialize(entityx::ComponentHandle<ScriptsComponent> component)
 {
 	Json::Value ret;
 	ret["scripts"] = Json::Value(Json::arrayValue);
@@ -361,12 +369,12 @@ Json::Value Serializer::serialize(entityx::ComponentHandle<ScriptsComponent> com
     return ret;
 }
 
-Json::Value Serializer::serialize(entityx::ComponentHandle<DetectionRangeComponent> component)
+Json::Value Serializer::implSerialize(entityx::ComponentHandle<DetectionRangeComponent> component)
 {
 	return component->detectionRange;
 }
 
-Json::Value Serializer::serialize(entityx::ComponentHandle<DeathComponent> component)
+Json::Value Serializer::implSerialize(entityx::ComponentHandle<DeathComponent> component)
 {
 	Json::Value ret;
 	ret["dead"] = component->dead;
@@ -385,12 +393,12 @@ Json::Value Serializer::serialize(entityx::ComponentHandle<DeathComponent> compo
 	return ret;
 }
 
-Json::Value Serializer::serialize(entityx::ComponentHandle<NameComponent> component)
+Json::Value Serializer::implSerialize(entityx::ComponentHandle<NameComponent> component)
 {
 	return component->name;
 }
 
-Json::Value Serializer::serialize(entityx::ComponentHandle<HandToHandComponent> component)
+Json::Value Serializer::implSerialize(entityx::ComponentHandle<HandToHandComponent> component)
 {
 	Json::Value ret;
 	ret["damages"] = component->damages;
@@ -399,7 +407,7 @@ Json::Value Serializer::serialize(entityx::ComponentHandle<HandToHandComponent> 
 	return ret;
 }
 
-Json::Value Serializer::serialize(entityx::ComponentHandle<ActorComponent> component)
+Json::Value Serializer::implSerialize(entityx::ComponentHandle<ActorComponent> component)
 {
 	Json::Value ret;
 	ret["hand to hand resistance"] = component->handToHandResistance;
@@ -411,60 +419,81 @@ Json::Value Serializer::serialize(entityx::ComponentHandle<ActorComponent> compo
 	return ret;
 }
 
-Json::Value Serializer::serialize(entityx::ComponentHandle<HoldItemComponent> component)
+Json::Value Serializer::implSerialize(entityx::ComponentHandle<ItemComponent> component)
 {
 	Json::Value ret;
-	if(isMember(m_entitiesMap, component->item))
-		ret["item"] = getKey(m_entitiesMap, component->item);
-	const b2Vec2 localAnchor{m_context.parameters.pixelByMeter * component->joint->GetLocalAnchorA()};
-	ret["local anchor"]["x"] = localAnchor.x;
-	ret["local anchor"]["y"] = localAnchor.y;
+	ret["type"] = component->type;
+	ret["category"] = component->category;
+	ret["weight"] = component->weight;
+	ret["value"] = component->value;
+	ret["hold anchor"]["x"] = component->holdAnchor.x;
+	ret["hold anchor"]["y"] = component->holdAnchor.y;
 	return ret;
 }
 
-Json::Value Serializer::serialize(entityx::ComponentHandle<ArticuledArmsComponent> component)
+Json::Value Serializer::implSerialize(entityx::ComponentHandle<HoldItemComponent> component)
 {
-	const float pixelByMeter{m_context.parameters.pixelByMeter};
 	Json::Value ret;
-	if(isMember(m_entitiesMap, component->arms))
-		ret["arms"] = getKey(m_entitiesMap, component->arms);
+	ret["body anchor"]["x"] = m_context.parameters.pixelByMeter * component->bodyAnchor.x;
+	ret["body anchor"]["y"] = m_context.parameters.pixelByMeter * component->bodyAnchor.y;
+	if(not TEST(isMember(m_entities, component->item)))
+		return Json::Value();
+	ret["item"] = getKey(m_entities, component->item);
+	ret["item anchor"]["x"] = m_context.parameters.pixelByMeter * component->itemAnchor.x;
+	ret["item anchor"]["y"] = m_context.parameters.pixelByMeter * component->itemAnchor.y;
+	return ret;
+}
+
+Json::Value Serializer::implSerialize(entityx::ComponentHandle<ArticuledArmsComponent> component)
+{
+	Json::Value ret;
 	ret["target angle"] = component->targetAngle * 180.f / b2_pi;
-	ret["upper angle"] = component->armsJoint->GetUpperLimit() * 180.f / b2_pi;
-	ret["lower angle"] = component->armsJoint->GetLowerLimit() * 180.f / b2_pi;
+	ret["upper angle"] = component->upperAngle * 180.f / b2_pi;
+	ret["lower angle"] = component->lowerAngle * 180.f / b2_pi;
 	ret["current angle"] = component->armsJoint->GetJointAngle() * 180.f / b2_pi;
-	const b2Vec2 localAnchor{pixelByMeter * component->armsJoint->GetLocalAnchorA()};
-	ret["local anchor"]["x"] = localAnchor.x;
-	ret["local anchor"]["y"] = localAnchor.y;
+	if(not TEST(isMember(m_entities, component->arms)))
+		return Json::Value();
+	ret["arms"] = getKey(m_entities, component->arms);
+	ret["arms anchor"]["x"] = component->armsAnchor.x * m_context.parameters.pixelByMeter;
+	ret["arms anchor"]["y"] = component->armsAnchor.y * m_context.parameters.pixelByMeter;
 	return ret;
 }
 
-Json::Value Serializer::serialize(entityx::ComponentHandle<BowComponent> component)
+Json::Value Serializer::implSerialize(entityx::ComponentHandle<BowComponent> component)
 {
-	const float pixelByMeter{m_context.parameters.pixelByMeter};
 	Json::Value ret;
-	if(isMember(m_entitiesMap, component->notchedArrow) and component->notchedArrow.valid())
-		ret["notched arrow"] = getKey(m_entitiesMap, component->notchedArrow);
-	ret["target translation"] = component->targetTranslation;
-	ret["upper translation"] = component->notchedArrowJoint->GetUpperLimit()*pixelByMeter;
-	ret["lower translation"] = component->notchedArrowJoint->GetLowerLimit()*pixelByMeter;
-	ret["current translation"] = component->notchedArrowJoint->GetJointTranslation()*pixelByMeter;
-	const b2Vec2 localAnchor{pixelByMeter * component->notchedArrowJoint->GetLocalAnchorA()};
-	ret["local anchor"]["x"] = localAnchor.x;
-	ret["local anchor"]["y"] = localAnchor.y;
+	ret["upper translation"] = component->upperTranslation * m_context.parameters.pixelByMeter;
+	ret["lower translation"] = component->lowerTranslation * m_context.parameters.pixelByMeter;
+	ret["target translation"] = component->targetTranslation * m_context.parameters.pixelByMeter;
+	ret["current translation"] = component->notchedArrowJoint->GetJointTranslation() * m_context.parameters.pixelByMeter;
+	if(component->notchedArrow.valid())
+	{
+		if(not TEST(isMember(m_entities, component->notchedArrow)))
+			return Json::Value();
+		ret["notched arrow"] = getKey(m_entities, component->notchedArrow);
+	}
+	ret["notched arrow anchor"]["x"] = component->notchedArrowAnchor.x * m_context.parameters.pixelByMeter;
+	ret["notched arrow anchor"]["y"] = component->notchedArrowAnchor.y * m_context.parameters.pixelByMeter;
 	return ret;
 }
 
-Json::Value Serializer::serialize(entityx::ComponentHandle<QuiverComponent> component)
+Json::Value Serializer::implSerialize(entityx::ComponentHandle<QuiverComponent> component)
 {
 	Json::Value ret;
 	ret["capacity"] = component->capacity;
 	ret["arrows"] = Json::Value(Json::arrayValue);
 	//For each arrow of the quiver
-	for(entityx::Entity arrow : component->arrows)
-		//If the arrow is in the entity list
-		if(isMember(m_entitiesMap, arrow) and arrow.valid())
-			//Add it to the value
-			ret["arrows"].append(getKey(m_entitiesMap, arrow));
+	for(auto& pair : component->arrows)
+	{
+		if(not TEST(pair.first.valid() and isMember(m_entities, pair.first)))
+			return Json::Value();
+		//Add it to the value
+		ret["arrows"].append(getKey(m_entities, pair.first));
+	}
+	ret["arrow anchor"]["x"] = component->arrowAnchor.x * m_context.parameters.pixelByMeter;
+	ret["arrow anchor"]["y"] = component->arrowAnchor.y * m_context.parameters.pixelByMeter;
+	ret["body anchor"]["x"] = component->bodyAnchor.x * m_context.parameters.pixelByMeter;
+	ret["body anchor"]["y"] = component->bodyAnchor.y * m_context.parameters.pixelByMeter;
 	return ret;
 }
 
@@ -474,10 +503,11 @@ Json::Value Serializer::serialize(entityx::ComponentHandle<QuiverComponent> comp
  ////////// Deserializing //////////
 //////////               //////////
 
-void Serializer::deserialize(const Json::Value& value, entityx::ComponentHandle<BodyComponent> component, entityx::ComponentHandle<TransformComponent> transformComponent)
+void Serializer::implDeserialize(const Json::Value& value, entityx::ComponentHandle<BodyComponent> component, entityx::Entity entity)
 {
-	if(not transformComponent)
-		return;
+	const entityx::ComponentHandle<TransformComponent> transformComponent{entity.component<TransformComponent>()};
+	if(not TEST(transformComponent))
+		throw std::runtime_error("Transform component lacks.");
 	const float pixelByMeter{m_context.parameters.pixelByMeter};
 	b2BodyDef bodyDef;
 	//type
@@ -694,7 +724,7 @@ void Serializer::deserialize(const Json::Value& value, entityx::ComponentHandle<
 	}
 }
 
-void Serializer::deserialize(const Json::Value& value, entityx::ComponentHandle<SpriteComponent> component)
+void Serializer::implDeserialize(const Json::Value& value, entityx::ComponentHandle<SpriteComponent> component, entityx::Entity)
 {
 	const std::string identifier{value["identifier"].asString()};
 	m_context.textureManager.load(identifier, paths[m_context.parameters.scaleIndex] + "/" + identifier);
@@ -703,7 +733,7 @@ void Serializer::deserialize(const Json::Value& value, entityx::ComponentHandle<
 		component->sprite.setOrigin(value["origin"]["x"].asFloat()*m_context.parameters.scale, value["origin"]["y"].asFloat()*m_context.parameters.scale);
 }
 
-void Serializer::deserialize(const Json::Value& value, entityx::ComponentHandle<TransformComponent> component)
+void Serializer::implDeserialize(const Json::Value& value, entityx::ComponentHandle<TransformComponent> component, entityx::Entity)
 {
 	component->transform.x = value["x"].asFloat();
 	component->transform.y = value["y"].asFloat();
@@ -711,23 +741,24 @@ void Serializer::deserialize(const Json::Value& value, entityx::ComponentHandle<
 	component->transform.angle = value["angle"].asFloat();
 }
 
-void Serializer::deserialize(const Json::Value& value, entityx::ComponentHandle<InventoryComponent> component)
+void Serializer::implDeserialize(const Json::Value& value, entityx::ComponentHandle<InventoryComponent> component, entityx::Entity)
 {
 	component->items.clear();
 	for(Json::ArrayIndex i{0}; i < value["items"].size(); ++i)
-		if(m_entitiesMap.find(value["items"][i].asString()) != m_entitiesMap.end())
-			component->items.push_back(m_entitiesMap.at(value["items"][i].asString()));
+		if(m_entities.find(value["items"][i].asString()) != m_entities.end())
+			component->items.push_back(m_entities.at(value["items"][i].asString()));
 	component->maxWeight = value["maximum weight"].asFloat();
 }
 
-void Serializer::deserialize(const Json::Value& value, entityx::ComponentHandle<AnimationsComponent<SpriteSheetAnimation>> component, entityx::ComponentHandle<SpriteComponent> spriteComponent)
+void Serializer::implDeserialize(const Json::Value& value, entityx::ComponentHandle<AnimationsComponent<SpriteSheetAnimation>> component, entityx::Entity entity)
 {
-	if(not spriteComponent)
-		return;
+	entityx::ComponentHandle<SpriteComponent> spriteComponent{entity.component<SpriteComponent>()};
+	if(not TEST(spriteComponent))
+		throw std::runtime_error("Sprite component lacks.");
 	component->animationsManager.deserialize(value, spriteComponent->sprite, m_context);
 }
 
-void Serializer::deserialize(const Json::Value& value, entityx::ComponentHandle<DirectionComponent> component)
+void Serializer::implDeserialize(const Json::Value& value, entityx::ComponentHandle<DirectionComponent> component, entityx::Entity)
 {
 	if(value["direction"] == "left")
 		component->direction = Direction::Left;
@@ -743,7 +774,7 @@ void Serializer::deserialize(const Json::Value& value, entityx::ComponentHandle<
 		component->moveToRight = value["move to right"].asBool();
 }
 
-void Serializer::deserialize(const Json::Value& value, entityx::ComponentHandle<CategoryComponent> component)
+void Serializer::implDeserialize(const Json::Value& value, entityx::ComponentHandle<CategoryComponent> component, entityx::Entity)
 {
 	unsigned int category{0};
 	for(Json::ArrayIndex i{0}; i < value.size(); ++i)
@@ -760,14 +791,14 @@ void Serializer::deserialize(const Json::Value& value, entityx::ComponentHandle<
 	component->category = category;
 }
 
-void Serializer::deserialize(const Json::Value& value, entityx::ComponentHandle<FallComponent> component)
+void Serializer::implDeserialize(const Json::Value& value, entityx::ComponentHandle<FallComponent> component, entityx::Entity)
 {
 	component->fallingResistance = value["falling resistance"].asFloat();
 	component->contactCount = 0;
 	component->inAir = true;
 }
 
-void Serializer::deserialize(const Json::Value& value, entityx::ComponentHandle<WalkComponent> component)
+void Serializer::implDeserialize(const Json::Value& value, entityx::ComponentHandle<WalkComponent> component, entityx::Entity)
 {
 	if(value.isMember("effective movement"))
 	{
@@ -785,46 +816,54 @@ void Serializer::deserialize(const Json::Value& value, entityx::ComponentHandle<
 	component->walkSpeed = value["speed"].asFloat();
 }
 
-void Serializer::deserialize(const Json::Value& value, entityx::ComponentHandle<JumpComponent> component)
+void Serializer::implDeserialize(const Json::Value& value, entityx::ComponentHandle<JumpComponent> component, entityx::Entity)
 {
 	component->jumpStrength = value["strength"].asFloat();
 	component->mustJump = false;
 }
 
-void Serializer::deserialize(const Json::Value& value, entityx::ComponentHandle<ArcherComponent> component, entityx::ComponentHandle<BodyComponent> bodyComponent)
+void Serializer::implDeserialize(const Json::Value& value, entityx::ComponentHandle<ArcherComponent> component, entityx::Entity entity)
 {
-	if(not bodyComponent)
-		return;
+	const entityx::ComponentHandle<BodyComponent> bodyComponent{entity.component<BodyComponent>()};
+	if(not TEST(bodyComponent))
+		throw std::runtime_error("Body component lacks.");
 	component->damages = value["damages"].asFloat();
 	component->initialSpeed = value["initial speed"].asFloat();
-	component->quiver = m_entitiesMap.at(value["quiver"].asString());
-	const b2Vec2 localAnchor(value["local anchor"]["x"].asFloat(), value["local anchor"]["y"].asFloat());
+	component->quiver = m_entities.at(value["quiver"].asString());
+	component->quiverAnchor.x = value["quiver anchor"]["x"].asFloat()/m_context.parameters.pixelByMeter;
+	component->quiverAnchor.y = value["quiver anchor"]["y"].asFloat()/m_context.parameters.pixelByMeter;
+	if(not TEST(component->quiver))
+		throw std::runtime_error("Quiver entity is invalid.");
+	const QuiverComponent::Handle quiverComponent(component->quiver.component<QuiverComponent>());
+	const BodyComponent::Handle quiverBodyComponent(component->quiver.component<BodyComponent>());
+	if(not TEST(quiverComponent and quiverBodyComponent))
+		throw std::runtime_error("Quiver or body component lacks.");
 	b2WeldJointDef jointDef;
 	jointDef.bodyA = bodyComponent->body;
-	jointDef.bodyB = component->quiver.component<BodyComponent>()->body;
-	jointDef.localAnchorA = (1.f/m_context.parameters.pixelByMeter) * localAnchor;
-	jointDef.localAnchorB = {0, 0};
-	jointDef.referenceAngle = jointDef.bodyB->GetAngle() - jointDef.bodyA->GetAngle();
-	jointDef.frequencyHz = 0.f;
-	jointDef.dampingRatio = 0.f;
+	jointDef.bodyB = quiverBodyComponent->body;
+	jointDef.localAnchorA = component->quiverAnchor;
+	jointDef.localAnchorB = quiverComponent->bodyAnchor;
+	jointDef.referenceAngle = 0.f;
+	jointDef.frequencyHz = 30.f;
+	jointDef.dampingRatio = 1.f;
 	component->quiverJoint = static_cast<b2WeldJoint*>(m_context.world.CreateJoint(&jointDef));
 }
 
-void Serializer::deserialize(const Json::Value& value, entityx::ComponentHandle<HealthComponent> component)
+void Serializer::implDeserialize(const Json::Value& value, entityx::ComponentHandle<HealthComponent> component, entityx::Entity)
 {
 	component->current = value["current"].asFloat();
 	component->maximum = value["maximum"].asFloat();
 	component->regeneration = value["regeneration"].asFloat();
 }
 
-void Serializer::deserialize(const Json::Value& value, entityx::ComponentHandle<StaminaComponent> component)
+void Serializer::implDeserialize(const Json::Value& value, entityx::ComponentHandle<StaminaComponent> component, entityx::Entity)
 {
 	component->current = value["current"].asFloat();
 	component->maximum = value["maximum"].asFloat();
 	component->regeneration = value["regeneration"].asFloat();
 }
 
-void Serializer::deserialize(const Json::Value& value, entityx::ComponentHandle<ArrowComponent> component)
+void Serializer::implDeserialize(const Json::Value& value, entityx::ComponentHandle<ArrowComponent> component, entityx::Entity)
 {
 	component->friction = value["friction"].asFloat();
 	component->penetrance = value["penetrance"].asFloat();
@@ -833,8 +872,12 @@ void Serializer::deserialize(const Json::Value& value, entityx::ComponentHandle<
 	component->localFrictionPoint.y = value["local friction point"]["y"].asFloat();
 	component->localStickPoint.x = value["local stick point"]["x"].asFloat();
 	component->localStickPoint.y = value["local stick point"]["y"].asFloat();
-	if(value.isMember("shooter") and m_entitiesMap.find(value["shooter"].asString()) != m_entitiesMap.end())
-		component->shooter = m_entitiesMap.at(value["shooter"].asString());
+	if(value.isMember("shooter"))
+	{
+		if(not TEST(m_entities.find(value["shooter"].asString()) != m_entities.end()))
+			throw std::runtime_error("Unknow shooter entity.");
+		component->shooter = m_entities.at(value["shooter"].asString());
+	}
 	if(value["state"] == "fired")
 		component->state = ArrowComponent::Fired;
 	else if(value["state"] == "sticked")
@@ -845,12 +888,12 @@ void Serializer::deserialize(const Json::Value& value, entityx::ComponentHandle<
 		component->state = ArrowComponent::Notched;
 }
 
-void Serializer::deserialize(const Json::Value& value, entityx::ComponentHandle<HardnessComponent> component)
+void Serializer::implDeserialize(const Json::Value& value, entityx::ComponentHandle<HardnessComponent> component, entityx::Entity)
 {
 	component->hardness = value.asFloat();
 }
 
-void Serializer::deserialize(const Json::Value& value, entityx::ComponentHandle<ScriptsComponent> component)
+void Serializer::implDeserialize(const Json::Value& value, entityx::ComponentHandle<ScriptsComponent> component, entityx::Entity)
 {
 	for(Json::ArrayIndex i{0}; i < value["scripts"].size(); ++i)
 	{
@@ -860,36 +903,36 @@ void Serializer::deserialize(const Json::Value& value, entityx::ComponentHandle<
 	}
 }
 
-void Serializer::deserialize(const Json::Value& value, entityx::ComponentHandle<DetectionRangeComponent> component)
+void Serializer::implDeserialize(const Json::Value& value, entityx::ComponentHandle<DetectionRangeComponent> component, entityx::Entity)
 {
 	component->detectionRange = value.asFloat();
 }
 
-void Serializer::deserialize(const Json::Value& value, entityx::ComponentHandle<DeathComponent> component)
+void Serializer::implDeserialize(const Json::Value& value, entityx::ComponentHandle<DeathComponent> component, entityx::Entity)
 {
 	component->dead = value["dead"].asBool();
 	for(Json::ArrayIndex i{0}; i < value["drops"].size(); ++i)
 		component->drops.push_back({value["drops"][i]["category"].asString(),
-									value["drops"][i]["type"].asString(),
-									value["drops"][i]["probability"].asFloat(),
-									value["drops"][i]["weight"].asFloat(),
-									value["drops"][i]["value"].asFloat(),
-									value["drops"][i]["max drops"].asUInt()});
+				value["drops"][i]["type"].asString(),
+				value["drops"][i]["probability"].asFloat(),
+				value["drops"][i]["weight"].asFloat(),
+				value["drops"][i]["value"].asFloat(),
+				value["drops"][i]["max drops"].asUInt()});
 }
 
-void Serializer::deserialize(const Json::Value& value, entityx::ComponentHandle<NameComponent> component)
+void Serializer::implDeserialize(const Json::Value& value, entityx::ComponentHandle<NameComponent> component, entityx::Entity)
 {
 	component->name = value.asString();
 }
 
-void Serializer::deserialize(const Json::Value& value, entityx::ComponentHandle<HandToHandComponent> component)
+void Serializer::implDeserialize(const Json::Value& value, entityx::ComponentHandle<HandToHandComponent> component, entityx::Entity)
 {
 	component->damages = value["damages"].asFloat();
 	component->delay = sf::seconds(value["delay"].asFloat());
 	component->lastShoot = sf::seconds(value["last shoot"].asFloat());
 }
 
-void Serializer::deserialize(const Json::Value& value, entityx::ComponentHandle<ActorComponent> component)
+void Serializer::implDeserialize(const Json::Value& value, entityx::ComponentHandle<ActorComponent> component, entityx::Entity)
 {
 	component->handToHandResistance = value["hand to hand resistance"].asFloat();
 	component->magicResistance = value["magic resistance"].asFloat();
@@ -899,24 +942,39 @@ void Serializer::deserialize(const Json::Value& value, entityx::ComponentHandle<
 	component->poisonResistance = value["poison resistance"].asFloat();
 }
 
-void Serializer::deserialize(const Json::Value& value, entityx::ComponentHandle<ArticuledArmsComponent> component, entityx::ComponentHandle<BodyComponent> bodyComponent)
+void Serializer::implDeserialize(const Json::Value& value, entityx::ComponentHandle<ItemComponent> component, entityx::Entity)
 {
-	if(not bodyComponent)
-		return;
+	component->type = value["type"].asString();
+	component->category = value["category"].asString();
+	component->weight = value["weight"].asFloat();
+	component->value = value["value"].asFloat();
+	component->holdAnchor.x = value["hold anchor"]["x"].asFloat();
+	component->holdAnchor.y = value["hold anchor"]["y"].asFloat();
+}
+
+void Serializer::implDeserialize(const Json::Value& value, entityx::ComponentHandle<ArticuledArmsComponent> component, entityx::Entity entity)
+{
+	const entityx::ComponentHandle<BodyComponent> bodyComponent{entity.component<BodyComponent>()};
+	if(not TEST(bodyComponent))
+		throw std::runtime_error("Body component lacks.");
 	const float pixelByMeter{m_context.parameters.pixelByMeter};
-	component->arms = m_entitiesMap.at(value["arms"].asString());
-	if(not component->arms.component<BodyComponent>())
-		return;
+	component->arms = m_entities.at(value["arms"].asString());
 	component->targetAngle = value["target angle"].asFloat() * b2_pi / 180.f;
 	component->lowerAngle = value["lower angle"].asFloat() * b2_pi / 180.f;
 	component->upperAngle = value["upper angle"].asFloat() * b2_pi / 180.f;
-	component->localAnchor = {value["local anchor"]["x"].asFloat()/pixelByMeter,
-							  value["local anchor"]["y"].asFloat()/pixelByMeter};
+	component->armsAnchor.x = value["arms anchor"]["x"].asFloat()/pixelByMeter;
+	component->armsAnchor.y = value["arms anchor"]["y"].asFloat()/pixelByMeter;
+	if(not TEST(component->arms))
+		throw std::runtime_error("Invalid arms entity.");
+	const BodyComponent::Handle armsBodyComponent{component->arms.component<BodyComponent>()};
+	const HoldItemComponent::Handle holdItemComponent{component->arms.component<HoldItemComponent>()};
+	if(not TEST(armsBodyComponent and holdItemComponent))
+		throw std::runtime_error("Body or hold item component of arms lacks.");
 	b2RevoluteJointDef jointDef;
 	jointDef.bodyA = bodyComponent->body;
-	jointDef.bodyB = component->arms.component<BodyComponent>()->body;
-	jointDef.localAnchorA = component->localAnchor;
-	jointDef.localAnchorB = jointDef.bodyB->GetLocalPoint(jointDef.bodyA->GetWorldPoint(jointDef.localAnchorA));
+	jointDef.bodyB = armsBodyComponent->body;
+	jointDef.localAnchorA = component->armsAnchor;
+	jointDef.localAnchorB = holdItemComponent->bodyAnchor;
 	jointDef.lowerAngle = component->lowerAngle;
 	jointDef.upperAngle = component->upperAngle;
 	jointDef.referenceAngle = value["current angle"].asFloat() * b2_pi / 180.f;
@@ -927,52 +985,56 @@ void Serializer::deserialize(const Json::Value& value, entityx::ComponentHandle<
 	component->armsJoint = static_cast<b2RevoluteJoint*>(m_context.world.CreateJoint(&jointDef));
 }
 
-void Serializer::deserialize(const Json::Value& value, entityx::ComponentHandle<HoldItemComponent> component, entityx::ComponentHandle<BodyComponent> bodyComponent)
+void Serializer::implDeserialize(const Json::Value& value, entityx::ComponentHandle<HoldItemComponent> component, entityx::Entity entity)
 {
-	if(not bodyComponent)
-		return;
+	const entityx::ComponentHandle<BodyComponent> bodyComponent{entity.component<BodyComponent>()};
+	if(not TEST(bodyComponent))
+		throw std::runtime_error("Body component lacks.");
 	const float pixelByMeter{m_context.parameters.pixelByMeter};
-	component->item = m_entitiesMap.at(value["item"].asString());
-	if(not component->item.component<BodyComponent>())
-		return;
-	component->localAnchor = {value["local anchor"]["x"].asFloat()/pixelByMeter,
-							  value["local anchor"]["y"].asFloat()/pixelByMeter};
+	component->item = m_entities.at(value["item"].asString());
+	component->bodyAnchor.x = value["body anchor"]["x"].asFloat()/pixelByMeter;
+	component->bodyAnchor.y = value["body anchor"]["y"].asFloat()/pixelByMeter;
+	component->itemAnchor.x = value["item anchor"]["x"].asFloat()/pixelByMeter;
+	component->itemAnchor.x = value["item anchor"]["y"].asFloat()/pixelByMeter;
+	const BodyComponent::Handle itemBodyComponent{component->item.component<BodyComponent>()};
+	const ItemComponent::Handle itemComponent{component->item.component<ItemComponent>()};
+	if(not TEST(itemBodyComponent and itemComponent))
+	{
+		if(itemBodyComponent)std::cout << "BODY OK" << std::endl;
+		if(itemComponent)std::cout << "ITEM OK" << std::endl;
+		throw std::runtime_error("Body or item component of item lacks.");
+	}
 	b2WeldJointDef jointDef;
 	jointDef.bodyA = bodyComponent->body;
-	jointDef.bodyB = component->item.component<BodyComponent>()->body;
-	jointDef.localAnchorA = component->localAnchor;
-	jointDef.localAnchorB = jointDef.bodyB->GetLocalPoint(jointDef.bodyA->GetWorldPoint(jointDef.localAnchorA));
-	jointDef.referenceAngle = jointDef.bodyB->GetAngle() - jointDef.bodyA->GetAngle();
+	jointDef.bodyB = itemBodyComponent->body;
+	jointDef.localAnchorA = component->itemAnchor;
+	jointDef.localAnchorB = itemComponent->holdAnchor;
+	jointDef.referenceAngle = 0.f;
 	jointDef.frequencyHz = 30.f;
 	jointDef.dampingRatio = 1.f;
-	component->joint = static_cast<b2WeldJoint*>(m_context.world.CreateJoint(&jointDef));
+	component->itemJoint = static_cast<b2WeldJoint*>(m_context.world.CreateJoint(&jointDef));
 }
 
-void Serializer::deserialize(const Json::Value& value, entityx::ComponentHandle<BowComponent> component, entityx::ComponentHandle<BodyComponent> bodyComponent)
+void Serializer::implDeserialize(const Json::Value& value, entityx::ComponentHandle<BowComponent> component, entityx::Entity entity)
 {
-	if(not bodyComponent)
-		return;
-	const float pixelByMeter{m_context.parameters.pixelByMeter};
-	component->notchedArrow = m_entitiesMap.at(value["notched arrow"].asString());
-	if(not component->notchedArrow.component<BodyComponent>())
-		return;
+	const entityx::ComponentHandle<BodyComponent> bodyComponent{entity.component<BodyComponent>()};
+	if(not TEST(bodyComponent))
+		throw std::runtime_error("Body component lacks.");
+	component->notchedArrow = m_entities.at(value["notched arrow"].asString());
 	component->targetTranslation = value["target translation"].asFloat();
-	component->lowerTranslation = value["lower translation"].asFloat()/pixelByMeter;
-	component->upperTranslation = value["upper translation"].asFloat()/pixelByMeter;
-	component->localAnchor = {value["local anchor"]["x"].asFloat()/pixelByMeter,
-							  value["local anchor"]["y"].asFloat()/pixelByMeter};
+	component->lowerTranslation = value["lower translation"].asFloat()/m_context.parameters.pixelByMeter;
+	component->upperTranslation = value["upper translation"].asFloat()/m_context.parameters.pixelByMeter;
+	component->notchedArrowAnchor.x = value["notched arrow anchor"]["x"].asFloat()/m_context.parameters.pixelByMeter;
+	component->notchedArrowAnchor.x = value["notched arrow anchor"]["y"].asFloat()/m_context.parameters.pixelByMeter;
+	const BodyComponent::Handle notchedArrowBodyComponent{component->notchedArrow.component<BodyComponent>()};
+	ArrowComponent::Handle arrowComponent{component->notchedArrow.component<ArrowComponent>()};
+	if(not TEST(notchedArrowBodyComponent and arrowComponent))
+		throw std::runtime_error("Body or arrow component of notched arrow lacks.");
 	b2PrismaticJointDef jointDef;
 	jointDef.bodyA = bodyComponent->body;
 	jointDef.bodyB = component->notchedArrow.component<BodyComponent>()->body;
-	jointDef.localAnchorA = component->localAnchor;
-	//Get the AABB of the arrow, to compute where to place the anchor of the joint
-	b2AABB arrowBox;
-	b2Transform identity;
-	identity.SetIdentity();
-	for(b2Fixture* fixture{jointDef.bodyB->GetFixtureList()}; fixture; fixture = fixture->GetNext())
-		if(fixtureHasRole(fixture, FixtureRole::Main))
-			fixture->GetShape()->ComputeAABB(&arrowBox, identity, 0);
-	jointDef.localAnchorB = {0.f, (arrowBox.upperBound.y - arrowBox.lowerBound.y)*0.5f};
+	jointDef.localAnchorA = component->notchedArrowAnchor;
+	jointDef.localAnchorB = sftob2(arrowComponent->localFrictionPoint);
 	jointDef.localAxisA = {1.f, 0.f};
 	jointDef.lowerTranslation = component->lowerTranslation;
 	jointDef.upperTranslation = component->upperTranslation;
@@ -982,31 +1044,35 @@ void Serializer::deserialize(const Json::Value& value, entityx::ComponentHandle<
 	jointDef.enableMotor = true;
 	jointDef.referenceAngle = 0.f;
 	component->notchedArrowJoint = static_cast<b2PrismaticJoint*>(m_context.world.CreateJoint(&jointDef));
+	arrowComponent->state = ArrowComponent::Notched;
 }
 
-void Serializer::deserialize(const Json::Value& value, entityx::ComponentHandle<QuiverComponent> component, entityx::ComponentHandle<BodyComponent> bodyComponent)
+void Serializer::implDeserialize(const Json::Value& value, entityx::ComponentHandle<QuiverComponent> component, entityx::Entity entity)
 {
-	if(not bodyComponent)
-		return;
+	const entityx::ComponentHandle<BodyComponent> bodyComponent{entity.component<BodyComponent>()};
+	if(not TEST(bodyComponent))
+		throw std::runtime_error("Body component lacks.");
 	component->arrows.clear();
 	for(Json::ArrayIndex i{0}; i < value["arrows"].size(); ++i)
 	{
-		if(m_entitiesMap.find(value["arrows"][i].asString()) != m_entitiesMap.end())
+		if(m_entities.find(value["arrows"][i].asString()) != m_entities.end())
 		{
-			entityx::Entity arrow{m_entitiesMap.at(value["arrows"][i].asString())};
-			component->arrows.push_back(arrow);
+			entityx::Entity arrow{m_entities.at(value["arrows"][i].asString())};
+			if(not TEST(arrow))
+				throw std::runtime_error("An arrow in a quiver is not valid.");
+			const BodyComponent::Handle arrowBodyComponent{arrow.component<BodyComponent>()};
+			const ArrowComponent::Handle arrowComponent{arrow.component<ArrowComponent>()};
+			if(not TEST(arrowBodyComponent and arrowComponent))
+				throw std::runtime_error("Arrow or body component of arrow in a quiver lacks.");
 			b2WeldJointDef jointDef;
 			jointDef.bodyA = bodyComponent->body;
-			jointDef.bodyB = arrow.component<BodyComponent>()->body;
-//			jointDef.localAnchorA = {0, 0};
-//			jointDef.localAnchorB = jointDef.bodyB->GetLocalPoint(jointDef.bodyA->GetWorldPoint(jointDef.localAnchorA));
-//			jointDef.referenceAngle = jointDef.bodyB->GetAngle() - jointDef.bodyA->GetAngle();
-			jointDef.localAnchorA = {0.f, 0.f};
-			jointDef.localAnchorB = {0.4f, 0.10833333f};
+			jointDef.bodyB = arrowBodyComponent->body;
+			jointDef.localAnchorA = component->arrowAnchor;
+			jointDef.localAnchorB = sftob2(arrowComponent->localStickPoint);
 			jointDef.referenceAngle = -b2_pi/2.f;
-			jointDef.frequencyHz = 0.f;
-			jointDef.dampingRatio = 0.f;
-			m_context.world.CreateJoint(&jointDef);
+			jointDef.frequencyHz = 30.f;
+			jointDef.dampingRatio = 1.f;
+			component->arrows.emplace(arrow, static_cast<b2WeldJoint*>(m_context.world.CreateJoint(&jointDef)));
 		}
 	}
 	component->capacity = value["capacity"].asUInt();

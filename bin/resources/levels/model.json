@@ -190,6 +190,15 @@
                         "type" : "string",
                         "required" : false
                     },
+					{
+						"name" : "dependencies",
+						"type" : "array",
+						"required" : false,
+						"children" :
+						{
+							"type" : "string"
+						}
+					},
                     {
                         "name" : "walk",
                         "type" : "object",
@@ -333,7 +342,7 @@
 								"required" : true
 							},
 							{
-								"name" : "local anchor",
+								"name" : "quiver anchor",
 								"type" : "object",
 								"required" : true,
 								"free children names" : false,
@@ -444,7 +453,26 @@
 								"required" : true
 							},
 							{
-								"name" : "local anchor",
+								"name" : "body anchor",
+								"type" : "object",
+								"required" : true,
+								"free children names" : false,
+								"children" : 
+								[
+                                    {
+                                        "name" : "x",
+                                        "type" : "real",
+                                        "required" : true
+                                    },
+                                    {
+                                        "name" : "y",
+                                        "type" : "real",
+                                        "required" : true
+                                    }
+								]
+							},
+							{
+								"name" : "item anchor",
 								"type" : "object",
 								"required" : true,
 								"free children names" : false,
@@ -497,7 +525,7 @@
 								"required" : true
 							},
 							{
-								"name" : "local anchor",
+								"name" : "arms anchor",
 								"type" : "object",
 								"required" : true,
 								"free children names" : false,
@@ -551,7 +579,7 @@
 								"required" : true
 							},
 							{
-								"name" : "local anchor",
+								"name" : "notched arrow anchor",
 								"type" : "object",
 								"required" : true,
 								"free children names" : false,
@@ -591,7 +619,45 @@
                                 {
                                     "type" : "string"
                                 }
-                            }
+                            },
+							{
+								"name" : "body anchor",
+								"type" : "object",
+								"required" : true,
+								"free children names" : false,
+								"children" : 
+								[
+                                    {
+                                        "name" : "x",
+                                        "type" : "real",
+                                        "required" : true
+                                    },
+                                    {
+                                        "name" : "y",
+                                        "type" : "real",
+                                        "required" : true
+                                    }
+								]
+							},
+							{
+								"name" : "arrow anchor",
+								"type" : "object",
+								"required" : true,
+								"free children names" : false,
+								"children" : 
+								[
+                                    {
+                                        "name" : "x",
+                                        "type" : "real",
+                                        "required" : true
+                                    },
+                                    {
+                                        "name" : "y",
+                                        "type" : "real",
+                                        "required" : true
+                                    }
+								]
+							}
 						]
 					},
                     {
@@ -678,6 +744,54 @@
 						"type" : "string",
 						"required" : false
 					},
+					{
+						"name" : "item",
+						"type" : "object",
+						"free children names" : false,
+						"required" : false,
+						"children" :
+						[
+							{
+								"name" : "type",
+								"type" : "string",
+								"required" : true
+							},
+							{
+								"name" : "category",
+								"type" : "string",
+								"required" : true
+							},
+							{
+								"name" : "weight",
+								"type" : "real",
+								"required" : true
+							},
+							{
+								"name" : "value",
+								"type" : "real",
+								"required" : true
+							},
+							{
+								"name" : "hold anchor",
+								"type" : "object",
+                                "free children names" : false,
+                                "required" : true,
+                                "children" :
+                                [
+                                    {
+                                        "name" : "x",
+                                        "type" : "real",
+                                        "required" : true
+                                    },
+                                    {
+                                        "name" : "y",
+                                        "type" : "real",
+                                        "required" : true
+                                    }
+                                ]
+							}
+						]
+					},
                     {
                         "name" : "inventory",
                         "type" : "object",
@@ -696,32 +810,8 @@
                                 "required" : true,
                                 "children" :
                                 {
-                                    "type" : "object",
-									"free children names" : false,
-									"children" :
-									[
-										{
-											"name" : "type",
-											"type" : "string",
-											"required" : true
-										},
-										{
-											"name" : "category",
-											"type" : "string",
-											"required" : true
-										},
-										{
-											"name" : "weight",
-											"type" : "real",
-											"required" : true
-										},
-										{
-											"name" : "value",
-											"type" : "real",
-											"required" : true
-										}
-									]
-                                }
+                                    "type" : "string"
+								}
                             }
                         ]
                     },

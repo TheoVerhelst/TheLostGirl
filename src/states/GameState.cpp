@@ -38,7 +38,7 @@
 //TODO Sauvegarde en fonction des includes.
 //TODO Retirer la fleche pendant le CAC.
 //TODO Sound manager.
-//TODO Faire un système multi texture pour une même partie d'entité (soit chunker une grande image, soit faire plusieurs images).
+//TODO Faire un système multi texture pour une même entité (soit chunker une grande image, soit faire plusieurs images).
 //TODO CAC: statique : deux coups; en avancant: ??? ; en tombant: un puissant; en sautant : un faible; roulade : ???; en reculant : ???; en sneak : prise (egorgement/ippo sonage)
 
 GameState::GameState(StateStack& stack, std::string file) :
@@ -57,7 +57,7 @@ GameState::GameState(StateStack& stack, std::string file) :
 
 GameState::~GameState()
 {
-//	saveWorld("resources/levels/S.json");
+	saveWorld("resources/levels/check.json");
 	clear();
 	if(m_threadLoad.joinable())
 		m_threadLoad.join();
@@ -107,39 +107,37 @@ void GameState::saveWorld(const std::string& file)
 		Json::Value root;//Will contains the root value after serializing.
 		Json::StyledWriter writer;
 		std::ofstream saveFileStream(file, std::ofstream::binary);
+		root["entities"] = Json::ValueType::objectValue;
+		Serializer s(getContext(), m_entities, root["entities"]);
 		for(auto& entity : m_entities)
 		{
-			Serializer s(getContext(), m_entities);
-#define SERIALIZE(componentName, componentType)\
-if(entity.second.has_component<componentType>())\
-	root["entities"][entity.first][componentName] = s.serialize(entity.second.component<componentType>());
-			SERIALIZE("body", BodyComponent)
-			SERIALIZE("sprite", SpriteComponent)
-			SERIALIZE("tranform", TransformComponent)
-			SERIALIZE("inventory", InventoryComponent)
-			SERIALIZE("archer", ArcherComponent)
-			SERIALIZE("spritesheed animations", AnimationsComponent<SpriteSheetAnimation>)
-			SERIALIZE("direction", DirectionComponent)
-			SERIALIZE("categories", CategoryComponent)
-			SERIALIZE("fall", FallComponent)
-			SERIALIZE("walk", WalkComponent)
-			SERIALIZE("jump", JumpComponent)
-			SERIALIZE("healt", HealthComponent)
-			SERIALIZE("stamina", StaminaComponent)
-			SERIALIZE("arrow", ArrowComponent)
-			SERIALIZE("hardness", HardnessComponent)
-			SERIALIZE("scripts", ScriptsComponent)
-			SERIALIZE("detection range", DetectionRangeComponent)
-			SERIALIZE("death", DeathComponent)
-			SERIALIZE("name", NameComponent)
-			SERIALIZE("hand to hand", HandToHandComponent)
-			SERIALIZE("actor", ActorComponent)
-			SERIALIZE("hold item", HoldItemComponent)
-			SERIALIZE("articuled arms", ArticuledArmsComponent)
-			SERIALIZE("bow", BowComponent)
-			SERIALIZE("quiver", QuiverComponent)
+			s.serialize<BodyComponent>(entity.first, "body");
+			s.serialize<SpriteComponent>(entity.first, "sprite");
+			s.serialize<TransformComponent>(entity.first, "transform");
+			s.serialize<InventoryComponent>(entity.first, "inventory");
+			s.serialize<ArcherComponent>(entity.first, "archer");
+			s.serialize<AnimationsComponent<SpriteSheetAnimation>>(entity.first, "spritesheed animations");
+			s.serialize<DirectionComponent>(entity.first, "direction");
+			s.serialize<CategoryComponent>(entity.first, "categories");
+			s.serialize<FallComponent>(entity.first, "fall");
+			s.serialize<WalkComponent>(entity.first, "walk");
+			s.serialize<JumpComponent>(entity.first, "jump");
+			s.serialize<HealthComponent>(entity.first, "healt");
+			s.serialize<StaminaComponent>(entity.first, "stamina");
+			s.serialize<ArrowComponent>(entity.first, "arrow");
+			s.serialize<HardnessComponent>(entity.first, "hardness");
+			s.serialize<ScriptsComponent>(entity.first, "scripts");
+			s.serialize<DetectionRangeComponent>(entity.first, "detection range");
+			s.serialize<DeathComponent>(entity.first, "death");
+			s.serialize<NameComponent>(entity.first, "name");
+			s.serialize<HandToHandComponent>(entity.first, "hand to hand");
+			s.serialize<ActorComponent>(entity.first, "actor");
+			s.serialize<ItemComponent>(entity.first, "item");
+			s.serialize<HoldItemComponent>(entity.first, "hold item");
+			s.serialize<ArticuledArmsComponent>(entity.first, "articuled arms");
+			s.serialize<BowComponent>(entity.first, "bow");
+			s.serialize<QuiverComponent>(entity.first, "quiver");
 			//End serialize
-#undef SERIALIZE
 		}
 
 		//time
@@ -252,79 +250,73 @@ void GameState::initWorld(const std::string& file)
 		if(root.isMember("entities"))
 		{
 			getContext().eventManager.emit<LoadingStateChange>("Loading entities");
-			const Json::Value entities{root["entities"]};
-			//First add all entities with some needed components, that's for component that need
-			//that m_entities is complete and bodies already created to be assigned (such as InventoryComponent).
-			for(const std::string& entityName : entities.getMemberNames())
+			Json::Value jsonEntities{root["entities"]};
+			Serializer s(getContext(), m_entities, jsonEntities);
+			std::set<std::string> alreadyDeserialized;
+			std::function<void(const std::string&)> deserializerLambda = [&](const std::string& entityName)
 			{
-				Json::Value entity{entities[entityName]};
-				//If the entity is derivated from a generic entities, add components of the base to the entity
-				if(entity.isMember("base"))
-				{
-					if(not genericEntities.isMember(entity["base"].asString()))
-						throw std::runtime_error("\"entities." + entityName + ".base\" value is not an existing base.");
-					const Json::Value base{genericEntities[entity["base"].asString()]};
-					for(const std::string& componentName : base.getMemberNames())
-						entity[componentName] = base[componentName];
-				}
-				m_entities.emplace(entityName, getContext().entityManager.create());
-				Serializer s(getContext(), m_entities);
-				if(entity.isMember("transform"))
-					s.deserialize(entity["transform"], m_entities[entityName].assign<TransformComponent>());
-				if(entity.isMember("body"))
-				{
-					s.deserialize(entity["body"], m_entities[entityName].assign<BodyComponent>(), m_entities[entityName].component<TransformComponent>());
-					//Assign user data to the body of the entity
-					m_entities[entityName].component<BodyComponent>()->body->SetUserData(&m_entities[entityName]);
-				}
-			}
+				if(alreadyDeserialized.count(entityName) > 0)
+					return;
 
-			for(const std::string& entityName : entities.getMemberNames())
-			{
-				Json::Value entity{entities[entityName]};
-				//If the entity is derivated from a generic entities, add components of the base to the entity
-				if(entity.isMember("base"))
-				{
-					const Json::Value base{genericEntities[entity["base"].asString()]};
-					for(const std::string& componentName : base.getMemberNames())
-						entity[componentName] = base[componentName];
-				}
-				//Assign to root the new entity
-				root["entities"][entityName] = entity;
+				std::cout << "Deserializing " << entityName << std::endl;
+				entityx::Entity& entity{m_entities.emplace(entityName, getContext().entityManager.create()).first->second};
+				Json::Value& jsonEntity{jsonEntities[entityName]};
 
-				Serializer s(getContext(), m_entities);
-#define DESERIALIZE(componentName, componentType)\
-if(entity.isMember(componentName))\
-	s.deserialize(entity[componentName], m_entities[entityName].assign<componentType>());
-#define DESERIALIZE_(componentName, componentType, dependency)\
-if(entity.isMember(componentName))\
-	s.deserialize(entity[componentName], m_entities[entityName].assign<componentType>(), m_entities[entityName].component<dependency>());
-				DESERIALIZE("sprite", SpriteComponent)
-				DESERIALIZE_("spritesheet animations", AnimationsComponent<SpriteSheetAnimation>, SpriteComponent)
-				DESERIALIZE("inventory", InventoryComponent)
-				DESERIALIZE_("archer", ArcherComponent, BodyComponent)
-				DESERIALIZE("categories", CategoryComponent)
-				DESERIALIZE("walk", WalkComponent)
-				DESERIALIZE("jump", JumpComponent)
-				DESERIALIZE("health", HealthComponent)
-				DESERIALIZE("stamina", StaminaComponent)
-				DESERIALIZE("direction", DirectionComponent)
-				DESERIALIZE("fall", FallComponent)
-				DESERIALIZE("arrow", ArrowComponent)
-				DESERIALIZE("hardness", HardnessComponent)
-				DESERIALIZE("scripts", ScriptsComponent)
-				DESERIALIZE("detection range", DetectionRangeComponent)
-				DESERIALIZE("death", DeathComponent)
-				DESERIALIZE("name", NameComponent)
-				DESERIALIZE("hand to hand", HandToHandComponent)
-				DESERIALIZE("actor", ActorComponent)
-				DESERIALIZE_("hold item", HoldItemComponent, BodyComponent)
-				DESERIALIZE_("articuled arms", ArticuledArmsComponent, BodyComponent)
-				DESERIALIZE_("bow", BowComponent, BodyComponent)
-				DESERIALIZE_("quiver", QuiverComponent, BodyComponent)
+				//If the entity is derivated from a base entities, add json values of the base to the json entity
+				if(jsonEntity.isMember("base"))
+				{
+					const std::string baseName{jsonEntity["base"].asString()};
+					if(not TEST(genericEntities.isMember(baseName)))
+						throw std::runtime_error("\"" + baseName + "\" is not a valid base.");
+					const Json::Value base{genericEntities[baseName]};
+					for(const std::string& componentName : base.getMemberNames())
+						jsonEntity[componentName] = base[componentName];
+				}
+
+				//Deserialize first all dependecies of this entity
+				Json::Value dependencies{jsonEntity["dependencies"]};
+				for(Json::ArrayIndex i{0}; i < dependencies.size(); ++i)
+					if(TEST(jsonEntities.isMember(dependencies[i].asString())))
+						deserializerLambda(dependencies[i].asString());
+					else
+						throw std::runtime_error("\"" + dependencies[i].asString() + "\" is not a valid dependecy.");
+
+				s.deserialize<TransformComponent>(entityName, "transform");
+				s.deserialize<BodyComponent>(entityName, "body");
+				BodyComponent::Handle bodyComponent{entity.component<BodyComponent>()};
+				if(bodyComponent)
+					bodyComponent->body->SetUserData(&entity);
+				s.deserialize<SpriteComponent>(entityName, "sprite");
+				s.deserialize<AnimationsComponent<SpriteSheetAnimation>>(entityName, "spritesheet animations");
+				s.deserialize<InventoryComponent>(entityName, "inventory");
+				s.deserialize<ArcherComponent>(entityName, "archer");
+				s.deserialize<CategoryComponent>(entityName, "categories");
+				s.deserialize<WalkComponent>(entityName, "walk");
+				s.deserialize<JumpComponent>(entityName, "jump");
+				s.deserialize<HealthComponent>(entityName, "health");
+				s.deserialize<StaminaComponent>(entityName, "stamina");
+				s.deserialize<DirectionComponent>(entityName, "direction");
+				s.deserialize<FallComponent>(entityName, "fall");
+				s.deserialize<ArrowComponent>(entityName, "arrow");
+				s.deserialize<HardnessComponent>(entityName, "hardness");
+				s.deserialize<ScriptsComponent>(entityName, "scripts");
+				s.deserialize<DetectionRangeComponent>(entityName, "detection range");
+				s.deserialize<DeathComponent>(entityName, "death");
+				s.deserialize<NameComponent>(entityName, "name");
+				s.deserialize<HandToHandComponent>(entityName, "hand to hand");
+				s.deserialize<ActorComponent>(entityName, "actor");
+				s.deserialize<ItemComponent>(entityName, "item");
+				s.deserialize<HoldItemComponent>(entityName, "hold item");
+				s.deserialize<ArticuledArmsComponent>(entityName, "articuled arms");
+				s.deserialize<BowComponent>(entityName, "bow");
+				s.deserialize<QuiverComponent>(entityName, "quiver");
 				//End deserialize
-#undef DESERIALIZE
-			}
+				alreadyDeserialized.insert(entityName);
+			};
+			for(const std::string& name : jsonEntities.getMemberNames())
+				//Don't check if  jsonEntities[name] has been already deserialized, because
+				//if there is only a few dependencies, there will be more useless check than useless lambda call
+				deserializerLambda(name);
 		}
 
 		if(not getContext().parameters.debugMode)

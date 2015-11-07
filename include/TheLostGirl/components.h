@@ -2,11 +2,13 @@
 #define COMPONENTS_H
 
 #include <string>
+#include <unordered_map>
 #include <SFML/Graphics/Sprite.hpp>
 #include <SFML/System/Clock.hpp>
 #include <entityx/Entity.h>
 #include <TheLostGirl/Category.h>
 #include <TheLostGirl/AnimationsManager.h>
+#include <TheLostGirl/HashEntity.h>
 
 //Forward declarations
 class b2Body;
@@ -63,6 +65,8 @@ struct AnimationsComponent : public entityx::Component<AnimationsComponent<A>>
 };
 
 /// Enumeration of every possible direction.
+/// The order in the enum is important, it allow to compute the
+/// opposite of a direction using division/modulo calculations.
 enum class Direction : int
 {
 	Left,  ///< Diriged to the left.
@@ -72,7 +76,7 @@ enum class Direction : int
 	None   ///< Unhandled direction.
 };
 
-/// The Direction component.
+/// The sirection component.
 /// It indicates where the entity is diriged to.
 struct DirectionComponent : public entityx::Component<DirectionComponent>
 {
@@ -99,6 +103,7 @@ struct ItemComponent : public entityx::Component<ItemComponent>
 	std::string type;    ///< Type of item (dark bow, simple wood arrow, ...).
 	float weight;        ///< Weight of the item.
 	float value;         ///< Value of the item.
+	b2Vec2 holdAnchor;   ///< Indicates where the item should be held by other entities (in the item coordinates system).
 };
 
 /// The inventory component.
@@ -150,29 +155,6 @@ struct StaminaComponent : public entityx::Component<StaminaComponent>
 	float maximum;     ///< The maximum stamina.
 	float current;     ///< The current stamina.
 	float regeneration;///< The regeneration of stamina (in units/s).
-};
-
-/// Arrow component that holds all stats about an arrow.
-/// The friction is applied in order to set the angle of the body tangent to the arrow trajectory.
-/// The penetrance indicates how much the arrow can stick into hard targets, and so make damages.
-struct ArrowComponent : public entityx::Component<ArrowComponent>
-{
-	/// Possibles states of an arrow.
-	enum ArrowState
-	{
-		Fired,  ///< The arrow is fired and is in air.
-		Sticked,///< The arrow is sticked into something.
-		Stored, ///< The arrow is stored into an inventory or in a quiver.
-		Notched ///< The arrow is notched in a bow.
-	};
-
-	float friction;                 ///< The amplitude of the friction applied on the body.
-	sf::Vector2f localFrictionPoint;///< The point where the friction must be applied.
-	sf::Vector2f localStickPoint;   ///< The point where the arrow will be sticked when touch a target.
-	float penetrance;               ///< Indicates how much the arrow can stick into hard targets.
-	float damage;                   ///< Indicates the damage that the arrow can do on the target.
-	ArrowState state;               ///< Indicates the current state of the arrow.
-	entityx::Entity shooter;        ///< The last entity that shooted the arrow, invalid if the arrow was never shooted.
 };
 
 /// Target hardness component that indicates the treshold of stucking of the arrow into the object.
@@ -249,7 +231,7 @@ struct ArcherComponent : public entityx::Component<ArcherComponent>
 	float initialSpeed;      ///< The initial speed of the arrow when fired at maximum bending, in m/s.
 	float damages;           ///< The damages that make a shoot.
 	entityx::Entity quiver;  ///< The quiver that the entity holds on his back.
-	b2Vec2 localAnchor;      ///< Indicates where the quiver is anchored in the archer's body.
+	b2Vec2 quiverAnchor;      ///< Indicates where the quiver is anchored in the archer's body.
 	b2WeldJoint* quiverJoint;///< The joint that maintains the quiver on the entity.
 };
 
@@ -257,20 +239,22 @@ struct ArcherComponent : public entityx::Component<ArcherComponent>
 /// This component should be added to an entity which represents arms.
 struct HoldItemComponent : public entityx::Component<HoldItemComponent>
 {
-	entityx::Entity item;///< The held item.
-	b2Vec2 localAnchor;  ///< Indicates where the item is anchored in the arms's body.
-	b2WeldJoint* joint;  ///< The joint that maintains both entities together.
+	b2Vec2 bodyAnchor;     ///< Indicates where this entity is anchored in the main body.
+	entityx::Entity item;  ///< The held item.
+	b2Vec2 itemAnchor;     ///< Indicates where the item is anchored in the body of this entity.
+	b2WeldJoint* itemJoint;///< The joint that maintains both entities together.
 };
 
 /// Stores data about an entity that have articuled arms that can rotate around its shoulders.
-/// The arms are a separate entity.
+/// The arms are a separate entity, and this component should be added on the entity which is joined
+/// to the arms, not directly on the arm's entity itself.
 struct ArticuledArmsComponent : public entityx::Component<ArticuledArmsComponent>
 {
-	entityx::Entity arms;      ///< The entity representing the arms.
 	float upperAngle;          ///< The maximum angle of the arms.
 	float lowerAngle;          ///< The minimum angle of the arms.
 	float targetAngle;         ///< The angle that the arms should have (rotation isn't instantaneous, for physics reasons).
-	b2Vec2 localAnchor;        ///< Indicates where the arms is anchored in the archer's body.
+	entityx::Entity arms;      ///< The entity representing the arms.
+	b2Vec2 armsAnchor;         ///< Indicates where the arms is anchored in the archer's body.
 	b2RevoluteJoint* armsJoint;///< The joint that maintains both entities together.
 };
 
@@ -279,20 +263,45 @@ struct ArticuledArmsComponent : public entityx::Component<ArticuledArmsComponent
 /// The notched arrow translates alongside an axis to simulate the bow bending.
 struct BowComponent : public entityx::Component<BowComponent>
 {
-	entityx::Entity notchedArrow;       ///< The notched arrow.
 	float upperTranslation;             ///< The maximum translation of the arrow.
 	float lowerTranslation;             ///< The minimum translation of the arrow.
 	float targetTranslation;            ///< The translation that the arrow should have (translation isn't instantaneous, for physics reasons).
-	b2Vec2 localAnchor;                 ///< Indicates where the arrow is anchored in the bow's body.
+	entityx::Entity notchedArrow;       ///< The notched arrow.
+	b2Vec2 notchedArrowAnchor;          ///< Indicates where the arrow is anchored in the bow's body.
 	b2PrismaticJoint* notchedArrowJoint;///< The joint that maintains the bow with the arrow.
+};
+
+/// Arrow component that holds all stats about an arrow.
+/// The friction is applied in order to set the angle of the body tangent to the arrow trajectory.
+/// The penetrance indicates how much the arrow can stick into hard targets, and so make damages.
+struct ArrowComponent : public entityx::Component<ArrowComponent>
+{
+	/// Possibles states of an arrow.
+	enum ArrowState
+	{
+		Fired,  ///< The arrow is fired and is in air.
+		Sticked,///< The arrow is sticked into something.
+		Stored, ///< The arrow is stored into an inventory or in a quiver.
+		Notched ///< The arrow is notched in a bow.
+	};
+
+	float friction;                 ///< The amplitude of the friction applied on the body.
+	sf::Vector2f localFrictionPoint;///< The point where the friction must be applied.
+	sf::Vector2f localStickPoint;   ///< The point where the arrow will be sticked when touch a target.
+	float penetrance;               ///< Indicates how much the arrow can stick into hard targets.
+	float damage;                   ///< Indicates the damage that the arrow can do on the target.
+	ArrowState state;               ///< Indicates the current state of the arrow.
+	entityx::Entity shooter;        ///< The last entity that shooted the arrow, invalid if the arrow was never shooted.
 };
 
 /// This component should be added to every quiver entity.
 /// A quiver is an item that is joined to the back of an entity and hold some arrows.
 struct QuiverComponent : public entityx::Component<QuiverComponent>
 {
-	unsigned int capacity;            ///< Maximum number of arrows in the quiver.
-	std::list<entityx::Entity> arrows;///< List of all stocked arrows.
+	unsigned int capacity;///< Maximum number of arrows in the quiver.
+	b2Vec2 bodyAnchor;    ///< Indicates where the quiver is anchored in the body of the main entity.
+	b2Vec2 arrowAnchor;   ///< Indicates where the arrow is anchored in the body of the quiver.
+	std::unordered_map<entityx::Entity, b2WeldJoint*, HashEntity> arrows;///< List of all stocked arrows and corresponding joints.
 };
 
 #endif //COMPONENTS_H

@@ -224,6 +224,8 @@ void DebugDraw::drawDebugAth()
 	m_FPSLabel->setText("FPS: " + roundOutput(m_framesPerSecond));
 
 	//Console
+
+	m_console->moveToFront();
 	if(not m_outStringStream.str().empty())
 	{
 		m_console->addLine(m_outStringStream.str());

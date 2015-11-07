@@ -2,19 +2,21 @@
 #include <entityx/Entity.h>
 #include <Box2D/Dynamics/b2World.h>
 #include <TheLostGirl/components.h>
+#include <TheLostGirl/functions.h>
 #include <TheLostGirl/FixtureRoles.h>
 #include <TheLostGirl/actions/HandToHand.h>
 
 void HandToHand::operator()(entityx::Entity entity) const
 {
-	if(not entity)
+	if(not TEST(entity.valid()))
 		return;
 	HandToHandComponent::Handle handToHandComponent(entity.component<HandToHandComponent>());
-	const DirectionComponent::Handle directionComponent(entity.component<DirectionComponent>());
-	const WalkComponent::Handle walkComponent(entity.component<WalkComponent>());
 	BodyComponent::Handle bodyComponent(entity.component<BodyComponent>());
-	if(directionComponent and handToHandComponent and bodyComponent
-		and (not walkComponent or walkComponent->effectiveMovement == Direction::None))
+	const DirectionComponent::Handle directionComponent(entity.component<DirectionComponent>());
+	if(not TEST(handToHandComponent and directionComponent and bodyComponent))
+		return;
+	const WalkComponent::Handle walkComponent(entity.component<WalkComponent>());
+	if(not walkComponent or walkComponent->effectiveMovement == Direction::None)
 	{
 		handToHandComponent->lastShoot += handToHandComponent->timer.restart();
 		if(handToHandComponent->lastShoot >= handToHandComponent->delay)
@@ -40,16 +42,13 @@ void HandToHand::operator()(entityx::Entity entity) const
 
 			for(entityx::Entity foundEntity : callback.foundEntities)
 			{
-				if(foundEntity.valid())
+				HealthComponent::Handle healthComponent(foundEntity.component<HealthComponent>());
+				const ActorComponent::Handle actorComponent(foundEntity.component<ActorComponent>());
+				if(healthComponent)
 				{
-					HealthComponent::Handle healthComponent(foundEntity.component<HealthComponent>());
-					const ActorComponent::Handle actorComponent(foundEntity.component<ActorComponent>());
-					if(healthComponent and actorComponent)
-					{
-						float damages{handToHandComponent->damages};
-						damages -= actorComponent->handToHandResistance;
-						healthComponent->current -= damages;
-					}
+					float damages{handToHandComponent->damages};
+					damages -= actorComponent->handToHandResistance;
+					healthComponent->current -= damages;
 				}
 			}
 
@@ -77,6 +76,8 @@ HandToHandQueryCallback::HandToHandQueryCallback(entityx::Entity attacker):
 bool HandToHandQueryCallback::ReportFixture(b2Fixture* fixture)
 {
 	entityx::Entity entity{*static_cast<entityx::Entity*>(fixture->GetBody()->GetUserData())};
+	if(not TEST(entity.valid()))
+		return true;
 	//The entity is added to the list only if:
 	// -this is not the attacker itself
 	// -this is an actor

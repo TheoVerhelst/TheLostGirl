@@ -1,10 +1,11 @@
 {
-	"include" : ["archer.json", "mobs.json", "items.json"],
+	"include" : ["items.json", "archer.json", "mobs.json"],
 	"entities" : 
 	{
 		"player bow" :
 		{
 			"base" : "bow",
+			"dependencies" : ["arrow 3"],
 			"bow" :
 			{
 				"notched arrow" : "arrow 3",
@@ -12,9 +13,9 @@
 				"lower translation" : -37,
 				"current translation" : 0,
 				"target translation" : 0,
-				"local anchor" : 
+				"notched arrow anchor" : 
 				{
-					"x" : 75,
+					"x" : 95,
 					"y" : 50
 				}
 			},
@@ -29,13 +30,19 @@
 		"player arms" :
 		{
 			"base" : "archer arms",
+			"dependencies" : ["player bow"],
 			"hold item" :
 			{
 				"item" : "player bow",
-				"local anchor" :
+				"item anchor" :
 				{
 					"x" : 50,
 					"y" : 70
+				},
+				"body anchor":
+				{
+					"x" : 0,
+					"y" : 0
 				}
 			},
 			"transform" : 
@@ -49,9 +56,20 @@
 		"player quiver" : 
 		{
 			"base" : "quiver",
+			"dependencies" : ["arrow 1", "arrow 2", "arrow 3"],
 			"quiver" : 
 			{
 				"capacity" : 20,
+				"arrow anchor" :
+				{
+					"x" : 0,
+					"y" : 0
+				},
+				"body anchor":
+				{
+					"x" : 50,
+					"y" : 90
+				},
 				"arrows" : [ "arrow 1", "arrow 2", "arrow 4" ]
 			},
 			"transform" : 
@@ -64,11 +82,12 @@
 		},
 		"player" : 
 		{
+			"dependencies" : ["player arms", "player quiver"],
 			"base" : "archer",
 			"archer" : 
 			{
 				"quiver" : "player quiver",
-				"local anchor" :
+				"quiver anchor" :
 				{
 					"x" : 43,
 					"y" : 59
@@ -83,7 +102,7 @@
 				"lower angle" : -90,
 				"current angle" : 0,
 				"target angle" : 0,
-				"local anchor" : 
+				"arms anchor" : 
 				{
 					"x" : 50,
 					"y" : 68

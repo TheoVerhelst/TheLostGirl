@@ -176,3 +176,9 @@ Direction operator!(const Direction& direction)
 		return Direction((static_cast<int>(direction) + (max / 2 )) % max);
 	}
 }
+
+bool printError(const std::string& expression, const std::string& filename, unsigned int line)
+{
+	std::cerr << "Test failed in " << filename << " at line " << line << " : \"" << expression << "\"" << std::endl;
+	return false;
+}

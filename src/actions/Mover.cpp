@@ -16,7 +16,7 @@ Mover::Mover(StateStack::Context context, Direction _direction, bool _start):
 
 void Mover::operator()(entityx::Entity entity) const
 {
-	if(not entity or direction == Direction::None)
+	if(not TEST(entity and direction != Direction::None))
 		return;
 //	const auto fallComponent(entity.component<FallComponent>());
 //	if(fallComponent and fallComponent->inAir)
@@ -29,7 +29,9 @@ void Mover::operator()(entityx::Entity entity) const
 	std::string directionStr{directionToString.at(direction)};
 	std::string oppDirectionStr{directionToString.at(not direction)};
 	DirectionComponent::Handle directionComponent(entity.component<DirectionComponent>());
-	if(directionComponent and (direction == Direction::Left or direction == Direction::Right))
+	if(not TEST(directionComponent))
+		return;
+	if(direction == Direction::Left or direction == Direction::Right)
 	{
 		bool moveToOppDirection;
 		if(direction == Direction::Left)
@@ -204,7 +206,7 @@ void Mover::flip(entityx::Entity entity) const
 			HoldItemComponent::Handle holdItemComponent{armsComponent->arms.component<HoldItemComponent>()};
 			if(holdItemComponent)
 			{
-				b2Body* itemBody{holdItemComponent->joint->GetBodyB()};
+				b2Body* itemBody{holdItemComponent->itemJoint->GetBodyB()};
 				flipFixtures(itemBody, 0);
 				flipBody(itemBody, globalMid);
 				BowComponent::Handle bowComponent{holdItemComponent->item.component<BowComponent>()};

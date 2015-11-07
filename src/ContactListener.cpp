@@ -39,6 +39,10 @@ bool ContactListener::collide(b2Contact* contact, const b2Manifold*)
 	entityx::Entity entityB{*static_cast<entityx::Entity*>(bodyB->GetUserData())};
 	//Wrap all checks into this function allow to stop next checks when any of the checks is verified.
 
+	//The contact do not occurs if an entity is invalid
+	if(not entityA or not entityB)
+		return false;
+
 	//The contact do not occurs if both entities are the same one
 	if(entityA == entityB)
 		return false;

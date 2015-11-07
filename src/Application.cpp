@@ -190,7 +190,6 @@ void Application::render()
 	m_stateStack.draw();
 	if(m_parameters.debugMode)
 		m_world.DrawDebugData();
-	m_debugDraw.drawDebugAth();
 	m_window.resetGLStates();
 	if(m_parameters.bloomEnabled)
 	{
@@ -199,6 +198,7 @@ void Application::render()
 		m_bloomEffect.apply(m_postEffectsTexture, m_window);
 	}
 	m_gui.draw();
+	m_debugDraw.drawDebugAth();
 	m_window.display();
 }
 
