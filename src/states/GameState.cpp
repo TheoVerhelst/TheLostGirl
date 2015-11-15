@@ -34,6 +34,9 @@
 #include <TheLostGirl/serialization.h>
 #include <TheLostGirl/states/GameState.h>
 
+//FIXME Bad func call quand on on fait un scroll souris pendant le GameState
+//TODO Statestack::Context as global variable
+//TODO Replace include by import in save file
 //TODO Finir la fonction flip().
 //TODO Sauvegarde en fonction des includes.
 //TODO Retirer la fleche pendant le CAC.
@@ -77,8 +80,8 @@ bool GameState::update(sf::Time elapsedTime)
 {
 	getContext().systemManager.update<ScriptsSystem>(elapsedTime.asSeconds());
 	getContext().systemManager.update<PendingChangesSystem>(elapsedTime.asSeconds());
-	getContext().systemManager.update<PhysicsSystem>(elapsedTime.asSeconds());
 	getContext().systemManager.update<AnimationsSystem>(elapsedTime.asSeconds());
+	getContext().systemManager.update<PhysicsSystem>(elapsedTime.asSeconds());
 	getContext().systemManager.update<ScrollingSystem>(elapsedTime.asSeconds());
 	getContext().systemManager.update<StatsSystem>(elapsedTime.asSeconds());
 	getContext().systemManager.update<TimeSystem>(elapsedTime.asSeconds()*m_timeSpeed);//Scale the time
@@ -222,9 +225,9 @@ void GameState::initWorld(const std::string& file)
 
 		getContext().systemManager.system<ScrollingSystem>()->setLevelData(m_levelRect, m_referencePlan);
 		Json::Value genericEntities;
-		if(root.isMember("include"))
+		if(root.isMember("import"))
 		{
-			const Json::Value includes{root["include"]};
+			const Json::Value includes{root["import"]};
 			for(Json::ArrayIndex i{0}; i < includes.size(); ++i)
 			{
 				//Parse the level data

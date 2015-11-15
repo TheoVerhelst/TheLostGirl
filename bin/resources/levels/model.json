@@ -6,7 +6,7 @@
     "children":
     [
 		{
-			"name" : "include",
+			"name" : "import",
 			"type" : "array",
 			"required" : false,
 			"children" :

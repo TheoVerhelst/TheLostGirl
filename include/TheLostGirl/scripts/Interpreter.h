@@ -105,7 +105,7 @@ class Interpreter
 		/// This function take care of pass over nested parentheses.
 		/// \param from Iterator to the first token after the opening parenthesis.
 		/// \param to Iterator to the past-the-last token that can be the corresponding parenthesis.
-		/// \return An iterator to the parenthesis if found, to otherwise.
+		/// \return An iterator to the parenthesis if found, \a to otherwise.
 		std::list<std::string>::const_iterator parenthesis(std::list<std::string>::const_iterator from, std::list<std::string>::const_iterator to) const;
 
 		/// Check if the given string contains only whitespaces.

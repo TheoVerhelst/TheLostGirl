@@ -13,7 +13,7 @@ enum Lang
 	EN,///< English
 	FR,///< French
 	NL,///< Dutch
-	IT///< Italian
+	IT ///< Italian
 };
 
 /// Language manager that translates strings.
@@ -46,6 +46,7 @@ class LangManager
 
 		Lang m_lang;                                  ///< The current lang.
 		std::map<std::string, std::wstring> m_entries;///< Translations related to the current lang.
+		static const std::map<Lang, std::string> langNames;
 };
 
 #endif//LANGMANAGER_H

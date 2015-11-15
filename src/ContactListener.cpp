@@ -63,12 +63,19 @@ bool ContactListener::collide(b2Contact* contact, const b2Manifold*)
 
 bool ContactListener::checkCollide(entityx::Entity entityA, entityx::Entity entityB) const
 {
-	if(entityA.has_component<QuiverComponent>() or entityA.has_component<ItemComponent>() or entityA.has_component<BowComponent>()
-		or entityA.has_component<HoldItemComponent>())
-			return false;
+//	if(entityA.has_component<QuiverComponent>() or entityA.has_component<ItemComponent>() or entityA.has_component<BowComponent>()
+//		or entityA.has_component<HoldItemComponent>())
+//			return false;
 
 	const ArrowComponent::Handle entityAArrowComponent{entityA.component<ArrowComponent>()};
+
 	const ArrowComponent::Handle entityBArrowComponent{entityB.component<ArrowComponent>()};
+	const DeathComponent::Handle entityBDeathComponent{entityB.component<DeathComponent>()};
+	const QuiverComponent::Handle entityBQuiverComponent{entityB.component<QuiverComponent>()};
+	const BowComponent::Handle entityBBowComponent{entityB.component<BowComponent>()};
+	const HoldItemComponent::Handle entityBHoldItemComponent{entityB.component<HoldItemComponent>()};
+	const ArticuledArmsComponent::Handle entityBArticuledArmsComponent{entityB.component<ArticuledArmsComponent>()};
+
 	//The contact do not occurs if both entities are arrows
 	if(entityAArrowComponent and entityBArrowComponent)
 		return false;
@@ -81,9 +88,20 @@ bool ContactListener::checkCollide(entityx::Entity entityA, entityx::Entity enti
 	if(entityAArrowComponent and entityAArrowComponent->shooter == entityB)
 		return false;
 
+	if(entityBBowComponent and entityBBowComponent->notchedArrow == entityA)
+		return false;
+
+	if(entityBQuiverComponent and entityBQuiverComponent->arrows.find(entityA) != entityBQuiverComponent->arrows.end())
+		return false;
+
+	if(entityBHoldItemComponent and entityBHoldItemComponent->item == entityA)
+		return false;
+
+	if(entityBArticuledArmsComponent and entityBArticuledArmsComponent->arms == entityA)
+		return false;
+
 	//The contact do not occurs if the entity A is a corpse and the entity B is an arrow
-	const DeathComponent::Handle entityADeathComponent{entityA.component<DeathComponent>()};
-	if(entityADeathComponent and entityADeathComponent->dead and entityBArrowComponent)
+	if(entityBDeathComponent and entityBDeathComponent->dead and entityAArrowComponent)
 		return false;
 
 	//If none of the previous case is verified, then the collision occurs

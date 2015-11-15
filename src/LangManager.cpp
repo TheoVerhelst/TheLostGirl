@@ -1,6 +1,10 @@
 #include <iostream>
 #include <TheLostGirl/LangManager.h>
 
+#define MAP_ITEM(lang) {lang, #lang}
+const std::map<Lang, std::string> LangManager::langNames = {MAP_ITEM(EN), MAP_ITEM(FR), MAP_ITEM(NL), MAP_ITEM(IT)};
+#undef MAP_ITEM
+
 void LangManager::setLang(Lang newLang)
 {
 	m_lang = newLang;
@@ -13,7 +17,7 @@ std::wstring LangManager::tr(const std::string& entryName) const
 		return m_entries.at(entryName);
 	else
 	{
-		std::cerr << "No translation available for \"" << entryName << "\" in the lang " << m_lang << std::endl;
+		std::cerr << "No translation available for \"" << entryName << "\" in the lang " << langNames.at(m_lang) << std::endl;
 		return std::wstring(entryName.begin(), entryName.end());
 	}
 }

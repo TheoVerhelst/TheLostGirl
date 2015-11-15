@@ -46,9 +46,9 @@ Json::Value Serializer::implSerialize(entityx::ComponentHandle<BodyComponent> co
 
 	ret["linear velocity"]["x"] = component->body->GetLinearVelocity().x*pixelByMeter;
 	ret["linear velocity"]["y"] = component->body->GetLinearVelocity().y*pixelByMeter;
-	ret["angular velocity"] = component->body->GetAngularVelocity();
-	ret["linear damping"] = component->body->GetLinearDamping();
-	ret["angular damping"] = component->body->GetAngularDamping();
+	ret["angular velocity"] = component->body->GetAngularVelocity()*180.f/b2_pi;
+	ret["linear damping"] = component->body->GetLinearDamping()*pixelByMeter;
+	ret["angular damping"] = component->body->GetAngularDamping()*180.f/b2_pi;
 	ret["allow sleep"] = component->body->IsSleepingAllowed();
 	ret["awake"] = component->body->IsAwake();
 	ret["fixed rotation"] = component->body->IsFixedRotation();
@@ -519,18 +519,14 @@ void Serializer::implDeserialize(const Json::Value& value, entityx::ComponentHan
 	else if(type == "dynamic")
 		bodyDef.type = b2_dynamicBody;
 
-	//position
 	bodyDef.position.x = transformComponent->transform.x/pixelByMeter;
 	bodyDef.position.y = transformComponent->transform.y/pixelByMeter;
-
-	//angle
-	bodyDef.angle = transformComponent->transform.angle*b2_pi/180;
-	const Json::Value linearVelocity{value["linear velocity"]};
-	bodyDef.linearVelocity.x = linearVelocity["x"].asFloat()/pixelByMeter;
-	bodyDef.linearVelocity.y = linearVelocity["y"].asFloat()/pixelByMeter;
-	bodyDef.angularVelocity = value["angular velocity"].asFloat();
-	bodyDef.linearDamping = value["linear damping"].asFloat();
-	bodyDef.angularDamping = value["angular damping"].asFloat();
+	bodyDef.angle = transformComponent->transform.angle*b2_pi/180.f;
+	bodyDef.linearVelocity.x = value["linear velocity"]["x"].asFloat()/pixelByMeter;
+	bodyDef.linearVelocity.y = value["linear velocity"]["y"].asFloat()/pixelByMeter;
+	bodyDef.angularVelocity = value["angular velocity"].asFloat()*b2_pi/180.f;
+	bodyDef.linearDamping = value["linear damping"].asFloat()/pixelByMeter;
+	bodyDef.angularDamping = value["angular damping"].asFloat()*b2_pi/180.f;
 	bodyDef.allowSleep = value["allow sleep"].asBool();
 	bodyDef.awake = value["awake"].asBool();
 	bodyDef.fixedRotation = value["fixed rotation"].asBool();
@@ -844,8 +840,8 @@ void Serializer::implDeserialize(const Json::Value& value, entityx::ComponentHan
 	jointDef.localAnchorA = component->quiverAnchor;
 	jointDef.localAnchorB = quiverComponent->bodyAnchor;
 	jointDef.referenceAngle = 0.f;
-	jointDef.frequencyHz = 30.f;
-	jointDef.dampingRatio = 1.f;
+	jointDef.frequencyHz = 0.f;
+	jointDef.dampingRatio = 0.f;
 	component->quiverJoint = static_cast<b2WeldJoint*>(m_context.world.CreateJoint(&jointDef));
 }
 
@@ -948,8 +944,8 @@ void Serializer::implDeserialize(const Json::Value& value, entityx::ComponentHan
 	component->category = value["category"].asString();
 	component->weight = value["weight"].asFloat();
 	component->value = value["value"].asFloat();
-	component->holdAnchor.x = value["hold anchor"]["x"].asFloat();
-	component->holdAnchor.y = value["hold anchor"]["y"].asFloat();
+	component->holdAnchor.x = value["hold anchor"]["x"].asFloat()/m_context.parameters.pixelByMeter;
+	component->holdAnchor.y = value["hold anchor"]["y"].asFloat()/m_context.parameters.pixelByMeter;
 }
 
 void Serializer::implDeserialize(const Json::Value& value, entityx::ComponentHandle<ArticuledArmsComponent> component, entityx::Entity entity)
@@ -999,19 +995,15 @@ void Serializer::implDeserialize(const Json::Value& value, entityx::ComponentHan
 	const BodyComponent::Handle itemBodyComponent{component->item.component<BodyComponent>()};
 	const ItemComponent::Handle itemComponent{component->item.component<ItemComponent>()};
 	if(not TEST(itemBodyComponent and itemComponent))
-	{
-		if(itemBodyComponent)std::cout << "BODY OK" << std::endl;
-		if(itemComponent)std::cout << "ITEM OK" << std::endl;
 		throw std::runtime_error("Body or item component of item lacks.");
-	}
 	b2WeldJointDef jointDef;
 	jointDef.bodyA = bodyComponent->body;
 	jointDef.bodyB = itemBodyComponent->body;
 	jointDef.localAnchorA = component->itemAnchor;
 	jointDef.localAnchorB = itemComponent->holdAnchor;
 	jointDef.referenceAngle = 0.f;
-	jointDef.frequencyHz = 30.f;
-	jointDef.dampingRatio = 1.f;
+	jointDef.frequencyHz = 0.f;
+	jointDef.dampingRatio = 0.f;
 	component->itemJoint = static_cast<b2WeldJoint*>(m_context.world.CreateJoint(&jointDef));
 }
 
@@ -1034,7 +1026,7 @@ void Serializer::implDeserialize(const Json::Value& value, entityx::ComponentHan
 	jointDef.bodyA = bodyComponent->body;
 	jointDef.bodyB = component->notchedArrow.component<BodyComponent>()->body;
 	jointDef.localAnchorA = component->notchedArrowAnchor;
-	jointDef.localAnchorB = sftob2(arrowComponent->localFrictionPoint);
+	jointDef.localAnchorB = sftob2(arrowComponent->localFrictionPoint/m_context.parameters.pixelByMeter);
 	jointDef.localAxisA = {1.f, 0.f};
 	jointDef.lowerTranslation = component->lowerTranslation;
 	jointDef.upperTranslation = component->upperTranslation;
@@ -1042,7 +1034,7 @@ void Serializer::implDeserialize(const Json::Value& value, entityx::ComponentHan
 	jointDef.maxMotorForce = 10.f;
 	jointDef.motorSpeed = 0.f;
 	jointDef.enableMotor = true;
-	jointDef.referenceAngle = 0.f;
+	jointDef.referenceAngle = -b2_pi/2.f;
 	component->notchedArrowJoint = static_cast<b2PrismaticJoint*>(m_context.world.CreateJoint(&jointDef));
 	arrowComponent->state = ArrowComponent::Notched;
 }
@@ -1068,10 +1060,10 @@ void Serializer::implDeserialize(const Json::Value& value, entityx::ComponentHan
 			jointDef.bodyA = bodyComponent->body;
 			jointDef.bodyB = arrowBodyComponent->body;
 			jointDef.localAnchorA = component->arrowAnchor;
-			jointDef.localAnchorB = sftob2(arrowComponent->localStickPoint);
+			jointDef.localAnchorB = sftob2(arrowComponent->localStickPoint/m_context.parameters.pixelByMeter);
 			jointDef.referenceAngle = -b2_pi/2.f;
-			jointDef.frequencyHz = 30.f;
-			jointDef.dampingRatio = 1.f;
+			jointDef.frequencyHz = 0.f;
+			jointDef.dampingRatio = 0.f;
 			component->arrows.emplace(arrow, static_cast<b2WeldJoint*>(m_context.world.CreateJoint(&jointDef)));
 		}
 	}
