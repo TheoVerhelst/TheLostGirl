@@ -36,7 +36,6 @@
 
 //FIXME Bad func call quand on on fait un scroll souris pendant le GameState
 //TODO Statestack::Context as global variable
-//TODO Replace include by import in save file
 //TODO Finir la fonction flip().
 //TODO Sauvegarde en fonction des includes.
 //TODO Retirer la fleche pendant le CAC.

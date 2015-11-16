@@ -63,9 +63,9 @@ bool ContactListener::collide(b2Contact* contact, const b2Manifold*)
 
 bool ContactListener::checkCollide(entityx::Entity entityA, entityx::Entity entityB) const
 {
-//	if(entityA.has_component<QuiverComponent>() or entityA.has_component<ItemComponent>() or entityA.has_component<BowComponent>()
-//		or entityA.has_component<HoldItemComponent>())
-//			return false;
+	if(entityA.has_component<QuiverComponent>() or entityA.has_component<ItemComponent>() or entityA.has_component<BowComponent>()
+		or entityA.has_component<HoldItemComponent>())
+			return false;
 
 	const ArrowComponent::Handle entityAArrowComponent{entityA.component<ArrowComponent>()};
 
@@ -86,9 +86,6 @@ bool ContactListener::checkCollide(entityx::Entity entityA, entityx::Entity enti
 
 	//The contact do not occurs if the entity A was fired by B
 	if(entityAArrowComponent and entityAArrowComponent->shooter == entityB)
-		return false;
-
-	if(entityBBowComponent and entityBBowComponent->notchedArrow == entityA)
 		return false;
 
 	if(entityBQuiverComponent and entityBQuiverComponent->arrows.find(entityA) != entityBQuiverComponent->arrows.end())

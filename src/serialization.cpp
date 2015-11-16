@@ -974,7 +974,7 @@ void Serializer::implDeserialize(const Json::Value& value, entityx::ComponentHan
 	jointDef.lowerAngle = component->lowerAngle;
 	jointDef.upperAngle = component->upperAngle;
 	jointDef.referenceAngle = value["current angle"].asFloat() * b2_pi / 180.f;
-	jointDef.enableLimit = false;
+	jointDef.enableLimit = true;
 	jointDef.maxMotorTorque = 10.f;
 	jointDef.motorSpeed = 0.f;
 	jointDef.enableMotor = true;
@@ -991,7 +991,7 @@ void Serializer::implDeserialize(const Json::Value& value, entityx::ComponentHan
 	component->bodyAnchor.x = value["body anchor"]["x"].asFloat()/pixelByMeter;
 	component->bodyAnchor.y = value["body anchor"]["y"].asFloat()/pixelByMeter;
 	component->itemAnchor.x = value["item anchor"]["x"].asFloat()/pixelByMeter;
-	component->itemAnchor.x = value["item anchor"]["y"].asFloat()/pixelByMeter;
+	component->itemAnchor.y = value["item anchor"]["y"].asFloat()/pixelByMeter;
 	const BodyComponent::Handle itemBodyComponent{component->item.component<BodyComponent>()};
 	const ItemComponent::Handle itemComponent{component->item.component<ItemComponent>()};
 	if(not TEST(itemBodyComponent and itemComponent))
