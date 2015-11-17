@@ -7,6 +7,7 @@
 #include <TheLostGirl/Player.h>
 #include <TheLostGirl/components.h>
 #include <TheLostGirl/events.h>
+#include <TheLostGirl/functions.h>
 #include <TheLostGirl/states/OpenInventoryState.h>
 
 OpenInventoryState::OpenInventoryState(entityx::Entity entity) :
@@ -44,7 +45,12 @@ OpenInventoryState::OpenInventoryState(entityx::Entity entity) :
 	m_categoryTab->add("Resources");
 	m_categoryTab->setPosition(0.f, bindHeight(m_background, 0.23f));
 	m_categoryTab->setTabHeight(m_background->getSize().y*0.07f);
+	m_categoryTab->select("Resources");
+	m_categoryTab->connect("tabselected", &OpenInventoryState::switchCategory, this);
 	m_background->add(m_categoryTab);
+
+	m_categoriesPartition["Ammo"] = {"Quiver", "Bow", "Arrow"};
+	m_categoriesPartition["Resources"] = {"Skins"};
 
 	//Make the grid
 	m_gridPanel = tgui::Panel::create();
@@ -52,46 +58,6 @@ OpenInventoryState::OpenInventoryState(entityx::Entity entity) :
 	m_gridPanel->setSize(bindWidth(m_background), bindHeight(m_background, 0.8f));
 	m_gridPanel->setBackgroundColor(sf::Color(255, 255, 255, 100));
 	m_background->add(m_gridPanel);
-
-	m_gridScrollbar = tgui::Scrollbar::create(Context::parameters->guiConfigFile);
-	m_gridScrollbar->setPosition(bindWidth(m_gridPanel, 0.98f), 0.f);
-	m_gridScrollbar->setSize(bindWidth(m_gridPanel, 0.02f), bindHeight(m_gridPanel));
-    m_gridScrollbar->setArrowScrollAmount(30);
-    m_gridScrollbar->connect("valuechanged", &OpenInventoryState::scrollGrid, this);
-    m_gridPanel->add(m_gridScrollbar);
-
-	unsigned int rowCounter{0}, columnCounter{0}, itemCounter{0};
-	const float itemSize{120.f*Context::parameters->scale};
-	for(auto& entityItem : m_entity.component<InventoryComponent>()->items)
-	{
-		std::string type{entityItem.component<ItemComponent>()->type};
-		std::string category{entityItem.component<ItemComponent>()->category};
-		ItemGridWidget itemWidget;
-		itemWidget.background = tgui::Panel::create();
-		itemWidget.background->setBackgroundColor(sf::Color::Transparent);
-		itemWidget.background->setSize(itemSize, itemSize);
-		itemWidget.background->setPosition(itemSize*columnCounter, itemSize*rowCounter);
-
-		itemWidget.picture = tgui::Picture::create(paths[Context::parameters->scaleIndex] + "items/" + category + "/" + type + ".png");
-		itemWidget.picture->setPosition(itemSize/6.f, 0.f);
-		itemWidget.background->add(itemWidget.picture);
-
-		itemWidget.caption = tgui::Label::create(Context::parameters->guiConfigFile);
-		itemWidget.caption->setPosition(bindWidth(itemWidget.background, 0.5f)-bindWidth(itemWidget.caption, 0.5f), itemSize/1.2f);
-		itemWidget.caption->setTextSize(15.f);
-		itemWidget.background->add(itemWidget.caption);
-
-		itemWidget.item = entityItem;
-		m_gridPanel->add(itemWidget.background);
-		m_itemWidgets.push_back(itemWidget);
-		rowCounter = (++itemCounter) / 8;
-		columnCounter = itemCounter % 8;
-	}
-	//Set rowCounter to the total number of rows
-	rowCounter = ((--itemCounter) / 8)+1;
-    m_gridScrollbar->setLowValue(int(m_gridPanel->getSize().y));
-    //Set the maximum value to 120*scale*number of rows
-    m_gridScrollbar->setMaximum(int(itemSize*float(rowCounter)));
 
     //Make the list
 	m_listPanel = tgui::Panel::create();
@@ -127,38 +93,7 @@ OpenInventoryState::OpenInventoryState(entityx::Entity entity) :
 	m_listContentLayout->setSize(bindWidth(m_listPanel, 0.98f), 15*m_entity.component<InventoryComponent>()->items.size());
     m_listPanel->add(m_listContentLayout);
 
-	//Fill the vertical content layout
-	for(auto& entityItem : m_entity.component<InventoryComponent>()->items)
-	{
-		const ItemComponent::Handle itemComponent(entityItem.component<ItemComponent>());
-		bool foundSimilarItem{false};
-		for(auto& itemWidget : m_listContent)
-		{
-			if(itemsAreEquals(itemComponent, itemWidget.items.front().component<ItemComponent>()))
-			{
-				itemWidget.items.push_back(entityItem);
-				foundSimilarItem = true;
-				break;
-			}
-		}
-		if(not foundSimilarItem)
-		{
-			ItemListWidget itemWidget;
-			itemWidget.items = {entityItem};
-			itemWidget.layout = tgui::HorizontalLayout::create();
-			itemWidget.layout->addSpace(0.1f);
-			for(auto& columnStr : m_listColumnsNames)
-			{
-				tgui::Label::Ptr label = tgui::Label::create(Context::parameters->guiConfigFile);
-				label->setTextSize(15);
-				itemWidget.layout->add(label);
-				itemWidget.labels.emplace(columnStr, label);
-			}
-			m_listContent.push_back(itemWidget);
-			m_listContentLayout->add(itemWidget.layout);
-		}
-	}
-
+	//Set scrollbars
 	m_listScrollbar = tgui::Scrollbar::create(Context::parameters->guiConfigFile);
 	m_listScrollbar->setPosition(bindWidth(m_listPanel, 0.98f), 0.f);
 	m_listScrollbar->setSize(bindWidth(m_listPanel, 0.02f), bindHeight(m_listPanel));
@@ -169,6 +104,14 @@ OpenInventoryState::OpenInventoryState(entityx::Entity entity) :
     m_listPanel->add(m_listScrollbar);
 	m_listPanel->hide();
 
+	m_gridScrollbar = tgui::Scrollbar::create(Context::parameters->guiConfigFile);
+	m_gridScrollbar->setPosition(bindWidth(m_gridPanel, 0.98f), 0.f);
+	m_gridScrollbar->setSize(bindWidth(m_gridPanel, 0.02f), bindHeight(m_gridPanel));
+    m_gridScrollbar->setArrowScrollAmount(30);
+    m_gridScrollbar->connect("valuechanged", &OpenInventoryState::scrollGrid, this);
+    m_gridPanel->add(m_gridScrollbar);
+
+	fillContentDisplay();
 	resetTexts();
 }
 
@@ -244,6 +187,95 @@ void OpenInventoryState::resetTexts()
 	}
 }
 
+void OpenInventoryState::fillContentDisplay()
+{
+	const InventoryComponent::Handle inventoryComponent{m_entity.component<InventoryComponent>()};
+	if(not TEST(inventoryComponent))
+		return;
+
+	//Clear the grid and the list
+	for(auto& itemWidget : m_listContent)
+		m_listContentLayout->remove(itemWidget.layout);
+	m_listContent.clear();
+	for(auto& itemWidget : m_itemWidgets)
+		m_gridPanel->remove(itemWidget.background);
+	m_itemWidgets.clear();
+
+	unsigned int rowCounter{0}, columnCounter{0}, itemCounter{0};
+	const float itemSize{120.f*Context::parameters->scale};
+	for(auto& entityItem : m_entity.component<InventoryComponent>()->items)
+	{
+		ItemComponent::Handle itemComponent(entityItem.component<ItemComponent>());
+		if(not TEST(itemComponent))
+			continue;
+
+		const std::string type{entityItem.component<ItemComponent>()->type};
+		const std::string category{entityItem.component<ItemComponent>()->category};
+
+		//Test if the current item whould be displayed according to the selected tab
+		const std::string& currentTab{m_categoryTab->getSelected()};
+		auto subCategories = m_categoriesPartition.find(currentTab);
+		if(subCategories != m_categoriesPartition.end())
+			if(subCategories->second.find(itemComponent->category) == subCategories->second.end())
+				continue;
+
+		//Fill the list
+		bool foundSimilarItem{false};
+		for(auto& itemWidget : m_listContent)
+		{
+			if(itemsAreEquals(itemComponent, itemWidget.items.front().component<ItemComponent>()))
+			{
+				itemWidget.items.push_back(entityItem);
+				foundSimilarItem = true;
+				break;
+			}
+		}
+		if(not foundSimilarItem)
+		{
+			ItemListWidget itemWidget;
+			itemWidget.items.push_back(entityItem);
+			itemWidget.layout = tgui::HorizontalLayout::create();
+			itemWidget.layout->addSpace(0.1f);
+			for(auto& columnStr : m_listColumnsNames)
+			{
+				tgui::Label::Ptr label = tgui::Label::create(Context::parameters->guiConfigFile);
+				label->setTextSize(15);
+				itemWidget.layout->add(label);
+				itemWidget.labels.emplace(columnStr, label);
+			}
+			m_listContent.push_back(itemWidget);
+			m_listContentLayout->add(itemWidget.layout);
+		}
+
+		//Fill the grid
+		ItemGridWidget itemWidget;
+		itemWidget.background = tgui::Panel::create();
+		itemWidget.background->setBackgroundColor(sf::Color::Transparent);
+		itemWidget.background->setSize(itemSize, itemSize);
+		itemWidget.background->setPosition(itemSize*columnCounter, itemSize*rowCounter);
+
+		itemWidget.picture = tgui::Picture::create(paths[Context::parameters->scaleIndex] + "items/" + category + "/" + type + ".png");
+		itemWidget.picture->setPosition(itemSize/6.f, 0.f);
+		itemWidget.background->add(itemWidget.picture);
+
+		itemWidget.caption = tgui::Label::create(Context::parameters->guiConfigFile);
+		itemWidget.caption->setPosition(bindWidth(itemWidget.background, 0.5f)-bindWidth(itemWidget.caption, 0.5f), itemSize/1.2f);
+		itemWidget.caption->setTextSize(15.f);
+		itemWidget.background->add(itemWidget.caption);
+
+		itemWidget.item = entityItem;
+		m_gridPanel->add(itemWidget.background);
+		m_itemWidgets.push_back(itemWidget);
+		rowCounter = (++itemCounter) / 8;
+		columnCounter = itemCounter % 8;
+	}
+	//Set rowCounter to the total number of rows
+	rowCounter = ((--itemCounter) / 8)+1;
+    m_gridScrollbar->setLowValue(int(m_gridPanel->getSize().y));
+    //Set the maximum value to 120*scale*number of rows
+    m_gridScrollbar->setMaximum(int(itemSize*float(rowCounter)));
+}
+
 void OpenInventoryState::scrollGrid(int newScrollValue)
 {
 	unsigned int rowCounter{0}, columnCounter{0}, itemCounter{0};
@@ -263,12 +295,22 @@ void OpenInventoryState::scrollList(int newScrollValue)
 
 void OpenInventoryState::switchDisplay(sf::String selectedTab)
 {
-	m_gridPanel->hide();
-	m_listPanel->hide();
 	if(selectedTab == "Grid")
+	{
+		m_listPanel->hide();
 		m_gridPanel->show();
+	}
 	else if(selectedTab == "List")
+	{
+		m_gridPanel->hide();
 		m_listPanel->show();
+	}
+}
+
+void OpenInventoryState::switchCategory(sf::String)
+{
+	fillContentDisplay();
+	resetTexts();
 }
 
 bool OpenInventoryState::itemsAreEquals(const ItemComponent::Handle& left, const ItemComponent::Handle& right) const

@@ -61,6 +61,9 @@ class OpenInventoryState : public State
 		/// Reset all texts in the buttons and other widgets.
 		void resetTexts();
 
+		/// Fill the vertical layout with the items of m_entity.
+		void fillContentDisplay();
+
 		/// Function called by the scrollbar, used to scroll the grid display.
 		/// \param newScrollValue the new value of the scrollbar.
 		void scrollGrid(int newScrollValue);
@@ -72,6 +75,10 @@ class OpenInventoryState : public State
 		/// Function called by the tab for switching the diplay mode.
 		/// \param selectedTab The name of the new selected tab.
 		void switchDisplay(sf::String selectedTab);
+
+		/// Function called by the tab for switching the category mode.
+		/// \param selectedTab The name of the new selected tab.
+		void switchCategory(sf::String selectedTab);
 
 		/// Checks if the two entities represents the same item.
 		/// This is used to display similar items in a single line/square in the inventory display.
@@ -114,6 +121,7 @@ class OpenInventoryState : public State
 		tgui::VerticalLayout::Ptr m_listContentLayout;    ///< Main layout for the content of the list display.
 		std::list<ItemListWidget> m_listContent;          ///< All the widgets for the content of the list display.
 		tgui::Scrollbar::Ptr m_listScrollbar;             ///< The scrollbar for the list display.
+		std::map<std::string, std::set<std::string>> m_categoriesPartition;///< Indicates the repartition of items categories between Ammo and Resources
 
 };
 
