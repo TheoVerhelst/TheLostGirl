@@ -146,14 +146,14 @@ Json::Value AnimationsManager<A>::serialize() const
 }
 
 template<typename A> template<typename T>
-void AnimationsManager<A>::deserialize(const Json::Value& value, T& object, StateStack::Context context)
+void AnimationsManager<A>::deserialize(const Json::Value& value, T& object)
 {
 	m_animationsMap.clear();
 	//For each animation name in the value
 	for(std::string& animationName : value.getMemberNames())
 	{
 		Json::Value animationObj = value[animationName];
-		A animation(object, context);
+		A animation(object);
 		//Copy the data inside the animation
 		animation.deserialize(animationObj["data"]);
 		TimeAnimation timeAnim(animation);

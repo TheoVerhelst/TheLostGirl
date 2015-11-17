@@ -6,9 +6,6 @@
 #include <TheLostGirl/SkyAnimation.h>
 #include <TheLostGirl/systems/AnimationsSystem.h>
 
-AnimationsSystem::AnimationsSystem(StateStack::Context)
-{}
-
 void AnimationsSystem::update(entityx::EntityManager& entityManager, entityx::EventManager&, double dt)
 {
 	AnimationsComponent<SpriteSheetAnimation>::Handle animationsComponent;

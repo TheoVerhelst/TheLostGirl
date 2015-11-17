@@ -6,8 +6,7 @@
 #include <TheLostGirl/systems/PendingChangesSystem.h>
 #include <TheLostGirl/Player.h>
 
-Player::Player(StateStack& stateStack):
-	m_stateStack(stateStack)
+Player::Player()
 {
 	// Set initial inputs bindings
 	m_keyBinding[sf::Keyboard::Q]         = Action::MoveLeft;
@@ -64,7 +63,7 @@ Player::Player(StateStack& stateStack):
 
 void Player::handleEvent(const sf::Event& event)
 {
-	auto& commands(m_stateStack.getContext().systemManager.system<PendingChangesSystem>()->commandQueue);
+	auto& commands(Context::systemManager->system<PendingChangesSystem>()->commandQueue);
 	if(event.type == sf::Event::KeyPressed)
 	{
 		// Check if pressed key appears in key binding, trigger command if so
@@ -249,9 +248,8 @@ bool Player::isActived(Action action) const
 		if(sf::Keyboard::isKeyPressed(key))
 			return true;
 
-	const sf::RenderWindow& window(m_stateStack.getContext().window);
-	sf::IntRect windowRect({0, 0}, sf::Vector2i(window.getSize()));
-	if(windowRect.contains(sf::Mouse::getPosition(window)))
+	sf::IntRect windowRect({0, 0}, sf::Vector2i(Context::window->getSize()));
+	if(windowRect.contains(sf::Mouse::getPosition(*Context::window)))
 		for(auto& button : mouseButtonsBindings)
 			if(sf::Mouse::isButtonPressed(button))
 				return true;
@@ -271,7 +269,7 @@ bool Player::isActived(Action action) const
 
 void Player::handleInitialInputState()
 {
-	auto& commands(m_stateStack.getContext().systemManager.system<PendingChangesSystem>()->commandQueue);
+	auto& commands(Context::systemManager->system<PendingChangesSystem>()->commandQueue);
 	for(auto& pair : m_startActionBinding)
 	{
 		if(isActived(pair.first))
@@ -286,20 +284,20 @@ void Player::handleInitialInputState()
 
 void Player::initializeActions()
 {
-	m_startActionBinding[Action::MoveLeft].action = Mover(m_stateStack.getContext(), Direction::Left);
-	m_startActionBinding[Action::MoveRight].action =  Mover(m_stateStack.getContext(), Direction::Right);
-	m_startActionBinding[Action::MoveUp].action =  Mover(m_stateStack.getContext(), Direction::Top);
-	m_startActionBinding[Action::MoveDown].action =  Mover(m_stateStack.getContext(), Direction::Bottom);
+	m_startActionBinding[Action::MoveLeft].action = Mover(Direction::Left);
+	m_startActionBinding[Action::MoveRight].action =  Mover(Direction::Right);
+	m_startActionBinding[Action::MoveUp].action =  Mover(Direction::Top);
+	m_startActionBinding[Action::MoveDown].action =  Mover(Direction::Bottom);
 
-	m_stopActionBinding[Action::MoveLeft].action =  Mover(m_stateStack.getContext(), Direction::Left, false);
-	m_stopActionBinding[Action::MoveRight].action = Mover(m_stateStack.getContext(), Direction::Right, false);
-	m_stopActionBinding[Action::MoveUp].action = Mover(m_stateStack.getContext(), Direction::Top, false);
-	m_stopActionBinding[Action::MoveDown].action = Mover(m_stateStack.getContext(), Direction::Bottom, false);
+	m_stopActionBinding[Action::MoveLeft].action =  Mover(Direction::Left, false);
+	m_stopActionBinding[Action::MoveRight].action = Mover(Direction::Right, false);
+	m_stopActionBinding[Action::MoveUp].action = Mover(Direction::Top, false);
+	m_stopActionBinding[Action::MoveDown].action = Mover(Direction::Bottom, false);
 
 	m_immediateActionBinding[Action::Jump].action = Jumper();
 	m_immediateActionBinding[Action::PickUp].action = ArrowPicker();
 	m_immediateActionBinding[Action::HandToHand].action = HandToHand();
-	m_immediateActionBinding[Action::SearchCorpse].action = CorpseSearcher(m_stateStack);
+	m_immediateActionBinding[Action::SearchCorpse].action = CorpseSearcher();
 
 	//Do not assign a command to the bending action, the DragAndDrop system already does
 }

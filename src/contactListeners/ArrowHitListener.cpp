@@ -13,11 +13,6 @@
 #include <TheLostGirl/systems/PendingChangesSystem.h>
 #include <TheLostGirl/contactListeners/ArrowHitListener.h>
 
-ArrowHitListener::ArrowHitListener(StateStack::Context context):
-	m_context(context)
-{
-}
-
 void ArrowHitListener::PreSolve(b2Contact *, const b2Manifold*)
 {
 }
@@ -55,7 +50,7 @@ void ArrowHitListener::PostSolve(b2Contact* contact, const b2ContactImpulse* imp
 			if(arrowComponent->state == ArrowComponent::Fired and
 				impulse->normalImpulses[0]*arrowComponent->penetrance > hardnessComponent->hardness)
 			{
-				b2Vec2 localStickPoint{sftob2(arrowComponent->localStickPoint/m_context.parameters.pixelByMeter)};
+				b2Vec2 localStickPoint{sftob2(arrowComponent->localStickPoint/Context::parameters->pixelByMeter)};
 				b2Vec2 globalStickPoint{bodyA->GetWorldPoint(localStickPoint)};
 				b2WeldJointDef* weldJointDef = new b2WeldJointDef();
 				weldJointDef->bodyA = bodyA;
@@ -63,7 +58,7 @@ void ArrowHitListener::PostSolve(b2Contact* contact, const b2ContactImpulse* imp
 				weldJointDef->localAnchorA = localStickPoint;
 				weldJointDef->localAnchorB = bodyB->GetLocalPoint(globalStickPoint);
 				weldJointDef->referenceAngle = bodyB->GetAngle() - bodyA->GetAngle();
-				m_context.systemManager.system<PendingChangesSystem>()->jointsToCreate.push(weldJointDef);
+				Context::systemManager->system<PendingChangesSystem>()->jointsToCreate.push(weldJointDef);
 				arrowComponent->state = ArrowComponent::Sticked;
 			}
 			HealthComponent::Handle healthComponent(entityB.component<HealthComponent>());

@@ -6,13 +6,6 @@
 #include <TheLostGirl/functions.h>
 #include <TheLostGirl/ContactListener.h>
 
-ContactListener::ContactListener(StateStack::Context context):
-	m_context(context),
-	m_fallingListener(m_context),
-	m_arrowHitListener(m_context)
-{
-}
-
 
 void ContactListener::PreSolve(b2Contact* contact, const b2Manifold* oldManifold)
 {
@@ -39,21 +32,21 @@ bool ContactListener::collide(b2Contact* contact, const b2Manifold*)
 	entityx::Entity entityB{*static_cast<entityx::Entity*>(bodyB->GetUserData())};
 	//Wrap all checks into this function allow to stop next checks when any of the checks is verified.
 
-	//The contact do not occurs if an entity is invalid
+	//The contact does not occurs if an entity is invalid
 	if(not entityA or not entityB)
 		return false;
 
-	//The contact do not occurs if both entities are the same one
+	//The contact does not occurs if both entities are the same one
 	if(entityA == entityB)
 		return false;
 
-	//The contact do not occurs if both entities are actors
+	//The contact does not occurs if both entities are actors
 	if(entityA.has_component<ActorComponent>() and entityB.has_component<ActorComponent>())
 		return false;
 
 	const TransformComponent::Handle entityATransformComponent(entityA.component<TransformComponent>());
 	const TransformComponent::Handle entityBTransformComponent(entityB.component<TransformComponent>());
-		//The contact do not occurs if the entities are not in the same plan
+	//The contact does not occurs if the entities are not in the same plan
 	if(entityATransformComponent and entityBTransformComponent
 		and lround(entityATransformComponent->transform.z) != lround(entityBTransformComponent->transform.z))
 			return false;
@@ -63,12 +56,7 @@ bool ContactListener::collide(b2Contact* contact, const b2Manifold*)
 
 bool ContactListener::checkCollide(entityx::Entity entityA, entityx::Entity entityB) const
 {
-	if(entityA.has_component<QuiverComponent>() or entityA.has_component<ItemComponent>() or entityA.has_component<BowComponent>()
-		or entityA.has_component<HoldItemComponent>())
-			return false;
-
 	const ArrowComponent::Handle entityAArrowComponent{entityA.component<ArrowComponent>()};
-
 	const ArrowComponent::Handle entityBArrowComponent{entityB.component<ArrowComponent>()};
 	const DeathComponent::Handle entityBDeathComponent{entityB.component<DeathComponent>()};
 	const QuiverComponent::Handle entityBQuiverComponent{entityB.component<QuiverComponent>()};
@@ -76,28 +64,31 @@ bool ContactListener::checkCollide(entityx::Entity entityA, entityx::Entity enti
 	const HoldItemComponent::Handle entityBHoldItemComponent{entityB.component<HoldItemComponent>()};
 	const ArticuledArmsComponent::Handle entityBArticuledArmsComponent{entityB.component<ArticuledArmsComponent>()};
 
-	//The contact do not occurs if both entities are arrows
+	//The contact does not occurs if both entities are arrows
 	if(entityAArrowComponent and entityBArrowComponent)
 		return false;
 
-	//The contact do not occurs if the entity A is an arrow wich is not fired
+	//The contact does not occurs if the entity A is an arrow wich is not fired
 	if(entityAArrowComponent and entityAArrowComponent->state != ArrowComponent::Fired)
 		return false;
 
-	//The contact do not occurs if the entity A was fired by B
+	//The contact does not occurs if the entity A was fired by B
 	if(entityAArrowComponent and entityAArrowComponent->shooter == entityB)
 		return false;
 
+	//The contact does occurs if the entity A is in the quiver B
 	if(entityBQuiverComponent and entityBQuiverComponent->arrows.find(entityA) != entityBQuiverComponent->arrows.end())
 		return false;
 
+	//The contact does not occurs if the entity B hold the item A
 	if(entityBHoldItemComponent and entityBHoldItemComponent->item == entityA)
 		return false;
 
+	//The contact does not occurs if the arms A are on the body B
 	if(entityBArticuledArmsComponent and entityBArticuledArmsComponent->arms == entityA)
 		return false;
 
-	//The contact do not occurs if the entity A is a corpse and the entity B is an arrow
+	//The contact does not occurs if the entity A is a corpse and the entity B is an arrow
 	if(entityBDeathComponent and entityBDeathComponent->dead and entityAArrowComponent)
 		return false;
 

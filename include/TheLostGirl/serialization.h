@@ -18,9 +18,8 @@ class Serializer
 {
 	public:
 		/// Constructor.
-		/// \param context The current context of the application.
 		/// \param entitiesMap The map containing all entities (to find name - entity correspondance).
-		Serializer(StateStack::Context context, std::map<std::string, entityx::Entity>& entities, Json::Value& jsonEntities);
+		Serializer(std::map<std::string, entityx::Entity>& entities, Json::Value& jsonEntities);
 
 		template <typename T>
 		inline void serialize(const std::string& entityName, const std::string& componentName)
@@ -313,7 +312,6 @@ class Serializer
 
 		//End deserialize
 
-		StateStack::Context m_context;                     ///< The current context of the application.
 		std::map<std::string, entityx::Entity>& m_entities;///< All the entities of the application.
 		Json::Value& m_jsonEntities;
 };

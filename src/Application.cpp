@@ -11,17 +11,42 @@
 #include <TheLostGirl/Application.h>
 
 Application::Application(bool debugMode):
+	m_parameters{},
+	m_window{},
+	m_postEffectsTexture{},
+	m_bloomEffect{},
+	m_gui{},
+	m_textureManager{},
+	m_fontManager{},
+	m_scriptManager{},
+	m_langManager{},
+	m_eventManager{},
 	m_entityManager{m_eventManager},
 	m_systemManager{m_entityManager, m_eventManager},
 	m_world{m_parameters.gravity},
-	m_stateStack{StateStack::Context{m_parameters, m_window, m_postEffectsTexture, m_textureManager, m_fontManager, m_scriptManager,
-									m_langManager, m_gui, m_eventManager, m_entityManager, m_systemManager, m_world, m_player}},
-	m_player(m_stateStack),
-	m_debugDraw(m_stateStack.getContext()),
-	m_FPSRefreshRate(sf::milliseconds(50)),
+	m_stateStack{},
+	m_player{},
+	m_debugDraw{m_gui, m_parameters.guiConfigFile},
+	m_FPSTimer{},
+	m_FPSRefreshRate{sf::milliseconds(50)},
 	m_frameTime{sf::seconds(1.f/60.f)},
 	m_newScaleIndex{m_parameters.scaleIndex}
 {
+	Context::parameters = &m_parameters;
+	Context::window = &m_window;
+	Context::postEffectsTexture = &m_postEffectsTexture;
+	Context::textureManager = &m_textureManager;
+	Context::fontManager = &m_fontManager;
+	Context::scriptManager = &m_scriptManager;
+	Context::langManager = &m_langManager;
+	Context::gui = &m_gui;
+	Context::eventManager = &m_eventManager;
+	Context::entityManager = &m_entityManager;
+	Context::systemManager = &m_systemManager;
+	Context::world = &m_world;
+	Context::player = &m_player;
+	Context::stateStack = &m_stateStack;
+
 	m_eventManager.subscribe<ParametersChange>(*this);
 	std::string file("settings.json");
 	Json::Value settings;//Will contains the root value after parsing
@@ -204,13 +229,13 @@ void Application::render()
 
 void Application::registerSystems()
 {
-	m_systemManager.add<PhysicsSystem>(m_stateStack.getContext());
-	m_systemManager.add<PendingChangesSystem>(m_stateStack.getContext());
-	m_systemManager.add<AnimationsSystem>(m_stateStack.getContext());
-	m_systemManager.add<RenderSystem>(m_stateStack.getContext());
-	m_systemManager.add<DragAndDropSystem>(m_stateStack.getContext());
-	m_systemManager.add<ScrollingSystem>(m_stateStack.getContext());
-	m_systemManager.add<TimeSystem>(m_stateStack.getContext());
-	m_systemManager.add<StatsSystem>(m_stateStack.getContext());
-	m_systemManager.add<ScriptsSystem>(m_stateStack.getContext());
+	m_systemManager.add<PhysicsSystem>();
+	m_systemManager.add<PendingChangesSystem>();
+	m_systemManager.add<AnimationsSystem>();
+	m_systemManager.add<RenderSystem>();
+	m_systemManager.add<DragAndDropSystem>();
+	m_systemManager.add<ScrollingSystem>();
+	m_systemManager.add<TimeSystem>();
+	m_systemManager.add<StatsSystem>();
+	m_systemManager.add<ScriptsSystem>();
 }

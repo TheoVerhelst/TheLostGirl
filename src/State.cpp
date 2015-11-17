@@ -12,22 +12,12 @@ using entityx::EventManager;
 using entityx::EntityManager;
 using entityx::SystemManager;
 
-State::State(StateStack& stack):
-	m_stateStack(&stack)
-{
-}
-
 void State::requestStackPop()
 {
-	m_stateStack->popState();
+	Context::stateStack->popState();
 }
 
 void State::requestStateClear()
 {
-	m_stateStack->clearStates();
-}
-
-StateStack::Context State::getContext() const
-{
-	return m_stateStack->getContext();
+	Context::stateStack->clearStates();
 }

@@ -21,8 +21,7 @@ class IntroState : public State
 {
 	public:
         /// Constructor.
-        /// \param stack StateStack wherein the State is added.
-		IntroState(StateStack& stack);
+		IntroState();
 
 		/// Destructor.
 		~IntroState();

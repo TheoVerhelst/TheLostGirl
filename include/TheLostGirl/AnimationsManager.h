@@ -170,9 +170,8 @@ class AnimationsManager
 		/// That copy all data in value and construct them in this instance of animations manager.
 		/// \param value A Json value containing all the data.
 		/// \param object The object to pass to animations constructors.
-		/// \param context The current context of the application.
 		template <typename T>
-		void deserialize(const Json::Value& value, T& object, StateStack::Context context);
+		void deserialize(const Json::Value& value, T& object);
 
 	private:
 		std::map<std::string, TimeAnimation> m_animationsMap;///< List of all registred animations.

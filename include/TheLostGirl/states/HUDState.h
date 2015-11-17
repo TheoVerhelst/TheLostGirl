@@ -4,6 +4,7 @@
 #include <TGUI/Panel.hpp>
 #include <TGUI/Canvas.hpp>
 #include <TGUI/Picture.hpp>
+#include <TheLostGirl/State.h>
 #include <TheLostGirl/HashEntity.h>
 
 //Forward declarations
@@ -12,7 +13,6 @@ namespace sf
 	class Event;
 	class Time;
 }
-class State;
 class Context;
 class StateStack;
 struct EntityHealthChange;
@@ -25,11 +25,10 @@ class HUDState : public State
         /// Constructor.
         /// The role of the entitiesNumber parameter is to load some tgui::Canvas
         /// in order to do not load them on the fly during the game, when entities health change.
-        /// \param stack StateStack wherein the State is added.
-		HUDState(StateStack& stack);
+		HUDState();
 
 		/// Destructor.
-		~HUDState();
+		virtual ~HUDState();
 
         /// The drawing function.
         /// \return virtual void

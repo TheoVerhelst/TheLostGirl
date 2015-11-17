@@ -5,6 +5,7 @@
 #include <TGUI/Button.hpp>
 #include <TGUI/Picture.hpp>
 #include <TGUI/VerticalLayout.hpp>
+#include <TheLostGirl/State.h>
 
 //Forward declarations
 namespace sf
@@ -20,9 +21,8 @@ struct ParametersChange;
 class MainMenuState : public State
 {
 	public:
-        /// Constructor.
-        /// \param stack StateStack wherein the State is added.
-		MainMenuState(StateStack& stack);
+        /// Default constructor.
+		MainMenuState();
 
 		/// Destructor.
 		/// It clear the GUI.

@@ -24,10 +24,9 @@ struct Mover : public Action
 {
 	public:
 		/// Constructor.
-		/// \param context Current context of the application.
 		/// \param _direction The direction of the movement.
 		/// \param _start True if the movement starts, false if it stops.
-		Mover( StateStack::Context context, Direction _direction, bool _start = true);
+		Mover(Direction _direction, bool _start = true);
 
 		/// Destructor.
 		virtual ~Mover() = default;
@@ -63,8 +62,6 @@ struct Mover : public Action
 		/// \param vec The point to flip.
 		/// \param mid Thehalf width of the body.
 		inline void flipPoint(b2Vec2& vec, float32 mid) const;
-
-		StateStack::Context m_context;///< Current context of the application.
 };
 
 #endif//MOVER_H

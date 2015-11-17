@@ -9,19 +9,13 @@
 #include <TheLostGirl/systems/TimeSystem.h>
 #include <TheLostGirl/systems/PhysicsSystem.h>
 
-PhysicsSystem::PhysicsSystem(StateStack::Context context):
-	m_world(context.world),
-	m_pixelByMeter(context.parameters.pixelByMeter),
-	m_systemManager(context.systemManager)
-{}
-
 void PhysicsSystem::update(entityx::EntityManager& entityManager, entityx::EventManager&, double dt)
 {
 	int32 velocityIterations{8};
 	int32 positionIterations{8};
-	m_world.Step(float32(dt), velocityIterations, positionIterations);
+	Context::world->Step(float32(dt), velocityIterations, positionIterations);
 	//Get the force of the wind
-	const float windStrength{m_systemManager.system<TimeSystem>()->getWindStrength()};
+	const float windStrength{Context::systemManager->system<TimeSystem>()->getWindStrength()};
 	BodyComponent::Handle bodyComponent;
 	for(auto entity : entityManager.entities_with_components(bodyComponent))
 	{
@@ -31,7 +25,7 @@ void PhysicsSystem::update(entityx::EntityManager& entityManager, entityx::Event
 		if(walkComponent)
 		{
 			float targetVelocity{0.f};
-			const float walkVelocity{walkComponent->walkSpeed/m_pixelByMeter};
+			const float walkVelocity{walkComponent->walkSpeed/Context::parameters->pixelByMeter};
 			const Direction walkDirection{walkComponent->effectiveMovement};
 			if(walkDirection ==  Direction::Left)
 				targetVelocity = -walkVelocity - body->GetLinearVelocity().x;
@@ -47,7 +41,7 @@ void PhysicsSystem::update(entityx::EntityManager& entityManager, entityx::Event
 		JumpComponent::Handle jumpComponent(entity.component<JumpComponent>());
 		if(jumpComponent and jumpComponent->mustJump)
 		{
-			const float targetVelocity{-jumpComponent->jumpStrength/m_pixelByMeter};
+			const float targetVelocity{-jumpComponent->jumpStrength/Context::parameters->pixelByMeter};
 			body->ApplyLinearImpulse({0.f, targetVelocity*body->GetMass()}, body->GetWorldCenter(), true);
 			jumpComponent->mustJump = false;
 		}
@@ -87,7 +81,7 @@ void PhysicsSystem::update(entityx::EntityManager& entityManager, entityx::Event
 		//		float dragForceMagnitude{(1 - fabs(scalarProduct)) * flightSpeed * flightSpeed * dragConstant * body->GetMass()};
 				const float dragForceMagnitude{(1.f - scalarProduct) * flightSpeed * flightSpeed * dragConstant * body->GetMass()};
 				//Convert the local friction point to Box2D global coordinates
-				const b2Vec2 localFrictionPoint{sftob2(arrowComponent->localFrictionPoint/m_pixelByMeter)};
+				const b2Vec2 localFrictionPoint{sftob2(arrowComponent->localFrictionPoint/Context::parameters->pixelByMeter)};
 				const b2Vec2 arrowTailPosition{body->GetWorldPoint(localFrictionPoint)};
 				body->ApplyForce(float32(dragForceMagnitude)*(-flightDirection), arrowTailPosition, true);
 			}
@@ -99,8 +93,8 @@ void PhysicsSystem::update(entityx::EntityManager& entityManager, entityx::Event
 		if(transformComponent)
 		{
 			const b2Vec2 pos{body->GetPosition()};
-			transformComponent->transform.x = pos.x * m_pixelByMeter;
-			transformComponent->transform.y = pos.y * m_pixelByMeter;
+			transformComponent->transform.x = pos.x * Context::parameters->pixelByMeter;
+			transformComponent->transform.y = pos.y * Context::parameters->pixelByMeter;
 			transformComponent->transform.angle = body->GetAngle()*180/b2_pi;
 		}
 	}

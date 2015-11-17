@@ -10,13 +10,13 @@
 			{
 				"notched arrow" : "arrow 3",
 				"upper translation" : 0,
-				"lower translation" : 0,
+				"lower translation" : 1,
 				"current translation" : 0,
 				"target translation" : 0,
 				"notched arrow anchor" : 
 				{
-					"x" : 95,
-					"y" : 5
+					"x" : 75,
+					"y" : 45
 				}
 			},
 			"transform" : 
@@ -67,8 +67,8 @@
 				},
 				"body anchor":
 				{
-					"x" : 50,
-					"y" : 90
+					"x" : 10,
+					"y" : 0
 				},
 				"arrows" : [ "arrow 1", "arrow 2", "arrow 4" ]
 			},

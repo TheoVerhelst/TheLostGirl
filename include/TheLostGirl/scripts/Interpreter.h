@@ -6,7 +6,6 @@
 #include <boost/variant.hpp>
 #include <entityx/Entity.h>
 #include <TheLostGirl/scripts/Tree.h>
-#include <TheLostGirl/StateStack.h>
 
 typedef boost::variant<bool, int, float, std::string, entityx::Entity> Data;
 typedef Tree<std::pair<Data, bool>> Expression;
@@ -35,19 +34,17 @@ class Interpreter
 		/// \return True on succes.
 		bool loadFromFile(const std::string& fileName);
 
-		/// Execute the loaded script on the entity, in the given context.
-		/// The context in mainly used to push command on the command queue, such as moving or attacking.
+		/// Execute the loaded script on the entity.
 		/// The entity parameter is the entity that is available as the variable "self" in the scripts.
 		/// \param entity The entity on wich execute the script.
-		/// \param context Current context of the application.
-		void interpret(entityx::Entity entity, StateStack::Context context);
+		void interpret(entityx::Entity entity);
 
 	private:
 		/// Represents a function that can be called in scripts.
 		struct Function
 		{
 			short int numberOperands;///< Number of operands that the function must take. If -1, the function is variadic.
-			std::function<Data(const std::vector<Data>&, StateStack::Context)> pointer;///< Pointer to the effective C++ function to execute.
+			std::function<Data(const std::vector<Data>&)> pointer;///< Pointer to the effective C++ function to execute.
 		};
 
 		std::ifstream m_file;                                        ///< Stream of the script file to execute.
@@ -55,7 +52,6 @@ class Interpreter
 		const std::map<std::string, Function> m_functions;           ///< All functions available in the script.
 		const std::map<std::string, Data> m_initialVars;             ///< Variables available by default in all scripts.
 		std::map<std::string, Data> m_vars;                          ///< Variables of the current script.
-		StateStack::Context* m_context;                              ///< The current context of the application.
 
 		std::list<Expression::Ptr> m_expressions;                    ///< List of all expression of the script, stored as trees.
 		std::string m_operators;                                     ///< List of characters that will separates tokens in tokenization process.
@@ -65,12 +61,11 @@ class Interpreter
 		/// Evaluates a block of instructions.
 		/// The iterators should be iterator on m_tree.
 		/// \param entity The entity on which execute the script.
-		/// \param context The current context of the application.
 		/// \param from Iterator to the first expression to evaluate, in a std::list.
 		/// \param to Iterator to the past-the-last expression to evaluate, in a std::list.
 		/// \param begin Iterator to the very first expression of the script,
 		/// it is only used in error messages, to display the correct line number.
-		void interpretBlock(entityx::Entity entity, StateStack::Context context, std::list<Expression::Ptr>::iterator from,
+		void interpretBlock(entityx::Entity entity, std::list<Expression::Ptr>::iterator from,
 							 std::list<Expression::Ptr>::iterator to, std::list<Expression::Ptr>::iterator begin);
 
 		/// Simple shortening for a tedious operation, get the string value of the tree pointer pointed by a list iterator.

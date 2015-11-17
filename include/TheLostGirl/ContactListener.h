@@ -12,10 +12,6 @@
 class ContactListener : public b2ContactListener
 {
 	public:
-		///Default constructor.
-        /// \param context Current context of the application.
-		ContactListener(StateStack::Context context);
-
 		/// This is called after a contact is updated.
 		/// This allows to inspect a contact before it goes to the solver.
 		/// It prevent the collision between entities with the same entity Id.
@@ -40,7 +36,6 @@ class ContactListener : public b2ContactListener
 		void PostSolve(b2Contact* contact, const b2ContactImpulse* impulse);
 
 	private:
-		StateStack::Context m_context;              ///< Current context of the application.
 		FallingListener m_fallingListener;          ///< The falling collision listener.
 		ArrowHitListener m_arrowHitListener;        ///< The arrow hit listener.
 

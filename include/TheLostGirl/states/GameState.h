@@ -6,6 +6,7 @@
 #include <entityx/Entity.h>
 #include <TheLostGirl/AnimationsManager.h>
 #include <TheLostGirl/ContactListener.h>
+#include <TheLostGirl/State.h>
 
 //Forward declarations
 namespace sf
@@ -13,7 +14,6 @@ namespace sf
 	class Event;
 	class Time;
 }
-class State;
 class Context;
 class StateStack;
 struct Transform;
@@ -25,9 +25,8 @@ class GameState : public State
 {
 	public:
         /// Constructor.
-        /// \param stack StateStack wherein the State is added.
         /// \param file Path name of the save file to load.
-		GameState(StateStack& stack, std::string file = "resources/levels/save.json");
+		GameState(std::string file = "resources/levels/save.json");
 
 		/// Destructor.
 		/// Remove all bodies, sprites and others from the memory.

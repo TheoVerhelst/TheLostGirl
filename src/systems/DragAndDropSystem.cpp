@@ -11,11 +11,7 @@
 #include <TheLostGirl/systems/DragAndDropSystem.h>
 
 
-DragAndDropSystem::DragAndDropSystem(StateStack::Context context):
-	m_window(context.window),
-	m_texture(context.postEffectsTexture),
-	m_bloomEnabled(context.parameters.bloomEnabled),
-	m_commandQueue(context.systemManager.system<PendingChangesSystem>()->commandQueue),
+DragAndDropSystem::DragAndDropSystem():
 	m_origin{0, 0},
 	m_line{sf::Vertex({0, 0}, sf::Color::Black), sf::Vertex({0, 0}, sf::Color::Black)},
 	m_isActive{false}
@@ -24,19 +20,19 @@ DragAndDropSystem::DragAndDropSystem(StateStack::Context context):
 void DragAndDropSystem::update(entityx::EntityManager&, entityx::EventManager&, double)
 {
 	//If the drag and drop is active and effective
-	if(m_isActive and m_origin != sf::Mouse::getPosition(m_window))
+	if(m_isActive and m_origin != sf::Mouse::getPosition(*Context::window))
 	{
-		if(m_bloomEnabled)
+		if(Context::parameters->bloomEnabled)
 		{
-			m_line[0].position = m_texture.mapPixelToCoords(m_origin);
-			m_line[1].position = m_texture.mapPixelToCoords(sf::Mouse::getPosition(m_window));
-			m_texture.draw(m_line, 2, sf::Lines);
+			m_line[0].position = Context::postEffectsTexture->mapPixelToCoords(m_origin);
+			m_line[1].position = Context::postEffectsTexture->mapPixelToCoords(sf::Mouse::getPosition(*Context::window));
+			Context::postEffectsTexture->draw(m_line, 2, sf::Lines);
 		}
 		else
 		{
-			m_line[0].position = m_window.mapPixelToCoords(m_origin);
-			m_line[1].position = m_window.mapPixelToCoords(sf::Mouse::getPosition(m_window));
-			m_window.draw(m_line, 2, sf::Lines);
+			m_line[0].position = Context::window->mapPixelToCoords(m_origin);
+			m_line[1].position = Context::window->mapPixelToCoords(sf::Mouse::getPosition(*Context::window));
+			Context::window->draw(m_line, 2, sf::Lines);
 		}
 		//Compute the drag and drop data
 		sf::Vector2f delta{m_line[1].position - m_line[0].position};
@@ -48,14 +44,14 @@ void DragAndDropSystem::update(entityx::EntityManager&, entityx::EventManager&, 
 		bendCommand.targetIsSpecific = false;
 		bendCommand.category = Category::Player;
 		bendCommand.action = BowBender(angle, power);
-		m_commandQueue.push(bendCommand);
+		Context::systemManager->system<PendingChangesSystem>()->commandQueue.push(bendCommand);
 	}
 }
 
 void DragAndDropSystem::setDragAndDropActivation(bool isActive)
 {
 	if(not m_isActive and isActive)//Activation
-		m_origin = sf::Mouse::getPosition(m_window);
+		m_origin = sf::Mouse::getPosition(*Context::window);
 	if(not isActive and m_isActive)//Desactivation
 	{
 		float delta_x{m_line[1].position.x- m_line[0].position.x};
@@ -66,13 +62,13 @@ void DragAndDropSystem::setDragAndDropActivation(bool isActive)
 		shootCommand.targetIsSpecific = false;
 		shootCommand.category = Category::Player;
 		shootCommand.action = ArrowShooter();
-		m_commandQueue.push(shootCommand);
+		Context::systemManager->system<PendingChangesSystem>()->commandQueue.push(shootCommand);
 		//Reset the bending power to 0
 		Command bendCommand;
 		bendCommand.targetIsSpecific = false;
 		bendCommand.category = Category::Player;
 		bendCommand.action = BowBender(float(angle), 0.f);//Reset the power of the bending
-		m_commandQueue.push(bendCommand);
+		Context::systemManager->system<PendingChangesSystem>()->commandQueue.push(bendCommand);
 	}
 	m_isActive = isActive;
 }

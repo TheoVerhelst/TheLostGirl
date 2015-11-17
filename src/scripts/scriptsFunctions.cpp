@@ -76,7 +76,7 @@ void cast<entityx::Entity>(Data& var)
 		throw ScriptError("Conversion from any type to entity is not allowed.");
 }
 
-Data print(const std::vector<Data>& args, StateStack::Context)
+Data print(const std::vector<Data>& args)
 {
 	std::cout << std::boolalpha;
 	for(size_t i(0); i < args.size(); ++i)
@@ -85,7 +85,7 @@ Data print(const std::vector<Data>& args, StateStack::Context)
 	return 0;
 }
 
-Data lowerThanOp(const std::vector<Data>& args, StateStack::Context)
+Data lowerThanOp(const std::vector<Data>& args)
 {
 	Data lhs(args[0]), rhs(args[1]);
 	if(lhs.which() != 3 and rhs.which() != 3 and lhs.which() != 4 and rhs.which() != 4)
@@ -109,22 +109,22 @@ Data lowerThanOp(const std::vector<Data>& args, StateStack::Context)
 		throw std::runtime_error("invalid operands types for comparaison.");
 }
 
-Data greaterThanOp(const std::vector<Data>& args, StateStack::Context context)
+Data greaterThanOp(const std::vector<Data>& args)
 {
-	return lowerThanOp({args[1], args[0]}, context);
+	return lowerThanOp({args[1], args[0]});
 }
 
-Data lowerEqualOp(const std::vector<Data>& args, StateStack::Context context)
+Data lowerEqualOp(const std::vector<Data>& args)
 {
-	return notOp({greaterThanOp(args, context)}, context);
+	return notOp({greaterThanOp(args)});
 }
 
-Data greaterEqualOp(const std::vector<Data>& args, StateStack::Context context)
+Data greaterEqualOp(const std::vector<Data>& args)
 {
-	return notOp({lowerThanOp(args, context)}, context);
+	return notOp({lowerThanOp(args)});
 }
 
-Data equalOp(const std::vector<Data>& args, StateStack::Context context)
+Data equalOp(const std::vector<Data>& args)
 {
 	const Data& lhs(args[0]), rhs(args[1]);
 	//Both are string
@@ -138,17 +138,17 @@ Data equalOp(const std::vector<Data>& args, StateStack::Context context)
 		return boost::get<bool>(lhs) == boost::get<entityx::Entity>(rhs).valid();
 	//Both are numeric
 	else if(lhs.which() <= 2 and rhs.which() <= 2)
-		return andOp({greaterEqualOp(args, context), lowerEqualOp(args, context)}, context);
+		return andOp({greaterEqualOp(args), lowerEqualOp(args)});
 	else
 		return false;
 }
 
-Data notEqualOp(const std::vector<Data>& args, StateStack::Context context)
+Data notEqualOp(const std::vector<Data>& args)
 {
-	return notOp({equalOp(args, context)}, context);
+	return notOp({equalOp(args)});
 }
 
-Data andOp(const std::vector<Data>& args, StateStack::Context)
+Data andOp(const std::vector<Data>& args)
 {
 	Data lhs(args[0]), rhs(args[1]);
 	cast<bool>(lhs);
@@ -156,7 +156,7 @@ Data andOp(const std::vector<Data>& args, StateStack::Context)
 	return boost::get<bool>(lhs) and boost::get<bool>(rhs);
 }
 
-Data orOp(const std::vector<Data>& args, StateStack::Context)
+Data orOp(const std::vector<Data>& args)
 {
 	Data lhs(args[0]), rhs(args[1]);
 	cast<bool>(lhs);
@@ -164,7 +164,7 @@ Data orOp(const std::vector<Data>& args, StateStack::Context)
 	return boost::get<bool>(lhs) or boost::get<bool>(rhs);
 }
 
-Data addOp(const std::vector<Data>& args, StateStack::Context)
+Data addOp(const std::vector<Data>& args)
 {
 	Data lhs(args[0]), rhs(args[1]);
 	if(lhs.which() == 4 or rhs.which() == 4)
@@ -191,7 +191,7 @@ Data addOp(const std::vector<Data>& args, StateStack::Context)
 		return static_cast<bool>(boost::get<bool>(lhs) + boost::get<bool>(rhs));
 }
 
-Data substractOp(const std::vector<Data>& args, StateStack::Context)
+Data substractOp(const std::vector<Data>& args)
 {
 	Data lhs(args[0]), rhs(args[1]);
 	if(lhs.which() == 4 or rhs.which() == 4)
@@ -214,7 +214,7 @@ Data substractOp(const std::vector<Data>& args, StateStack::Context)
 		return static_cast<bool>(boost::get<bool>(lhs) + boost::get<bool>(rhs));
 }
 
-Data multiplyOp(const std::vector<Data>& args, StateStack::Context)
+Data multiplyOp(const std::vector<Data>& args)
 {
 	Data lhs(args[0]), rhs(args[1]);
 	if(lhs.which() == 4 or rhs.which() == 4)
@@ -237,7 +237,7 @@ Data multiplyOp(const std::vector<Data>& args, StateStack::Context)
 		return static_cast<bool>(boost::get<bool>(lhs) * boost::get<bool>(rhs));
 }
 
-Data divideOp(const std::vector<Data>& args, StateStack::Context)
+Data divideOp(const std::vector<Data>& args)
 {
 	Data lhs(args[0]), rhs(args[1]);
 	if(lhs.which() == 4 or rhs.which() == 4)
@@ -264,7 +264,7 @@ Data divideOp(const std::vector<Data>& args, StateStack::Context)
 		throw std::runtime_error("boolean does not support division.");
 }
 
-Data moduloOp(const std::vector<Data>& args, StateStack::Context)
+Data moduloOp(const std::vector<Data>& args)
 {
 	Data lhs(args[0]), rhs(args[1]);
 	if(lhs.which() == 4 or rhs.which() == 4)
@@ -291,14 +291,14 @@ Data moduloOp(const std::vector<Data>& args, StateStack::Context)
 		throw std::runtime_error("boolean does not support modulo.");
 }
 
-Data notOp(const std::vector<Data>& args, StateStack::Context)
+Data notOp(const std::vector<Data>& args)
 {
 	Data lhs(args[0]);
 	cast<bool>(lhs);
 	return not boost::get<bool>(lhs);
 }
 
-entityx::Entity nearestFoe(const std::vector<Data>& args, StateStack::Context context)
+entityx::Entity nearestFoe(const std::vector<Data>& args)
 {
 	entityx::Entity self(boost::get<entityx::Entity>(args[0]));
 	if(not self)
@@ -307,10 +307,10 @@ entityx::Entity nearestFoe(const std::vector<Data>& args, StateStack::Context co
 	DetectionRangeComponent::Handle detectionRangeComponent(self.component<DetectionRangeComponent>());
 	if(bodyComponent and detectionRangeComponent)
 	{
-		const float range{detectionRangeComponent->detectionRange/context.parameters.pixelByMeter};
+		const float range{detectionRangeComponent->detectionRange/Context::parameters->pixelByMeter};
 		b2Body* body{bodyComponent->body};
 		b2World* world{body->GetWorld()};
-		NearestFoeQueryCallback callback(self, context);
+		NearestFoeQueryCallback callback(self);
 		b2AABB aabb;
 		aabb.lowerBound = b2Vec2(-range, -range) + body->GetWorldCenter();
 		aabb.upperBound = b2Vec2(range, range) + body->GetWorldCenter();
@@ -320,7 +320,7 @@ entityx::Entity nearestFoe(const std::vector<Data>& args, StateStack::Context co
 	return entityx::Entity();
 }
 
-float distanceFrom(const std::vector<Data>& args, StateStack::Context)
+float distanceFrom(const std::vector<Data>& args)
 {
 	entityx::Entity self(boost::get<entityx::Entity>(args[0]));
 	entityx::Entity target(boost::get<entityx::Entity>(args[1]));
@@ -373,7 +373,7 @@ float distanceFrom(const std::vector<Data>& args, StateStack::Context)
 	return 0.f;
 }
 
-int directionTo(const std::vector<Data>& args, StateStack::Context)
+int directionTo(const std::vector<Data>& args)
 {
 	entityx::Entity self(boost::get<entityx::Entity>(args[0]));
 	entityx::Entity target(boost::get<entityx::Entity>(args[1]));
@@ -393,7 +393,7 @@ int directionTo(const std::vector<Data>& args, StateStack::Context)
 	return static_cast<int>(Direction::None);
 }
 
-int directionOf(const std::vector<Data>& args, StateStack::Context)
+int directionOf(const std::vector<Data>& args)
 {
 	entityx::Entity self(boost::get<entityx::Entity>(args[0]));
 	if(not self)
@@ -404,7 +404,7 @@ int directionOf(const std::vector<Data>& args, StateStack::Context)
 	return static_cast<int>(Direction::None);
 }
 
-int attack(const std::vector<Data>& args, StateStack::Context context)
+int attack(const std::vector<Data>& args)
 {
 	Command attackCommand;
 	attackCommand.targetIsSpecific = true;
@@ -412,15 +412,14 @@ int attack(const std::vector<Data>& args, StateStack::Context context)
 	if(not attackCommand.entity)
 		throw ScriptError("can move(): first argument is an invalid entity.");
 	attackCommand.action = HandToHand();
-	context.systemManager.system<PendingChangesSystem>()->commandQueue.push(attackCommand);
+	Context::systemManager->system<PendingChangesSystem>()->commandQueue.push(attackCommand);
 	return 0;
 }
 
-NearestFoeQueryCallback::NearestFoeQueryCallback(entityx::Entity self, StateStack::Context context):
+NearestFoeQueryCallback::NearestFoeQueryCallback(entityx::Entity self):
 	entity(),
 	m_self(self),
-	m_distance(std::numeric_limits<float>::infinity()),
-	m_context(context)
+	m_distance(std::numeric_limits<float>::infinity())
 {}
 
 bool NearestFoeQueryCallback::ReportFixture(b2Fixture* fixture)
@@ -433,7 +432,7 @@ bool NearestFoeQueryCallback::ReportFixture(b2Fixture* fixture)
 	{
 		if(currentEntity != m_self)
 		{
-			float currentDistance{distanceFrom({m_self, currentEntity}, m_context)};
+			float currentDistance{distanceFrom({m_self, currentEntity})};
 			if(currentDistance < m_distance)
 			{
 				m_distance = currentDistance;
@@ -444,7 +443,7 @@ bool NearestFoeQueryCallback::ReportFixture(b2Fixture* fixture)
 	return true;
 }
 
-bool canMove(const std::vector<Data>& args, StateStack::Context)
+bool canMove(const std::vector<Data>& args)
 {
 	entityx::Entity self(boost::get<entityx::Entity>(args[0]));
 	if(not self)
@@ -452,19 +451,19 @@ bool canMove(const std::vector<Data>& args, StateStack::Context)
 	return self.has_component<WalkComponent>();
 }
 
-int move(const std::vector<Data>& args, StateStack::Context context)
+int move(const std::vector<Data>& args)
 {
 	Command moveCommand;
 	moveCommand.targetIsSpecific = true;
 	moveCommand.entity = boost::get<entityx::Entity>(args[0]);
 	if(not moveCommand.entity)
 		throw ScriptError("can move(): first argument is an invalid entity.");
-	moveCommand.action = Mover(context, static_cast<Direction>(boost::get<int>(args[1])));
-	context.systemManager.system<PendingChangesSystem>()->commandQueue.push(moveCommand);
+	moveCommand.action = Mover(static_cast<Direction>(boost::get<int>(args[1])));
+	Context::systemManager->system<PendingChangesSystem>()->commandQueue.push(moveCommand);
 	return 0;
 }
 
-int stop(const std::vector<Data>& args, StateStack::Context context)
+int stop(const std::vector<Data>& args)
 {
 	entityx::Entity self(boost::get<entityx::Entity>(args[0]));
 	if(not self)
@@ -481,24 +480,24 @@ int stop(const std::vector<Data>& args, StateStack::Context context)
 			Command moveCommand2;
 			moveCommand2.targetIsSpecific = true;
 			moveCommand2.entity = self;
-			moveCommand1.action = Mover(context, not directionComponent->direction, false);
-			moveCommand2.action = Mover(context, directionComponent->direction, false);
-			context.systemManager.system<PendingChangesSystem>()->commandQueue.push(moveCommand1);
-			context.systemManager.system<PendingChangesSystem>()->commandQueue.push(moveCommand2);
+			moveCommand1.action = Mover(not directionComponent->direction, false);
+			moveCommand2.action = Mover(directionComponent->direction, false);
+			Context::systemManager->system<PendingChangesSystem>()->commandQueue.push(moveCommand1);
+			Context::systemManager->system<PendingChangesSystem>()->commandQueue.push(moveCommand2);
 		}
 		else
 		{
 			Command moveCommand;
 			moveCommand.targetIsSpecific = true;
 			moveCommand.entity = self;
-			moveCommand.action = Mover(context, directionComponent->direction, false);
-			context.systemManager.system<PendingChangesSystem>()->commandQueue.push(moveCommand);
+			moveCommand.action = Mover(directionComponent->direction, false);
+			Context::systemManager->system<PendingChangesSystem>()->commandQueue.push(moveCommand);
 		}
 	}
 	return 0;
 }
 
-bool canJump(const std::vector<Data>& args, StateStack::Context)
+bool canJump(const std::vector<Data>& args)
 {
 	entityx::Entity self(boost::get<entityx::Entity>(args[0]));
 	if(not self)
@@ -507,16 +506,16 @@ bool canJump(const std::vector<Data>& args, StateStack::Context)
 	return self.has_component<JumpComponent>() and fallComponent and not fallComponent->inAir;
 }
 
-int jump(const std::vector<Data>& args, StateStack::Context context)
+int jump(const std::vector<Data>& args)
 {
-	if(canJump(args, context))
+	if(canJump(args))
 	{
 		//Simply push a jump command on the command queue
 		Command jumpCommand;
 		jumpCommand.targetIsSpecific = true;
 		jumpCommand.entity = boost::get<entityx::Entity>(args[0]);
 		jumpCommand.action = Jumper();
-		context.systemManager.system<PendingChangesSystem>()->commandQueue.push(jumpCommand);
+		Context::systemManager->system<PendingChangesSystem>()->commandQueue.push(jumpCommand);
 	}
 	return 0;
 }

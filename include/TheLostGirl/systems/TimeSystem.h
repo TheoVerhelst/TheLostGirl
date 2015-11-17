@@ -3,7 +3,6 @@
 
 #include <random>
 #include <entityx/System.h>
-#include <TheLostGirl/StateStack.h>
 
 //Forward declarations
 namespace entityx
@@ -17,8 +16,7 @@ class TimeSystem : public entityx::System<TimeSystem>
 {
 	public:
 		/// Constructor.
-		/// \param context Current context of the application.
-		TimeSystem(StateStack::Context context);
+		TimeSystem();
 
 		/// System's update function.
 		/// \param es Entity manager.
@@ -91,8 +89,6 @@ class TimeSystem : public entityx::System<TimeSystem>
 		std::mt19937 m_gen;				  ///< Generate a sequence of numbers from the seed.
 		std::uniform_real_distribution<float> m_transitionLenghtDis;///< Distribute the sequence uniformely.
 		std::uniform_real_distribution<float> m_strengthDis;///< Same as above.
-
-		const LangManager& m_langManager; ///< Reference to the lang manager, to display formatted date/time.
 };
 
 #endif//TIMESYSTEM_H

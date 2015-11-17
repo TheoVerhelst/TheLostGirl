@@ -1,6 +1,5 @@
 #include <TGUI/Gui.hpp>
 #include <entityx/System.h>
-#include <TheLostGirl/State.h>
 #include <TheLostGirl/states/MainMenuState.h>
 #include <TheLostGirl/StateStack.h>
 #include <TheLostGirl/LangManager.h>
@@ -11,13 +10,12 @@
 #include <TheLostGirl/Parameters.h>
 #include <TheLostGirl/states/PauseState.h>
 
-PauseState::PauseState(StateStack& stack) :
-	State(stack)
+PauseState::PauseState()
 {
-	getContext().eventManager.subscribe<ParametersChange>(*this);
+	Context::eventManager->subscribe<ParametersChange>(*this);
 	using tgui::bindWidth;
 	using tgui::bindHeight;
-	tgui::Gui& gui(getContext().gui);
+	tgui::Gui& gui(*Context::gui);
 
 	m_background = tgui::VerticalLayout::create();
 	m_background->setPosition(bindWidth(gui, 0.25f), bindHeight(gui, 0.f));
@@ -30,24 +28,24 @@ PauseState::PauseState(StateStack& stack) :
 	tgui::Panel::Ptr titlePanel = tgui::Panel::create();
 	titlePanel->setBackgroundColor(sf::Color::Transparent);
 	m_background->add(titlePanel);
-	m_pauseLabel = tgui::Label::create(getContext().parameters.guiConfigFile);
+	m_pauseLabel = tgui::Label::create(Context::parameters->guiConfigFile);
 	titlePanel->add(m_pauseLabel);
 	m_pauseLabel->setTextSize(80);
 	m_pauseLabel->setPosition((bindWidth(titlePanel)-bindWidth(m_pauseLabel))/2, 0.f);
 
 	m_background->addSpace();
 
-	m_backToGameButton = tgui::Button::create(getContext().parameters.guiConfigFile);
+	m_backToGameButton = tgui::Button::create(Context::parameters->guiConfigFile);
 	m_backToGameButton->setTextSize(50);
 	m_backToGameButton->connect("pressed", &PauseState::backToGame, this);
 	m_background->add(m_backToGameButton);
 
-	m_goToOptionsButton = tgui::Button::create(getContext().parameters.guiConfigFile);
+	m_goToOptionsButton = tgui::Button::create(Context::parameters->guiConfigFile);
 	m_goToOptionsButton->setTextSize(50);
 	m_goToOptionsButton->connect("pressed", [this]{m_background->hide(); requestStackPush<ParametersState>();});
 	m_background->add(m_goToOptionsButton);
 
-	m_backToMainMenuButton = tgui::Button::create(getContext().parameters.guiConfigFile);
+	m_backToMainMenuButton = tgui::Button::create(Context::parameters->guiConfigFile);
 	m_backToMainMenuButton->setTextSize(50);
 	m_backToMainMenuButton->connect("pressed", &PauseState::backToMainMenu, this);
 	m_background->add(m_backToMainMenuButton);
@@ -58,7 +56,7 @@ PauseState::PauseState(StateStack& stack) :
 
 PauseState::~PauseState()
 {
-	getContext().gui.remove(m_background);
+	Context::gui->remove(m_background);
 }
 
 void PauseState::draw()
@@ -89,20 +87,20 @@ void PauseState::receive(const ParametersChange& parametersChange)
 void PauseState::resetTexts()
 {
 	if(m_pauseLabel)
-		m_pauseLabel->setText(getContext().langManager.tr("Pause"));
+		m_pauseLabel->setText(Context::langManager->tr("Pause"));
 	if(m_backToGameButton)
-		m_backToGameButton->setText(getContext().langManager.tr("Back to game"));
+		m_backToGameButton->setText(Context::langManager->tr("Back to game"));
 	if(m_goToOptionsButton)
-		m_goToOptionsButton->setText(getContext().langManager.tr("Parameters"));
+		m_goToOptionsButton->setText(Context::langManager->tr("Parameters"));
 	if(m_backToMainMenuButton)
-		m_backToMainMenuButton->setText(getContext().langManager.tr("Back to main menu"));
+		m_backToMainMenuButton->setText(Context::langManager->tr("Back to main menu"));
 }
 
 
 inline void PauseState::backToGame()
 {
 	requestStackPop();
-	getContext().player.handleInitialInputState();
+	Context::player->handleInitialInputState();
 }
 
 inline void PauseState::backToMainMenu()

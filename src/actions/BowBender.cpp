@@ -93,7 +93,7 @@ void BowBender::operator()(entityx::Entity entity) const
 		jointDef.bodyA = bowBodyComponent->body;
 		jointDef.bodyB = notchedArrowBodyComponent->body;
 		jointDef.localAnchorA = bowComponent->notchedArrowAnchor;
-		jointDef.localAnchorB = sftob2(notchedArrowComponent->localFrictionPoint);
+		jointDef.localAnchorB = sftob2(notchedArrowComponent->localFrictionPoint/Context::parameters->pixelByMeter);
 		jointDef.localAxisA = {1.f, 0.f};
 		jointDef.lowerTranslation = bowComponent->lowerTranslation;
 		jointDef.upperTranslation = bowComponent->upperTranslation;

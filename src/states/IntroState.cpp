@@ -1,20 +1,18 @@
 #include <SFML/System/Time.hpp>
 #include <SFML/Window/Event.hpp>
 #include <TGUI/Gui.hpp>
-#include <TheLostGirl/State.h>
 #include <TheLostGirl/states/MainMenuState.h>
 #include <TheLostGirl/StateStack.h>
 #include <TheLostGirl/Parameters.h>
 #include <TheLostGirl/events.h>
 #include <TheLostGirl/states/IntroState.h>
 
-IntroState::IntroState(StateStack& stack):
-	State(stack)
+IntroState::IntroState()
 {
-	getContext().eventManager.subscribe<ParametersChange>(*this);
+	Context::eventManager->subscribe<ParametersChange>(*this);
 	using tgui::bindWidth;
 	using tgui::bindHeight;
-	tgui::Gui& gui(getContext().gui);
+	tgui::Gui& gui(*Context::gui);
 
 	m_background = tgui::Panel::create();
 	m_background->setPosition(bindWidth(gui, 0.25f), bindHeight(gui, 0.f));
@@ -22,11 +20,11 @@ IntroState::IntroState(StateStack& stack):
 	m_background->setBackgroundColor(sf::Color(255, 255, 255, 100));
 	gui.add(m_background);
 
-	m_logo = tgui::Picture::create(paths[getContext().parameters.scaleIndex] + "title.png");
+	m_logo = tgui::Picture::create(paths[Context::parameters->scaleIndex] + "title.png");
 	m_logo->setPosition((bindWidth(gui) - bindWidth(m_logo))/2, bindHeight(gui, 0.f));
 	gui.add(m_logo);
 
-	m_sentence = tgui::Label::create(getContext().parameters.guiConfigFile);
+	m_sentence = tgui::Label::create(Context::parameters->guiConfigFile);
 	m_sentence->setTextSize(30);
 	m_sentence->setPosition((bindWidth(gui) - bindWidth(m_sentence))/2, bindHeight(gui, 0.5));
 	gui.add(m_sentence);
@@ -35,10 +33,9 @@ IntroState::IntroState(StateStack& stack):
 
 IntroState::~IntroState()
 {
-	tgui::Gui& gui(getContext().gui);
-	gui.remove(m_background);
-	gui.remove(m_logo);
-	gui.remove(m_sentence);
+	Context::gui->remove(m_background);
+	Context::gui->remove(m_logo);
+	Context::gui->remove(m_sentence);
 }
 
 void IntroState::draw()
@@ -68,5 +65,5 @@ void IntroState::receive(const ParametersChange& parametersChange)
 
 void IntroState::resetTexts()
 {
-	m_sentence->setText(getContext().langManager.tr("Press any key to continue..."));
+	m_sentence->setText(Context::langManager->tr("Press any key to continue..."));
 }

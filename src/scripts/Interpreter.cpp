@@ -55,7 +55,6 @@ Interpreter::Interpreter():
 				{"top", static_cast<int>(Direction::Top)},
 				{"bottom",static_cast<int>(Direction::Bottom)}},
 	m_vars(m_initialVars),
-	m_context(nullptr),
 	m_operators("!:,=<>+-*/%()"),
 	m_multichar0perators{{"<", "="}, {">", "="}, {"=", "="}, {"!", "="}},
 	m_reservedNames{"else if", "if", "else", "endif", "and", "or", "not", "event", "is"}
@@ -91,12 +90,10 @@ bool Interpreter::loadFromFile(const std::string& fileName)
 	return true;
 }
 
-void Interpreter::interpret(entityx::Entity entity, StateStack::Context context)
+void Interpreter::interpret(entityx::Entity entity)
 {
-	m_context = &context;
 	m_vars["self"] = entity;
-	interpretBlock(entity, context, m_expressions.begin(), m_expressions.end(), m_expressions.begin());
-	m_context = nullptr;
+	interpretBlock(entity, m_expressions.begin(), m_expressions.end(), m_expressions.begin());
 	//Reset all variables
 	m_vars = m_initialVars;
 }
@@ -106,7 +103,7 @@ inline std::string Interpreter::getStr(std::list<Expression::Ptr>::iterator it) 
 	return boost::get<std::string>((*it)->getValue().first);
 }
 
-void Interpreter::interpretBlock(entityx::Entity entity, StateStack::Context context, std::list<Expression::Ptr>::iterator from, std::list<Expression::Ptr>::iterator to, std::list<Expression::Ptr>::iterator begin)
+void Interpreter::interpretBlock(entityx::Entity entity, std::list<Expression::Ptr>::iterator from, std::list<Expression::Ptr>::iterator to, std::list<Expression::Ptr>::iterator begin)
 {
 	try
 	{
@@ -128,7 +125,7 @@ void Interpreter::interpretBlock(entityx::Entity entity, StateStack::Context con
 					{
 						if(condition)
 						{
-							interpretBlock(entity, context, beginIf, endIf, begin);
+							interpretBlock(entity, beginIf, endIf, begin);
 							skip = true;
 						}
 						else
@@ -199,7 +196,7 @@ Data Interpreter::evaluateExpression(const Expression::Ptr expression)
 				std::vector<Data> args;
 				for(size_t i{0}; i < expression->childrenNumber(); ++i)
 					args.push_back(evaluateExpression(expression->getChild(i)));
-				return fn.pointer(args, *m_context);
+				return fn.pointer(args);
 			}
 			else
 			{

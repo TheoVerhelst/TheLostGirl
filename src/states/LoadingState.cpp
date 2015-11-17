@@ -2,17 +2,15 @@
 #include <SFML/System/Time.hpp>
 #include <SFML/Window/Event.hpp>
 #include <TGUI/Gui.hpp>
-#include <TheLostGirl/State.h>
 #include <TheLostGirl/LangManager.h>
 #include <TheLostGirl/events.h>
 #include <TheLostGirl/Parameters.h>
 #include <TheLostGirl/states/LoadingState.h>
 
-LoadingState::LoadingState(StateStack& stack):
-	State(stack)
+LoadingState::LoadingState()
 {
-	getContext().eventManager.subscribe<LoadingStateChange>(*this);
-	getContext().eventManager.subscribe<ParametersChange>(*this);
+	Context::eventManager->subscribe<LoadingStateChange>(*this);
+	Context::eventManager->subscribe<ParametersChange>(*this);
 	std::ifstream fileStream("resources/lang/hints");
 	if(not fileStream.is_open())//If failed to open the file
 		throw std::runtime_error("Unable to open hints file: resources/lang/hints");
@@ -42,7 +40,7 @@ LoadingState::LoadingState(StateStack& stack):
 
 		using tgui::bindWidth;
 		using tgui::bindHeight;
-		tgui::Gui& gui(getContext().gui);
+		tgui::Gui& gui(*Context::gui);
 
 		m_background = tgui::Panel::create();
 		m_background->setPosition(bindWidth(gui, 0.f), bindHeight(gui, 0.3f));
@@ -50,15 +48,15 @@ LoadingState::LoadingState(StateStack& stack):
 		m_background->setBackgroundColor(sf::Color(255, 255, 255, 100));
 		gui.add(m_background);
 
-		m_sentenceLabel = tgui::Label::create(getContext().parameters.guiConfigFile);
+		m_sentenceLabel = tgui::Label::create(Context::parameters->guiConfigFile);
 		m_sentenceLabel->setText(m_sentence);
 		m_sentenceLabel->setTextSize(20);
 		//Center the label
 		m_sentenceLabel->setPosition((bindWidth(gui) - bindWidth(m_sentenceLabel))/2, bindHeight(gui, 0.5f));
 		gui.add(m_sentenceLabel);
 
-		m_hintLabel = tgui::Label::create(getContext().parameters.guiConfigFile);
-		m_hintLabel->setText(getContext().langManager.tr(line));
+		m_hintLabel = tgui::Label::create(Context::parameters->guiConfigFile);
+		m_hintLabel->setText(Context::langManager->tr(line));
 		m_hintLabel->setTextSize(30);
 		//Center the label
 		m_hintLabel->setPosition((bindWidth(gui) - bindWidth(m_hintLabel))/2.f, bindHeight(gui, 0.38f));
@@ -68,9 +66,9 @@ LoadingState::LoadingState(StateStack& stack):
 
 LoadingState::~LoadingState()
 {
-	getContext().gui.remove(m_background);
-	getContext().gui.remove(m_sentenceLabel);
-	getContext().gui.remove(m_hintLabel);
+	Context::gui->remove(m_background);
+	Context::gui->remove(m_sentenceLabel);
+	Context::gui->remove(m_hintLabel);
 }
 
 void LoadingState::draw()
@@ -98,7 +96,7 @@ void LoadingState::receive(const LoadingStateChange &loadingStateChange)
 
 void LoadingState::resetTexts()
 {
-	m_sentenceLabel->setText(getContext().langManager.tr(m_sentence) + L"...");
+	m_sentenceLabel->setText(Context::langManager->tr(m_sentence) + L"...");
 }
 
 

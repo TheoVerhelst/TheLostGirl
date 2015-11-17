@@ -15,13 +15,11 @@
 #include <Box2D/Dynamics/Joints/b2MotorJoint.h>
 #include <entityx/entityx.h>
 #include <dist/json/json.h>
-#include <TheLostGirl/State.h>
 #include <TheLostGirl/states/PauseState.h>
 #include <TheLostGirl/states/HUDState.h>
 #include <TheLostGirl/states/MainMenuState.h>
 #include <TheLostGirl/components.h>
 #include <TheLostGirl/Category.h>
-#include <TheLostGirl/StateStack.h>
 #include <TheLostGirl/systems.h>
 #include <TheLostGirl/ResourceManager.h>
 #include <TheLostGirl/Player.h>
@@ -36,6 +34,7 @@
 
 //FIXME Bad func call quand on on fait un scroll souris pendant le GameState
 //TODO Statestack::Context as global variable
+//TODO Mettre ArrowComponent::local(Friction|Stick)Point en pixels dans la sauvegarde
 //TODO Finir la fonction flip().
 //TODO Sauvegarde en fonction des includes.
 //TODO Retirer la fleche pendant le CAC.
@@ -43,9 +42,8 @@
 //TODO Faire un système multi texture pour une même entité (soit chunker une grande image, soit faire plusieurs images).
 //TODO CAC: statique : deux coups; en avancant: ??? ; en tombant: un puissant; en sautant : un faible; roulade : ???; en reculant : ???; en sneak : prise (egorgement/ippo sonage)
 
-GameState::GameState(StateStack& stack, std::string file) :
-	State(stack),
-	m_contactListener(getContext()),
+GameState::GameState(std::string file):
+	m_contactListener(),
 	m_timeSpeed{1.f},
 	m_loading{true},
 	m_levelIdentifier{""},
@@ -53,7 +51,7 @@ GameState::GameState(StateStack& stack, std::string file) :
 	m_referencePlan{0.f},
 	m_levelRect{0, 0, 1920, 1080}
 {
-	getContext().eventManager.subscribe<ParametersChange>(*this);
+	Context::eventManager->subscribe<ParametersChange>(*this);
 	m_threadLoad = std::thread(&GameState::initWorld, this, file);
 }
 
@@ -69,21 +67,21 @@ void GameState::draw()
 {
 	if(not m_loading)
 	{
-		getContext().systemManager.update<RenderSystem>(0.f);
+		Context::systemManager->update<RenderSystem>(0.f);
 		//The drag and drop system draw a line on the screen, so we have to update it here
-		getContext().systemManager.update<DragAndDropSystem>(0.f);
+		Context::systemManager->update<DragAndDropSystem>(0.f);
 	}
 }
 
 bool GameState::update(sf::Time elapsedTime)
 {
-	getContext().systemManager.update<ScriptsSystem>(elapsedTime.asSeconds());
-	getContext().systemManager.update<PendingChangesSystem>(elapsedTime.asSeconds());
-	getContext().systemManager.update<AnimationsSystem>(elapsedTime.asSeconds());
-	getContext().systemManager.update<PhysicsSystem>(elapsedTime.asSeconds());
-	getContext().systemManager.update<ScrollingSystem>(elapsedTime.asSeconds());
-	getContext().systemManager.update<StatsSystem>(elapsedTime.asSeconds());
-	getContext().systemManager.update<TimeSystem>(elapsedTime.asSeconds()*m_timeSpeed);//Scale the time
+	Context::systemManager->update<ScriptsSystem>(elapsedTime.asSeconds());
+	Context::systemManager->update<PendingChangesSystem>(elapsedTime.asSeconds());
+	Context::systemManager->update<AnimationsSystem>(elapsedTime.asSeconds());
+	Context::systemManager->update<PhysicsSystem>(elapsedTime.asSeconds());
+	Context::systemManager->update<ScrollingSystem>(elapsedTime.asSeconds());
+	Context::systemManager->update<StatsSystem>(elapsedTime.asSeconds());
+	Context::systemManager->update<TimeSystem>(elapsedTime.asSeconds()*m_timeSpeed);//Scale the time
 	return false;
 }
 
@@ -93,10 +91,10 @@ bool GameState::handleEvent(const sf::Event& event)
 		or event.type == sf::Event::LostFocus)
 		requestStackPush<PauseState>();
 
-	getContext().player.handleEvent(event);
+	Context::player->handleEvent(event);
 	//Update the drag and drop state
-	const bool isDragAndDropActive{getContext().player.isActived(Player::Action::Bend)};
-	getContext().systemManager.system<DragAndDropSystem>()->setDragAndDropActivation(isDragAndDropActive);
+	const bool isDragAndDropActive{Context::player->isActived(Player::Action::Bend)};
+	Context::systemManager->system<DragAndDropSystem>()->setDragAndDropActivation(isDragAndDropActive);
 	return false;
 }
 
@@ -110,7 +108,7 @@ void GameState::saveWorld(const std::string& file)
 		Json::StyledWriter writer;
 		std::ofstream saveFileStream(file, std::ofstream::binary);
 		root["entities"] = Json::ValueType::objectValue;
-		Serializer s(getContext(), m_entities, root["entities"]);
+		Serializer s(m_entities, root["entities"]);
 		for(auto& entity : m_entities)
 		{
 			s.serialize<BodyComponent>(entity.first, "body");
@@ -144,7 +142,7 @@ void GameState::saveWorld(const std::string& file)
 
 		//time
 		root["time"]["speed"] = m_timeSpeed;
-		root["time"]["date"] = getContext().systemManager.system<TimeSystem>()->getRealTime().asSeconds();
+		root["time"]["date"] = Context::systemManager->system<TimeSystem>()->getRealTime().asSeconds();
 
 		//level data
 		root["level"]["identifier"] = m_levelIdentifier;
@@ -180,8 +178,7 @@ void GameState::saveWorld(const std::string& file)
 
 void GameState::initWorld(const std::string& file)
 {
-	TextureManager& texManager(getContext().textureManager);
-	getContext().eventManager.emit<LoadingStateChange>("Loading save file");
+	Context::eventManager->emit<LoadingStateChange>("Loading save file");
 	try
 	{
 		//Parse the level data
@@ -201,9 +198,9 @@ void GameState::initWorld(const std::string& file)
 		parse(root, model, "root", "root");
 
 		const Json::Value time{root["time"]};
-		getContext().systemManager.system<TimeSystem>()->setTotalTime(sf::seconds(time["date"].asFloat()));
+		Context::systemManager->system<TimeSystem>()->setTotalTime(sf::seconds(time["date"].asFloat()));
 		m_timeSpeed = time["speed"].asFloat();
-		getContext().systemManager.system<AnimationsSystem>()->setTimeSpeed(m_timeSpeed);
+		Context::systemManager->system<AnimationsSystem>()->setTimeSpeed(m_timeSpeed);
 
 		const Json::Value level{root["level"]};
 		//number of plans
@@ -222,7 +219,7 @@ void GameState::initWorld(const std::string& file)
 		m_levelRect.top = levelBox["x"].asInt();
 		m_levelRect.left = levelBox["y"].asInt();
 
-		getContext().systemManager.system<ScrollingSystem>()->setLevelData(m_levelRect, m_referencePlan);
+		Context::systemManager->system<ScrollingSystem>()->setLevelData(m_levelRect, m_referencePlan);
 		Json::Value genericEntities;
 		if(root.isMember("import"))
 		{
@@ -251,9 +248,9 @@ void GameState::initWorld(const std::string& file)
 		//and the scrolling system replace sprite according to the player position.
 		if(root.isMember("entities"))
 		{
-			getContext().eventManager.emit<LoadingStateChange>("Loading entities");
+			Context::eventManager->emit<LoadingStateChange>("Loading entities");
 			Json::Value jsonEntities{root["entities"]};
-			Serializer s(getContext(), m_entities, jsonEntities);
+			Serializer s(m_entities, jsonEntities);
 			std::set<std::string> alreadyDeserialized;
 			std::function<void(const std::string&)> deserializerLambda = [&](const std::string& entityName)
 			{
@@ -261,7 +258,7 @@ void GameState::initWorld(const std::string& file)
 					return;
 
 				std::cout << "Deserializing " << entityName << std::endl;
-				entityx::Entity& entity{m_entities.emplace(entityName, getContext().entityManager.create()).first->second};
+				entityx::Entity& entity{m_entities.emplace(entityName, Context::entityManager->create()).first->second};
 				Json::Value& jsonEntity{jsonEntities[entityName]};
 
 				//If the entity is derivated from a base entities, add json values of the base to the json entity
@@ -321,9 +318,9 @@ void GameState::initWorld(const std::string& file)
 				deserializerLambda(name);
 		}
 
-		if(not getContext().parameters.debugMode)
+		if(not Context::parameters->debugMode)
 		{
-			getContext().eventManager.emit<LoadingStateChange>("Loading background");
+			Context::eventManager->emit<LoadingStateChange>("Loading background");
 			//level
 			//for each group of replaces
 			for(const std::string groupOfReplacesName : level["replaces"].getMemberNames())
@@ -331,7 +328,7 @@ void GameState::initWorld(const std::string& file)
 				//Filename of the image to load
 				const std::string fileTexture{m_levelIdentifier + "_" + groupOfReplacesName};
 				//Path of the image to load
-				const std::string path{paths[getContext().parameters.scaleIndex] + "levels/" + m_levelIdentifier + "/" + fileTexture + ".png"};
+				const std::string path{paths[Context::parameters->scaleIndex] + "levels/" + m_levelIdentifier + "/" + fileTexture + ".png"};
 
 				const Json::Value groupOfReplaces{level["replaces"][groupOfReplacesName]};
 				//Vector that will be added to m_sceneEntitiesData
@@ -344,10 +341,10 @@ void GameState::initWorld(const std::string& file)
 
 					//Coordinates of the original image
 					sf::IntRect originRect;
-					originRect.left = static_cast<int>(origin["x"].asFloat()*getContext().parameters.scale);
-					originRect.top = static_cast<int>(origin["y"].asFloat()*getContext().parameters.scale);
-					originRect.width = static_cast<int>(origin["w"].asFloat()*getContext().parameters.scale);
-					originRect.height = static_cast<int>(origin["h"].asFloat()*getContext().parameters.scale);
+					originRect.left = static_cast<int>(origin["x"].asFloat()*Context::parameters->scale);
+					originRect.top = static_cast<int>(origin["y"].asFloat()*Context::parameters->scale);
+					originRect.width = static_cast<int>(origin["w"].asFloat()*Context::parameters->scale);
+					originRect.height = static_cast<int>(origin["h"].asFloat()*Context::parameters->scale);
 
 					SceneReplaces replacesData;
 					//Directly take the data from the json value in order to keep the not scaled size
@@ -356,7 +353,7 @@ void GameState::initWorld(const std::string& file)
 					//Load the texture
 					//Identifier of the texture, in format "level_plan_texture"
 					const std::string textureIdentifier{fileTexture + "_" + std::to_string(i)};
-					texManager.load<sf::IntRect>(textureIdentifier, path, originRect);
+					Context::textureManager->load<sf::IntRect>(textureIdentifier, path, originRect);
 					//Replaces
 					const Json::Value replaces{image["replaces"]};
 					//For each replacing of the image
@@ -367,8 +364,8 @@ void GameState::initWorld(const std::string& file)
 						const std::string replaceIdentifier{textureIdentifier + "_" + std::to_string(j)};
 						//Position where the frame should be replaced
 						Transform replaceTransform;
-						replaceTransform.x = replace["x"].asFloat()*getContext().parameters.scale;
-						replaceTransform.y = replace["y"].asFloat()*getContext().parameters.scale;
+						replaceTransform.x = replace["x"].asFloat()*Context::parameters->scale;
+						replaceTransform.y = replace["y"].asFloat()*Context::parameters->scale;
 						replaceTransform.z = replace["z"].asFloat();
 						replaceTransform.angle = replace["angle"].asFloat();
 
@@ -376,10 +373,10 @@ void GameState::initWorld(const std::string& file)
 						replacesData.replaces.push_back({replace["x"].asFloat(), replace["y"].asFloat(), replace["z"].asFloat(), replace["angle"].asFloat()});
 
 						//Create an entity
-						m_sceneEntities.emplace(replaceIdentifier, getContext().entityManager.create());
+						m_sceneEntities.emplace(replaceIdentifier, Context::entityManager->create());
 						//Create a sprite with the loaded texture
 						//Assign the sprite to the entity
-						sf::Sprite replaceSpr(texManager.get(textureIdentifier));
+						sf::Sprite replaceSpr(Context::textureManager->get(textureIdentifier));
 						replaceSpr.setPosition(replaceTransform.x, replaceTransform.y);
 						replaceSpr.setRotation(replaceTransform.angle);
 						SpriteComponent::Handle sprComp{m_sceneEntities[replaceIdentifier].assign<SpriteComponent>()};
@@ -397,10 +394,10 @@ void GameState::initWorld(const std::string& file)
 			for(unsigned int i{0}; i < m_numberOfPlans; ++i)
 			{
 				const std::string fileTexture{m_levelIdentifier + "_" + std::to_string(i)};
-				const std::string path{paths[getContext().parameters.scaleIndex] + "levels/" + m_levelIdentifier + "/" + fileTexture + ".png"};
+				const std::string path{paths[Context::parameters->scaleIndex] + "levels/" + m_levelIdentifier + "/" + fileTexture + ".png"};
 				const int chunkSize{int(sf::Texture::getMaximumSize())};
 				//The length of the plan, relatively to the reference.
-				const int planLength{int(float(m_levelRect.width) * std::pow(1.5f, m_referencePlan - float(i)) * getContext().parameters.scale)};
+				const int planLength{int(float(m_levelRect.width) * std::pow(1.5f, m_referencePlan - float(i)) * Context::parameters->scale)};
 				//Number of chunks to load in this plan
 				const int numberOfChunks{(planLength/chunkSize)+1};
 
@@ -412,12 +409,12 @@ void GameState::initWorld(const std::string& file)
 					int currentChunkSize{chunkSize};
 					if(j >= planLength/chunkSize)
 						currentChunkSize = planLength - chunkSize*j;
-					texManager.load<sf::IntRect>(textureIdentifier, path, sf::IntRect(j*chunkSize, 0, currentChunkSize, int(float(m_levelRect.height)*getContext().parameters.scale)));
+					Context::textureManager->load<sf::IntRect>(textureIdentifier, path, sf::IntRect(j*chunkSize, 0, currentChunkSize, int(float(m_levelRect.height)*Context::parameters->scale)));
 					//Create an entity
-					m_sceneEntities.emplace(textureIdentifier, getContext().entityManager.create());
+					m_sceneEntities.emplace(textureIdentifier, Context::entityManager->create());
 					//Create a sprite with the loaded texture
 					//Assign the sprite to the entity
-					sf::Sprite chunkSpr(texManager.get(textureIdentifier));
+					sf::Sprite chunkSpr(Context::textureManager->get(textureIdentifier));
 					chunkSpr.setPosition(float(j*chunkSize), 0);
 					SpriteComponent::Handle sprComp{m_sceneEntities[textureIdentifier].assign<SpriteComponent>()};
 					sprComp->sprite = chunkSpr;
@@ -430,7 +427,7 @@ void GameState::initWorld(const std::string& file)
 			}
 		}
 
-		const float daySeconds{std::remainder(getContext().systemManager.system<TimeSystem>()->getRealTime().asSeconds(), 600.f)};
+		const float daySeconds{std::remainder(Context::systemManager->system<TimeSystem>()->getRealTime().asSeconds(), 600.f)};
 		//Add sky animations.
 		if(m_entities.find("day sky") != m_entities.end() and m_entities["day sky"].valid())
 		{
@@ -451,13 +448,13 @@ void GameState::initWorld(const std::string& file)
 			skyAnimationsComp->animationsManager.play("day/night cycle");
 		}
 
-		getContext().systemManager.system<ScrollingSystem>()->searchPlayer(getContext().entityManager);
-		getContext().systemManager.update<ScrollingSystem>(0.f);
-		getContext().systemManager.update<AnimationsSystem>(0.f);
-		getContext().player.handleInitialInputState();
-		getContext().world.SetContactListener(&m_contactListener);
+		Context::systemManager->system<ScrollingSystem>()->searchPlayer();
+		Context::systemManager->update<ScrollingSystem>(0.f);
+		Context::systemManager->update<AnimationsSystem>(0.f);
+		Context::player->handleInitialInputState();
+		Context::world->SetContactListener(&m_contactListener);
 		requestStackPop();
-		getContext().eventManager.emit<LoadingStateChange>("Loading HUD");
+		Context::eventManager->emit<LoadingStateChange>("Loading HUD");
 		requestStackPush<HUDState>();
 	}
 	catch(std::runtime_error& e)
@@ -476,7 +473,7 @@ void GameState::clear()
     for(auto& entity : m_entities)
     {
         if(entity.second.has_component<BodyComponent>())
-                getContext().world.DestroyBody(entity.second.component<BodyComponent>()->body);
+                Context::world->DestroyBody(entity.second.component<BodyComponent>()->body);
 
         entity.second.destroy();
     }

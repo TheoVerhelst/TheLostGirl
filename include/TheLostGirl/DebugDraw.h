@@ -21,8 +21,7 @@ class DebugDraw : public b2Draw
 {
 	public:
 		/// Constructor.
-		/// \param context Current context of the application.
-		DebugDraw(StateStack::Context context);
+		DebugDraw(tgui::Gui& gui, const std::string& guiCongifFile);
 
 		/// Destructor.
 		virtual ~DebugDraw();
@@ -81,7 +80,6 @@ class DebugDraw : public b2Draw
 		std::string roundOutput(float x, std::size_t decimals=3);
 
 		bool m_debugMode;                   ///< Indicate if the debug ath should be drawn.
-		StateStack::Context m_context;      ///< Current context of the application.
 		float m_framesPerSecond;            ///< FPS value to display.
 		tgui::Label::Ptr m_positionLabel;
 		tgui::Label::Ptr m_mousePositionLabel;

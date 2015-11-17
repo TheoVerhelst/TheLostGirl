@@ -4,28 +4,27 @@
 #include <TheLostGirl/LangManager.h>
 #include <TheLostGirl/states/KeyConfigurationState.h>
 
-KeyConfigurationState::KeyConfigurationState(StateStack& stack) :
-	State(stack),
-	m_actionStrings{{Player::Action::Bend, getContext().langManager.tr("Bend")},
-			{Player::Action::ChangeArrow, getContext().langManager.tr("Change arrow")},
-			{Player::Action::Concentrate, getContext().langManager.tr("Concentrate")},
-			{Player::Action::FurtherView, getContext().langManager.tr("Further view")},
-			{Player::Action::GenericAction, getContext().langManager.tr("Action")},
-			{Player::Action::HandToHand, getContext().langManager.tr("Hand to hand")},
-			{Player::Action::Inventory, getContext().langManager.tr("Inventory")},
-			{Player::Action::Jump, getContext().langManager.tr("Jump")},
-			{Player::Action::MoveDown, getContext().langManager.tr("Move down")},
-			{Player::Action::MoveLeft, getContext().langManager.tr("Move left")},
-			{Player::Action::MoveRight, getContext().langManager.tr("Move right")},
-			{Player::Action::MoveUp, getContext().langManager.tr("Move up")},
-			{Player::Action::PickUp, getContext().langManager.tr("Pick up arrow")},
-			{Player::Action::Roulade, getContext().langManager.tr("Roulade")},
-			{Player::Action::SearchCorpse, getContext().langManager.tr("Search in corpse")},
-			{Player::Action::Sneak, getContext().langManager.tr("Sneak")}}
+KeyConfigurationState::KeyConfigurationState() :
+	m_actionStrings{{Player::Action::Bend, Context::langManager->tr("Bend")},
+			{Player::Action::ChangeArrow, Context::langManager->tr("Change arrow")},
+			{Player::Action::Concentrate, Context::langManager->tr("Concentrate")},
+			{Player::Action::FurtherView, Context::langManager->tr("Further view")},
+			{Player::Action::GenericAction, Context::langManager->tr("Action")},
+			{Player::Action::HandToHand, Context::langManager->tr("Hand to hand")},
+			{Player::Action::Inventory, Context::langManager->tr("Inventory")},
+			{Player::Action::Jump, Context::langManager->tr("Jump")},
+			{Player::Action::MoveDown, Context::langManager->tr("Move down")},
+			{Player::Action::MoveLeft, Context::langManager->tr("Move left")},
+			{Player::Action::MoveRight, Context::langManager->tr("Move right")},
+			{Player::Action::MoveUp, Context::langManager->tr("Move up")},
+			{Player::Action::PickUp, Context::langManager->tr("Pick up arrow")},
+			{Player::Action::Roulade, Context::langManager->tr("Roulade")},
+			{Player::Action::SearchCorpse, Context::langManager->tr("Search in corpse")},
+			{Player::Action::Sneak, Context::langManager->tr("Sneak")}}
 {
 	using tgui::bindWidth;
 	using tgui::bindHeight;
-	tgui::Gui& gui(getContext().gui);
+	tgui::Gui& gui(*Context::gui);
 
 	m_background = tgui::Panel::create();
 	m_background->setPosition(bindWidth(gui, 0.25f), bindHeight(gui, 0.f));
@@ -33,40 +32,40 @@ KeyConfigurationState::KeyConfigurationState(StateStack& stack) :
 	m_background->setBackgroundColor(sf::Color(255, 255, 255, 100));
 	gui.add(m_background);
 
-	m_title = tgui::Label::create(getContext().parameters.guiConfigFile);
+	m_title = tgui::Label::create(Context::parameters->guiConfigFile);
 	m_title->setPosition((bindWidth(m_background) - bindWidth(m_title))/2.f, bindHeight(m_background, 0.1f));
 	m_title->setTextSize(50);
-	m_title->setText(getContext().langManager.tr("Key configuration"));
+	m_title->setText(Context::langManager->tr("Key configuration"));
 	m_background->add(m_title);
 
-	m_nameLabel = tgui::Label::create(getContext().parameters.guiConfigFile);
+	m_nameLabel = tgui::Label::create(Context::parameters->guiConfigFile);
 	m_nameLabel->setPosition(bindWidth(m_background, 0.01f + 0.15f*0.98f) - bindWidth(m_nameLabel, 0.5f), bindHeight(m_background, 0.25f));
 	m_nameLabel->setTextSize(30);
-	m_nameLabel->setText(getContext().langManager.tr("Action"));
+	m_nameLabel->setText(Context::langManager->tr("Action"));
 	m_background->add(m_nameLabel);
 
-	m_key1Label = tgui::Label::create(getContext().parameters.guiConfigFile);
+	m_key1Label = tgui::Label::create(Context::parameters->guiConfigFile);
 	m_key1Label->setPosition(bindWidth(m_background, (0.3f+0.075f)*0.98f+0.01f) - bindWidth(m_key1Label, 0.5f), bindHeight(m_background, 0.25f));
 	m_key1Label->setTextSize(30);
-	m_key1Label->setText(getContext().langManager.tr("Key 1"));
+	m_key1Label->setText(Context::langManager->tr("Key 1"));
 	m_background->add(m_key1Label);
 
-	m_key2Label = tgui::Label::create(getContext().parameters.guiConfigFile);
+	m_key2Label = tgui::Label::create(Context::parameters->guiConfigFile);
 	m_key2Label->setPosition(bindWidth(m_background, (0.475f+0.075f)*0.98f+0.01f) - bindWidth(m_key2Label, 0.5f), bindHeight(m_background, 0.25f));
 	m_key2Label->setTextSize(30);
-	m_key2Label->setText(getContext().langManager.tr("Key 2"));
+	m_key2Label->setText(Context::langManager->tr("Key 2"));
 	m_background->add(m_key2Label);
 
-	m_mouseLabel = tgui::Label::create(getContext().parameters.guiConfigFile);
+	m_mouseLabel = tgui::Label::create(Context::parameters->guiConfigFile);
 	m_mouseLabel->setPosition(bindWidth(m_background, (0.65f+0.075f)*0.98f+0.01f) - bindWidth(m_mouseLabel, 0.5f), bindHeight(m_background, 0.25f));
 	m_mouseLabel->setTextSize(30);
-	m_mouseLabel->setText(getContext().langManager.tr("Mouse"));
+	m_mouseLabel->setText(Context::langManager->tr("Mouse"));
 	m_background->add(m_mouseLabel);
 
-	m_joystickLabel = tgui::Label::create(getContext().parameters.guiConfigFile);
+	m_joystickLabel = tgui::Label::create(Context::parameters->guiConfigFile);
 	m_joystickLabel->setPosition(bindWidth(m_background, (0.825f+0.075f)*0.98f+0.01f) - bindWidth(m_joystickLabel, 0.5f), bindHeight(m_background, 0.25f));
 	m_joystickLabel->setTextSize(30);
-	m_joystickLabel->setText(getContext().langManager.tr("Joystick"));
+	m_joystickLabel->setText(Context::langManager->tr("Joystick"));
 	m_background->add(m_joystickLabel);
 
 	m_actionsPanel = tgui::Panel::create();
@@ -75,7 +74,7 @@ KeyConfigurationState::KeyConfigurationState(StateStack& stack) :
 	m_actionsPanel->setBackgroundColor(sf::Color(0, 0, 0, 0));
 	m_background->add(m_actionsPanel);
 
-	m_scrollbar = tgui::Scrollbar::create(getContext().parameters.guiConfigFile);
+	m_scrollbar = tgui::Scrollbar::create(Context::parameters->guiConfigFile);
 	m_scrollbar->setPosition(bindWidth(m_actionsPanel, 0.975f), 0.f);
 	m_scrollbar->setSize(bindWidth(m_actionsPanel, 0.025f), bindHeight(m_actionsPanel));
     m_scrollbar->setArrowScrollAmount(30);
@@ -87,41 +86,41 @@ KeyConfigurationState::KeyConfigurationState(StateStack& stack) :
 	float i{0.f};
 	for(auto& actionPair : m_actionStrings)
 	{
-		tgui::Label::Ptr label = tgui::Label::create(getContext().parameters.guiConfigFile);
+		tgui::Label::Ptr label = tgui::Label::create(Context::parameters->guiConfigFile);
 		m_actionLabels.emplace(actionPair.first, label);
 		label->setText(actionPair.second);
 		label->setTextSize(25);
 		label->setPosition(0.f, bindHeight(m_actionsPanel, i*0.1f+0.05f)-bindHeight(label, 0.5f));
 		m_actionsPanel->add(label);
-		const auto keyBindings = getContext().player.getAssignedKeys(actionPair.first);
-		const auto mouseBindings = getContext().player.getAssignedMouseButtons(actionPair.first);
-		const auto joystickBindings = getContext().player.getAssignedJoystickButtons(actionPair.first);
-		tgui::Button::Ptr key1Button = tgui::Button::create(getContext().parameters.guiConfigFile);
+		const auto keyBindings = Context::player->getAssignedKeys(actionPair.first);
+		const auto mouseBindings = Context::player->getAssignedMouseButtons(actionPair.first);
+		const auto joystickBindings = Context::player->getAssignedJoystickButtons(actionPair.first);
+		tgui::Button::Ptr key1Button = tgui::Button::create(Context::parameters->guiConfigFile);
 		m_key1Buttons.emplace(actionPair.first, key1Button);
 		key1Button->setSize(bindWidth(m_actionsPanel, 0.15f), bindHeight(m_actionsPanel, 0.1f));
 		key1Button->setPosition(bindWidth(m_actionsPanel, 0.3f), bindHeight(m_actionsPanel, i*0.1f));
-		key1Button->setText(getContext().langManager.tr(keyBindings.empty() ? "[None]" : toString(keyBindings[0])));
+		key1Button->setText(Context::langManager->tr(keyBindings.empty() ? "[None]" : toString(keyBindings[0])));
 		m_actionsPanel->add(key1Button);
 
-		tgui::Button::Ptr key2Button = tgui::Button::create(getContext().parameters.guiConfigFile);
+		tgui::Button::Ptr key2Button = tgui::Button::create(Context::parameters->guiConfigFile);
 		m_key2Buttons.emplace(actionPair.first, key2Button);
 		key2Button->setSize(bindWidth(m_actionsPanel, 0.15f), bindHeight(m_actionsPanel, 0.1f));
 		key2Button->setPosition(bindWidth(m_actionsPanel, 0.475f), bindHeight(m_actionsPanel, i*0.1f));
-		key2Button->setText(getContext().langManager.tr(keyBindings.size() < 2 ? "[None]" : toString(keyBindings[1])));
+		key2Button->setText(Context::langManager->tr(keyBindings.size() < 2 ? "[None]" : toString(keyBindings[1])));
 		m_actionsPanel->add(key2Button);
 
-		tgui::Button::Ptr mouseButton = tgui::Button::create(getContext().parameters.guiConfigFile);
+		tgui::Button::Ptr mouseButton = tgui::Button::create(Context::parameters->guiConfigFile);
 		m_mouseButtons.emplace(actionPair.first, mouseButton);
 		mouseButton->setSize(bindWidth(m_actionsPanel, 0.15f), bindHeight(m_actionsPanel, 0.1f));
 		mouseButton->setPosition(bindWidth(m_actionsPanel, 0.65f), bindHeight(m_actionsPanel, i*0.1f));
-		mouseButton->setText(getContext().langManager.tr(mouseBindings.empty() ? "[None]" : toString(mouseBindings[0])));
+		mouseButton->setText(Context::langManager->tr(mouseBindings.empty() ? "[None]" : toString(mouseBindings[0])));
 		m_actionsPanel->add(mouseButton);
 
-		tgui::Button::Ptr joystickButton = tgui::Button::create(getContext().parameters.guiConfigFile);
+		tgui::Button::Ptr joystickButton = tgui::Button::create(Context::parameters->guiConfigFile);
 		m_joystickButtons.emplace(actionPair.first, joystickButton);
 		joystickButton->setSize(bindWidth(m_actionsPanel, 0.15f), bindHeight(m_actionsPanel, 0.1f));
 		joystickButton->setPosition(bindWidth(m_actionsPanel, 0.825f), bindHeight(m_actionsPanel, i*0.1f));
-		joystickButton->setText(getContext().langManager.tr(joystickBindings.empty() ? "[None]" : std::to_string(joystickBindings[0])));
+		joystickButton->setText(Context::langManager->tr(joystickBindings.empty() ? "[None]" : std::to_string(joystickBindings[0])));
 		m_actionsPanel->add(joystickButton);
 
 		++i;
@@ -131,7 +130,7 @@ KeyConfigurationState::KeyConfigurationState(StateStack& stack) :
 
 KeyConfigurationState::~KeyConfigurationState()
 {
-	getContext().gui.remove(m_background);
+	Context::gui->remove(m_background);
 }
 
 void KeyConfigurationState::draw()

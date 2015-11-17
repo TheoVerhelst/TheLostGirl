@@ -2,7 +2,6 @@
 #define RENDERSYSTEM_H
 
 #include <entityx/System.h>
-#include <TheLostGirl/StateStack.h>
 
 //Forward declarations
 namespace entityx
@@ -21,8 +20,7 @@ class RenderSystem : public entityx::System<RenderSystem>
 {
 	public:
 		/// Constructor.
-		/// \param context Current context of the application.
-		RenderSystem(StateStack::Context context);
+		RenderSystem();
 
 		/// System's update function.
 		/// \param es Entity manager.
@@ -31,10 +29,7 @@ class RenderSystem : public entityx::System<RenderSystem>
 		void update(entityx::EntityManager &es, entityx::EventManager &events, double dt) override;
 
 	private:
-		sf::RenderWindow& m_window;  ///< SFML's window on wich render the entities.
-		sf::RenderTexture& m_texture;///< Render texture on wich render the entities, if bloom is enabled.
-		bool& m_bloomEnabled;        ///< Indicates if the bloom effect i enabled.
-		bool m_postEffectSupported;  ///< Indicates if post effects are supported (avoid useless calls of PostEffect::isSupported())
+		const bool m_postEffectSupported;  ///< Indicates if post effects are supported (avoid useless calls of PostEffect::isSupported())
 };
 
 #endif//RENDERSYSTEM_H

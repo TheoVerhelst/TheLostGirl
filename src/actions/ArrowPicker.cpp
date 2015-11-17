@@ -41,10 +41,10 @@ void ArrowPicker::operator()(entityx::Entity entity) const
 		jointDef.bodyA = quiverBodyComponent->body;
 		jointDef.bodyB = arrowBody;
 		jointDef.localAnchorA = quiverComponent->arrowAnchor;
-		jointDef.localAnchorB = sftob2(arrowComponent->localStickPoint);
+		jointDef.localAnchorB = sftob2(arrowComponent->localStickPoint/Context::parameters->pixelByMeter);
 		jointDef.referenceAngle = -b2_pi/2.f;
-		jointDef.frequencyHz = 30.f;
-		jointDef.dampingRatio = 1.f;
+		jointDef.frequencyHz = 0.f;
+		jointDef.dampingRatio = 0.f;
 
 		//Add the arrow to the quiver
 		quiverComponent->arrows.emplace(callback.foundEntity, static_cast<b2WeldJoint*>(world->CreateJoint(&jointDef)));

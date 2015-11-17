@@ -28,8 +28,7 @@ class ParametersState : public State
 {
 	public:
         /// Constructor.
-        /// \param stack StateStack wherein the State is added.
-		ParametersState(StateStack& stack);
+		ParametersState();
 
 		/// Destructor.
 		~ParametersState();

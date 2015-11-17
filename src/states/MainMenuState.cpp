@@ -1,21 +1,18 @@
 #include <TGUI/Gui.hpp>
-#include <TheLostGirl/State.h>
 #include <TheLostGirl/states/GameState.h>
 #include <TheLostGirl/states/LoadingState.h>
-#include <TheLostGirl/StateStack.h>
 #include <TheLostGirl/LangManager.h>
 #include <TheLostGirl/functions.h>
 #include <TheLostGirl/Parameters.h>
 #include <TheLostGirl/events.h>
 #include <TheLostGirl/states/MainMenuState.h>
 
-MainMenuState::MainMenuState(StateStack& stack):
-	State(stack)
+MainMenuState::MainMenuState()
 {
-	getContext().eventManager.subscribe<ParametersChange>(*this);
+	Context::eventManager->subscribe<ParametersChange>(*this);
 	using tgui::bindWidth;
 	using tgui::bindHeight;
-	tgui::Gui& gui(getContext().gui);
+	tgui::Gui& gui(*Context::gui);
 
 	m_background = tgui::VerticalLayout::create();
 	m_background->setPosition(bindWidth(gui, 0.25f), bindHeight(gui, 0.f));
@@ -23,19 +20,19 @@ MainMenuState::MainMenuState(StateStack& stack):
 	m_background->setBackgroundColor(sf::Color(255, 255, 255, 100));
 	gui.add(m_background);
 
-	m_logo = tgui::Picture::create(paths[getContext().parameters.scaleIndex] + "title.png");
+	m_logo = tgui::Picture::create(paths[Context::parameters->scaleIndex] + "title.png");
 	m_logo->setPosition((bindWidth(gui) - bindWidth(m_logo))/2, bindHeight(gui, 0.f));
 	gui.add(m_logo);
 
-	m_newButton = tgui::Button::create(getContext().parameters.guiConfigFile);
+	m_newButton = tgui::Button::create(Context::parameters->guiConfigFile);
 	m_newButton->connect("pressed", &MainMenuState::playGame, this);
 	m_background->add(m_newButton);
 
-	m_loadButton = tgui::Button::create(getContext().parameters.guiConfigFile);
+	m_loadButton = tgui::Button::create(Context::parameters->guiConfigFile);
 	m_loadButton->connect("pressed", &MainMenuState::playGame, this);
 	m_background->add(m_loadButton);
 
-	m_exitButton = tgui::Button::create(getContext().parameters.guiConfigFile);
+	m_exitButton = tgui::Button::create(Context::parameters->guiConfigFile);
 	m_exitButton->connect("pressed", &MainMenuState::exitGame, this);
 	m_background->add(m_exitButton);
 
@@ -46,7 +43,7 @@ MainMenuState::MainMenuState(StateStack& stack):
 
 MainMenuState::~MainMenuState()
 {
-	tgui::Gui& gui(getContext().gui);
+	tgui::Gui& gui(*Context::gui);
 	gui.remove(m_background);
 	gui.remove(m_logo);
 }
@@ -73,9 +70,9 @@ void MainMenuState::receive(const ParametersChange& parametersChange)
 
 void MainMenuState::resetTexts()
 {
-	m_newButton->setText(getContext().langManager.tr("New game"));
-	m_loadButton->setText(getContext().langManager.tr("Load game"));
-	m_exitButton->setText(getContext().langManager.tr("Exit"));
+	m_newButton->setText(Context::langManager->tr("New game"));
+	m_loadButton->setText(Context::langManager->tr("Load game"));
+	m_exitButton->setText(Context::langManager->tr("Exit"));
 }
 
 

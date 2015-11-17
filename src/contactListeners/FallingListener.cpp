@@ -9,11 +9,6 @@
 #include <TheLostGirl/FixtureRoles.h>
 #include <TheLostGirl/contactListeners/FallingListener.h>
 
-FallingListener::FallingListener(StateStack::Context context):
-	m_context(context)
-{
-}
-
 void FallingListener::PreSolve(b2Contact *, const b2Manifold*)
 {
 }

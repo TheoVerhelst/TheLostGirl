@@ -23,8 +23,7 @@ class KeyConfigurationState : public State
 {
 	public:
         /// Default constructor.
-        /// \param stack StateStack wherein the State is added.
-		KeyConfigurationState(StateStack& stack);
+		KeyConfigurationState();
 
 		/// Default destructor.
 		~KeyConfigurationState();

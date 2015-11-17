@@ -3,7 +3,6 @@
 #include <TGUI/Gui.hpp>
 #include <entityx/System.h>
 #include <entityx/Entity.h>
-#include <TheLostGirl/State.h>
 #include <TheLostGirl/LangManager.h>
 #include <TheLostGirl/events.h>
 #include <TheLostGirl/Parameters.h>
@@ -13,40 +12,36 @@
 #include <TheLostGirl/systems/TimeSystem.h>
 #include <TheLostGirl/states/HUDState.h>
 
-HUDState::HUDState(StateStack& stack):
-	State(stack),
+HUDState::HUDState():
 	m_windIsFading{true}
 {
-	getContext().eventManager.subscribe<EntityHealthChange>(*this);
-	getContext().eventManager.subscribe<EntityStaminaChange>(*this);
+	Context::eventManager->subscribe<EntityHealthChange>(*this);
+	Context::eventManager->subscribe<EntityStaminaChange>(*this);
 
 	using tgui::bindWidth;
 	using tgui::bindHeight;
-	tgui::Gui& gui(getContext().gui);
-	const float scale{getContext().parameters.scale};
-	TextureManager& texManager(getContext().textureManager);
+	tgui::Gui& gui(*Context::gui);
 
 	//Load textures
-	texManager.load("wind arrow ath", paths[getContext().parameters.scaleIndex] + "windArrowAth.png");
-	texManager.load("wind bar ath", paths[getContext().parameters.scaleIndex] + "windBarAth.png");
+	Context::textureManager->load("wind arrow ath", paths[Context::parameters->scaleIndex] + "windArrowAth.png");
+	Context::textureManager->load("wind bar ath", paths[Context::parameters->scaleIndex] + "windBarAth.png");
 
 	//Create the wind bar
-	m_windStrengthSpr.setTexture(texManager.get("wind arrow ath"));
-	m_windStrengthSpr.setPosition(120.f*scale, 0);
-	m_windStrengthBarSpr.setTexture(texManager.get("wind bar ath"));
-	m_windBar = tgui::Canvas::create({std::ceil(240.f*scale), std::ceil(20.f*scale)});
+	m_windStrengthSpr.setTexture(Context::textureManager->get("wind arrow ath"));
+	m_windStrengthSpr.setPosition(120.f*Context::parameters->scale, 0);
+	m_windStrengthBarSpr.setTexture(Context::textureManager->get("wind bar ath"));
+	m_windBar = tgui::Canvas::create({std::ceil(240.f*Context::parameters->scale), std::ceil(20.f*Context::parameters->scale)});
 	m_windBar->setPosition(bindWidth(gui, 0.99f) - bindWidth(m_windBar), bindHeight(gui, 0.95f) - bindHeight(m_windBar));
 	gui.add(m_windBar);
 }
 
 HUDState::~HUDState()
 {
-	tgui::Gui& gui(getContext().gui);
 	for(auto& barPair : m_healthBars)
-		gui.remove(barPair.second.panel);
+		Context::gui->remove(barPair.second.panel);
 	for(auto& barPair : m_staminaBars)
-		gui.remove(barPair.second.panel);
-	gui.remove(m_windBar);
+		Context::gui->remove(barPair.second.panel);
+	Context::gui->remove(m_windBar);
 }
 
 void HUDState::draw()
@@ -57,7 +52,7 @@ void HUDState::draw()
 		const auto deathComponent(barPair.first.component<DeathComponent>());
 		if(deathComponent and deathComponent->dead)
 		{
-			getContext().gui.remove(barPair.second.panel);
+			Context::gui->remove(barPair.second.panel);
 			entitiesToRemove.push_back(barPair.first);
 		}
 	}
@@ -70,7 +65,7 @@ void HUDState::draw()
 		const auto deathComponent(barPair.first.component<DeathComponent>());
 		if(deathComponent and deathComponent->dead)
 		{
-			getContext().gui.remove(barPair.second.panel);
+			Context::gui->remove(barPair.second.panel);
 			entitiesToRemove.push_back(barPair.first);
 		}
 	}
@@ -86,13 +81,13 @@ void HUDState::draw()
 bool HUDState::update(sf::Time dt)
 {
 	//Get the wind strength and compute the wind ath
-	const float scale{getContext().parameters.scale};
-	const float windStrength{cap(getContext().systemManager.system<TimeSystem>()->getWindStrength()/5.f, -1.f, 1.f)};
+	const float scale{Context::parameters->scale};
+	const float windStrength{cap(Context::systemManager->system<TimeSystem>()->getWindStrength()/5.f, -1.f, 1.f)};
 	sf::Vector2f viewPos;
-	if(getContext().parameters.bloomEnabled)
-		viewPos = getContext().postEffectsTexture.getView().getCenter() - getContext().postEffectsTexture.getDefaultView().getCenter();
+	if(Context::parameters->bloomEnabled)
+		viewPos = Context::postEffectsTexture->getView().getCenter() - Context::postEffectsTexture->getDefaultView().getCenter();
 	else
-		viewPos = getContext().window.getView().getCenter() - getContext().window.getDefaultView().getCenter();
+		viewPos = Context::window->getView().getCenter() - Context::window->getDefaultView().getCenter();
 
 	for(auto& barPair : m_healthBars)
 		barPair.second.timer += dt;
@@ -172,8 +167,8 @@ void HUDState::receive(const EntityHealthChange& entityHealthChange)
 {
 	using tgui::bindWidth;
 	using tgui::bindHeight;
-	tgui::Gui& gui(getContext().gui);
-	const float scale{getContext().parameters.scale};
+	tgui::Gui& gui(*Context::gui);
+	const float scale{Context::parameters->scale};
 	entityx::Entity entity{entityHealthChange.entity};
 
 	if(not m_healthBars.count(entity))
@@ -181,15 +176,15 @@ void HUDState::receive(const EntityHealthChange& entityHealthChange)
 		Bar bar;
 		if(isPlayer(entity))
 		{
-			bar.bar = tgui::Picture::create(paths[getContext().parameters.scaleIndex] + "healthAth.png");
-			bar.borders = tgui::Picture::create(paths[getContext().parameters.scaleIndex] + "healthBorderAth.png");
+			bar.bar = tgui::Picture::create(paths[Context::parameters->scaleIndex] + "healthAth.png");
+			bar.borders = tgui::Picture::create(paths[Context::parameters->scaleIndex] + "healthBorderAth.png");
 			bar.panel = tgui::Panel::create({std::ceil(240.f*scale)+1, std::ceil(20.f*scale)+1});
 			bar.panel->setPosition(bindWidth(gui, 0.01f), bindHeight(gui, 0.99f) - bindHeight(bar.panel));
 		}
 		else
 		{
-			bar.bar = tgui::Picture::create(paths[getContext().parameters.scaleIndex] + "entityHealthBar.png");
-			bar.borders = tgui::Picture::create(paths[getContext().parameters.scaleIndex] + "entityHealthBarBorders.png");
+			bar.bar = tgui::Picture::create(paths[Context::parameters->scaleIndex] + "entityHealthBar.png");
+			bar.borders = tgui::Picture::create(paths[Context::parameters->scaleIndex] + "entityHealthBarBorders.png");
 			bar.panel = tgui::Panel::create({std::ceil(100.f*scale)+1, std::ceil(10.f*scale)+1});
 		}
 		bar.panel->setBackgroundColor(sf::Color::Transparent);
@@ -215,8 +210,8 @@ void HUDState::receive(const EntityStaminaChange& entityStaminaChange)
 {
 	using tgui::bindWidth;
 	using tgui::bindHeight;
-	tgui::Gui& gui(getContext().gui);
-	const float scale{getContext().parameters.scale};
+	tgui::Gui& gui(*Context::gui);
+	const float scale{Context::parameters->scale};
 	entityx::Entity entity{entityStaminaChange.entity};
 
 	if(isPlayer(entity))
@@ -224,8 +219,8 @@ void HUDState::receive(const EntityStaminaChange& entityStaminaChange)
 		if(not m_staminaBars.count(entity))
 		{
 			Bar bar;
-			bar.bar = tgui::Picture::create(paths[getContext().parameters.scaleIndex] + "staminaAth.png");
-			bar.borders = tgui::Picture::create(paths[getContext().parameters.scaleIndex] + "staminaBorderAth.png");
+			bar.bar = tgui::Picture::create(paths[Context::parameters->scaleIndex] + "staminaAth.png");
+			bar.borders = tgui::Picture::create(paths[Context::parameters->scaleIndex] + "staminaBorderAth.png");
 			bar.panel = tgui::Panel::create({std::ceil(240.f*scale), std::ceil(20.f*scale)+1});
 			bar.panel->setPosition(bindWidth(gui, 0.99f) - bindWidth(bar.panel), bindHeight(gui, 0.99f) - bindHeight(bar.panel));
 			bar.panel->setBackgroundColor(sf::Color::Transparent);

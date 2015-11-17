@@ -3,6 +3,7 @@
 
 #include <TGUI/Label.hpp>
 #include <TGUI/Panel.hpp>
+#include <TheLostGirl/State.h>
 
 //Forward declarations
 namespace sf
@@ -10,7 +11,6 @@ namespace sf
 	class Event;
 	class Time;
 }
-class State;
 class Context;
 class StateStack;
 class LoadingStateChange;
@@ -21,8 +21,7 @@ class LoadingState : public State
 {
 	public:
         /// Constructor.
-        /// \param stack StateStack wherein the State is added.
-		LoadingState(StateStack& stack);
+		LoadingState();
 
 		/// Destructor.
 		~LoadingState();

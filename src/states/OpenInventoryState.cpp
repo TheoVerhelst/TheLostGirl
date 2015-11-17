@@ -2,7 +2,6 @@
 #include <SFML/Window/Event.hpp>
 #include <entityx/entityx.h>
 #include <TGUI/Gui.hpp>
-#include <TheLostGirl/State.h>
 #include <TheLostGirl/events.h>
 #include <TheLostGirl/Parameters.h>
 #include <TheLostGirl/Player.h>
@@ -10,29 +9,28 @@
 #include <TheLostGirl/events.h>
 #include <TheLostGirl/states/OpenInventoryState.h>
 
-OpenInventoryState::OpenInventoryState(StateStack& stack, entityx::Entity entity) :
-	State(stack),
+OpenInventoryState::OpenInventoryState(entityx::Entity entity) :
 	m_entity(entity)
 {
-	getContext().eventManager.subscribe<ParametersChange>(*this);
+	Context::eventManager->subscribe<ParametersChange>(*this);
 	using tgui::bindWidth;
 	using tgui::bindHeight;
 	using tgui::bindLeft;
 	using tgui::bindTop;
-	tgui::Gui& gui(getContext().gui);
+	tgui::Gui& gui(*Context::gui);
 
-	m_background = tgui::ChildWindow::create(getContext().parameters.guiConfigFile);
+	m_background = tgui::ChildWindow::create(Context::parameters->guiConfigFile);
 	m_background->setPosition(bindWidth(gui, 0.25f), bindHeight(gui, 0.125f));
 	m_background->setSize(bindWidth(gui, 0.5f/0.98f), bindHeight(gui, 0.75f));//Larger background for scrolling bar
-	m_background->connect("closed", [this]{requestStackPop(); getContext().player.handleInitialInputState();});
+	m_background->connect("closed", [this]{requestStackPop(); Context::player->handleInitialInputState();});
 	gui.add(m_background);
 
-	m_entityName = tgui::Label::create(getContext().parameters.guiConfigFile);
+	m_entityName = tgui::Label::create(Context::parameters->guiConfigFile);
 	m_entityName->setTextSize(35);
 	m_entityName->setPosition(bindWidth(m_background, 0.5f) - bindWidth(m_entityName, 0.5f), bindHeight(m_background, 0.125f));
 	m_background->add(m_entityName);
 
-	m_displayTab = tgui::Tab::create(getContext().parameters.guiConfigFile);
+	m_displayTab = tgui::Tab::create(Context::parameters->guiConfigFile);
 	m_displayTab->add("List");
 	m_displayTab->add("Grid");
 	m_displayTab->setPosition(bindWidth(m_background) - bindWidth(m_displayTab), bindHeight(m_background, 0.23f));
@@ -40,7 +38,7 @@ OpenInventoryState::OpenInventoryState(StateStack& stack, entityx::Entity entity
 	m_displayTab->connect("tabselected", &OpenInventoryState::switchDisplay, this);
 	m_background->add(m_displayTab);
 
-	m_categoryTab = tgui::Tab::create(getContext().parameters.guiConfigFile);
+	m_categoryTab = tgui::Tab::create(Context::parameters->guiConfigFile);
 	m_categoryTab->add("All");
 	m_categoryTab->add("Ammo");
 	m_categoryTab->add("Resources");
@@ -55,7 +53,7 @@ OpenInventoryState::OpenInventoryState(StateStack& stack, entityx::Entity entity
 	m_gridPanel->setBackgroundColor(sf::Color(255, 255, 255, 100));
 	m_background->add(m_gridPanel);
 
-	m_gridScrollbar = tgui::Scrollbar::create(getContext().parameters.guiConfigFile);
+	m_gridScrollbar = tgui::Scrollbar::create(Context::parameters->guiConfigFile);
 	m_gridScrollbar->setPosition(bindWidth(m_gridPanel, 0.98f), 0.f);
 	m_gridScrollbar->setSize(bindWidth(m_gridPanel, 0.02f), bindHeight(m_gridPanel));
     m_gridScrollbar->setArrowScrollAmount(30);
@@ -63,7 +61,7 @@ OpenInventoryState::OpenInventoryState(StateStack& stack, entityx::Entity entity
     m_gridPanel->add(m_gridScrollbar);
 
 	unsigned int rowCounter{0}, columnCounter{0}, itemCounter{0};
-	const float itemSize{120.f*getContext().parameters.scale};
+	const float itemSize{120.f*Context::parameters->scale};
 	for(auto& entityItem : m_entity.component<InventoryComponent>()->items)
 	{
 		std::string type{entityItem.component<ItemComponent>()->type};
@@ -74,11 +72,11 @@ OpenInventoryState::OpenInventoryState(StateStack& stack, entityx::Entity entity
 		itemWidget.background->setSize(itemSize, itemSize);
 		itemWidget.background->setPosition(itemSize*columnCounter, itemSize*rowCounter);
 
-		itemWidget.picture = tgui::Picture::create(paths[getContext().parameters.scaleIndex] + "items/" + category + "/" + type + ".png");
+		itemWidget.picture = tgui::Picture::create(paths[Context::parameters->scaleIndex] + "items/" + category + "/" + type + ".png");
 		itemWidget.picture->setPosition(itemSize/6.f, 0.f);
 		itemWidget.background->add(itemWidget.picture);
 
-		itemWidget.caption = tgui::Label::create(getContext().parameters.guiConfigFile);
+		itemWidget.caption = tgui::Label::create(Context::parameters->guiConfigFile);
 		itemWidget.caption->setPosition(bindWidth(itemWidget.background, 0.5f)-bindWidth(itemWidget.caption, 0.5f), itemSize/1.2f);
 		itemWidget.caption->setTextSize(15.f);
 		itemWidget.background->add(itemWidget.caption);
@@ -117,7 +115,7 @@ OpenInventoryState::OpenInventoryState(StateStack& stack, entityx::Entity entity
 	m_listPanel->add(m_listColumnTitles.layout);
 	for(auto& column : m_listColumnsNames)
 	{
-		auto label = tgui::Label::create(getContext().parameters.guiConfigFile);
+		auto label = tgui::Label::create(Context::parameters->guiConfigFile);
 		label->setText(column);
 		label->setTextSize(20);
 		m_listColumnTitles.layout->add(label);
@@ -151,7 +149,7 @@ OpenInventoryState::OpenInventoryState(StateStack& stack, entityx::Entity entity
 			itemWidget.layout->addSpace(0.1f);
 			for(auto& columnStr : m_listColumnsNames)
 			{
-				tgui::Label::Ptr label = tgui::Label::create(getContext().parameters.guiConfigFile);
+				tgui::Label::Ptr label = tgui::Label::create(Context::parameters->guiConfigFile);
 				label->setTextSize(15);
 				itemWidget.layout->add(label);
 				itemWidget.labels.emplace(columnStr, label);
@@ -161,7 +159,7 @@ OpenInventoryState::OpenInventoryState(StateStack& stack, entityx::Entity entity
 		}
 	}
 
-	m_listScrollbar = tgui::Scrollbar::create(getContext().parameters.guiConfigFile);
+	m_listScrollbar = tgui::Scrollbar::create(Context::parameters->guiConfigFile);
 	m_listScrollbar->setPosition(bindWidth(m_listPanel, 0.98f), 0.f);
 	m_listScrollbar->setSize(bindWidth(m_listPanel, 0.02f), bindHeight(m_listPanel));
     m_listScrollbar->setArrowScrollAmount(30);
@@ -176,7 +174,7 @@ OpenInventoryState::OpenInventoryState(StateStack& stack, entityx::Entity entity
 
 OpenInventoryState::~OpenInventoryState()
 {
-	tgui::Gui& gui(getContext().gui);
+	tgui::Gui& gui(*Context::gui);
 	gui.remove(m_background);
 }
 
@@ -193,7 +191,7 @@ bool OpenInventoryState::handleEvent(const sf::Event& event)
 	if(event.type == sf::Event::KeyPressed and event.key.code == sf::Keyboard::Escape)
 	{
 		requestStackPop();
-		getContext().player.handleInitialInputState();
+		Context::player->handleInitialInputState();
 	}
 	return false;
 }
@@ -210,17 +208,17 @@ void OpenInventoryState::resetTexts()
 	{
 		const auto nameComponent(m_entity.component<NameComponent>());
 		if(nameComponent)
-			m_entityName->setText(getContext().langManager.tr(nameComponent->name));
+			m_entityName->setText(Context::langManager->tr(nameComponent->name));
 		else
 			m_entityName->setText("");
 	}
 
 	for(ItemGridWidget& itemWidget : m_itemWidgets)
 		if(itemWidget.caption)
-			itemWidget.caption->setText(getContext().langManager.tr(itemWidget.item.component<ItemComponent>()->type));
+			itemWidget.caption->setText(Context::langManager->tr(itemWidget.item.component<ItemComponent>()->type));
 
 	for(auto& labelPair : m_listColumnTitles.labels)
-		labelPair.second->setText(getContext().langManager.tr(labelPair.first));
+		labelPair.second->setText(Context::langManager->tr(labelPair.first));
 
 	for(ItemListWidget& itemWidget : m_listContent)
 	{
@@ -230,10 +228,10 @@ void OpenInventoryState::resetTexts()
 			it->second->setText(std::to_wstring(itemWidget.items.size()));
 		it = itemWidget.labels.find("Category");
 		if(it != itemWidget.labels.end())
-			it->second->setText(getContext().langManager.tr(itemComponent->category));
+			it->second->setText(Context::langManager->tr(itemComponent->category));
 		it = itemWidget.labels.find("Name");
 		if(it != itemWidget.labels.end())
-			it->second->setText(getContext().langManager.tr(itemComponent->type));
+			it->second->setText(Context::langManager->tr(itemComponent->type));
 		it = itemWidget.labels.find("Weight");
 		if(it != itemWidget.labels.end())
 			it->second->setText(std::to_wstring(itemComponent->weight));
@@ -249,7 +247,7 @@ void OpenInventoryState::resetTexts()
 void OpenInventoryState::scrollGrid(int newScrollValue)
 {
 	unsigned int rowCounter{0}, columnCounter{0}, itemCounter{0};
-	const float itemSize{120.f*getContext().parameters.scale};
+	const float itemSize{120.f*Context::parameters->scale};
 	for(auto& itemWidget : m_itemWidgets)
 	{
 		itemWidget.background->setPosition(itemSize*columnCounter, itemSize*rowCounter-newScrollValue);

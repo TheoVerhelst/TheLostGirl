@@ -5,9 +5,8 @@
 #include <TheLostGirl/functions.h>
 #include <TheLostGirl/SpriteSheetAnimation.h>
 
-SpriteSheetAnimation::SpriteSheetAnimation(sf::Sprite& sprite, StateStack::Context context) :
-	m_sprite(sprite),
-	m_context(context)
+SpriteSheetAnimation::SpriteSheetAnimation(sf::Sprite& sprite):
+	m_sprite(sprite)
 {
 }
 

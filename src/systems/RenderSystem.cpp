@@ -8,10 +8,7 @@
 #include <TheLostGirl/PostEffect.h>
 #include <TheLostGirl/systems/RenderSystem.h>
 
-RenderSystem::RenderSystem(StateStack::Context context):
-	m_window(context.window),
-	m_texture(context.postEffectsTexture),
-	m_bloomEnabled(context.parameters.bloomEnabled),
+RenderSystem::RenderSystem():
 	m_postEffectSupported{PostEffect::isSupported()}
 {
 }
@@ -37,9 +34,9 @@ void RenderSystem::update(entityx::EntityManager& entityManager, entityx::EventM
 	for(auto it(orderedEntities.crbegin()); it != orderedEntities.crend(); it++)
 		//Draw the entities of this plan
 		for(auto sprite : it->second)
-			if(m_postEffectSupported and m_bloomEnabled)
-				m_texture.draw(*sprite);
+			if(m_postEffectSupported and Context::parameters->bloomEnabled)
+				Context::postEffectsTexture->draw(*sprite);
 			else
-				m_window.draw(*sprite);
+				Context::window->draw(*sprite);
 
 }

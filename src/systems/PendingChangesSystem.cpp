@@ -9,10 +9,6 @@
 #include <TheLostGirl/Command.h>
 #include <TheLostGirl/systems/PendingChangesSystem.h>
 
-PendingChangesSystem::PendingChangesSystem(StateStack::Context context):
-	m_world(context.world)
-{}
-
 void PendingChangesSystem::update(entityx::EntityManager& entityManager, entityx::EventManager&, double)
 {
 	while(not commandQueue.empty())
@@ -30,24 +26,24 @@ void PendingChangesSystem::update(entityx::EntityManager& entityManager, entityx
 	}
 	while(not bodiesToCreate.empty())
 	{
-		m_world.CreateBody(bodiesToCreate.front());
+		Context::world->CreateBody(bodiesToCreate.front());
 		delete bodiesToCreate.front();//Delete the definition
 		bodiesToCreate.pop();
 	}
 	while(not bodiesToDestroy.empty())
 	{
-		m_world.DestroyBody(bodiesToDestroy.front());
+		Context::world->DestroyBody(bodiesToDestroy.front());
 		bodiesToDestroy.pop();
 	}
 	while(not jointsToCreate.empty())
 	{
-		m_world.CreateJoint(jointsToCreate.front());
+		Context::world->CreateJoint(jointsToCreate.front());
 		delete jointsToCreate.front();//Delete the definition
 		jointsToCreate.pop();
 	}
 	while(not jointsToDestroy.empty())
 	{
-		m_world.DestroyJoint(jointsToDestroy.front());
+		Context::world->DestroyJoint(jointsToDestroy.front());
 		jointsToDestroy.pop();
 	}
 }

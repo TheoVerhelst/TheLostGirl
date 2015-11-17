@@ -21,8 +21,7 @@ class PauseState : public State
 {
 	public:
         /// Constructor.
-        /// \param stack StateStack wherein the State is added.
-		PauseState(StateStack& stack);
+		PauseState();
 
 		/// Destructor.
 		/// It clear the GUI.

@@ -4,6 +4,7 @@
 #include <memory>
 #include <entityx/Event.h>
 #include <TheLostGirl/StateStack.h>
+#include <TheLostGirl/Context.h>
 
 namespace sf
 {
@@ -22,10 +23,6 @@ class State: public entityx::Receiver<State>
 	public:
         /// Pointer typedef.
 		typedef std::unique_ptr<State> Ptr;
-
-        /// Constructor.
-        /// \param stack StateStack wherein the State is added.
-		State(StateStack& stack);
 
 		/// Destructor.
 		virtual ~State() = default;
@@ -59,19 +56,12 @@ class State: public entityx::Receiver<State>
 
 		/// Delete all the states as soon as possible.
 		void requestStateClear();
-
-		/// Give the context of the application.
-		/// \return Context structure of the current game.
-		StateStack::Context getContext() const;
-
-	private:
-		StateStack* m_stateStack;///< Pointer to the state stack that holds this state.
 };
 
 template<typename T, typename ... Args>
 void State::requestStackPush(Args&&... args)
 {
-	m_stateStack->pushState<T>(std::forward<Args>(args)...);
+	Context::stateStack->pushState<T>(std::forward<Args>(args)...);
 }
 
 #endif//STATE_H

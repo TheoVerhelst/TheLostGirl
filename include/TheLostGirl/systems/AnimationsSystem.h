@@ -16,10 +16,6 @@ namespace entityx
 class AnimationsSystem : public entityx::System<AnimationsSystem>
 {
 	public:
-		/// Constructor.
-		/// \param context Current context of the application.
-		AnimationsSystem(StateStack::Context context);
-
 		/// System's update function.
 		/// \param es Entity manager.
 		/// \param events Event manager.

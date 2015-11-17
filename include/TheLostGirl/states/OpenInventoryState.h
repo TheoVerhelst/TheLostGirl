@@ -30,9 +30,8 @@ class OpenInventoryState : public State
 {
 	public:
         /// Constructor.
-        /// \param stack StateStack wherein the State is added.
         /// \param entity Entity of which open the inventory.
-		OpenInventoryState(StateStack& stack, entityx::Entity entity);
+		OpenInventoryState(entityx::Entity entity);
 
 		/// Destructor.
 		~OpenInventoryState();

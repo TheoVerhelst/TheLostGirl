@@ -4,7 +4,6 @@
 #include <queue>
 #include <entityx/System.h>
 #include <SFML/Graphics/Vertex.hpp>
-#include <TheLostGirl/StateStack.h>
 
 //Forward declarations
 namespace sf
@@ -25,8 +24,7 @@ class DragAndDropSystem : public entityx::System<DragAndDropSystem>
 {
 	public:
 		/// Constructor.
-		/// \param context Current context of the application.
-		DragAndDropSystem(StateStack::Context context);
+		DragAndDropSystem();
 
 		/// System's update function.
 		/// This function must be called if the drag and drop is not active.
@@ -41,10 +39,6 @@ class DragAndDropSystem : public entityx::System<DragAndDropSystem>
 		void setDragAndDropActivation(bool isActive);
 
 	private:
-		sf::RenderWindow& m_window;         ///< The main window.
-		sf::RenderTexture& m_texture;       ///< Texture for rendering post effects.
-		bool& m_bloomEnabled;               ///< Indicates whether the bloom effect is enabled.
-		std::queue<Command>& m_commandQueue;///< Queue of command where the actions should be putted in.
 		sf::Vector2i m_origin;              ///< Position of the mouse when the drag and drop started.
 		sf::Vertex m_line[2];               ///< The drag and drop line.
 		bool m_isActive;                    ///< True when the drag and drop is actived.

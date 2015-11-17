@@ -7,10 +7,9 @@
 #include <TheLostGirl/FixtureRoles.h>
 #include <TheLostGirl/actions/Mover.h>
 
-Mover::Mover(StateStack::Context context, Direction _direction, bool _start):
+Mover::Mover(Direction _direction, bool _start):
 	direction{_direction},
-	start{_start},
-	m_context(context)
+	start{_start}
 {
 }
 
@@ -228,7 +227,7 @@ inline float32 Mover::getMid(b2Body* body) const
 	{
 		SpriteComponent::Handle spriteComponent{entity.component<SpriteComponent>()};
 		if(spriteComponent)
-			return spriteComponent->sprite.getLocalBounds().width/(2.f*m_context.parameters.scaledPixelByMeter);
+			return spriteComponent->sprite.getLocalBounds().width/(2.f*Context::parameters->scaledPixelByMeter);
 	}
 	return body->GetLocalCenter().x;
 }

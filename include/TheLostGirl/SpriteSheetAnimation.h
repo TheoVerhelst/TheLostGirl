@@ -3,6 +3,7 @@
 
 #include <TheLostGirl/StateStack.h>
 #include <TheLostGirl/Parameters.h>
+#include <TheLostGirl/Context.h>
 
 //Forward declarations
 namespace sf
@@ -51,8 +52,7 @@ class SpriteSheetAnimation
 
 		/// Constructor.
 		/// \param sprite Sprite to animate.
-		/// \param context Current context of the application.
-		SpriteSheetAnimation(sf::Sprite& sprite, StateStack::Context context);
+		SpriteSheetAnimation(sf::Sprite& sprite);
 
 		/// Registers a new frame.
 		/// \param frame Frame of texture to display on the sprite of the entity.
@@ -78,23 +78,21 @@ class SpriteSheetAnimation
 		void deserialize(const Json::Value& value);
 
 	private:
-		/// Scale the given rectangle with the scale indicated in m_context.
+		/// Scale the given rectangle with the current scale.
 		/// \param rect Rectangle to scale.
 		/// \return A scaled rectangle.
 		template<typename T>
 		sf::Rect<T> scale(sf::Rect<T> rect)
 		{
-			float scaleRes = m_context.parameters.scale;
 			sf::Rect<T> res;
-			res.left = T(float(rect.left)*scaleRes);
-			res.top = T(float(rect.top)*scaleRes);
-			res.width = T(float(rect.width)*scaleRes);
-			res.height = T(float(rect.height)*scaleRes);
+			res.left = T(float(rect.left) * Context::parameters->scale);
+			res.top = T(float(rect.top) * Context::parameters->scale);
+			res.width = T(float(rect.width) * Context::parameters->scale);
+			res.height = T(float(rect.height) * Context::parameters->scale);
 			return res;
 		}
 		std::vector<Frame> m_frames;  ///< Array of all registred frames.
 		sf::Sprite& m_sprite;         ///< Sprite to animate.
-		StateStack::Context m_context;///< Current context of the application.
 };
 
 #endif//SPRITESHEETANIMATION_H
