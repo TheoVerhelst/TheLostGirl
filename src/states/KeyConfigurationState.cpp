@@ -8,7 +8,7 @@ KeyConfigurationState::KeyConfigurationState() :
 	m_actionStrings{{Player::Action::Bend, Context::langManager->tr("Bend")},
 			{Player::Action::ChangeArrow, Context::langManager->tr("Change arrow")},
 			{Player::Action::Concentrate, Context::langManager->tr("Concentrate")},
-			{Player::Action::FurtherView, Context::langManager->tr("Further view")},
+			{Player::Action::FurtherView, Context::langManager->tr("Look further")},
 			{Player::Action::GenericAction, Context::langManager->tr("Action")},
 			{Player::Action::HandToHand, Context::langManager->tr("Hand to hand")},
 			{Player::Action::Inventory, Context::langManager->tr("Inventory")},
@@ -212,14 +212,14 @@ sf::String KeyConfigurationState::toString(sf::Keyboard::Key key)
 		case sf::Keyboard::Num8      : return "Num 8";
 		case sf::Keyboard::Num9      : return "Num 9";
 		case sf::Keyboard::Escape    : return "Escape";
-		case sf::Keyboard::LControl  : return "Left Ctrl";
-		case sf::Keyboard::LShift    : return "Left Shift";
-		case sf::Keyboard::LAlt      : return "Left Alt";
-		case sf::Keyboard::LSystem   : return "Left System";
-		case sf::Keyboard::RControl  : return "Right Ctrl";
-		case sf::Keyboard::RShift    : return "Right Shift";
-		case sf::Keyboard::RAlt      : return "Right Alt";
-		case sf::Keyboard::RSystem   : return "Right System";
+		case sf::Keyboard::LControl  : return "Left ctrl";
+		case sf::Keyboard::LShift    : return "Left shift";
+		case sf::Keyboard::LAlt      : return "Left alt";
+		case sf::Keyboard::LSystem   : return "Left system";
+		case sf::Keyboard::RControl  : return "Right ctrl";
+		case sf::Keyboard::RShift    : return "Right shift";
+		case sf::Keyboard::RAlt      : return "Right alt";
+		case sf::Keyboard::RSystem   : return "Right system";
 		case sf::Keyboard::Menu      : return "Menu";
 		case sf::Keyboard::LBracket  : return "[";
 		case sf::Keyboard::RBracket  : return "]";

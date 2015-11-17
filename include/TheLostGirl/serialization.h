@@ -34,10 +34,7 @@ class Serializer
 		{
 			entityx::Entity entity{m_entities[entityName]};
 			if(m_jsonEntities[entityName].isMember(componentName))
-			{
-				std::cout << "Deserializing " << componentName << " on " << entityName << std::endl;
 				implDeserialize(m_jsonEntities[entityName][componentName], entity.assign<T>(), entity);
-			}
 		}
 
 	private:

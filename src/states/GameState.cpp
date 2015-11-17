@@ -257,7 +257,6 @@ void GameState::initWorld(const std::string& file)
 				if(alreadyDeserialized.count(entityName) > 0)
 					return;
 
-				std::cout << "Deserializing " << entityName << std::endl;
 				entityx::Entity& entity{m_entities.emplace(entityName, Context::entityManager->create()).first->second};
 				Json::Value& jsonEntity{jsonEntities[entityName]};
 

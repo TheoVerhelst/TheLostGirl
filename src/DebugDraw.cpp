@@ -178,8 +178,6 @@ void DebugDraw::drawDebugAth()
 			m_FPSLabel->show();
 			m_console->show();
 		}
-		std::cout << "out" << std::endl;
-		std::cerr << "err" << std::endl;
 	}
 	m_debugMode = Context::parameters->debugMode;
 	if(not m_debugMode)
