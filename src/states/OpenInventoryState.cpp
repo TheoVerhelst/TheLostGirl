@@ -156,7 +156,7 @@ void OpenInventoryState::resetTexts()
 			m_entityName->setText("");
 	}
 
-	for(ItemGridWidget& itemWidget : m_itemWidgets)
+	for(ItemGridWidget& itemWidget : m_gridContent)
 		if(itemWidget.caption)
 			itemWidget.caption->setText(Context::langManager->tr(itemWidget.item.component<ItemComponent>()->type));
 
@@ -197,9 +197,9 @@ void OpenInventoryState::fillContentDisplay()
 	for(auto& itemWidget : m_listContent)
 		m_listContentLayout->remove(itemWidget.layout);
 	m_listContent.clear();
-	for(auto& itemWidget : m_itemWidgets)
+	for(auto& itemWidget : m_gridContent)
 		m_gridPanel->remove(itemWidget.background);
-	m_itemWidgets.clear();
+	m_gridContent.clear();
 
 	unsigned int rowCounter{0}, columnCounter{0}, itemCounter{0};
 	const float itemSize{120.f*Context::parameters->scale};
@@ -265,7 +265,7 @@ void OpenInventoryState::fillContentDisplay()
 
 		itemWidget.item = entityItem;
 		m_gridPanel->add(itemWidget.background);
-		m_itemWidgets.push_back(itemWidget);
+		m_gridContent.push_back(itemWidget);
 		rowCounter = (++itemCounter) / 8;
 		columnCounter = itemCounter % 8;
 	}
@@ -280,7 +280,7 @@ void OpenInventoryState::scrollGrid(int newScrollValue)
 {
 	unsigned int rowCounter{0}, columnCounter{0}, itemCounter{0};
 	const float itemSize{120.f*Context::parameters->scale};
-	for(auto& itemWidget : m_itemWidgets)
+	for(auto& itemWidget : m_gridContent)
 	{
 		itemWidget.background->setPosition(itemSize*columnCounter, itemSize*rowCounter-newScrollValue);
 		rowCounter = (++itemCounter) / 8;

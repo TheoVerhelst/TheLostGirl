@@ -104,7 +104,7 @@ class OpenInventoryState : public State
 		};
 		tgui::Panel::Ptr m_gridPanel;                     ///< Background of the whole grid display.
 		tgui::Scrollbar::Ptr m_gridScrollbar;             ///< Scrollbar for scrolling the grid.
-		std::list<ItemGridWidget> m_itemWidgets;          ///< List of all items to display.
+		std::list<ItemGridWidget> m_gridContent;          ///< List of all items to display.
 
 		//Widget for the list display
 		/// Hold GUI widgets to represent an item in the list inventory.
