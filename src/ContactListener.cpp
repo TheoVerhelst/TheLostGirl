@@ -57,6 +57,7 @@ bool ContactListener::collide(b2Contact* contact, const b2Manifold*)
 bool ContactListener::checkCollide(entityx::Entity entityA, entityx::Entity entityB) const
 {
 	const ArrowComponent::Handle entityAArrowComponent{entityA.component<ArrowComponent>()};
+	const ActorComponent::Handle entityAActorComponent{entityA.component<ActorComponent>()};
 	const ArrowComponent::Handle entityBArrowComponent{entityB.component<ArrowComponent>()};
 	const DeathComponent::Handle entityBDeathComponent{entityB.component<DeathComponent>()};
 	const QuiverComponent::Handle entityBQuiverComponent{entityB.component<QuiverComponent>()};
@@ -90,6 +91,10 @@ bool ContactListener::checkCollide(entityx::Entity entityA, entityx::Entity enti
 
 	//The contact does not occurs if the entity A is a corpse and the entity B is an arrow
 	if(entityBDeathComponent and entityBDeathComponent->dead and entityAArrowComponent)
+		return false;
+
+	//The contact does not occurds if the entity A is an actor and the entity B is arms, a quiver or a bow
+	if(entityAActorComponent and (entityBHoldItemComponent or entityBQuiverComponent or entityBBowComponent))
 		return false;
 
 	//If none of the previous case is verified, then the collision occurs

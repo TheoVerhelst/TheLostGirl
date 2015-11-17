@@ -191,12 +191,8 @@ Json::Value Serializer::implSerialize(entityx::ComponentHandle<InventoryComponen
 	ret["items"] = Json::Value(Json::arrayValue);
 	//For each item of the inventory
 	for(entityx::Entity item : component->items)
-	{
-		if(not TEST(isMember(m_entities, item) and item.valid()))
-			return Json::Value();
-		//Add it to the value
-		ret["items"].append(getKey(m_entities, item));
-	}
+		if(TEST(isMember(m_entities, item) and item.valid()))
+			ret["items"].append(getKey(m_entities, item));
 	return ret;
 }
 
