@@ -106,7 +106,8 @@ void Player::handleEvent(const sf::Event& event)
 	}
 	else if(event.type == sf::Event::MouseWheelMoved)
 	{
-		commands.push(m_immediateActionBinding[m_mouseWheelBinding]);
+		if(isImmediateAction(m_mouseWheelBinding))
+			commands.push(m_immediateActionBinding[m_mouseWheelBinding]);
 	}
 	else if(event.type == sf::Event::JoystickButtonPressed)
 	{
