@@ -24,7 +24,7 @@ struct Parameters
 	bool debugMode = false;                          ///< True if the DebugDrawing must be activated.
 	unsigned int scaleIndex = 0;                     ///< The index of the current scale, in the range [0, 5[
 	float scale = scales[scaleIndex];                ///< Current scale of graphics and  images.
-	float pixelByMeter = 120.f;                      ///< Original pixels/meter scale.
+	float pixelByMeter = 50.f;                       ///< Original pixels/meter scale.
 	float scaledPixelByMeter = scale*pixelByMeter;   ///< Scaled pixels/meter scale, equal to scale*pixelByMeter
 	b2Vec2 gravity = {0.0f, 9.80665f};               ///< The gravity vector.
 	bool bloomEnabled = false;                       ///< Indicates if the bloom effect is enabled.

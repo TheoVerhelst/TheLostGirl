@@ -82,7 +82,7 @@
 		},
 		"player" : 
 		{
-			"dependencies" : ["player arms", "player quiver"],
+			"dependencies" : ["player left arm", "player quiver"],
 			"base" : "archer",
 			"archer" : 
 			{
@@ -97,7 +97,7 @@
 			},
 			"articuled arms" :
 			{
-				"arms" : "player arms",
+				"arms" : "player left arm",
 				"upper angle" : 180,
 				"lower angle" : -90,
 				"current angle" : 0,
