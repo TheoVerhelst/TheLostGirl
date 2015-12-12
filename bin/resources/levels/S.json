@@ -15,8 +15,8 @@
 				"target translation" : 0,
 				"notched arrow anchor" : 
 				{
-					"x" : 75,
-					"y" : 45
+					"x" : 2,
+					"y" : 28
 				}
 			},
 			"transform" : 
@@ -27,22 +27,22 @@
 				"z" : 1
 			}
 		},
-		"player arms" :
+		"player left arm" :
 		{
-			"base" : "archer arms",
+			"base" : "archer left arm",
 			"dependencies" : ["player bow"],
 			"hold item" :
 			{
 				"item" : "player bow",
 				"item anchor" :
 				{
-					"x" : 83,
-					"y" : 83
+					"x" : 63,
+					"y" : 3
 				},
 				"body anchor":
 				{
-					"x" : 50,
-					"y" : 15
+					"x" : 12,
+					"y" : 4
 				}
 			},
 			"transform" : 
@@ -67,7 +67,7 @@
 				},
 				"body anchor":
 				{
-					"x" : 10,
+					"x" : 2,
 					"y" : 0
 				},
 				"arrows" : [ "arrow 1", "arrow 2", "arrow 4" ]
@@ -89,8 +89,8 @@
 				"quiver" : "player quiver",
 				"quiver anchor" :
 				{
-					"x" : 43,
-					"y" : 59
+					"x" : 16,
+					"y" : 20
 				},
 				"damages" : 180,
 				"initial speed" : 60
@@ -104,8 +104,8 @@
 				"target angle" : 0,
 				"arms anchor" : 
 				{
-					"x" : 50,
-					"y" : 65
+					"x" : 18,
+					"y" : 20
 				}
 			},
 			"death" : 
@@ -335,8 +335,8 @@
 				"identifier" : "day.png",
 				"origin" :
 				{
-					"x" : 1450,
-					"y" : 1450
+					"x" : 500,
+					"y" : 500
 				}
 			},
 			"transform" :
@@ -356,8 +356,8 @@
 				"identifier" : "night.png",
 				"origin" :
 				{
-					"x" : 1450,
-					"y" : 1450
+					"x" : 500,
+					"y" : 500
 				}
 			},
 			"transform" :

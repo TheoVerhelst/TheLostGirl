@@ -34,16 +34,16 @@
 								"y" : 0
 							},
 							{
-								"x" : 10,
+								"x" : 6,
 								"y" : 0
 							},
 							{
-								"x" : 10,
-								"y" : 50
+								"x" : 6,
+								"y" : 22
 							},
 							{
 								"x" : 0,
-								"y" : 50
+								"y" : 22
 							}
 						]
 					}
@@ -92,20 +92,20 @@
 						"vertices" : 
 						[
 							{
-								"x" : 100,
+								"x" : 0,
+								"y" : 0
+							},
+							{
+								"x" : 9,
 								"y" : 0
 							},
 							{
-								"x" : 100,
-								"y" : 100
+								"x" : 9,
+								"y" : 56
 							},
 							{
 								"x" : 0,
-								"y" : 100
-							},
-							{
-								"x" : 0,
-								"y" : 0
+								"y" : 56
 							}
 						]
 					}
@@ -120,13 +120,13 @@
 				"value" : 10,
 				"hold anchor":
 				{
-					"x" : 83,
-					"y" : 83
+					"x" : 7,
+					"y" : 27
 				}
 			},
 			"sprite" : 
 			{
-				"identifier" : "bow.png"
+				"identifier" : "wood bow.png"
 			},
 			"spritesheet animations" : 
 			{
@@ -175,39 +175,39 @@
 					"data" : 
 					[
 						{
-							"h" : 100,
+							"h" : 56,
 							"relative duration" : 0.2,
-							"w" : 100,
+							"w" : 9,
+							"x" : 130,
+							"y" : 56
+						},
+						{
+							"h" : 56,
+							"relative duration" : 0.2,
+							"w" : 19,
+							"x" : 111,
+							"y" : 56
+						},
+						{
+							"h" : 56,
+							"relative duration" : 0.2,
+							"w" : 28,
+							"x" : 83,
+							"y" : 56
+						},
+						{
+							"h" : 56,
+							"relative duration" : 0.2,
+							"w" : 37,
+							"x" : 46,
+							"y" : 56
+						},
+						{
+							"h" : 56,
+							"relative duration" : 0.2,
+							"w" : 46,
 							"x" : 0,
-							"y" : 245
-						},
-						{
-							"h" : 100,
-							"relative duration" : 0.2,
-							"w" : 100,
-							"x" : 100,
-							"y" : 245
-						},
-						{
-							"h" : 100,
-							"relative duration" : 0.2,
-							"w" : 100,
-							"x" : 200,
-							"y" : 245
-						},
-						{
-							"h" : 100,
-							"relative duration" : 0.2,
-							"w" : 100,
-							"x" : 300,
-							"y" : 245
-						},
-						{
-							"h" : 100,
-							"relative duration" : 0.2,
-							"w" : 100,
-							"x" : 400,
-							"y" : 245
+							"y" : 56
 						}
 					],
 					"duration" : 1,
@@ -222,39 +222,39 @@
 					"data" : 
 					[
 						{
-							"h" : 100,
+							"h" : 56,
 							"relative duration" : 0.2,
-							"w" : 100,
-							"x" : 0,
-							"y" : 45
+							"w" : 9,
+							"x" : 130,
+							"y" : 0
 						},
 						{
-							"h" : 100,
+							"h" : 56,
 							"relative duration" : 0.2,
-							"w" : 100,
-							"x" : 100,
-							"y" : 45
+							"w" : 19,
+							"x" : 9,
+							"y" : 0
 						},
 						{
-							"h" : 100,
+							"h" : 56,
 							"relative duration" : 0.2,
-							"w" : 100,
-							"x" : 200,
-							"y" : 45
+							"w" : 28,
+							"x" : 28,
+							"y" : 0
 						},
 						{
-							"h" : 100,
+							"h" : 56,
 							"relative duration" : 0.2,
-							"w" : 100,
-							"x" : 300,
-							"y" : 45
+							"w" : 37,
+							"x" : 56,
+							"y" : 0
 						},
 						{
-							"h" : 100,
-							"relative duration" : 0.25,
-							"w" : 100,
-							"x" : 400,
-							"y" : 45
+							"h" : 56,
+							"relative duration" : 0.2,
+							"w" : 46,
+							"x" : 93,
+							"y" : 0
 						}
 					],
 					"duration" : 1,
@@ -269,11 +269,11 @@
 					"data" : 
 					[
 						{
-							"h" : 70,
+							"h" : 0,
 							"relative duration" : 1,
-							"w" : 100,
+							"w" : 0,
 							"x" : 0,
-							"y" : 245
+							"y" : 0
 						}
 					],
 					"duration" : 1,
@@ -293,13 +293,13 @@
 				"friction" : 1,
 				"local friction point" : 
 				{
-					"x" : 0,
-					"y" : 3
+					"x" : 22,
+					"y" : 2
 				},
 				"local stick point" : 
 				{
-					"x" : 70,
-					"y" : 3
+					"x" : 42,
+					"y" : 2
 				},
 				"penetrance" : 100,
 				"state" : "stored"
@@ -331,20 +331,20 @@
 						"vertices" : 
 						[
 							{
-								"x" : 70,
-								"y" : 3
+								"x" : 0,
+								"y" : 0
 							},
 							{
-								"x" : 35,
+								"x" : 44,
+								"y" : 0
+							},
+							{
+								"x" : 44,
 								"y" : 5
 							},
 							{
 								"x" : 0,
-								"y" : 3
-							},
-							{
-								"x" : 35,
-								"y" : 0
+								"y" : 5
 							}
 						]
 					}
@@ -365,7 +365,7 @@
 			},
 			"sprite" : 
 			{
-				"identifier" : "arrow.png"
+				"identifier" : "wood arrow.png"
 			}
 		}
 	}
