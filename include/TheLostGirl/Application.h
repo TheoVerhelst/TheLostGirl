@@ -12,6 +12,7 @@
 #include <TheLostGirl/Player.h>
 #include <TheLostGirl/Parameters.h>
 #include <TheLostGirl/DebugDraw.h>
+#include <TheLostGirl/LangManager.h>
 
 //Forward declarations
 namespace entityx
