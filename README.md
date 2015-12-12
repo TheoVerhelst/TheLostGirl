@@ -22,6 +22,6 @@ SFML: http://www.sfml-dev.org/
 TGUI: https://www.tgui.eu/  
 Box2D: http://www.box2d.org/  
 Entityx: https://github.com/alecthomas/entityx/  
-Json-cpp: http://jsoncpp.sourceforge.net/  
+Json-cpp: https://github.com/open-source-parsers/jsoncpp  
 Boost: http://www.boost.org/  
 
