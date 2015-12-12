@@ -31,21 +31,23 @@ OpenInventoryState::OpenInventoryState(entityx::Entity entity) :
 	m_entityName->setPosition(bindWidth(m_background, 0.5f) - bindWidth(m_entityName, 0.5f), bindHeight(m_background, 0.125f));
 	m_background->add(m_entityName);
 
+	m_displayStrings = {"List", "Grid"};
 	m_displayTab = tgui::Tab::create(Context::parameters->guiConfigFile);
-	m_displayTab->add("List");
-	m_displayTab->add("Grid");
+	for(const sf::String& displayName : m_displayStrings)
+		m_displayTab->add(displayName);
 	m_displayTab->setPosition(bindWidth(m_background) - bindWidth(m_displayTab), bindHeight(m_background, 0.23f));
 	m_displayTab->setTabHeight(m_background->getSize().y*0.07f);
+	m_displayTab->select(m_displayStrings.front());
 	m_displayTab->connect("tabselected", &OpenInventoryState::switchDisplay, this);
 	m_background->add(m_displayTab);
 
+	m_categoryStrings = {"All", "Ammo", "Resources"};
 	m_categoryTab = tgui::Tab::create(Context::parameters->guiConfigFile);
-	m_categoryTab->add("All");
-	m_categoryTab->add("Ammo");
-	m_categoryTab->add("Resources");
+	for(const sf::String& categoryName : m_categoryStrings)
+		m_categoryTab->add(categoryName);
 	m_categoryTab->setPosition(0.f, bindHeight(m_background, 0.23f));
 	m_categoryTab->setTabHeight(m_background->getSize().y*0.07f);
-	m_categoryTab->select("Resources");
+	m_categoryTab->select(m_categoryStrings.front());
 	m_categoryTab->connect("tabselected", &OpenInventoryState::switchCategory, this);
 	m_background->add(m_categoryTab);
 
@@ -66,26 +68,20 @@ OpenInventoryState::OpenInventoryState(entityx::Entity entity) :
 	m_listPanel->setBackgroundColor(sf::Color(255, 255, 255, 100));
 	m_background->add(m_listPanel);
 
-	m_listColumnsNames.push_back("Qtty");
-	m_listColumnsNames.push_back("Name");
-	m_listColumnsNames.push_back("Category");
-	m_listColumnsNames.push_back("Weight");
-	m_listColumnsNames.push_back("Value");
-	m_listColumnsNames.push_back("Value/Weight");
-
+	m_columnStrings = {"Qtty", "Name", "Category", "Weight", "Value", "Value/Weight"};
 	m_listColumnTitles = ItemListWidget();
 	m_listColumnTitles.layout = tgui::HorizontalLayout::create();
 	m_listColumnTitles.layout->setPosition(0.f, 5.f);
 	m_listColumnTitles.layout->setSize(bindWidth(m_listPanel), 25.f);
 	m_listColumnTitles.layout->addSpace(0.1f);
 	m_listPanel->add(m_listColumnTitles.layout);
-	for(auto& column : m_listColumnsNames)
+	for(const sf::String& columnName : m_columnStrings)
 	{
 		auto label = tgui::Label::create(Context::parameters->guiConfigFile);
-		label->setText(column);
+		label->setText(columnName);
 		label->setTextSize(20);
 		m_listColumnTitles.layout->add(label);
-		m_listColumnTitles.labels.emplace(column, label);
+		m_listColumnTitles.labels.emplace(columnName, label);
 	}
 
 	m_listContentLayout = tgui::VerticalLayout::create();
@@ -155,6 +151,12 @@ void OpenInventoryState::resetTexts()
 		else
 			m_entityName->setText("");
 	}
+
+	for(std::size_t i{0}; i < m_displayTab->getTabsCount(); ++i)
+		m_displayTab->changeText(i, Context::langManager->tr(m_displayStrings[i]));
+
+	for(std::size_t i{0}; i < m_categoryTab->getTabsCount(); ++i)
+		m_categoryTab->changeText(i, Context::langManager->tr(m_categoryStrings[i]));
 
 	for(ItemGridWidget& itemWidget : m_gridContent)
 		if(itemWidget.caption)
@@ -236,7 +238,7 @@ void OpenInventoryState::fillContentDisplay()
 			itemWidget.items.push_back(entityItem);
 			itemWidget.layout = tgui::HorizontalLayout::create();
 			itemWidget.layout->addSpace(0.1f);
-			for(auto& columnStr : m_listColumnsNames)
+			for(auto& columnStr : m_columnStrings)
 			{
 				tgui::Label::Ptr label = tgui::Label::create(Context::parameters->guiConfigFile);
 				label->setTextSize(15);

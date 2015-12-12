@@ -2,6 +2,7 @@
 #define ACTIONS_H
 
 #include <TheLostGirl/actions/ArrowPicker.h>
+#include <TheLostGirl/actions/InventoryOpener.h>
 #include <TheLostGirl/actions/ArrowShooter.h>
 #include <TheLostGirl/actions/BowBender.h>
 #include <TheLostGirl/actions/CorpseSearcher.h>

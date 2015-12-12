@@ -299,6 +299,7 @@ void Player::initializeActions()
 	m_immediateActionBinding[Action::PickUp].action = ArrowPicker();
 	m_immediateActionBinding[Action::HandToHand].action = HandToHand();
 	m_immediateActionBinding[Action::SearchCorpse].action = CorpseSearcher();
+	m_immediateActionBinding[Action::Inventory].action = InventoryOpener();
 
 	//Do not assign a command to the bending action, the DragAndDrop system already does
 }

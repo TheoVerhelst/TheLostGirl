@@ -10,6 +10,7 @@
 #include <TGUI/HorizontalLayout.hpp>
 #include <TGUI/VerticalLayout.hpp>
 #include <TheLostGirl/State.h>
+#include <TheLostGirl/components.h>
 
 //Forward declarations
 namespace sf
@@ -91,7 +92,9 @@ class OpenInventoryState : public State
 		tgui::ChildWindow::Ptr m_background;              ///< Background of the whole inventory window.
 		tgui::Label::Ptr m_entityName;                    ///< Label with the name of the entity.
 		tgui::Tab::Ptr m_displayTab;                      ///< Tab used for switching the display mode.
+		std::vector<sf::String> m_displayStrings;
 		tgui::Tab::Ptr m_categoryTab;                     ///< Tab used for switching the shown category.
+		std::vector<sf::String> m_categoryStrings;
 
 		//Widgets for the grid display
 		/// Hold GUI widgets to represent an item in the grid inventory.
@@ -116,11 +119,11 @@ class OpenInventoryState : public State
 			std::list<entityx::Entity> items;             ///< The represented item.
 		};
 		tgui::Panel::Ptr m_listPanel;                     ///< Background for the whole list diplay.
-		std::list<sf::String> m_listColumnsNames;         ///< The name of each kind of data in the list
+		tgui::Scrollbar::Ptr m_listScrollbar;             ///< The scrollbar for the list display.
+		std::list<ItemListWidget> m_listContent;          ///< All the widgets for the content of the list display.
+		std::list<sf::String> m_columnStrings;            ///< The name of each kind of data in the list
 		ItemListWidget m_listColumnTitles;                ///< Contains all title labels.
 		tgui::VerticalLayout::Ptr m_listContentLayout;    ///< Main layout for the content of the list display.
-		std::list<ItemListWidget> m_listContent;          ///< All the widgets for the content of the list display.
-		tgui::Scrollbar::Ptr m_listScrollbar;             ///< The scrollbar for the list display.
 		std::map<std::string, std::set<std::string>> m_categoriesPartition;///< Indicates the repartition of items categories between Ammo and Resources
 
 };
