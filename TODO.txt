@@ -1,0 +1,7 @@
+[ ] Mettre ArrowComponent::local(Friction|Stick)Point en pixels dans la sauvegarde
+[ ] Finir la fonction flip().
+[ ] Sauvegarde en fonction des includes.
+[ ] Retirer la fleche pendant le CAC.
+[ ] Sound manager.
+[ ] Faire un système multi texture pour une même entité (soit chunker une grande image, soit faire plusieurs images).
+[ ] CAC: statique : deux coups; en avancant: ??? ; en tombant: un puissant; en sautant : un faible; roulade : ???; en reculant : ???; en sneak : prise (egorgement/ippo sonage)
