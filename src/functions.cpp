@@ -26,12 +26,12 @@ void handleResize()
 	const float scalex{fw / iw}, scaley{fh / ih};
 	sf::View view{Context::window->getView()};
 	view.setViewport({(1 - scalex) / 2.0f, (1 - scaley) / 2.0f, scalex, scaley});
-	view.setSize(1920.f, 1080.f);
+	view.setSize(1920.f/2, 1080.f/2);
 	if(Context::parameters->bloomEnabled)
 		Context::postEffectsTexture->setView(view);
 	else
 		Context::window->setView(view);
-	view.setCenter({960.f, 540.f});
+	view.setCenter({960.f/2, 540.f/2});
 	Context::gui->setView(view);
 }
 

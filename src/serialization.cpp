@@ -970,7 +970,7 @@ void Serializer::implDeserialize(const Json::Value& value, entityx::ComponentHan
 	jointDef.upperAngle = component->upperAngle;
 	jointDef.referenceAngle = value["current angle"].asFloat() * b2_pi / 180.f;
 	jointDef.enableLimit = true;
-	jointDef.maxMotorTorque = 10.f;
+	jointDef.maxMotorTorque = 5.f;
 	jointDef.motorSpeed = 0.f;
 	jointDef.enableMotor = true;
 	component->armsJoint = static_cast<b2RevoluteJoint*>(Context::world->CreateJoint(&jointDef));

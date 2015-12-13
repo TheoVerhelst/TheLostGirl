@@ -46,7 +46,7 @@ void PhysicsSystem::update(entityx::EntityManager& entityManager, entityx::Event
 			jumpComponent->mustJump = false;
 		}
 
-		const float32 gain{20.f};
+		const float32 gain{5.f};
 		//Update the rotating arms
 		ArticuledArmsComponent::Handle armsComponent(entity.component<ArticuledArmsComponent>());
 
