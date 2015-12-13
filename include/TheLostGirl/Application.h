@@ -83,7 +83,6 @@ class Application : public entityx::Receiver<Application>
 		sf::Time m_FPSTimer;                   ///< Count time since last FPS ath update.
 		sf::Time m_FPSRefreshRate;             ///< Refresh rate of the FPS ath.
 		sf::Time m_frameTime;                  ///< The target frame time (1/FPS).
-		unsigned int m_newScaleIndex;          ///< The scale index that will be saved in the settings file at the end of the application.
 };
 
 #endif//APPLICATION_H

@@ -2,10 +2,8 @@
 
 Parameters::Parameters():
 	debugMode{false},
-	scaleIndex{0},
-	scale{scales[scaleIndex]},
+	imagePath{"resources/images/"},
 	pixelByMeter{50.f},
-	scaledPixelByMeter{scale*pixelByMeter},
 	gravity{0.0f, 9.80665f},
 	bloomEnabled{false},
 	fullscreen{true},

@@ -77,8 +77,6 @@ class ParametersState : public State
 		tgui::Label::Ptr m_title;                ///< The title label of the menu
 
 		//Options
-		tgui::Label::Ptr m_resolutionLabel;      ///< The label of the resolution combo box.
-		tgui::ComboBox::Ptr m_resolutionComboBox;///< The resolution combo box.
 		tgui::Label::Ptr m_langLabel;            ///< The label of the lang combo box.
 		tgui::ComboBox::Ptr m_langComboBox;      ///< The lang combo box.
 		tgui::Label::Ptr m_bloomLabel;           ///< The label of the bloom checkbox.

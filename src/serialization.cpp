@@ -168,8 +168,8 @@ Json::Value Serializer::implSerialize(entityx::ComponentHandle<SpriteComponent> 
 	ret["identifier"] = Context::textureManager->getIdentifier(*tex);//Get the identifier of the texture
 	if(component->sprite.getOrigin() != sf::Vector2f(0, 0))
 	{
-		ret["origin"]["x"] = component->sprite.getOrigin().x/Context::parameters->scale;
-		ret["origin"]["y"] = component->sprite.getOrigin().y/Context::parameters->scale;
+		ret["origin"]["x"] = component->sprite.getOrigin().x;
+		ret["origin"]["y"] = component->sprite.getOrigin().y;
 	}
 	return ret;
 }
@@ -718,10 +718,10 @@ void Serializer::implDeserialize(const Json::Value& value, entityx::ComponentHan
 void Serializer::implDeserialize(const Json::Value& value, entityx::ComponentHandle<SpriteComponent> component, entityx::Entity)
 {
 	const std::string identifier{value["identifier"].asString()};
-	Context::textureManager->load(identifier, paths[Context::parameters->scaleIndex] + "/" + identifier);
+	Context::textureManager->load(identifier, Context::parameters->imagePath + "/" + identifier);
 	component->sprite.setTexture(Context::textureManager->get(identifier));
 	if(value.isMember("origin"))
-		component->sprite.setOrigin(value["origin"]["x"].asFloat()*Context::parameters->scale, value["origin"]["y"].asFloat()*Context::parameters->scale);
+		component->sprite.setOrigin(value["origin"]["x"].asFloat(), value["origin"]["y"].asFloat());
 }
 
 void Serializer::implDeserialize(const Json::Value& value, entityx::ComponentHandle<TransformComponent> component, entityx::Entity)

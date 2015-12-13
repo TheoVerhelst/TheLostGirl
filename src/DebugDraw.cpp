@@ -48,7 +48,7 @@ void DebugDraw::DrawPolygon(const b2Vec2* vertices, int32 vertexCount, const b2C
 	sf::ConvexShape polygon(static_cast<unsigned int>(vertexCount));
 	for(int32 i{0}; i < vertexCount; ++i)
 		polygon.setPoint(static_cast<unsigned int>(i),
-						sf::Vector2f(vertices[i].x, vertices[i].y)*Context::parameters->scaledPixelByMeter);
+						sf::Vector2f(vertices[i].x, vertices[i].y)*Context::parameters->pixelByMeter);
 	polygon.setOutlineColor(sf::Color(static_cast<sf::Uint8>(color.r*255.f),
 										static_cast<sf::Uint8>(color.g*255.f),
 										static_cast<sf::Uint8>(color.b*255.f),
@@ -66,7 +66,7 @@ void DebugDraw::DrawSolidPolygon(const b2Vec2* vertices, int32 vertexCount, cons
 	unsigned int count{static_cast<unsigned int>(vertexCount)};
 	sf::ConvexShape polygon(count);
 	for(unsigned int i{0}; i < count; ++i)
-		polygon.setPoint(i, sf::Vector2f(vertices[i].x, vertices[i].y)*Context::parameters->scaledPixelByMeter);
+		polygon.setPoint(i, sf::Vector2f(vertices[i].x, vertices[i].y)*Context::parameters->pixelByMeter);
 	polygon.setOutlineColor(b2ColorToSf(color));
 	polygon.setOutlineThickness(-1.f);
 	polygon.setFillColor(sf::Color::Transparent);
@@ -78,9 +78,9 @@ void DebugDraw::DrawSolidPolygon(const b2Vec2* vertices, int32 vertexCount, cons
 
 void DebugDraw::DrawCircle(const b2Vec2& center, float32 radius, const b2Color& color)
 {
-	sf::CircleShape circle(radius * Context::parameters->scaledPixelByMeter);
-	circle.setOrigin(radius * Context::parameters->scaledPixelByMeter, radius * Context::parameters->scaledPixelByMeter);
-	circle.setPosition(center.x* Context::parameters->scaledPixelByMeter, center.y* Context::parameters->scaledPixelByMeter);
+	sf::CircleShape circle(radius * Context::parameters->pixelByMeter);
+	circle.setOrigin(radius * Context::parameters->pixelByMeter, radius * Context::parameters->pixelByMeter);
+	circle.setPosition(center.x* Context::parameters->pixelByMeter, center.y* Context::parameters->pixelByMeter);
 	circle.setOutlineColor(b2ColorToSf(color));
 	circle.setOutlineThickness(-1.f);
 	circle.setFillColor(sf::Color::Transparent);
@@ -92,9 +92,9 @@ void DebugDraw::DrawCircle(const b2Vec2& center, float32 radius, const b2Color& 
 
 void DebugDraw::DrawSolidCircle(const b2Vec2& center, float32 radius, const b2Vec2& axis, const b2Color& color)
 {
-	sf::CircleShape circle(radius * Context::parameters->scaledPixelByMeter);
-	circle.setOrigin(radius * Context::parameters->scaledPixelByMeter, radius * Context::parameters->scaledPixelByMeter);
-	circle.setPosition(center.x* Context::parameters->scaledPixelByMeter, center.y* Context::parameters->scaledPixelByMeter);
+	sf::CircleShape circle(radius * Context::parameters->pixelByMeter);
+	circle.setOrigin(radius * Context::parameters->pixelByMeter, radius * Context::parameters->pixelByMeter);
+	circle.setPosition(center.x* Context::parameters->pixelByMeter, center.y* Context::parameters->pixelByMeter);
 	circle.setOutlineColor(b2ColorToSf(color));
 	circle.setOutlineThickness(-1.f);
 	circle.setFillColor(sf::Color::Transparent);
@@ -105,8 +105,8 @@ void DebugDraw::DrawSolidCircle(const b2Vec2& center, float32 radius, const b2Ve
 
 	sf::Vertex line[2];
 	b2Vec2 axisPoint{center + radius * axis};
-	line[0].position = sf::Vector2f(center.x, center.y)*Context::parameters->scaledPixelByMeter;
-	line[1].position = sf::Vector2f(axisPoint.x, axisPoint.y)*Context::parameters->scaledPixelByMeter;
+	line[0].position = sf::Vector2f(center.x, center.y)*Context::parameters->pixelByMeter;
+	line[1].position = sf::Vector2f(axisPoint.x, axisPoint.y)*Context::parameters->pixelByMeter;
 	line[0].color = b2ColorToSf(color);
 	line[1].color = line[0].color;
 	if(Context::parameters->bloomEnabled)
@@ -118,8 +118,8 @@ void DebugDraw::DrawSolidCircle(const b2Vec2& center, float32 radius, const b2Ve
 void DebugDraw::DrawSegment(const b2Vec2& p1, const b2Vec2& p2, const b2Color& color)
 {
 	sf::Vertex line[2];
-	line[0].position = sf::Vector2f(p1.x, p1.y)*Context::parameters->scaledPixelByMeter;
-	line[1].position = sf::Vector2f(p2.x, p2.y)*Context::parameters->scaledPixelByMeter;
+	line[0].position = sf::Vector2f(p1.x, p1.y)*Context::parameters->pixelByMeter;
+	line[1].position = sf::Vector2f(p2.x, p2.y)*Context::parameters->pixelByMeter;
 	line[0].color = b2ColorToSf(color);
 	line[1].color = line[0].color;
 	if(Context::parameters->bloomEnabled)
@@ -132,11 +132,11 @@ void DebugDraw::DrawTransform(const b2Transform& xf)
 {
 	const float axisScale{0.4f};
 	sf::Vector2f xAxis{xf.q.GetXAxis().x, xf.q.GetXAxis().y};
-	xAxis *= Context::parameters->scaledPixelByMeter;
+	xAxis *= Context::parameters->pixelByMeter;
 	sf::Vector2f yAxis{xf.q.GetYAxis().x, xf.q.GetYAxis().y};
-	yAxis *= Context::parameters->scaledPixelByMeter;
+	yAxis *= Context::parameters->pixelByMeter;
 	sf::Vector2f p1{xf.p.x, xf.p.y};
-	p1 *= Context::parameters->scaledPixelByMeter;
+	p1 *= Context::parameters->pixelByMeter;
 	sf::Vector2f p2;
 
 	sf::Vertex line1[2];
@@ -213,7 +213,7 @@ void DebugDraw::drawDebugAth()
 		mousePositionPixels = Context::postEffectsTexture->mapPixelToCoords(sf::Mouse::getPosition());
 	else
 		mousePositionPixels = Context::window->mapPixelToCoords(sf::Mouse::getPosition(*Context::window));
-	mousePosition = mousePositionPixels / Context::parameters->scaledPixelByMeter;
+	mousePosition = mousePositionPixels / Context::parameters->pixelByMeter;
 	m_mousePositionLabel->setText("(" + roundOutput(mousePosition.x) + ", " + roundOutput(mousePosition.y) + ")\n" +
 			"(" + roundOutput(mousePositionPixels.x) + ", " + roundOutput(mousePositionPixels.y) + ")");
 

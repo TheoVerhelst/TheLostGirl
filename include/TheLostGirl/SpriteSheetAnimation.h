@@ -78,19 +78,6 @@ class SpriteSheetAnimation
 		void deserialize(const Json::Value& value);
 
 	private:
-		/// Scale the given rectangle with the current scale.
-		/// \param rect Rectangle to scale.
-		/// \return A scaled rectangle.
-		template<typename T>
-		sf::Rect<T> scale(sf::Rect<T> rect)
-		{
-			sf::Rect<T> res;
-			res.left = T(float(rect.left) * Context::parameters->scale);
-			res.top = T(float(rect.top) * Context::parameters->scale);
-			res.width = T(float(rect.width) * Context::parameters->scale);
-			res.height = T(float(rect.height) * Context::parameters->scale);
-			return res;
-		}
 		std::vector<Frame> m_frames;  ///< Array of all registred frames.
 		sf::Sprite& m_sprite;         ///< Sprite to animate.
 };

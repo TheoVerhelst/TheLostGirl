@@ -40,32 +40,8 @@ ParametersState::ParametersState()
 	mainLayout->addSpace(0.5f);
 
 	tgui::HorizontalLayout::Ptr layout = tgui::HorizontalLayout::create();
-	m_resolutionLabel = tgui::Label::copy(m_title);
-	m_resolutionLabel->setTextSize(30);
-	layout->add(m_resolutionLabel);
-
-	m_resolutionComboBox = tgui::ComboBox::create(Context::parameters->guiConfigFile);
-	m_resolutionComboBox->addItem("360p", "0");
-	m_resolutionComboBox->addItem("576p", "1");
-	m_resolutionComboBox->addItem("720p", "2");
-	m_resolutionComboBox->addItem("900p", "3");
-	m_resolutionComboBox->addItem("1080p", "4");
-	m_resolutionComboBox->setSelectedItemById(std::to_string(Context::parameters->scaleIndex));
-	m_resolutionComboBox->connect("itemSelected", [this](){
-								tgui::MessageBox::Ptr box = tgui::MessageBox::create(Context::parameters->guiConfigFile);
-								box->setText("Takes effects only after restart");
-								box->setTextSize(15);
-								box->setPosition(bindWidth(m_background, 0.25f), bindHeight(m_background, 0.4f));
-								box->setSize(bindWidth(m_background, 0.5f), bindHeight(m_background, 0.2f));
-								m_background->add(box);
-								});
-	layout->add(m_resolutionComboBox);
-	mainLayout->add(layout);
-
-	mainLayout->addSpace(0.5f);
-
-	layout = tgui::HorizontalLayout::create();
-	m_langLabel = tgui::Label::copy(m_resolutionLabel);
+	m_langLabel = tgui::Label::copy(m_title);
+	m_langLabel->setTextSize(30);
 	layout->add(m_langLabel);
 
 	m_langComboBox = tgui::ComboBox::create(Context::parameters->guiConfigFile);
@@ -80,7 +56,7 @@ ParametersState::ParametersState()
 	mainLayout->addSpace(0.5f);
 
 	layout = tgui::HorizontalLayout::create();
-	m_bloomLabel = tgui::Label::copy(m_resolutionLabel);
+	m_bloomLabel = tgui::Label::copy(m_langLabel);
 	layout->add(m_bloomLabel);
 	layout->setRatio(m_bloomLabel, 0.5f);
 
@@ -95,7 +71,7 @@ ParametersState::ParametersState()
 	mainLayout->addSpace(0.5f);
 
 	layout = tgui::HorizontalLayout::create();
-	m_fullscreenLabel = tgui::Label::copy(m_resolutionLabel);
+	m_fullscreenLabel = tgui::Label::copy(m_langLabel);
 	layout->add(m_fullscreenLabel);
 	layout->setRatio(m_fullscreenLabel, 0.5f);
 
@@ -141,7 +117,7 @@ ParametersState::ParametersState()
 	mainLayout->addSpace(0.5f);
 
 	layout = tgui::HorizontalLayout::create();
-	m_mainVolumeLabel = tgui::Label::copy(m_resolutionLabel);
+	m_mainVolumeLabel = tgui::Label::copy(m_langLabel);
 	layout->add(m_mainVolumeLabel);
 
 	m_mainVolumeSlider = tgui::Slider::create(Context::parameters->guiConfigFile);
@@ -152,7 +128,7 @@ ParametersState::ParametersState()
 	mainLayout->addSpace(0.5f);
 
 	layout = tgui::HorizontalLayout::create();
-	m_musicVolumeLabel = tgui::Label::copy(m_resolutionLabel);
+	m_musicVolumeLabel = tgui::Label::copy(m_langLabel);
 	layout->add(m_musicVolumeLabel);
 
 	m_musicVolumeSlider = tgui::Slider::copy(m_mainVolumeSlider);
@@ -162,7 +138,7 @@ ParametersState::ParametersState()
 	mainLayout->addSpace(0.5f);
 
 	layout = tgui::HorizontalLayout::create();
-	m_effectsVolumeLabel = tgui::Label::copy(m_resolutionLabel);
+	m_effectsVolumeLabel = tgui::Label::copy(m_langLabel);
 	layout->add(m_effectsVolumeLabel);
 
 	m_effectsVolumeSlider = tgui::Slider::copy(m_mainVolumeSlider);
@@ -172,7 +148,7 @@ ParametersState::ParametersState()
 	mainLayout->addSpace(0.5f);
 
 	layout = tgui::HorizontalLayout::create();
-	m_ambianceVolumeLabel = tgui::Label::copy(m_resolutionLabel);
+	m_ambianceVolumeLabel = tgui::Label::copy(m_langLabel);
 	layout->add(m_ambianceVolumeLabel);
 
 	m_ambianceVolumeSlider = tgui::Slider::copy(m_mainVolumeSlider);
@@ -182,7 +158,7 @@ ParametersState::ParametersState()
 	mainLayout->addSpace(0.5f);
 
 	layout = tgui::HorizontalLayout::create();
-	m_controlsLabel = tgui::Label::copy(m_resolutionLabel);
+	m_controlsLabel = tgui::Label::copy(m_langLabel);
 	layout->add(m_controlsLabel);
 
 	m_controlsButton = tgui::Button::create(Context::parameters->guiConfigFile);
@@ -248,8 +224,6 @@ void ParametersState::applyChanges()
 	bool langChanged{Context::langManager->getLang() != fromString(m_langComboBox->getSelectedItem())};
 	bool bloomEnabledChanged{Context::parameters->bloomEnabled != m_bloomCheckbox->isChecked()};
 	bool fullscreenChanged{Context::parameters->fullscreen != m_fullscreenCheckbox->isChecked()};
-	const unsigned int scaleIndex{unsigned(std::stoi(m_resolutionComboBox->getSelectedItemId().toAnsiString()))};
-	bool resolutionChanged{Context::parameters->scaleIndex != scaleIndex};
 	if(langChanged)
 		Context::langManager->setLang(fromString(m_langComboBox->getSelectedItem()));
 	if(bloomEnabledChanged)
@@ -276,19 +250,18 @@ void ParametersState::applyChanges()
 			videoMode = sf::VideoMode::getFullscreenModes()[std::stoul(m_fullscreenComboBox->getSelectedItemId().toAnsiString())];
 		}
 		else
-			videoMode = {unsigned(1920.f*Context::parameters->scale), unsigned(1080.f*Context::parameters->scale)};
+			videoMode = {1920, 1080};
 		Context::window->create(videoMode, "The Lost Girl", style);
 		Context::parameters->fullscreen = m_fullscreenCheckbox->isChecked();
-		handleResize(*Context::window, Context::parameters->bloomEnabled, Context::parameters->scale, *Context::postEffectsTexture, *Context::gui);
+		handleResize();
 	}
-	if(langChanged or bloomEnabledChanged or resolutionChanged)
-		Context::eventManager->emit<ParametersChange>(langChanged, bloomEnabledChanged, resolutionChanged, scaleIndex, fullscreenChanged);
+	if(langChanged or bloomEnabledChanged)
+		Context::eventManager->emit<ParametersChange>(langChanged, bloomEnabledChanged, fullscreenChanged);
 }
 
 void ParametersState::resetTexts()
 {
 	m_title->setText(Context::langManager->tr("Parameters"));
-	m_resolutionLabel->setText(Context::langManager->tr("Resolution"));
 	m_langLabel->setText(Context::langManager->tr("Lang"));
 	m_bloomLabel->setText(Context::langManager->tr("Bloom effect"));
 	m_fullscreenLabel->setText(Context::langManager->tr("Fullscreen"));

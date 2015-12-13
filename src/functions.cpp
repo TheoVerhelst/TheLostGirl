@@ -14,25 +14,25 @@
 #include <TheLostGirl/functions.h>
 
 
-void handleResize(sf::RenderWindow& window, bool bloomEnabled, float scale, sf::RenderTexture& bloomTexture, tgui::Gui& gui)
+void handleResize()
 {
-	const float iw{float(window.getSize().x)};
-	const float ih{float(window.getSize().y)};
+	const float iw{float(Context::window->getSize().x)};
+	const float ih{float(Context::window->getSize().y)};
 	float fh(ih), fw(iw);//If size is in a 16:9 ratio, it won't change.
 	if(iw / 16.f < ih / 9.f) //Taller than a 16:9 ratio
 		fh = iw * (9.0f / 16.0f);
 	else if(iw / 16.f > ih / 9.f) //Larger than a 16:9 ratio
 		fw = ih * (16.0f / 9.0f);
 	const float scalex{fw / iw}, scaley{fh / ih};
-	sf::View view{window.getView()};
+	sf::View view{Context::window->getView()};
 	view.setViewport({(1 - scalex) / 2.0f, (1 - scaley) / 2.0f, scalex, scaley});
-	view.setSize(1920.f*scale, 1080.f*scale);
-	if(bloomEnabled)
-		bloomTexture.setView(view);
+	view.setSize(1920.f, 1080.f);
+	if(Context::parameters->bloomEnabled)
+		Context::postEffectsTexture->setView(view);
 	else
-		window.setView(view);
-	view.setCenter({960.f*scale, 540.f*scale});
-	gui.setView(view);
+		Context::window->setView(view);
+	view.setCenter({960.f, 540.f});
+	Context::gui->setView(view);
 }
 
 sf::Color fadingColor(sf::Time dt, sf::Time fadingLength, bool in)

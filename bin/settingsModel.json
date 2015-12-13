@@ -22,12 +22,6 @@
             "possible values" : ["FR", "EN"]
         },
         {
-            "name" : "resolution",
-            "type" : "int",
-            "required" : true,
-            "possible values" : [360, 576, 720, 900, 1080]
-        },
-        {
             "name" : "window size",
             "type" : "object",
             "required" : true,

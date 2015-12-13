@@ -325,7 +325,7 @@ void GameState::initWorld(const std::string& file)
 				//Filename of the image to load
 				const std::string fileTexture{m_levelIdentifier + "_" + groupOfReplacesName};
 				//Path of the image to load
-				const std::string path{paths[Context::parameters->scaleIndex] + "levels/" + m_levelIdentifier + "/" + fileTexture + ".png"};
+				const std::string path{Context::parameters->imagePath + "levels/" + m_levelIdentifier + "/" + fileTexture + ".png"};
 
 				const Json::Value groupOfReplaces{level["replaces"][groupOfReplacesName]};
 				//Vector that will be added to m_sceneEntitiesData
@@ -338,13 +338,12 @@ void GameState::initWorld(const std::string& file)
 
 					//Coordinates of the original image
 					sf::IntRect originRect;
-					originRect.left = static_cast<int>(origin["x"].asFloat()*Context::parameters->scale);
-					originRect.top = static_cast<int>(origin["y"].asFloat()*Context::parameters->scale);
-					originRect.width = static_cast<int>(origin["w"].asFloat()*Context::parameters->scale);
-					originRect.height = static_cast<int>(origin["h"].asFloat()*Context::parameters->scale);
+					originRect.left = origin["x"].asInt();
+					originRect.top = origin["y"].asInt();
+					originRect.width = origin["w"].asInt();
+					originRect.height = origin["h"].asInt();
 
 					SceneReplaces replacesData;
-					//Directly take the data from the json value in order to keep the not scaled size
 					replacesData.origin = {origin["x"].asInt(), origin["y"].asInt(), origin["w"].asInt(), origin["h"].asInt()};
 
 					//Load the texture
@@ -361,12 +360,11 @@ void GameState::initWorld(const std::string& file)
 						const std::string replaceIdentifier{textureIdentifier + "_" + std::to_string(j)};
 						//Position where the frame should be replaced
 						Transform replaceTransform;
-						replaceTransform.x = replace["x"].asFloat()*Context::parameters->scale;
-						replaceTransform.y = replace["y"].asFloat()*Context::parameters->scale;
+						replaceTransform.x = replace["x"].asFloat();
+						replaceTransform.y = replace["y"].asFloat();
 						replaceTransform.z = replace["z"].asFloat();
 						replaceTransform.angle = replace["angle"].asFloat();
 
-						//Directly take the data from the json value in order to keep the not scaled size
 						replacesData.replaces.push_back({replace["x"].asFloat(), replace["y"].asFloat(), replace["z"].asFloat(), replace["angle"].asFloat()});
 
 						//Create an entity
@@ -391,10 +389,10 @@ void GameState::initWorld(const std::string& file)
 			for(unsigned int i{0}; i < m_numberOfPlans; ++i)
 			{
 				const std::string fileTexture{m_levelIdentifier + "_" + std::to_string(i)};
-				const std::string path{paths[Context::parameters->scaleIndex] + "levels/" + m_levelIdentifier + "/" + fileTexture + ".png"};
+				const std::string path{Context::parameters->imagePath + "levels/" + m_levelIdentifier + "/" + fileTexture + ".png"};
 				const int chunkSize{int(sf::Texture::getMaximumSize())};
 				//The length of the plan, relatively to the reference.
-				const int planLength{int(float(m_levelRect.width) * std::pow(1.5f, m_referencePlan - float(i)) * Context::parameters->scale)};
+				const int planLength{int(float(m_levelRect.width) * std::pow(1.5f, m_referencePlan - float(i)))};
 				//Number of chunks to load in this plan
 				const int numberOfChunks{(planLength/chunkSize)+1};
 
@@ -406,7 +404,7 @@ void GameState::initWorld(const std::string& file)
 					int currentChunkSize{chunkSize};
 					if(j >= planLength/chunkSize)
 						currentChunkSize = planLength - chunkSize*j;
-					Context::textureManager->load<sf::IntRect>(textureIdentifier, path, sf::IntRect(j*chunkSize, 0, currentChunkSize, int(float(m_levelRect.height)*Context::parameters->scale)));
+					Context::textureManager->load<sf::IntRect>(textureIdentifier, path, sf::IntRect(j*chunkSize, 0, currentChunkSize, int(float(m_levelRect.height))));
 					//Create an entity
 					m_sceneEntities.emplace(textureIdentifier, Context::entityManager->create());
 					//Create a sprite with the loaded texture

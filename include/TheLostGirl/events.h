@@ -58,25 +58,17 @@ struct EntityStaminaChange : public entityx::Event<EntityStaminaChange>
 struct ParametersChange : public entityx::Event<ParametersChange>
 {
 	/// Constructor.
-	/// The scale index must be transmitted by this event because the resolution change take place
-	/// after restarting the game, then the scaleIndex in the Parameters instance must not be modified.
 	/// \param _langChanged Indicates whether the lang has been changed.
 	/// \param _bloomEnabledChanged Indicates whether the bloom option has been toggled.
-	/// \param _resolutionChanged Indicates whether the resolution has been changed.
-	/// \param _newScaleIndex The new scale index.
 	/// \param _fullscreenChanged Indicates wheter the fullscreen state has been toggled.
-	ParametersChange(bool _langChanged, bool _bloomEnabledChanged, bool _resolutionChanged, unsigned int _newScaleIndex, bool _fullscreenChanged):
+	ParametersChange(bool _langChanged, bool _bloomEnabledChanged, bool _fullscreenChanged):
 		langChanged{_langChanged},
 		bloomEnabledChanged{_bloomEnabledChanged},
-		resolutionChanged{_resolutionChanged},
-		newScaleIndex{_newScaleIndex},
 		fullscreenChanged{_fullscreenChanged}
 	{}
 
 	bool langChanged;          ///< Indicates whether the lang has been changed.
 	bool bloomEnabledChanged;  ///< Indicates whether the bloom option has been toggled.
-	bool resolutionChanged;    ///< Indicates whether the resolution has been changed.
-	unsigned int newScaleIndex;///< The new scale index.
 	bool fullscreenChanged;    ///< Indicates wheter the fullscreen state has been toggled.
 };
 

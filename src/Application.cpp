@@ -29,8 +29,7 @@ Application::Application(bool debugMode):
 	m_debugDraw{m_gui, m_parameters.guiConfigFile},
 	m_FPSTimer{},
 	m_FPSRefreshRate{sf::milliseconds(50)},
-	m_frameTime{sf::seconds(1.f/60.f)},
-	m_newScaleIndex{m_parameters.scaleIndex}
+	m_frameTime{sf::seconds(1.f/60.f)}
 {
 	Context::parameters = &m_parameters;
 	Context::window = &m_window;
@@ -65,7 +64,6 @@ Application::Application(bool debugMode):
 		//Load default settings
 		m_window.create({640, 360}, "The Lost Girl");
 		m_postEffectsTexture.create(640, 360);
-		m_parameters.scaleIndex = 0;
 		m_parameters.fullscreen = false;
 		m_parameters.bloomEnabled = false;
 	}
@@ -78,20 +76,15 @@ Application::Application(bool debugMode):
 			m_langManager.setLang(FR);
 		else
 			m_langManager.setLang(EN);
-		std::map<int, unsigned int> scaleMap{{360, 0}, {576, 1}, {720, 2}, {900, 3}, {1080, 4}};
-		m_parameters.scaleIndex = scaleMap[settings["resolution"].asInt()];
-		m_newScaleIndex = m_parameters.scaleIndex;
 		m_parameters.fullscreen = settings["fullscreen"].asBool();
 		m_parameters.bloomEnabled = settings["enable bloom"].asBool();
 		uint32 style{m_parameters.fullscreen ? sf::Style::Fullscreen : sf::Style::Default};
 		m_window.create(mode, "The Lost Girl", style);
 		m_postEffectsTexture.create(mode.width, mode.height);
 	}
-	m_parameters.scale = scales[m_parameters.scaleIndex];
-	m_parameters.scaledPixelByMeter = m_parameters.scale*m_parameters.pixelByMeter;
 	m_parameters.debugMode = debugMode;
 	m_gui.setWindow(m_window);
-	handleResize(m_window, m_parameters.bloomEnabled, m_parameters.scale, m_postEffectsTexture, m_gui);
+	handleResize();
 }
 
 Application::~Application()
@@ -105,7 +98,6 @@ Application::~Application()
 		settings["lang"] = "FR";
 	else if(m_langManager.getLang() == EN)
 		settings["lang"] = "EN";
-	settings["resolution"] = int(1080.f*m_parameters.scale);
 	settings["window size"]["w"] = m_window.getSize().x;
 	settings["window size"]["h"] = m_window.getSize().y;
 	settings["enable bloom"] = m_parameters.bloomEnabled;
@@ -181,8 +173,6 @@ int Application::run()
 
 void Application::receive(const ParametersChange& parametersChange)
 {
-	if(parametersChange.resolutionChanged)
-		m_newScaleIndex = parametersChange.newScaleIndex;
 }
 
 void Application::processInput()
@@ -195,7 +185,7 @@ void Application::processInput()
 		else if(event.type == sf::Event::KeyPressed and event.key.code == sf::Keyboard::F2)
 			m_parameters.debugMode = not m_parameters.debugMode;//Toggle the debug mode
 		else if(event.type == sf::Event::Resized)
-			handleResize(m_window, m_parameters.bloomEnabled, m_parameters.scale, m_postEffectsTexture, m_gui);
+			handleResize();
 		m_stateStack.handleEvent(event);
 		m_gui.handleEvent(event);
 	}

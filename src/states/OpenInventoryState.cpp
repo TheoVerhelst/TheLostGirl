@@ -204,7 +204,7 @@ void OpenInventoryState::fillContentDisplay()
 	m_gridContent.clear();
 
 	unsigned int rowCounter{0}, columnCounter{0}, itemCounter{0};
-	const float itemSize{120.f*Context::parameters->scale};
+	const float itemSize{120.f};
 	for(auto& entityItem : m_entity.component<InventoryComponent>()->items)
 	{
 		ItemComponent::Handle itemComponent(entityItem.component<ItemComponent>());
@@ -256,7 +256,7 @@ void OpenInventoryState::fillContentDisplay()
 		itemWidget.background->setSize(itemSize, itemSize);
 		itemWidget.background->setPosition(itemSize*columnCounter, itemSize*rowCounter);
 
-		itemWidget.picture = tgui::Picture::create(paths[Context::parameters->scaleIndex] + "items/" + category + "/" + type + ".png");
+		itemWidget.picture = tgui::Picture::create(Context::parameters->imagePath + "items/" + category + "/" + type + ".png");
 		itemWidget.picture->setPosition(itemSize/6.f, 0.f);
 		itemWidget.background->add(itemWidget.picture);
 
@@ -274,14 +274,14 @@ void OpenInventoryState::fillContentDisplay()
 	//Set rowCounter to the total number of rows
 	rowCounter = ((--itemCounter) / 8)+1;
     m_gridScrollbar->setLowValue(int(m_gridPanel->getSize().y));
-    //Set the maximum value to 120*scale*number of rows
+    //Set the maximum value to 120*number of rows
     m_gridScrollbar->setMaximum(int(itemSize*float(rowCounter)));
 }
 
 void OpenInventoryState::scrollGrid(int newScrollValue)
 {
 	unsigned int rowCounter{0}, columnCounter{0}, itemCounter{0};
-	const float itemSize{120.f*Context::parameters->scale};
+	const float itemSize{120.f};
 	for(auto& itemWidget : m_gridContent)
 	{
 		itemWidget.background->setPosition(itemSize*columnCounter, itemSize*rowCounter-newScrollValue);

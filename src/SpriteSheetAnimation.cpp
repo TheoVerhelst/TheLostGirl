@@ -32,11 +32,11 @@ void SpriteSheetAnimation::animate(float progress)
 			progressCounter += frame.duration;
 			if(progressCounter >= progress)
 			{
-				m_sprite.setTextureRect(scale<int>(frame.rect));
+				m_sprite.setTextureRect(frame.rect);
 				return;
 			}
 		}
-		m_sprite.setTextureRect(scale<int>(m_frames[m_frames.size()-1].rect));
+		m_sprite.setTextureRect(m_frames[m_frames.size()-1].rect);
 	}
 }
 
