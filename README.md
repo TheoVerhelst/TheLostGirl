@@ -9,7 +9,12 @@ The makefile is not yet written.
 
 ## API Reference
 
-The code reference can be found in the *doxygen* folder.
+Run the following commands in a terminal once you are in the *doxygen* folder:  
+```
+doxygen
+sensible-browser html/index.html
+```
+This works only under Linux. There is no way to do programming under Windows.
 
 ## Contributors
 
