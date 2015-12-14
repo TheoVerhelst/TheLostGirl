@@ -25,7 +25,7 @@ IntroState::IntroState()
 	gui.add(m_logo);
 
 	m_sentence = tgui::Label::create(Context::parameters->guiConfigFile);
-	m_sentence->setTextSize(30);
+	m_sentence->setTextSize(15);
 	m_sentence->setPosition((bindWidth(gui) - bindWidth(m_sentence))/2, bindHeight(gui, 0.5));
 	gui.add(m_sentence);
 	resetTexts();

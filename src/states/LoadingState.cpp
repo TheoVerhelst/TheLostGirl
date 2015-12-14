@@ -50,14 +50,14 @@ LoadingState::LoadingState()
 
 		m_sentenceLabel = tgui::Label::create(Context::parameters->guiConfigFile);
 		m_sentenceLabel->setText(m_sentence);
-		m_sentenceLabel->setTextSize(20);
+		m_sentenceLabel->setTextSize(10);
 		//Center the label
 		m_sentenceLabel->setPosition((bindWidth(gui) - bindWidth(m_sentenceLabel))/2, bindHeight(gui, 0.5f));
 		gui.add(m_sentenceLabel);
 
 		m_hintLabel = tgui::Label::create(Context::parameters->guiConfigFile);
 		m_hintLabel->setText(Context::langManager->tr(line));
-		m_hintLabel->setTextSize(30);
+		m_hintLabel->setTextSize(15);
 		//Center the label
 		m_hintLabel->setPosition((bindWidth(gui) - bindWidth(m_hintLabel))/2.f, bindHeight(gui, 0.38f));
 		gui.add(m_hintLabel);

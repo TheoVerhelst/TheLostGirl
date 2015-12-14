@@ -30,23 +30,23 @@ PauseState::PauseState()
 	m_background->add(titlePanel);
 	m_pauseLabel = tgui::Label::create(Context::parameters->guiConfigFile);
 	titlePanel->add(m_pauseLabel);
-	m_pauseLabel->setTextSize(80);
+	m_pauseLabel->setTextSize(40);
 	m_pauseLabel->setPosition((bindWidth(titlePanel)-bindWidth(m_pauseLabel))/2, 0.f);
 
 	m_background->addSpace();
 
 	m_backToGameButton = tgui::Button::create(Context::parameters->guiConfigFile);
-	m_backToGameButton->setTextSize(50);
+	m_backToGameButton->setTextSize(25);
 	m_backToGameButton->connect("pressed", &PauseState::backToGame, this);
 	m_background->add(m_backToGameButton);
 
 	m_goToOptionsButton = tgui::Button::create(Context::parameters->guiConfigFile);
-	m_goToOptionsButton->setTextSize(50);
+	m_goToOptionsButton->setTextSize(25);
 	m_goToOptionsButton->connect("pressed", [this]{m_background->hide(); requestStackPush<ParametersState>();});
 	m_background->add(m_goToOptionsButton);
 
 	m_backToMainMenuButton = tgui::Button::create(Context::parameters->guiConfigFile);
-	m_backToMainMenuButton->setTextSize(50);
+	m_backToMainMenuButton->setTextSize(25);
 	m_backToMainMenuButton->connect("pressed", &PauseState::backToMainMenu, this);
 	m_background->add(m_backToMainMenuButton);
 

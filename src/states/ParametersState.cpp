@@ -33,7 +33,7 @@ ParametersState::ParametersState()
 	mainLayout->addSpace(0.5f);
 
 	m_title = tgui::Label::create(Context::parameters->guiConfigFile);
-	m_title->setTextSize(80);
+	m_title->setTextSize(40);
 	mainLayout->add(m_title);
 	mainLayout->setRatio(m_title, 3.f);
 
@@ -41,7 +41,7 @@ ParametersState::ParametersState()
 
 	tgui::HorizontalLayout::Ptr layout = tgui::HorizontalLayout::create();
 	m_langLabel = tgui::Label::copy(m_title);
-	m_langLabel->setTextSize(30);
+	m_langLabel->setTextSize(15);
 	layout->add(m_langLabel);
 
 	m_langComboBox = tgui::ComboBox::create(Context::parameters->guiConfigFile);

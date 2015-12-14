@@ -21,19 +21,19 @@ DebugDraw::DebugDraw(tgui::Gui& gui, const std::string& guiCongifFile):
 	m_cerrStreambuf{std::cerr.rdbuf(m_errStringStream.rdbuf())}
 {
 	m_positionLabel->setPosition(tgui::bindWidth(gui, 0.01f), tgui::bindHeight(gui, 0.01f));
-	m_positionLabel->setTextSize(20);
+	m_positionLabel->setTextSize(10);
 	gui.add(m_positionLabel);
 
 	m_mousePositionLabel->setPosition(tgui::bindWidth(gui, 0.35f), tgui::bindHeight(gui, 0.01f));
-	m_mousePositionLabel->setTextSize(20);
+	m_mousePositionLabel->setTextSize(10);
 	gui.add(m_mousePositionLabel);
 
 	m_FPSLabel->setPosition(tgui::bindWidth(gui, 0.7f), tgui::bindHeight(gui, 0.01f));
-	m_FPSLabel->setTextSize(20);
+	m_FPSLabel->setTextSize(10);
 	gui.add(m_FPSLabel);
 	m_console->setPosition(tgui::bindWidth(gui, 0.5f), tgui::bindHeight(gui, 0.7f));
 	m_console->setSize(tgui::bindWidth(gui, 0.5f) - 10.f, tgui::bindHeight(gui, 0.3f) - 10.f);
-	m_console->setTextSize(10);
+	m_console->setTextSize(50);
 	gui.add(m_console);
 }
 

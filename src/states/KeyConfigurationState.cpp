@@ -34,37 +34,37 @@ KeyConfigurationState::KeyConfigurationState() :
 
 	m_title = tgui::Label::create(Context::parameters->guiConfigFile);
 	m_title->setPosition((bindWidth(m_background) - bindWidth(m_title))/2.f, bindHeight(m_background, 0.1f));
-	m_title->setTextSize(50);
+	m_title->setTextSize(25);
 	m_title->setText(Context::langManager->tr("Key configuration"));
 	m_background->add(m_title);
 
 	m_nameLabel = tgui::Label::create(Context::parameters->guiConfigFile);
 	m_nameLabel->setPosition(bindWidth(m_background, 0.01f + 0.15f*0.98f) - bindWidth(m_nameLabel, 0.5f), bindHeight(m_background, 0.25f));
-	m_nameLabel->setTextSize(30);
+	m_nameLabel->setTextSize(15);
 	m_nameLabel->setText(Context::langManager->tr("Action"));
 	m_background->add(m_nameLabel);
 
 	m_key1Label = tgui::Label::create(Context::parameters->guiConfigFile);
 	m_key1Label->setPosition(bindWidth(m_background, (0.3f+0.075f)*0.98f+0.01f) - bindWidth(m_key1Label, 0.5f), bindHeight(m_background, 0.25f));
-	m_key1Label->setTextSize(30);
+	m_key1Label->setTextSize(15);
 	m_key1Label->setText(Context::langManager->tr("Key 1"));
 	m_background->add(m_key1Label);
 
 	m_key2Label = tgui::Label::create(Context::parameters->guiConfigFile);
 	m_key2Label->setPosition(bindWidth(m_background, (0.475f+0.075f)*0.98f+0.01f) - bindWidth(m_key2Label, 0.5f), bindHeight(m_background, 0.25f));
-	m_key2Label->setTextSize(30);
+	m_key2Label->setTextSize(15);
 	m_key2Label->setText(Context::langManager->tr("Key 2"));
 	m_background->add(m_key2Label);
 
 	m_mouseLabel = tgui::Label::create(Context::parameters->guiConfigFile);
 	m_mouseLabel->setPosition(bindWidth(m_background, (0.65f+0.075f)*0.98f+0.01f) - bindWidth(m_mouseLabel, 0.5f), bindHeight(m_background, 0.25f));
-	m_mouseLabel->setTextSize(30);
+	m_mouseLabel->setTextSize(15);
 	m_mouseLabel->setText(Context::langManager->tr("Mouse"));
 	m_background->add(m_mouseLabel);
 
 	m_joystickLabel = tgui::Label::create(Context::parameters->guiConfigFile);
 	m_joystickLabel->setPosition(bindWidth(m_background, (0.825f+0.075f)*0.98f+0.01f) - bindWidth(m_joystickLabel, 0.5f), bindHeight(m_background, 0.25f));
-	m_joystickLabel->setTextSize(30);
+	m_joystickLabel->setTextSize(15);
 	m_joystickLabel->setText(Context::langManager->tr("Joystick"));
 	m_background->add(m_joystickLabel);
 
@@ -77,7 +77,7 @@ KeyConfigurationState::KeyConfigurationState() :
 	m_scrollbar = tgui::Scrollbar::create(Context::parameters->guiConfigFile);
 	m_scrollbar->setPosition(bindWidth(m_actionsPanel, 0.975f), 0.f);
 	m_scrollbar->setSize(bindWidth(m_actionsPanel, 0.025f), bindHeight(m_actionsPanel));
-    m_scrollbar->setArrowScrollAmount(30);
+    m_scrollbar->setArrowScrollAmount(15);
     m_scrollbar->setLowValue(int(m_actionsPanel->getSize().y));
     m_scrollbar->setMaximum(int(m_actionsPanel->getSize().y*0.1f)*m_actionStrings.size());
     m_scrollbar->connect("valuechanged", &KeyConfigurationState::scrollArea, this);
@@ -89,7 +89,7 @@ KeyConfigurationState::KeyConfigurationState() :
 		tgui::Label::Ptr label = tgui::Label::create(Context::parameters->guiConfigFile);
 		m_actionLabels.emplace(actionPair.first, label);
 		label->setText(actionPair.second);
-		label->setTextSize(25);
+		label->setTextSize(13);
 		label->setPosition(0.f, bindHeight(m_actionsPanel, i*0.1f+0.05f)-bindHeight(label, 0.5f));
 		m_actionsPanel->add(label);
 		const auto keyBindings = Context::player->getAssignedKeys(actionPair.first);

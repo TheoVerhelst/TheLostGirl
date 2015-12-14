@@ -27,7 +27,7 @@ OpenInventoryState::OpenInventoryState(entityx::Entity entity) :
 	gui.add(m_background);
 
 	m_entityName = tgui::Label::create(Context::parameters->guiConfigFile);
-	m_entityName->setTextSize(35);
+	m_entityName->setTextSize(17);
 	m_entityName->setPosition(bindWidth(m_background, 0.5f) - bindWidth(m_entityName, 0.5f), bindHeight(m_background, 0.125f));
 	m_background->add(m_entityName);
 
@@ -241,7 +241,7 @@ void OpenInventoryState::fillContentDisplay()
 			for(auto& columnStr : m_columnStrings)
 			{
 				tgui::Label::Ptr label = tgui::Label::create(Context::parameters->guiConfigFile);
-				label->setTextSize(15);
+				label->setTextSize(8);
 				itemWidget.layout->add(label);
 				itemWidget.labels.emplace(columnStr, label);
 			}
@@ -262,7 +262,7 @@ void OpenInventoryState::fillContentDisplay()
 
 		itemWidget.caption = tgui::Label::create(Context::parameters->guiConfigFile);
 		itemWidget.caption->setPosition(bindWidth(itemWidget.background, 0.5f)-bindWidth(itemWidget.caption, 0.5f), itemSize/1.2f);
-		itemWidget.caption->setTextSize(15.f);
+		itemWidget.caption->setTextSize(8);
 		itemWidget.background->add(itemWidget.caption);
 
 		itemWidget.item = entityItem;

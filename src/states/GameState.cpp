@@ -32,14 +32,6 @@
 #include <TheLostGirl/serialization.h>
 #include <TheLostGirl/states/GameState.h>
 
-//TODO Mettre ArrowComponent::local(Friction|Stick)Point en pixels dans la sauvegarde
-//TODO Finir la fonction flip().
-//TODO Sauvegarde en fonction des includes.
-//TODO Retirer la fleche pendant le CAC.
-//TODO Sound manager.
-//TODO Faire un système multi texture pour une même entité (soit chunker une grande image, soit faire plusieurs images).
-//TODO CAC: statique : deux coups; en avancant: ??? ; en tombant: un puissant; en sautant : un faible; roulade : ???; en reculant : ???; en sneak : prise (egorgement/ippo sonage)
-
 GameState::GameState(std::string file):
 	m_contactListener(),
 	m_timeSpeed{1.f},
