@@ -1,7 +1,7 @@
 #include <SFML/System/Time.hpp>
 #include <SFML/Window/Event.hpp>
 #include <entityx/entityx.h>
-#include <TGUI/Gui.hpp>
+#include <TGUI/TGUI.hpp>
 #include <TheLostGirl/events.h>
 #include <TheLostGirl/Parameters.h>
 #include <TheLostGirl/Player.h>
@@ -20,33 +20,33 @@ OpenInventoryState::OpenInventoryState(entityx::Entity entity) :
 	using tgui::bindTop;
 	tgui::Gui& gui(*Context::gui);
 
-	m_background = tgui::ChildWindow::create(Context::parameters->guiConfigFile);
-	m_background->setPosition(bindWidth(gui, 0.25f), bindHeight(gui, 0.125f));
-	m_background->setSize(bindWidth(gui, 0.5f/0.98f), bindHeight(gui, 0.75f));//Larger background for scrolling bar
+	m_background = Context::parameters->guiTheme->load("ChildWindow");
+	m_background->setPosition(bindWidth(gui) * 0.25f, bindHeight(gui) * 0.125f);
+	m_background->setSize(bindWidth(gui) * (0.5f/0.98f), bindHeight(gui) * 0.75f);//Larger background for scrolling bar
 	m_background->connect("closed", [this]{requestStackPop(); Context::player->handleInitialInputState();});
 	gui.add(m_background);
 
-	m_entityName = tgui::Label::create(Context::parameters->guiConfigFile);
+	m_entityName = Context::parameters->guiTheme->load("Label");
 	m_entityName->setTextSize(17);
-	m_entityName->setPosition(bindWidth(m_background, 0.5f) - bindWidth(m_entityName, 0.5f), bindHeight(m_background, 0.125f));
+	m_entityName->setPosition(bindWidth(m_background) * 0.5f - bindWidth(m_entityName) * 0.5f, bindHeight(m_background) * 0.125f);
 	m_background->add(m_entityName);
 
 	m_displayStrings = {"List", "Grid"};
-	m_displayTab = tgui::Tab::create(Context::parameters->guiConfigFile);
+	m_displayTab = Context::parameters->guiTheme->load("Tab");
 	for(const sf::String& displayName : m_displayStrings)
 		m_displayTab->add(displayName);
-	m_displayTab->setPosition(bindWidth(m_background) - bindWidth(m_displayTab), bindHeight(m_background, 0.23f));
-	m_displayTab->setTabHeight(m_background->getSize().y*0.07f);
+	m_displayTab->setPosition(bindWidth(m_background) - bindWidth(m_displayTab), bindHeight(m_background) * 0.23f);
+	m_displayTab->setTabHeight(m_background->getSize().y * 0.07f);
 	m_displayTab->select(m_displayStrings.front());
 	m_displayTab->connect("tabselected", &OpenInventoryState::switchDisplay, this);
 	m_background->add(m_displayTab);
 
 	m_categoryStrings = {"All", "Ammo", "Resources"};
-	m_categoryTab = tgui::Tab::create(Context::parameters->guiConfigFile);
+	m_categoryTab = Context::parameters->guiTheme->load("Tab");
 	for(const sf::String& categoryName : m_categoryStrings)
 		m_categoryTab->add(categoryName);
-	m_categoryTab->setPosition(0.f, bindHeight(m_background, 0.23f));
-	m_categoryTab->setTabHeight(m_background->getSize().y*0.07f);
+	m_categoryTab->setPosition(0.f, bindHeight(m_background) * 0.23f);
+	m_categoryTab->setTabHeight(m_background->getSize().y * 0.07f);
 	m_categoryTab->select(m_categoryStrings.front());
 	m_categoryTab->connect("tabselected", &OpenInventoryState::switchCategory, this);
 	m_background->add(m_categoryTab);
@@ -55,44 +55,44 @@ OpenInventoryState::OpenInventoryState(entityx::Entity entity) :
 	m_categoriesPartition["Resources"] = {"Skins"};
 
 	//Make the grid
-	m_gridPanel = tgui::Panel::create();
-	m_gridPanel->setPosition(0.f, bindHeight(m_background, 0.3f));
-	m_gridPanel->setSize(bindWidth(m_background), bindHeight(m_background, 0.8f));
+	m_gridPanel = std::make_shared<tgui::Panel>();
+	m_gridPanel->setPosition(0.f, bindHeight(m_background) * 0.3f);
+	m_gridPanel->setSize(bindWidth(m_background), bindHeight(m_background) * 0.8f);
 	m_gridPanel->setBackgroundColor(sf::Color(255, 255, 255, 100));
 	m_background->add(m_gridPanel);
 
     //Make the list
-	m_listPanel = tgui::Panel::create();
-	m_listPanel->setPosition(0.f, bindHeight(m_background, 0.3f));
-	m_listPanel->setSize(bindWidth(m_background), bindHeight(m_background, 0.8f));
+	m_listPanel = std::make_shared<tgui::Panel>();
+	m_listPanel->setPosition(0.f, bindHeight(m_background) * 0.3f);
+	m_listPanel->setSize(bindWidth(m_background), bindHeight(m_background) * 0.8f);
 	m_listPanel->setBackgroundColor(sf::Color(255, 255, 255, 100));
 	m_background->add(m_listPanel);
 
 	m_columnStrings = {"Qtty", "Name", "Category", "Weight", "Value", "Value/Weight"};
 	m_listColumnTitles = ItemListWidget();
-	m_listColumnTitles.layout = tgui::HorizontalLayout::create();
+	m_listColumnTitles.layout = std::make_shared<tgui::HorizontalLayout>();
 	m_listColumnTitles.layout->setPosition(0.f, 5.f);
 	m_listColumnTitles.layout->setSize(bindWidth(m_listPanel), 25.f);
 	m_listColumnTitles.layout->addSpace(0.1f);
 	m_listPanel->add(m_listColumnTitles.layout);
 	for(const sf::String& columnName : m_columnStrings)
 	{
-		auto label = tgui::Label::create(Context::parameters->guiConfigFile);
+		tgui::Label::Ptr label = Context::parameters->guiTheme->load("Label");
 		label->setText(columnName);
 		label->setTextSize(20);
 		m_listColumnTitles.layout->add(label);
 		m_listColumnTitles.labels.emplace(columnName, label);
 	}
 
-	m_listContentLayout = tgui::VerticalLayout::create();
+	m_listContentLayout = std::make_shared<tgui::VerticalLayout>();
 	m_listContentLayout->setPosition(0.f, 30.f);
-	m_listContentLayout->setSize(bindWidth(m_listPanel, 0.98f), 15*m_entity.component<InventoryComponent>()->items.size());
+	m_listContentLayout->setSize(bindWidth(m_listPanel) * 0.98f, 15*m_entity.component<InventoryComponent>()->items.size());
     m_listPanel->add(m_listContentLayout);
 
 	//Set scrollbars
-	m_listScrollbar = tgui::Scrollbar::create(Context::parameters->guiConfigFile);
-	m_listScrollbar->setPosition(bindWidth(m_listPanel, 0.98f), 0.f);
-	m_listScrollbar->setSize(bindWidth(m_listPanel, 0.02f), bindHeight(m_listPanel));
+	m_listScrollbar = Context::parameters->guiTheme->load("Scrollbar");
+	m_listScrollbar->setPosition(bindWidth(m_listPanel) * 0.98f, 0.f);
+	m_listScrollbar->setSize(bindWidth(m_listPanel) * 0.02f, bindHeight(m_listPanel));
     m_listScrollbar->setArrowScrollAmount(30);
     m_listScrollbar->setLowValue(int(m_gridPanel->getSize().y));
     m_listScrollbar->setMaximum(int(m_listContentLayout->getSize().y));
@@ -100,9 +100,9 @@ OpenInventoryState::OpenInventoryState(entityx::Entity entity) :
     m_listPanel->add(m_listScrollbar);
 	m_listPanel->hide();
 
-	m_gridScrollbar = tgui::Scrollbar::create(Context::parameters->guiConfigFile);
-	m_gridScrollbar->setPosition(bindWidth(m_gridPanel, 0.98f), 0.f);
-	m_gridScrollbar->setSize(bindWidth(m_gridPanel, 0.02f), bindHeight(m_gridPanel));
+	m_gridScrollbar = Context::parameters->guiTheme->load("Scrollbar");
+	m_gridScrollbar->setPosition(bindWidth(m_gridPanel) * 0.98f, 0.f);
+	m_gridScrollbar->setSize(bindWidth(m_gridPanel) * 0.02f, bindHeight(m_gridPanel));
     m_gridScrollbar->setArrowScrollAmount(30);
     m_gridScrollbar->connect("valuechanged", &OpenInventoryState::scrollGrid, this);
     m_gridPanel->add(m_gridScrollbar);
@@ -236,11 +236,11 @@ void OpenInventoryState::fillContentDisplay()
 		{
 			ItemListWidget itemWidget;
 			itemWidget.items.push_back(entityItem);
-			itemWidget.layout = tgui::HorizontalLayout::create();
+			itemWidget.layout = std::make_shared<tgui::HorizontalLayout>();
 			itemWidget.layout->addSpace(0.1f);
 			for(auto& columnStr : m_columnStrings)
 			{
-				tgui::Label::Ptr label = tgui::Label::create(Context::parameters->guiConfigFile);
+				tgui::Label::Ptr label = Context::parameters->guiTheme->load("Label");
 				label->setTextSize(8);
 				itemWidget.layout->add(label);
 				itemWidget.labels.emplace(columnStr, label);
@@ -251,17 +251,17 @@ void OpenInventoryState::fillContentDisplay()
 
 		//Fill the grid
 		ItemGridWidget itemWidget;
-		itemWidget.background = tgui::Panel::create();
+		itemWidget.background = std::make_shared<tgui::Panel>();
 		itemWidget.background->setBackgroundColor(sf::Color::Transparent);
 		itemWidget.background->setSize(itemSize, itemSize);
 		itemWidget.background->setPosition(itemSize*columnCounter, itemSize*rowCounter);
 
-		itemWidget.picture = tgui::Picture::create(Context::parameters->imagePath + "items/" + category + "/" + type + ".png");
+		itemWidget.picture = std::make_shared<tgui::Picture>(Context::parameters->imagePath + "items/" + category + "/" + type + ".png");
 		itemWidget.picture->setPosition(itemSize/6.f, 0.f);
 		itemWidget.background->add(itemWidget.picture);
 
-		itemWidget.caption = tgui::Label::create(Context::parameters->guiConfigFile);
-		itemWidget.caption->setPosition(bindWidth(itemWidget.background, 0.5f)-bindWidth(itemWidget.caption, 0.5f), itemSize/1.2f);
+		itemWidget.caption = Context::parameters->guiTheme->load("Label");
+		itemWidget.caption->setPosition((bindWidth(itemWidget.background) * 0.5f) - (bindWidth(itemWidget.caption) * 0.5f), itemSize/1.2f);
 		itemWidget.caption->setTextSize(8);
 		itemWidget.background->add(itemWidget.caption);
 

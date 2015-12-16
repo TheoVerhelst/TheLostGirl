@@ -1,10 +1,7 @@
 #ifndef KEYCONFIGURATIONSTATE_H
 #define KEYCONFIGURATIONSTATE_H
 
-#include <TGUI/Label.hpp>
-#include <TGUI/Panel.hpp>
-#include <TGUI/Button.hpp>
-#include <TGUI/Scrollbar.hpp>
+#include <TGUI/TGUI.hpp>
 #include <TheLostGirl/State.h>
 #include <TheLostGirl/Player.h>
 

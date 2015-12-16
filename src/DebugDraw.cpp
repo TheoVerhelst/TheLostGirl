@@ -1,6 +1,6 @@
 #include <iostream>
 #include <SFML/Graphics.hpp>
-#include <TGUI/Gui.hpp>
+#include <TGUI/TGUI.hpp>
 #include <entityx/Entity.h>
 #include <Box2D/Box2D.h>
 #include <TheLostGirl/Parameters.h>
@@ -9,30 +9,30 @@
 #include <TheLostGirl/functions.h>
 #include <TheLostGirl/DebugDraw.h>
 
-DebugDraw::DebugDraw(tgui::Gui& gui, const std::string& guiCongifFile):
+DebugDraw::DebugDraw(tgui::Gui& gui, tgui::Theme::Ptr guiTheme):
 	m_debugMode{true},
-	m_positionLabel{tgui::Label::create(guiCongifFile)},
-	m_mousePositionLabel{tgui::Label::create(guiCongifFile)},
-	m_FPSLabel{tgui::Label::create(guiCongifFile)},
-	m_console{tgui::ChatBox::create(guiCongifFile)},
+	m_positionLabel{guiTheme->load("Label")},
+	m_mousePositionLabel{guiTheme->load("Label")},
+	m_FPSLabel{guiTheme->load("Label")},
+	m_console{guiTheme->load("ChatBox")},
 	m_outStringStream{},
 	m_errStringStream{},
 	m_coutStreambuf{std::cout.rdbuf(m_outStringStream.rdbuf())},
 	m_cerrStreambuf{std::cerr.rdbuf(m_errStringStream.rdbuf())}
 {
-	m_positionLabel->setPosition(tgui::bindWidth(gui, 0.01f), tgui::bindHeight(gui, 0.01f));
+	m_positionLabel->setPosition(tgui::bindWidth(gui) * 0.01f, tgui::bindHeight(gui) * 0.01f);
 	m_positionLabel->setTextSize(10);
 	gui.add(m_positionLabel);
 
-	m_mousePositionLabel->setPosition(tgui::bindWidth(gui, 0.35f), tgui::bindHeight(gui, 0.01f));
+	m_mousePositionLabel->setPosition(tgui::bindWidth(gui) * 0.35f, tgui::bindHeight(gui) * 0.01f);
 	m_mousePositionLabel->setTextSize(10);
 	gui.add(m_mousePositionLabel);
 
-	m_FPSLabel->setPosition(tgui::bindWidth(gui, 0.7f), tgui::bindHeight(gui, 0.01f));
+	m_FPSLabel->setPosition(tgui::bindWidth(gui) * 0.7f, tgui::bindHeight(gui) * 0.01f);
 	m_FPSLabel->setTextSize(10);
 	gui.add(m_FPSLabel);
-	m_console->setPosition(tgui::bindWidth(gui, 0.5f), tgui::bindHeight(gui, 0.7f));
-	m_console->setSize(tgui::bindWidth(gui, 0.5f) - 10.f, tgui::bindHeight(gui, 0.3f) - 10.f);
+	m_console->setPosition(tgui::bindWidth(gui) * 0.5f, tgui::bindHeight(gui) * 0.7f);
+	m_console->setSize(tgui::bindWidth(gui) * 0.5f - 10.f, tgui::bindHeight(gui) * 0.3f - 10.f);
 	m_console->setTextSize(50);
 	gui.add(m_console);
 }
@@ -240,12 +240,12 @@ void DebugDraw::setFPS(float framesPerSecond)
 	m_framesPerSecond = framesPerSecond;
 }
 
-void DebugDraw::setTextFont(std::shared_ptr<sf::Font> font)
+void DebugDraw::setFont(std::shared_ptr<sf::Font> font)
 {
-	m_positionLabel->setTextFont(font);
-	m_mousePositionLabel->setTextFont(font);
-	m_FPSLabel->setTextFont(font);
-	m_console->setTextFont(font);
+	m_positionLabel->setFont(font);
+	m_mousePositionLabel->setFont(font);
+	m_FPSLabel->setFont(font);
+	m_console->setFont(font);
 }
 
 std::string DebugDraw::roundOutput(float x, std::size_t decimals)

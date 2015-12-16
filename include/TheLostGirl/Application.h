@@ -2,7 +2,7 @@
 #define APPLICATION_H
 
 //Unable to forward-declare those types
-#include <TGUI/Gui.hpp>
+#include <TGUI/TGUI.hpp>
 #include <entityx/entityx.h>
 #include <Box2D/Dynamics/b2World.h>
 #include <TheLostGirl/ResourceManager.h>

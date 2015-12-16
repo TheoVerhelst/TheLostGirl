@@ -8,7 +8,7 @@
 #include <Box2D/Common/b2Draw.h>
 #include <Box2D/Dynamics/b2Fixture.h>
 #include <Box2D/Dynamics/b2Body.h>
-#include <TGUI/Button.hpp>
+#include <TGUI/TGUI.hpp>
 
 //Forward declarations
 namespace sf

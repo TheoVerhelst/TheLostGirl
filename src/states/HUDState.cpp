@@ -1,6 +1,6 @@
 #include <SFML/System/Time.hpp>
 #include <SFML/Window/Event.hpp>
-#include <TGUI/Gui.hpp>
+#include <TGUI/TGUI.hpp>
 #include <entityx/System.h>
 #include <entityx/Entity.h>
 #include <TheLostGirl/LangManager.h>
@@ -30,8 +30,8 @@ HUDState::HUDState():
 	m_windStrengthSpr.setTexture(Context::textureManager->get("wind arrow ath"));
 	m_windStrengthSpr.setPosition(120.f, 0);
 	m_windStrengthBarSpr.setTexture(Context::textureManager->get("wind bar ath"));
-	m_windBar = tgui::Canvas::create({std::ceil(240.f), std::ceil(20.f)});
-	m_windBar->setPosition(bindWidth(gui, 0.99f) - bindWidth(m_windBar), bindHeight(gui, 0.95f) - bindHeight(m_windBar));
+	m_windBar = std::make_shared<tgui::Canvas>(tgui::Layout2d(sf::Vector2f(std::ceil(240.f), std::ceil(20.f))));
+	m_windBar->setPosition(bindWidth(gui) * 0.99f - bindWidth(m_windBar), bindHeight(gui) * 0.95f - bindHeight(m_windBar));
 	gui.add(m_windBar);
 }
 
@@ -133,7 +133,7 @@ bool HUDState::update(sf::Time dt)
 			//This time will be equal to 0 while 2 seconds after the start of the fading and then will grow normally
 			const float time{cap(barPair.second.timer.asSeconds()-2.f, 0.f, 3.f)};
 			const unsigned char alpha{(unsigned char)(765.f - time*255.f)};
-			barPair.second.panel->setTransparency(alpha);
+			barPair.second.panel->setOpacity(alpha);
 		}
 		const auto transformComponent(barPair.first.component<TransformComponent>());
 		if(transformComponent and not isPlayer(barPair.first))
@@ -150,7 +150,7 @@ bool HUDState::update(sf::Time dt)
 			//This time will be equal to 0 while 2 seconds after the start of the fading and then will grow normally
 			const float time{cap(barPair.second.timer.asSeconds()-2.f, 0.f, 3.f)};
 			const unsigned char alpha{(unsigned char)(765.f - time*255.f)};
-			barPair.second.panel->setTransparency(alpha);
+			barPair.second.panel->setOpacity(alpha);
 		}
 	}
 	return true;
@@ -173,16 +173,16 @@ void HUDState::receive(const EntityHealthChange& entityHealthChange)
 		Bar bar;
 		if(isPlayer(entity))
 		{
-			bar.bar = tgui::Picture::create(Context::parameters->imagePath + "healthAth.png");
-			bar.borders = tgui::Picture::create(Context::parameters->imagePath + "healthBorderAth.png");
-			bar.panel = tgui::Panel::create({240+1, 20+1});
-			bar.panel->setPosition(bindWidth(gui, 0.01f), bindHeight(gui, 0.99f) - bindHeight(bar.panel));
+			bar.bar = std::make_shared<tgui::Picture>(Context::parameters->imagePath + "healthAth.png");
+			bar.borders = std::make_shared<tgui::Picture>(Context::parameters->imagePath + "healthBorderAth.png");
+			bar.panel = std::make_shared<tgui::Panel>(tgui::Layout2d(sf::Vector2f(240+1, 20+1)));
+			bar.panel->setPosition(bindWidth(gui) * 0.01f, bindHeight(gui) * 0.99f - bindHeight(bar.panel));
 		}
 		else
 		{
-			bar.bar = tgui::Picture::create(Context::parameters->imagePath + "entityHealthBar.png");
-			bar.borders = tgui::Picture::create(Context::parameters->imagePath + "entityHealthBarBorders.png");
-			bar.panel = tgui::Panel::create({100+1, 10+1});
+			bar.bar = std::make_shared<tgui::Picture>(Context::parameters->imagePath + "entityHealthBar.png");
+			bar.borders = std::make_shared<tgui::Picture>(Context::parameters->imagePath + "entityHealthBarBorders.png");
+			bar.panel = std::make_shared<tgui::Panel>(tgui::Layout2d(sf::Vector2f(100+1, 10+1)));
 		}
 		bar.panel->setBackgroundColor(sf::Color::Transparent);
 		bar.panel->add(bar.bar);
@@ -195,7 +195,7 @@ void HUDState::receive(const EntityHealthChange& entityHealthChange)
 	bar.isFull = entityHealthChange.normalizedHealth >= 1.f;
 	//If the fading ends now
 	if(barWasFull and not bar.isFull)
-		bar.panel->setTransparency(255);
+		bar.panel->setOpacity(255);
 	bar.timer = sf::Time::Zero;//In all cases, the timer should reset when the health change
 	if(isPlayer(entity))
 		bar.bar->setPosition(std::ceil(-240.f*(1-entityHealthChange.normalizedHealth)), 0.f);
@@ -215,10 +215,10 @@ void HUDState::receive(const EntityStaminaChange& entityStaminaChange)
 		if(not m_staminaBars.count(entity))
 		{
 			Bar bar;
-			bar.bar = tgui::Picture::create(Context::parameters->imagePath + "staminaAth.png");
-			bar.borders = tgui::Picture::create(Context::parameters->imagePath + "staminaBorderAth.png");
-			bar.panel = tgui::Panel::create({240, 20+1});
-			bar.panel->setPosition(bindWidth(gui, 0.99f) - bindWidth(bar.panel), bindHeight(gui, 0.99f) - bindHeight(bar.panel));
+			bar.bar = std::make_shared<tgui::Picture>(Context::parameters->imagePath + "staminaAth.png");
+			bar.borders = std::make_shared<tgui::Picture>(Context::parameters->imagePath + "staminaBorderAth.png");
+			bar.panel = std::make_shared<tgui::Panel>(tgui::Layout2d(sf::Vector2f(240, 20+1)));
+			bar.panel->setPosition(bindWidth(gui) * 0.99f - bindWidth(bar.panel), bindHeight(gui) * 0.99f - bindHeight(bar.panel));
 			bar.panel->setBackgroundColor(sf::Color::Transparent);
 			bar.panel->add(bar.bar);
 			bar.panel->add(bar.borders);
@@ -229,7 +229,7 @@ void HUDState::receive(const EntityStaminaChange& entityStaminaChange)
 		bar.isFull = entityStaminaChange.normalizedStamina >= 1.f;
 		//If the fading ends now
 		if(barWasFull and not bar.isFull)
-			bar.panel->setTransparency(255);
+			bar.panel->setOpacity(255);
 		bar.timer = sf::Time::Zero;//In all cases, the timer should reset when the health change
 		bar.bar->setPosition(std::ceil(-240.f*(1-entityStaminaChange.normalizedStamina)), 0.f);
 	}

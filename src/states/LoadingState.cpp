@@ -1,7 +1,7 @@
 #include <random>
 #include <SFML/System/Time.hpp>
 #include <SFML/Window/Event.hpp>
-#include <TGUI/Gui.hpp>
+#include <TGUI/TGUI.hpp>
 #include <TheLostGirl/LangManager.h>
 #include <TheLostGirl/events.h>
 #include <TheLostGirl/Parameters.h>
@@ -42,24 +42,24 @@ LoadingState::LoadingState()
 		using tgui::bindHeight;
 		tgui::Gui& gui(*Context::gui);
 
-		m_background = tgui::Panel::create();
-		m_background->setPosition(bindWidth(gui, 0.f), bindHeight(gui, 0.3f));
-		m_background->setSize(bindWidth(gui), bindHeight(gui, 0.35f));
+		m_background = std::make_shared<tgui::Panel>();
+		m_background->setPosition(bindWidth(gui) * 0.f, bindHeight(gui) * 0.3f);
+		m_background->setSize(bindWidth(gui), bindHeight(gui) * 0.35f);
 		m_background->setBackgroundColor(sf::Color(255, 255, 255, 100));
 		gui.add(m_background);
 
-		m_sentenceLabel = tgui::Label::create(Context::parameters->guiConfigFile);
+		m_sentenceLabel = Context::parameters->guiTheme->load("Label");
 		m_sentenceLabel->setText(m_sentence);
 		m_sentenceLabel->setTextSize(10);
 		//Center the label
-		m_sentenceLabel->setPosition((bindWidth(gui) - bindWidth(m_sentenceLabel))/2, bindHeight(gui, 0.5f));
+		m_sentenceLabel->setPosition((bindWidth(gui) - bindWidth(m_sentenceLabel))/2, bindHeight(gui) * 0.5f);
 		gui.add(m_sentenceLabel);
 
-		m_hintLabel = tgui::Label::create(Context::parameters->guiConfigFile);
+		m_hintLabel = Context::parameters->guiTheme->load("Label");
 		m_hintLabel->setText(Context::langManager->tr(line));
 		m_hintLabel->setTextSize(15);
 		//Center the label
-		m_hintLabel->setPosition((bindWidth(gui) - bindWidth(m_hintLabel))/2.f, bindHeight(gui, 0.38f));
+		m_hintLabel->setPosition((bindWidth(gui) - bindWidth(m_hintLabel))/2.f, bindHeight(gui) * 0.38f);
 		gui.add(m_hintLabel);
 	}
 }

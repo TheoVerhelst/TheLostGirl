@@ -1,6 +1,6 @@
 #include <SFML/System/Time.hpp>
 #include <SFML/Window/Event.hpp>
-#include <TGUI/Gui.hpp>
+#include <TGUI/TGUI.hpp>
 #include <TheLostGirl/states/MainMenuState.h>
 #include <TheLostGirl/StateStack.h>
 #include <TheLostGirl/Parameters.h>
@@ -14,19 +14,19 @@ IntroState::IntroState()
 	using tgui::bindHeight;
 	tgui::Gui& gui(*Context::gui);
 
-	m_background = tgui::Panel::create();
-	m_background->setPosition(bindWidth(gui, 0.25f), bindHeight(gui, 0.f));
-	m_background->setSize(bindWidth(gui, 0.5f), bindHeight(gui));
+	m_background = std::make_shared<tgui::Panel>();
+	m_background->setPosition(bindWidth(gui) * 0.25f, bindHeight(gui) * 0.f);
+	m_background->setSize(bindWidth(gui) * 0.5f, bindHeight(gui));
 	m_background->setBackgroundColor(sf::Color(255, 255, 255, 100));
 	gui.add(m_background);
 
-	m_logo = tgui::Picture::create(Context::parameters->imagePath + "title.png");
-	m_logo->setPosition((bindWidth(gui) - bindWidth(m_logo))/2, bindHeight(gui, 0.f));
+	m_logo = std::make_shared<tgui::Picture>(Context::parameters->imagePath + "title.png");
+	m_logo->setPosition((bindWidth(gui) - bindWidth(m_logo))/2, bindHeight(gui) * 0.f);
 	gui.add(m_logo);
 
-	m_sentence = tgui::Label::create(Context::parameters->guiConfigFile);
+	m_sentence = Context::parameters->guiTheme->load("Label");
 	m_sentence->setTextSize(15);
-	m_sentence->setPosition((bindWidth(gui) - bindWidth(m_sentence))/2, bindHeight(gui, 0.5));
+	m_sentence->setPosition((bindWidth(gui) - bindWidth(m_sentence))/2, bindHeight(gui) * 0.5);
 	gui.add(m_sentence);
 	resetTexts();
 }

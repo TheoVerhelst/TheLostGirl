@@ -2,9 +2,7 @@
 #define DEBUGDRAW_H
 
 #include <Box2D/Common/b2Draw.h>
-#include <TGUI/Label.hpp>
-#include <TGUI/Scrollbar.hpp>
-#include <TGUI/ChatBox.hpp>
+#include <TGUI/TGUI.hpp>
 #include <TheLostGirl/StateStack.h>
 
 //Forward declarations
@@ -20,8 +18,8 @@ struct Parameters;
 class DebugDraw : public b2Draw
 {
 	public:
-		/// Constructor.
-		DebugDraw(tgui::Gui& gui, const std::string& guiCongifFile);
+		/// Default constructor.
+		DebugDraw(tgui::Gui& gui, tgui::Theme::Ptr guiTheme);
 
 		/// Destructor.
 		virtual ~DebugDraw();
@@ -70,7 +68,7 @@ class DebugDraw : public b2Draw
 
 		/// Changes the font of the text.
 		/// \param font The new font.
-		void setTextFont(std::shared_ptr<sf::Font> font);
+		void setFont(std::shared_ptr<sf::Font> font);
 
 	private:
 		/// Return a string containing x with 2 decimals.

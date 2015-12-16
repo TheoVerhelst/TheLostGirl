@@ -1,9 +1,7 @@
 #ifndef HUDSTATE_H
 #define HUDSTATE_H
 
-#include <TGUI/Panel.hpp>
-#include <TGUI/Canvas.hpp>
-#include <TGUI/Picture.hpp>
+#include <TGUI/TGUI.hpp>
 #include <TheLostGirl/State.h>
 #include <TheLostGirl/HashEntity.h>
 

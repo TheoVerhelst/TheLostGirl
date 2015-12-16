@@ -1,14 +1,7 @@
 #ifndef OPENINVENTORYSTATE_H
 #define OPENINVENTORYSTATE_H
 
-#include <TGUI/Panel.hpp>
-#include <TGUI/Scrollbar.hpp>
-#include <TGUI/ChildWindow.hpp>
-#include <TGUI/Picture.hpp>
-#include <TGUI/Tab.hpp>
-#include <TGUI/Label.hpp>
-#include <TGUI/HorizontalLayout.hpp>
-#include <TGUI/VerticalLayout.hpp>
+#include <TGUI/TGUI.hpp>
 #include <TheLostGirl/State.h>
 #include <TheLostGirl/components.h>
 

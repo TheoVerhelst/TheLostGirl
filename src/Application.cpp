@@ -11,23 +11,10 @@
 #include <TheLostGirl/Application.h>
 
 Application::Application(bool debugMode):
-	m_parameters{},
-	m_window{},
-	m_postEffectsTexture{},
-	m_bloomEffect{},
-	m_gui{},
-	m_textureManager{},
-	m_fontManager{},
-	m_scriptManager{},
-	m_langManager{},
-	m_eventManager{},
 	m_entityManager{m_eventManager},
 	m_systemManager{m_entityManager, m_eventManager},
 	m_world{m_parameters.gravity},
-	m_stateStack{},
-	m_player{},
-	m_debugDraw{m_gui, m_parameters.guiConfigFile},
-	m_FPSTimer{},
+	m_debugDraw{m_gui, m_parameters.guiTheme},
 	m_FPSRefreshRate{sf::milliseconds(50)},
 	m_frameTime{sf::seconds(1.f/60.f)}
 {
@@ -115,9 +102,9 @@ int Application::init()
 		m_window.setKeyRepeatEnabled(false);//Desactive the key repeating
 		m_fontManager.load("menu", "resources/fonts/euphorigenic.ttf");
 		m_fontManager.load("debug", "resources/fonts/FreeMonoBold.ttf");
-		m_gui.setGlobalFont(std::make_shared<sf::Font>(m_fontManager.get("menu")));
+		m_gui.setFont(std::make_shared<sf::Font>(m_fontManager.get("menu")));
 		m_world.SetDebugDraw(&m_debugDraw);
-		m_debugDraw.setTextFont(std::make_shared<sf::Font>(m_fontManager.get("debug")));
+		m_debugDraw.setFont(std::make_shared<sf::Font>(m_fontManager.get("debug")));
 		m_debugDraw.SetFlags(b2Draw::e_shapeBit|b2Draw::e_jointBit);//Debug drawing flags
 		m_systemManager.configure();
 		m_stateStack.pushState<IntroState>();//Add the intro state

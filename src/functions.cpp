@@ -4,7 +4,7 @@
 #include <SFML/Graphics/Rect.hpp>
 #include <SFML/System/Time.hpp>
 #include <SFML/Window/Event.hpp>
-#include <TGUI/Gui.hpp>
+#include <TGUI/TGUI.hpp>
 #include <Box2D/Dynamics/Joints/b2Joint.h>
 #include <Box2D/Dynamics/Joints/b2RevoluteJoint.h>
 #include <Box2D/Dynamics/Joints/b2PrismaticJoint.h>

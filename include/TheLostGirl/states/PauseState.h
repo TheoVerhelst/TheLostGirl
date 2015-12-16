@@ -1,9 +1,7 @@
 #ifndef PAUSESTATE_H
 #define PAUSESTATE_H
 
-#include <TGUI/Button.hpp>
-#include <TGUI/Label.hpp>
-#include <TGUI/VerticalLayout.hpp>
+#include <TGUI/TGUI.hpp>
 #include <TheLostGirl/State.h>
 
 //Forward declarations

@@ -1,9 +1,7 @@
 #ifndef INTROSTATE_H
 #define INTROSTATE_H
 
-#include <TGUI/Picture.hpp>
-#include <TGUI/Panel.hpp>
-#include <TGUI/Label.hpp>
+#include <TGUI/TGUI.hpp>
 #include <TheLostGirl/State.h>
 
 //Forward declarations

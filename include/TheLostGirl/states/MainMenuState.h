@@ -2,9 +2,7 @@
 #define MAINMENUSTATE_H
 
 #include <memory>
-#include <TGUI/Button.hpp>
-#include <TGUI/Picture.hpp>
-#include <TGUI/VerticalLayout.hpp>
+#include <TGUI/TGUI.hpp>
 #include <TheLostGirl/State.h>
 
 //Forward declarations

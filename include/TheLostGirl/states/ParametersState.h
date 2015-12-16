@@ -1,15 +1,7 @@
 #ifndef PARAMETERSSTATE_H
 #define PARAMETERSSTATE_H
 
-#include <TGUI/Scrollbar.hpp>
-#include <TGUI/Slider.hpp>
-#include <TGUI/Checkbox.hpp>
-#include <TGUI/ComboBox.hpp>
-#include <TGUI/Button.hpp>
-#include <TGUI/Canvas.hpp>
-#include <TGUI/Label.hpp>
-#include <TGUI/Panel.hpp>
-#include <TGUI/Grid.hpp>
+#include <TGUI/TGUI.hpp>
 #include <TheLostGirl/State.h>
 #include <TheLostGirl/LangManager.h>
 
@@ -80,7 +72,7 @@ class ParametersState : public State
 		tgui::Label::Ptr m_langLabel;            ///< The label of the lang combo box.
 		tgui::ComboBox::Ptr m_langComboBox;      ///< The lang combo box.
 		tgui::Label::Ptr m_bloomLabel;           ///< The label of the bloom checkbox.
-		tgui::Checkbox::Ptr m_bloomCheckbox;     ///< The bloom checkbox.
+		tgui::CheckBox::Ptr m_bloomCheckBox;     ///< The bloom checkbox.
 		tgui::Label::Ptr m_mainVolumeLabel;      ///< The label of the main volume slider.
 		tgui::Slider::Ptr m_mainVolumeSlider;    ///< The main volume slider.
 		tgui::Label::Ptr m_musicVolumeLabel;     ///< The label of the music volume slider.
@@ -90,7 +82,7 @@ class ParametersState : public State
 		tgui::Label::Ptr m_ambianceVolumeLabel;  ///< The label of the ambiance volume slider.
 		tgui::Slider::Ptr m_ambianceVolumeSlider;///< The ambiance volume slider.
 		tgui::Label::Ptr m_fullscreenLabel;      ///< The fulscreen label.
-		tgui::Checkbox::Ptr m_fullscreenCheckbox;///< The fullscreen checkbox.
+		tgui::CheckBox::Ptr m_fullscreenCheckBox;///< The fullscreen checkbox.
 		tgui::ComboBox::Ptr m_fullscreenComboBox;///< The fulscreen combo box.
 		tgui::Label::Ptr m_controlsLabel;        ///< The label of the controls button.
 		tgui::Button::Ptr m_controlsButton;      ///< The controls button.

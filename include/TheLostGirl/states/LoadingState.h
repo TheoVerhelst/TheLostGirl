@@ -1,8 +1,7 @@
 #ifndef LOADINGSTATE_H
 #define LOADINGSTATE_H
 
-#include <TGUI/Label.hpp>
-#include <TGUI/Panel.hpp>
+#include <TGUI/TGUI.hpp>
 #include <TheLostGirl/State.h>
 
 //Forward declarations

@@ -1,4 +1,4 @@
-#include <TGUI/Gui.hpp>
+#include <TGUI/TGUI.hpp>
 #include <TheLostGirl/states/GameState.h>
 #include <TheLostGirl/states/LoadingState.h>
 #include <TheLostGirl/LangManager.h>
@@ -14,25 +14,25 @@ MainMenuState::MainMenuState()
 	using tgui::bindHeight;
 	tgui::Gui& gui(*Context::gui);
 
-	m_background = tgui::VerticalLayout::create();
-	m_background->setPosition(bindWidth(gui, 0.25f), bindHeight(gui, 0.f));
-	m_background->setSize(bindWidth(gui, 0.5f), bindHeight(gui));
+	m_background = std::make_shared<tgui::VerticalLayout>();
+	m_background->setPosition(bindWidth(gui) * 0.25f, bindHeight(gui) * 0.f);
+	m_background->setSize(bindWidth(gui) * 0.5f, bindHeight(gui));
 	m_background->setBackgroundColor(sf::Color(255, 255, 255, 100));
 	gui.add(m_background);
 
-	m_logo = tgui::Picture::create(Context::parameters->imagePath + "title.png");
-	m_logo->setPosition((bindWidth(gui) - bindWidth(m_logo))/2, bindHeight(gui, 0.f));
+	m_logo = std::make_shared<tgui::Picture>(Context::parameters->imagePath + "title.png");
+	m_logo->setPosition((bindWidth(gui) - bindWidth(m_logo))/2, bindHeight(gui) * 0.f);
 	gui.add(m_logo);
 
-	m_newButton = tgui::Button::create(Context::parameters->guiConfigFile);
+	m_newButton = Context::parameters->guiTheme->load("Button");
 	m_newButton->connect("pressed", &MainMenuState::playGame, this);
 	m_background->add(m_newButton);
 
-	m_loadButton = tgui::Button::create(Context::parameters->guiConfigFile);
+	m_loadButton = Context::parameters->guiTheme->load("Button");
 	m_loadButton->connect("pressed", &MainMenuState::playGame, this);
 	m_background->add(m_loadButton);
 
-	m_exitButton = tgui::Button::create(Context::parameters->guiConfigFile);
+	m_exitButton = Context::parameters->guiTheme->load("Button");
 	m_exitButton->connect("pressed", &MainMenuState::exitGame, this);
 	m_background->add(m_exitButton);
 

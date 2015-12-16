@@ -1,4 +1,4 @@
-#include <TGUI/Gui.hpp>
+#include <TGUI/TGUI.hpp>
 #include <entityx/System.h>
 #include <TheLostGirl/states/MainMenuState.h>
 #include <TheLostGirl/StateStack.h>
@@ -17,35 +17,35 @@ PauseState::PauseState()
 	using tgui::bindHeight;
 	tgui::Gui& gui(*Context::gui);
 
-	m_background = tgui::VerticalLayout::create();
-	m_background->setPosition(bindWidth(gui, 0.25f), bindHeight(gui, 0.f));
-	m_background->setSize(bindWidth(gui, 0.5f), bindHeight(gui));
+	m_background = std::make_shared<tgui::VerticalLayout>();
+	m_background->setPosition(bindWidth(gui) * 0.25f, bindHeight(gui) * 0.f);
+	m_background->setSize(bindWidth(gui) * 0.5f, bindHeight(gui));
 	m_background->setBackgroundColor(sf::Color(255, 255, 255, 100));
 	gui.add(m_background);
 
 	m_background->addSpace();
 
-	tgui::Panel::Ptr titlePanel = tgui::Panel::create();
+	tgui::Panel::Ptr titlePanel = std::make_shared<tgui::Panel>();
 	titlePanel->setBackgroundColor(sf::Color::Transparent);
 	m_background->add(titlePanel);
-	m_pauseLabel = tgui::Label::create(Context::parameters->guiConfigFile);
+	m_pauseLabel = Context::parameters->guiTheme->load("Label");
 	titlePanel->add(m_pauseLabel);
 	m_pauseLabel->setTextSize(40);
 	m_pauseLabel->setPosition((bindWidth(titlePanel)-bindWidth(m_pauseLabel))/2, 0.f);
 
 	m_background->addSpace();
 
-	m_backToGameButton = tgui::Button::create(Context::parameters->guiConfigFile);
+	m_backToGameButton = Context::parameters->guiTheme->load("Button");
 	m_backToGameButton->setTextSize(25);
 	m_backToGameButton->connect("pressed", &PauseState::backToGame, this);
 	m_background->add(m_backToGameButton);
 
-	m_goToOptionsButton = tgui::Button::create(Context::parameters->guiConfigFile);
+	m_goToOptionsButton = Context::parameters->guiTheme->load("Button");
 	m_goToOptionsButton->setTextSize(25);
 	m_goToOptionsButton->connect("pressed", [this]{m_background->hide(); requestStackPush<ParametersState>();});
 	m_background->add(m_goToOptionsButton);
 
-	m_backToMainMenuButton = tgui::Button::create(Context::parameters->guiConfigFile);
+	m_backToMainMenuButton = Context::parameters->guiTheme->load("Button");
 	m_backToMainMenuButton->setTextSize(25);
 	m_backToMainMenuButton->connect("pressed", &PauseState::backToMainMenu, this);
 	m_background->add(m_backToMainMenuButton);
