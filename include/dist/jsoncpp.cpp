@@ -73,7 +73,7 @@ license you like.
 
 
 
-#include <json/json.h>
+#include <dist/json/json.h>
 
 
 // //////////////////////////////////////////////////////////////////////
@@ -187,10 +187,10 @@ static inline void fixNumericLocale(char* begin, char* end) {
 // See file LICENSE for detail or copy at http://jsoncpp.sourceforge.net/LICENSE
 
 #if !defined(JSON_IS_AMALGAMATION)
-#include <json/assertions.h>
-#include <json/reader.h>
-#include <json/value.h>
-#include "json_tool.h"
+#include <dist/json/assertions.h>
+#include <dist/json/reader.h>
+#include <dist/json/value.h>
+#include "dist/dist/json_tool.h"
 #endif//if !defined(JSON_IS_AMALGAMATION)
 #include <utility>
 #include <cstdio>
@@ -1502,11 +1502,11 @@ ValueIterator& ValueIterator::operator=(const SelfType& other) {
 // See file LICENSE for detail or copy at http://jsoncpp.sourceforge.net/LICENSE
 
 #if !defined(JSON_IS_AMALGAMATION)
-#include <json/assertions.h>
-#include <json/value.h>
-#include <json/writer.h>
+#include <dist/json/assertions.h>
+#include <dist/json/value.h>
+#include <dist/json/writer.h>
 #ifndef JSON_USE_SIMPLE_INTERNAL_ALLOCATOR
-#include "json_batchallocator.h"
+#include "dist/json_batchallocator.h"
 #endif//#ifndef JSON_USE_SIMPLE_INTERNAL_ALLOCATOR
 #endif//if !defined(JSON_IS_AMALGAMATION)
 #include <math.h>
@@ -1615,11 +1615,11 @@ static inline void releaseStringValue(char* value) { free(value); }
 // //////////////////////////////////////////////////////////////////
 #if !defined(JSON_IS_AMALGAMATION)
 #ifdef JSON_VALUE_USE_INTERNAL_MAP
-#include "json_internalarray.inl"
-#include "json_internalmap.inl"
+#include "dist/dist/json_internalarray.inl"
+#include "dist/dist/json_internalmap.inl"
 #endif//JSON_VALUE_USE_INTERNAL_MAP
 
-#include "json_valueiterator.inl"
+#include "dist/dist/json_valueiterator.inl"
 #endif//if !defined(JSON_IS_AMALGAMATION)
 
 namespace Json {
@@ -3058,8 +3058,8 @@ Value& Path::make(Value& root) const {
 // See file LICENSE for detail or copy at http://jsoncpp.sourceforge.net/LICENSE
 
 #if !defined(JSON_IS_AMALGAMATION)
-#include <json/writer.h>
-#include "json_tool.h"
+#include <dist/json/writer.h>
+#include "dist/json_tool.h"
 #endif//if !defined(JSON_IS_AMALGAMATION)
 #include <utility>
 #include <assert.h>

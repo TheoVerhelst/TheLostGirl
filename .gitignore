@@ -7,4 +7,9 @@ bin/TheLostGirl
 bin/TheLostGirl-d
 bin/gmon.out
 bin/sc.py
-bin/out
+bin/CMakeCache.txt
+bin/CMakeFiles/
+bin/Makefile
+bin/cmake_install.cmake
+bin/settings.json
+
