@@ -10,18 +10,16 @@
 MainMenuState::MainMenuState()
 {
 	Context::eventManager->subscribe<ParametersChange>(*this);
-	using tgui::bindWidth;
-	using tgui::bindHeight;
 	tgui::Gui& gui(*Context::gui);
 
 	m_background = std::make_shared<tgui::VerticalLayout>();
-	m_background->setPosition(bindWidth(gui) * 0.25f, bindHeight(gui) * 0.f);
-	m_background->setSize(bindWidth(gui) * 0.5f, bindHeight(gui));
+	m_background->setPosition(tgui::bindWidth(gui) * 0.25f, tgui::bindHeight(gui) * 0.f);
+	m_background->setSize(tgui::bindWidth(gui) * 0.5f, tgui::bindHeight(gui));
 	m_background->setBackgroundColor(sf::Color(255, 255, 255, 100));
 	gui.add(m_background);
 
 	m_logo = std::make_shared<tgui::Picture>(Context::parameters->imagePath + "title.png");
-	m_logo->setPosition((bindWidth(gui) - bindWidth(m_logo))/2, bindHeight(gui) * 0.f);
+	m_logo->setPosition((tgui::bindWidth(gui) - tgui::bindWidth(m_logo)) / 2.f, tgui::bindHeight(gui) * 0.02f);
 	gui.add(m_logo);
 
 	m_newButton = Context::parameters->guiTheme->load("Button");
@@ -36,7 +34,7 @@ MainMenuState::MainMenuState()
 	m_exitButton->connect("pressed", &MainMenuState::exitGame, this);
 	m_background->add(m_exitButton);
 
-    m_background->insertSpace(0, 8.f/3.f);//Add a space before widgets
+    m_background->insertSpace(0, 4.f);//Add a space before widgets
     m_background->addSpace();//And another space after
 	resetTexts();
 }

@@ -10,25 +10,24 @@
 IntroState::IntroState()
 {
 	Context::eventManager->subscribe<ParametersChange>(*this);
-	using tgui::bindWidth;
-	using tgui::bindHeight;
 	tgui::Gui& gui(*Context::gui);
+	const auto guiWidth = tgui::bindWidth(gui);
 
 	m_background = std::make_shared<tgui::Panel>();
-	m_background->setPosition(bindWidth(gui) * 0.25f, bindHeight(gui) * 0.f);
-	m_background->setSize(bindWidth(gui) * 0.5f, bindHeight(gui));
+	m_background->setPosition(guiWidth * 0.25f, 0.f);
+	m_background->setSize(guiWidth * 0.5f, tgui::bindHeight(gui));
 	m_background->setBackgroundColor(sf::Color(255, 255, 255, 100));
 	gui.add(m_background);
 
 	m_logo = std::make_shared<tgui::Picture>(Context::parameters->imagePath + "title.png");
-	m_logo->setPosition((bindWidth(gui) - bindWidth(m_logo))/2, bindHeight(gui) * 0.f);
+	m_logo->setPosition((tgui::bindWidth(gui) - tgui::bindWidth(m_logo)) / 2.f, tgui::bindHeight(gui) * 0.02f);
 	gui.add(m_logo);
 
 	m_sentence = Context::parameters->guiTheme->load("Label");
-	m_sentence->setTextSize(15);
-	m_sentence->setPosition((bindWidth(gui) - bindWidth(m_sentence))/2, bindHeight(gui) * 0.5);
-	gui.add(m_sentence);
+	m_sentence->setTextSize(20);
 	resetTexts();
+	m_sentence->setPosition(tgui::bindWidth(gui)/2.f - tgui::bindWidth(m_sentence)/2.f, tgui::bindHeight(gui) * 0.6f);
+	gui.add(m_sentence);
 }
 
 IntroState::~IntroState()

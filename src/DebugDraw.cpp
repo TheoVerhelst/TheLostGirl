@@ -43,7 +43,7 @@ void DebugDraw::initWidgets()
 	gui.add(m_FPSLabel);
 	m_console->setPosition(tgui::bindWidth(gui) * 0.5f, tgui::bindHeight(gui) * 0.7f);
 	m_console->setSize(tgui::bindWidth(gui) * 0.5f - 10.f, tgui::bindHeight(gui) * 0.3f - 10.f);
-	m_console->setTextSize(50);
+	m_console->setTextSize(10);
 	gui.add(m_console);
 }
 

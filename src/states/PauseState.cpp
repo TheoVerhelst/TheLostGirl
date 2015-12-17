@@ -30,8 +30,7 @@ PauseState::PauseState()
 	m_background->add(titlePanel);
 	m_pauseLabel = Context::parameters->guiTheme->load("Label");
 	titlePanel->add(m_pauseLabel);
-	m_pauseLabel->setTextSize(40);
-	m_pauseLabel->setPosition((bindWidth(titlePanel)-bindWidth(m_pauseLabel))/2, 0.f);
+	m_pauseLabel->setTextSize(50);
 
 	m_background->addSpace();
 
@@ -52,6 +51,7 @@ PauseState::PauseState()
 
 	m_background->addSpace();
 	resetTexts();
+	m_pauseLabel->setPosition((bindWidth(titlePanel)-bindWidth(m_pauseLabel))/2, 0.f);
 }
 
 PauseState::~PauseState()
