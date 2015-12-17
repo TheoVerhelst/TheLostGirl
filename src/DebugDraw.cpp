@@ -9,17 +9,27 @@
 #include <TheLostGirl/functions.h>
 #include <TheLostGirl/DebugDraw.h>
 
-DebugDraw::DebugDraw(tgui::Gui& gui, tgui::Theme::Ptr guiTheme):
+DebugDraw::DebugDraw():
 	m_debugMode{true},
-	m_positionLabel{guiTheme->load("Label")},
-	m_mousePositionLabel{guiTheme->load("Label")},
-	m_FPSLabel{guiTheme->load("Label")},
-	m_console{guiTheme->load("ChatBox")},
-	m_outStringStream{},
-	m_errStringStream{},
 	m_coutStreambuf{std::cout.rdbuf(m_outStringStream.rdbuf())},
 	m_cerrStreambuf{std::cerr.rdbuf(m_errStringStream.rdbuf())}
 {
+}
+
+DebugDraw::~DebugDraw()
+{
+	std::cout.rdbuf(m_coutStreambuf);
+	std::cerr.rdbuf(m_cerrStreambuf);
+}
+
+void DebugDraw::initWidgets()
+{
+	m_positionLabel = Context::parameters->guiTheme->load("Label");
+	m_mousePositionLabel = Context::parameters->guiTheme->load("Label");
+	m_FPSLabel = Context::parameters->guiTheme->load("Label");
+	m_console = Context::parameters->guiTheme->load("ChatBox");
+	tgui::Gui& gui = *Context::gui;
+
 	m_positionLabel->setPosition(tgui::bindWidth(gui) * 0.01f, tgui::bindHeight(gui) * 0.01f);
 	m_positionLabel->setTextSize(10);
 	gui.add(m_positionLabel);
@@ -35,12 +45,6 @@ DebugDraw::DebugDraw(tgui::Gui& gui, tgui::Theme::Ptr guiTheme):
 	m_console->setSize(tgui::bindWidth(gui) * 0.5f - 10.f, tgui::bindHeight(gui) * 0.3f - 10.f);
 	m_console->setTextSize(50);
 	gui.add(m_console);
-}
-
-DebugDraw::~DebugDraw()
-{
-	std::cout.rdbuf(m_coutStreambuf);
-	std::cerr.rdbuf(m_cerrStreambuf);
 }
 
 void DebugDraw::DrawPolygon(const b2Vec2* vertices, int32 vertexCount, const b2Color& color)

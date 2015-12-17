@@ -19,10 +19,14 @@ class DebugDraw : public b2Draw
 {
 	public:
 		/// Default constructor.
-		DebugDraw(tgui::Gui& gui, tgui::Theme::Ptr guiTheme);
+		DebugDraw();
 
 		/// Destructor.
 		virtual ~DebugDraw();
+
+		/// Initialize all gui widgets.
+		/// This methoud should be called before any call of others methods.
+		void initWidgets();
 
 		/// Draw a holow Box2D polygon.
 		/// \param vertices Vertices to draw.

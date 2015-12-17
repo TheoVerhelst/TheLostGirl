@@ -14,7 +14,6 @@ Application::Application(bool debugMode):
 	m_entityManager{m_eventManager},
 	m_systemManager{m_entityManager, m_eventManager},
 	m_world{m_parameters.gravity},
-	m_debugDraw{m_gui, m_parameters.guiTheme},
 	m_FPSRefreshRate{sf::milliseconds(50)},
 	m_frameTime{sf::seconds(1.f/60.f)}
 {
@@ -71,6 +70,7 @@ Application::Application(bool debugMode):
 	}
 	m_parameters.debugMode = debugMode;
 	m_gui.setWindow(m_window);
+	m_debugDraw.initWidgets();
 	handleResize();
 }
 

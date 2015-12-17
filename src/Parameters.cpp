@@ -9,5 +9,4 @@ Parameters::Parameters():
 	fullscreen{true},
 	guiTheme{std::make_shared<tgui::Theme>("resources/gui.conf")}
 {
-	std::cerr << "******************OK******************" << std::endl;
 }
