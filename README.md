@@ -13,14 +13,25 @@ In order to compile The Lost Girl from sources, you have to install the followin
 See below for download link of these librairies.
 Json-cpp is already included.
 
+For now, the compilation was tested only under Linux.  
+To compile The Lost Girl, run the following commands in a terminal once you are in the main directory:
+```
+cd bin
+cmake ..
+make
+```
+And then go have a coffee.  
+The executable is now available by running `./TheLostGirl`.
+
 ## API Reference
 
-Run the following commands in a terminal once you are in the *doxygen* folder:  
+Run the following commands in a terminal once you are in the main directory:  
 ```
+cd doxygen
 doxygen
 sensible-browser html/index.html
 ```
-This works only under Linux. There is no way to do programming under Windows.
+For now this was tested only under Linux.
 
 ## Contributors
 
