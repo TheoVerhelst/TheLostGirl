@@ -8,13 +8,12 @@ In order to compile The Lost Girl from sources, you have to install the followin
 * SFML version 2.3
 * TGUI version 0.7-alpha2
 * Box2D version 2.3
-* Entityx version 1.0.0alpha1
+* Entityx version 1.0.0alpha1 or higher
 * Boost version 1.57 or higher  
 See below for download link of these librairies.
 Json-cpp is already included.
 
-For now, the compilation was tested only under Linux.  
-To compile The Lost Girl, run the following commands in a terminal once you are in the main directory:
+Once you have installed the librairies, run the following commands in a terminal in the main directory:
 ```
 cd bin
 cmake ..
@@ -22,6 +21,7 @@ make
 ```
 And then go have a coffee.  
 The executable is now available by running `./TheLostGirl`.
+For now, the compilation was tested only under Linux.  
 
 ## API Reference
 
