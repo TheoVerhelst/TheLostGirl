@@ -2,6 +2,7 @@
 #define SCROLLINGSYSTEM_H
 
 #include <entityx/System.h>
+#include <SFML/Graphics/Rect.hpp>
 
 //Forward declarations
 namespace sf

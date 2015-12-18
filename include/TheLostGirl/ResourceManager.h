@@ -14,6 +14,7 @@ namespace sf
 {
 	class Texture;
 	class Font;
+	class Shader;
 }
 enum class Textures;
 enum class Fonts;

@@ -2,13 +2,8 @@
 #define COMMAND_H
 
 #include <functional>
+#include <entityx/Entity.h>
 #include <TheLostGirl/Category.h>
-
-//Forward declarations
-namespace entityx
-{
-	class Entity;
-}
 
 /// Function applied to an entity.
 /// The Command structure hold a function that will be applied to a specific entity.

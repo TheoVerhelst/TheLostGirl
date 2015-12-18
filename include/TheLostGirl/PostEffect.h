@@ -2,6 +2,7 @@
 #define POSTEFFECT_H
 
 #include <SFML/System/NonCopyable.hpp>
+#include <SFML/Graphics/RenderStates.hpp>
 
 
 namespace sf

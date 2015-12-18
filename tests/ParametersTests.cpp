@@ -1,18 +1,18 @@
 #include <boost/test/unit_test.hpp>
 #include <TheLostGirl/Parameters.h>
 
-struct Data
+struct TestFixture
 {
-	Data()
+	TestFixture()
 	{
 	}
 
-	~Data()
+	~TestFixture()
 	{
 	}
 };
 
-BOOST_FIXTURE_TEST_SUITE(Parameters, Data)
+BOOST_FIXTURE_TEST_SUITE(ParametersTests, TestFixture)
  
 BOOST_AUTO_TEST_CASE(MyMethod)
 {

@@ -1,18 +1,18 @@
 #include <boost/test/unit_test.hpp>
 #include <TheLostGirl/Context.h>
 
-struct Data
+struct TestFixture
 {
-	Data()
+	TestFixture()
 	{
 	}
 
-	~Data()
+	~TestFixture()
 	{
 	}
 };
 
-BOOST_FIXTURE_TEST_SUITE(Context, Data)
+BOOST_FIXTURE_TEST_SUITE(ContextTests, TestFixture)
  
 BOOST_AUTO_TEST_CASE(MyMethod)
 {

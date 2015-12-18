@@ -4,13 +4,9 @@
 #include <unordered_set>
 
 #include <Box2D/Dynamics/b2WorldCallbacks.h>
+#include <entityx/Entity.h>
 #include <TheLostGirl/Action.h>
 #include <TheLostGirl/HashEntity.h>
-
-namespace entityx
-{
-    class Entity;
-}
 
 /// Performs a hand to hand attack in front on the entity.
 /// This attack strikes all entities that are near the entity at once.

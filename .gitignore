@@ -5,6 +5,7 @@ TheLostGirl.layout
 doxygen/
 bin/TheLostGirl
 bin/TheLostGirl-d
+bin/TheLostGirl-tests
 bin/gmon.out
 bin/sc.py
 bin/CMakeCache.txt

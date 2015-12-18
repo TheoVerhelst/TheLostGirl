@@ -1,18 +1,18 @@
 #include <boost/test/unit_test.hpp>
 #include <TheLostGirl/actions/HandToHand.h>
 
-struct Data
+struct TestFixture
 {
-	Data()
+	TestFixture()
 	{
 	}
 
-	~Data()
+	~TestFixture()
 	{
 	}
 };
 
-BOOST_FIXTURE_TEST_SUITE(HandToHand, Data)
+BOOST_FIXTURE_TEST_SUITE(HandToHandTests, TestFixture)
  
 BOOST_AUTO_TEST_CASE(MyMethod)
 {

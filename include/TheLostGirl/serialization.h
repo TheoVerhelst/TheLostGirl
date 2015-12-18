@@ -1,6 +1,9 @@
 #ifndef SERIALIZATION_H
 #define SERIALIZATION_H
 
+#include <entityx/Entity.h>
+#include <TheLostGirl/components.h>
+
 //Forward declarations
 namespace Json
 {

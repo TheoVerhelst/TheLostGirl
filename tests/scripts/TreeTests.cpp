@@ -1,18 +1,18 @@
 #include <boost/test/unit_test.hpp>
 #include <TheLostGirl/scripts/Tree.h>
 
-struct Data
+struct TestFixture
 {
-	Data()
+	TestFixture()
 	{
 	}
 
-	~Data()
+	~TestFixture()
 	{
 	}
 };
 
-BOOST_FIXTURE_TEST_SUITE(Tree, Data)
+BOOST_FIXTURE_TEST_SUITE(TreeTests, TestFixture)
  
 BOOST_AUTO_TEST_CASE(MyMethod)
 {

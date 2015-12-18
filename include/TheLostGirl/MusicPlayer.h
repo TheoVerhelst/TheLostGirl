@@ -1,12 +1,8 @@
 #ifndef MUSICPLAYER_H
 #define MUSICPLAYER_H
 
-//Forward declarations
-namespace sf
-{
-	class Music;
-	class NonCopyable;
-}
+#include <SFML/System/NonCopyable.hpp>
+#include <SFML/Audio/Music.hpp>
 
 /// Handle the list of musics in the game and play one of them at once.
 /// This manager is useful for avoiding multiple musics played at the same time

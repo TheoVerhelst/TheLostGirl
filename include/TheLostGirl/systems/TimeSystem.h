@@ -5,6 +5,11 @@
 #include <entityx/System.h>
 
 //Forward declarations
+namespace sf
+{
+	class Time;
+}
+
 namespace entityx
 {
 	class EventManager;

@@ -1,18 +1,18 @@
 #include <boost/test/unit_test.hpp>
 #include <TheLostGirl/contactListeners/FallingListener.h>
 
-struct Data
+struct TestFixture
 {
-	Data()
+	TestFixture()
 	{
 	}
 
-	~Data()
+	~TestFixture()
 	{
 	}
 };
 
-BOOST_FIXTURE_TEST_SUITE(FallingListener, Data)
+BOOST_FIXTURE_TEST_SUITE(FallingListenerTests, TestFixture)
  
 BOOST_AUTO_TEST_CASE(MyMethod)
 {

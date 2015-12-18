@@ -2,12 +2,8 @@
 #define ARROWPICKER_H
 
 #include <Box2D/Dynamics/b2WorldCallbacks.h>
+#include <entityx/Entity.h>
 #include <TheLostGirl/Action.h>
-
-namespace entityx
-{
-    class Entity;
-}
 
 /// Structure that pick a sticked arrow nearby the entity.
 struct ArrowPicker : public Action

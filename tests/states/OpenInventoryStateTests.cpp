@@ -1,18 +1,18 @@
 #include <boost/test/unit_test.hpp>
 #include <TheLostGirl/states/OpenInventoryState.h>
 
-struct Data
+struct TestFixture
 {
-	Data()
+	TestFixture()
 	{
 	}
 
-	~Data()
+	~TestFixture()
 	{
 	}
 };
 
-BOOST_FIXTURE_TEST_SUITE(OpenInventoryState, Data)
+BOOST_FIXTURE_TEST_SUITE(OpenInventoryStateTests, TestFixture)
  
 BOOST_AUTO_TEST_CASE(MyMethod)
 {

@@ -2,6 +2,7 @@
 #define CONTACTLISTENER_H
 
 #include <Box2D/Dynamics/b2WorldCallbacks.h>
+#include <entityx/Entity.h>
 #include <TheLostGirl/contactListeners/FallingListener.h>
 #include <TheLostGirl/contactListeners/ArrowHitListener.h>
 #include <TheLostGirl/StateStack.h>

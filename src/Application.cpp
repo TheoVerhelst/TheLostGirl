@@ -158,7 +158,7 @@ int Application::run()
 	return 0;
 }
 
-void Application::receive(const ParametersChange& parametersChange)
+void Application::receive(const ParametersChange&)
 {
 }
 

@@ -1,7 +1,9 @@
 #ifndef HUDSTATE_H
 #define HUDSTATE_H
 
+#include <unordered_map>
 #include <TGUI/TGUI.hpp>
+#include <entityx/Entity.h>
 #include <TheLostGirl/State.h>
 #include <TheLostGirl/HashEntity.h>
 

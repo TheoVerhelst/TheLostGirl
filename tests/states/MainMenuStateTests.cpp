@@ -1,18 +1,18 @@
 #include <boost/test/unit_test.hpp>
 #include <TheLostGirl/states/MainMenuState.h>
 
-struct Data
+struct TestFixture
 {
-	Data()
+	TestFixture()
 	{
 	}
 
-	~Data()
+	~TestFixture()
 	{
 	}
 };
 
-BOOST_FIXTURE_TEST_SUITE(MainMenuState, Data)
+BOOST_FIXTURE_TEST_SUITE(MainMenuStateTests, TestFixture)
  
 BOOST_AUTO_TEST_CASE(MyMethod)
 {
