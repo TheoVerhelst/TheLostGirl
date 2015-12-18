@@ -5,6 +5,7 @@
 #include <unordered_map>
 #include <SFML/Graphics/Sprite.hpp>
 #include <SFML/System/Clock.hpp>
+#include <Box2D/Common/b2Math.h>
 #include <entityx/Entity.h>
 #include <TheLostGirl/Category.h>
 #include <TheLostGirl/AnimationsManager.h>

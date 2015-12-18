@@ -1,4 +1,6 @@
-#include <TheLostGirl/SpriteSheetAnimation.h>
+#include <cassert>
+#include <algorithm>
+#include <functional>
 
 template<typename A>
 void AnimationsManager<A>::addAnimation(const std::string& identifier, A animation, unsigned int importance, sf::Time duration, bool loops, bool stopAtEnd)

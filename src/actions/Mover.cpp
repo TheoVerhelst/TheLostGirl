@@ -4,6 +4,7 @@
 #include <Box2D/Collision/Shapes/b2ChainShape.h>
 #include <Box2D/Collision/Shapes/b2CircleShape.h>
 #include <TheLostGirl/components.h>
+#include <TheLostGirl/SpriteSheetAnimation.h>
 #include <TheLostGirl/FixtureRoles.h>
 #include <TheLostGirl/actions/Mover.h>
 

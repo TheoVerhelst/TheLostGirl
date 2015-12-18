@@ -5,6 +5,8 @@
 #include <entityx/entityx.h>
 #include <TheLostGirl/components.h>
 #include <TheLostGirl/Category.h>
+#include <TheLostGirl/Parameters.h>
+#include <TheLostGirl/Context.h>
 #include <TheLostGirl/PostEffect.h>
 #include <TheLostGirl/systems/RenderSystem.h>
 

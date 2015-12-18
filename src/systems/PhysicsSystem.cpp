@@ -6,6 +6,7 @@
 #include <TheLostGirl/Category.h>
 #include <TheLostGirl/Parameters.h>
 #include <TheLostGirl/functions.h>
+#include <TheLostGirl/Context.h>
 #include <TheLostGirl/systems/TimeSystem.h>
 #include <TheLostGirl/systems/PhysicsSystem.h>
 

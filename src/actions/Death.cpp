@@ -1,6 +1,7 @@
 #include <entityx/Entity.h>
 #include <TheLostGirl/components.h>
 #include <TheLostGirl/functions.h>
+#include <TheLostGirl/SpriteSheetAnimation.h>
 #include <TheLostGirl/scripts/scriptsFunctions.h>
 #include <TheLostGirl/actions/Death.h>
 

@@ -3,6 +3,7 @@
 #include <Box2D/Dynamics/b2World.h>
 #include <TheLostGirl/components.h>
 #include <TheLostGirl/functions.h>
+#include <TheLostGirl/SpriteSheetAnimation.h>
 #include <TheLostGirl/FixtureRoles.h>
 #include <TheLostGirl/actions/HandToHand.h>
 

@@ -5,6 +5,7 @@
 #include <entityx/Entity.h>
 #include <TheLostGirl/components.h>
 #include <TheLostGirl/AnimationsManager.h>
+#include <TheLostGirl/SpriteSheetAnimation.h>
 #include <TheLostGirl/events.h>
 #include <TheLostGirl/FixtureRoles.h>
 #include <TheLostGirl/contactListeners/FallingListener.h>

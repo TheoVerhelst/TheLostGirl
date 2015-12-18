@@ -3,6 +3,7 @@
 
 #include <entityx/Entity.h>
 #include <TheLostGirl/components.h>
+#include <TheLostGirl/SpriteSheetAnimation.h>
 
 //Forward declarations
 namespace Json

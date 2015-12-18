@@ -8,6 +8,8 @@
 #include <TheLostGirl/components.h>
 #include <TheLostGirl/AnimationsManager.h>
 #include <TheLostGirl/events.h>
+#include <TheLostGirl/Context.h>
+#include <TheLostGirl/Parameters.h>
 #include <TheLostGirl/functions.h>
 #include <TheLostGirl/FixtureRoles.h>
 #include <TheLostGirl/systems/PendingChangesSystem.h>

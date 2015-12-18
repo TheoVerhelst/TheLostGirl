@@ -5,6 +5,7 @@
 #include <TheLostGirl/events.h>
 #include <TheLostGirl/Command.h>
 #include <TheLostGirl/actions.h>
+#include <TheLostGirl/Context.h>
 #include <TheLostGirl/systems/PendingChangesSystem.h>
 #include <TheLostGirl/systems/StatsSystem.h>
 

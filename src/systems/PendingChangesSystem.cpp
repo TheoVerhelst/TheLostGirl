@@ -5,6 +5,7 @@
 #include <Box2D/Dynamics/b2Body.h>
 #include <Box2D/Dynamics/Joints/b2Joint.h>
 #include <TheLostGirl/Category.h>
+#include <TheLostGirl/Context.h>
 #include <TheLostGirl/components.h>
 #include <TheLostGirl/Command.h>
 #include <TheLostGirl/systems/PendingChangesSystem.h>

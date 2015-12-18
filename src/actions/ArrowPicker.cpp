@@ -5,6 +5,8 @@
 #include <Box2D/Dynamics/b2Fixture.h>
 #include <TheLostGirl/components.h>
 #include <TheLostGirl/functions.h>
+#include <TheLostGirl/Context.h>
+#include <TheLostGirl/Parameters.h>
 #include <TheLostGirl/actions/ArrowPicker.h>
 
 void ArrowPicker::operator()(entityx::Entity entity) const

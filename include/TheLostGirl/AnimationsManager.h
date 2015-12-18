@@ -1,12 +1,9 @@
 #ifndef ANIMATIONS_H
 #define ANIMATIONS_H
 
-#include <functional>
 #include <string>
 #include <map>
 #include <cmath>
-#include <cassert>
-#include <algorithm>
 #include <SFML/System/Time.hpp>
 #include <dist/json/json.h>
 #include <TheLostGirl/StateStack.h>
@@ -131,7 +128,7 @@ class AnimationsManager
 		/// \see stop
 		void pause(const std::string& identifier);
 
-		/// Stop and desactive the given animation and remove it from the played animations list.
+		/// Stop and desactivate the given animation and remove it from the played animations list.
 		/// If another less important animation is currently playing,
 		/// then this one will effectively be played.
 		/// \param identifier Identifier of the animation to stop.

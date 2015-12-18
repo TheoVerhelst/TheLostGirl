@@ -5,6 +5,7 @@
 #include <Box2D/Box2D.h>
 #include <TheLostGirl/Parameters.h>
 #include <TheLostGirl/components.h>
+#include <TheLostGirl/Context.h>
 #include <TheLostGirl/ResourceManager.h>
 #include <TheLostGirl/functions.h>
 #include <TheLostGirl/DebugDraw.h>
@@ -121,6 +122,7 @@ void DebugDraw::DrawSolidCircle(const b2Vec2& center, float32 radius, const b2Ve
 
 void DebugDraw::DrawSegment(const b2Vec2& p1, const b2Vec2& p2, const b2Color& color)
 {
+
 	sf::Vertex line[2];
 	line[0].position = sf::Vector2f(p1.x, p1.y)*Context::parameters->pixelByMeter;
 	line[1].position = sf::Vector2f(p2.x, p2.y)*Context::parameters->pixelByMeter;

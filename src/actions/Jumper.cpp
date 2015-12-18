@@ -1,6 +1,7 @@
 #include <entityx/Entity.h>
 #include <TheLostGirl/components.h>
 #include <TheLostGirl/functions.h>
+#include <TheLostGirl/SpriteSheetAnimation.h>
 #include <TheLostGirl/actions/Jumper.h>
 
 void Jumper::operator()(entityx::Entity entity) const

@@ -2,6 +2,7 @@
 #include <TheLostGirl/components.h>
 #include <TheLostGirl/scripts/Interpreter.h>
 #include <TheLostGirl/ResourceManager.h>
+#include <TheLostGirl/Context.h>
 #include <TheLostGirl/systems/ScriptsSystem.h>
 
 void ScriptsSystem::update(entityx::EntityManager& entityManager, entityx::EventManager&, double)
