@@ -22,6 +22,7 @@ make
 And then go have a coffee.  
 The executable is now available by running `./TheLostGirl`.
 For now, the compilation was tested only under Linux.  
+If you have problems with steps above, send me an email.
 
 ## API Reference
 
