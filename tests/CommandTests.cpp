@@ -35,12 +35,12 @@ BOOST_FIXTURE_TEST_SUITE(CommandTests, CommandTestsFixture)
 	BOOST_AUTO_TEST_CASE(copyConstructor)
 	{
 		Command command(targetSpecific);
-		BOOST_TEST(targetSpecific.entity == command.entity);
-		BOOST_TEST(targetSpecific.targetIsSpecific == command.targetIsSpecific);
+		BOOST_CHECK_EQUAL(targetSpecific.entity, command.entity);
+		BOOST_CHECK_EQUAL(targetSpecific.targetIsSpecific, command.targetIsSpecific);
 
 		Command otherCommand(targetNotSpecific);
-		BOOST_TEST(targetNotSpecific.category == otherCommand.category);
-		BOOST_TEST(targetNotSpecific.targetIsSpecific == otherCommand.targetIsSpecific);
+		BOOST_CHECK_EQUAL(targetNotSpecific.category, otherCommand.category);
+		BOOST_CHECK_EQUAL(targetNotSpecific.targetIsSpecific, otherCommand.targetIsSpecific);
 	}
 
 BOOST_AUTO_TEST_SUITE_END()
