@@ -13,10 +13,7 @@ struct ContactListenerTestsFixture
 };
 
 BOOST_FIXTURE_TEST_SUITE(ContactListenerTests, ContactListenerTestsFixture)
- 
-BOOST_AUTO_TEST_CASE(MyMethod)
-{
-    BOOST_CHECK(1 + 1 == 2);
-}
- 
+
+//Really difficult to test
+
 BOOST_AUTO_TEST_SUITE_END()

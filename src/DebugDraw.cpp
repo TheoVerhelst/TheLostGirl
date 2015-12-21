@@ -193,6 +193,7 @@ void DebugDraw::drawDebugAth()
 	CategoryComponent::Handle categoryComponent;
 	BodyComponent::Handle bodyComponent;
 	//Position
+	//TODO move find player in a private static method
 	b2Vec2 position{0, 0};
 	bool found{false};
 	for(auto entity : Context::entityManager->entities_with_components(categoryComponent, bodyComponent))
