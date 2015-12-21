@@ -25,28 +25,28 @@ struct TestFixture
 
 BOOST_FIXTURE_TEST_SUITE(AnimationsManagerTests, TestFixture)
 
-	BOOST_AUTO_TEST_CASE(getters)
-	{
+//	BOOST_AUTO_TEST_CASE(getters)
+//	{
 //		manager.isRegistred("a");
 	//	BOOST_TEST(manager.isPaused("a"));
 	//	BOOST_TEST(not manager.isActive("a"));
 	//	BOOST_TEST(manager.getProgress("a") == 0.f);
-	}
+//	}
 
-	BOOST_AUTO_TEST_CASE(setProgress)
-	{
+//	BOOST_AUTO_TEST_CASE(setProgress)
+//	{
 	//	manager.setProgress("a", 0.5f);
 	//	BOOST_TEST(manager.getProgress("a"), 0.5f);
-	}
+//	}
 
-	BOOST_AUTO_TEST_CASE(remove)
-	{
+//	BOOST_AUTO_TEST_CASE(remove)
+//	{
 	//	manager.removeAnimation("a");
 	//	BOOST_TEST(not manager.isRegistred("a"));
-	}
+//	}
 
-	BOOST_AUTO_TEST_CASE(play)
-	{
+//	BOOST_AUTO_TEST_CASE(play)
+//	{
 	//	manager.setProgress("a", 0.5f);
 	//	manager.play("a");
 	//	BOOST_TEST(not manager.isPaused("a"));
@@ -62,6 +62,6 @@ BOOST_FIXTURE_TEST_SUITE(AnimationsManagerTests, TestFixture)
 	//	BOOST_TEST(manager.isPaused("a"));
 	//	BOOST_TEST(not manager.isActive("a"));
 	//	BOOST_TEST(manager.getProgress("a"), 0.f);
-	}
+//	}
 
 BOOST_AUTO_TEST_SUITE_END()
