@@ -1,18 +1,18 @@
 #include <boost/test/unit_test.hpp>
 #include <TheLostGirl/systems/ScrollingSystem.h>
 
-struct TestFixture
+struct ScrollingSystemTestsFixture
 {
-	TestFixture()
+	ScrollingSystemTestsFixture()
 	{
 	}
 
-	~TestFixture()
+	~ScrollingSystemTestsFixture()
 	{
 	}
 };
 
-BOOST_FIXTURE_TEST_SUITE(ScrollingSystemTests, TestFixture)
+BOOST_FIXTURE_TEST_SUITE(ScrollingSystemTests, ScrollingSystemTestsFixture)
  
 BOOST_AUTO_TEST_CASE(MyMethod)
 {

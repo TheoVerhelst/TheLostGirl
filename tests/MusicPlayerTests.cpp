@@ -1,18 +1,18 @@
 #include <boost/test/unit_test.hpp>
 #include <TheLostGirl/MusicPlayer.h>
 
-struct TestFixture
+struct MusicPlayerTestsFixture
 {
-	TestFixture()
+	MusicPlayerTestsFixture()
 	{
 	}
 
-	~TestFixture()
+	~MusicPlayerTestsFixture()
 	{
 	}
 };
 
-BOOST_FIXTURE_TEST_SUITE(MusicPlayerTests, TestFixture)
+BOOST_FIXTURE_TEST_SUITE(MusicPlayerTests, MusicPlayerTestsFixture)
  
 BOOST_AUTO_TEST_CASE(MyMethod)
 {

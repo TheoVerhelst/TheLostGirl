@@ -1,18 +1,18 @@
 #include <boost/test/unit_test.hpp>
 #include <TheLostGirl/states/PauseState.h>
 
-struct TestFixture
+struct PauseStateTestsFixture
 {
-	TestFixture()
+	PauseStateTestsFixture()
 	{
 	}
 
-	~TestFixture()
+	~PauseStateTestsFixture()
 	{
 	}
 };
 
-BOOST_FIXTURE_TEST_SUITE(PauseStateTests, TestFixture)
+BOOST_FIXTURE_TEST_SUITE(PauseStateTests, PauseStateTestsFixture)
  
 BOOST_AUTO_TEST_CASE(MyMethod)
 {

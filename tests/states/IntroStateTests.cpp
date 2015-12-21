@@ -1,18 +1,18 @@
 #include <boost/test/unit_test.hpp>
 #include <TheLostGirl/states/IntroState.h>
 
-struct TestFixture
+struct IntroStateTestsFixture
 {
-	TestFixture()
+	IntroStateTestsFixture()
 	{
 	}
 
-	~TestFixture()
+	~IntroStateTestsFixture()
 	{
 	}
 };
 
-BOOST_FIXTURE_TEST_SUITE(IntroStateTests, TestFixture)
+BOOST_FIXTURE_TEST_SUITE(IntroStateTests, IntroStateTestsFixture)
  
 BOOST_AUTO_TEST_CASE(MyMethod)
 {

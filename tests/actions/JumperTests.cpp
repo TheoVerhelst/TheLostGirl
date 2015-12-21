@@ -1,18 +1,18 @@
 #include <boost/test/unit_test.hpp>
 #include <TheLostGirl/actions/Jumper.h>
 
-struct TestFixture
+struct JumperTestsFixture
 {
-	TestFixture()
+	JumperTestsFixture()
 	{
 	}
 
-	~TestFixture()
+	~JumperTestsFixture()
 	{
 	}
 };
 
-BOOST_FIXTURE_TEST_SUITE(JumperTests, TestFixture)
+BOOST_FIXTURE_TEST_SUITE(JumperTests, JumperTestsFixture)
  
 BOOST_AUTO_TEST_CASE(MyMethod)
 {

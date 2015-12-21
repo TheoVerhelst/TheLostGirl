@@ -1,18 +1,18 @@
 #include <boost/test/unit_test.hpp>
 #include <TheLostGirl/systems/DragAndDropSystem.h>
 
-struct TestFixture
+struct DragAndDropSystemTestsFixture
 {
-	TestFixture()
+	DragAndDropSystemTestsFixture()
 	{
 	}
 
-	~TestFixture()
+	~DragAndDropSystemTestsFixture()
 	{
 	}
 };
 
-BOOST_FIXTURE_TEST_SUITE(DragAndDropSystemTests, TestFixture)
+BOOST_FIXTURE_TEST_SUITE(DragAndDropSystemTests, DragAndDropSystemTestsFixture)
  
 BOOST_AUTO_TEST_CASE(MyMethod)
 {

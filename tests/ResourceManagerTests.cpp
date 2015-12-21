@@ -1,18 +1,18 @@
 #include <boost/test/unit_test.hpp>
 #include <TheLostGirl/ResourceManager.h>
 
-struct TestFixture
+struct ResourceManagerTestsFixture
 {
-	TestFixture()
+	ResourceManagerTestsFixture()
 	{
 	}
 
-	~TestFixture()
+	~ResourceManagerTestsFixture()
 	{
 	}
 };
 
-BOOST_FIXTURE_TEST_SUITE(ResourceManagerTests, TestFixture)
+BOOST_FIXTURE_TEST_SUITE(ResourceManagerTests, ResourceManagerTestsFixture)
  
 BOOST_AUTO_TEST_CASE(MyMethod)
 {

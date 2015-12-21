@@ -1,18 +1,18 @@
 #include <boost/test/unit_test.hpp>
 #include <TheLostGirl/PostEffect.h>
 
-struct TestFixture
+struct PostEffectTestsFixture
 {
-	TestFixture()
+	PostEffectTestsFixture()
 	{
 	}
 
-	~TestFixture()
+	~PostEffectTestsFixture()
 	{
 	}
 };
 
-BOOST_FIXTURE_TEST_SUITE(PostEffectTests, TestFixture)
+BOOST_FIXTURE_TEST_SUITE(PostEffectTests, PostEffectTestsFixture)
  
 BOOST_AUTO_TEST_CASE(MyMethod)
 {

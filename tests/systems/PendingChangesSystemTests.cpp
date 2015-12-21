@@ -1,18 +1,18 @@
 #include <boost/test/unit_test.hpp>
 #include <TheLostGirl/systems/PendingChangesSystem.h>
 
-struct TestFixture
+struct PendingChangesSystemTestsFixture
 {
-	TestFixture()
+	PendingChangesSystemTestsFixture()
 	{
 	}
 
-	~TestFixture()
+	~PendingChangesSystemTestsFixture()
 	{
 	}
 };
 
-BOOST_FIXTURE_TEST_SUITE(PendingChangesSystemTests, TestFixture)
+BOOST_FIXTURE_TEST_SUITE(PendingChangesSystemTests, PendingChangesSystemTestsFixture)
  
 BOOST_AUTO_TEST_CASE(MyMethod)
 {

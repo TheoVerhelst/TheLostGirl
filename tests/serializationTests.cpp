@@ -1,18 +1,18 @@
 #include <boost/test/unit_test.hpp>
 #include <TheLostGirl/serialization.h>
 
-struct TestFixture
+struct serializationTestsFixture
 {
-	TestFixture()
+	serializationTestsFixture()
 	{
 	}
 
-	~TestFixture()
+	~serializationTestsFixture()
 	{
 	}
 };
 
-BOOST_FIXTURE_TEST_SUITE(serializationTests, TestFixture)
+BOOST_FIXTURE_TEST_SUITE(serializationTests, serializationTestsFixture)
  
 BOOST_AUTO_TEST_CASE(MyMethod)
 {

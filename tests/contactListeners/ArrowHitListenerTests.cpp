@@ -1,18 +1,18 @@
 #include <boost/test/unit_test.hpp>
 #include <TheLostGirl/contactListeners/ArrowHitListener.h>
 
-struct TestFixture
+struct ArrowHitListenerTestsFixture
 {
-	TestFixture()
+	ArrowHitListenerTestsFixture()
 	{
 	}
 
-	~TestFixture()
+	~ArrowHitListenerTestsFixture()
 	{
 	}
 };
 
-BOOST_FIXTURE_TEST_SUITE(ArrowHitListenerTests, TestFixture)
+BOOST_FIXTURE_TEST_SUITE(ArrowHitListenerTests, ArrowHitListenerTestsFixture)
  
 BOOST_AUTO_TEST_CASE(MyMethod)
 {

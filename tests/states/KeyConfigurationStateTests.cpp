@@ -1,18 +1,18 @@
 #include <boost/test/unit_test.hpp>
 #include <TheLostGirl/states/KeyConfigurationState.h>
 
-struct TestFixture
+struct KeyConfigurationStateTestsFixture
 {
-	TestFixture()
+	KeyConfigurationStateTestsFixture()
 	{
 	}
 
-	~TestFixture()
+	~KeyConfigurationStateTestsFixture()
 	{
 	}
 };
 
-BOOST_FIXTURE_TEST_SUITE(KeyConfigurationStateTests, TestFixture)
+BOOST_FIXTURE_TEST_SUITE(KeyConfigurationStateTests, KeyConfigurationStateTestsFixture)
  
 BOOST_AUTO_TEST_CASE(MyMethod)
 {

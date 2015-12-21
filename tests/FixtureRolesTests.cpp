@@ -1,18 +1,18 @@
 #include <boost/test/unit_test.hpp>
 #include <TheLostGirl/FixtureRoles.h>
 
-struct TestFixture
+struct FixtureRolesTestsFixture
 {
-	TestFixture()
+	FixtureRolesTestsFixture()
 	{
 	}
 
-	~TestFixture()
+	~FixtureRolesTestsFixture()
 	{
 	}
 };
 
-BOOST_FIXTURE_TEST_SUITE(FixtureRolesTests, TestFixture)
+BOOST_FIXTURE_TEST_SUITE(FixtureRolesTests, FixtureRolesTestsFixture)
  
 BOOST_AUTO_TEST_CASE(MyMethod)
 {

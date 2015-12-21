@@ -1,18 +1,18 @@
 #include <boost/test/unit_test.hpp>
 #include <TheLostGirl/StateStack.h>
 
-struct TestFixture
+struct StateStackTestsFixture
 {
-	TestFixture()
+	StateStackTestsFixture()
 	{
 	}
 
-	~TestFixture()
+	~StateStackTestsFixture()
 	{
 	}
 };
 
-BOOST_FIXTURE_TEST_SUITE(StateStackTests, TestFixture)
+BOOST_FIXTURE_TEST_SUITE(StateStackTests, StateStackTestsFixture)
  
 BOOST_AUTO_TEST_CASE(MyMethod)
 {

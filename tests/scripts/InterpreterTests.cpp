@@ -1,18 +1,18 @@
 #include <boost/test/unit_test.hpp>
 #include <TheLostGirl/scripts/Interpreter.h>
 
-struct TestFixture
+struct InterpreterTestsFixture
 {
-	TestFixture()
+	InterpreterTestsFixture()
 	{
 	}
 
-	~TestFixture()
+	~InterpreterTestsFixture()
 	{
 	}
 };
 
-BOOST_FIXTURE_TEST_SUITE(InterpreterTests, TestFixture)
+BOOST_FIXTURE_TEST_SUITE(InterpreterTests, InterpreterTestsFixture)
  
 BOOST_AUTO_TEST_CASE(MyMethod)
 {

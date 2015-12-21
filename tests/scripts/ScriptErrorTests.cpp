@@ -1,18 +1,18 @@
 #include <boost/test/unit_test.hpp>
 #include <TheLostGirl/scripts/ScriptError.h>
 
-struct TestFixture
+struct ScriptErrorTestsFixture
 {
-	TestFixture()
+	ScriptErrorTestsFixture()
 	{
 	}
 
-	~TestFixture()
+	~ScriptErrorTestsFixture()
 	{
 	}
 };
 
-BOOST_FIXTURE_TEST_SUITE(ScriptErrorTests, TestFixture)
+BOOST_FIXTURE_TEST_SUITE(ScriptErrorTests, ScriptErrorTestsFixture)
  
 BOOST_AUTO_TEST_CASE(MyMethod)
 {

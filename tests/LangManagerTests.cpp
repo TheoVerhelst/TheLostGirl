@@ -1,18 +1,18 @@
 #include <boost/test/unit_test.hpp>
 #include <TheLostGirl/LangManager.h>
 
-struct TestFixture
+struct LangManagerTestsFixture
 {
-	TestFixture()
+	LangManagerTestsFixture()
 	{
 	}
 
-	~TestFixture()
+	~LangManagerTestsFixture()
 	{
 	}
 };
 
-BOOST_FIXTURE_TEST_SUITE(LangManagerTests, TestFixture)
+BOOST_FIXTURE_TEST_SUITE(LangManagerTests, LangManagerTestsFixture)
  
 BOOST_AUTO_TEST_CASE(MyMethod)
 {

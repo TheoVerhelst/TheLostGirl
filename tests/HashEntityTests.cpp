@@ -1,18 +1,18 @@
 #include <boost/test/unit_test.hpp>
 #include <TheLostGirl/HashEntity.h>
 
-struct TestFixture
+struct HashEntityTestsFixture
 {
-	TestFixture()
+	HashEntityTestsFixture()
 	{
 	}
 
-	~TestFixture()
+	~HashEntityTestsFixture()
 	{
 	}
 };
 
-BOOST_FIXTURE_TEST_SUITE(HashEntityTests, TestFixture)
+BOOST_FIXTURE_TEST_SUITE(HashEntityTests, HashEntityTestsFixture)
  
 BOOST_AUTO_TEST_CASE(MyMethod)
 {

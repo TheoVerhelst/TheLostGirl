@@ -1,18 +1,18 @@
 #include <boost/test/unit_test.hpp>
 #include <TheLostGirl/DebugDraw.h>
 
-struct TestFixture
+struct DebugDrawTestsFixture
 {
-	TestFixture()
+	DebugDrawTestsFixture()
 	{
 	}
 
-	~TestFixture()
+	~DebugDrawTestsFixture()
 	{
 	}
 };
 
-BOOST_FIXTURE_TEST_SUITE(DebugDrawTests, TestFixture)
+BOOST_FIXTURE_TEST_SUITE(DebugDrawTests, DebugDrawTestsFixture)
  
 BOOST_AUTO_TEST_CASE(MyMethod)
 {

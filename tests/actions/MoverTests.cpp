@@ -1,18 +1,18 @@
 #include <boost/test/unit_test.hpp>
 #include <TheLostGirl/actions/Mover.h>
 
-struct TestFixture
+struct MoverTestsFixture
 {
-	TestFixture()
+	MoverTestsFixture()
 	{
 	}
 
-	~TestFixture()
+	~MoverTestsFixture()
 	{
 	}
 };
 
-BOOST_FIXTURE_TEST_SUITE(MoverTests, TestFixture)
+BOOST_FIXTURE_TEST_SUITE(MoverTests, MoverTestsFixture)
  
 BOOST_AUTO_TEST_CASE(MyMethod)
 {

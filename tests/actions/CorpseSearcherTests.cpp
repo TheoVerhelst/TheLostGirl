@@ -1,18 +1,18 @@
 #include <boost/test/unit_test.hpp>
 #include <TheLostGirl/actions/CorpseSearcher.h>
 
-struct TestFixture
+struct CorpseSearcherTestsFixture
 {
-	TestFixture()
+	CorpseSearcherTestsFixture()
 	{
 	}
 
-	~TestFixture()
+	~CorpseSearcherTestsFixture()
 	{
 	}
 };
 
-BOOST_FIXTURE_TEST_SUITE(CorpseSearcherTests, TestFixture)
+BOOST_FIXTURE_TEST_SUITE(CorpseSearcherTests, CorpseSearcherTestsFixture)
  
 BOOST_AUTO_TEST_CASE(MyMethod)
 {

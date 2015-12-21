@@ -1,18 +1,18 @@
 #include <boost/test/unit_test.hpp>
 #include <TheLostGirl/systems/PhysicsSystem.h>
 
-struct TestFixture
+struct PhysicsSystemTestsFixture
 {
-	TestFixture()
+	PhysicsSystemTestsFixture()
 	{
 	}
 
-	~TestFixture()
+	~PhysicsSystemTestsFixture()
 	{
 	}
 };
 
-BOOST_FIXTURE_TEST_SUITE(PhysicsSystemTests, TestFixture)
+BOOST_FIXTURE_TEST_SUITE(PhysicsSystemTests, PhysicsSystemTestsFixture)
  
 BOOST_AUTO_TEST_CASE(MyMethod)
 {

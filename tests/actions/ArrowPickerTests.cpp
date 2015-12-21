@@ -1,18 +1,18 @@
 #include <boost/test/unit_test.hpp>
 #include <TheLostGirl/actions/ArrowPicker.h>
 
-struct TestFixture
+struct ArrowPickerTestsFixture
 {
-	TestFixture()
+	ArrowPickerTestsFixture()
 	{
 	}
 
-	~TestFixture()
+	~ArrowPickerTestsFixture()
 	{
 	}
 };
 
-BOOST_FIXTURE_TEST_SUITE(ArrowPickerTests, TestFixture)
+BOOST_FIXTURE_TEST_SUITE(ArrowPickerTests, ArrowPickerTestsFixture)
 
 BOOST_AUTO_TEST_CASE(MyMethod)
 {

@@ -1,18 +1,18 @@
 #include <boost/test/unit_test.hpp>
 #include <TheLostGirl/states/HUDState.h>
 
-struct TestFixture
+struct HUDStateTestsFixture
 {
-	TestFixture()
+	HUDStateTestsFixture()
 	{
 	}
 
-	~TestFixture()
+	~HUDStateTestsFixture()
 	{
 	}
 };
 
-BOOST_FIXTURE_TEST_SUITE(HUDStateTests, TestFixture)
+BOOST_FIXTURE_TEST_SUITE(HUDStateTests, HUDStateTestsFixture)
  
 BOOST_AUTO_TEST_CASE(MyMethod)
 {

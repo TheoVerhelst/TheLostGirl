@@ -1,18 +1,18 @@
 #include <boost/test/unit_test.hpp>
 #include <TheLostGirl/actions/BowBender.h>
 
-struct TestFixture
+struct BowBenderTestsFixture
 {
-	TestFixture()
+	BowBenderTestsFixture()
 	{
 	}
 
-	~TestFixture()
+	~BowBenderTestsFixture()
 	{
 	}
 };
 
-BOOST_FIXTURE_TEST_SUITE(BowBenderTests, TestFixture)
+BOOST_FIXTURE_TEST_SUITE(BowBenderTests, BowBenderTestsFixture)
  
 BOOST_AUTO_TEST_CASE(MyMethod)
 {

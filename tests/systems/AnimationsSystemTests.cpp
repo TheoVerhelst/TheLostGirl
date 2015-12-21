@@ -1,18 +1,18 @@
 #include <boost/test/unit_test.hpp>
 #include <TheLostGirl/systems/AnimationsSystem.h>
 
-struct TestFixture
+struct AnimationsSystemTestsFixture
 {
-	TestFixture()
+	AnimationsSystemTestsFixture()
 	{
 	}
 
-	~TestFixture()
+	~AnimationsSystemTestsFixture()
 	{
 	}
 };
 
-BOOST_FIXTURE_TEST_SUITE(AnimationsSystemTests, TestFixture)
+BOOST_FIXTURE_TEST_SUITE(AnimationsSystemTests, AnimationsSystemTestsFixture)
  
 BOOST_AUTO_TEST_CASE(MyMethod)
 {

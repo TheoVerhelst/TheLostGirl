@@ -1,18 +1,18 @@
 #include <boost/test/unit_test.hpp>
 #include <TheLostGirl/SkyAnimation.h>
 
-struct TestFixture
+struct SkyAnimationTestsFixture
 {
-	TestFixture()
+	SkyAnimationTestsFixture()
 	{
 	}
 
-	~TestFixture()
+	~SkyAnimationTestsFixture()
 	{
 	}
 };
 
-BOOST_FIXTURE_TEST_SUITE(SkyAnimationTests, TestFixture)
+BOOST_FIXTURE_TEST_SUITE(SkyAnimationTests, SkyAnimationTestsFixture)
  
 BOOST_AUTO_TEST_CASE(MyMethod)
 {

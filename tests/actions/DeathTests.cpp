@@ -1,18 +1,18 @@
 #include <boost/test/unit_test.hpp>
 #include <TheLostGirl/actions/Death.h>
 
-struct TestFixture
+struct DeathTestsFixture
 {
-	TestFixture()
+	DeathTestsFixture()
 	{
 	}
 
-	~TestFixture()
+	~DeathTestsFixture()
 	{
 	}
 };
 
-BOOST_FIXTURE_TEST_SUITE(DeathTests, TestFixture)
+BOOST_FIXTURE_TEST_SUITE(DeathTests, DeathTestsFixture)
  
 BOOST_AUTO_TEST_CASE(MyMethod)
 {

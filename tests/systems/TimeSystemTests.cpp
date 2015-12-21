@@ -1,18 +1,18 @@
 #include <boost/test/unit_test.hpp>
 #include <TheLostGirl/systems/TimeSystem.h>
 
-struct TestFixture
+struct TimeSystemTestsFixture
 {
-	TestFixture()
+	TimeSystemTestsFixture()
 	{
 	}
 
-	~TestFixture()
+	~TimeSystemTestsFixture()
 	{
 	}
 };
 
-BOOST_FIXTURE_TEST_SUITE(TimeSystemTests, TestFixture)
+BOOST_FIXTURE_TEST_SUITE(TimeSystemTests, TimeSystemTestsFixture)
  
 BOOST_AUTO_TEST_CASE(MyMethod)
 {

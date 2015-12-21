@@ -1,18 +1,18 @@
 #include <boost/test/unit_test.hpp>
 #include <TheLostGirl/BloomEffect.h>
 
-struct TestFixture
+struct BloomEffectTestsFixture
 {
-	TestFixture()
+	BloomEffectTestsFixture()
 	{
 	}
 
-	~TestFixture()
+	~BloomEffectTestsFixture()
 	{
 	}
 };
 
-BOOST_FIXTURE_TEST_SUITE(BloomEffectTests, TestFixture)
+BOOST_FIXTURE_TEST_SUITE(BloomEffectTests, BloomEffectTestsFixture)
 
 //Untestable
 
