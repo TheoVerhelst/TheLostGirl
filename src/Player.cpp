@@ -287,13 +287,13 @@ void Player::initializeActions()
 {
 	m_startActionBinding[Action::MoveLeft].action = Mover(Direction::Left);
 	m_startActionBinding[Action::MoveRight].action =  Mover(Direction::Right);
-	m_startActionBinding[Action::MoveUp].action =  Mover(Direction::Top);
-	m_startActionBinding[Action::MoveDown].action =  Mover(Direction::Bottom);
+	m_startActionBinding[Action::MoveUp].action =  Mover(Direction::Up);
+	m_startActionBinding[Action::MoveDown].action =  Mover(Direction::Down);
 
 	m_stopActionBinding[Action::MoveLeft].action =  Mover(Direction::Left, false);
 	m_stopActionBinding[Action::MoveRight].action = Mover(Direction::Right, false);
-	m_stopActionBinding[Action::MoveUp].action = Mover(Direction::Top, false);
-	m_stopActionBinding[Action::MoveDown].action = Mover(Direction::Bottom, false);
+	m_stopActionBinding[Action::MoveUp].action = Mover(Direction::Up, false);
+	m_stopActionBinding[Action::MoveDown].action = Mover(Direction::Down, false);
 
 	m_immediateActionBinding[Action::Jump].action = Jumper();
 	m_immediateActionBinding[Action::PickUp].action = ArrowPicker();

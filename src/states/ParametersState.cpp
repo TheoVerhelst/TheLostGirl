@@ -42,11 +42,9 @@ ParametersState::ParametersState()
 	layout->add(m_langLabel);
 
 	m_langComboBox = Context::parameters->guiTheme->load("ComboBox");
-	m_langComboBox->addItem(toString(FR));
-	m_langComboBox->addItem(toString(EN));
-	m_langComboBox->addItem(toString(IT));
-	m_langComboBox->addItem(toString(NL));
-	m_langComboBox->setSelectedItem(toString(Context::langManager->getLang()));
+	m_langComboBox->addItem(LangManager::getLangName(FR));
+	m_langComboBox->addItem(LangManager::getLangName(EN));
+	m_langComboBox->setSelectedItem(LangManager::getLangName(Context::langManager->getLang()));
 	layout->add(m_langComboBox);
 	mainLayout->add(layout);
 
@@ -273,30 +271,10 @@ void ParametersState::resetTexts()
 	m_okButton->setText(Context::langManager->tr("OK"));
 }
 
-sf::String ParametersState::toString(Lang lang)
-{
-	switch(lang)
-	{
-		case FR:
-			return L"Français";
-		case IT:
-			return "Italiano";
-		case NL:
-			return "Neederlands";
-		case EN:
-		default:
-			return "English";
-	}
-}
-
 Lang ParametersState::fromString(sf::String string)
 {
 	if(string == L"Français")
 		return FR;
-	else if(string == "Italiano")
-		return IT;
-	else if(string == "Nederlands")
-		return NL;
 	else
 		return EN;
 }

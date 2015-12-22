@@ -21,8 +21,8 @@ void Mover::operator()(entityx::Entity entity) const
 	const std::map<Direction, std::string> directionToString = {
 			{Direction::Left, " left"},
 			{Direction::Right, " right"},
-			{Direction::Top, " top"},
-			{Direction::Bottom, " bottom"}};
+			{Direction::Up, " up"},
+			{Direction::Down, " down"}};
 	std::string directionStr{directionToString.at(direction)};
 	std::string oppDirectionStr{directionToString.at(not direction)};
 	DirectionComponent::Handle directionComponent(entity.component<DirectionComponent>());

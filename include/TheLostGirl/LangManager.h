@@ -10,10 +10,8 @@
 /// Available langages.
 enum Lang
 {
-	EN,///< English
-	FR,///< French
-	NL,///< Dutch
-	IT ///< Italian
+	EN,///< English.
+	FR ///< French.
 };
 
 /// Language manager that translates strings.
@@ -32,6 +30,23 @@ class LangManager
         /// \return Lang
 		Lang getLang() const;
 
+		/// Get the default lang.
+		/// The default lang is the one that is used in code,
+		/// and that is loaded if the file for the asked lang is not found.
+		/// \return The default lang.
+		Lang getDefaultLang() const;
+
+		/// Get a string representing the given lang,
+		/// this string is intented to be a valid lang file
+		/// in the directory "lang".
+		/// \param lang The lang to cast to a string.
+		/// \return The string representation of the parameter.
+		static std::string getLangName(Lang lang);
+
+		/// Get an array of all available langs.
+		/// \return An array of all available langs.
+		static std::array<Lang, 2> getAvailableLangs();
+
         /// Translate the given string.
         ///	The \a entryName must be an entry in the lang file, and be in english.
         /// Should be called for every in-game text.
@@ -45,8 +60,9 @@ class LangManager
 		void loadLang(Lang langToLoad);
 
 		Lang m_lang;                                  ///< The current lang.
+		const Lang m_defaultLang = EN;
 		std::map<std::string, std::wstring> m_entries;///< Translations related to the current lang.
-		static const std::map<Lang, std::string> langNames;
+		static const std::map<Lang, std::string> m_langNames;
 };
 
 #endif//LANGMANAGER_H

@@ -70,11 +70,11 @@ struct AnimationsComponent : public entityx::Component<AnimationsComponent<A>>
 /// opposite of a direction using division/modulo calculations.
 enum class Direction : int
 {
-	Left,  ///< Diriged to the left.
-	Top,   ///< Diriged to the top.
-	Right, ///< Diriged to the right.
-	Bottom,///< Diriged to the bottom.
-	None   ///< Unhandled direction.
+	Left, ///< Diriged to the left.
+	Up,   ///< Diriged to the top.
+	Right,///< Diriged to the right.
+	Down, ///< Diriged to the bottom.
+	None  ///< Unhandled direction.
 };
 
 /// The sirection component.

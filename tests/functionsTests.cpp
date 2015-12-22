@@ -206,8 +206,8 @@ BOOST_AUTO_TEST_CASE(operatorNotTests)
 {
 	BOOST_CHECK((not Direction::Left) == Direction::Right);
 	BOOST_CHECK((not Direction::Right) == Direction::Left);
-	BOOST_CHECK((not Direction::Top) == Direction::Bottom);
-	BOOST_CHECK((not Direction::Bottom) == Direction::Top);
+	BOOST_CHECK((not Direction::Up) == Direction::Down);
+	BOOST_CHECK((not Direction::Down) == Direction::Up);
 	BOOST_CHECK((not Direction::None) == Direction::None);
 }
 

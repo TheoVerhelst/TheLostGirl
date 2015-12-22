@@ -4,7 +4,11 @@
 #include <TheLostGirl/LangManager.h>
 
 #define MAP_ITEM(lang) {lang, #lang}
-const std::map<Lang, std::string> LangManager::langNames = {MAP_ITEM(EN), MAP_ITEM(FR), MAP_ITEM(NL), MAP_ITEM(IT)};
+const std::map<Lang, std::string> LangManager::m_langNames =
+{
+	MAP_ITEM(EN),
+	MAP_ITEM(FR)
+};
 #undef MAP_ITEM
 
 void LangManager::setLang(Lang newLang)
@@ -13,65 +17,78 @@ void LangManager::setLang(Lang newLang)
 	loadLang(m_lang);
 }
 
+Lang LangManager::getLang() const
+{
+	return m_lang;
+}
+
+Lang LangManager::getDefaultLang() const
+{
+	return m_defaultLang;
+}
+
+std::string LangManager::getLangName(Lang lang)
+{
+	return m_langNames.at(lang);
+}
+
+std::array<Lang, 2> LangManager::getAvailableLangs()
+{
+	return {EN, FR};
+}
+
 std::wstring LangManager::tr(const std::string& entryName) const
 {
 	if(m_entries.count(entryName) > 0)
 		return m_entries.at(entryName);
 	else
 	{
-		std::cerr << "No translation available for \"" << entryName << "\" in the lang " << langNames.at(m_lang) << std::endl;
+		std::cerr << "No translation available for \"" << entryName << "\" in the lang " << m_langNames.at(m_lang) << std::endl;
 		return std::wstring(entryName.begin(), entryName.end());
 	}
 }
 
-Lang LangManager::getLang() const
-{
-	return m_lang;
-}
-
 void LangManager::loadLang(Lang langToLoad)
 {
-	m_entries.clear();
-	std::string sourceFilePath(Context::parameters->resourcesPath + "lang/EN"), translationFilePath(sourceFilePath);
+	std::string sourceFilePath{Context::parameters->resourcesPath + "lang/" + m_langNames.at(m_defaultLang)};
+	std::string translationFilePath{Context::parameters->resourcesPath + "lang/" + m_langNames.at(langToLoad)};
 	std::ifstream sourceFileStream;
 	std::wifstream translationFileStream;
-	//Things to handle wide encoding
-	std::locale loc("");
-	translationFileStream.imbue(loc);
-	switch(langToLoad)//Open the right file
-	{
-		case NL:
-		case IT:
-		case EN:
-			translationFilePath = Context::parameters->resourcesPath + "lang/EN";
-			break;
+	m_entries.clear();
 
-		case FR:
-			translationFilePath = Context::parameters->resourcesPath + "lang/FR";
-			break;
-	}
+	//Things to handle wide encoding
+	translationFileStream.imbue(std::locale(""));
+
 	sourceFileStream.open(sourceFilePath);
 	translationFileStream.open(translationFilePath);
+
+	//Check if the langs files are loaded
 	if(not sourceFileStream.is_open())
 		throw std::runtime_error("Unable to open source lang file: " + sourceFilePath);
 	else if(not translationFileStream.is_open())
-		throw std::runtime_error("Unable to open translation lang file: " + translationFilePath);
-	else
 	{
-		while(not sourceFileStream.eof() and not translationFileStream.eof())
-		{
-			std::string sourceLine;
-			std::wstring translatedLine;
-			getline(sourceFileStream, sourceLine);//fill line with the next line of filestream
-			getline(translationFileStream, translatedLine);//fill line with the next line of filestream
-			m_entries.emplace(sourceLine, translatedLine);
-		}
+		std::cerr << "Unable to open translation lang file: " + translationFilePath << std::endl;
+		//Load default translation file
+		translationFileStream.open(sourceFilePath);
 	}
+	if(not sourceFileStream.is_open())
+		throw std::runtime_error("Unable to open default translation lang file: " + sourceFilePath);
+
+	std::string sourceLine;
+	std::wstring translatedLine;
+	while(not sourceFileStream.eof() and not translationFileStream.eof())
+	{
+		getline(sourceFileStream, sourceLine);//fill line with the next line of filestream
+		getline(translationFileStream, translatedLine);//fill line with the next line of filestream
+		m_entries.emplace(sourceLine, translatedLine);
+	}
+
 	if(sourceFileStream.eof() != translationFileStream.eof())
 	{
 		std::cerr << "\"" << sourceFilePath << "\" source file and \"" << translationFilePath << "\" translation file have different number of lines." << std::endl;
 		std::cerr << "Translations are probably inconsistent." << std::endl;
 	}
+
 	sourceFileStream.close();
 	translationFileStream.close();
 }

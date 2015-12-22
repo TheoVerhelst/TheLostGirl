@@ -205,10 +205,10 @@ Json::Value Serializer::implSerialize(entityx::ComponentHandle<DirectionComponen
 		case Direction::Right:
 			ret["direction"] = "right";
 			break;
-		case Direction::Top:
+		case Direction::Up:
 			ret["direction"] = "top";
 			break;
-		case Direction::Bottom:
+		case Direction::Down:
 			ret["direction"] = "bottom";
 			break;
 		case Direction::None:
@@ -254,10 +254,10 @@ Json::Value Serializer::implSerialize(entityx::ComponentHandle<WalkComponent> co
 		case Direction::Right:
 			ret["effective movement"] = "right";
 			break;
-		case Direction::Top:
+		case Direction::Up:
 			ret["effective movement"] = "top";
 			break;
-		case Direction::Bottom:
+		case Direction::Down:
 			ret["effective movement"] = "bottom";
 			break;
 		case Direction::None:
@@ -749,9 +749,9 @@ void Serializer::implDeserialize(const Json::Value& value, entityx::ComponentHan
 	else if(value["direction"] == "right")
 		component->direction = Direction::Right;
 	else if(value["direction"] == "top")
-		component->direction = Direction::Top;
+		component->direction = Direction::Up;
 	else if(value["direction"] == "bottom")
-		component->direction = Direction::Bottom;
+		component->direction = Direction::Down;
 	if(value.isMember("move to left"))
 		component->moveToLeft = value["move to left"].asBool();
 	if(value.isMember("move to right"))
@@ -791,9 +791,9 @@ void Serializer::implDeserialize(const Json::Value& value, entityx::ComponentHan
 		else if(value["effective movement"] == "right")
 			component->effectiveMovement = Direction::Right;
 		else if(value["effective movement"] == "top")
-			component->effectiveMovement = Direction::Top;
+			component->effectiveMovement = Direction::Up;
 		else if(value["effective movement"] == "bottom")
-			component->effectiveMovement = Direction::Bottom;
+			component->effectiveMovement = Direction::Down;
 		else
 			component->effectiveMovement = Direction::None;
 	}
