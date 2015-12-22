@@ -1,12 +1,10 @@
 #include <boost/test/unit_test.hpp>
 #include <TheLostGirl/AnimationsManager.h>
 
-//TODO Debug this test case
-
 class MockAnimation
 {
 	public:
-		void setProgress(float progress)
+		void setProgress(float)
 		{
 		}
 };

@@ -18,7 +18,7 @@ MainMenuState::MainMenuState()
 	m_background->setBackgroundColor(sf::Color(255, 255, 255, 100));
 	gui.add(m_background);
 
-	m_logo = std::make_shared<tgui::Picture>(Context::parameters->imagePath + "title.png");
+	m_logo = std::make_shared<tgui::Picture>(Context::parameters->resourcesPath + "images/title.png");
 	m_logo->setPosition((tgui::bindWidth(gui) - tgui::bindWidth(m_logo)) / 2.f, tgui::bindHeight(gui) * 0.02f);
 	gui.add(m_logo);
 

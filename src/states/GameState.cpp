@@ -317,7 +317,7 @@ void GameState::initWorld(const std::string& file)
 				//Filename of the image to load
 				const std::string fileTexture{m_levelIdentifier + "_" + groupOfReplacesName};
 				//Path of the image to load
-				const std::string path{Context::parameters->imagePath + "levels/" + m_levelIdentifier + "/" + fileTexture + ".png"};
+				const std::string path{Context::parameters->resourcesPath + "images/levels/" + m_levelIdentifier + "/" + fileTexture + ".png"};
 
 				const Json::Value groupOfReplaces{level["replaces"][groupOfReplacesName]};
 				//Vector that will be added to m_sceneEntitiesData
@@ -381,7 +381,7 @@ void GameState::initWorld(const std::string& file)
 			for(unsigned int i{0}; i < m_numberOfPlans; ++i)
 			{
 				const std::string fileTexture{m_levelIdentifier + "_" + std::to_string(i)};
-				const std::string path{Context::parameters->imagePath + "levels/" + m_levelIdentifier + "/" + fileTexture + ".png"};
+				const std::string path{Context::parameters->resourcesPath + "images/levels/" + m_levelIdentifier + "/" + fileTexture + ".png"};
 				const int chunkSize{int(sf::Texture::getMaximumSize())};
 				//The length of the plan, relatively to the reference.
 				const int planLength{int(float(m_levelRect.width) * std::pow(1.5f, m_referencePlan - float(i)))};

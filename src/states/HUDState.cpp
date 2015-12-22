@@ -23,8 +23,8 @@ HUDState::HUDState():
 	tgui::Gui& gui(*Context::gui);
 
 	//Load textures
-	Context::textureManager->load("wind arrow ath", Context::parameters->imagePath + "windArrowAth.png");
-	Context::textureManager->load("wind bar ath", Context::parameters->imagePath + "windBarAth.png");
+	Context::textureManager->load("wind arrow ath", Context::parameters->resourcesPath + "images/windArrowAth.png");
+	Context::textureManager->load("wind bar ath", Context::parameters->resourcesPath + "images/windBarAth.png");
 
 	//Create the wind bar
 	m_windStrengthSpr.setTexture(Context::textureManager->get("wind arrow ath"));
@@ -173,15 +173,15 @@ void HUDState::receive(const EntityHealthChange& entityHealthChange)
 		Bar bar;
 		if(isPlayer(entity))
 		{
-			bar.bar = std::make_shared<tgui::Picture>(Context::parameters->imagePath + "healthAth.png");
-			bar.borders = std::make_shared<tgui::Picture>(Context::parameters->imagePath + "healthBorderAth.png");
+			bar.bar = std::make_shared<tgui::Picture>(Context::parameters->resourcesPath + "images/healthAth.png");
+			bar.borders = std::make_shared<tgui::Picture>(Context::parameters->resourcesPath + "images/healthBorderAth.png");
 			bar.panel = std::make_shared<tgui::Panel>(tgui::Layout2d(sf::Vector2f(240+1, 20+1)));
 			bar.panel->setPosition(bindWidth(gui) * 0.01f, bindHeight(gui) * 0.99f - bindHeight(bar.panel));
 		}
 		else
 		{
-			bar.bar = std::make_shared<tgui::Picture>(Context::parameters->imagePath + "entityHealthBar.png");
-			bar.borders = std::make_shared<tgui::Picture>(Context::parameters->imagePath + "entityHealthBarBorders.png");
+			bar.bar = std::make_shared<tgui::Picture>(Context::parameters->resourcesPath + "images/entityHealthBar.png");
+			bar.borders = std::make_shared<tgui::Picture>(Context::parameters->resourcesPath + "images/entityHealthBarBorders.png");
 			bar.panel = std::make_shared<tgui::Panel>(tgui::Layout2d(sf::Vector2f(100+1, 10+1)));
 		}
 		bar.panel->setBackgroundColor(sf::Color::Transparent);
@@ -215,8 +215,8 @@ void HUDState::receive(const EntityStaminaChange& entityStaminaChange)
 		if(not m_staminaBars.count(entity))
 		{
 			Bar bar;
-			bar.bar = std::make_shared<tgui::Picture>(Context::parameters->imagePath + "staminaAth.png");
-			bar.borders = std::make_shared<tgui::Picture>(Context::parameters->imagePath + "staminaBorderAth.png");
+			bar.bar = std::make_shared<tgui::Picture>(Context::parameters->resourcesPath + "images/staminaAth.png");
+			bar.borders = std::make_shared<tgui::Picture>(Context::parameters->resourcesPath + "images/staminaBorderAth.png");
 			bar.panel = std::make_shared<tgui::Panel>(tgui::Layout2d(sf::Vector2f(240, 20+1)));
 			bar.panel->setPosition(bindWidth(gui) * 0.99f - bindWidth(bar.panel), bindHeight(gui) * 0.99f - bindHeight(bar.panel));
 			bar.panel->setBackgroundColor(sf::Color::Transparent);

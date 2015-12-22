@@ -718,7 +718,7 @@ void Serializer::implDeserialize(const Json::Value& value, entityx::ComponentHan
 void Serializer::implDeserialize(const Json::Value& value, entityx::ComponentHandle<SpriteComponent> component, entityx::Entity)
 {
 	const std::string identifier{value["identifier"].asString()};
-	Context::textureManager->load(identifier, Context::parameters->imagePath + "/" + identifier);
+	Context::textureManager->load(identifier, Context::parameters->resourcesPath + "images//" + identifier);
 	component->sprite.setTexture(Context::textureManager->get(identifier));
 	if(value.isMember("origin"))
 		component->sprite.setOrigin(value["origin"]["x"].asFloat(), value["origin"]["y"].asFloat());

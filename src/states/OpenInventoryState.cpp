@@ -256,7 +256,7 @@ void OpenInventoryState::fillContentDisplay()
 		itemWidget.background->setSize(itemSize, itemSize);
 		itemWidget.background->setPosition(itemSize*columnCounter, itemSize*rowCounter);
 
-		itemWidget.picture = std::make_shared<tgui::Picture>(Context::parameters->imagePath + "items/" + category + "/" + type + ".png");
+		itemWidget.picture = std::make_shared<tgui::Picture>(Context::parameters->resourcesPath + "images/items/" + category + "/" + type + ".png");
 		itemWidget.picture->setPosition(itemSize/6.f, 0.f);
 		itemWidget.background->add(itemWidget.picture);
 
