@@ -6,4 +6,6 @@
 [ ] Faire un système multi texture pour une même entité (soit chunker une grande image, soit faire plusieurs images).
 [ ] CAC: statique : deux coups; en avancant: ??? ; en tombant: un puissant; en sautant : un faible; roulade : ???; en reculant : ???; en sneak : prise (egorgement/ippo sonage)
 [ ] Éviter les fonctions globales, mettre ce qui est possible dans une classe en statique et le reste dans un namespace.
-[ ] Use template template parameter with isMember() in function.h.
+[ ] Use template template parameter in isMember() in function.h.
+[ ] Include <SFML/Graphics.hpp> instead of precise header; Include <Box2D/Box2D.h>; ...
+[ ] Rename Direction::Top and Direction::Bottom to respectively Direction::Up and Direction::Down.
