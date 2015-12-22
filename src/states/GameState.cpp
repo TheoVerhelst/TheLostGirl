@@ -47,7 +47,7 @@ GameState::GameState(std::string file):
 
 GameState::~GameState()
 {
-	saveWorld("resources/levels/check.json");
+	saveWorld(Context::parameters->resourcesPath + "levels/check.json");
 	clear();
 	if(m_threadLoad.joinable())
 		m_threadLoad.join();
@@ -176,12 +176,12 @@ void GameState::initWorld(const std::string& file)
 		Json::Value model;
 		Json::Reader reader;
 		std::ifstream saveFile(file, std::ifstream::binary);
-		std::ifstream modelSaveFile("resources/levels/model.json", std::ifstream::binary);
+		std::ifstream modelSaveFile(Context::parameters->resourcesPath + "levels/model.json", std::ifstream::binary);
 		if(not reader.parse(saveFile, root))//report to the user the failure and their locations in the document.
 			throw std::runtime_error("save file \"" + file + "\" : " + reader.getFormattedErrorMessages());
 		saveFile.close();
 		if(not reader.parse(modelSaveFile, model))
-			throw std::runtime_error("model file \"resources/levels/model.json\": " + reader.getFormattedErrorMessages());
+			throw std::runtime_error("model file \"" + Context::parameters->resourcesPath + "levels/model.json\": " + reader.getFormattedErrorMessages());
 		modelSaveFile.close();
 
 		//SuperMegaMagic parsing of the save file from the model file
@@ -218,9 +218,9 @@ void GameState::initWorld(const std::string& file)
 			{
 				//Parse the level data
 				Json::Value includeRoot;//Will contains the root value after parsing.
-				std::ifstream includeFile("resources/levels/" + includes[i].asString(), std::ifstream::binary);
+				std::ifstream includeFile(Context::parameters->resourcesPath + "levels/" + includes[i].asString(), std::ifstream::binary);
 				if(not reader.parse(includeFile, includeRoot))//report to the user the failure and their locations in the document.
-					throw std::runtime_error("included file \"resources/levels/" + includes[i].asString() + "\" : " + reader.getFormattedErrorMessages());
+					throw std::runtime_error("included file \"" + Context::parameters->resourcesPath + "levels/" + includes[i].asString() + "\" : " + reader.getFormattedErrorMessages());
 				includeFile.close();
 
 				//Parsing of the included file from the model file

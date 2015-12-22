@@ -889,7 +889,7 @@ void Serializer::implDeserialize(const Json::Value& value, entityx::ComponentHan
 	for(Json::ArrayIndex i{0}; i < value["scripts"].size(); ++i)
 	{
 		std::string scriptName{value["scripts"][i].asString()};
-		Context::scriptManager->load(scriptName, "resources/scripts/" + scriptName);
+		Context::scriptManager->load(scriptName, Context::parameters->resourcesPath + "scripts/" + scriptName);
         component->scriptsNames.push_back(scriptName);
 	}
 }

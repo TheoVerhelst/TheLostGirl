@@ -100,8 +100,8 @@ int Application::init()
 	{
 		registerSystems();
 		m_window.setKeyRepeatEnabled(false);//Desactive the key repeating
-		m_fontManager.load("menu", "resources/fonts/euphorigenic.ttf");
-		m_fontManager.load("debug", "resources/fonts/FreeMonoBold.ttf");
+		m_fontManager.load("menu", Context::parameters->resourcesPath + "fonts/euphorigenic.ttf");
+		m_fontManager.load("debug", Context::parameters->resourcesPath + "fonts/FreeMonoBold.ttf");
 		m_gui.setFont(std::make_shared<sf::Font>(m_fontManager.get("menu")));
 		m_world.SetDebugDraw(&m_debugDraw);
 		m_debugDraw.setFont(std::make_shared<sf::Font>(m_fontManager.get("debug")));

@@ -1,4 +1,6 @@
 #include <iostream>
+#include <TheLostGirl/Context.h>
+#include <TheLostGirl/Parameters.h>
 #include <TheLostGirl/LangManager.h>
 
 #define MAP_ITEM(lang) {lang, #lang}
@@ -30,7 +32,7 @@ Lang LangManager::getLang() const
 void LangManager::loadLang(Lang langToLoad)
 {
 	m_entries.clear();
-	std::string sourceFilePath("resources/lang/EN"), translationFilePath(sourceFilePath);
+	std::string sourceFilePath(Context::parameters->resourcesPath + "lang/EN"), translationFilePath(sourceFilePath);
 	std::ifstream sourceFileStream;
 	std::wifstream translationFileStream;
 	//Things to handle wide encoding
@@ -41,11 +43,11 @@ void LangManager::loadLang(Lang langToLoad)
 		case NL:
 		case IT:
 		case EN:
-			translationFilePath = "resources/lang/EN";
+			translationFilePath = Context::parameters->resourcesPath + "lang/EN";
 			break;
 
 		case FR:
-			translationFilePath = "resources/lang/FR";
+			translationFilePath = Context::parameters->resourcesPath + "lang/FR";
 			break;
 	}
 	sourceFileStream.open(sourceFilePath);

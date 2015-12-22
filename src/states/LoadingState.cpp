@@ -11,7 +11,7 @@ LoadingState::LoadingState()
 {
 	Context::eventManager->subscribe<LoadingStateChange>(*this);
 	Context::eventManager->subscribe<ParametersChange>(*this);
-	std::ifstream fileStream("resources/lang/hints");
+	std::ifstream fileStream(Context::parameters->resourcesPath + "lang/hints");
 	if(not fileStream.is_open())//If failed to open the file
 		throw std::runtime_error("Unable to open hints file: resources/lang/hints");
 	else
@@ -25,7 +25,7 @@ LoadingState::LoadingState()
 		}
 		catch(std::invalid_argument & e)
 		{
-			std::cerr << "Unable to convert content of line 0 to number in file \"resources/lang/hints\"\n";
+			std::cerr << "Unable to convert content of line 0 to number in file \"" + Context::parameters->resourcesPath + "lang/hints\"\n";
 			throw;//Rethrow the exception
 		}
 

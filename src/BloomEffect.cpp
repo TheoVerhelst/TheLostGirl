@@ -1,11 +1,13 @@
+#include <TheLostGirl/Context.h>
+#include <TheLostGirl/Parameters.h>
 #include <TheLostGirl/BloomEffect.h>
 
 BloomEffect::BloomEffect()
 {
-	m_shaders.load("brightness pass","resources/shaders/Fullpass.vert", "resources/shaders/Brightness.frag");
-	m_shaders.load("down sample pass","resources/shaders/Fullpass.vert", "resources/shaders/DownSample.frag");
-	m_shaders.load("gaussian blur pass", "resources/shaders/Fullpass.vert", "resources/shaders/GuassianBlur.frag");
-	m_shaders.load("add pass","resources/shaders/Fullpass.vert", "resources/shaders/Add.frag");
+	m_shaders.load("brightness pass", Context::parameters->resourcesPath + "shaders/Fullpass.vert", Context::parameters->resourcesPath + "shaders/Brightness.frag");
+	m_shaders.load("down sample pass", Context::parameters->resourcesPath + "shaders/Fullpass.vert", Context::parameters->resourcesPath + "shaders/DownSample.frag");
+	m_shaders.load("gaussian blur pass", Context::parameters->resourcesPath + "shaders/Fullpass.vert", Context::parameters->resourcesPath + "shaders/GuassianBlur.frag");
+	m_shaders.load("add pass", Context::parameters->resourcesPath + "shaders/Fullpass.vert", Context::parameters->resourcesPath + "shaders/Add.frag");
 }
 
 BloomEffect::~BloomEffect()

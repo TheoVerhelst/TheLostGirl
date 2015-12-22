@@ -4,6 +4,8 @@
 #include <thread>
 #include <SFML/Graphics/Rect.hpp>
 #include <entityx/Entity.h>
+#include <TheLostGirl/Parameters.h>
+#include <TheLostGirl/Context.h>
 #include <TheLostGirl/AnimationsManager.h>
 #include <TheLostGirl/ContactListener.h>
 #include <TheLostGirl/State.h>
@@ -26,7 +28,7 @@ class GameState : public State
 	public:
         /// Constructor.
         /// \param file Path name of the save file to load.
-		GameState(std::string file = "resources/levels/save.json");
+		GameState(std::string file = Context::parameters->resourcesPath + "levels/save.json");
 
 		/// Destructor.
 		/// Remove all bodies, sprites and others from the memory.
