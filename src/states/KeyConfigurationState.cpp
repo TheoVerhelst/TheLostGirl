@@ -1,4 +1,4 @@
-#include <SFML/Window/Event.hpp>
+#include <SFML/Window.hpp>
 #include <TGUI/TGUI.hpp>
 #include <TheLostGirl/Parameters.h>
 #include <TheLostGirl/LangManager.h>

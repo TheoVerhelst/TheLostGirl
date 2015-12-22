@@ -1,7 +1,7 @@
 #ifndef SKYANIMATION_H
 #define SKYANIMATION_H
 
-#include <entityx/Entity.h>
+#include <entityx/entityx.h>
 
 /// Animation of a sky entity.
 /// This class rotate and set the transparence of sprites of a given entity

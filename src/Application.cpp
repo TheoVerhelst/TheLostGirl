@@ -1,4 +1,4 @@
-#include <SFML/Graphics/RenderTexture.hpp>
+#include <SFML/Graphics.hpp>
 #include <Box2D/Box2D.h>
 #include <TheLostGirl/states/IntroState.h>
 #include <TheLostGirl/components.h>

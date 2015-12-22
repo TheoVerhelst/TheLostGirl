@@ -1,4 +1,4 @@
-#include <entityx/Entity.h>
+#include <entityx/entityx.h>
 #include <TheLostGirl/Context.h>
 #include <TheLostGirl/states/OpenInventoryState.h>
 

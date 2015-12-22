@@ -1,6 +1,6 @@
 #include <random>
-#include <SFML/System/Time.hpp>
-#include <SFML/Window/Event.hpp>
+#include <SFML/System.hpp>
+#include <SFML/Window.hpp>
 #include <TGUI/TGUI.hpp>
 #include <TheLostGirl/LangManager.h>
 #include <TheLostGirl/events.h>

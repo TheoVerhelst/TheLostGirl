@@ -1,8 +1,5 @@
-#include <entityx/Entity.h>
-#include <Box2D/Dynamics/b2Body.h>
-#include <Box2D/Dynamics/b2World.h>
-#include <Box2D/Dynamics/Joints/b2WeldJoint.h>
-#include <Box2D/Dynamics/b2Fixture.h>
+#include <entityx/entityx.h>
+#include <Box2D/Box2D.h>
 #include <TheLostGirl/components.h>
 #include <TheLostGirl/functions.h>
 #include <TheLostGirl/Context.h>

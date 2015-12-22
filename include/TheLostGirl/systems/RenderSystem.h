@@ -1,7 +1,7 @@
 #ifndef RENDERSYSTEM_H
 #define RENDERSYSTEM_H
 
-#include <entityx/System.h>
+#include <entityx/entityx.h>
 
 //Forward declarations
 namespace entityx

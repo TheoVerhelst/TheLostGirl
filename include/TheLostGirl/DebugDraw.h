@@ -1,7 +1,7 @@
 #ifndef DEBUGDRAW_H
 #define DEBUGDRAW_H
 
-#include <Box2D/Common/b2Draw.h>
+#include <Box2D/Box2D.h>
 #include <TGUI/TGUI.hpp>
 #include <TheLostGirl/StateStack.h>
 

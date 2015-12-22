@@ -1,9 +1,7 @@
 #include <algorithm>
 #include <cmath>
 #include <entityx/entityx.h>
-#include <Box2D/Dynamics/b2World.h>
-#include <Box2D/Dynamics/b2Body.h>
-#include <Box2D/Dynamics/Joints/b2Joint.h>
+#include <Box2D/Box2D.h>
 #include <TheLostGirl/Category.h>
 #include <TheLostGirl/Context.h>
 #include <TheLostGirl/components.h>

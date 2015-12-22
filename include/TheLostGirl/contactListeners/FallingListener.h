@@ -1,7 +1,7 @@
 #ifndef FALLINGLISTENER_H
 #define FALLINGLISTENER_H
 
-#include <Box2D/Dynamics/b2WorldCallbacks.h>
+#include <Box2D/Box2D.h>
 
 /// Collision listener.
 /// - Handle collisions between falling actors and others entities

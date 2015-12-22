@@ -1,4 +1,4 @@
-#include <SFML/Graphics/RenderWindow.hpp>
+#include <SFML/Graphics.hpp>
 #include <entityx/entityx.h>
 #include <TheLostGirl/Command.h>
 #include <TheLostGirl/components.h>

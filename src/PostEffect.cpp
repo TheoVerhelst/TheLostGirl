@@ -1,6 +1,4 @@
-#include <SFML/Graphics/Shader.hpp>
-#include <SFML/Graphics/RenderTarget.hpp>
-#include <SFML/Graphics/VertexArray.hpp>
+#include <SFML/Graphics.hpp>
 #include <TheLostGirl/PostEffect.h>
 
 void PostEffect::applyShader(const sf::Shader& shader, sf::RenderTarget& output, const sf::RenderStates& states)

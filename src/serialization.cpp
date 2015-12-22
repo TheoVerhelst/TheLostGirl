@@ -1,14 +1,7 @@
 #include <dist/json/json.h>
-#include <entityx/Entity.h>
-#include <Box2D/Collision/Shapes/b2CircleShape.h>
-#include <Box2D/Collision/Shapes/b2ChainShape.h>
-#include <Box2D/Collision/Shapes/b2EdgeShape.h>
-#include <Box2D/Collision/Shapes/b2PolygonShape.h>
-#include <Box2D/Dynamics/Joints/b2RevoluteJoint.h>
-#include <Box2D/Dynamics/Joints/b2WeldJoint.h>
-#include <Box2D/Dynamics/Joints/b2PrismaticJoint.h>
-#include <Box2D/Dynamics/b2World.h>
-#include <SFML/Graphics/Texture.hpp>
+#include <entityx/entityx.h>
+#include <Box2D/Box2D.h>
+#include <SFML/Graphics.hpp>
 #include <TheLostGirl/components.h>
 #include <TheLostGirl/ResourceManager.h>
 #include <TheLostGirl/FixtureRoles.h>

@@ -3,7 +3,7 @@
 
 #include <unordered_map>
 #include <TGUI/TGUI.hpp>
-#include <entityx/Entity.h>
+#include <entityx/entityx.h>
 #include <TheLostGirl/State.h>
 #include <TheLostGirl/HashEntity.h>
 

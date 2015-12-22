@@ -2,8 +2,8 @@
 #define GAMESTATE_H
 
 #include <thread>
-#include <SFML/Graphics/Rect.hpp>
-#include <entityx/Entity.h>
+#include <SFML/Graphics.hpp>
+#include <entityx/entityx.h>
 #include <TheLostGirl/Parameters.h>
 #include <TheLostGirl/Context.h>
 #include <TheLostGirl/AnimationsManager.h>

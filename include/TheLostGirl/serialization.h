@@ -1,7 +1,7 @@
 #ifndef SERIALIZATION_H
 #define SERIALIZATION_H
 
-#include <entityx/Entity.h>
+#include <entityx/entityx.h>
 #include <TheLostGirl/components.h>
 #include <TheLostGirl/SpriteSheetAnimation.h>
 

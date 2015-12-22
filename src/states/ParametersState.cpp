@@ -1,5 +1,4 @@
-#include <SFML/Window/Event.hpp>
-#include <SFML/Window/VideoMode.hpp>
+#include <SFML/Window.hpp>
 #include <TGUI/TGUI.hpp>
 #include <TheLostGirl/LangManager.h>
 #include <TheLostGirl/states/PauseState.h>

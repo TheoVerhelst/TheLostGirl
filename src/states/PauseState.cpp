@@ -1,5 +1,5 @@
 #include <TGUI/TGUI.hpp>
-#include <entityx/System.h>
+#include <entityx/entityx.h>
 #include <TheLostGirl/states/MainMenuState.h>
 #include <TheLostGirl/StateStack.h>
 #include <TheLostGirl/LangManager.h>

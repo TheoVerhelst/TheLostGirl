@@ -1,8 +1,8 @@
 #ifndef POSTEFFECT_H
 #define POSTEFFECT_H
 
-#include <SFML/System/NonCopyable.hpp>
-#include <SFML/Graphics/RenderStates.hpp>
+#include <SFML/System.hpp>
+#include <SFML/Graphics.hpp>
 
 
 namespace sf

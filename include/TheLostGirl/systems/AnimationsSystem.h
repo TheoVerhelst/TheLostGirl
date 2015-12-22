@@ -1,8 +1,8 @@
 #ifndef ANIMATIONSSYSTEM_H
 #define ANIMATIONSSYSTEM_H
 
-#include <entityx/System.h>
-#include <SFML/Graphics/Vertex.hpp>
+#include <entityx/entityx.h>
+#include <SFML/Graphics.hpp>
 
 //Forward declarations
 namespace entityx

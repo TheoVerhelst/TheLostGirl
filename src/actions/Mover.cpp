@@ -1,8 +1,5 @@
-#include <entityx/Entity.h>
-#include <Box2D/Collision/Shapes/b2PolygonShape.h>
-#include <Box2D/Collision/Shapes/b2EdgeShape.h>
-#include <Box2D/Collision/Shapes/b2ChainShape.h>
-#include <Box2D/Collision/Shapes/b2CircleShape.h>
+#include <entityx/entityx.h>
+#include <Box2D/Box2D.h>
 #include <TheLostGirl/components.h>
 #include <TheLostGirl/SpriteSheetAnimation.h>
 #include <TheLostGirl/FixtureRoles.h>

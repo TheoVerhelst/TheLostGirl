@@ -2,8 +2,7 @@
 #define EVENTS_H
 
 #include <string>
-#include <entityx/Event.h>
-#include <entityx/Entity.h>
+#include <entityx/entityx.h>
 #include <TheLostGirl/LangManager.h>
 
 /// Structure used to emit and receive loading progression between differents game states.

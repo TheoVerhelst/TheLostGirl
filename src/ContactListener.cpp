@@ -1,7 +1,5 @@
-#include <Box2D/Dynamics/b2Body.h>
-#include <Box2D/Dynamics/b2Fixture.h>
-#include <Box2D/Dynamics/Contacts/b2Contact.h>
-#include <entityx/Entity.h>
+#include <Box2D/Box2D.h>
+#include <entityx/entityx.h>
 #include <TheLostGirl/components.h>
 #include <TheLostGirl/functions.h>
 #include <TheLostGirl/ContactListener.h>

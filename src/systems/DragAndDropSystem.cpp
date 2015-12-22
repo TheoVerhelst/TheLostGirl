@@ -1,8 +1,7 @@
 #include <cmath>
-#include <SFML/Graphics/RenderWindow.hpp>
-#include <SFML/Graphics/RenderTexture.hpp>
-#include <SFML/Window/Event.hpp>
-#include <Box2D/Common/b2Math.h>
+#include <SFML/Graphics.hpp>
+#include <SFML/Window.hpp>
+#include <Box2D/Box2D.h>
 #include <TheLostGirl/components.h>
 #include <TheLostGirl/Context.h>
 #include <TheLostGirl/Command.h>

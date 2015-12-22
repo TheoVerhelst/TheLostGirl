@@ -1,4 +1,4 @@
-#include <SFML/System/Time.hpp>
+#include <SFML/System.hpp>
 #include <entityx/entityx.h>
 #include <Box2D/Box2D.h>
 #include <TheLostGirl/components.h>

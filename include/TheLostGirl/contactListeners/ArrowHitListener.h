@@ -1,7 +1,7 @@
 #ifndef ARROWHITLISTENER_H
 #define ARROWHITLISTENER_H
 
-#include <Box2D/Dynamics/b2WorldCallbacks.h>
+#include <Box2D/Box2D.h>
 
 /// Collision listener.
 /// - Handle collisions of arrows to decide if the arrow should be sticked

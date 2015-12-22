@@ -1,7 +1,5 @@
 #include <deque>
-#include <SFML/Graphics/RenderWindow.hpp>
-#include <SFML/Graphics/RenderTexture.hpp>
-#include <SFML/Graphics/Sprite.hpp>
+#include <SFML/Graphics.hpp>
 #include <entityx/entityx.h>
 #include <TheLostGirl/components.h>
 #include <TheLostGirl/Category.h>

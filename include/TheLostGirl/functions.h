@@ -3,11 +3,9 @@
 
 #include <string>
 #include <map>
-#include <SFML/Graphics/Rect.hpp>
-#include <SFML/Window/Event.hpp>
-#include <Box2D/Common/b2Draw.h>
-#include <Box2D/Dynamics/b2Fixture.h>
-#include <Box2D/Dynamics/b2Body.h>
+#include <SFML/Graphics.hpp>
+#include <SFML/Window.hpp>
+#include <Box2D/Box2D.h>
 #include <TGUI/TGUI.hpp>
 
 //Forward declarations

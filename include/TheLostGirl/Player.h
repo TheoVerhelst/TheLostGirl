@@ -3,7 +3,7 @@
 
 #include <map>
 #include <queue>
-#include <SFML/Window/Event.hpp>
+#include <SFML/Window.hpp>
 #include <TheLostGirl/State.h>
 
 //Forward declarations

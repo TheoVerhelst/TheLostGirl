@@ -1,5 +1,5 @@
 #include <cmath>
-#include <SFML/System/Time.hpp>
+#include <SFML/System.hpp>
 #include <TheLostGirl/LangManager.h>
 #include <TheLostGirl/systems/TimeSystem.h>
 #include <TheLostGirl/Context.h>

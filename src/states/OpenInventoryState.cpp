@@ -1,5 +1,5 @@
-#include <SFML/System/Time.hpp>
-#include <SFML/Window/Event.hpp>
+#include <SFML/System.hpp>
+#include <SFML/Window.hpp>
 #include <entityx/entityx.h>
 #include <TGUI/TGUI.hpp>
 #include <TheLostGirl/events.h>

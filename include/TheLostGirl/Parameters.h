@@ -2,7 +2,7 @@
 #define PARAMETERS_H
 
 #include <string>
-#include <Box2D/Common/b2Math.h>
+#include <Box2D/Box2D.h>
 #include <TGUI/TGUI.hpp>
 
 /// Structure that holds various informations about the application.

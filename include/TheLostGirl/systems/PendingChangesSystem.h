@@ -2,7 +2,7 @@
 #define PENDINGCHANGESSYSTEM_H
 
 #include <queue>
-#include <entityx/System.h>
+#include <entityx/entityx.h>
 
 //Forward declarations
 namespace entityx

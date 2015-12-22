@@ -3,10 +3,10 @@
 
 #include <string>
 #include <unordered_map>
-#include <SFML/Graphics/Sprite.hpp>
-#include <SFML/System/Clock.hpp>
-#include <Box2D/Common/b2Math.h>
-#include <entityx/Entity.h>
+#include <SFML/Graphics.hpp>
+#include <SFML/System.hpp>
+#include <Box2D/Box2D.h>
+#include <entityx/entityx.h>
 #include <TheLostGirl/Category.h>
 #include <TheLostGirl/AnimationsManager.h>
 #include <TheLostGirl/HashEntity.h>

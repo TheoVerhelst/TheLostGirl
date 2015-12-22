@@ -2,8 +2,8 @@
 #define SCRIPTSFUNCTIONS_H
 
 #include <vector>
-#include <Box2D/Dynamics/b2WorldCallbacks.h>
-#include <entityx/Entity.h>
+#include <Box2D/Box2D.h>
+#include <entityx/entityx.h>
 #include <TheLostGirl/scripts/Interpreter.h>
 
 //Forward declarations

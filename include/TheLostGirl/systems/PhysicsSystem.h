@@ -1,7 +1,7 @@
 #ifndef PHYSICSSYSTEM_H
 #define PHYSICSSYSTEM_H
 
-#include <entityx/System.h>
+#include <entityx/entityx.h>
 
 //Forward declarations
 namespace entityx

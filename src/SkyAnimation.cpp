@@ -1,6 +1,5 @@
-#include <SFML/Graphics/Rect.hpp>
-#include <SFML/Graphics/Sprite.hpp>
-#include <entityx/Entity.h>
+#include <SFML/Graphics.hpp>
+#include <entityx/entityx.h>
 #include <TheLostGirl/components.h>
 #include <TheLostGirl/functions.h>
 #include <TheLostGirl/SkyAnimation.h>

@@ -1,4 +1,4 @@
-#include <entityx/Entity.h>
+#include <entityx/entityx.h>
 #include <TheLostGirl/components.h>
 #include <TheLostGirl/functions.h>
 #include <TheLostGirl/SpriteSheetAnimation.h>

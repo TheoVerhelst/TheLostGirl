@@ -1,10 +1,6 @@
 #include <utility> //std::swap
-#include <Box2D/Dynamics/b2Body.h>
-#include <Box2D/Dynamics/Contacts/b2Contact.h>
-#include <Box2D/Dynamics/Joints/b2WeldJoint.h>
-#include <Box2D/Dynamics/b2World.h>
-#include <entityx/Entity.h>
-#include <entityx/System.h>
+#include <Box2D/Box2D.h>
+#include <entityx/entityx.h>
 #include <TheLostGirl/components.h>
 #include <TheLostGirl/AnimationsManager.h>
 #include <TheLostGirl/events.h>

@@ -1,7 +1,7 @@
 #ifndef FIXTUREROLES_H
 #define FIXTUREROLES_H
 
-#include <Box2D/Dynamics/b2Fixture.h>
+#include <Box2D/Box2D.h>
 
 /// \file FixtureRoles.h
 

@@ -1,8 +1,8 @@
-#include <SFML/System/Time.hpp>
-#include <SFML/Window/Event.hpp>
+#include <SFML/System.hpp>
+#include <SFML/Window.hpp>
 #include <TGUI/TGUI.hpp>
 #include <entityx/entityx.h>
-#include <Box2D/Dynamics/b2World.h>
+#include <Box2D/Box2D.h>
 #include <TheLostGirl/ResourceManager.h>
 #include <TheLostGirl/Player.h>
 #include <TheLostGirl/Command.h>

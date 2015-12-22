@@ -1,5 +1,5 @@
-#include <SFML/System/Time.hpp>
-#include <SFML/Window/Event.hpp>
+#include <SFML/System.hpp>
+#include <SFML/Window.hpp>
 #include <TGUI/TGUI.hpp>
 #include <TheLostGirl/states/MainMenuState.h>
 #include <TheLostGirl/StateStack.h>

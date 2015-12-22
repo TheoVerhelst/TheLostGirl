@@ -3,8 +3,8 @@
 
 #include <unordered_set>
 
-#include <Box2D/Dynamics/b2WorldCallbacks.h>
-#include <entityx/Entity.h>
+#include <Box2D/Box2D.h>
+#include <entityx/entityx.h>
 #include <TheLostGirl/Action.h>
 #include <TheLostGirl/HashEntity.h>
 

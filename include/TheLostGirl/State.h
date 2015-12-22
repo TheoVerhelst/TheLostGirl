@@ -2,7 +2,7 @@
 #define STATE_H
 
 #include <memory>
-#include <entityx/Event.h>
+#include <entityx/entityx.h>
 #include <TheLostGirl/StateStack.h>
 #include <TheLostGirl/Context.h>
 

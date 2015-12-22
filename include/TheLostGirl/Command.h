@@ -2,7 +2,7 @@
 #define COMMAND_H
 
 #include <functional>
-#include <entityx/Entity.h>
+#include <entityx/entityx.h>
 #include <TheLostGirl/Category.h>
 
 /// Function applied to an entity.

@@ -1,7 +1,7 @@
 #ifndef STATSSYSTEM_H
 #define STATSSYSTEM_H
 
-#include <entityx/System.h>
+#include <entityx/entityx.h>
 
 //Forward declarations
 namespace entityx

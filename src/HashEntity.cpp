@@ -1,5 +1,5 @@
 #include <functional>
-#include <entityx/Entity.h>
+#include <entityx/entityx.h>
 #include <TheLostGirl/HashEntity.h>
 
 std::size_t HashEntity::operator()(entityx::Entity entity) const

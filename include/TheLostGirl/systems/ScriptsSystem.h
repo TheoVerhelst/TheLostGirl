@@ -1,7 +1,7 @@
 #ifndef SCRIPTSSYSTEM_H
 #define SCRIPTSSYSTEM_H
 
-#include <entityx/System.h>
+#include <entityx/entityx.h>
 
 //Forward declarations
 namespace entityx

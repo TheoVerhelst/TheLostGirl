@@ -1,9 +1,6 @@
 #include <algorithm>
-#include <Box2D/Dynamics/b2Body.h>
-#include <Box2D/Dynamics/b2World.h>
-#include <Box2D/Dynamics/b2Fixture.h>
-#include <Box2D/Collision/b2Distance.h>
-#include <entityx/System.h>
+#include <Box2D/Box2D.h>
+#include <entityx/entityx.h>
 #include <TheLostGirl/components.h>
 #include <TheLostGirl/Command.h>
 #include <TheLostGirl/actions.h>

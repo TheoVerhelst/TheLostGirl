@@ -2,7 +2,7 @@
 #define TIMESYSTEM_H
 
 #include <random>
-#include <entityx/System.h>
+#include <entityx/entityx.h>
 
 //Forward declarations
 namespace sf

@@ -1,6 +1,6 @@
 #include <cassert>
-#include <SFML/System/Time.hpp>
-#include <SFML/Window/Event.hpp>
+#include <SFML/System.hpp>
+#include <SFML/Window.hpp>
 #include <TheLostGirl/State.h>
 #include <TheLostGirl/StateStack.h>
 

@@ -1,8 +1,8 @@
 #ifndef SCROLLINGSYSTEM_H
 #define SCROLLINGSYSTEM_H
 
-#include <entityx/System.h>
-#include <SFML/Graphics/Rect.hpp>
+#include <entityx/entityx.h>
+#include <SFML/Graphics.hpp>
 
 //Forward declarations
 namespace sf

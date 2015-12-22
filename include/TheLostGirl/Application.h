@@ -3,7 +3,7 @@
 
 #include <TGUI/TGUI.hpp>
 #include <entityx/entityx.h>
-#include <Box2D/Dynamics/b2World.h>
+#include <Box2D/Box2D.h>
 #include <TheLostGirl/ResourceManager.h>
 #include <TheLostGirl/State.h>
 #include <TheLostGirl/BloomEffect.h>

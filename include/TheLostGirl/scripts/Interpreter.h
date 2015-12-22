@@ -4,7 +4,7 @@
 #include <map>
 #include <fstream>
 #include <boost/variant.hpp>
-#include <entityx/Entity.h>
+#include <entityx/entityx.h>
 #include <TheLostGirl/scripts/Tree.h>
 
 typedef boost::variant<bool, int, float, std::string, entityx::Entity> Data;

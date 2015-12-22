@@ -3,7 +3,7 @@
 
 #include <vector>
 #include <memory>
-#include <SFML/System/NonCopyable.hpp>
+#include <SFML/System.hpp>
 
 //Forward declarations
 namespace sf

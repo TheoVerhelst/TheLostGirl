@@ -1,5 +1,4 @@
-#include <SFML/Graphics/RenderWindow.hpp>
-#include <SFML/Graphics/Sprite.hpp>
+#include <SFML/Graphics.hpp>
 #include <entityx/entityx.h>
 #include <Box2D/Box2D.h>
 #include <TheLostGirl/components.h>

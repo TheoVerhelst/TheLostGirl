@@ -4,7 +4,7 @@
 #include <string>
 #include <map>
 #include <cmath>
-#include <SFML/System/Time.hpp>
+#include <SFML/System.hpp>
 #include <dist/json/json.h>
 #include <TheLostGirl/StateStack.h>
 
