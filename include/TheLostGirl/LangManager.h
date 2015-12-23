@@ -2,17 +2,8 @@
 #define LANGMANAGER_H
 
 #include <string>
-#include <locale>
-#include <fstream>
 #include <map>
-#include <exception>
-
-/// Available langages.
-enum Lang
-{
-	EN,///< English.
-	FR ///< French.
-};
+#include <set>
 
 /// Language manager that translates strings.
 /// It translate a std::string in english to a std::wtring in the langage defined by setLang.
@@ -24,28 +15,21 @@ class LangManager
         /// The lang file is automaticaly loaded by the manager.
         /// \param newLang Lang to load
         /// \return void
-		void setLang(Lang newLang);
+		void setLang(std::string newLang);
 
         /// Return the current lang.
         /// \return Lang
-		Lang getLang() const;
+		std::string getLang() const;
 
 		/// Get the default lang.
 		/// The default lang is the one that is used in code,
 		/// and that is loaded if the file for the asked lang is not found.
 		/// \return The default lang.
-		Lang getDefaultLang() const;
-
-		/// Get a string representing the given lang,
-		/// this string is intented to be a valid lang file
-		/// in the directory "lang".
-		/// \param lang The lang to cast to a string.
-		/// \return The string representation of the parameter.
-		static std::string getLangName(Lang lang);
+		std::string getDefaultLang() const;
 
 		/// Get an array of all available langs.
 		/// \return An array of all available langs.
-		static std::array<Lang, 2> getAvailableLangs();
+		static std::set<std::string> getAvailableLangs();
 
         /// Translate the given string.
         ///	The \a entryName must be an entry in the lang file, and be in english.
@@ -57,12 +41,11 @@ class LangManager
 	private:
 		/// Load the data related to the given lang.
 		/// \param langToLoad Lang to load.
-		void loadLang(Lang langToLoad);
+		void loadLang(std::string langToLoad);
 
-		Lang m_lang;                                  ///< The current lang.
-		const Lang m_defaultLang = EN;
+		std::string m_lang;                           ///< The current lang.
+		const std::string m_defaultLang = "EN";
 		std::map<std::string, std::wstring> m_entries;///< Translations related to the current lang.
-		static const std::map<Lang, std::string> m_langNames;
 };
 
 #endif//LANGMANAGER_H

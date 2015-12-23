@@ -55,16 +55,6 @@ class ParametersState : public State
 		/// Reset all texts in the buttons and other widgets.
 		void resetTexts();
 
-		/// Gives the string corresponding to the given Lang, to display in parameters menu.
-		/// \param lang The lang to convert.
-		/// \return The corresponding string.
-		sf::String toString(Lang lang);
-
-		/// Gives the Lang corresponding to the given string.
-		/// \param string The string to convert.
-		/// \return The corresponding Lang.
-		Lang fromString(sf::String string);
-
 		tgui::Panel::Ptr m_background;           ///< The background of the menu.
 		tgui::Label::Ptr m_title;                ///< The title label of the menu
 

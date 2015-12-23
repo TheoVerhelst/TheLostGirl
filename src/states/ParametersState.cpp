@@ -42,9 +42,9 @@ ParametersState::ParametersState()
 	layout->add(m_langLabel);
 
 	m_langComboBox = Context::parameters->guiTheme->load("ComboBox");
-	m_langComboBox->addItem(LangManager::getLangName(FR));
-	m_langComboBox->addItem(LangManager::getLangName(EN));
-	m_langComboBox->setSelectedItem(LangManager::getLangName(Context::langManager->getLang()));
+	for(auto& lang : Context::langManager->getAvailableLangs())
+		m_langComboBox->addItem(lang);
+	m_langComboBox->setSelectedItem(Context::langManager->getLang());
 	layout->add(m_langComboBox);
 	mainLayout->add(layout);
 
@@ -216,11 +216,11 @@ void ParametersState::receive(const ParametersChange& parametersChange)
 
 void ParametersState::applyChanges()
 {
-	bool langChanged{Context::langManager->getLang() != fromString(m_langComboBox->getSelectedItem())};
+	bool langChanged{Context::langManager->getLang() != m_langComboBox->getSelectedItem()};
 	bool bloomEnabledChanged{Context::parameters->bloomEnabled != m_bloomCheckBox->isChecked()};
 	bool fullscreenChanged{Context::parameters->fullscreen != m_fullscreenCheckBox->isChecked()};
 	if(langChanged)
-		Context::langManager->setLang(fromString(m_langComboBox->getSelectedItem()));
+		Context::langManager->setLang(m_langComboBox->getSelectedItem());
 	if(bloomEnabledChanged)
 	{
 		if(m_bloomCheckBox->isChecked())
@@ -270,12 +270,3 @@ void ParametersState::resetTexts()
 	m_cancelButton->setText(Context::langManager->tr("Cancel"));
 	m_okButton->setText(Context::langManager->tr("OK"));
 }
-
-Lang ParametersState::fromString(sf::String string)
-{
-	if(string == L"Français")
-		return FR;
-	else
-		return EN;
-}
-

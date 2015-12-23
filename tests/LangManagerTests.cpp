@@ -1,3 +1,4 @@
+#include <fstream>
 #include <boost/test/unit_test.hpp>
 #include <TheLostGirl/Parameters.h>
 #include <TheLostGirl/Context.h>
@@ -33,7 +34,7 @@ BOOST_AUTO_TEST_CASE(LangTests)
 		sourceFileStream.open(sourceFileName);
 		//Things to handle wide encoding
 		translationFileStream.imbue(std::locale(""));
-		translationFileStream.open(parameters.resourcesPath + "lang/" + LangManager::getLangName(availableLang));
+		translationFileStream.open(parameters.resourcesPath + "lang/" + availableLang);
 
 		//Check if the langs files are loaded
 		BOOST_REQUIRE(sourceFileStream.is_open());

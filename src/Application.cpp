@@ -58,10 +58,7 @@ Application::Application(bool debugMode):
 		//Parsing of the settings file from the model file
 		parse(settings, model, "root", "root");
 		sf::VideoMode mode{settings["window size"]["w"].asUInt(), settings["window size"]["h"].asUInt()};
-		if(settings["lang"].asString() == "FR")
-			m_langManager.setLang(FR);
-		else
-			m_langManager.setLang(EN);
+		m_langManager.setLang(settings["lang"].asString());
 		m_parameters.fullscreen = settings["fullscreen"].asBool();
 		m_parameters.bloomEnabled = settings["enable bloom"].asBool();
 		uint32 style{m_parameters.fullscreen ? sf::Style::Fullscreen : sf::Style::Default};
@@ -71,6 +68,7 @@ Application::Application(bool debugMode):
 	m_parameters.debugMode = debugMode;
 	m_gui.setWindow(m_window);
 	m_debugDraw.initWidgets();
+	m_bloomEffect.init();
 	handleResize();
 }
 
@@ -81,10 +79,7 @@ Application::~Application()
 	std::string file("settings.json");
 	std::ofstream settingsFileStream(file, std::ofstream::binary);
 
-	if(m_langManager.getLang() == FR)
-		settings["lang"] = "FR";
-	else if(m_langManager.getLang() == EN)
-		settings["lang"] = "EN";
+	settings["lang"] = m_langManager.getLang();
 	settings["window size"]["w"] = m_window.getSize().x;
 	settings["window size"]["h"] = m_window.getSize().y;
 	settings["enable bloom"] = m_parameters.bloomEnabled;

@@ -17,6 +17,9 @@ class BloomEffect : public PostEffect
 		/// Destructor.
 		virtual ~BloomEffect();
 
+		/// Init the effects.
+		void init();
+
 		/// Apply the bloom effect.
 		/// \param input Texture on wich the shader will be applied.
 		/// \param output Destination where the result of the shader will be drawn.

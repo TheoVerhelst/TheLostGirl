@@ -1,4 +1,5 @@
 #include <random>
+#include <fstream>
 #include <SFML/System.hpp>
 #include <SFML/Window.hpp>
 #include <TGUI/TGUI.hpp>
