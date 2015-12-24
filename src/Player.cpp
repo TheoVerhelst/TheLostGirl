@@ -241,6 +241,7 @@ std::vector<sf::Joystick::Axis> Player::getAssignedJoystickAxis(Action action) c
 
 bool Player::isActived(Action action) const
 {
+	//Use std::find instead of copy of range here
 	std::vector<sf::Keyboard::Key> keyBindings{getAssignedKeys(action)};
 	std::vector<sf::Mouse::Button> mouseButtonsBindings{getAssignedMouseButtons(action)};
 	std::vector<unsigned int> joystickButtonsBindings{getAssignedJoystickButtons(action)};
@@ -272,10 +273,8 @@ void Player::handleInitialInputState()
 {
 	auto& commands(Context::systemManager->system<PendingChangesSystem>()->commandQueue);
 	for(auto& pair : m_startActionBinding)
-	{
 		if(isActived(pair.first))
 			commands.push(pair.second);
-	}
 	//We must do 2 differents loops because an action can have to differents
 	//bindings for the beginning and the ending of the action.
 	for(auto& pair : m_stopActionBinding)

@@ -33,12 +33,12 @@ void StateStack::handleEvent(const sf::Event& event)
 
 void StateStack::popState()
 {
-	m_pendingList.push_back([this]{m_stack.pop_back();});
+	m_pendingList.push_back(std::bind(&std::vector<std::unique_ptr<State>>::pop_back, &m_stack));
 }
 
 void StateStack::clearStates()
 {
-	m_pendingList.push_back([this]{m_stack.clear();});
+	m_pendingList.emplace_back(std::bind(&std::vector<std::unique_ptr<State>>::clear, &m_stack));
 }
 
 bool StateStack::isEmpty() const

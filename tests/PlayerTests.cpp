@@ -3,8 +3,15 @@
 
 struct PlayerTestsFixture
 {
-	PlayerTestsFixture()
+	entityx::EventManager events;
+	entityx::EntityManager entities;
+	entityx::SystemManager systems;
+	PlayerTestsFixture():
+		entities{events},
+		systems{events, entities}
 	{
+		systems.add<PendingChangesSystem>();
+		systems.add<DragAndDropSystem>();
 	}
 
 	~PlayerTestsFixture()
@@ -13,10 +20,7 @@ struct PlayerTestsFixture
 };
 
 BOOST_FIXTURE_TEST_SUITE(PlayerTests, PlayerTestsFixture)
- 
-BOOST_AUTO_TEST_CASE(MyMethod)
-{
-    BOOST_CHECK(1 + 1 == 2);
-}
- 
+
+//TODO Need to implement the command config file, in order to test key assignement in the player class
+
 BOOST_AUTO_TEST_SUITE_END()

@@ -9,3 +9,4 @@ CAC: statique : deux coups; en avancant: ??? ; en tombant: un puissant; en sauta
 Use template template parameter in isMember() in function.h. +TheLostGirl
 Apply perfect forwarding on variadic arguments in StateStack.h's pushState method. +TheLostGirl
 Avoid init() methods because of the Context init in Application constructor +TheLostGirl
+Use std::bitset instead of unsigned int for CategoryComponent +TheLostGirl

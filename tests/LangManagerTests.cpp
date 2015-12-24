@@ -20,10 +20,10 @@ struct LangManagerTestsFixture
 
 BOOST_FIXTURE_TEST_SUITE(LangManagerTests, LangManagerTestsFixture)
 
-BOOST_AUTO_TEST_CASE(LangTests)
+BOOST_AUTO_TEST_CASE(langsTests)
 {
 	std::map<std::string, std::wstring> entries;
-	const std::string sourceFileName{parameters.resourcesPath + "lang/EN"};
+	const std::string sourceFileName{parameters.resourcesPath + "lang/" + langs.getDefaultLang()};
 	std::ifstream sourceFileStream;
 	std::wifstream translationFileStream;
 
@@ -59,5 +59,25 @@ BOOST_AUTO_TEST_CASE(LangTests)
 			BOOST_CHECK(langs.tr(pair.first) == pair.second);
 	}
 }
+
+BOOST_AUTO_TEST_CASE(setLangTests)
+{
+	const std::vector<std::string> availableLangs{LangManager::getAvailableLangs()};
+	const std::string currentLang{langs.getLang()};
+	const std::string defaultLang{langs.getDefaultLang()};
+	BOOST_CHECK(std::find(availableLangs.begin(), availableLangs.end(), currentLang) != availableLangs.end());
+	BOOST_CHECK(std::find(availableLangs.begin(), availableLangs.end(), defaultLang) != availableLangs.end());
+	auto it = std::find_if(availableLangs.begin(), availableLangs.end(), [&currentLang](const std::string& s){return currentLang != s;});
+	if(it != availableLangs.end())
+	{
+		const std::string newLang{*it};
+		langs.setLang(newLang);
+		BOOST_CHECK(langs.getLang() == newLang);
+	}
+	else
+		BOOST_WARN_MESSAGE("No second lang was found for testing LangManager::setLang");
+}
+
+//TODO more tests case can be written here
 
 BOOST_AUTO_TEST_SUITE_END()
