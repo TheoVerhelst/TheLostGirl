@@ -24,17 +24,19 @@ BOOST_AUTO_TEST_CASE(langsTests)
 {
 	std::map<std::string, std::wstring> entries;
 	const std::string sourceFileName{parameters.resourcesPath + "lang/" + langs.getDefaultLang()};
+	std::string translationFileName;
 	std::ifstream sourceFileStream;
 	std::wifstream translationFileStream;
 
 	//Check if all translation files are complete
 	for(auto& availableLang : LangManager::getAvailableLangs())
 	{
+		translationFileName = parameters.resourcesPath + "lang/" + availableLang;
 		entries.clear();
 		sourceFileStream.open(sourceFileName);
 		//Things to handle wide encoding
 		translationFileStream.imbue(std::locale(""));
-		translationFileStream.open(parameters.resourcesPath + "lang/" + availableLang);
+		translationFileStream.open(translationFileName);
 
 		//Check if the langs files are loaded
 		BOOST_REQUIRE(sourceFileStream.is_open());
@@ -49,7 +51,8 @@ BOOST_AUTO_TEST_CASE(langsTests)
 			entries.emplace(sourceLine, translatedLine);
 		}
 
-		BOOST_REQUIRE_MESSAGE(sourceFileStream.eof() == translationFileStream.eof(), "It seems that lang files are not consistent");
+		BOOST_REQUIRE_MESSAGE(sourceFileStream.eof() == translationFileStream.eof(),
+				"It seems that lang files are not consistent (" + sourceFileName + " and " + translationFileName + ").");
 		sourceFileStream.close();
 		translationFileStream.close();
 
@@ -62,20 +65,21 @@ BOOST_AUTO_TEST_CASE(langsTests)
 
 BOOST_AUTO_TEST_CASE(setLangTests)
 {
-	const std::vector<std::string> availableLangs{LangManager::getAvailableLangs()};
-	const std::string currentLang{langs.getLang()};
-	const std::string defaultLang{langs.getDefaultLang()};
-	BOOST_CHECK(std::find(availableLangs.begin(), availableLangs.end(), currentLang) != availableLangs.end());
-	BOOST_CHECK(std::find(availableLangs.begin(), availableLangs.end(), defaultLang) != availableLangs.end());
-	auto it = std::find_if(availableLangs.begin(), availableLangs.end(), [&currentLang](const std::string& s){return currentLang != s;});
-	if(it != availableLangs.end())
+	const std::set<std::string> availableLangs{LangManager::getAvailableLangs()};
+	if(availableLangs.size() > 1)
 	{
+		const std::string defaultLang{langs.getDefaultLang()};
+		BOOST_CHECK(std::find(availableLangs.begin(), availableLangs.end(), defaultLang) != availableLangs.end());
+		auto it = std::find_if(availableLangs.begin(), availableLangs.end(), [&defaultLang](const std::string& lang)
+		{
+			return defaultLang != lang;
+		});
+		BOOST_REQUIRE(it != availableLangs.end());
 		const std::string newLang{*it};
 		langs.setLang(newLang);
 		BOOST_CHECK(langs.getLang() == newLang);
 	}
-	else
-		BOOST_WARN_MESSAGE("No second lang was found for testing LangManager::setLang");
+	BOOST_WARN_MESSAGE(availableLangs.size() > 1, "No second lang was found for testing LangManager::setLang");
 }
 
 //TODO more tests case can be written here
