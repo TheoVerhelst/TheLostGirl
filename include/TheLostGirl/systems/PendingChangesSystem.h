@@ -3,6 +3,7 @@
 
 #include <queue>
 #include <entityx/entityx.h>
+#include <TheLostGirl/Command.h>
 
 //Forward declarations
 namespace entityx
@@ -10,7 +11,6 @@ namespace entityx
 	class EventManager;
 	class EntityManager;
 }
-struct Command;
 struct b2BodyDef;
 class b2Body;
 struct b2JointDef;
