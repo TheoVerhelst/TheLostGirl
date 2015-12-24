@@ -1,0 +1,144 @@
+template <class Enum, std::size_t N>
+bool FlagSet::operator==(const FlagSet<Enum, N>& rhs) const
+{
+	return m_bitset == rhs.m_bitset;
+}
+
+template <class Enum, std::size_t N>
+bool FlagSet::operator!=(const FlagSet<Enum, N>& rhs) const
+{
+	return m_bitset != rhs.m_bitset;
+}
+
+template <class Enum, std::size_t N>
+bool FlagSet::test(Enum flag) const
+{
+	return m_bitset.test(getIndex(flag));
+}
+
+template <class Enum, std::size_t N>
+bool FlagSet::all() const
+{
+	return m_bitset.all();
+}
+
+template <class Enum, std::size_t N>
+bool FlagSet::any() const
+{
+	return m_bitset.any();
+}
+
+template <class Enum, std::size_t N>
+bool FlagSet::none() const
+{
+	return m_bitset.none();
+}
+
+template <class Enum, std::size_t N>
+std::size_t FlagSet::count() const
+{
+	return m_bitset.count();
+}
+
+template <class Enum, std::size_t N>
+constexpr std::size_t FlagSet::size() const
+{
+	return m_bitset.size();
+}
+
+template <class Enum, std::size_t N>
+FlagSet<Enum, N>& FlagSet::operator&=(const FlagSet<Enum>& other)
+{
+	m_bitset.operator&=(other.m_bitset);
+	return *this;
+}
+
+template <class Enum, std::size_t N>
+FlagSet<Enum, N>& FlagSet::operator|=(const FlagSet<Enum>& other)
+{
+	m_bitset.operator|=(other.m_bitset);
+	return *this;
+}
+
+template <class Enum, std::size_t N>
+FlagSet<Enum, N>& FlagSet::operator^=(const FlagSet<Enum>& other)
+{
+	m_bitset.operator^=(other.m_bitset);
+	return *this;
+}
+
+template <class Enum, std::size_t N>
+FlagSet<Enum, N> FlagSet::operator~() const
+{
+	FlagSet<Enum, N> res(*this);
+	res.m_bitset.operator~();
+	return res;
+}
+
+template <class Enum, std::size_t N>
+FlagSet<Enum, N>& FlagSet::set()
+{
+	m_bitset.set();
+	return *this;
+}
+
+template <class Enum, std::size_t N>
+FlagSet<Enum, N>& FlagSet::set(Enum flag, bool FlagSet::value=true)
+{
+	m_bitset.set(getIndex(flag), value);
+	return *this;
+}
+
+template <class Enum, std::size_t N>
+FlagSet<Enum, N>& FlagSet::reset()
+{
+	m_bitset.reset();
+	return *this;
+}
+
+template <class Enum, std::size_t N>
+FlagSet<Enum, N>& FlagSet::reset(Enum flag)
+{
+	m_bitset.set(getIndex(flag));
+	return *this;
+}
+
+template <class Enum, std::size_t N>
+FlagSet<Enum, N>& FlagSet::flip()
+{
+	m_bitset.flip();
+	return *this;
+}
+
+template <class Enum, std::size_t N>
+FlagSet<Enum, N>& FlagSet::flip(Enum flag)
+{
+	m_bitset.flip(getIndex(flag));
+	return *this;
+}
+
+	private:
+template <class Enum, std::size_t N>
+std::size_t FlagSet::getIndex(Enum flag) const
+{
+	return static_cast<std::size_t>(flag);
+}
+
+
+template<class Enum, std::size_t N>
+FlagSet<Enum, N> operator&(FlagSet<Enum, N> lhs, const FlagSet<Enum, N>& rhs)
+{
+	return lhs &= rhs;
+}
+
+template<class Enum, std::size_t N>
+FlagSet<Enum, N> operator|(FlagSet<Enum, N> lhs, const FlagSet<Enum, N>& rhs)
+{
+	return lhs |= rhs;
+}
+
+template<class Enum, std::size_t N>
+FlagSet<Enum, N> operator^(FlagSet<Enum, N> lhs, const FlagSet<Enum, N>& rhs)
+{
+	return lhs ^= rhs;
+}
