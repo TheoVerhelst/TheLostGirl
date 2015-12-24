@@ -1,5 +1,6 @@
 #include <boost/test/unit_test.hpp>
 #include <TheLostGirl/Player.h>
+#include <TheLostGirl/systems.h>
 
 struct PlayerTestsFixture
 {
@@ -8,7 +9,7 @@ struct PlayerTestsFixture
 	entityx::SystemManager systems;
 	PlayerTestsFixture():
 		entities{events},
-		systems{events, entities}
+		systems{entities, events}
 	{
 		systems.add<PendingChangesSystem>();
 		systems.add<DragAndDropSystem>();
