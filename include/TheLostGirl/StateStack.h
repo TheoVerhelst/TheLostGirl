@@ -38,7 +38,7 @@ class StateStack : private sf::NonCopyable
 		/// \param args Arguments that will be forwarded to the constructor of the state.
 		/// There can be zero, one or more arguments of any types.
 		template <typename T, typename ... Args>
-		void pushState(Args ... args);
+		void pushState(Args&& ... args);
 
 		/// Delete the top state as soon as possible.
 		void popState();
@@ -59,9 +59,14 @@ class StateStack : private sf::NonCopyable
 };
 
 template <typename T, typename ... Args>
-void StateStack::pushState(Args ... args)
+void StateStack::pushState(Args&& ... args)
 {
-	m_pendingList.push_back([this, args...]{m_stack.push_back(std::unique_ptr<State>(new T(args...)));});
+	m_pendingList.push_back([this, args...]
+	{
+		//No perfect forwarding is done here because the arguments
+		//needs to be copied in order to be stored in the lambda
+		m_stack.push_back(std::unique_ptr<State>(new T(args...)));
+	});
 }
 
 #endif//STATESTACK_H
