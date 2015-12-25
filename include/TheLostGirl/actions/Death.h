@@ -17,7 +17,7 @@ class Death : public Action
 
 		/// Overload of the () operator.
 		/// \param entity Entity who dead.
-		virtual void operator()(entityx::Entity entity) const;
+		virtual void operator()(entityx::Entity entity) const override;
 };
 
 #endif//DEATH_H

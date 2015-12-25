@@ -25,7 +25,7 @@ class BowBender : public Action
 
 		/// Overload of the () operator.
 		/// \param entity Entity who bend.
-		virtual void operator()(entityx::Entity entity) const;
+		virtual void operator()(entityx::Entity entity) const override;
 
 		float angle;///< The angle of the bending.
 		float power;///< The power of the bending.

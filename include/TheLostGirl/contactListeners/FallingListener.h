@@ -14,23 +14,23 @@ class FallingListener : public b2ContactListener
 		/// It prevent the collision between entities with the same entity Id.
 		/// \param contact Structure containing data about the contact.
 		/// \param oldManifold Old manifold.
-		void PreSolve(b2Contact* contact, const b2Manifold* oldManifold);
+		virtual void PreSolve(b2Contact* contact, const b2Manifold* oldManifold) override;
 
 		/// Handle the hitting of an actor with the ground.
 		/// Function called on every begin of contact between two fixtures.
 		/// \param contact Contact object of the collision.
-		void BeginContact(b2Contact* contact);
+		virtual void BeginContact(b2Contact* contact) override;
 
 		/// Handle the end of contact between the ground and an actor.
 		/// Function called on every end of contact between two fixtures.
 		/// \param contact Contact object of the collision.
-		void EndContact(b2Contact* contact);
+		virtual void EndContact(b2Contact* contact) override;
 
 		/// This is called after the solver is finished.
 		/// This allows to inspect e.g. impulses.
 		/// \param contact Structure containing data about the contact.
 		/// \param impulse Resulting impulse.
-		void PostSolve(b2Contact* contact, const b2ContactImpulse* impulse);
+		virtual void PostSolve(b2Contact* contact, const b2ContactImpulse* impulse) override;
 };
 
 #endif//FALLINGLISTENER_H

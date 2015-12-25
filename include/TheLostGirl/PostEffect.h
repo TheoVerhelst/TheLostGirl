@@ -13,7 +13,7 @@ namespace sf
 }
 
 /// Base class for all pretty effects.
-class PostEffect : sf::NonCopyable
+class PostEffect : private sf::NonCopyable
 {
 	public:
 		/// Destructor.

@@ -16,7 +16,7 @@ class CorpseSearcher : public Action
 		/// Overload of the () operator.
 		/// \param entity Entity who shoot.
 		/// \param dt Elapsed time in the last game frame.
-		virtual void operator()(entityx::Entity entity) const;
+		virtual void operator()(entityx::Entity entity) const override;
 };
 
 /// AABB query callback that indicate if a corpse is found into the AABB.

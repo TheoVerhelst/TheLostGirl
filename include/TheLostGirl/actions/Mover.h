@@ -27,7 +27,7 @@ class Mover : public Action
 
 		/// Overload of the () operator.
 		/// \param entity Entity who move.
-		virtual void operator()(entityx::Entity entity) const;
+		virtual void operator()(entityx::Entity entity) const override;
 
 		Direction direction;///< Indicates the direction of the movement.
 		bool start;         ///< True if the movement starts, false if it stops.

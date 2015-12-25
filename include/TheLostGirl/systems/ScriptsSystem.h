@@ -3,13 +3,6 @@
 
 #include <entityx/entityx.h>
 
-//Forward declarations
-namespace entityx
-{
-	class EventManager;
-	class EntityManager;
-}
-
 /// System that plays animations on entities.
 /// \see AnimationsManager
 class ScriptsSystem : public entityx::System<ScriptsSystem>

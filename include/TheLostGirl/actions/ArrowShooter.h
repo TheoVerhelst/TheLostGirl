@@ -20,7 +20,7 @@ class ArrowShooter : public Action
 
 		/// Overload of the () operator.
 		/// \param entity Entity who shoot.
-		virtual void operator()(entityx::Entity entity) const;
+		virtual void operator()(entityx::Entity entity) const override;
 };
 
 #endif//ARROWSHOOTER_H

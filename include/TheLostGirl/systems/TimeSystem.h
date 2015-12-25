@@ -10,12 +10,6 @@ namespace sf
 	class Time;
 }
 
-namespace entityx
-{
-	class EventManager;
-	class EntityManager;
-}
-
 /// System that manages the in-game date and time.
 class TimeSystem : public entityx::System<TimeSystem>
 {

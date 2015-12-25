@@ -20,7 +20,7 @@ class InventoryOpener : public Action
 		/// Overload of the () operator.
 		/// \param entity Entity who do the action.
 		/// \param dt Elapsed time in the last game frame.
-		virtual void operator()(entityx::Entity entity) const;
+		virtual void operator()(entityx::Entity entity) const override;
 };
 
 #endif//INVENTORYOPENER_H

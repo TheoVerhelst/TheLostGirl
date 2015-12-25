@@ -14,7 +14,7 @@ class ScriptError: public std::runtime_error
 
 		/// Get the error message.
 		/// \return The error message.
-		virtual const char* what() const throw()
+		virtual const char* what() const throw() override
 		{
 			return m_what.c_str();
 		}

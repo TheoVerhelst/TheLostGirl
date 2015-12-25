@@ -19,7 +19,7 @@ void PendingChangesSystem::update(entityx::EntityManager& entityManager, entityx
 		else
 			for(auto entity : entityManager.entities_with_components(categoryComponent))
 				//On vérifie si l'entité correspond à la commande, si oui on fait l'action
-				if((categoryComponent->category & command.category).all())
+				if((categoryComponent->category & command.category).any())
 					command.action(entity);
 		commandQueue.pop();
 	}

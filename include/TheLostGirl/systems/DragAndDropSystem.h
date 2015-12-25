@@ -5,19 +5,6 @@
 #include <entityx/entityx.h>
 #include <SFML/Graphics.hpp>
 
-//Forward declarations
-namespace sf
-{
-	class RenderWindow;
-	class RenderTexture;
-}
-namespace entityx
-{
-	class EventManager;
-	class EntityManager;
-}
-struct Command;
-
 /// System that handle the drag and drop.
 /// It draw a line on the screen, and set the bending angle of the playr's archer.
 class DragAndDropSystem : public entityx::System<DragAndDropSystem>

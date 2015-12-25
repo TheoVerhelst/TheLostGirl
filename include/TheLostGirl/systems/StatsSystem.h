@@ -3,15 +3,6 @@
 
 #include <entityx/entityx.h>
 
-//Forward declarations
-namespace entityx
-{
-	class EventManager;
-	class EntityManager;
-}
-
-struct Command;
-
 /// System that set the correct view according to the player position.
 class StatsSystem : public entityx::System<StatsSystem>
 {

@@ -3,18 +3,6 @@
 
 #include <entityx/entityx.h>
 
-//Forward declarations
-namespace entityx
-{
-	class EventManager;
-	class EntityManager;
-}
-namespace sf
-{
-	class RenderWindow;
-	class RenderTexture;
-}
-
 /// System that draws all drawables entities on the screen.
 class RenderSystem : public entityx::System<RenderSystem>
 {

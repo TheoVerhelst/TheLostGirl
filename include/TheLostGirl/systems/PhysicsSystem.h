@@ -3,15 +3,6 @@
 
 #include <entityx/entityx.h>
 
-//Forward declarations
-namespace entityx
-{
-	class EventManager;
-	class EntityManager;
-}
-class b2World;
-struct Parameters;
-
 /// System that updates the Box2D's world and the drawables entities.
 class PhysicsSystem : public entityx::System<PhysicsSystem>
 {

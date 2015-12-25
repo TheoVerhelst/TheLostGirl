@@ -4,18 +4,6 @@
 #include <entityx/entityx.h>
 #include <SFML/Graphics.hpp>
 
-//Forward declarations
-namespace sf
-{
-	class RenderWindow;
-}
-namespace entityx
-{
-	class EventManager;
-	class EntityManager;
-}
-struct Parameters;
-
 /// System that set the correct view according to the player position.
 class ScrollingSystem : public entityx::System<ScrollingSystem>
 {

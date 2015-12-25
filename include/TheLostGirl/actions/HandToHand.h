@@ -21,7 +21,7 @@ class HandToHand : public Action
 
 		/// Overload of the () operator.
 		/// \param entity Entity who do the action.
-		virtual void operator()(entityx::Entity entity) const;
+		virtual void operator()(entityx::Entity entity) const override;
 };
 
 /// AABB query callback that indicate if some actors are found into the AABB.

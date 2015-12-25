@@ -4,13 +4,6 @@
 #include <entityx/entityx.h>
 #include <SFML/Graphics.hpp>
 
-//Forward declarations
-namespace entityx
-{
-	class EventManager;
-	class EntityManager;
-}
-
 /// System that plays animations on entities.
 /// \see AnimationsManager
 class AnimationsSystem : public entityx::System<AnimationsSystem>

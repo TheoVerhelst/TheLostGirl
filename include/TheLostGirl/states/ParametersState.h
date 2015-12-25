@@ -28,19 +28,19 @@ class ParametersState : public State
         /// The drawing function.
         /// \return virtual void
         /// It must do all things related to drawing stuff on the screen.
-		virtual void draw();
+		virtual void draw() override;
 
         /// The logic update function.
         /// This function call e.g. the physic update function, the AI function, etc...
         /// \param dt Elapsed time in the last game frame.
         /// \return Return true if the state under this one in the stack must be also updated.
-		virtual bool update(sf::Time dt);
+		virtual bool update(sf::Time dt) override;
 
         /// The event handling function.
         /// \param event Event to handle.
         /// \return Return true if the state under this state in the stack must be also updated.
         /// \note The closing window and resinzing window events are already handled by the Application class.
-		virtual bool handleEvent(const sf::Event& event);
+		virtual bool handleEvent(const sf::Event& event) override;
 
 		/// Receive an event about a change in the parameters.
 		/// This function is defined because this is possible that

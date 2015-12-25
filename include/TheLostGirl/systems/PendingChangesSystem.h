@@ -6,11 +6,6 @@
 #include <TheLostGirl/Command.h>
 
 //Forward declarations
-namespace entityx
-{
-	class EventManager;
-	class EntityManager;
-}
 struct b2BodyDef;
 class b2Body;
 struct b2JointDef;

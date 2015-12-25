@@ -20,7 +20,7 @@ class Jumper : public Action
 
 		/// Overload of the () operator.
 		/// \param entity Entity who jump.
-		virtual void operator()(entityx::Entity entity) const;
+		virtual void operator()(entityx::Entity entity) const override;
 };
 
 #endif//JUMPER_H

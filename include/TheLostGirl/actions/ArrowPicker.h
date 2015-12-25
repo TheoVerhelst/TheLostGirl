@@ -17,7 +17,7 @@ class ArrowPicker : public Action
 
 		/// Overload of the () operator.
 		/// \param entity Entity who shoot.
-		virtual void operator()(entityx::Entity entity) const;
+		virtual void operator()(entityx::Entity entity) const override;
 };
 
 /// AABB query callback that indicate if a sticked arrow is found into the AABB.
