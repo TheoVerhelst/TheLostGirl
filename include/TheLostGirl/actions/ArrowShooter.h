@@ -9,17 +9,18 @@ namespace entityx
 }
 
 /// Structure that shoot the arrow notched by the entity.
-struct ArrowShooter : public Action
+class ArrowShooter : public Action
 {
-	/// Constructor.
-	ArrowShooter() = default;
+	public:
+		/// Constructor.
+		ArrowShooter() = default;
 
-	/// Destructor.
-	virtual ~ArrowShooter() = default;
+		/// Destructor.
+		virtual ~ArrowShooter() = default;
 
-	/// Overload of the () operator.
-	/// \param entity Entity who shoot.
-	virtual void operator()(entityx::Entity entity) const;
+		/// Overload of the () operator.
+		/// \param entity Entity who shoot.
+		virtual void operator()(entityx::Entity entity) const;
 };
 
 #endif//ARROWSHOOTER_H

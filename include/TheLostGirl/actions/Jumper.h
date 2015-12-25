@@ -9,17 +9,18 @@ namespace entityx
 }
 
 /// Structure that jump an entity.
-struct Jumper : public Action
+class Jumper : public Action
 {
-	/// Constructor.
-	Jumper() = default;
+	public:
+		/// Constructor.
+		Jumper() = default;
 
-	/// Destructor.
-	virtual ~Jumper() = default;
+		/// Destructor.
+		virtual ~Jumper() = default;
 
-	/// Overload of the () operator.
-	/// \param entity Entity who jump.
-	virtual void operator()(entityx::Entity entity) const;
+		/// Overload of the () operator.
+		/// \param entity Entity who jump.
+		virtual void operator()(entityx::Entity entity) const;
 };
 
 #endif//JUMPER_H

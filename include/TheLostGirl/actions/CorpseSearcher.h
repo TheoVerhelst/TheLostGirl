@@ -7,15 +7,16 @@
 #include <TheLostGirl/StateStack.h>
 
 /// Structure that search on a corpse around the entity.
-struct CorpseSearcher : public Action
+class CorpseSearcher : public Action
 {
-	/// Destructor.
-	virtual ~CorpseSearcher() = default;
+	public:
+		/// Destructor.
+		virtual ~CorpseSearcher() = default;
 
-	/// Overload of the () operator.
-	/// \param entity Entity who shoot.
-	/// \param dt Elapsed time in the last game frame.
-	virtual void operator()(entityx::Entity entity) const;
+		/// Overload of the () operator.
+		/// \param entity Entity who shoot.
+		/// \param dt Elapsed time in the last game frame.
+		virtual void operator()(entityx::Entity entity) const;
 };
 
 /// AABB query callback that indicate if a corpse is found into the AABB.

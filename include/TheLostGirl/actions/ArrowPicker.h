@@ -6,17 +6,18 @@
 #include <TheLostGirl/Action.h>
 
 /// Structure that pick a sticked arrow nearby the entity.
-struct ArrowPicker : public Action
+class ArrowPicker : public Action
 {
-	/// Constructor.
-	ArrowPicker() = default;
+	public:
+		/// Constructor.
+		ArrowPicker() = default;
 
-	/// Destructor.
-	virtual ~ArrowPicker() = default;
+		/// Destructor.
+		virtual ~ArrowPicker() = default;
 
-	/// Overload of the () operator.
-	/// \param entity Entity who shoot.
-	virtual void operator()(entityx::Entity entity) const;
+		/// Overload of the () operator.
+		/// \param entity Entity who shoot.
+		virtual void operator()(entityx::Entity entity) const;
 };
 
 /// AABB query callback that indicate if a sticked arrow is found into the AABB.

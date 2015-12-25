@@ -14,7 +14,7 @@ class b2WeldJointDef;
 class b2WeldJoint;
 
 /// Structure that move an entity to a given side.
-struct Mover : public Action
+class Mover : public Action
 {
 	public:
 		/// Constructor.

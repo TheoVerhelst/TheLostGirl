@@ -9,14 +9,15 @@ namespace entityx
 }
 
 /// Structure that process the death of an entity
-struct Death : public Action
+class Death : public Action
 {
-	/// Destructor.
-	virtual ~Death() = default;
+	public:
+		/// Destructor.
+		virtual ~Death() = default;
 
-	/// Overload of the () operator.
-	/// \param entity Entity who dead.
-	virtual void operator()(entityx::Entity entity) const;
+		/// Overload of the () operator.
+		/// \param entity Entity who dead.
+		virtual void operator()(entityx::Entity entity) const;
 };
 
 #endif//DEATH_H

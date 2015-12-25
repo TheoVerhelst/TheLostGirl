@@ -12,7 +12,7 @@ namespace sf
 	class Event;
 }
 
-struct State;
+class State;
 
 /// States manager.
 /// This class holds all the game or menu state and manages them.

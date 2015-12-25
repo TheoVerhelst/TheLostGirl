@@ -10,19 +10,18 @@
 
 /// Performs a hand to hand attack in front on the entity.
 /// This attack strikes all entities that are near the entity at once.
-struct HandToHand : public Action
+class HandToHand : public Action
 {
-	/// Constructor.
-	HandToHand() = default;
+	public:
+		/// Constructor.
+		HandToHand() = default;
 
-	/// Destructor.
-	virtual ~HandToHand() = default;
+		/// Destructor.
+		virtual ~HandToHand() = default;
 
-	/// Overload of the () operator.
-	/// \param entity Entity who do the action.
-	virtual void operator()(entityx::Entity entity) const;
-
-	private:
+		/// Overload of the () operator.
+		/// \param entity Entity who do the action.
+		virtual void operator()(entityx::Entity entity) const;
 };
 
 /// AABB query callback that indicate if some actors are found into the AABB.
