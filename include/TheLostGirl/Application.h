@@ -30,16 +30,16 @@ class Application : public entityx::Receiver<Application>
 {
 	public:
 		/// Constructor.
-		/// \param debugMode Indicate if the appliaction should start in debug mode.
-		Application(bool debugMode = false);
+		Application();
 
 		/// Destructor.
 		~Application();
 
         /// Initialize the game.
         /// This does all that need to be done at the beginning of the game.
+		/// \param debugMode Indicate if the appliaction should start in debug mode.
         /// \return 0 on succes, 1 on failure.
-		int init();
+		int init(bool debugMode = false);
 
         /// Run the game.
         /// This function contains the main game loop.
@@ -63,6 +63,12 @@ class Application : public entityx::Receiver<Application>
 
 		/// Registers all the logic systems.
 		void registerSystems();
+
+		/// Load the settings in the settings file and apply them.
+		void deserializeSettings();
+
+		/// Set all pointers in Context.
+		void initContext();
 
 		Parameters m_parameters;                  ///< Structure containing all the game parameters.
 		sf::RenderWindow m_window;                ///< The main window.

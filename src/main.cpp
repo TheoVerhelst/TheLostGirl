@@ -5,10 +5,10 @@
 int main()
 {
 	XInitThreads();//For multithreadings on linux, must be called before the initialisation of the StateStack
+	Application application;
 #ifdef NDEBUG
-	Application application(false);
+	return application.init(false) or application.run();
 #else
-	Application application(true);
+	return application.init(true) or application.run();
 #endif
-	return application.init() or application.run();
 }

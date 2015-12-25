@@ -10,66 +10,13 @@
 #include <TheLostGirl/serialization.h>
 #include <TheLostGirl/Application.h>
 
-Application::Application(bool debugMode):
+Application::Application():
 	m_entityManager{m_eventManager},
 	m_systemManager{m_entityManager, m_eventManager},
 	m_world{m_parameters.gravity},
 	m_FPSRefreshRate{sf::milliseconds(50)},
 	m_frameTime{sf::seconds(1.f/60.f)}
 {
-	Context::parameters = &m_parameters;
-	Context::window = &m_window;
-	Context::postEffectsTexture = &m_postEffectsTexture;
-	Context::textureManager = &m_textureManager;
-	Context::fontManager = &m_fontManager;
-	Context::scriptManager = &m_scriptManager;
-	Context::langManager = &m_langManager;
-	Context::gui = &m_gui;
-	Context::eventManager = &m_eventManager;
-	Context::entityManager = &m_entityManager;
-	Context::systemManager = &m_systemManager;
-	Context::world = &m_world;
-	Context::player = &m_player;
-	Context::stateStack = &m_stateStack;
-
-	m_eventManager.subscribe<ParametersChange>(*this);
-	std::string file("settings.json");
-	Json::Value settings;//Will contains the root value after parsing
-	Json::Value model;
-	Json::Reader reader;
-	std::ifstream settingsFile(file, std::ifstream::binary);
-	std::ifstream modelFile("settingsModel.json", std::ifstream::binary);
-	bool settingsOk{true}, modelOk{true};
-	if(not (settingsOk = reader.parse(settingsFile, settings)))
-		//report to the user the failure and its location in the document
-		std::cerr << "\"" + file + "\": " + reader.getFormattedErrorMessages() << "\nLoaded default settings.\n";
-	else if(not (modelOk = reader.parse(modelFile, model)))
-		std::cerr << "\"settingsModel.json\": " + reader.getFormattedErrorMessages() << "\nLoaded default settings.\n";
-	if(not settingsOk or not modelOk)
-	{
-		//Load default settings
-		m_window.create({640, 360}, "The Lost Girl");
-		m_postEffectsTexture.create(640, 360);
-		m_parameters.fullscreen = false;
-		m_parameters.bloomEnabled = false;
-	}
-	else
-	{
-		//Parsing of the settings file from the model file
-		parse(settings, model, "root", "root");
-		sf::VideoMode mode{settings["window size"]["w"].asUInt(), settings["window size"]["h"].asUInt()};
-		m_langManager.setLang(settings["lang"].asString());
-		m_parameters.fullscreen = settings["fullscreen"].asBool();
-		m_parameters.bloomEnabled = settings["enable bloom"].asBool();
-		uint32 style{m_parameters.fullscreen ? sf::Style::Fullscreen : sf::Style::Default};
-		m_window.create(mode, "The Lost Girl", style);
-		m_postEffectsTexture.create(mode.width, mode.height);
-	}
-	m_gui.setWindow(m_window);
-	m_debugDraw.initWidgets();
-	m_bloomEffect.init();
-	handleResize();
-	m_parameters.debugMode = debugMode;
 }
 
 Application::~Application()
@@ -89,10 +36,18 @@ Application::~Application()
 	settingsFileStream.close();
 }
 
-int Application::init()
+int Application::init(bool debugMode)
 {
 	try
 	{
+		m_parameters.debugMode = debugMode;
+		initContext();
+		deserializeSettings();
+		m_eventManager.subscribe<ParametersChange>(*this);
+		m_gui.setWindow(m_window);
+		m_debugDraw.initWidgets();
+		m_bloomEffect.init();
+		handleResize();
 		registerSystems();
 		m_window.setKeyRepeatEnabled(false);//Desactive the key repeating
 		m_fontManager.load("menu", Context::parameters->resourcesPath + "fonts/euphorigenic.ttf");
@@ -211,4 +166,58 @@ void Application::registerSystems()
 	m_systemManager.add<TimeSystem>();
 	m_systemManager.add<StatsSystem>();
 	m_systemManager.add<ScriptsSystem>();
+}
+
+void Application::initContext()
+{
+	Context::parameters = &m_parameters;
+	Context::window = &m_window;
+	Context::postEffectsTexture = &m_postEffectsTexture;
+	Context::textureManager = &m_textureManager;
+	Context::fontManager = &m_fontManager;
+	Context::scriptManager = &m_scriptManager;
+	Context::langManager = &m_langManager;
+	Context::gui = &m_gui;
+	Context::eventManager = &m_eventManager;
+	Context::entityManager = &m_entityManager;
+	Context::systemManager = &m_systemManager;
+	Context::world = &m_world;
+	Context::player = &m_player;
+	Context::stateStack = &m_stateStack;
+}
+
+void Application::deserializeSettings()
+{
+	std::string file("settings.json");
+	Json::Value settings;//Will contains the root value after parsing
+	Json::Value model;
+	Json::Reader reader;
+	std::ifstream settingsFile(file, std::ifstream::binary);
+	std::ifstream modelFile("settingsModel.json", std::ifstream::binary);
+	bool settingsOk{true}, modelOk{true};
+	if(not (settingsOk = reader.parse(settingsFile, settings)))
+		//report to the user the failure and its location in the document
+		std::cerr << "\"" + file + "\": " + reader.getFormattedErrorMessages() << "\nLoaded default settings.\n";
+	else if(not (modelOk = reader.parse(modelFile, model)))
+		std::cerr << "\"settingsModel.json\": " + reader.getFormattedErrorMessages() << "\nLoaded default settings.\n";
+	if(not settingsOk or not modelOk)
+	{
+		//Load default settings
+		m_window.create({640, 360}, "The Lost Girl");
+		m_postEffectsTexture.create(640, 360);
+		m_parameters.fullscreen = false;
+		m_parameters.bloomEnabled = false;
+	}
+	else
+	{
+		//Parsing of the settings file from the model file
+		parse(settings, model, "root", "root");
+		sf::VideoMode mode{settings["window size"]["w"].asUInt(), settings["window size"]["h"].asUInt()};
+		m_langManager.setLang(settings["lang"].asString());
+		m_parameters.fullscreen = settings["fullscreen"].asBool();
+		m_parameters.bloomEnabled = settings["enable bloom"].asBool();
+		uint32 style{m_parameters.fullscreen ? sf::Style::Fullscreen : sf::Style::Default};
+		m_window.create(mode, "The Lost Girl", style);
+		m_postEffectsTexture.create(mode.width, mode.height);
+	}
 }
