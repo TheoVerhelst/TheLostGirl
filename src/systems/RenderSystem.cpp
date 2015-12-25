@@ -24,7 +24,7 @@ void RenderSystem::update(entityx::EntityManager& entityManager, entityx::EventM
 	{
 		const CategoryComponent::Handle categoryComponent(entity.component<CategoryComponent>());
 		//If this is a scene entity, add its sprites beyond the others entities in this plan
-		if(categoryComponent and categoryComponent->category & Category::Scene)
+		if(categoryComponent and categoryComponent->category.test(Category::Scene))
 			orderedEntities[transformComponent->transform.z].push_front(&spriteComponent->sprite);
 		else
 			orderedEntities[transformComponent->transform.z].push_back(&spriteComponent->sprite);

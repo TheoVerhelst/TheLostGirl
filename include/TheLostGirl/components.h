@@ -10,6 +10,7 @@
 #include <TheLostGirl/Category.h>
 #include <TheLostGirl/AnimationsManager.h>
 #include <TheLostGirl/HashEntity.h>
+#include <TheLostGirl/FlagSet.h>
 
 //Forward declarations
 class b2Body;
@@ -89,7 +90,7 @@ struct DirectionComponent : public entityx::Component<DirectionComponent>
 /// The category component (player, aggressive, passive, ...).
 struct CategoryComponent : public entityx::Component<CategoryComponent>
 {
-	unsigned int category;///< Category of the entity.
+	FlagSet<Category> category;///< Category of the entity.
 };
 
 /// The item component.

@@ -62,7 +62,7 @@ void ScrollingSystem::searchPlayer()
 	for(auto entity : Context::entityManager->entities_with_components(categoryComponent, transformComponent))
 	{
 		//We found the player
-		if(categoryComponent->category & Category::Player)
+		if(categoryComponent->category.test(Category::Player))
 		{
 			m_player = entity;
 			break;

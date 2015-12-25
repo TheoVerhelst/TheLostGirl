@@ -4,6 +4,7 @@
 #include <functional>
 #include <entityx/entityx.h>
 #include <TheLostGirl/Category.h>
+#include <TheLostGirl/FlagSet.h>
 
 /// Function applied to an entity.
 /// The Command structure hold a function that will be applied to a specific entity.
@@ -32,7 +33,7 @@ struct Command
 	union
 	{
 		/// Category of entity concerned by \a action.
-		unsigned int category;
+		FlagSet<Category> category;
 
 		/// Specific entity concerned by \a action.
 		entityx::Entity entity;

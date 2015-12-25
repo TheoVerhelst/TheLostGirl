@@ -6,11 +6,12 @@
 /// \file FixtureRoles.h
 
 /// Enumeration of role of some fixture (foot, head, ...).
-enum class FixtureRole : long unsigned int
+enum class FixtureRole : std::size_t
 {
-	None  = 0,      ///< Role that correspond to none role.
-	Foot  = 1 << 0, ///< Role for fixtures that observes the collisions with the ground.
-	Main  = 1 << 1  ///< Role for fixtures that are the main fixture of a body (e.g. to compute distance between entities).
+	None,   ///< Role that correspond to none role.
+	Foot,   ///< Role for fixtures that observes the collisions with the ground.
+	Main,   ///< Role for fixtures that are the main fixture of a body (e.g. to compute distance between entities).
+	MaxValue///< Sentinel value for using FlagSet.
 };
 
 /// Check wheter the given fixture has all its roles flags that match with the given flags.
@@ -19,7 +20,7 @@ enum class FixtureRole : long unsigned int
 /// \return True if the given fixture has all its roles flags that match with the given flags, false otherwise.
 inline bool fixtureHasRole(b2Fixture* fixture, FixtureRole role)
 {
-	return fixture->GetUserData() and (reinterpret_cast<long unsigned int>(fixture->GetUserData()) & static_cast<long unsigned int>(role));
+	return static_cast<FlagSet<FixtureRole>*>(fixture->GetUserData())->test(role);
 }
 
 #endif//FIXTUREROLES_H

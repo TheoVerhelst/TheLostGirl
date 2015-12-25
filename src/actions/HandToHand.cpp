@@ -87,8 +87,8 @@ bool HandToHandQueryCallback::ReportFixture(b2Fixture* fixture)
 	const CategoryComponent::Handle entityCategoryComponent(entity.component<CategoryComponent>());
 	const auto attackerCategoryComponent(m_attacker.component<CategoryComponent>());
 	if(entity != m_attacker and actorComponent
-			and not (attackerCategoryComponent and attackerCategoryComponent->category & Category::Aggressive
-				and entityCategoryComponent and entityCategoryComponent->category & Category::Aggressive))
+			and not (attackerCategoryComponent and attackerCategoryComponent->category.test(Category::Aggressive)
+				and entityCategoryComponent and entityCategoryComponent->category.test(Category::Aggressive)))
 		foundEntities.insert(entity);
 	return true;
 }

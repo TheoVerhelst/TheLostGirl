@@ -117,9 +117,9 @@ BOOST_AUTO_TEST_CASE(isPlayerTests)
 	BOOST_CHECK(not isPlayer(entity));
 	entity = entities.create();
 	CategoryComponent::Handle catComponent = entity.assign<CategoryComponent>();
-	catComponent->category |= Category::Scene;
+	catComponent->category.set(Category::Scene);
 	BOOST_CHECK(not isPlayer(entity));
-	catComponent->category |= Category::Player;
+	catComponent->category.set(Category::Player);
 	BOOST_CHECK(isPlayer(entity));
 }
 

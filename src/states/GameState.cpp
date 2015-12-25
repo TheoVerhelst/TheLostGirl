@@ -361,7 +361,7 @@ void GameState::initWorld(const std::string& file)
 						TransformComponent::Handle trsfComp{m_sceneEntities[replaceIdentifier].assign<TransformComponent>()};
 						trsfComp->transform = replaceTransform;
 						CategoryComponent::Handle catComp{m_sceneEntities[replaceIdentifier].assign<CategoryComponent>()};
-						catComp->category = Category::Scene;
+						catComp->category = {Category::Scene};
 					}
 					planData.push_back(replacesData);
 				}
@@ -398,7 +398,7 @@ void GameState::initWorld(const std::string& file)
 					TransformComponent::Handle trsfComp{m_sceneEntities[textureIdentifier].assign<TransformComponent>()};
 					trsfComp->transform = {static_cast<float>(j*chunkSize), 0, static_cast<float>(i), 0};
 					CategoryComponent::Handle catComp{m_sceneEntities[textureIdentifier].assign<CategoryComponent>()};
-					catComp->category = Category::Scene;
+					catComp->category = {Category::Scene};
 					//Update the ScrollingSystem in order to directly display the sprite at the right position
 				}
 			}

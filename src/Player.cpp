@@ -46,17 +46,17 @@ Player::Player()
 	// Assign all categories
 	for(auto& pair : m_startActionBinding)
 	{
-		pair.second.category = Category::Player;
+		pair.second.category = {Category::Player};
 		pair.second.targetIsSpecific = false;
 	}
 	for(auto& pair : m_stopActionBinding)
 	{
-		pair.second.category = Category::Player;
+		pair.second.category = {Category::Player};
 		pair.second.targetIsSpecific = false;
 	}
 	for(auto& pair : m_immediateActionBinding)
 	{
-		pair.second.category = Category::Player;
+		pair.second.category = {Category::Player};
 		pair.second.targetIsSpecific = false;
 	}
 }

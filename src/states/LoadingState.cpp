@@ -24,7 +24,7 @@ LoadingState::LoadingState()
 		{
 			numberOfHints = stoul(line);
 		}
-		catch(std::invalid_argument & e)
+		catch(std::invalid_argument& e)
 		{
 			std::cerr << "Unable to convert content of line 0 to number in file \"" + Context::parameters->resourcesPath + "lang/hints\"\n";
 			throw;//Rethrow the exception

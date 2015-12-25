@@ -427,7 +427,7 @@ bool NearestFoeQueryCallback::ReportFixture(b2Fixture* fixture)
 	if(not TEST(currentEntity))
 		return true;
 	CategoryComponent::Handle categoryComponent(currentEntity.component<CategoryComponent>());
-	if(categoryComponent and currentEntity.component<CategoryComponent>()->category & Category::Passive)//currentEntity must be passive
+	if(categoryComponent and currentEntity.component<CategoryComponent>()->category.test(Category::Passive))//currentEntity must be passive
 	{
 		if(currentEntity != m_self)
 		{

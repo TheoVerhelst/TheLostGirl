@@ -23,78 +23,84 @@ template <class Enum, std::size_t N = static_cast<std::size_t>(Enum::MaxValue)>
 class FlagSet
 {
 	public:
+		inline constexpr FlagSet() = default;
+
+		inline constexpr FlagSet(std::initializer_list<Enum> flags);
+
+		inline FlagSet& operator=(std::initializer_list<Enum> flags);
+
 		/// Compare the two FlagSets.
 		/// \param FlagSet to compare
 		/// \return true if the state of each flag in *this equals the state of the corresponding flags in rhs, otherwise false
-		bool operator==(const FlagSet<Enum, N>& rhs) const;
+		inline bool operator==(const FlagSet<Enum, N>& rhs) const;
 
 		/// Compare the two FlagSets.
 		/// \param FlagSet to compare
 		/// \return true if !(*this == rhs), otherwise false
-		bool operator!=(const FlagSet<Enum, N>& rhs) const;
+		inline bool operator!=(const FlagSet<Enum, N>& rhs) const;
 
 		/// Return the state of the given flag.
 		/// \param flag Flag to test
 		/// \return true if the requested flag is set, false otherwise
 		/// \exception std::out_of_range if flag does not correspond to a valid flag within the FlagSet.
-		bool test(Enum flag) const throw(std::out_of_range);
+		inline bool test(Enum flag) const throw(std::out_of_range);
 
 		///  Checks if all flags are set to true
 		/// \return true if all flags are set to true, otherwise false
-		bool all() const noexcept;
+		inline bool all() const noexcept;
 
 		///  Checks if any flags are set to true
 		/// \return true if any of the flags are set to true, otherwise false
-		bool any() const noexcept;
+		inline bool any() const noexcept;
 
 		///  Checks if none of the flags are set to true
 		/// \return true if none of the flags are set to true, otherwise false
-		bool none() const noexcept;
+		inline bool none() const noexcept;
 
 		/// Returns the number of flags that are set to true.
 		/// \return the number of flags that are set to true
-		std::size_t count() const;
+		inline std::size_t count() const;
 
 		/// Returns the number of flags that the FlagSet can hold.
 		/// This is not necessarily the number of elements in Enum,
 		/// this is the second parameter N.
 		/// \return the number of flags that the FlagSet can hold
-		constexpr std::size_t size() const noexcept;
+		inline constexpr std::size_t size() const noexcept;
 
-		FlagSet<Enum, N>& operator&=(const FlagSet<Enum>& other);
+		inline FlagSet<Enum, N>& operator&=(const FlagSet<Enum>& other);
 
-		FlagSet<Enum, N>& operator|=(const FlagSet<Enum>& other);
+		inline FlagSet<Enum, N>& operator|=(const FlagSet<Enum>& other);
 
-		FlagSet<Enum, N>& operator^=(const FlagSet<Enum>& other);
+		inline FlagSet<Enum, N>& operator^=(const FlagSet<Enum>& other);
 
-		FlagSet<Enum, N> operator~() const;
+		inline FlagSet<Enum, N> operator~() const;
 
-		FlagSet<Enum, N>& set();
+		inline FlagSet<Enum, N>& set();
 
-		FlagSet<Enum, N>& set(Enum flag, bool value=true);
+		inline FlagSet<Enum, N>& set(Enum flag, bool value=true);
 
-		FlagSet<Enum, N>& reset();
+		inline FlagSet<Enum, N>& reset();
 
-		FlagSet<Enum, N>& reset(Enum flag);
+		inline FlagSet<Enum, N>& reset(Enum flag);
 
-		FlagSet<Enum, N>& flip();
+		inline FlagSet<Enum, N>& flip();
 
-		FlagSet<Enum, N>& flip(Enum flag);
+		inline FlagSet<Enum, N>& flip(Enum flag);
 
 	private:
-		std::size_t getIndex(Enum flag) const;
+		inline std::size_t getIndex(Enum flag) const;
 
 		std::bitset<N> m_bitset;
 };
 
 template<class Enum, std::size_t N>
-FlagSet<Enum, N> operator&(FlagSet<Enum, N> lhs, const FlagSet<Enum, N>& rhs);
+inline FlagSet<Enum, N> operator&(FlagSet<Enum, N> lhs, const FlagSet<Enum, N>& rhs);
 
 template<class Enum, std::size_t N>
-FlagSet<Enum, N> operator|(FlagSet<Enum, N> lhs, const FlagSet<Enum, N>& rhs);
+inline FlagSet<Enum, N> operator|(FlagSet<Enum, N> lhs, const FlagSet<Enum, N>& rhs);
 
 template<class Enum, std::size_t N>
-FlagSet<Enum, N> operator^(FlagSet<Enum, N> lhs, const FlagSet<Enum, N>& rhs);
+inline FlagSet<Enum, N> operator^(FlagSet<Enum, N> lhs, const FlagSet<Enum, N>& rhs);
 
 #include <TheLostGirl/FlagSet.impl>
 

@@ -1,74 +1,88 @@
 template <class Enum, std::size_t N>
-bool FlagSet::operator==(const FlagSet<Enum, N>& rhs) const
+inline constexpr FlagSet<Enum, N>::FlagSet(std::initializer_list<Enum> flags)
+{
+	for(auto& flag : flags)
+		set(flag);
+}
+
+template <class Enum, std::size_t N>
+inline FlagSet<Enum, N>& FlagSet<Enum, N>::operator=(std::initializer_list<Enum> flags)
+{
+	operator=(FlagSet(flags));
+	return *this;
+}
+
+template <class Enum, std::size_t N>
+inline bool FlagSet<Enum, N>::operator==(const FlagSet<Enum, N>& rhs) const
 {
 	return m_bitset == rhs.m_bitset;
 }
 
 template <class Enum, std::size_t N>
-bool FlagSet::operator!=(const FlagSet<Enum, N>& rhs) const
+inline bool FlagSet<Enum, N>::operator!=(const FlagSet<Enum, N>& rhs) const
 {
 	return m_bitset != rhs.m_bitset;
 }
 
 template <class Enum, std::size_t N>
-bool FlagSet::test(Enum flag) const
+inline bool FlagSet<Enum, N>::test(Enum flag) const throw(std::out_of_range)
 {
 	return m_bitset.test(getIndex(flag));
 }
 
 template <class Enum, std::size_t N>
-bool FlagSet::all() const
+inline bool FlagSet<Enum, N>::all() const noexcept
 {
 	return m_bitset.all();
 }
 
 template <class Enum, std::size_t N>
-bool FlagSet::any() const
+inline bool FlagSet<Enum, N>::any() const noexcept
 {
 	return m_bitset.any();
 }
 
 template <class Enum, std::size_t N>
-bool FlagSet::none() const
+inline bool FlagSet<Enum, N>::none() const noexcept
 {
 	return m_bitset.none();
 }
 
 template <class Enum, std::size_t N>
-std::size_t FlagSet::count() const
+inline std::size_t FlagSet<Enum, N>::count() const
 {
 	return m_bitset.count();
 }
 
 template <class Enum, std::size_t N>
-constexpr std::size_t FlagSet::size() const
+inline constexpr std::size_t FlagSet<Enum, N>::size() const noexcept
 {
 	return m_bitset.size();
 }
 
 template <class Enum, std::size_t N>
-FlagSet<Enum, N>& FlagSet::operator&=(const FlagSet<Enum>& other)
+inline FlagSet<Enum, N>& FlagSet<Enum, N>::operator&=(const FlagSet<Enum>& other)
 {
 	m_bitset.operator&=(other.m_bitset);
 	return *this;
 }
 
 template <class Enum, std::size_t N>
-FlagSet<Enum, N>& FlagSet::operator|=(const FlagSet<Enum>& other)
+inline FlagSet<Enum, N>& FlagSet<Enum, N>::operator|=(const FlagSet<Enum>& other)
 {
 	m_bitset.operator|=(other.m_bitset);
 	return *this;
 }
 
 template <class Enum, std::size_t N>
-FlagSet<Enum, N>& FlagSet::operator^=(const FlagSet<Enum>& other)
+inline FlagSet<Enum, N>& FlagSet<Enum, N>::operator^=(const FlagSet<Enum>& other)
 {
 	m_bitset.operator^=(other.m_bitset);
 	return *this;
 }
 
 template <class Enum, std::size_t N>
-FlagSet<Enum, N> FlagSet::operator~() const
+inline FlagSet<Enum, N> FlagSet<Enum, N>::operator~() const
 {
 	FlagSet<Enum, N> res(*this);
 	res.m_bitset.operator~();
@@ -76,69 +90,68 @@ FlagSet<Enum, N> FlagSet::operator~() const
 }
 
 template <class Enum, std::size_t N>
-FlagSet<Enum, N>& FlagSet::set()
+inline FlagSet<Enum, N>& FlagSet<Enum, N>::set()
 {
 	m_bitset.set();
 	return *this;
 }
 
 template <class Enum, std::size_t N>
-FlagSet<Enum, N>& FlagSet::set(Enum flag, bool FlagSet::value=true)
+inline FlagSet<Enum, N>& FlagSet<Enum, N>::set(Enum flag, bool value)
 {
 	m_bitset.set(getIndex(flag), value);
 	return *this;
 }
 
 template <class Enum, std::size_t N>
-FlagSet<Enum, N>& FlagSet::reset()
+inline FlagSet<Enum, N>& FlagSet<Enum, N>::reset()
 {
 	m_bitset.reset();
 	return *this;
 }
 
 template <class Enum, std::size_t N>
-FlagSet<Enum, N>& FlagSet::reset(Enum flag)
+inline FlagSet<Enum, N>& FlagSet<Enum, N>::reset(Enum flag)
 {
 	m_bitset.set(getIndex(flag));
 	return *this;
 }
 
 template <class Enum, std::size_t N>
-FlagSet<Enum, N>& FlagSet::flip()
+inline FlagSet<Enum, N>& FlagSet<Enum, N>::flip()
 {
 	m_bitset.flip();
 	return *this;
 }
 
 template <class Enum, std::size_t N>
-FlagSet<Enum, N>& FlagSet::flip(Enum flag)
+inline FlagSet<Enum, N>& FlagSet<Enum, N>::flip(Enum flag)
 {
 	m_bitset.flip(getIndex(flag));
 	return *this;
 }
 
-	private:
 template <class Enum, std::size_t N>
-std::size_t FlagSet::getIndex(Enum flag) const
+inline std::size_t FlagSet<Enum, N>::getIndex(Enum flag) const
 {
 	return static_cast<std::size_t>(flag);
 }
 
 
 template<class Enum, std::size_t N>
-FlagSet<Enum, N> operator&(FlagSet<Enum, N> lhs, const FlagSet<Enum, N>& rhs)
+inline FlagSet<Enum, N> operator&(FlagSet<Enum, N> lhs, const FlagSet<Enum, N>& rhs)
 {
 	return lhs &= rhs;
 }
 
 template<class Enum, std::size_t N>
-FlagSet<Enum, N> operator|(FlagSet<Enum, N> lhs, const FlagSet<Enum, N>& rhs)
+inline FlagSet<Enum, N> operator|(FlagSet<Enum, N> lhs, const FlagSet<Enum, N>& rhs)
 {
 	return lhs |= rhs;
 }
 
 template<class Enum, std::size_t N>
-FlagSet<Enum, N> operator^(FlagSet<Enum, N> lhs, const FlagSet<Enum, N>& rhs)
+inline FlagSet<Enum, N> operator^(FlagSet<Enum, N> lhs, const FlagSet<Enum, N>& rhs)
 {
 	return lhs ^= rhs;
 }

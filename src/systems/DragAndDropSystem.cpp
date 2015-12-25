@@ -43,7 +43,7 @@ void DragAndDropSystem::update(entityx::EntityManager&, entityx::EventManager&, 
 		//Send a command to player's entities to bend them bows according to the drag and drop data
 		Command bendCommand;
 		bendCommand.targetIsSpecific = false;
-		bendCommand.category = Category::Player;
+		bendCommand.category = {Category::Player};
 		bendCommand.action = BowBender(angle, power);
 		Context::systemManager->system<PendingChangesSystem>()->commandQueue.push(bendCommand);
 	}
@@ -61,13 +61,13 @@ void DragAndDropSystem::setDragAndDropActivation(bool isActive)
 		//Shoot the arrow
 		Command shootCommand;
 		shootCommand.targetIsSpecific = false;
-		shootCommand.category = Category::Player;
+		shootCommand.category = {Category::Player};
 		shootCommand.action = ArrowShooter();
 		Context::systemManager->system<PendingChangesSystem>()->commandQueue.push(shootCommand);
 		//Reset the bending power to 0
 		Command bendCommand;
 		bendCommand.targetIsSpecific = false;
-		bendCommand.category = Category::Player;
+		bendCommand.category = {Category::Player};
 		bendCommand.action = BowBender(float(angle), 0.f);//Reset the power of the bending
 		Context::systemManager->system<PendingChangesSystem>()->commandQueue.push(bendCommand);
 	}

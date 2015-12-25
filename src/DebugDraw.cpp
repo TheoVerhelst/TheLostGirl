@@ -199,7 +199,7 @@ void DebugDraw::drawDebugAth()
 	for(auto entity : Context::entityManager->entities_with_components(categoryComponent, bodyComponent))
 	{
 		//We found the player
-		if(categoryComponent->category & Category::Player)
+		if(categoryComponent->category.test(Category::Player))
 		{
 			position = bodyComponent->body->GetPosition();
 			const b2Vec2 positionPixels{Context::parameters->pixelByMeter * position};

@@ -225,13 +225,13 @@ Json::Value Serializer::implSerialize(entityx::ComponentHandle<DirectionComponen
 Json::Value Serializer::implSerialize(entityx::ComponentHandle<CategoryComponent> component)
 {
 	Json::Value ret;
-	if(component->category & Category::Player)
+	if(component->category.test(Category::Player))
 		ret.append("player");
-	if(component->category & Category::Scene)
+	if(component->category.test(Category::Scene))
 		ret.append("scene");
-	if(component->category & Category::Passive)
+	if(component->category.test(Category::Passive))
 		ret.append("passive");
-	if(component->category & Category::Aggressive)
+	if(component->category.test(Category::Aggressive))
 		ret.append("aggressive");
 	return ret;
 }
@@ -554,11 +554,9 @@ void Serializer::implDeserialize(const Json::Value& value, entityx::ComponentHan
 			for(Json::ArrayIndex j{0}; j < roles.size(); ++j)
 			{
 				if(roles[j].asString() == "foot sensor")
-					//Add the role to the data
-					fixtureDef.userData = add(fixtureDef.userData, static_cast<long unsigned int>(FixtureRole::Foot));
+					static_cast<FlagSet<FixtureRole>*>(fixtureDef.userData)->set(FixtureRole::Foot);
 				else if(roles[j].asString() == "main")
-					//Add the role to the data
-					fixtureDef.userData = add(fixtureDef.userData, static_cast<long unsigned int>(FixtureRole::Main));
+					static_cast<FlagSet<FixtureRole>*>(fixtureDef.userData)->set(FixtureRole::Main);
 			}
 			component->body->CreateFixture(&fixtureDef);
 		}
@@ -609,11 +607,9 @@ void Serializer::implDeserialize(const Json::Value& value, entityx::ComponentHan
 			for(Json::ArrayIndex j{0}; j < roles.size(); ++j)
 			{
 				if(roles[j].asString() == "foot sensor")
-					//Add the role to the data
-					fixtureDef.userData = add(fixtureDef.userData, static_cast<long unsigned int>(FixtureRole::Foot));
+					static_cast<FlagSet<FixtureRole>*>(fixtureDef.userData)->set(FixtureRole::Foot);
 				else if(roles[j].asString() == "main")
-					//Add the role to the data
-					fixtureDef.userData = add(fixtureDef.userData, static_cast<long unsigned int>(FixtureRole::Main));
+					static_cast<FlagSet<FixtureRole>*>(fixtureDef.userData)->set(FixtureRole::Main);
 			}
 
 			component->body->CreateFixture(&fixtureDef);
@@ -659,17 +655,16 @@ void Serializer::implDeserialize(const Json::Value& value, entityx::ComponentHan
 			fixtureDef.friction = fixture["friction"].asFloat();
 			fixtureDef.restitution = fixture["restitution"].asFloat();
 			fixtureDef.isSensor = fixture["is sensor"].asBool();
+			FlagSet<FixtureRole>* fixtureRoles = new FlagSet<FixtureRole>();
+			fixtureDef.userData = static_cast<void*>(fixtureRoles);
 			const Json::Value roles{value["roles"]};
 			for(Json::ArrayIndex j{0}; j < roles.size(); ++j)
 			{
 				if(roles[j].asString() == "foot sensor")
-					//Add the role to the data
-					fixtureDef.userData = add(fixtureDef.userData, static_cast<long unsigned int>(FixtureRole::Foot));
+					static_cast<FlagSet<FixtureRole>*>(fixtureDef.userData)->set(FixtureRole::Foot);
 				else if(roles[j].asString() == "main")
-					//Add the role to the data
-					fixtureDef.userData = add(fixtureDef.userData, static_cast<long unsigned int>(FixtureRole::Main));
+					static_cast<FlagSet<FixtureRole>*>(fixtureDef.userData)->set(FixtureRole::Main);
 			}
-
 			component->body->CreateFixture(&fixtureDef);
 		}
 	}
@@ -697,11 +692,9 @@ void Serializer::implDeserialize(const Json::Value& value, entityx::ComponentHan
 			for(Json::ArrayIndex j{0}; j < roles.size(); ++j)
 			{
 				if(roles[j].asString() == "foot sensor")
-					//Add the role to the data
-					fixtureDef.userData = add(fixtureDef.userData, static_cast<long unsigned int>(FixtureRole::Foot));
+					static_cast<FlagSet<FixtureRole>*>(fixtureDef.userData)->set(FixtureRole::Foot);
 				else if(roles[j].asString() == "main")
-					//Add the role to the data
-					fixtureDef.userData = add(fixtureDef.userData, static_cast<long unsigned int>(FixtureRole::Main));
+					static_cast<FlagSet<FixtureRole>*>(fixtureDef.userData)->set(FixtureRole::Main);
 			}
 			component->body->CreateFixture(&fixtureDef);
 		}
@@ -760,17 +753,17 @@ void Serializer::implDeserialize(const Json::Value& value, entityx::ComponentHan
 
 void Serializer::implDeserialize(const Json::Value& value, entityx::ComponentHandle<CategoryComponent> component, entityx::Entity)
 {
-	unsigned int category{0};
+	FlagSet<Category> category;
 	for(Json::ArrayIndex i{0}; i < value.size(); ++i)
 	{
 		if(value[i] == "player")
-			category |= Category::Player;
+			category.set(Category::Player);
 		else if(value[i] == "scene")
-			category |= Category::Scene;
+			category.set(Category::Scene);
 		else if(value[i] == "passive")
-			category |= Category::Passive;
+			category.set(Category::Passive);
 		else if(value[i] == "aggressive")
-			category |= Category::Aggressive;
+			category.set(Category::Aggressive);
 	}
 	component->category = category;
 }
