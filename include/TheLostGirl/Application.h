@@ -12,6 +12,7 @@
 #include <TheLostGirl/Parameters.h>
 #include <TheLostGirl/DebugDraw.h>
 #include <TheLostGirl/LangManager.h>
+#include <TheLostGirl/DestructionListener.h>
 
 //Forward declarations
 namespace entityx
@@ -63,25 +64,26 @@ class Application : public entityx::Receiver<Application>
 		/// Registers all the logic systems.
 		void registerSystems();
 
-		Parameters m_parameters;               ///< Structure containing all the game parameters.
-		sf::RenderWindow m_window;             ///< The main window.
-		sf::RenderTexture m_postEffectsTexture;///< Texture for rendering post effects.
-		BloomEffect m_bloomEffect;             ///< The shader to apply on m_postEffectsTexture.
-		tgui::Gui m_gui;                       ///< All the gui.
-		TextureManager m_textureManager;       ///< The texture manager.
-		FontManager m_fontManager;             ///< The fonts manager.
-		ScriptManager m_scriptManager;         ///< The scripts manager.
-		LangManager m_langManager;             ///< The lang manager.
-		entityx::EventManager m_eventManager;  ///< The entity events manager.
-		entityx::EntityManager m_entityManager;///< The entity manager.
-		entityx::SystemManager m_systemManager;///< The entity systems manager.
-		b2World m_world;                       ///< The Box2D world.
-		StateStack m_stateStack;               ///< The game state manager.
-		Player m_player;                       ///< The input manager.
-		DebugDraw m_debugDraw;                 ///< The debugging drawer.
-		sf::Time m_FPSTimer;                   ///< Count time since last FPS ath update.
-		sf::Time m_FPSRefreshRate;             ///< Refresh rate of the FPS ath.
-		sf::Time m_frameTime;                  ///< The target frame time (1/FPS).
+		Parameters m_parameters;                  ///< Structure containing all the game parameters.
+		sf::RenderWindow m_window;                ///< The main window.
+		sf::RenderTexture m_postEffectsTexture;   ///< Texture for rendering post effects.
+		BloomEffect m_bloomEffect;                ///< The shader to apply on m_postEffectsTexture.
+		tgui::Gui m_gui;                          ///< All the gui.
+		TextureManager m_textureManager;          ///< The texture manager.
+		FontManager m_fontManager;                ///< The fonts manager.
+		ScriptManager m_scriptManager;            ///< The scripts manager.
+		LangManager m_langManager;                ///< The lang manager.
+		entityx::EventManager m_eventManager;     ///< The entity events manager.
+		entityx::EntityManager m_entityManager;   ///< The entity manager.
+		entityx::SystemManager m_systemManager;   ///< The entity systems manager.
+		b2World m_world;                          ///< The Box2D world.
+		StateStack m_stateStack;                  ///< The game state manager.
+		Player m_player;                          ///< The input manager.
+		DebugDraw m_debugDraw;                    ///< The debugging drawer.
+		DestructionListener m_destructionListener;///< The fixture/joint destruction handler.
+		sf::Time m_FPSTimer;                      ///< Count time since last FPS ath update.
+		sf::Time m_FPSRefreshRate;                ///< Refresh rate of the FPS ath.
+		sf::Time m_frameTime;                     ///< The target frame time (1/FPS).
 };
 
 #endif//APPLICATION_H

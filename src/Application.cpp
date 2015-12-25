@@ -65,11 +65,11 @@ Application::Application(bool debugMode):
 		m_window.create(mode, "The Lost Girl", style);
 		m_postEffectsTexture.create(mode.width, mode.height);
 	}
-	m_parameters.debugMode = debugMode;
 	m_gui.setWindow(m_window);
 	m_debugDraw.initWidgets();
 	m_bloomEffect.init();
 	handleResize();
+	m_parameters.debugMode = debugMode;
 }
 
 Application::~Application()
@@ -99,6 +99,7 @@ int Application::init()
 		m_fontManager.load("debug", Context::parameters->resourcesPath + "fonts/FreeMonoBold.ttf");
 		m_gui.setFont(std::make_shared<sf::Font>(m_fontManager.get("menu")));
 		m_world.SetDebugDraw(&m_debugDraw);
+		m_world.SetDestructionListener(&m_destructionListener);
 		m_debugDraw.setFont(std::make_shared<sf::Font>(m_fontManager.get("debug")));
 		m_debugDraw.SetFlags(b2Draw::e_shapeBit|b2Draw::e_jointBit);//Debug drawing flags
 		m_systemManager.configure();

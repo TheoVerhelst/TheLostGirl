@@ -2,6 +2,7 @@
 #define FLAGSET_H
 
 #include <bitset>
+#include <stdexcept>
 
 /// Set of flags defined by the template parameter enumeration.
 /// This is a type-safe replacing for the usual couple unsigned int/enum.
