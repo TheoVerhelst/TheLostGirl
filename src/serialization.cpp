@@ -550,6 +550,10 @@ void Serializer::implDeserialize(const Json::Value& value, entityx::ComponentHan
 			fixtureDef.friction = fixture["friction"].asFloat();
 			fixtureDef.restitution = fixture["restitution"].asFloat();
 			fixtureDef.isSensor = fixture["is sensor"].asBool();
+			FlagSet<FixtureRole>* fixtureRoles = new FlagSet<FixtureRole>();
+			fixtureDef.userData = static_cast<void*>(fixtureRoles);
+
+			//Roles
 			const Json::Value roles{fixture["roles"]};
 			for(Json::ArrayIndex j{0}; j < roles.size(); ++j)
 			{
@@ -601,6 +605,8 @@ void Serializer::implDeserialize(const Json::Value& value, entityx::ComponentHan
 			fixtureDef.friction = fixture["friction"].asFloat();
 			fixtureDef.restitution = fixture["restitution"].asFloat();
 			fixtureDef.isSensor = fixture["is sensor"].asBool();
+			FlagSet<FixtureRole>* fixtureRoles = new FlagSet<FixtureRole>();
+			fixtureDef.userData = static_cast<void*>(fixtureRoles);
 
 			//roles
 			const Json::Value roles{value["roles"]};
@@ -657,6 +663,8 @@ void Serializer::implDeserialize(const Json::Value& value, entityx::ComponentHan
 			fixtureDef.isSensor = fixture["is sensor"].asBool();
 			FlagSet<FixtureRole>* fixtureRoles = new FlagSet<FixtureRole>();
 			fixtureDef.userData = static_cast<void*>(fixtureRoles);
+
+			//Roles
 			const Json::Value roles{value["roles"]};
 			for(Json::ArrayIndex j{0}; j < roles.size(); ++j)
 			{
@@ -688,6 +696,10 @@ void Serializer::implDeserialize(const Json::Value& value, entityx::ComponentHan
 			fixtureDef.friction = fixture["friction"].asFloat();
 			fixtureDef.restitution = fixture["restitution"].asFloat();
 			fixtureDef.isSensor = fixture["is sensor"].asBool();
+			FlagSet<FixtureRole>* fixtureRoles = new FlagSet<FixtureRole>();
+			fixtureDef.userData = static_cast<void*>(fixtureRoles);
+
+			//Roles
 			const Json::Value roles{value["roles"]};
 			for(Json::ArrayIndex j{0}; j < roles.size(); ++j)
 			{

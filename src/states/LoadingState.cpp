@@ -12,9 +12,9 @@ LoadingState::LoadingState()
 {
 	Context::eventManager->subscribe<LoadingStateChange>(*this);
 	Context::eventManager->subscribe<ParametersChange>(*this);
-	std::ifstream fileStream(Context::parameters->resourcesPath + "lang/hints");
+	std::ifstream fileStream(Context::parameters->resourcesPath + "hints");
 	if(not fileStream.is_open())//If failed to open the file
-		throw std::runtime_error("Unable to open hints file: resources/lang/hints");
+		throw std::runtime_error("Unable to open hints file: \"" + Context::parameters->resourcesPath + "hints\"");
 	else
 	{
 		std::string line;
