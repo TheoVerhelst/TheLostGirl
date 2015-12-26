@@ -65,27 +65,54 @@ class FlagSet
 		/// Returns the number of flags that the FlagSet can hold.
 		/// This is not necessarily the number of elements in Enum,
 		/// this is the second parameter N.
-		/// \return the number of flags that the FlagSet can hold
+		/// \return The number of flags that the FlagSet can hold.
 		inline constexpr std::size_t size() const noexcept;
 
+		/// Performs logical AND on each corresponding flag between *this and other.
+		/// \param ther Another FlagSet.
+		/// \return *this
 		inline FlagSet<Enum, N>& operator&=(const FlagSet<Enum>& other);
 
+		/// Performs logical OR on each corresponding flag between *this and other.
+		/// \param other Another FlagSet.
+		/// \return *this
 		inline FlagSet<Enum, N>& operator|=(const FlagSet<Enum>& other);
 
+
+		/// Performs logical XOR on each corresponding flag between *this and other.
+		/// \param other Another FlagSet.
+		/// \return *this
 		inline FlagSet<Enum, N>& operator^=(const FlagSet<Enum>& other);
 
+		/// Performs logcial NOT on each flag in *this.
+		/// \return A copy of *this with every flag flipped.
 		inline FlagSet<Enum, N> operator~() const;
 
+		/// Set all flags to true.
+		/// \return *this
 		inline FlagSet<Enum, N>& set();
 
+		/// Set the specified \a flag to the specified \a value.
+		/// \param flag Flag to set.
+		/// \param value Value to set to the flag.
+		/// \return *this
 		inline FlagSet<Enum, N>& set(Enum flag, bool value=true);
 
+		/// Set all flags to false.
+		/// \return *this
 		inline FlagSet<Enum, N>& reset();
 
+		/// Set the specified \a flag to false.
+		/// \param flag Flag to set.
+		/// \return *this
 		inline FlagSet<Enum, N>& reset(Enum flag);
 
+		/// Flip all flags.
+		/// \return *this
 		inline FlagSet<Enum, N>& flip();
 
+		/// Flip the specified flag.
+		/// \return *this
 		inline FlagSet<Enum, N>& flip(Enum flag);
 
 	private:
@@ -94,12 +121,26 @@ class FlagSet
 		std::bitset<N> m_bitset;
 };
 
+/// Performs logical AND on each corresponding flags between lhs and rhs.
+/// \param lhs The FlagSet on the left-hand side of the operator.
+/// \param rhs The FlagSet on the right-hand side of the operator.
+/// \return lhs &= rhs
 template<class Enum, std::size_t N>
 inline FlagSet<Enum, N> operator&(FlagSet<Enum, N> lhs, const FlagSet<Enum, N>& rhs);
 
+
+/// Performs logical OR on each corresponding flags between lhs and rhs.
+/// \param lhs The FlagSet on the left-hand side of the operator.
+/// \param rhs The FlagSet on the right-hand side of the operator.
+/// \return lhs |= rhs
 template<class Enum, std::size_t N>
 inline FlagSet<Enum, N> operator|(FlagSet<Enum, N> lhs, const FlagSet<Enum, N>& rhs);
 
+
+/// Performs logical XOR on each corresponding flags between lhs and rhs.
+/// \param lhs The FlagSet on the left-hand side of the operator.
+/// \param rhs The FlagSet on the right-hand side of the operator.
+/// \return lhs ^= rhs
 template<class Enum, std::size_t N>
 inline FlagSet<Enum, N> operator^(FlagSet<Enum, N> lhs, const FlagSet<Enum, N>& rhs);
 
