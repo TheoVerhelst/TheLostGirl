@@ -73,16 +73,18 @@ ParametersState::ParametersState()
 	m_fullscreenCheckBox = Context::parameters->guiTheme->load("CheckBox");
 	if(Context::parameters->fullscreen)
 		m_fullscreenCheckBox->check();
-	m_fullscreenCheckBox->connect("checked", [this](){
-								m_fullscreenComboBox->enable();
-								m_fullscreenComboBox->getRenderer()->setProperty("backgroundcolor", "(255, 255, 255, 255)");
-								m_fullscreenComboBox->getRenderer()->setProperty("arrowbackgroundcolor", "(255, 255, 255, 255)");
-								});
-	m_fullscreenCheckBox->connect("unchecked", [this](){
-								m_fullscreenComboBox->disable();
-								m_fullscreenComboBox->getRenderer()->setProperty("backgroundcolor", "(200, 200, 200, 255)");
-								m_fullscreenComboBox->getRenderer()->setProperty("arrowbackgroundcolor", "(200, 200, 200, 255)");
-								});
+	m_fullscreenCheckBox->connect("checked", [this]()
+	{
+		m_fullscreenComboBox->enable();
+		m_fullscreenComboBox->getRenderer()->setProperty("backgroundcolor", "(255, 255, 255, 255)");
+		m_fullscreenComboBox->getRenderer()->setProperty("arrowbackgroundcolor", "(255, 255, 255, 255)");
+	});
+	m_fullscreenCheckBox->connect("unchecked", [this]()
+	{
+		m_fullscreenComboBox->disable();
+		m_fullscreenComboBox->getRenderer()->setProperty("backgroundcolor", "(200, 200, 200, 255)");
+		m_fullscreenComboBox->getRenderer()->setProperty("arrowbackgroundcolor", "(200, 200, 200, 255)");
+	});
 	layout->add(m_fullscreenCheckBox);
 	layout->setRatio(m_fullscreenCheckBox, 0.075f);
 	layout->addSpace(0.025f);
@@ -177,7 +179,10 @@ ParametersState::ParametersState()
 
 	m_okButton = tgui::Button::copy(m_controlsButton);
 	m_okButton->disconnect(signal);
-	m_okButton->connect("pressed", [this](){applyChanges(); requestStackPop();});
+	m_okButton->connect("pressed", [this]()
+	{
+		applyChanges(); requestStackPop();
+	});
 	layout->add(m_okButton);
 	mainLayout->add(layout);
 	mainLayout->setRatio(layout, 3.f);

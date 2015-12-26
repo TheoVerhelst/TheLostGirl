@@ -42,7 +42,10 @@ sf::Color fadingColor(sf::Time dt, sf::Time fadingLength, bool in)
 
 bool hasWhiteSpace(const std::string str)
 {
-	return std::any_of(str.cbegin(), str.cend(), [](const char& chr){return isspace(chr);});
+	return std::any_of(str.cbegin(), str.cend(), [](const char& chr)
+	{
+		return isspace(chr);
+	});
 }
 
 sf::Vector2f b2tosf(const b2Vec2& vec)

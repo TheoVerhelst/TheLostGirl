@@ -484,13 +484,19 @@ inline bool Interpreter::isFloat(const std::string& str) const
 
 inline bool Interpreter::isInt(const std::string& str) const
 {
-	return std::all_of(str.cbegin(), str.cend(), [](const char& ch){return std::isdigit(ch);});
+	return std::all_of(str.cbegin(), str.cend(), [](const char& ch)
+	{
+		return std::isdigit(ch);
+	});
 }
 
 bool Interpreter::isIdentifier(const std::string& str) const
 {
 	return str.size() > 0 and not std::isdigit(str[0])
-		and std::all_of(str.cbegin(), str.cend(), [](const char& ch){return std::isalnum(ch) or std::isspace(ch);});
+		and std::all_of(str.cbegin(), str.cend(), [](const char& ch)
+	{
+		return std::isalnum(ch) or std::isspace(ch);
+	});
 }
 
 inline bool Interpreter::isBool(const std::string& str) const
