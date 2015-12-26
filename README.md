@@ -1,5 +1,6 @@
-## Synopsis {#mainpage}
+# The Lost Girl {#mainpage}
 
+## Synopsis 
 The Lost Girl is an archery role-playing game represented in scrolling 2D.<br/>
 You took place in a huge world full of possibilities and you can play up to 4 differents characters. Alot of amazing and well constructed quests are proposed to you, but you are totally free of your actions. You want to kill the most important character of the whole country? No problem, you'll just have to assume yourself. 
 
