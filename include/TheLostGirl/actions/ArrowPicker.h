@@ -16,7 +16,7 @@ class ArrowPicker : public Action
 		virtual ~ArrowPicker() = default;
 
 		/// Overload of the () operator.
-		/// \param entity Entity who shoot.
+		/// \param entity Entity that pick up an arrow.
 		virtual void operator()(entityx::Entity entity) const override;
 };
 

@@ -44,7 +44,7 @@ class LangManager
 		void loadLang(std::string langToLoad);
 
 		std::string m_lang;                           ///< The current lang.
-		const std::string m_defaultLang = "EN";
+		const std::string m_defaultLang = "EN";       ///< The default lang used in the source code.
 		std::map<std::string, std::wstring> m_entries;///< Translations related to the current lang.
 };
 

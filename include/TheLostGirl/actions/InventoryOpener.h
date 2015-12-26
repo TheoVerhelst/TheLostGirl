@@ -8,6 +8,7 @@ namespace entityx
     class Entity;
 }
 
+/// Display a GUI menu that allow to open the inventory of the player.
 class InventoryOpener : public Action
 {
 	public:
@@ -18,8 +19,7 @@ class InventoryOpener : public Action
 		virtual ~InventoryOpener();
 
 		/// Overload of the () operator.
-		/// \param entity Entity who do the action.
-		/// \param dt Elapsed time in the last game frame.
+		/// \param entity Entity that open its inventory.
 		virtual void operator()(entityx::Entity entity) const override;
 };
 

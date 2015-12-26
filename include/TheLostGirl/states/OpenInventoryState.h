@@ -85,9 +85,9 @@ class OpenInventoryState : public State
 		tgui::ChildWindow::Ptr m_background;              ///< Background of the whole inventory window.
 		tgui::Label::Ptr m_entityName;                    ///< Label with the name of the entity.
 		tgui::Tab::Ptr m_displayTab;                      ///< Tab used for switching the display mode.
-		std::vector<sf::String> m_displayStrings;
+		std::vector<sf::String> m_displayStrings;         ///< The string used in display tabs, not translated.
 		tgui::Tab::Ptr m_categoryTab;                     ///< Tab used for switching the shown category.
-		std::vector<sf::String> m_categoryStrings;
+		std::vector<sf::String> m_categoryStrings;        ///< The string used in catgory tabs, not translated.
 
 		//Widgets for the grid display
 		/// Hold GUI widgets to represent an item in the grid inventory.

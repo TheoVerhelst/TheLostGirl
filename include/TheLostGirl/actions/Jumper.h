@@ -19,7 +19,7 @@ class Jumper : public Action
 		virtual ~Jumper() = default;
 
 		/// Overload of the () operator.
-		/// \param entity Entity who jump.
+		/// \param entity Entity that jumps.
 		virtual void operator()(entityx::Entity entity) const override;
 };
 

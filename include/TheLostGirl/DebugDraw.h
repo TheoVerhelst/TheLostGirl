@@ -81,16 +81,16 @@ class DebugDraw : public b2Draw
 		/// \return A formated string.
 		std::string roundOutput(float x, std::size_t decimals=3);
 
-		bool m_debugMode;                   ///< Indicate if the debug ath should be drawn.
-		float m_framesPerSecond;            ///< FPS value to display.
-		tgui::Label::Ptr m_positionLabel;
-		tgui::Label::Ptr m_mousePositionLabel;
-		tgui::Label::Ptr m_FPSLabel;
-		tgui::ChatBox::Ptr m_console;
-		std::stringstream m_outStringStream;///< String used to print standard output into the GUI.
-		std::stringstream m_errStringStream;///< String used to print standard error into the GUI.
-		std::streambuf* m_coutStreambuf;    ///< The old stream buffer of std::cout.
-		std::streambuf* m_cerrStreambuf;    ///< The old stream buffer of std::cerr.
+		bool m_debugMode;                     ///< Indicate if the debug ath should be drawn.
+		float m_framesPerSecond;              ///< FPS value to display.
+		tgui::Label::Ptr m_positionLabel;     ///< The label of the player's position.
+		tgui::Label::Ptr m_mousePositionLabel;///< The label of the position of the mouse.
+		tgui::Label::Ptr m_FPSLabel;          ///< The label of the FPS counter.
+		tgui::ChatBox::Ptr m_console;         ///< The chatbox of the console.
+		std::stringstream m_outStringStream;  ///< String used to print standard output into the GUI.
+		std::stringstream m_errStringStream;  ///< String used to print standard error into the GUI.
+		std::streambuf* m_coutStreambuf;      ///< The old stream buffer of std::cout.
+		std::streambuf* m_cerrStreambuf;      ///< The old stream buffer of std::cerr.
 };
 
 #endif//DEBUGDRAW_H

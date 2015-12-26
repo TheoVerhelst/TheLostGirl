@@ -14,8 +14,7 @@ class CorpseSearcher : public Action
 		virtual ~CorpseSearcher() = default;
 
 		/// Overload of the () operator.
-		/// \param entity Entity who shoot.
-		/// \param dt Elapsed time in the last game frame.
+		/// \param entity Entity that search in corpses.
 		virtual void operator()(entityx::Entity entity) const override;
 };
 

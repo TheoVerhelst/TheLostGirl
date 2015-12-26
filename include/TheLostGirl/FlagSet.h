@@ -1,7 +1,7 @@
 #ifndef FLAGSET_H
 #define FLAGSET_H
 
-#include <bitset>
+#include <unordered_set>
 #include <stdexcept>
 
 /// Set of flags defined by the template parameter enumeration.
@@ -24,42 +24,40 @@ template <class Enum, std::size_t N = static_cast<std::size_t>(Enum::MaxValue)>
 class FlagSet
 {
 	public:
+		/// Default constructor.
 		inline constexpr FlagSet() = default;
 
+		/// Constructor from initializer list.
+		/// \param flags Set of flags.
 		inline constexpr FlagSet(std::initializer_list<Enum> flags);
 
+		/// Assignment operator from initializer list.
+		/// \param flags Set of flags.
+		/// \return *this
 		inline FlagSet& operator=(std::initializer_list<Enum> flags);
 
 		/// Compare the two FlagSets.
-		/// \param FlagSet to compare
-		/// \return true if the state of each flag in *this equals the state of the corresponding flags in rhs, otherwise false
+		/// \param rhs FlagSet to compare.
+		/// \return true if the state of each flag in *this equals the state of the corresponding flags in rhs, otherwise false.
 		inline bool operator==(const FlagSet<Enum, N>& rhs) const;
 
 		/// Compare the two FlagSets.
-		/// \param FlagSet to compare
+		/// \param rhs FlagSet to compare.
 		/// \return true if !(*this == rhs), otherwise false
 		inline bool operator!=(const FlagSet<Enum, N>& rhs) const;
 
 		/// Return the state of the given flag.
-		/// \param flag Flag to test
-		/// \return true if the requested flag is set, false otherwise
+		/// \param flag Flag to test.
+		/// \return true if the requested flag is set, false otherwise.
 		/// \exception std::out_of_range if flag does not correspond to a valid flag within the FlagSet.
 		inline bool test(Enum flag) const throw(std::out_of_range);
 
-		///  Checks if all flags are set to true
-		/// \return true if all flags are set to true, otherwise false
-		inline bool all() const noexcept;
-
 		///  Checks if any flags are set to true
-		/// \return true if any of the flags are set to true, otherwise false
-		inline bool any() const noexcept;
-
-		///  Checks if none of the flags are set to true
-		/// \return true if none of the flags are set to true, otherwise false
-		inline bool none() const noexcept;
+		/// \return true if any of the flags are set to true, otherwise false.
+		inline bool empty() const noexcept;
 
 		/// Returns the number of flags that are set to true.
-		/// \return the number of flags that are set to true
+		/// \return the number of flags that are set to true.
 		inline std::size_t count() const;
 
 		/// Returns the number of flags that the FlagSet can hold.
@@ -69,19 +67,19 @@ class FlagSet
 		inline constexpr std::size_t size() const noexcept;
 
 		/// Performs logical AND on each corresponding flag between *this and other.
-		/// \param ther Another FlagSet.
-		/// \return *this
+		/// \param other Another FlagSet.
+		/// \return *this.
 		inline FlagSet<Enum, N>& operator&=(const FlagSet<Enum>& other);
 
 		/// Performs logical OR on each corresponding flag between *this and other.
 		/// \param other Another FlagSet.
-		/// \return *this
+		/// \return *this.
 		inline FlagSet<Enum, N>& operator|=(const FlagSet<Enum>& other);
 
 
 		/// Performs logical XOR on each corresponding flag between *this and other.
 		/// \param other Another FlagSet.
-		/// \return *this
+		/// \return *this.
 		inline FlagSet<Enum, N>& operator^=(const FlagSet<Enum>& other);
 
 		/// Performs logcial NOT on each flag in *this.
@@ -95,30 +93,34 @@ class FlagSet
 		/// Set the specified \a flag to the specified \a value.
 		/// \param flag Flag to set.
 		/// \param value Value to set to the flag.
-		/// \return *this
+		/// \return *this.
 		inline FlagSet<Enum, N>& set(Enum flag, bool value=true);
 
 		/// Set all flags to false.
-		/// \return *this
+		/// \return *this.
 		inline FlagSet<Enum, N>& reset();
 
 		/// Set the specified \a flag to false.
-		/// \param flag Flag to set.
-		/// \return *this
+		/// \param flag Flag to reset.
+		/// \return *this.
 		inline FlagSet<Enum, N>& reset(Enum flag);
 
 		/// Flip all flags.
-		/// \return *this
+		/// \return *this.
 		inline FlagSet<Enum, N>& flip();
 
 		/// Flip the specified flag.
-		/// \return *this
+		/// \param flag Flag to flip.
+		/// \return *this.
 		inline FlagSet<Enum, N>& flip(Enum flag);
 
 	private:
+		/// Get the index in the bitset for the given \a flag.
+		/// \param flag The flag.
+		/// \return The index in the bitset for \a flag.
 		inline std::size_t getIndex(Enum flag) const;
 
-		std::bitset<N> m_bitset;
+		std::bitset<N> m_bitset;///< The underlying bitset.
 };
 
 /// Performs logical AND on each corresponding flags between lhs and rhs.

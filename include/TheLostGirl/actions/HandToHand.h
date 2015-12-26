@@ -20,7 +20,7 @@ class HandToHand : public Action
 		virtual ~HandToHand() = default;
 
 		/// Overload of the () operator.
-		/// \param entity Entity who do the action.
+		/// \param entity Entity that does the action.
 		virtual void operator()(entityx::Entity entity) const override;
 };
 

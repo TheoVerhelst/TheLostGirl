@@ -117,7 +117,7 @@ bool isMember(const Container<Key, Value, OtherTemplateParameters...>& container
 /// 	<li>the second template parameter must be the value type;</li>
 /// 	<li>it must implements cbegin() and cend() as defined in the requirement Container</li>
 /// </ul>
-/// \param map The map to search in.
+/// \param container The map to search in.
 /// \param value Value to search for.
 /// \return The key of \a value if found in the map, undefied behavior otherwise.
 /// \exception std::out_of_range if the given value is not registred in the map.
@@ -160,12 +160,18 @@ b2JointDef* getJointDef(b2Joint* joint);
 /// \return The opposite direction.
 Direction operator!(const Direction& direction);
 
+/// Print a debug message. This function is intented to be used only by the TEST macro.
+/// \param expression The expression that has evaluated to false
+/// \param filename The file name where the expression is located.
+/// \param line The number of line where the expression is located.
+/// \return false.
 bool printError(const std::string& expression, const std::string& filename, unsigned int line);
 
 //If this is the release build
 #ifdef NDEBUG
  #define TEST(expression) (expression)
 #else
+ /// Print a debug message if \a expression evalueates to false, do nothing otherwise.
  #define TEST(expression) ((expression) ? true : printError(#expression, __FILE__, __LINE__))
 #endif // NDEBUG
 
