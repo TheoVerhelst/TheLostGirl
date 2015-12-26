@@ -63,20 +63,20 @@ sf::Color fadingColor(sf::Time dt = sf::seconds(0), sf::Time fadingLength = sf::
 /// \return True if the given string contains at least one whitespace, false otherwise.
 bool hasWhiteSpace(const std::string str);
 
-/// Convert a Box2D vector to a SFML vector
+/// Convert a Box2D vector to a SFML vector.
 /// \param vec A Box2D vector.
 /// \return A SFML vector.
 /// \see sftob2
 sf::Vector2f b2tosf(const b2Vec2& vec);
 
-/// Convert a SFML vector to a Box2D vector
+/// Convert a SFML vector to a Box2D vector.
 /// \param vec A SFML vector.
 /// \return A Box2D vector.
 /// \see b2tosf
 b2Vec2 sftob2(const sf::Vector2f& vec);
 
-/// Convert a Box2D color to a SFML color;
-/// \param color A Box2D color;
+/// Convert a Box2D color to a SFML color.
+/// \param color A Box2D color.
 /// \return A SFML color.
 sf::Color b2ColorToSf(const b2Color& color);
 
@@ -91,29 +91,46 @@ inline void* add(void* ptr, T value)
 	return reinterpret_cast<void*>(reinterpret_cast<T>(ptr) | value);
 }
 
-/// Check if the given \a value is registred in map or hash map.
-/// \param container Map or hash map to search in.
+/// Check if the given \a value is registred in map.
+/// The map must have the following requirements:
+/// <ul>
+/// 	<li>the first template parameter must be the key type;</li>
+/// 	<li>the second template parameter must be the value type;</li>
+/// 	<li>it must implements cbegin() and cend() as defined in the requirement Container</li>
+/// </ul>
+/// \param container Map to search in.
 /// \param value Value to search for.
 /// \return True if the given value is registred in map, false otherwise.
-template <typename Container, typename Value>
-bool isMember(const Container& container, const Value& value)
+template <template <class ...> class Container, typename Key, typename Value, class ... OtherTemplateParameters>
+bool isMember(const Container<Key, Value, OtherTemplateParameters...>& container, const Value& value)
 {
-	auto it = container.cbegin();
-	while(it != container.cend() and it->second != value) ++it;
-	return it != container.cend();
+	return std::any_of(container.cbegin(), container.cend(), [&value](const auto& pair)
+	{
+		return pair.second == value;
+	});
 }
 
-/// Get the key of the given \a value in a hash map.
-/// \note If the given value is not registred in the map, the behavior is undefined.
-/// \param map Hash map to search in.
+/// Get the key of the given \a value in a map.
+/// The map must have the following requirements:
+/// <ul>
+/// 	<li>the first template parameter must be the key type;</li>
+/// 	<li>the second template parameter must be the value type;</li>
+/// 	<li>it must implements cbegin() and cend() as defined in the requirement Container</li>
+/// </ul>
+/// \param map The map to search in.
 /// \param value Value to search for.
 /// \return The key of \a value if found in the map, undefied behavior otherwise.
+/// \exception std::out_of_range if the given value is not registred in the map.
 /// \see isMember
-template <typename Key, typename Value>
-Key getKey(const std::map<Key, Value>& map, const Value& value)
+template <template <class ...> class Container, typename Key, typename Value, class ... OtherTemplateParameters>
+Key getKey(const Container<Key, Value, OtherTemplateParameters ...>& container, const Value& value)
 {
-	auto it = map.cbegin();
-	while(it != map.cend() and it->second != value) ++it;
+	auto it = std::find_if(container.cbegin(), container.cend(), [&value](const auto& pair)
+	{
+		return pair.second == value;
+	});
+	if(it == container.cend())
+		throw std::out_of_range("Key error in getKey(): no key exists for the given value.");
 	return it->first;
 }
 
