@@ -41,11 +41,7 @@ void DragAndDropSystem::update(entityx::EntityManager&, entityx::EventManager&, 
 		float angle{std::atan2(delta.x, delta.y)};//Angle of the line with the horizontal axis
 		angle += b2_pi/2.f;//Turn the angle of 90 degrees to fit the gameplay requirements
 		//Send a command to player's entities to bend them bows according to the drag and drop data
-		Command bendCommand;
-		bendCommand.targetIsSpecific = false;
-		bendCommand.category = {Category::Player};
-		bendCommand.action = BowBender(angle, power);
-		Context::systemManager->system<PendingChangesSystem>()->commandQueue.push(bendCommand);
+		Context::systemManager->system<PendingChangesSystem>()->commandQueue.emplace(FlagSet<Category>({Category::Player}), BowBender(angle, power));
 	}
 }
 
@@ -59,17 +55,9 @@ void DragAndDropSystem::setDragAndDropActivation(bool isActive)
 		float delta_y{m_line[1].position.y- m_line[0].position.y};
 		float angle{std::atan2(delta_x, delta_y) + b2_pi/2.f};//Angle of the line with the horizontal axis
 		//Shoot the arrow
-		Command shootCommand;
-		shootCommand.targetIsSpecific = false;
-		shootCommand.category = {Category::Player};
-		shootCommand.action = ArrowShooter();
-		Context::systemManager->system<PendingChangesSystem>()->commandQueue.push(shootCommand);
-		//Reset the bending power to 0
-		Command bendCommand;
-		bendCommand.targetIsSpecific = false;
-		bendCommand.category = {Category::Player};
-		bendCommand.action = BowBender(float(angle), 0.f);//Reset the power of the bending
-		Context::systemManager->system<PendingChangesSystem>()->commandQueue.push(bendCommand);
+		Context::systemManager->system<PendingChangesSystem>()->commandQueue.emplace(FlagSet<Category>({Category::Player}), ArrowShooter());
+		//Reset the power of the bending
+		Context::systemManager->system<PendingChangesSystem>()->commandQueue.emplace(FlagSet<Category>({Category::Player}), BowBender(float(angle), 0.f));
 	}
 	m_isActive = isActive;
 }

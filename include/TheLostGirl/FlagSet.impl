@@ -1,157 +1,128 @@
-template <class Enum, std::size_t N>
-inline constexpr FlagSet<Enum, N>::FlagSet(std::initializer_list<Enum> flags)
+#include <algorithm>
+
+template <class Enum>
+inline constexpr FlagSet<Enum>::FlagSet(std::initializer_list<Enum> flags):
+	m_set(flags)
 {
-	for(auto& flag : flags)
-		set(flag);
 }
 
-template <class Enum, std::size_t N>
-inline FlagSet<Enum, N>& FlagSet<Enum, N>::operator=(std::initializer_list<Enum> flags)
+//template <class Enum>
+//inline FlagSet<Enum>& FlagSet<Enum>::operator=(std::initializer_list<Enum> flags)
+//{
+//	m_set = flags;
+//	return *this;
+//}
+
+template <class Enum>
+inline bool FlagSet<Enum>::test(Enum flag) const
 {
-	operator=(FlagSet(flags));
+	return m_set.count(flag) != 0;
+}
+
+template <class Enum>
+inline bool FlagSet<Enum>::none() const noexcept
+{
+	return m_set.empty();
+}
+
+template <class Enum>
+inline bool FlagSet<Enum>::any() const noexcept
+{
+	return !none();
+}
+
+template <class Enum>
+inline bool FlagSet<Enum>::set(Enum flag)
+{
+	return m_set.insert(flag).second;
+}
+
+template <class Enum>
+inline void FlagSet<Enum>::reset() noexcept
+{
+	m_set.clear();
+}
+
+template <class Enum>
+inline bool FlagSet<Enum>::reset(Enum flag)
+{
+	return m_set.erase(flag) > 0;
+}
+
+template <class Enum>
+inline std::size_t FlagSet<Enum>::size() const noexcept
+{
+	return m_set.size();
+}
+
+template <class Enum>
+inline constexpr std::size_t FlagSet<Enum>::max_size() const noexcept
+{
+	return m_set.max_size();
+}
+
+template <class Enum>
+inline void FlagSet<Enum>::swap(FlagSet<Enum>& other)
+{
+	m_set.swap(other.m_set);
+}
+
+template <class Enum>
+inline bool FlagSet<Enum>::operator==(const FlagSet<Enum>& rhs) const
+{
+	return m_set == rhs.m_set;
+}
+
+template <class Enum>
+inline bool FlagSet<Enum>::operator!=(const FlagSet<Enum>& rhs) const
+{
+	return m_set != rhs.m_set;
+}
+
+template <class Enum>
+inline FlagSet<Enum>& FlagSet<Enum>::operator&=(const FlagSet<Enum>& other)
+{
+	applyAlgorithm<std::set_intersection>(other);
 	return *this;
 }
 
-template <class Enum, std::size_t N>
-inline bool FlagSet<Enum, N>::operator==(const FlagSet<Enum, N>& rhs) const
+template <class Enum>
+inline FlagSet<Enum>& FlagSet<Enum>::operator|=(const FlagSet<Enum>& other)
 {
-	return m_bitset == rhs.m_bitset;
-}
-
-template <class Enum, std::size_t N>
-inline bool FlagSet<Enum, N>::operator!=(const FlagSet<Enum, N>& rhs) const
-{
-	return m_bitset != rhs.m_bitset;
-}
-
-template <class Enum, std::size_t N>
-inline bool FlagSet<Enum, N>::test(Enum flag) const throw(std::out_of_range)
-{
-	return m_bitset.test(getIndex(flag));
-}
-
-template <class Enum, std::size_t N>
-inline bool FlagSet<Enum, N>::all() const noexcept
-{
-	return m_bitset.all();
-}
-
-template <class Enum, std::size_t N>
-inline bool FlagSet<Enum, N>::any() const noexcept
-{
-	return m_bitset.any();
-}
-
-template <class Enum, std::size_t N>
-inline bool FlagSet<Enum, N>::none() const noexcept
-{
-	return m_bitset.none();
-}
-
-template <class Enum, std::size_t N>
-inline std::size_t FlagSet<Enum, N>::count() const
-{
-	return m_bitset.count();
-}
-
-template <class Enum, std::size_t N>
-inline constexpr std::size_t FlagSet<Enum, N>::size() const noexcept
-{
-	return m_bitset.size();
-}
-
-template <class Enum, std::size_t N>
-inline FlagSet<Enum, N>& FlagSet<Enum, N>::operator&=(const FlagSet<Enum>& other)
-{
-	m_bitset.operator&=(other.m_bitset);
+	applyAlgorithm<std::set_union>(other);
 	return *this;
 }
 
-template <class Enum, std::size_t N>
-inline FlagSet<Enum, N>& FlagSet<Enum, N>::operator|=(const FlagSet<Enum>& other)
+template <class Enum>
+inline FlagSet<Enum>& FlagSet<Enum>::operator^=(const FlagSet<Enum>& other)
 {
-	m_bitset.operator|=(other.m_bitset);
+	applyAlgorithm<std::set_symmetric_difference>(other);
 	return *this;
 }
 
-template <class Enum, std::size_t N>
-inline FlagSet<Enum, N>& FlagSet<Enum, N>::operator^=(const FlagSet<Enum>& other)
-{
-	m_bitset.operator^=(other.m_bitset);
-	return *this;
-}
+//template <class Enum>
+//template <std::back_insert_iterator<std::vector<Enum>>(*Algorithm)
+//		(typename std::set<Enum>::const_iterator,
+//		 typename std::set<Enum>::const_iterator,
+//		 typename std::set<Enum>::const_iterator,
+//		 typename std::set<Enum>::const_iterator,
+//		 std::back_insert_iterator<std::vector<Enum>>)>
+//inline void FlagSet<Enum>::applyAlgorithm(const FlagSet<Enum>& other)
 
-template <class Enum, std::size_t N>
-inline FlagSet<Enum, N> FlagSet<Enum, N>::operator~() const
-{
-	FlagSet<Enum, N> res(*this);
-	res.m_bitset.operator~();
-	return res;
-}
-
-template <class Enum, std::size_t N>
-inline FlagSet<Enum, N>& FlagSet<Enum, N>::set()
-{
-	m_bitset.set();
-	return *this;
-}
-
-template <class Enum, std::size_t N>
-inline FlagSet<Enum, N>& FlagSet<Enum, N>::set(Enum flag, bool value)
-{
-	m_bitset.set(getIndex(flag), value);
-	return *this;
-}
-
-template <class Enum, std::size_t N>
-inline FlagSet<Enum, N>& FlagSet<Enum, N>::reset()
-{
-	m_bitset.reset();
-	return *this;
-}
-
-template <class Enum, std::size_t N>
-inline FlagSet<Enum, N>& FlagSet<Enum, N>::reset(Enum flag)
-{
-	m_bitset.set(getIndex(flag));
-	return *this;
-}
-
-template <class Enum, std::size_t N>
-inline FlagSet<Enum, N>& FlagSet<Enum, N>::flip()
-{
-	m_bitset.flip();
-	return *this;
-}
-
-template <class Enum, std::size_t N>
-inline FlagSet<Enum, N>& FlagSet<Enum, N>::flip(Enum flag)
-{
-	m_bitset.flip(getIndex(flag));
-	return *this;
-}
-
-template <class Enum, std::size_t N>
-inline std::size_t FlagSet<Enum, N>::getIndex(Enum flag) const
-{
-	return static_cast<std::size_t>(flag);
-}
-
-
-template<class Enum, std::size_t N>
-inline FlagSet<Enum, N> operator&(FlagSet<Enum, N> lhs, const FlagSet<Enum, N>& rhs)
+template<class Enum>
+inline FlagSet<Enum> operator&(FlagSet<Enum> lhs, const FlagSet<Enum>& rhs)
 {
 	return lhs &= rhs;
 }
 
-template<class Enum, std::size_t N>
-inline FlagSet<Enum, N> operator|(FlagSet<Enum, N> lhs, const FlagSet<Enum, N>& rhs)
+template<class Enum>
+inline FlagSet<Enum> operator|(FlagSet<Enum> lhs, const FlagSet<Enum>& rhs)
 {
 	return lhs |= rhs;
 }
 
-template<class Enum, std::size_t N>
-inline FlagSet<Enum, N> operator^(FlagSet<Enum, N> lhs, const FlagSet<Enum, N>& rhs)
+template<class Enum>
+inline FlagSet<Enum> operator^(FlagSet<Enum> lhs, const FlagSet<Enum>& rhs)
 {
 	return lhs ^= rhs;
 }

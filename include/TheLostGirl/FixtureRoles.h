@@ -8,10 +8,9 @@
 /// Enumeration of role of some fixture (foot, head, ...).
 enum class FixtureRole : std::size_t
 {
-	None,   ///< Role that correspond to none role.
-	Foot,   ///< Role for fixtures that observes the collisions with the ground.
-	Main,   ///< Role for fixtures that are the main fixture of a body (e.g. to compute distance between entities).
-	MaxValue///< Sentinel value for using FlagSet.
+	None,///< Role that correspond to none role.
+	Foot,///< Role for fixtures that observes the collisions with the ground.
+	Main ///< Role for fixtures that are the main fixture of a body (e.g. to compute distance between entities).
 };
 
 /// Check wheter the given fixture has all its roles flags that match with the given flags.

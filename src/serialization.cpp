@@ -558,9 +558,9 @@ void Serializer::implDeserialize(const Json::Value& value, entityx::ComponentHan
 			for(Json::ArrayIndex j{0}; j < roles.size(); ++j)
 			{
 				if(roles[j].asString() == "foot sensor")
-					static_cast<FlagSet<FixtureRole>*>(fixtureDef.userData)->set(FixtureRole::Foot);
+					fixtureRoles->set(FixtureRole::Foot);
 				else if(roles[j].asString() == "main")
-					static_cast<FlagSet<FixtureRole>*>(fixtureDef.userData)->set(FixtureRole::Main);
+					fixtureRoles->set(FixtureRole::Main);
 			}
 			component->body->CreateFixture(&fixtureDef);
 		}
@@ -613,9 +613,9 @@ void Serializer::implDeserialize(const Json::Value& value, entityx::ComponentHan
 			for(Json::ArrayIndex j{0}; j < roles.size(); ++j)
 			{
 				if(roles[j].asString() == "foot sensor")
-					static_cast<FlagSet<FixtureRole>*>(fixtureDef.userData)->set(FixtureRole::Foot);
+					fixtureRoles->set(FixtureRole::Foot);
 				else if(roles[j].asString() == "main")
-					static_cast<FlagSet<FixtureRole>*>(fixtureDef.userData)->set(FixtureRole::Main);
+					fixtureRoles->set(FixtureRole::Main);
 			}
 
 			component->body->CreateFixture(&fixtureDef);
@@ -669,9 +669,9 @@ void Serializer::implDeserialize(const Json::Value& value, entityx::ComponentHan
 			for(Json::ArrayIndex j{0}; j < roles.size(); ++j)
 			{
 				if(roles[j].asString() == "foot sensor")
-					static_cast<FlagSet<FixtureRole>*>(fixtureDef.userData)->set(FixtureRole::Foot);
+					fixtureRoles->set(FixtureRole::Foot);
 				else if(roles[j].asString() == "main")
-					static_cast<FlagSet<FixtureRole>*>(fixtureDef.userData)->set(FixtureRole::Main);
+					fixtureRoles->set(FixtureRole::Main);
 			}
 			component->body->CreateFixture(&fixtureDef);
 		}
@@ -704,9 +704,9 @@ void Serializer::implDeserialize(const Json::Value& value, entityx::ComponentHan
 			for(Json::ArrayIndex j{0}; j < roles.size(); ++j)
 			{
 				if(roles[j].asString() == "foot sensor")
-					static_cast<FlagSet<FixtureRole>*>(fixtureDef.userData)->set(FixtureRole::Foot);
+					fixtureRoles->set(FixtureRole::Foot);
 				else if(roles[j].asString() == "main")
-					static_cast<FlagSet<FixtureRole>*>(fixtureDef.userData)->set(FixtureRole::Main);
+					fixtureRoles->set(FixtureRole::Main);
 			}
 			component->body->CreateFixture(&fixtureDef);
 		}

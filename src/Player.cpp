@@ -42,23 +42,6 @@ Player::Player()
 
 	// Set initial action bindings, fill the maps
 	initializeActions();
-
-	// Assign all categories
-	for(auto& pair : m_startActionBinding)
-	{
-		pair.second.category = {Category::Player};
-		pair.second.targetIsSpecific = false;
-	}
-	for(auto& pair : m_stopActionBinding)
-	{
-		pair.second.category = {Category::Player};
-		pair.second.targetIsSpecific = false;
-	}
-	for(auto& pair : m_immediateActionBinding)
-	{
-		pair.second.category = {Category::Player};
-		pair.second.targetIsSpecific = false;
-	}
 }
 
 void Player::handleEvent(const sf::Event& event)
@@ -71,9 +54,9 @@ void Player::handleEvent(const sf::Event& event)
 		if(found != m_keyBinding.end())
 		{
 			if(isRealtimeAction(found->second))
-				commands.push(m_startActionBinding[found->second]);
+				commands.push(m_startActionBinding.at(found->second));
 			if(isImmediateAction(found->second))
-				commands.push(m_immediateActionBinding[found->second]);
+				commands.push(m_immediateActionBinding.at(found->second));
 		}
 	}
 	else if(event.type == sf::Event::KeyReleased)
@@ -81,7 +64,7 @@ void Player::handleEvent(const sf::Event& event)
 		// Check if released key appears in key binding, trigger command if so
 		auto found = m_keyBinding.find(event.key.code);
 		if(found != m_keyBinding.end() and isRealtimeAction(found->second))
-			commands.push(m_stopActionBinding[found->second]);
+			commands.push(m_stopActionBinding.at(found->second));
 	}
 	else if(event.type == sf::Event::MouseButtonPressed)
 	{
@@ -89,16 +72,16 @@ void Player::handleEvent(const sf::Event& event)
 		if(found != m_mouseButtonBinding.end())
 		{
 			if(isRealtimeAction(found->second))
-				commands.push(m_startActionBinding[found->second]);
+				commands.push(m_startActionBinding.at(found->second));
 			if(isImmediateAction(found->second))
-				commands.push(m_immediateActionBinding[found->second]);
+				commands.push(m_immediateActionBinding.at(found->second));
 		}
 	}
 	else if(event.type == sf::Event::MouseButtonReleased)
 	{
 		auto found = m_mouseButtonBinding.find(event.mouseButton.button);
 		if(found != m_mouseButtonBinding.end() and isRealtimeAction(found->second))
-			commands.push(m_stopActionBinding[found->second]);
+			commands.push(m_stopActionBinding.at(found->second));
 	}
 	else if(event.type == sf::Event::MouseMoved)
 	{
@@ -107,7 +90,7 @@ void Player::handleEvent(const sf::Event& event)
 	else if(event.type == sf::Event::MouseWheelMoved)
 	{
 		if(isImmediateAction(m_mouseWheelBinding))
-			commands.push(m_immediateActionBinding[m_mouseWheelBinding]);
+			commands.push(m_immediateActionBinding.at(m_mouseWheelBinding));
 	}
 	else if(event.type == sf::Event::JoystickButtonPressed)
 	{
@@ -115,16 +98,16 @@ void Player::handleEvent(const sf::Event& event)
 		if(found != m_joystickButtonBinding.end())
 		{
 			if(isRealtimeAction(found->second))
-				commands.push(m_startActionBinding[found->second]);
+				commands.push(m_startActionBinding.at(found->second));
 			if(isImmediateAction(found->second))
-				commands.push(m_immediateActionBinding[found->second]);
+				commands.push(m_immediateActionBinding.at(found->second));
 		}
 	}
 	else if(event.type == sf::Event::JoystickButtonReleased)
 	{
 		auto found = m_joystickButtonBinding.find(event.joystickButton.button);
 		if(found != m_joystickButtonBinding.end() and isRealtimeAction(found->second))
-			commands.push(m_stopActionBinding[found->second]);
+			commands.push(m_stopActionBinding.at(found->second));
 	}
 	else if(event.type == sf::Event::JoystickMoved)
 	{
@@ -132,7 +115,7 @@ void Player::handleEvent(const sf::Event& event)
 //		if(found != m_joystickAxisBinding.end())
 //		{
 //			if(isRealtimeAction(found->second))
-//				commands.push(m_stopActionBinding[found->second]);
+//				commands.push(m_stopActionBinding.at(found->second));
 //		}
 	}
 }
@@ -284,21 +267,21 @@ void Player::handleInitialInputState()
 
 void Player::initializeActions()
 {
-	m_startActionBinding[Action::MoveLeft].action = Mover(Direction::Left);
-	m_startActionBinding[Action::MoveRight].action =  Mover(Direction::Right);
-	m_startActionBinding[Action::MoveUp].action =  Mover(Direction::Up);
-	m_startActionBinding[Action::MoveDown].action =  Mover(Direction::Down);
+	m_startActionBinding.emplace(Action::MoveLeft, Command({Category::Player}, Mover(Direction::Left)));
+	m_startActionBinding.emplace(Action::MoveRight, Command({Category::Player}, Mover(Direction::Right)));
+	m_startActionBinding.emplace(Action::MoveUp, Command({Category::Player}, Mover(Direction::Up)));
+	m_startActionBinding.emplace(Action::MoveDown, Command({Category::Player}, Mover(Direction::Down)));
 
-	m_stopActionBinding[Action::MoveLeft].action =  Mover(Direction::Left, false);
-	m_stopActionBinding[Action::MoveRight].action = Mover(Direction::Right, false);
-	m_stopActionBinding[Action::MoveUp].action = Mover(Direction::Up, false);
-	m_stopActionBinding[Action::MoveDown].action = Mover(Direction::Down, false);
+	m_stopActionBinding.emplace(Action::MoveLeft, Command({Category::Player}, Mover(Direction::Left, false)));
+	m_stopActionBinding.emplace(Action::MoveRight, Command({Category::Player}, Mover(Direction::Right, false)));
+	m_stopActionBinding.emplace(Action::MoveUp, Command({Category::Player}, Mover(Direction::Up, false)));
+	m_stopActionBinding.emplace(Action::MoveDown, Command({Category::Player}, Mover(Direction::Down, false)));
 
-	m_immediateActionBinding[Action::Jump].action = Jumper();
-	m_immediateActionBinding[Action::PickUp].action = ArrowPicker();
-	m_immediateActionBinding[Action::HandToHand].action = HandToHand();
-	m_immediateActionBinding[Action::SearchCorpse].action = CorpseSearcher();
-	m_immediateActionBinding[Action::Inventory].action = InventoryOpener();
+	m_immediateActionBinding.emplace(Action::Jump, Command({Category::Player}, Jumper()));
+	m_immediateActionBinding.emplace(Action::PickUp, Command({Category::Player}, ArrowPicker()));
+	m_immediateActionBinding.emplace(Action::HandToHand, Command({Category::Player}, HandToHand()));
+	m_immediateActionBinding.emplace(Action::SearchCorpse, Command({Category::Player}, CorpseSearcher()));
+	m_immediateActionBinding.emplace(Action::Inventory, Command({Category::Player}, InventoryOpener()));
 
 	//Do not assign a command to the bending action, the DragAndDrop system already does
 }

@@ -4,9 +4,9 @@
 #include <TheLostGirl/components.h>
 #include <TheLostGirl/Command.h>
 #include <TheLostGirl/actions.h>
-#include <TheLostGirl/FixtureRoles.h>
 #include <TheLostGirl/Context.h>
 #include <TheLostGirl/Parameters.h>
+#include <TheLostGirl/FixtureRoles.h>
 #include <TheLostGirl/scripts/scriptsFunctions.h>
 #include <TheLostGirl/scripts/ScriptError.h>
 #include <TheLostGirl/systems/PendingChangesSystem.h>
@@ -405,13 +405,10 @@ int directionOf(const std::vector<Data>& args)
 
 int attack(const std::vector<Data>& args)
 {
-	Command attackCommand;
-	attackCommand.targetIsSpecific = true;
-	attackCommand.entity = boost::get<entityx::Entity>(args[0]);
-	if(not attackCommand.entity)
+	entityx::Entity entity(boost::get<entityx::Entity>(args[0]));
+	if(not entity.valid())
 		throw ScriptError("can move(): first argument is an invalid entity.");
-	attackCommand.action = HandToHand();
-	Context::systemManager->system<PendingChangesSystem>()->commandQueue.push(attackCommand);
+	Context::systemManager->system<PendingChangesSystem>()->commandQueue.emplace(entity, HandToHand());
 	return 0;
 }
 
@@ -452,13 +449,10 @@ bool canMove(const std::vector<Data>& args)
 
 int move(const std::vector<Data>& args)
 {
-	Command moveCommand;
-	moveCommand.targetIsSpecific = true;
-	moveCommand.entity = boost::get<entityx::Entity>(args[0]);
-	if(not moveCommand.entity)
+	entityx::Entity entity(boost::get<entityx::Entity>(args[0]));
+	if(not entity.valid())
 		throw ScriptError("can move(): first argument is an invalid entity.");
-	moveCommand.action = Mover(static_cast<Direction>(boost::get<int>(args[1])));
-	Context::systemManager->system<PendingChangesSystem>()->commandQueue.push(moveCommand);
+	Context::systemManager->system<PendingChangesSystem>()->commandQueue.emplace(entity, Mover(static_cast<Direction>(boost::get<int>(args[1]))));
 	return 0;
 }
 
@@ -473,48 +467,28 @@ int stop(const std::vector<Data>& args)
 	{
 		if(directionComponent->moveToLeft and directionComponent->moveToRight)
 		{
-			Command moveCommand1;
-			moveCommand1.targetIsSpecific = true;
-			moveCommand1.entity = self;
-			Command moveCommand2;
-			moveCommand2.targetIsSpecific = true;
-			moveCommand2.entity = self;
-			moveCommand1.action = Mover(not directionComponent->direction, false);
-			moveCommand2.action = Mover(directionComponent->direction, false);
-			Context::systemManager->system<PendingChangesSystem>()->commandQueue.push(moveCommand1);
-			Context::systemManager->system<PendingChangesSystem>()->commandQueue.push(moveCommand2);
+			Context::systemManager->system<PendingChangesSystem>()->commandQueue.emplace(self, Mover(not directionComponent->direction, false));
+			Context::systemManager->system<PendingChangesSystem>()->commandQueue.emplace(self, Mover(directionComponent->direction, false));
 		}
 		else
-		{
-			Command moveCommand;
-			moveCommand.targetIsSpecific = true;
-			moveCommand.entity = self;
-			moveCommand.action = Mover(directionComponent->direction, false);
-			Context::systemManager->system<PendingChangesSystem>()->commandQueue.push(moveCommand);
-		}
+			Context::systemManager->system<PendingChangesSystem>()->commandQueue.emplace(self, Mover(directionComponent->direction, false));
 	}
 	return 0;
 }
 
 bool canJump(const std::vector<Data>& args)
 {
-	entityx::Entity self(boost::get<entityx::Entity>(args[0]));
-	if(not self)
+	entityx::Entity entity(boost::get<entityx::Entity>(args[0]));
+	if(not entity)
 		throw ScriptError("can jump(): first argument is an invalid entity.");
-	const FallComponent::Handle fallComponent(self.component<FallComponent>());
-	return self.has_component<JumpComponent>() and fallComponent and not fallComponent->inAir;
+	const FallComponent::Handle fallComponent(entity.component<FallComponent>());
+	return entity.has_component<JumpComponent>() and fallComponent and not fallComponent->inAir;
 }
 
 int jump(const std::vector<Data>& args)
 {
 	if(canJump(args))
-	{
 		//Simply push a jump command on the command queue
-		Command jumpCommand;
-		jumpCommand.targetIsSpecific = true;
-		jumpCommand.entity = boost::get<entityx::Entity>(args[0]);
-		jumpCommand.action = Jumper();
-		Context::systemManager->system<PendingChangesSystem>()->commandQueue.push(jumpCommand);
-	}
+		Context::systemManager->system<PendingChangesSystem>()->commandQueue.emplace(boost::get<entityx::Entity>(args[0]), Jumper());
 	return 0;
 }

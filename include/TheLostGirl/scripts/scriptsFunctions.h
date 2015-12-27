@@ -6,9 +6,6 @@
 #include <entityx/entityx.h>
 #include <TheLostGirl/scripts/Interpreter.h>
 
-//Forward declarations
-struct Command;
-
 /// Cast the variable to the templated type.
 /// The variable must be a boost::variant such as defined in Interpreter.h,
 /// and the cast will change the internal value of the variant.

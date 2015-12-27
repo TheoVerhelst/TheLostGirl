@@ -13,14 +13,16 @@ void PendingChangesSystem::update(entityx::EntityManager& entityManager, entityx
 	while(not commandQueue.empty())
 	{
 		Command& command(commandQueue.front());
-		CategoryComponent::Handle categoryComponent;
-		if(command.targetIsSpecific)
-			command.action(command.entity);
+		if(command.isTargetSpecific())
+			command.getAction()(command.getEntity());
 		else
+		{
+			CategoryComponent::Handle categoryComponent;
 			for(auto entity : entityManager.entities_with_components(categoryComponent))
 				//On vérifie si l'entité correspond à la commande, si oui on fait l'action
-				if((categoryComponent->category & command.category).any())
-					command.action(entity);
+				if((categoryComponent->category & command.getCategory()).any())
+					command.getAction()(entity);
+		}
 		commandQueue.pop();
 	}
 	while(not bodiesToCreate.empty())
