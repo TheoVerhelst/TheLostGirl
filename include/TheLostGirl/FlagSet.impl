@@ -1,17 +1,8 @@
-#include <algorithm>
-
 template <class Enum>
 inline constexpr FlagSet<Enum>::FlagSet(std::initializer_list<Enum> flags):
 	m_set(flags)
 {
 }
-
-//template <class Enum>
-//inline FlagSet<Enum>& FlagSet<Enum>::operator=(std::initializer_list<Enum> flags)
-//{
-//	m_set = flags;
-//	return *this;
-//}
 
 template <class Enum>
 inline bool FlagSet<Enum>::test(Enum flag) const
@@ -100,14 +91,22 @@ inline FlagSet<Enum>& FlagSet<Enum>::operator^=(const FlagSet<Enum>& other)
 	return *this;
 }
 
-//template <class Enum>
-//template <std::back_insert_iterator<std::vector<Enum>>(*Algorithm)
-//		(typename std::set<Enum>::const_iterator,
-//		 typename std::set<Enum>::const_iterator,
-//		 typename std::set<Enum>::const_iterator,
-//		 typename std::set<Enum>::const_iterator,
-//		 std::back_insert_iterator<std::vector<Enum>>)>
-//inline void FlagSet<Enum>::applyAlgorithm(const FlagSet<Enum>& other)
+template <class Enum>
+template <std::back_insert_iterator<std::vector<Enum>>(*Algorithm)
+		(typename std::set<Enum>::const_iterator,
+		 typename std::set<Enum>::const_iterator,
+		 typename std::set<Enum>::const_iterator,
+		 typename std::set<Enum>::const_iterator,
+		 std::back_insert_iterator<std::vector<Enum>>)>
+inline void FlagSet<Enum>::applyAlgorithm(const FlagSet<Enum>& other)
+{
+	std::vector<Enum> v;
+	Algorithm(m_set.begin(), m_set.end(),
+			other.m_set.begin(), other.m_set.end(),
+			std::back_inserter(v));
+	m_set.clear();
+	m_set.insert(v.begin(), v.end());
+}
 
 template<class Enum>
 inline FlagSet<Enum> operator&(FlagSet<Enum> lhs, const FlagSet<Enum>& rhs)

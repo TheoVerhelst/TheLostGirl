@@ -3,6 +3,7 @@
 
 #include <set>
 #include <vector>
+#include <algorithm>
 
 /// Set of flags defined by the template parameter enumeration.
 /// This is a type-safe replacing for the usual couple unsigned int/enum.
@@ -29,11 +30,6 @@ class FlagSet
 		/// Constructor from initializer list.
 		/// \param flags Set of flags.
 		inline constexpr FlagSet(std::initializer_list<Enum> flags);
-
-//		/// Assignment operator from initializer list.
-//		/// \param flags Set of flags.
-//		/// \return *this
-//		inline constexpr FlagSet& operator=(std::initializer_list<Enum> flags);
 
 		/// Returns the state of the given flag.
 		/// \param flag Flag to test.
@@ -110,15 +106,7 @@ class FlagSet
 				 typename std::set<Enum>::const_iterator,
 				 typename std::set<Enum>::const_iterator,
 				 std::back_insert_iterator<std::vector<Enum>>)>
-		inline void applyAlgorithm(const FlagSet<Enum>& other)
-		{
-			std::vector<Enum> v;
-			Algorithm(m_set.begin(), m_set.end(),
-					other.m_set.begin(), other.m_set.end(),
-					std::back_inserter(v));
-			m_set.clear();
-			m_set.insert(v.begin(), v.end());
-		}
+		inline void applyAlgorithm(const FlagSet<Enum>& other);
 
 		std::set<Enum> m_set;///< The underlying set.
 };
