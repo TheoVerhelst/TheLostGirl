@@ -66,12 +66,9 @@ sf::Color b2ColorToSf(const b2Color& color)
 
 bool isPlayer(entityx::Entity entity)
 {
-	if(entity.valid())
-	{
-		CategoryComponent::Handle categoryComponent(entity.component<CategoryComponent>());
-		return categoryComponent and categoryComponent->category.test(Category::Player);
-	}
-	return false;
+	assert(entity.valid());
+	CategoryComponent::Handle categoryComponent(entity.component<CategoryComponent>());
+	return categoryComponent and categoryComponent->category.test(Category::Player);
 }
 
 b2BodyDef getBodyDef(b2Body* body)

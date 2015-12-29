@@ -10,9 +10,7 @@ void ScriptsSystem::update(entityx::EntityManager& entityManager, entityx::Event
 	ScriptsComponent::Handle scriptsComponent;
 	DeathComponent::Handle deadComponent;
 	for(entityx::Entity entity : entityManager.entities_with_components(scriptsComponent, deadComponent))
-	{
 		if(not deadComponent->dead)
 			for(auto& scriptName : scriptsComponent->scriptsNames)
 				Context::scriptManager->get(scriptName).interpret(entity);
-	}
 }
