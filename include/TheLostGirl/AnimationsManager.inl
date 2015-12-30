@@ -17,6 +17,7 @@ void AnimationsManager<Animation>::addAnimation(const std::string& identifier, A
 	if(not TEST(it == m_animations.end()))
 		return;
 	m_animations.emplace_back(TimeAnimation{identifier, animation, importance, duration, loops, stopAtEnd});
+	m_animations.back().animation.animate(0.f);
 	std::push_heap(m_animations.begin(), m_animations.end(), m_animationsComparator);
 }
 
@@ -130,8 +131,8 @@ void AnimationsManager<Animation>::update(sf::Time dt)
 					std::push_heap(m_animations.begin(), m_animations.end(), m_animationsComparator);
 				}
 			}
+			timeAnim.animation.animate(timeAnim.progress);
 		}
-		timeAnim.animation.animate(timeAnim.progress);
 	}
 }
 
@@ -187,6 +188,7 @@ void AnimationsManager<Animation>::deserialize(const Json::Value& value, T& obje
 			timeAnim.isActive = animationObj["is active"].asBool();
 		if(animationObj.isMember("stop at end"))
 			timeAnim.stopAtEnd = animationObj["stop at end"].asBool();
+		timeAnim.animation.animate(timeAnim.progress);
 		m_animations.push_back(timeAnim);
 		std::push_heap(m_animations.begin(), m_animations.end(), m_animationsComparator);
 	}
