@@ -35,41 +35,12 @@ namespace entityx
 /// \see AnimationsSystem
 ///
 /// This animation system is inspired by the Animator system from the Jan Haller's Thor C++ library.
-template<typename A>
+template<typename Animation>
 class AnimationsManager
 {
+	static_assert(std::is_move_assignable<Animation>::value && std::is_move_constructible<Animation>::value,
+			"An animation have to be move assignable and move constructible.");
 	public:
-		/// Animation associated with a certain duration.
-		struct TimeAnimation
-		{
-			A animation;            ///< Pointer to the concrete animation.
-			unsigned int importance;///< Indicates the importance of the animation, relatively to the others.
-			sf::Time duration;      ///< Duration of the animation.
-			bool loops;             ///< Indicates if the animation must loops or not.
-			bool stopAtEnd;         ///< Indicates if the animation must stops when the loop is finished.
-			float progress;         ///< Current progress of the animation, in the range [0,1].
-			bool isPaused;          ///< Indicates if the animations is paused.
-			bool isActive;          ///< Indicates if the animations is active.
-
-			/// Constructor.
-			/// \param _animation Functor of the animation.
-			/// \param _importance Indicates the importance of the animation, relatively to the others.
-			/// \param _duration Duration of the animation.
-			/// \param _loops Indicates if the animation must loops or not.
-			/// \param _progress Current progress of the animation, in the range [0,1].
-			/// \param _isPaused Indicates if the animation is paused.
-			/// \param _isActive Indicates if the animation is active.
-			/// \param _stopAtEnd Indicates if the animation must stops when the loop is finished.
-			TimeAnimation(A _animation,
-							unsigned int _importance = 0,
-							sf::Time _duration = sf::seconds(1.f),
-							bool _loops = false,
-							bool _stopAtEnd = false,
-							float _progress = 0.f,
-							bool _isPaused = true,
-							bool _isActive = false);
-		};
-
 		/// Constructor.
 		AnimationsManager() = default;
 
@@ -84,7 +55,7 @@ class AnimationsManager
 		/// \param loops Indicate if the animation must loops or not.
 		/// \param stopAtEnd Indicates if the animation must stops when the loop is finished.
 		/// \see removeAnimation
-		void addAnimation(const std::string& identifier, A animation, unsigned int importance = 0, sf::Time duration = sf::seconds(1.f), bool loops = false, bool stopAtEnd = false);
+		void addAnimation(const std::string& identifier, Animation animation, unsigned int importance = 0, sf::Time duration = sf::seconds(1.f), bool loops = false, bool stopAtEnd = false);
 
 		/// Remove an animation from the animation manager.
 		/// \param identifier Identifier of the animation to delete.
@@ -171,7 +142,29 @@ class AnimationsManager
 		void deserialize(const Json::Value& value, T& object);
 
 	private:
-		std::map<std::string, TimeAnimation> m_animationsMap;///< List of all registred animations.
+		/// An animation and its properties.
+		struct TimeAnimation
+		{
+			std::string identifier;              ///< Unique identifier of the animation.
+			Animation animation;                 ///< Functor of the concrete animation.
+			unsigned int importance = 0;         ///< Indicates the importance of the animation, relatively to the others.
+			sf::Time duration = sf::seconds(1.f);///< Duration of the animation.
+			bool loops = false;                  ///< Indicates if the animation must loops or not.
+			bool stopAtEnd = false;              ///< Indicates if the animation must stops when the loop is finished.
+			float progress = 0.f;                ///< Current progress of the animation, in the range [0,1].
+			bool isPaused = true;                ///< Indicates if the animations is paused.
+			bool isActive = false;               ///< Indicates if the animations is active.
+		};
+
+		static const std::function<bool(const TimeAnimation&, const TimeAnimation&)> m_animationsComparator;
+
+		typename std::vector<TimeAnimation>::iterator getAnimation(const std::string& identifier);
+
+		typename std::vector<TimeAnimation>::const_iterator getAnimation(const std::string& identifier) const;
+
+		inline void stopImpl(TimeAnimation& animation);
+
+		std::vector<TimeAnimation> m_animations;///< List of all registred animations.
 };
 
 #include <TheLostGirl/AnimationsManager.inl>

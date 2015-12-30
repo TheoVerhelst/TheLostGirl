@@ -1,164 +1,178 @@
 #include <cassert>
 #include <algorithm>
 #include <functional>
+#include <TheLostGirl/functions.h>
 
-template<typename A>
-void AnimationsManager<A>::addAnimation(const std::string& identifier, A animation, unsigned int importance, sf::Time duration, bool loops, bool stopAtEnd)
+template <typename Animation>
+const std::function<bool(const typename AnimationsManager<Animation>::TimeAnimation&, const typename AnimationsManager<Animation>::TimeAnimation&)> AnimationsManager<Animation>::m_animationsComparator{
+		[](const TimeAnimation& lhs, const TimeAnimation& rhs)
+		{
+			return not lhs.isActive or ((lhs.importance < rhs.importance) and rhs.isActive);
+		}};
+
+template<typename Animation>
+void AnimationsManager<Animation>::addAnimation(const std::string& identifier, Animation animation, unsigned int importance, sf::Time duration, bool loops, bool stopAtEnd)
 {
-	TimeAnimation timeAnime{animation, importance, duration, loops, stopAtEnd};
-	m_animationsMap.emplace(identifier, timeAnime);
+	auto it = getAnimation(identifier);
+	if(not TEST(it == m_animations.end()))
+		return;
+	m_animations.emplace_back(TimeAnimation{identifier, animation, importance, duration, loops, stopAtEnd});
+	std::push_heap(m_animations.begin(), m_animations.end(), m_animationsComparator);
 }
 
-template<typename A>
-void AnimationsManager<A>::removeAnimation(const std::string& identifier)
+template<typename Animation>
+void AnimationsManager<Animation>::removeAnimation(const std::string& identifier)
 {
-	auto found = m_animationsMap.find(identifier);
-	assert(found != m_animationsMap.end());//Assert that the animation exists
-	m_animationsMap.erase(found);
+	auto it = getAnimation(identifier);
+	if(not TEST(it != m_animations.end()))
+		return;
+	m_animations.erase(it);
+	std::make_heap(m_animations.begin(), m_animations.end(), m_animationsComparator);
 }
 
-template<typename A>
-bool AnimationsManager<A>::isPaused(const std::string& identifier) const
+template<typename Animation>
+bool AnimationsManager<Animation>::isPaused(const std::string& identifier) const
 {
-	auto found = m_animationsMap.find(identifier);
-	assert(found != m_animationsMap.end());//Assert that the animation exists
-	return found->second.isPaused;
+	auto it = getAnimation(identifier);
+	if(not TEST(it != m_animations.cend()))
+		return false;
+	return it->isPaused;
 }
 
-template<typename A>
-bool AnimationsManager<A>::isActive(const std::string& identifier) const
+template<typename Animation>
+bool AnimationsManager<Animation>::isActive(const std::string& identifier) const
 {
-	auto found = m_animationsMap.find(identifier);
-	assert(found != m_animationsMap.end());//Assert that the animation exists
-	return found->second.isActive;
+	auto it = getAnimation(identifier);
+	if(not TEST(it != m_animations.cend()))
+		return false;
+	return it->isActive;
 }
 
-template<typename A>
-void AnimationsManager<A>::play(const std::string& identifier)
+template<typename Animation>
+void AnimationsManager<Animation>::play(const std::string& identifier)
 {
-	auto found = m_animationsMap.find(identifier);
-	assert(found != m_animationsMap.end());//Assert that the animation exists
-	found->second.isPaused = false;
-	found->second.isActive = true;
+	auto it = getAnimation(identifier);
+	if(not TEST(it != m_animations.end()))
+		return;
+	it->isPaused = false;
+	it->isActive = true;
+	std::make_heap(m_animations.begin(), m_animations.end(), m_animationsComparator);
 }
 
-template<typename A>
-void AnimationsManager<A>::activate(const std::string& identifier)
+template<typename Animation>
+void AnimationsManager<Animation>::activate(const std::string& identifier)
 {
-	auto found = m_animationsMap.find(identifier);
-	assert(found != m_animationsMap.end());//Assert that the animation exists
-	found->second.isActive = true;
+	auto it = getAnimation(identifier);
+	if(not TEST(it != m_animations.end()))
+		return;
+	it->isActive = true;
+	std::make_heap(m_animations.begin(), m_animations.end(), m_animationsComparator);
 }
 
-template<typename A>
-void AnimationsManager<A>::pause(const std::string& identifier)
+template<typename Animation>
+void AnimationsManager<Animation>::pause(const std::string& identifier)
 {
-	auto found = m_animationsMap.find(identifier);
-	assert(found != m_animationsMap.end());//Assert that the animation exists
-	found->second.isPaused = true;
+	auto it = getAnimation(identifier);
+	if(not TEST(it != m_animations.end()))
+		return;
+	it->isPaused = true;
 }
 
-template<typename A>
-void AnimationsManager<A>::stop(const std::string& identifier)
+template<typename Animation>
+void AnimationsManager<Animation>::stop(const std::string& identifier)
 {
-	auto found = m_animationsMap.find(identifier);
-	assert(found != m_animationsMap.end());//Assert that the animation exists
-	found->second.isPaused = true;
-	found->second.isActive = false;
-	found->second.progress = 0.f;
+	auto it = getAnimation(identifier);
+	if(not TEST(it != m_animations.end()))
+		return;
+	stopImpl(*it);
+	std::make_heap(m_animations.begin(), m_animations.end(), m_animationsComparator);
 }
 
-template<typename A>
-float AnimationsManager<A>::getProgress(const std::string& identifier) const
+template<typename Animation>
+float AnimationsManager<Animation>::getProgress(const std::string& identifier) const
 {
-	auto found = m_animationsMap.find(identifier);
-	assert(found != m_animationsMap.end());//Assert that the animation exists
-	return found->second.progress;
+	auto it = getAnimation(identifier);
+	if(not TEST(it != m_animations.cend()))
+		return 0.f;
+	return it->progress;
 }
 
-template<typename A>
-void AnimationsManager<A>::setProgress(const std::string& identifier, float newProgress)
+template<typename Animation>
+void AnimationsManager<Animation>::setProgress(const std::string& identifier, float newProgress)
 {
-	auto found = m_animationsMap.find(identifier);
-	assert(found != m_animationsMap.end());//Assert that the animation exists
-	found->second.progress = newProgress;
+	auto it = getAnimation(identifier);
+	if(not TEST(it != m_animations.end()))
+		return;
+	it->progress = newProgress;
 }
-template<typename A>
-void AnimationsManager<A>::update(sf::Time dt)
+template<typename Animation>
+void AnimationsManager<Animation>::update(sf::Time dt)
 {
-	if(not m_animationsMap.empty())
+	if(not m_animations.empty())
 	{
-		//Find the animation to play
-		//The map is T-dependent, so the typename keyword is necessary
-		typename std::map<std::string, TimeAnimation>::iterator mostImportant;
-		bool activeAnimationFound{false};
-		for(auto it = m_animationsMap.begin(); it != m_animationsMap.end(); it++)
+		TimeAnimation& timeAnim = m_animations.front();
+		//If timeAnim is inactive, all other animations are too
+		if(timeAnim.isActive and not timeAnim.isPaused)
 		{
-			if(it->second.isActive and (not activeAnimationFound or
-				(activeAnimationFound and it->second.importance > mostImportant->second.importance)))
+			if(timeAnim.loops)//Always increment progress if the animation loops
 			{
-				activeAnimationFound = true;
-				mostImportant = it;
+				timeAnim.progress += dt.asSeconds()/timeAnim.duration.asSeconds();
+				if(timeAnim.progress > 1.f)//If we must loops
+					timeAnim.progress -= std::floor(timeAnim.progress);//Keep the progress in the range [0, 1]
 			}
-		}
-		if(activeAnimationFound)
-		{
-			TimeAnimation& timeAnim = mostImportant->second;
-			if(not isPaused(mostImportant->first))
+			else if(timeAnim.progress < 1.f)//If the animation doesn't loops, incerement progress only if less than 1
 			{
-				if(timeAnim.loops)//Always increment progress if the animation loops
-				{
-					timeAnim.progress += dt.asSeconds()/timeAnim.duration.asSeconds();
-					if(timeAnim.progress > 1.f)//If we must loops
-						timeAnim.progress -= std::floor(timeAnim.progress);//Keep the progress in the range [0, 1]
-				}
-				else if(timeAnim.progress < 1.f)//If the animation doesn't loops, incerement progress only if less than 1
-					timeAnim.progress += dt.asSeconds()/timeAnim.duration.asSeconds();
+				timeAnim.progress += dt.asSeconds()/timeAnim.duration.asSeconds();
 				if(timeAnim.progress > 1.f and timeAnim.stopAtEnd)
-					stop(mostImportant->first);
+				{
+					stopImpl(timeAnim);
+					std::pop_heap(m_animations.begin(), m_animations.end(), m_animationsComparator);
+					std::push_heap(m_animations.begin(), m_animations.end(), m_animationsComparator);
+				}
 			}
-			timeAnim.animation.animate(timeAnim.progress);
 		}
+		timeAnim.animation.animate(timeAnim.progress);
 	}
 }
 
-template<typename A>
-bool AnimationsManager<A>::isRegistred(const std::string& identifier) const
+template<typename Animation>
+bool AnimationsManager<Animation>::isRegistred(const std::string& identifier) const
 {
-	return m_animationsMap.find(identifier) != m_animationsMap.end();
+	return getAnimation(identifier) != m_animations.cend();
 }
 
-template<typename A>
-Json::Value AnimationsManager<A>::serialize() const
+template<typename Animation>
+Json::Value AnimationsManager<Animation>::serialize() const
 {
 	Json::Value ret;
-	for(auto& pair : m_animationsMap)
+	for(auto& animation : m_animations)
 	{
-		ret[pair.first]["importance"] = pair.second.importance;
-		ret[pair.first]["duration"] = pair.second.duration.asSeconds();
-		ret[pair.first]["loops"] = pair.second.loops;
-		ret[pair.first]["stop at end"] = pair.second.stopAtEnd;
-		ret[pair.first]["progress"] = pair.second.progress;
-		ret[pair.first]["is paused"] = pair.second.isPaused;
-		ret[pair.first]["is active"] = pair.second.isActive;
-		ret[pair.first]["is active"] = pair.second.isActive;
-		ret[pair.first]["data"] = pair.second.animation.serialize();
+		ret[animation.identifier]["importance"] = animation.importance;
+		ret[animation.identifier]["duration"] = animation.duration.asSeconds();
+		ret[animation.identifier]["loops"] = animation.loops;
+		ret[animation.identifier]["stop at end"] = animation.stopAtEnd;
+		ret[animation.identifier]["progress"] = animation.progress;
+		ret[animation.identifier]["is paused"] = animation.isPaused;
+		ret[animation.identifier]["is active"] = animation.isActive;
+		ret[animation.identifier]["is active"] = animation.isActive;
+		ret[animation.identifier]["data"] = animation.animation.serialize();
 	}
 	return ret;
 }
 
-template<typename A> template<typename T>
-void AnimationsManager<A>::deserialize(const Json::Value& value, T& object)
+template<typename Animation>
+template<typename T>
+void AnimationsManager<Animation>::deserialize(const Json::Value& value, T& object)
 {
-	m_animationsMap.clear();
+	m_animations.clear();
 	//For each animation name in the value
-	for(std::string& animationName : value.getMemberNames())
+	for(std::string& animationIdentifier : value.getMemberNames())
 	{
-		Json::Value animationObj = value[animationName];
-		A animation(object);
+		Json::Value animationObj = value[animationIdentifier];
+		Animation animation(object);
 		//Copy the data inside the animation
 		animation.deserialize(animationObj["data"]);
-		TimeAnimation timeAnim(animation);
+		TimeAnimation timeAnim{animationIdentifier, animation};
 		if(animationObj.isMember("importance"))
 			timeAnim.importance = animationObj["importance"].asUInt();
 		if(animationObj.isMember("duration"))
@@ -173,20 +187,33 @@ void AnimationsManager<A>::deserialize(const Json::Value& value, T& object)
 			timeAnim.isActive = animationObj["is active"].asBool();
 		if(animationObj.isMember("stop at end"))
 			timeAnim.stopAtEnd = animationObj["stop at end"].asBool();
-		m_animationsMap.emplace(animationName, timeAnim);
+		m_animations.push_back(timeAnim);
+		std::push_heap(m_animations.begin(), m_animations.end(), m_animationsComparator);
 	}
 }
 
-template<typename A>
-AnimationsManager<A>::TimeAnimation::TimeAnimation(A _animation, unsigned int _importance, sf::Time _duration,
-												 bool _loops, bool _stopAtEnd, float _progress, bool _isPaused, bool _isActive):
-	animation{_animation},
-	importance{_importance},
-	duration{_duration},
-	loops{_loops},
-	stopAtEnd{_stopAtEnd},
-	progress{_progress},
-	isPaused{_isPaused},
-	isActive{_isActive}
+template<typename Animation>
+typename std::vector<typename AnimationsManager<Animation>::TimeAnimation>::iterator AnimationsManager<Animation>::getAnimation(const std::string& identifier)
 {
+	return std::find_if(m_animations.begin(), m_animations.end(), [&identifier](const TimeAnimation& animation)
+	{
+		return animation.identifier == identifier;
+	});
+}
+
+template<typename Animation>
+typename std::vector<typename AnimationsManager<Animation>::TimeAnimation>::const_iterator AnimationsManager<Animation>::getAnimation(const std::string& identifier) const
+{
+	return std::find_if(m_animations.cbegin(), m_animations.cend(), [&identifier](const TimeAnimation& animation)
+	{
+		return animation.identifier == identifier;
+	});
+}
+
+template<typename Animation>
+inline void AnimationsManager<Animation>::stopImpl(TimeAnimation& animation)
+{
+	animation.isPaused = true;
+	animation.isActive = false;
+	animation.progress = 0.f;
 }

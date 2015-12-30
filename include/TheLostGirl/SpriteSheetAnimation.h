@@ -11,6 +11,7 @@ namespace sf
 	template <typename T>
 	class Rect;
 	typedef Rect<int> IntRect;
+	class Sprite;
 }
 namespace Json
 {
@@ -26,30 +27,10 @@ namespace Json
 /// addAnimation member of an AnimationsManager object.
 class SpriteSheetAnimation
 {
+	private:
+		struct Frame;
+
 	public:
-		/// Structure that represent a frame of a spritesheet.
-		/// The rect is the area to display on the texture,
-		/// and the duration is the relative duration in the range [0, 1] of the frame
-		/// in comparaison of the others frames.
-		/// If the sum of all durations are greater than 1, the exceding frames
-		/// are not displayed.
-		/// If the sur of all durations are lower than 1, the last frame is displayed
-		/// until the end of the animation.
-		struct Frame
-		{
-			sf::IntRect rect;///< Rect to display.
-			float duration;  ///< Relative duration of the frame, in the range [0, 1].
-
-			/// Constructor.
-			/// \param _rect Rect to display.
-			/// \param _duration Relative duration of the frame, in the range [0, 1].
-			Frame(const sf::IntRect& _rect, float _duration):
-				rect(_rect),
-				duration(_duration)
-			{
-			}
-		};
-
 		/// Constructor.
 		/// \param sprite Sprite to animate.
 		SpriteSheetAnimation(sf::Sprite& sprite);
@@ -78,8 +59,30 @@ class SpriteSheetAnimation
 		void deserialize(const Json::Value& value);
 
 	private:
+		/// Structure that represent a frame of a spritesheet.
+		/// The rect is the area to display on the texture,
+		/// and the duration is the relative duration in the range [0, 1] of the frame
+		/// in comparaison of the others frames.
+		/// If the sum of all durations are greater than 1, the exceding frames
+		/// are not displayed.
+		/// If the sur of all durations are lower than 1, the last frame is displayed
+		/// until the end of the animation.
+		struct Frame
+		{
+			sf::IntRect rect;///< Rect to display.
+			float duration;  ///< Relative duration of the frame, in the range [0, 1].
+
+			/// Constructor.
+			/// \param _rect Rect to display.
+			/// \param _duration Relative duration of the frame, in the range [0, 1].
+			Frame(const sf::IntRect& _rect, float _duration):
+				rect(_rect),
+				duration(_duration)
+			{
+			}
+		};
 		std::vector<Frame> m_frames;  ///< Array of all registred frames.
-		sf::Sprite& m_sprite;         ///< Sprite to animate.
+		sf::Sprite* m_sprite;         ///< Sprite to animate.
 };
 
 #endif//SPRITESHEETANIMATION_H

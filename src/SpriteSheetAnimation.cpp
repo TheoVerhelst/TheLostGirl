@@ -5,7 +5,7 @@
 #include <TheLostGirl/SpriteSheetAnimation.h>
 
 SpriteSheetAnimation::SpriteSheetAnimation(sf::Sprite& sprite):
-	m_sprite(sprite)
+	m_sprite(&sprite)
 {
 }
 
@@ -31,11 +31,11 @@ void SpriteSheetAnimation::animate(float progress)
 			progressCounter += frame.duration;
 			if(progressCounter >= progress)
 			{
-				m_sprite.setTextureRect(frame.rect);
+				m_sprite->setTextureRect(frame.rect);
 				return;
 			}
 		}
-		m_sprite.setTextureRect(m_frames[m_frames.size()-1].rect);
+		m_sprite->setTextureRect(m_frames[m_frames.size()-1].rect);
 	}
 }
 
