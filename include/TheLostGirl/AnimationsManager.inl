@@ -17,8 +17,10 @@ void AnimationsManager<Animation>::addAnimation(const std::string& identifier, A
 	if(not TEST(it == m_animations.end()))
 		return;
 	m_animations.emplace_back(TimeAnimation{identifier, animation, importance, duration, loops, stopAtEnd});
-	m_animations.back().animation.animate(0.f);
 	std::push_heap(m_animations.begin(), m_animations.end(), m_animationsComparator);
+	TimeAnimation& front = m_animations.front();
+	if(front.identifier == identifier)
+		front.animation.animate(front.progress);
 }
 
 template<typename Animation>
@@ -113,22 +115,25 @@ void AnimationsManager<Animation>::update(sf::Time dt)
 	{
 		TimeAnimation& timeAnim = m_animations.front();
 		//If timeAnim is inactive, all other animations are too
-		if(timeAnim.isActive and not timeAnim.isPaused)
+		if(timeAnim.isActive)
 		{
-			if(timeAnim.loops)//Always increment progress if the animation loops
+			if(not timeAnim.isPaused)
 			{
-				timeAnim.progress += dt.asSeconds()/timeAnim.duration.asSeconds();
-				if(timeAnim.progress > 1.f)//If we must loops
-					timeAnim.progress -= std::floor(timeAnim.progress);//Keep the progress in the range [0, 1]
-			}
-			else if(timeAnim.progress < 1.f)//If the animation doesn't loops, incerement progress only if less than 1
-			{
-				timeAnim.progress += dt.asSeconds()/timeAnim.duration.asSeconds();
-				if(timeAnim.progress > 1.f and timeAnim.stopAtEnd)
+				if(timeAnim.loops)//Always increment progress if the animation loops
 				{
-					stopImpl(timeAnim);
-					std::pop_heap(m_animations.begin(), m_animations.end(), m_animationsComparator);
-					std::push_heap(m_animations.begin(), m_animations.end(), m_animationsComparator);
+					timeAnim.progress += dt.asSeconds()/timeAnim.duration.asSeconds();
+					if(timeAnim.progress > 1.f)//If we must loops
+						timeAnim.progress -= std::floor(timeAnim.progress);//Keep the progress in the range [0, 1]
+				}
+				else if(timeAnim.progress < 1.f)//If the animation doesn't loops, incerement progress only if less than 1
+				{
+					timeAnim.progress += dt.asSeconds()/timeAnim.duration.asSeconds();
+					if(timeAnim.progress > 1.f and timeAnim.stopAtEnd)
+					{
+						stopImpl(timeAnim);
+						std::pop_heap(m_animations.begin(), m_animations.end(), m_animationsComparator);
+						std::push_heap(m_animations.begin(), m_animations.end(), m_animationsComparator);
+					}
 				}
 			}
 			timeAnim.animation.animate(timeAnim.progress);
@@ -188,10 +193,10 @@ void AnimationsManager<Animation>::deserialize(const Json::Value& value, T& obje
 			timeAnim.isActive = animationObj["is active"].asBool();
 		if(animationObj.isMember("stop at end"))
 			timeAnim.stopAtEnd = animationObj["stop at end"].asBool();
-		timeAnim.animation.animate(timeAnim.progress);
 		m_animations.push_back(timeAnim);
 		std::push_heap(m_animations.begin(), m_animations.end(), m_animationsComparator);
 	}
+	m_animations.front().animation.animate(m_animations.front().progress);
 }
 
 template<typename Animation>

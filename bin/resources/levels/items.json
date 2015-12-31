@@ -323,7 +323,7 @@
 				"polygon fixtures" : 
 				[
 					{
-						"density" : 0.7,
+						"density" : 0.1,
 						"friction" : 0.8,
 						"is sensor" : false,
 						"restitution" : 0.2,
