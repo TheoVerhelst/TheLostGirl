@@ -79,12 +79,12 @@ void PhysicsSystem::update(entityx::EntityManager& entityManager, entityx::Event
 				const float dragConstant{arrowComponent->friction};
 				//The first commented line apply a lower force on the arrow when the arrow is diriged to the opposite side of its trajectory,
 				//So if the arrow is fired vertically, it will be decelered less than with the second line.
-		//		float dragForceMagnitude{(1 - fabs(scalarProduct)) * flightSpeed * flightSpeed * dragConstant * body->GetMass()};
+//				float dragForceMagnitude{(1.f - std::abs(scalarProduct)) * flightSpeed * flightSpeed * dragConstant * body->GetMass()};
 				const float dragForceMagnitude{(1.f - scalarProduct) * flightSpeed * flightSpeed * dragConstant * body->GetMass()};
 				//Convert the local friction point to Box2D global coordinates
 				const b2Vec2 localFrictionPoint{sftob2(arrowComponent->localFrictionPoint/Context::parameters->pixelByMeter)};
 				const b2Vec2 arrowTailPosition{body->GetWorldPoint(localFrictionPoint)};
-				body->ApplyForce(float32(dragForceMagnitude)*(-flightDirection), arrowTailPosition, true);
+				body->ApplyForce(static_cast<float32>(dragForceMagnitude) * (-flightDirection), arrowTailPosition, true);
 			}
 
 		}
