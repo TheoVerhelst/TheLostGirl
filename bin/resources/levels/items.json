@@ -120,7 +120,7 @@
 				"value" : 10,
 				"hold anchor":
 				{
-					"x" : 7,
+					"x" : 44,
 					"y" : 27
 				}
 			},
@@ -177,28 +177,28 @@
 						{
 							"h" : 56,
 							"relative duration" : 0.2,
-							"w" : 9,
-							"x" : 130,
+							"w" : 46,
+							"x" : 184,
 							"y" : 56
 						},
 						{
 							"h" : 56,
 							"relative duration" : 0.2,
-							"w" : 19,
-							"x" : 111,
+							"w" : 46,
+							"x" : 138,
 							"y" : 56
 						},
 						{
 							"h" : 56,
 							"relative duration" : 0.2,
-							"w" : 28,
-							"x" : 83,
+							"w" : 46,
+							"x" : 92,
 							"y" : 56
 						},
 						{
 							"h" : 56,
 							"relative duration" : 0.2,
-							"w" : 37,
+							"w" : 46,
 							"x" : 46,
 							"y" : 56
 						},
@@ -224,36 +224,36 @@
 						{
 							"h" : 56,
 							"relative duration" : 0.2,
-							"w" : 9,
-							"x" : 130,
-							"y" : 0
-						},
-						{
-							"h" : 56,
-							"relative duration" : 0.2,
-							"w" : 19,
-							"x" : 9,
-							"y" : 0
-						},
-						{
-							"h" : 56,
-							"relative duration" : 0.2,
-							"w" : 28,
-							"x" : 28,
-							"y" : 0
-						},
-						{
-							"h" : 56,
-							"relative duration" : 0.2,
-							"w" : 37,
-							"x" : 56,
+							"w" : 46,
+							"x" : 0,
 							"y" : 0
 						},
 						{
 							"h" : 56,
 							"relative duration" : 0.2,
 							"w" : 46,
-							"x" : 93,
+							"x" : 46,
+							"y" : 0
+						},
+						{
+							"h" : 56,
+							"relative duration" : 0.2,
+							"w" : 46,
+							"x" : 92,
+							"y" : 0
+						},
+						{
+							"h" : 56,
+							"relative duration" : 0.2,
+							"w" : 46,
+							"x" : 138,
+							"y" : 0
+						},
+						{
+							"h" : 56,
+							"relative duration" : 0.2,
+							"w" : 46,
+							"x" : 184,
 							"y" : 0
 						}
 					],
