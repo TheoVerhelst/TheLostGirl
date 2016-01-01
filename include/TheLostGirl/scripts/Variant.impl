@@ -1,0 +1,140 @@
+#include <typeinfo>
+#include <iostream>
+
+template <typename... Types>
+Variant<Types...>::Variant(const Variant<Types...>& other):
+	m_holder{other.m_holder->clone()}
+{
+}
+
+template <typename... Types>
+Variant<Types...>::Variant(Variant<Types...>&& other):
+	m_holder{other.m_holder.release()}
+{
+}
+
+//Use SFINAE to redirect to copy constructor if T is Variant<Types...>
+template <typename... Types>
+template <typename T, typename>
+Variant<Types...>::Variant(const T& value)
+{
+	set(value);
+}
+
+template <typename... Types>
+template <typename T, typename>
+Variant<Types...>::Variant(T&& value)
+{
+	set(std::forward<T>(value));
+}
+
+template <typename... Types>
+Variant<Types...>& Variant<Types...>::operator=(Variant<Types...> other) noexcept
+{
+	m_holder.swap(other.m_holder);
+	return *this;
+}
+
+template <typename... Types>
+template <typename T, typename>
+Variant<Types...>& Variant<Types...>::operator=(const T& value)
+{
+	set(value);
+	return *this;
+}
+
+template <typename... Types>
+template <typename T, typename>
+Variant<Types...>& Variant<Types...>::operator=(T&& value)
+{
+	set(std::forward<T>(value));
+	return *this;
+}
+
+template <typename... Types>
+template <typename T>
+void Variant<Types...>::set(const T& value)
+{
+	//Use static_assert instead of std::enable_if because it makes clearer error message
+	static_assert(variantDetails::ContainsType<T, Types...>::value, "Invalid template parameter.");
+	m_holder.reset(new variantDetails::ConcreteHolder<T>(value));
+}
+
+template <typename... Types>
+template <typename T>
+void Variant<Types...>::set(T&& value)
+{
+	static_assert(variantDetails::ContainsType<T, Types...>::value, "Invalid template parameter.");
+	m_holder.reset(new variantDetails::ConcreteHolder<T>(std::forward<T>(value)));
+}
+
+template <typename... Types>
+template <typename T, typename>
+Variant<Types...>::operator T() const
+{
+	return get<T>();
+}
+
+template <typename... Types>
+template <typename T>
+T Variant<Types...>::get() const
+{
+	static_assert(variantDetails::ContainsType<T, Types...>::value, "Invalid template parameter.");
+	//Runtime error if T is not the current type, altough it is in Types...
+	if(typeid(T) != m_holder->getId())
+		throw std::runtime_error(std::string("Variant<Types...>::get: bad template parameter for get: expected ")
+				+ m_holder->getId().name() + ", got " + typeid(T).name());
+	return static_cast<variantDetails::ConcreteHolder<T>*>(m_holder.get())->getValue();
+}
+
+template <typename... Types>
+std::ostream& operator<<(std::ostream& ostream, const Variant<Types...>& value)
+{
+	value.m_holder->printOnStream(ostream);
+	return ostream;
+}
+
+namespace variantDetails
+{
+
+	AbstractHolder::~AbstractHolder()
+	{
+	}
+
+	template <typename T>
+	ConcreteHolder<T>::ConcreteHolder(const T& value):
+		m_value(value)
+	{
+	}
+
+	template <typename T>
+	ConcreteHolder<T>::ConcreteHolder(T&& value):
+		m_value(std::forward<T>(value))
+	{
+	}
+
+	template <typename T>
+	const std::type_info& ConcreteHolder<T>::getId() const
+	{
+		return typeid(T);
+	}
+
+	template <typename T>
+	std::unique_ptr<AbstractHolder> ConcreteHolder<T>::clone() const
+	{
+		return std::unique_ptr<AbstractHolder>(new ConcreteHolder<T>(m_value));
+	}
+
+	template <typename T>
+	void ConcreteHolder<T>::printOnStream(std::ostream& ostream) const
+	{
+		ostream << m_value;
+	}
+
+	template <typename T>
+	const T& ConcreteHolder<T>::getValue() const
+	{
+		return m_value;
+	}
+}
+
