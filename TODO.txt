@@ -6,7 +6,8 @@ Sound manager. +TheLostGirl
 Faire un système multi texture pour une même entité (soit chunker une grande image, soit faire plusieurs images). +TheLostGirl
 CAC: statique : deux coups; en avancant: ??? ; en tombant: un puissant; en sautant : un faible; roulade : ???; en reculant : ???; en sneak : prise (egorgement/ippo sonage) +TheLostGirl
 Éviter les fonctions globales, mettre ce qui est possible dans une classe en statique et le reste dans un namespace. +TheLostGirl
-Use template template parameter in isMember() in function.h. +TheLostGirl
-Apply perfect forwarding on variadic arguments in StateStack.h's pushState method. +TheLostGirl
 Avoid init() methods because of the Context init in Application constructor +TheLostGirl
-Use std::bitset instead of unsigned int for CategoryComponent +TheLostGirl
+Factorize in a way or another code in Serializer::implDeserialize<BodyComponen>(). +TheLostGirl
+Script prompt in in-game log ChatBox. +TheLostGirl
+Use variadic template for extra parameters in ResourcesManager::load and AnimationsManager::deserialize +TheLostGirl
+LOL
