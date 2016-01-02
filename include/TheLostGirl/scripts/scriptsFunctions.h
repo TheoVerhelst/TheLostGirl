@@ -6,50 +6,6 @@
 #include <entityx/entityx.h>
 #include <TheLostGirl/scripts/Interpreter.h>
 
-/// Cast the variable to the templated type.
-/// The variable must be a boost::variant such as defined in Interpreter.h,
-/// and the cast will change the internal value of the variant.
-/// \param var Variant instance to cast.
-template <typename T>
-void cast(Data& var)
-{
-}
-
-/// Cast the variable to boolean type.
-/// The variable must be a boost::variant such as defined in Interpreter.h,
-/// and the cast will change the internal value of the variant.
-/// \param var Variant instance to cast.
-template <>
-void cast<bool>(Data& var);
-
-/// Cast the variable to integer type.
-/// The variable must be a boost::variant such as defined in Interpreter.h,
-/// and the cast will change the internal value of the variant.
-/// \param var Variant instance to cast.
-template <>
-void cast<int>(Data& var);
-
-/// Cast the variable to floating point type.
-/// The variable must be a boost::variant such as defined in Interpreter.h,
-/// and the cast will change the internal value of the variant.
-/// \param var Variant instance to cast.
-template <>
-void cast<float>(Data& var);
-
-/// Cast the variable to string type.
-/// The variable must be a boost::variant such as defined in Interpreter.h,
-/// and the cast will change the internal value of the variant.
-/// \param var Variant instance to cast.
-template <>
-void cast<std::string>(Data& var);
-
-/// Cast the variable to entity type.
-/// The variable must be a boost::variant such as defined in Interpreter.h,
-/// and the cast will change the internal value of the variant.
-/// \param var Variant instance to cast.
-template <>
-void cast<entityx::Entity>(Data& var);
-
 /// Implements the < operator in scripts between two variables.
 /// \param args Operands of the operator.
 /// \return the resulting value of the < operator.
