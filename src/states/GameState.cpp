@@ -369,35 +369,38 @@ void GameState::initWorld(const std::string& file)
 			}
 
 			//Load all images in multiples chunks
+			const float chunkSize{static_cast<float>(sf::Texture::getMaximumSize())};
+			const float viewWidth{Context::parameters->defaultViewSize.x};
+			const float scalableLevelWidth{m_levelRect.width - viewWidth};
 			for(unsigned int i{0}; i < m_numberOfPlans; ++i)
 			{
 				const std::string fileTexture{m_levelIdentifier + "_" + std::to_string(i)};
 				const std::string path{Context::parameters->resourcesPath + "images/levels/" + m_levelIdentifier + "/" + fileTexture + ".png"};
-				const int chunkSize{static_cast<int>(sf::Texture::getMaximumSize())};
-				//The length of the plan, relatively to the reference.
-				const int planLength{int(m_levelRect.width * std::pow(1.5f, m_referencePlan - float(i)))};
+				//The length of the plan, relatively to the reference
+				const float planLength{scalableLevelWidth * std::pow(1.5f, m_referencePlan - static_cast<float>(i)) + viewWidth};
 				//Number of chunks to load in this plan
-				const int numberOfChunks{(planLength/chunkSize)+1};
+				const int numberOfChunks{static_cast<int>(planLength / chunkSize) + 1};
 
 				for(int j{0}; j < numberOfChunks; ++j)
 				{
 					//Identifier of the entity, in format "level_plan_chunk"
 					const std::string textureIdentifier{fileTexture + "_" + std::to_string(j)};
 					//Size of the chunk to load, may be truncated if we reach the end of the image.
-					int currentChunkSize{chunkSize};
-					if(j >= planLength/chunkSize)
-						currentChunkSize = planLength - chunkSize*j;
-					Context::textureManager->load<sf::IntRect>(textureIdentifier, path, sf::IntRect(j*chunkSize, 0, currentChunkSize, int(m_levelRect.height)));
+					float currentChunkSize{chunkSize};
+					if(j == numberOfChunks - 1)
+						currentChunkSize = planLength - chunkSize * static_cast<float>(j);
+					Context::textureManager->load<sf::IntRect>(textureIdentifier, path,
+							sf::IntRect(j * static_cast<int>(chunkSize), 0, static_cast<int>(currentChunkSize), static_cast<int>(m_levelRect.height)));
 					//Create an entity
 					m_sceneEntities.emplace(textureIdentifier, Context::entityManager->create());
 					//Create a sprite with the loaded texture
 					//Assign the sprite to the entity
 					sf::Sprite chunkSpr(Context::textureManager->get(textureIdentifier));
-					chunkSpr.setPosition(float(j*chunkSize), 0);
+					chunkSpr.setPosition(static_cast<float>(j*chunkSize), 0.f);
 					SpriteComponent::Handle sprComp{m_sceneEntities[textureIdentifier].assign<SpriteComponent>()};
 					sprComp->sprite = chunkSpr;
 					TransformComponent::Handle trsfComp{m_sceneEntities[textureIdentifier].assign<TransformComponent>()};
-					trsfComp->transform = {static_cast<float>(j*chunkSize), 0, static_cast<float>(i), 0};
+					trsfComp->transform = {static_cast<float>(j) * chunkSize, 0.f, static_cast<float>(i), 0.f};
 					CategoryComponent::Handle catComp{m_sceneEntities[textureIdentifier].assign<CategoryComponent>()};
 					catComp->category = {Category::Scene};
 					//Update the ScrollingSystem in order to directly display the sprite at the right position
