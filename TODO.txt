@@ -10,4 +10,3 @@ Avoid init() methods because of the Context init in Application constructor +The
 Factorize in a way or another code in Serializer::implDeserialize<BodyComponen>(). +TheLostGirl
 Script prompt in in-game log ChatBox. +TheLostGirl
 Use variadic template for extra parameters in ResourcesManager::load and AnimationsManager::deserialize +TheLostGirl
-LOL

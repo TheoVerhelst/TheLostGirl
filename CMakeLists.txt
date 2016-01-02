@@ -5,7 +5,7 @@ project(TheLostGirl)
 set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake/Modules/")
 
 #Set compilator flags
-set(CMAKE_CXX_FLAGS "-Wall -Wextra -std=c++14 -lpthread")
+set(CMAKE_CXX_FLAGS "-Wall -Wextra -std=c++14")
 
 #Dependencies finding
 find_package(Boost 1.57 REQUIRED)
@@ -60,6 +60,7 @@ set(TLG_SOURCES
 	${TLG_SOURCES_DIR}/PostEffect.cpp 
 	${TLG_SOURCES_DIR}/scripts/Interpreter.cpp
 	${TLG_SOURCES_DIR}/scripts/scriptsFunctions.cpp
+	${TLG_SOURCES_DIR}/scripts/Variant.cpp
 	${TLG_SOURCES_DIR}/serialization.cpp
 	${TLG_SOURCES_DIR}/SkyAnimation.cpp
 	${TLG_SOURCES_DIR}/SpriteSheetAnimation.cpp
