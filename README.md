@@ -29,9 +29,9 @@ If you have problems with steps above, send me an email.
 
 Run the following commands in a terminal once you are in the main directory:<br/>
 
-    cd doxygen<br/>
-    doxygen<br/>
-    sensible-browser html/index.html<br/>
+    cd doxygen
+    doxygen
+    sensible-browser html/index.html
 
 For now this was tested only under Linux.
 
