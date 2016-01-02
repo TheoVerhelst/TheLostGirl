@@ -175,6 +175,29 @@ Direction operator!(const Direction& direction)
 	}
 }
 
+std::ostream& operator<<(std::ostream& ostream, const Direction& direction)
+{
+	switch(direction)
+	{
+		case Direction::Left:
+			ostream << "direction::left";
+			break;
+		case Direction::Right:
+			ostream << "direction::right";
+			break;
+		case Direction::Up:
+			ostream << "direction::up";
+			break;
+		case Direction::Down:
+			ostream << "direction::down";
+			break;
+		case Direction::None:
+			ostream << "direction::none";
+			break;
+	}
+	return ostream;
+}
+
 bool printError(const std::string& expression, const std::string& filename, unsigned int line)
 {
 	std::cerr << "Test failed in " << filename << " at line " << line << " : \"" << expression << "\"" << std::endl;

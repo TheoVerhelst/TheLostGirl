@@ -64,6 +64,8 @@ Data equalOp(const std::vector<Data>& args)
 			return lhs.get<entityx::Entity>() == rhs.get<entityx::Entity>();
 		case DataType::Boolean:
 			return lhs.get<bool>() == rhs.get<bool>();
+		case DataType::Direction:
+			return lhs.get<Direction>() == rhs.get<Direction>();
 		case DataType::Float:
 		case DataType::Integer:
 			return andOp({greaterEqualOp(args), lowerEqualOp(args)});
@@ -258,7 +260,7 @@ float distanceFrom(const std::vector<Data>& args)
 	return 0.f;
 }
 
-int directionTo(const std::vector<Data>& args)
+Direction directionTo(const std::vector<Data>& args)
 {
 	entityx::Entity entity(args[0].get<entityx::Entity>());
 	entityx::Entity target(args[1].get<entityx::Entity>());
@@ -271,22 +273,22 @@ int directionTo(const std::vector<Data>& args)
 	if(selfTransformComponent and targetTransformComponent)
 	{
 		if(selfTransformComponent->transform.x < targetTransformComponent->transform.x)
-			return static_cast<int>(Direction::Right);
+			return Direction::Right;
 		else
-			return static_cast<int>(Direction::Left);
+			return Direction::Left;
 	}
-	return static_cast<int>(Direction::None);
+	return Direction::None;
 }
 
-int directionOf(const std::vector<Data>& args)
+Direction directionOf(const std::vector<Data>& args)
 {
 	entityx::Entity entity(args[0].get<entityx::Entity>());
 	if(not TEST(entity.valid()))
 		throw ScriptError("direction of(): first argument is an invalid entity.");
 	DirectionComponent::Handle directionComponent(entity.component<DirectionComponent>());
 	if(directionComponent)
-		return static_cast<int>(directionComponent->direction);
-	return static_cast<int>(Direction::None);
+		directionComponent->direction;
+	return Direction::None;
 }
 
 int attack(const std::vector<Data>& args)
@@ -338,7 +340,7 @@ int move(const std::vector<Data>& args)
 	entityx::Entity entity(args[0].get<entityx::Entity>());
 	if(not TEST(entity.valid()))
 		throw ScriptError("can move(): first argument is an invalid entity.");
-	Context::systemManager->system<PendingChangesSystem>()->commandQueue.emplace(entity, Mover(static_cast<Direction>(args[1].get<int>())));
+	Context::systemManager->system<PendingChangesSystem>()->commandQueue.emplace(entity, Mover(args[1].get<Direction>()));
 	return 0;
 }
 

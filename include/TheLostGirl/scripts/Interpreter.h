@@ -6,8 +6,9 @@
 #include <TheLostGirl/scripts/Variant.h>
 #include <entityx/entityx.h>
 #include <TheLostGirl/scripts/Tree.h>
+#include <TheLostGirl/components.h>
 
-typedef Variant<bool, int, float, std::string, entityx::Entity> Data;
+typedef Variant<bool, int, float, std::string, entityx::Entity, Direction> Data;
 
 namespace DataType
 {
@@ -17,7 +18,8 @@ namespace DataType
 		Integer,
 		Float,
 		String,
-		Entity
+		Entity,
+		Direction
 	};
 }
 

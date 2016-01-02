@@ -101,13 +101,13 @@ float distanceFrom(const std::vector<Data>& args);
 /// Both argument must be valid entities, and must have a body component and transform component.
 /// \param args The two entities.
 /// \return The integer value of the variable "left" or "right" available in scripts.
-int directionTo(const std::vector<Data>& args);
+Direction directionTo(const std::vector<Data>& args);
 
 /// Return the direction that has an entity.
 /// First argument must be a valid entity, and have a direction component.
 /// \param args The entity.
 /// \return The direction of the entity.
-int directionOf(const std::vector<Data>& args);
+Direction directionOf(const std::vector<Data>& args);
 
 /// Make that first entity attack.
 /// \param args Entity that will attack.

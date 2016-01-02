@@ -160,6 +160,12 @@ b2JointDef* getJointDef(b2Joint* joint);
 /// \return The opposite direction.
 Direction operator!(const Direction& direction);
 
+/// Implements the stream operator for the enum Direction.
+/// \param ostream The output stream.
+/// \param The direction to print.
+/// \return ostream.
+std::ostream& operator<<(std::ostream& ostream, const Direction& direction);
+
 /// Print a debug message. This function is intented to be used only by the TEST macro.
 /// \param expression The expression that has evaluated to false
 /// \param filename The file name where the expression is located.
