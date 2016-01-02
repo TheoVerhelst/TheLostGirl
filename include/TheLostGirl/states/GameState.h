@@ -87,7 +87,7 @@ class GameState : public State
 		std::string m_levelIdentifier;    ///< Identifer of the level, must be a non-spaced name.
 		unsigned int m_numberOfPlans;     ///< Number of plans in the background.
 		float m_referencePlan;            ///< Number of the plan where actors evolute.
-		sf::IntRect m_levelRect;          ///< The dimensions of the level, in pixels.
+		sf::FloatRect m_levelRect;        ///< The dimensions of the level, in pixels.
 };
 
 #endif//GAMESTATE_H

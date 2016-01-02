@@ -250,7 +250,7 @@ void ParametersState::applyChanges()
 			videoMode = sf::VideoMode::getFullscreenModes()[std::stoul(m_fullscreenComboBox->getSelectedItemId().toAnsiString())];
 		}
 		else
-			videoMode = {1920, 1080};
+			videoMode = {960, 540};
 		Context::window->create(videoMode, "The Lost Girl", style);
 		Context::parameters->fullscreen = m_fullscreenCheckBox->isChecked();
 		handleResize();

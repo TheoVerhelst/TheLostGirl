@@ -29,7 +29,7 @@ GameState::GameState(std::string file):
 	m_levelIdentifier{""},
 	m_numberOfPlans{1},
 	m_referencePlan{0.f},
-	m_levelRect{0, 0, 1920, 1080}
+	m_levelRect{{0.f, 0.f}, Context::parameters->defaultViewSize}
 {
 	Context::eventManager->subscribe<ParametersChange>(*this);
 	m_threadLoad = std::thread(&GameState::initWorld, this, file);
@@ -194,10 +194,10 @@ void GameState::initWorld(const std::string& file)
 
 		//box
 		const Json::Value levelBox{level["box"]};
-		m_levelRect.width = levelBox["w"].asInt();
-		m_levelRect.height = levelBox["h"].asInt();
-		m_levelRect.top = levelBox["x"].asInt();
-		m_levelRect.left = levelBox["y"].asInt();
+		m_levelRect.width = levelBox["w"].asFloat();
+		m_levelRect.height = levelBox["h"].asFloat();
+		m_levelRect.top = levelBox["x"].asFloat();
+		m_levelRect.left = levelBox["y"].asFloat();
 
 		Context::systemManager->system<ScrollingSystem>()->setLevelData(m_levelRect, m_referencePlan);
 		Json::Value genericEntities;
@@ -367,14 +367,15 @@ void GameState::initWorld(const std::string& file)
 				}
 				m_sceneEntitiesData.emplace(groupOfReplacesName, planData);
 			}
-			//Load all the image in multiples chunks
+
+			//Load all images in multiples chunks
 			for(unsigned int i{0}; i < m_numberOfPlans; ++i)
 			{
 				const std::string fileTexture{m_levelIdentifier + "_" + std::to_string(i)};
 				const std::string path{Context::parameters->resourcesPath + "images/levels/" + m_levelIdentifier + "/" + fileTexture + ".png"};
-				const int chunkSize{int(sf::Texture::getMaximumSize())};
+				const int chunkSize{static_cast<int>(sf::Texture::getMaximumSize())};
 				//The length of the plan, relatively to the reference.
-				const int planLength{int(float(m_levelRect.width) * std::pow(1.5f, m_referencePlan - float(i)))};
+				const int planLength{int(m_levelRect.width * std::pow(1.5f, m_referencePlan - float(i)))};
 				//Number of chunks to load in this plan
 				const int numberOfChunks{(planLength/chunkSize)+1};
 
@@ -386,7 +387,7 @@ void GameState::initWorld(const std::string& file)
 					int currentChunkSize{chunkSize};
 					if(j >= planLength/chunkSize)
 						currentChunkSize = planLength - chunkSize*j;
-					Context::textureManager->load<sf::IntRect>(textureIdentifier, path, sf::IntRect(j*chunkSize, 0, currentChunkSize, int(float(m_levelRect.height))));
+					Context::textureManager->load<sf::IntRect>(textureIdentifier, path, sf::IntRect(j*chunkSize, 0, currentChunkSize, int(m_levelRect.height)));
 					//Create an entity
 					m_sceneEntities.emplace(textureIdentifier, Context::entityManager->create());
 					//Create a sprite with the loaded texture

@@ -9,20 +9,20 @@
 #include <TheLostGirl/Player.h>
 
 ScrollingSystem::ScrollingSystem():
-	m_levelRect{0, 0, 0, 0}
+	m_levelRect{0.f, 0.f, 0.f, 0.f}
 {}
 
 void ScrollingSystem::update(entityx::EntityManager& entityManager, entityx::EventManager&, double)
 {
-	if(m_levelRect != sf::IntRect(0, 0, 0, 0) and m_player.valid())
+	if(m_levelRect != sf::FloatRect(0.f, 0.f, 0.f, 0.f) and m_player.valid())
 	{
 		TransformComponent::Handle transformComponent(m_player.component<TransformComponent>());
 		sf::Vector2f playerPosition{transformComponent->transform.x, transformComponent->transform.y};
 		sf::View view{Context::parameters->bloomEnabled ? Context::postEffectsTexture->getView() : Context::window->getView()};
 		const sf::Vector2f halfViewSize{view.getSize()/2.f};
 		//Compute the maximum and minimum center coordinates that the view can have
-		const sf::Vector2f viewCenterMin{sf::Vector2f(float(m_levelRect.left), float(m_levelRect.top))+halfViewSize};
-		const sf::Vector2f viewCenterMax{sf::Vector2f(float(m_levelRect.width + m_levelRect.left), float(m_levelRect.height + m_levelRect.top))-halfViewSize};
+		const sf::Vector2f viewCenterMin{sf::Vector2f(m_levelRect.left, m_levelRect.top) + halfViewSize};
+		const sf::Vector2f viewCenterMax{sf::Vector2f(m_levelRect.width + m_levelRect.left, m_levelRect.height + m_levelRect.top) - halfViewSize};
 		//Cap the position between min and max
 		playerPosition.x = cap(playerPosition.x, viewCenterMin.x, viewCenterMax.x);
 		playerPosition.y = cap(playerPosition.y, viewCenterMin.y, viewCenterMax.y);
@@ -49,7 +49,7 @@ void ScrollingSystem::update(entityx::EntityManager& entityManager, entityx::Eve
 	}
 }
 
-void ScrollingSystem::setLevelData(const sf::IntRect& levelRect, float referencePlan)
+void ScrollingSystem::setLevelData(const sf::FloatRect& levelRect, float referencePlan)
 {
 	m_levelRect = levelRect;
 	m_referencePlan = referencePlan;

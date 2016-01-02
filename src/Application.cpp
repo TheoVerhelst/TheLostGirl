@@ -12,7 +12,7 @@ Application::Application():
 	m_entityManager{m_eventManager},
 	m_systemManager{m_entityManager, m_eventManager},
 	m_world{m_parameters.gravity},
-	m_FPSRefreshRate{sf::milliseconds(50)},
+	m_FPSRefreshRate{sf::seconds(1.f/20.f)},
 	m_frameTime{sf::seconds(1.f/60.f)}
 {
 }
@@ -74,13 +74,15 @@ int Application::run()
 		sf::Time timeSinceLastUpdate{sf::Time::Zero};
 		while(m_window.isOpen())
 		{
-			processInput();
-			sf::Time dt = clock.restart();
-			m_FPSTimer += dt;
-			if(m_FPSTimer > m_FPSRefreshRate)
+			const sf::Time dt = clock.restart();
+			if(m_parameters.debugMode)
 			{
-				m_debugDraw.setFPS(1.f/dt.asSeconds());
-				m_FPSTimer %= m_FPSRefreshRate;
+				m_FPSTimer += dt;
+				if(m_FPSTimer > m_FPSRefreshRate)
+				{
+					m_debugDraw.setFPS(1.f/dt.asSeconds());
+					m_FPSTimer %= m_FPSRefreshRate;
+				}
 			}
 			timeSinceLastUpdate += dt;
 			while(timeSinceLastUpdate > m_frameTime)
@@ -101,7 +103,7 @@ int Application::run()
 	}
 	catch(std::out_of_range& e)
 	{
-		std::cerr << "Out of range error (the level designer probably wrongly named entitie's parts): " << e.what() << "\n";
+		std::cerr << "Out of range error: " << e.what() << "\n";
 		return 2;
 	}
 	return 0;
@@ -201,8 +203,9 @@ void Application::deserializeSettings()
 	if(not settingsOk or not modelOk)
 	{
 		//Load default settings
-		m_window.create({640, 360}, "The Lost Girl");
-		m_postEffectsTexture.create(640, 360);
+		const sf::Vector2u windowSize{static_cast<sf::Vector2u>(m_parameters.defaultViewSize)};
+		m_window.create({windowSize.x, windowSize.y}, "The Lost Girl");
+		m_postEffectsTexture.create(windowSize.x, windowSize.y);
 		m_parameters.fullscreen = false;
 		m_parameters.bloomEnabled = false;
 	}

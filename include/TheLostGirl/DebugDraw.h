@@ -79,7 +79,7 @@ class DebugDraw : public b2Draw
 		/// \param x Number to convert.
 		/// \param decimals Number of decimals to show
 		/// \return A formated string.
-		std::string roundOutput(float x, std::size_t decimals=3);
+		static std::string roundOutput(float x, std::size_t decimals=3);
 
 		bool m_debugMode;                     ///< Indicate if the debug ath should be drawn.
 		float m_framesPerSecond;              ///< FPS value to display.
@@ -91,6 +91,7 @@ class DebugDraw : public b2Draw
 		std::stringstream m_errStringStream;  ///< String used to print standard error into the GUI.
 		std::streambuf* m_coutStreambuf;      ///< The old stream buffer of std::cout.
 		std::streambuf* m_cerrStreambuf;      ///< The old stream buffer of std::cerr.
+		const sf::Color m_errorColor;         ///< The color of an error line in the console.
 };
 
 #endif//DEBUGDRAW_H

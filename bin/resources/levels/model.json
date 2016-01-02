@@ -68,26 +68,25 @@
                     [
                         {
                             "name" : "x",
-                            "type" : "int",
+                            "type" : "real",
                             "required" : false,
                             "default value" : 0
                         },
                         {
                             "name" : "y",
-                            "type" : "int",
+                            "type" : "real",
                             "required" : false,
                             "default value" : 0
                         },
                         {
                             "name" : "w",
-                            "type" : "int",
+                            "type" : "real",
                             "required" : true
                         },
                         {
                             "name" : "h",
-                            "type" : "int",
-                            "required" : false,
-                            "default value" : 1080
+                            "type" : "real",
+                            "required" : true
                         }
                     ]
                 },

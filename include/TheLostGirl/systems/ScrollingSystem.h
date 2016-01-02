@@ -14,7 +14,7 @@ class ScrollingSystem : public entityx::System<ScrollingSystem>
 		/// Set the level bounds. This must be called before the first update.
 		/// \param levelRect Rectangle defining the level bounds.
 		/// \param referencePlan Number of the plan where actors evolute.
-		void setLevelData(const sf::IntRect& levelRect, float referencePlan);
+		void setLevelData(const sf::FloatRect& levelRect, float referencePlan);
 
 		/// Search the player in all entities, in order to avoid unnecessary search at each update.
 		/// This function must be called every time the player's entity change, such as at the beginning of a level.
@@ -27,9 +27,9 @@ class ScrollingSystem : public entityx::System<ScrollingSystem>
 		void update(entityx::EntityManager &es, entityx::EventManager &events, double dt) override;
 
 	private:
-		entityx::Entity m_player;    ///< The player entity, it is fulfilled with searchPlayer().
-		sf::IntRect m_levelRect;     ///< Rectangle defining the level bounds.
-		float m_referencePlan;       ///< Number of the plan where actors evolute.
+		entityx::Entity m_player; ///< The player entity, it is fulfilled with searchPlayer().
+		sf::FloatRect m_levelRect;///< Rectangle defining the level bounds.
+		float m_referencePlan;    ///< Number of the plan where actors evolute.
 };
 
 #endif//SCROLLINGSYSTEM_H
