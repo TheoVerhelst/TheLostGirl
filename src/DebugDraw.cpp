@@ -230,15 +230,25 @@ void DebugDraw::drawDebugAth()
 	//Console
 
 	m_console->moveToFront();
-	if(not m_outStringStream.str().empty())
+	const std::string outString(m_outStringStream.str());
+	if(not outString.empty())
 	{
-		m_console->addLine(m_outStringStream.str());
+		m_console->addLine(outString);
 		m_outStringStream.str("");
+		//Print too to stdout
+		std::cout.rdbuf(m_coutStreambuf);
+		std::cout << outString;
+		std::cout.rdbuf(m_outStringStream.rdbuf());
 	}
-	if(not m_errStringStream.str().empty())
+	const std::string errString(m_errStringStream.str());
+	if(not errString.empty())
 	{
-		m_console->addLine(m_errStringStream.str(), sf::Color(255, 100, 100));
+		m_console->addLine(errString, sf::Color(255, 100, 100));
 		m_errStringStream.str("");
+		//Print too to stderr
+		std::cerr.rdbuf(m_cerrStreambuf);
+		std::cerr << errString;
+		std::cerr.rdbuf(m_errStringStream.rdbuf());
 	}
 }
 
