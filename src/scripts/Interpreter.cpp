@@ -92,7 +92,7 @@ bool Interpreter::loadFromFile(const std::string& fileName)
 
 void Interpreter::interpret(entityx::Entity entity)
 {
-	m_vars["self"] = entity;
+	m_vars.emplace("self", entity);
 	interpretBlock(entity, m_expressions.begin(), m_expressions.end(), m_expressions.begin());
 	//Reset all variables
 	m_vars = m_initialVars;
@@ -100,7 +100,7 @@ void Interpreter::interpret(entityx::Entity entity)
 
 inline std::string Interpreter::getStr(std::list<Expression::Ptr>::iterator it) const
 {
-	return boost::get<std::string>((*it)->getValue().first);
+	return (*it)->getValue().first.get<std::string>();
 }
 
 void Interpreter::interpretBlock(entityx::Entity entity, std::list<Expression::Ptr>::iterator from, std::list<Expression::Ptr>::iterator to, std::list<Expression::Ptr>::iterator begin)
@@ -114,7 +114,7 @@ void Interpreter::interpretBlock(entityx::Entity entity, std::list<Expression::P
 				//An if statement has only one child, the boolean expression to evaluate.
 				Data conditionData = evaluateExpression((*from)->getChild(0));
 				cast<bool>(conditionData);
-				bool condition{boost::get<bool>(conditionData)}, skip{false};
+				bool condition{conditionData.get<bool>()}, skip{false};
 				std::list<Expression::Ptr>::iterator beginIf(std::next(from));
 				short int depth{0};
 				for(std::list<Expression::Ptr>::iterator endIf(beginIf); endIf != to; ++endIf)
@@ -162,7 +162,7 @@ Data Interpreter::evaluateExpression(const Expression::Ptr expression)
 	{
 		if(expression->getValue().second)
 		{
-			auto it = m_vars.find(boost::get<std::string>(expression->getValue().first));
+			auto it = m_vars.find(expression->getValue().first.get<std::string>());
 			if(it == m_vars.end())
 				throw ScriptError("unknow variable name: " + it->first);
 			return it->second;
@@ -172,11 +172,11 @@ Data Interpreter::evaluateExpression(const Expression::Ptr expression)
 	}
 	else
 	{
-		std::string value = boost::get<std::string>(expression->getValue().first);
+		std::string value = expression->getValue().first.get<std::string>();
 		if(value == "=")
 		{
 			const Data rvalue = evaluateExpression(Expression::copy(expression->getChild(1)));
-			m_vars[boost::get<std::string>(expression->getChild(0)->getValue().first)] = rvalue;
+			m_vars.emplace(expression->getChild(0)->getValue().first.get<std::string>(), rvalue);
 			return rvalue;
 		}
 		else
@@ -191,7 +191,7 @@ Data Interpreter::evaluateExpression(const Expression::Ptr expression)
 					throw ScriptError("wrong number of operands "
 							"(got "+std::to_string(expression->childrenNumber())+
 							", expected "+std::to_string(fn.numberOperands)+"): "+
-							boost::get<std::string>(expression->getValue().first));
+							expression->getValue().first.get<std::string>());
 				}
 				std::vector<Data> args;
 				for(size_t i{0}; i < expression->childrenNumber(); ++i)
@@ -201,7 +201,7 @@ Data Interpreter::evaluateExpression(const Expression::Ptr expression)
 			else
 			{
 				throw ScriptError("unable to parse the following token: " +
-						boost::get<std::string>(expression->getValue().first));
+						expression->getValue().first.get<std::string>());
 			}
 		}
 	}
@@ -209,7 +209,7 @@ Data Interpreter::evaluateExpression(const Expression::Ptr expression)
 
 std::list<std::string> Interpreter::tokenize(std::string::const_iterator from, std::string::const_iterator to) const
 {
-	//This function use boost and handmade algorithms in place of std::regex because
+	//This function use handmade algorithms in place of std::regex because
 	//std:regex is very, very slow and totally kill the FPS.
 	std::list<std::string> first, res;
 	//First tokenization, match string literal
@@ -396,7 +396,7 @@ Expression::Ptr Interpreter::convertTokens(std::list<std::string>::const_iterato
 		for(auto token:postfixeRes)
 		{
 			Data& value = token->getValue().first;
-			if(value.which() == 3 and m_precedence.find(boost::get<std::string>(value)) != m_precedence.end())
+			if(value.getTypeIndex() == DataType::String and m_precedence.find(value.get<std::string>()) != m_precedence.end())
 			{
 				Expression::Ptr operand2 = operandsStack.top();
 				operandsStack.pop();
@@ -467,7 +467,7 @@ std::list<std::string>::const_iterator Interpreter::parenthesis(std::list<std::s
 
 inline bool Interpreter::isSpace(const std::string& str) const
 {
-	return strip(str) == "";
+	return strip(str).empty();
 }
 
 inline bool Interpreter::isFloat(const std::string& str) const

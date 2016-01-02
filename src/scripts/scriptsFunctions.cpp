@@ -14,64 +14,64 @@
 template <>
 void cast<bool>(Data& var)
 {
-	if(var.which() == 4)//Convert entity to bool
-		var = boost::get<entityx::Entity>(var).valid();
-	else if(var.which() == 3)//Convert string to bool
-		var = boost::get<std::string>(var).size() > 0;
-	else if(var.which() == 1)//Convert int to bool
-		var = static_cast<bool>(boost::get<int>(var));
-	else if(var.which() == 2)//Convert float to bool
-		var = static_cast<bool>(boost::get<float>(var));
+	if(var.getTypeIndex() == DataType::Entity)//Convert entity to bool
+		var = var.get<entityx::Entity>().valid();
+	else if(var.getTypeIndex() == DataType::String)//Convert string to bool
+		var = var.get<std::string>().size() > 0;
+	else if(var.getTypeIndex() == DataType::Integer)//Convert int to bool
+		var = static_cast<bool>(var.get<int>());
+	else if(var.getTypeIndex() == DataType::Float)//Convert float to bool
+		var = static_cast<bool>(var.get<float>());
 }
 
 template <>
 void cast<int>(Data& var)
 {
-	if(var.which() == 4)//Convert entity to int
+	if(var.getTypeIndex() == DataType::Entity)//Convert entity to int
 		throw ScriptError("Conversion from entity to integer is not allowed.");
-	else if(var.which() == 3)//Convert string to int
-		var = std::stoi(boost::get<std::string>(var));
-	else if(var.which() == 0)//Convert bool to int
-		var = static_cast<int>(boost::get<bool>(var));
-	else if(var.which() == 2)//Convert float to int
-		var = static_cast<int>(boost::get<float>(var));
+	else if(var.getTypeIndex() == DataType::String)//Convert string to int
+		var = std::stoi(var.get<std::string>());
+	else if(var.getTypeIndex() == DataType::Boolean)//Convert bool to int
+		var = static_cast<int>(var.get<bool>());
+	else if(var.getTypeIndex() == DataType::Float)//Convert float to int
+		var = static_cast<int>(var.get<float>());
 }
 
 template <>
 void cast<float>(Data& var)
 {
-	if(var.which() == 4)//Convert entity to float
+	if(var.getTypeIndex() == DataType::Entity)//Convert entity to float
 		throw ScriptError("Conversion from entity to floating point is not allowed.");
-	else if(var.which() == 3)//Convert string to float
-		var = std::stof(boost::get<std::string>(var));
-	else if(var.which() == 0)//Convert bool to float
-		var = static_cast<float>(boost::get<bool>(var));
-	else if(var.which() == 1)//Convert int to float
-		var = static_cast<float>(boost::get<int>(var));
+	else if(var.getTypeIndex() == DataType::String)//Convert string to float
+		var = std::stof(var.get<std::string>());
+	else if(var.getTypeIndex() == DataType::Boolean)//Convert bool to float
+		var = static_cast<float>(var.get<bool>());
+	else if(var.getTypeIndex() == DataType::Integer)//Convert int to float
+		var = static_cast<float>(var.get<int>());
 }
 
 template <>
 void cast<std::string>(Data& var)
 {
-	if(var.which() == 1)//Convert int to string
-		var = std::to_string(boost::get<int>(var));
-	else if(var.which() == 0)//Convert bool to string
+	if(var.getTypeIndex() == DataType::Integer)//Convert int to string
+		var = std::to_string(var.get<int>());
+	else if(var.getTypeIndex() == DataType::Boolean)//Convert bool to string
 	{
-		if(boost::get<bool>(var))
-			var = "true";
+		if(var.get<bool>())
+			var = std::string("true");
 		else
-			var = "false";
+			var = std::string("false");
 	}
-	else if(var.which() == 2)//Convert float to string
-		var = std::to_string(boost::get<float>(var));
-	else if(var.which() == 4)//Convert entity to string
+	else if(var.getTypeIndex() == DataType::Float)//Convert float to string
+		var = std::to_string(var.get<float>());
+	else if(var.getTypeIndex() == DataType::Entity)//Convert entity to string
 		throw ScriptError("Conversion from entity to string is not allowed.");
 }
 
 template <>
 void cast<entityx::Entity>(Data& var)
 {
-	if(var.which() != 4)
+	if(var.getTypeIndex() != DataType::Entity)
 		throw ScriptError("Conversion from any type to entity is not allowed.");
 }
 
@@ -87,23 +87,26 @@ Data print(const std::vector<Data>& args)
 Data lowerThanOp(const std::vector<Data>& args)
 {
 	Data lhs(args[0]), rhs(args[1]);
-	if(lhs.which() != 3 and rhs.which() != 3 and lhs.which() != 4 and rhs.which() != 4)
+	if(lhs.getTypeIndex() != DataType::String
+			and rhs.getTypeIndex() != DataType::String
+			and lhs.getTypeIndex() != DataType::Entity
+			and rhs.getTypeIndex() != DataType::Entity)
 	{
-		if(lhs.which() != 2 and rhs.which() != 2)
+		if(lhs.getTypeIndex() != DataType::Float and rhs.getTypeIndex() != DataType::Float)
 		{
 			cast<int>(lhs);
 			cast<int>(rhs);
-			return boost::get<int>(lhs) < boost::get<int>(rhs);
+			return lhs.get<int>() < rhs.get<int>();
 		}
 		else
 		{
 			cast<float>(lhs);
 			cast<float>(rhs);
-			return boost::get<float>(lhs) < boost::get<float>(rhs);
+			return lhs.get<float>() < rhs.get<float>();
 		}
 	}
-	else if(lhs.which() == 3 and rhs.which() == 3)
-		return boost::get<std::string>(lhs).size() < boost::get<std::string>(rhs).size();
+	else if(lhs.getTypeIndex() == DataType::String and rhs.getTypeIndex() == DataType::String)
+		return lhs.get<std::string>().size() < rhs.get<std::string>().size();
 	else
 		throw std::runtime_error("invalid operands types for comparaison.");
 }
@@ -127,16 +130,16 @@ Data equalOp(const std::vector<Data>& args)
 {
 	const Data& lhs(args[0]), rhs(args[1]);
 	//Both are string
-	if(lhs.which() == 3 and rhs.which() == 3)
-		return boost::get<std::string>(lhs) == boost::get<std::string>(rhs);
+	if(lhs.getTypeIndex() == DataType::String and rhs.getTypeIndex() == DataType::String)
+		return lhs.get<std::string>() == rhs.get<std::string>();
 	//Left is entity, right is bool
-	else if(lhs.which() == 4 and rhs.which() == 0)
-		return boost::get<entityx::Entity>(lhs).valid() == boost::get<bool>(rhs);
+	else if(lhs.getTypeIndex() == DataType::Entity and rhs.getTypeIndex() == DataType::Boolean)
+		return lhs.get<entityx::Entity>().valid() == rhs.get<bool>();
 	//Left is bool, right is entity
-	else if(lhs.which() == 0 and rhs.which() == 4)
-		return boost::get<bool>(lhs) == boost::get<entityx::Entity>(rhs).valid();
+	else if(lhs.getTypeIndex() == DataType::Boolean and rhs.getTypeIndex() == DataType::Entity)
+		return lhs.get<bool>() == rhs.get<entityx::Entity>().valid();
 	//Both are numeric
-	else if(lhs.which() <= 2 and rhs.which() <= 2)
+	else if(lhs.getTypeIndex() <= DataType::Float and rhs.getTypeIndex() <= DataType::Float)
 		return andOp({greaterEqualOp(args), lowerEqualOp(args)});
 	else
 		return false;
@@ -152,7 +155,7 @@ Data andOp(const std::vector<Data>& args)
 	Data lhs(args[0]), rhs(args[1]);
 	cast<bool>(lhs);
 	cast<bool>(rhs);
-	return boost::get<bool>(lhs) and boost::get<bool>(rhs);
+	return lhs.get<bool>() and rhs.get<bool>();
 }
 
 Data orOp(const std::vector<Data>& args)
@@ -160,104 +163,104 @@ Data orOp(const std::vector<Data>& args)
 	Data lhs(args[0]), rhs(args[1]);
 	cast<bool>(lhs);
 	cast<bool>(rhs);
-	return boost::get<bool>(lhs) or boost::get<bool>(rhs);
+	return lhs.get<bool>() or rhs.get<bool>();
 }
 
 Data addOp(const std::vector<Data>& args)
 {
 	Data lhs(args[0]), rhs(args[1]);
-	if(lhs.which() == 4 or rhs.which() == 4)
+	if(lhs.getTypeIndex() == DataType::Entity or rhs.getTypeIndex() == DataType::Entity)
 		throw ScriptError("entities does not support addition.");
-	else if(lhs.which() == 3 or rhs.which() == 3)
+	else if(lhs.getTypeIndex() == DataType::String or rhs.getTypeIndex() == DataType::String)
 	{
 		cast<std::string>(lhs);
 		cast<std::string>(rhs);
-		return boost::get<std::string>(lhs) + boost::get<std::string>(rhs);
+		return lhs.get<std::string>() + rhs.get<std::string>();
 	}
-	else if(lhs.which() == 2 or rhs.which() == 2)
+	else if(lhs.getTypeIndex() == DataType::Float or rhs.getTypeIndex() == DataType::Float)
 	{
 		cast<float>(lhs);
 		cast<float>(rhs);
-		return boost::get<float>(lhs) + boost::get<float>(rhs);
+		return lhs.get<float>() + rhs.get<float>();
 	}
-	else if(lhs.which() == 1 or rhs.which() == 1)
+	else if(lhs.getTypeIndex() == DataType::Integer or rhs.getTypeIndex() == DataType::Integer)
 	{
 		cast<int>(lhs);
 		cast<int>(rhs);
-		return boost::get<int>(lhs) + boost::get<int>(rhs);
+		return lhs.get<int>() + rhs.get<int>();
 	}
 	else
-		return static_cast<bool>(boost::get<bool>(lhs) + boost::get<bool>(rhs));
+		return static_cast<bool>(lhs.get<bool>() + rhs.get<bool>());
 }
 
 Data substractOp(const std::vector<Data>& args)
 {
 	Data lhs(args[0]), rhs(args[1]);
-	if(lhs.which() == 4 or rhs.which() == 4)
+	if(lhs.getTypeIndex() == DataType::Entity or rhs.getTypeIndex() == DataType::Entity)
 		throw ScriptError("entities does not support substraction.");
-	else if(lhs.which() == 3 or rhs.which() == 3)
+	else if(lhs.getTypeIndex() == DataType::String or rhs.getTypeIndex() == DataType::String)
 		throw std::runtime_error("string does not support substraction");
-	else if(lhs.which() == 2 or rhs.which() == 2)
+	else if(lhs.getTypeIndex() == DataType::Float or rhs.getTypeIndex() == DataType::Float)
 	{
 		cast<float>(lhs);
 		cast<float>(rhs);
-		return boost::get<float>(lhs) - boost::get<float>(rhs);
+		return lhs.get<float>() - rhs.get<float>();
 	}
-	else if(lhs.which() == 1 or rhs.which() == 1)
+	else if(lhs.getTypeIndex() == DataType::Integer or rhs.getTypeIndex() == DataType::Integer)
 	{
 		cast<int>(lhs);
 		cast<int>(rhs);
-		return boost::get<int>(lhs) - boost::get<int>(rhs);
+		return lhs.get<int>() - rhs.get<int>();
 	}
 	else
-		return static_cast<bool>(boost::get<bool>(lhs) + boost::get<bool>(rhs));
+		return static_cast<bool>(lhs.get<bool>() + rhs.get<bool>());
 }
 
 Data multiplyOp(const std::vector<Data>& args)
 {
 	Data lhs(args[0]), rhs(args[1]);
-	if(lhs.which() == 4 or rhs.which() == 4)
+	if(lhs.getTypeIndex() == DataType::Entity or rhs.getTypeIndex() == DataType::Entity)
 		throw ScriptError("entities does not support multiplication.");
-	else if(lhs.which() == 3 or rhs.which() == 3)
+	else if(lhs.getTypeIndex() == DataType::String or rhs.getTypeIndex() == DataType::String)
 		throw std::runtime_error("string does not support multiplication.");
-	else if(lhs.which() == 2 or rhs.which() == 2)
+	else if(lhs.getTypeIndex() == DataType::Float or rhs.getTypeIndex() == DataType::Float)
 	{
 		cast<float>(lhs);
 		cast<float>(rhs);
-		return boost::get<float>(lhs) * boost::get<float>(rhs);
+		return lhs.get<float>() * rhs.get<float>();
 	}
-	else if(lhs.which() == 1 or rhs.which() == 1)
+	else if(lhs.getTypeIndex() == DataType::Integer or rhs.getTypeIndex() == DataType::Integer)
 	{
 		cast<int>(lhs);
 		cast<int>(rhs);
-		return boost::get<int>(lhs) * boost::get<int>(rhs);
+		return lhs.get<int>() * rhs.get<int>();
 	}
 	else
-		return static_cast<bool>(boost::get<bool>(lhs) * boost::get<bool>(rhs));
+		return static_cast<bool>(lhs.get<bool>() * rhs.get<bool>());
 }
 
 Data divideOp(const std::vector<Data>& args)
 {
 	Data lhs(args[0]), rhs(args[1]);
-	if(lhs.which() == 4 or rhs.which() == 4)
+	if(lhs.getTypeIndex() == DataType::Entity or rhs.getTypeIndex() == DataType::Entity)
 		throw ScriptError("entities does not support division.");
-	else if(lhs.which() == 3 or rhs.which() == 3)
+	else if(lhs.getTypeIndex() == DataType::String or rhs.getTypeIndex() == DataType::String)
 		throw std::runtime_error("string does not support division.");
-	else if(lhs.which() == 2 or rhs.which() == 2)
+	else if(lhs.getTypeIndex() == DataType::Float or rhs.getTypeIndex() == DataType::Float)
 	{
 		cast<float>(lhs);
 		cast<float>(rhs);
-		if(boost::get<float>(rhs) == 0.f)
+		if(rhs.get<float>() == 0.f)
 			throw std::runtime_error("division by zero");
-		return boost::get<float>(lhs) / boost::get<float>(rhs);
+		return lhs.get<float>() / rhs.get<float>();
 	}
-	else if(lhs.which() == 1 or rhs.which() == 1)
+	else if(lhs.getTypeIndex() == DataType::Integer or rhs.getTypeIndex() == DataType::Integer)
 	{
 		cast<int>(lhs);
 		cast<int>(rhs);
-		if(boost::get<int>(rhs) == 0)
+		if(rhs.get<int>() == 0)
 			throw std::runtime_error("division by zero");
-		return boost::get<int>(lhs) / boost::get<int>(rhs);
+		return lhs.get<int>() / rhs.get<int>();
 	}
 	else
 		throw std::runtime_error("boolean does not support division.");
@@ -266,25 +269,25 @@ Data divideOp(const std::vector<Data>& args)
 Data moduloOp(const std::vector<Data>& args)
 {
 	Data lhs(args[0]), rhs(args[1]);
-	if(lhs.which() == 4 or rhs.which() == 4)
+	if(lhs.getTypeIndex() == DataType::Entity or rhs.getTypeIndex() == DataType::Entity)
 		throw ScriptError("entities does not support modulo.");
-	else if(lhs.which() == 3 or rhs.which() == 3)
+	else if(lhs.getTypeIndex() == DataType::String or rhs.getTypeIndex() == DataType::String)
 		throw std::runtime_error("string does not support modulo.");
-	else if(lhs.which() == 2 or rhs.which() == 2)
+	else if(lhs.getTypeIndex() == DataType::Float or rhs.getTypeIndex() == DataType::Float)
 	{
 		cast<float>(lhs);
 		cast<float>(rhs);
-		if(boost::get<float>(rhs) == 0.f)
+		if(rhs.get<float>() == 0.f)
 			throw std::runtime_error("modulo by zero");
-		return std::fmod(boost::get<float>(lhs), boost::get<float>(rhs));
+		return std::fmod(lhs.get<float>(), rhs.get<float>());
 	}
-	else if(lhs.which() == 1 or rhs.which() == 1)
+	else if(lhs.getTypeIndex() == DataType::Integer or rhs.getTypeIndex() == DataType::Integer)
 	{
 		cast<int>(lhs);
 		cast<int>(rhs);
-		if(boost::get<int>(rhs) == 0)
+		if(rhs.get<int>() == 0)
 			throw std::runtime_error("modulo by zero");
-		return boost::get<int>(lhs) % boost::get<int>(rhs);
+		return lhs.get<int>() % rhs.get<int>();
 	}
 	else
 		throw std::runtime_error("boolean does not support modulo.");
@@ -294,12 +297,12 @@ Data notOp(const std::vector<Data>& args)
 {
 	Data lhs(args[0]);
 	cast<bool>(lhs);
-	return not boost::get<bool>(lhs);
+	return not lhs.get<bool>();
 }
 
 entityx::Entity nearestFoe(const std::vector<Data>& args)
 {
-	entityx::Entity self(boost::get<entityx::Entity>(args[0]));
+	entityx::Entity self(args[0].get<entityx::Entity>());
 	if(not self)
 		throw ScriptError("nearest foe(): first argument is an invalid entity.");
 	BodyComponent::Handle bodyComponent(self.component<BodyComponent>());
@@ -321,8 +324,8 @@ entityx::Entity nearestFoe(const std::vector<Data>& args)
 
 float distanceFrom(const std::vector<Data>& args)
 {
-	entityx::Entity self(boost::get<entityx::Entity>(args[0]));
-	entityx::Entity target(boost::get<entityx::Entity>(args[1]));
+	entityx::Entity self(args[0].get<entityx::Entity>());
+	entityx::Entity target(args[1].get<entityx::Entity>());
 	if(not self)
 		throw ScriptError("distance from(): first argument is an invalid entity.");
 	if(not target)
@@ -374,8 +377,8 @@ float distanceFrom(const std::vector<Data>& args)
 
 int directionTo(const std::vector<Data>& args)
 {
-	entityx::Entity self(boost::get<entityx::Entity>(args[0]));
-	entityx::Entity target(boost::get<entityx::Entity>(args[1]));
+	entityx::Entity self(args[0].get<entityx::Entity>());
+	entityx::Entity target(args[1].get<entityx::Entity>());
 	if(not self)
 		throw ScriptError("direction to(): first argument is an invalid entity.");
 	if(not target)
@@ -394,7 +397,7 @@ int directionTo(const std::vector<Data>& args)
 
 int directionOf(const std::vector<Data>& args)
 {
-	entityx::Entity self(boost::get<entityx::Entity>(args[0]));
+	entityx::Entity self(args[0].get<entityx::Entity>());
 	if(not self)
 		throw ScriptError("direction of(): first argument is an invalid entity.");
 	DirectionComponent::Handle directionComponent(self.component<DirectionComponent>());
@@ -405,7 +408,7 @@ int directionOf(const std::vector<Data>& args)
 
 int attack(const std::vector<Data>& args)
 {
-	entityx::Entity entity(boost::get<entityx::Entity>(args[0]));
+	entityx::Entity entity(args[0].get<entityx::Entity>());
 	if(not entity.valid())
 		throw ScriptError("can move(): first argument is an invalid entity.");
 	Context::systemManager->system<PendingChangesSystem>()->commandQueue.emplace(entity, HandToHand());
@@ -441,7 +444,7 @@ bool NearestFoeQueryCallback::ReportFixture(b2Fixture* fixture)
 
 bool canMove(const std::vector<Data>& args)
 {
-	entityx::Entity self(boost::get<entityx::Entity>(args[0]));
+	entityx::Entity self(args[0].get<entityx::Entity>());
 	if(not self)
 		throw ScriptError("can move(): first argument is an invalid entity.");
 	return self.has_component<WalkComponent>();
@@ -449,16 +452,16 @@ bool canMove(const std::vector<Data>& args)
 
 int move(const std::vector<Data>& args)
 {
-	entityx::Entity entity(boost::get<entityx::Entity>(args[0]));
+	entityx::Entity entity(args[0].get<entityx::Entity>());
 	if(not entity.valid())
 		throw ScriptError("can move(): first argument is an invalid entity.");
-	Context::systemManager->system<PendingChangesSystem>()->commandQueue.emplace(entity, Mover(static_cast<Direction>(boost::get<int>(args[1]))));
+	Context::systemManager->system<PendingChangesSystem>()->commandQueue.emplace(entity, Mover(static_cast<Direction>(args[1].get<int>())));
 	return 0;
 }
 
 int stop(const std::vector<Data>& args)
 {
-	entityx::Entity self(boost::get<entityx::Entity>(args[0]));
+	entityx::Entity self(args[0].get<entityx::Entity>());
 	if(not self)
 		throw ScriptError("stop(): first argument is an invalid entity.");
 	const DirectionComponent::Handle directionComponent(self.component<DirectionComponent>());
@@ -478,7 +481,7 @@ int stop(const std::vector<Data>& args)
 
 bool canJump(const std::vector<Data>& args)
 {
-	entityx::Entity entity(boost::get<entityx::Entity>(args[0]));
+	entityx::Entity entity(args[0].get<entityx::Entity>());
 	if(not entity)
 		throw ScriptError("can jump(): first argument is an invalid entity.");
 	const FallComponent::Handle fallComponent(entity.component<FallComponent>());
@@ -489,6 +492,6 @@ int jump(const std::vector<Data>& args)
 {
 	if(canJump(args))
 		//Simply push a jump command on the command queue
-		Context::systemManager->system<PendingChangesSystem>()->commandQueue.emplace(boost::get<entityx::Entity>(args[0]), Jumper());
+		Context::systemManager->system<PendingChangesSystem>()->commandQueue.emplace(args[0].get<entityx::Entity>(), Jumper());
 	return 0;
 }

@@ -1,13 +1,26 @@
-#ifndef INTERPRETER_HPP
-#define INTERPRETER_HPP
+#ifndef INTERPRETER_H
+#define INTERPRETER_H
 
 #include <map>
 #include <fstream>
-#include <boost/variant.hpp>
+#include <TheLostGirl/scripts/Variant.h>
 #include <entityx/entityx.h>
 #include <TheLostGirl/scripts/Tree.h>
 
-typedef boost::variant<bool, int, float, std::string, entityx::Entity> Data;
+typedef Variant<bool, int, float, std::string, entityx::Entity> Data;
+
+namespace DataType
+{
+	enum : std::size_t
+	{
+		Boolean,
+		Integer,
+		Float,
+		String,
+		Entity
+	};
+}
+
 typedef Tree<std::pair<Data, bool>> Expression;
 
 /// Load, evaluate and apply a script on an entity.
@@ -139,4 +152,4 @@ class Interpreter
 		std::string strip(const std::string& str) const;
 };
 
-#endif// INTERPRETER_HPP
+#endif// INTERPRETER_H
