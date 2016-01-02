@@ -86,29 +86,18 @@ Data print(const std::vector<Data>& args)
 
 Data lowerThanOp(const std::vector<Data>& args)
 {
-	Data lhs(args[0]), rhs(args[1]);
-	if(lhs.getTypeIndex() != DataType::String
-			and rhs.getTypeIndex() != DataType::String
-			and lhs.getTypeIndex() != DataType::Entity
-			and rhs.getTypeIndex() != DataType::Entity)
-	{
-		if(lhs.getTypeIndex() != DataType::Float and rhs.getTypeIndex() != DataType::Float)
-		{
-			cast<int>(lhs);
-			cast<int>(rhs);
-			return lhs.get<int>() < rhs.get<int>();
-		}
-		else
-		{
-			cast<float>(lhs);
-			cast<float>(rhs);
-			return lhs.get<float>() < rhs.get<float>();
-		}
-	}
-	else if(lhs.getTypeIndex() == DataType::String and rhs.getTypeIndex() == DataType::String)
-		return lhs.get<std::string>().size() < rhs.get<std::string>().size();
+	const Data& lhs(args[0]), rhs(args[1]);
+	if(lhs.getTypeIndex() != rhs.getTypeIndex())
+		throw std::runtime_error("different operands types for comparaison.");
 	else
-		throw std::runtime_error("invalid operands types for comparaison.");
+	{
+		if(lhs.getTypeIndex() == DataType::Float)
+			return lhs.get<float>() < rhs.get<float>();
+		else if(lhs.getTypeIndex() == DataType::Integer)
+			return lhs.get<int>() < rhs.get<int>();
+		else
+			throw std::runtime_error("unsupported operands types for comparaison.");
+	}
 }
 
 Data greaterThanOp(const std::vector<Data>& args)
@@ -129,20 +118,22 @@ Data greaterEqualOp(const std::vector<Data>& args)
 Data equalOp(const std::vector<Data>& args)
 {
 	const Data& lhs(args[0]), rhs(args[1]);
-	//Both are string
-	if(lhs.getTypeIndex() == DataType::String and rhs.getTypeIndex() == DataType::String)
-		return lhs.get<std::string>() == rhs.get<std::string>();
-	//Left is entity, right is bool
-	else if(lhs.getTypeIndex() == DataType::Entity and rhs.getTypeIndex() == DataType::Boolean)
-		return lhs.get<entityx::Entity>().valid() == rhs.get<bool>();
-	//Left is bool, right is entity
-	else if(lhs.getTypeIndex() == DataType::Boolean and rhs.getTypeIndex() == DataType::Entity)
-		return lhs.get<bool>() == rhs.get<entityx::Entity>().valid();
-	//Both are numeric
-	else if(lhs.getTypeIndex() <= DataType::Float and rhs.getTypeIndex() <= DataType::Float)
-		return andOp({greaterEqualOp(args), lowerEqualOp(args)});
-	else
-		return false;
+	if(lhs.getTypeIndex() != rhs.getTypeIndex())
+		throw std::runtime_error("different operands types for comparaison.");
+	switch(lhs.getTypeIndex())
+	{
+		case DataType::String:
+			return lhs.get<std::string>() == rhs.get<std::string>();
+		case DataType::Entity:
+			return lhs.get<entityx::Entity>() == rhs.get<entityx::Entity>();
+		case DataType::Boolean:
+			return lhs.get<bool>() == rhs.get<bool>();
+		case DataType::Float:
+		case DataType::Integer:
+			return andOp({greaterEqualOp(args), lowerEqualOp(args)});
+		default:
+			throw std::runtime_error("unsupported operands types for comparaison.");
+	}
 }
 
 Data notEqualOp(const std::vector<Data>& args)
@@ -152,167 +143,123 @@ Data notEqualOp(const std::vector<Data>& args)
 
 Data andOp(const std::vector<Data>& args)
 {
-	Data lhs(args[0]), rhs(args[1]);
-	cast<bool>(lhs);
-	cast<bool>(rhs);
+	const Data& lhs(args[0]), rhs(args[1]);
 	return lhs.get<bool>() and rhs.get<bool>();
 }
 
 Data orOp(const std::vector<Data>& args)
 {
-	Data lhs(args[0]), rhs(args[1]);
-	cast<bool>(lhs);
-	cast<bool>(rhs);
+	const Data& lhs(args[0]), rhs(args[1]);
 	return lhs.get<bool>() or rhs.get<bool>();
 }
 
 Data addOp(const std::vector<Data>& args)
 {
-	Data lhs(args[0]), rhs(args[1]);
-	if(lhs.getTypeIndex() == DataType::Entity or rhs.getTypeIndex() == DataType::Entity)
-		throw ScriptError("entities does not support addition.");
-	else if(lhs.getTypeIndex() == DataType::String or rhs.getTypeIndex() == DataType::String)
+	const Data& lhs(args[0]), rhs(args[1]);
+	if(lhs.getTypeIndex() != rhs.getTypeIndex())
+		throw std::runtime_error("different operands types for addition.");
+	switch(lhs.getTypeIndex())
 	{
-		cast<std::string>(lhs);
-		cast<std::string>(rhs);
-		return lhs.get<std::string>() + rhs.get<std::string>();
+		case DataType::String:
+			return lhs.get<std::string>() + rhs.get<std::string>();
+		case DataType::Float:
+			return lhs.get<float>() + rhs.get<float>();
+		case DataType::Integer:
+			return lhs.get<int>() + rhs.get<int>();
+		default:
+			throw std::runtime_error("unsupported operands types for addition.");
 	}
-	else if(lhs.getTypeIndex() == DataType::Float or rhs.getTypeIndex() == DataType::Float)
-	{
-		cast<float>(lhs);
-		cast<float>(rhs);
-		return lhs.get<float>() + rhs.get<float>();
-	}
-	else if(lhs.getTypeIndex() == DataType::Integer or rhs.getTypeIndex() == DataType::Integer)
-	{
-		cast<int>(lhs);
-		cast<int>(rhs);
-		return lhs.get<int>() + rhs.get<int>();
-	}
-	else
-		return static_cast<bool>(lhs.get<bool>() + rhs.get<bool>());
 }
 
 Data substractOp(const std::vector<Data>& args)
 {
-	Data lhs(args[0]), rhs(args[1]);
-	if(lhs.getTypeIndex() == DataType::Entity or rhs.getTypeIndex() == DataType::Entity)
-		throw ScriptError("entities does not support substraction.");
-	else if(lhs.getTypeIndex() == DataType::String or rhs.getTypeIndex() == DataType::String)
-		throw std::runtime_error("string does not support substraction");
-	else if(lhs.getTypeIndex() == DataType::Float or rhs.getTypeIndex() == DataType::Float)
+	const Data& lhs(args[0]), rhs(args[1]);
+	if(lhs.getTypeIndex() != rhs.getTypeIndex())
+		throw std::runtime_error("different operands types for substraction.");
+	switch(lhs.getTypeIndex())
 	{
-		cast<float>(lhs);
-		cast<float>(rhs);
-		return lhs.get<float>() - rhs.get<float>();
+		case DataType::Float:
+			return lhs.get<float>() - rhs.get<float>();
+		case DataType::Integer:
+			return lhs.get<int>() - rhs.get<int>();
+		default:
+			throw std::runtime_error("unsupported operands types for substraction.");
 	}
-	else if(lhs.getTypeIndex() == DataType::Integer or rhs.getTypeIndex() == DataType::Integer)
-	{
-		cast<int>(lhs);
-		cast<int>(rhs);
-		return lhs.get<int>() - rhs.get<int>();
-	}
-	else
-		return static_cast<bool>(lhs.get<bool>() + rhs.get<bool>());
 }
 
 Data multiplyOp(const std::vector<Data>& args)
 {
-	Data lhs(args[0]), rhs(args[1]);
-	if(lhs.getTypeIndex() == DataType::Entity or rhs.getTypeIndex() == DataType::Entity)
-		throw ScriptError("entities does not support multiplication.");
-	else if(lhs.getTypeIndex() == DataType::String or rhs.getTypeIndex() == DataType::String)
-		throw std::runtime_error("string does not support multiplication.");
-	else if(lhs.getTypeIndex() == DataType::Float or rhs.getTypeIndex() == DataType::Float)
+	const Data& lhs(args[0]), rhs(args[1]);
+	if(lhs.getTypeIndex() != rhs.getTypeIndex())
+		throw std::runtime_error("different operands types for multiplication.");
+	switch(lhs.getTypeIndex())
 	{
-		cast<float>(lhs);
-		cast<float>(rhs);
-		return lhs.get<float>() * rhs.get<float>();
+		case DataType::Float:
+			return lhs.get<float>() * rhs.get<float>();
+		case DataType::Integer:
+			return lhs.get<int>() * rhs.get<int>();
+		default:
+			throw std::runtime_error("unsupported operands types for multiplication.");
 	}
-	else if(lhs.getTypeIndex() == DataType::Integer or rhs.getTypeIndex() == DataType::Integer)
-	{
-		cast<int>(lhs);
-		cast<int>(rhs);
-		return lhs.get<int>() * rhs.get<int>();
-	}
-	else
-		return static_cast<bool>(lhs.get<bool>() * rhs.get<bool>());
 }
 
 Data divideOp(const std::vector<Data>& args)
 {
-	Data lhs(args[0]), rhs(args[1]);
-	if(lhs.getTypeIndex() == DataType::Entity or rhs.getTypeIndex() == DataType::Entity)
-		throw ScriptError("entities does not support division.");
-	else if(lhs.getTypeIndex() == DataType::String or rhs.getTypeIndex() == DataType::String)
-		throw std::runtime_error("string does not support division.");
-	else if(lhs.getTypeIndex() == DataType::Float or rhs.getTypeIndex() == DataType::Float)
+	const Data& lhs(args[0]), rhs(args[1]);
+	if(lhs.getTypeIndex() != rhs.getTypeIndex())
+		throw std::runtime_error("different operands types for division.");
+	switch(lhs.getTypeIndex())
 	{
-		cast<float>(lhs);
-		cast<float>(rhs);
-		if(rhs.get<float>() == 0.f)
-			throw std::runtime_error("division by zero");
-		return lhs.get<float>() / rhs.get<float>();
+		case DataType::Float:
+			return lhs.get<float>() / rhs.get<float>();
+		case DataType::Integer:
+			if(rhs.get<int>() == 0)
+				throw std::runtime_error("division by 0.");
+			return lhs.get<int>() / rhs.get<int>();
+		default:
+			throw std::runtime_error("unsupported operands types for division.");
 	}
-	else if(lhs.getTypeIndex() == DataType::Integer or rhs.getTypeIndex() == DataType::Integer)
-	{
-		cast<int>(lhs);
-		cast<int>(rhs);
-		if(rhs.get<int>() == 0)
-			throw std::runtime_error("division by zero");
-		return lhs.get<int>() / rhs.get<int>();
-	}
-	else
-		throw std::runtime_error("boolean does not support division.");
 }
 
 Data moduloOp(const std::vector<Data>& args)
 {
-	Data lhs(args[0]), rhs(args[1]);
-	if(lhs.getTypeIndex() == DataType::Entity or rhs.getTypeIndex() == DataType::Entity)
-		throw ScriptError("entities does not support modulo.");
-	else if(lhs.getTypeIndex() == DataType::String or rhs.getTypeIndex() == DataType::String)
-		throw std::runtime_error("string does not support modulo.");
-	else if(lhs.getTypeIndex() == DataType::Float or rhs.getTypeIndex() == DataType::Float)
+	const Data& lhs(args[0]), rhs(args[1]);
+	if(lhs.getTypeIndex() != rhs.getTypeIndex())
+		throw std::runtime_error("different operands types for division.");
+	switch(lhs.getTypeIndex())
 	{
-		cast<float>(lhs);
-		cast<float>(rhs);
-		if(rhs.get<float>() == 0.f)
-			throw std::runtime_error("modulo by zero");
-		return std::fmod(lhs.get<float>(), rhs.get<float>());
+		case DataType::Float:
+			if(rhs.get<float>() == 0.f)
+				throw std::runtime_error("modulo by 0.");
+			return std::fmod(lhs.get<float>(), rhs.get<float>());
+		case DataType::Integer:
+			if(rhs.get<int>() == 0)
+				throw std::runtime_error("modulo by 0.");
+			return lhs.get<int>() % rhs.get<int>();
+		default:
+			throw std::runtime_error("unsupported operands types for division.");
 	}
-	else if(lhs.getTypeIndex() == DataType::Integer or rhs.getTypeIndex() == DataType::Integer)
-	{
-		cast<int>(lhs);
-		cast<int>(rhs);
-		if(rhs.get<int>() == 0)
-			throw std::runtime_error("modulo by zero");
-		return lhs.get<int>() % rhs.get<int>();
-	}
-	else
-		throw std::runtime_error("boolean does not support modulo.");
 }
 
 Data notOp(const std::vector<Data>& args)
 {
 	Data lhs(args[0]);
-	cast<bool>(lhs);
 	return not lhs.get<bool>();
 }
 
 entityx::Entity nearestFoe(const std::vector<Data>& args)
 {
-	entityx::Entity self(args[0].get<entityx::Entity>());
-	if(not self)
+	entityx::Entity entity(args[0].get<entityx::Entity>());
+	if(not TEST(entity.valid()))
 		throw ScriptError("nearest foe(): first argument is an invalid entity.");
-	BodyComponent::Handle bodyComponent(self.component<BodyComponent>());
-	DetectionRangeComponent::Handle detectionRangeComponent(self.component<DetectionRangeComponent>());
+	BodyComponent::Handle bodyComponent(entity.component<BodyComponent>());
+	DetectionRangeComponent::Handle detectionRangeComponent(entity.component<DetectionRangeComponent>());
 	if(bodyComponent and detectionRangeComponent)
 	{
 		const float range{detectionRangeComponent->detectionRange/Context::parameters->pixelByMeter};
 		b2Body* body{bodyComponent->body};
 		b2World* world{body->GetWorld()};
-		NearestFoeQueryCallback callback(self);
+		NearestFoeQueryCallback callback(entity);
 		b2AABB aabb;
 		aabb.lowerBound = b2Vec2(-range, -range) + body->GetWorldCenter();
 		aabb.upperBound = b2Vec2(range, range) + body->GetWorldCenter();
@@ -324,15 +271,15 @@ entityx::Entity nearestFoe(const std::vector<Data>& args)
 
 float distanceFrom(const std::vector<Data>& args)
 {
-	entityx::Entity self(args[0].get<entityx::Entity>());
+	entityx::Entity entity(args[0].get<entityx::Entity>());
 	entityx::Entity target(args[1].get<entityx::Entity>());
-	if(not self)
+	if(not TEST(entity.valid()))
 		throw ScriptError("distance from(): first argument is an invalid entity.");
-	if(not target)
+	if(not TEST(target.valid()))
 		throw ScriptError("distance from(): second argument is an invalid entity.");
-	if(self == target)
+	if(entity == target)
 		return 0.f;
-	BodyComponent::Handle selfBodyComponent(self.component<BodyComponent>());
+	BodyComponent::Handle selfBodyComponent(entity.component<BodyComponent>());
 	BodyComponent::Handle targetBodyComponent(target.component<BodyComponent>());
 	if(selfBodyComponent and targetBodyComponent)
 	{
@@ -377,13 +324,13 @@ float distanceFrom(const std::vector<Data>& args)
 
 int directionTo(const std::vector<Data>& args)
 {
-	entityx::Entity self(args[0].get<entityx::Entity>());
+	entityx::Entity entity(args[0].get<entityx::Entity>());
 	entityx::Entity target(args[1].get<entityx::Entity>());
-	if(not self)
+	if(not TEST(entity.valid()))
 		throw ScriptError("direction to(): first argument is an invalid entity.");
-	if(not target)
+	if(not TEST(target.valid()))
 		throw ScriptError("direction to(): second argument is an invalid entity.");
-	TransformComponent::Handle selfTransformComponent(self.component<TransformComponent>());
+	TransformComponent::Handle selfTransformComponent(entity.component<TransformComponent>());
 	TransformComponent::Handle targetTransformComponent(target.component<TransformComponent>());
 	if(selfTransformComponent and targetTransformComponent)
 	{
@@ -397,10 +344,10 @@ int directionTo(const std::vector<Data>& args)
 
 int directionOf(const std::vector<Data>& args)
 {
-	entityx::Entity self(args[0].get<entityx::Entity>());
-	if(not self)
+	entityx::Entity entity(args[0].get<entityx::Entity>());
+	if(not TEST(entity.valid()))
 		throw ScriptError("direction of(): first argument is an invalid entity.");
-	DirectionComponent::Handle directionComponent(self.component<DirectionComponent>());
+	DirectionComponent::Handle directionComponent(entity.component<DirectionComponent>());
 	if(directionComponent)
 		return static_cast<int>(directionComponent->direction);
 	return static_cast<int>(Direction::None);
@@ -409,7 +356,7 @@ int directionOf(const std::vector<Data>& args)
 int attack(const std::vector<Data>& args)
 {
 	entityx::Entity entity(args[0].get<entityx::Entity>());
-	if(not entity.valid())
+	if(not TEST(entity.valid()))
 		throw ScriptError("can move(): first argument is an invalid entity.");
 	Context::systemManager->system<PendingChangesSystem>()->commandQueue.emplace(entity, HandToHand());
 	return 0;
@@ -424,7 +371,7 @@ NearestFoeQueryCallback::NearestFoeQueryCallback(entityx::Entity self):
 bool NearestFoeQueryCallback::ReportFixture(b2Fixture* fixture)
 {
 	entityx::Entity currentEntity{*static_cast<entityx::Entity*>(fixture->GetBody()->GetUserData())};
-	if(not TEST(currentEntity))
+	if(not TEST(currentEntity.valid()))
 		return true;
 	CategoryComponent::Handle categoryComponent(currentEntity.component<CategoryComponent>());
 	if(categoryComponent and currentEntity.component<CategoryComponent>()->category.test(Category::Passive))//currentEntity must be passive
@@ -444,16 +391,16 @@ bool NearestFoeQueryCallback::ReportFixture(b2Fixture* fixture)
 
 bool canMove(const std::vector<Data>& args)
 {
-	entityx::Entity self(args[0].get<entityx::Entity>());
-	if(not self)
+	const entityx::Entity entity(args[0].get<entityx::Entity>());
+	if(not TEST(entity.valid()))
 		throw ScriptError("can move(): first argument is an invalid entity.");
-	return self.has_component<WalkComponent>();
+	return entity.has_component<WalkComponent>();
 }
 
 int move(const std::vector<Data>& args)
 {
 	entityx::Entity entity(args[0].get<entityx::Entity>());
-	if(not entity.valid())
+	if(not TEST(entity.valid()))
 		throw ScriptError("can move(): first argument is an invalid entity.");
 	Context::systemManager->system<PendingChangesSystem>()->commandQueue.emplace(entity, Mover(static_cast<Direction>(args[1].get<int>())));
 	return 0;
@@ -461,20 +408,20 @@ int move(const std::vector<Data>& args)
 
 int stop(const std::vector<Data>& args)
 {
-	entityx::Entity self(args[0].get<entityx::Entity>());
-	if(not self)
+	entityx::Entity entity(args[0].get<entityx::Entity>());
+	if(not TEST(entity.valid()))
 		throw ScriptError("stop(): first argument is an invalid entity.");
-	const DirectionComponent::Handle directionComponent(self.component<DirectionComponent>());
-	const WalkComponent::Handle walkComponent(self.component<WalkComponent>());
+	const DirectionComponent::Handle directionComponent(entity.component<DirectionComponent>());
+	const WalkComponent::Handle walkComponent(entity.component<WalkComponent>());
 	if(directionComponent and walkComponent)
 	{
 		if(directionComponent->moveToLeft and directionComponent->moveToRight)
 		{
-			Context::systemManager->system<PendingChangesSystem>()->commandQueue.emplace(self, Mover(not directionComponent->direction, false));
-			Context::systemManager->system<PendingChangesSystem>()->commandQueue.emplace(self, Mover(directionComponent->direction, false));
+			Context::systemManager->system<PendingChangesSystem>()->commandQueue.emplace(entity, Mover(not directionComponent->direction, false));
+			Context::systemManager->system<PendingChangesSystem>()->commandQueue.emplace(entity, Mover(directionComponent->direction, false));
 		}
 		else
-			Context::systemManager->system<PendingChangesSystem>()->commandQueue.emplace(self, Mover(directionComponent->direction, false));
+			Context::systemManager->system<PendingChangesSystem>()->commandQueue.emplace(entity, Mover(directionComponent->direction, false));
 	}
 	return 0;
 }
@@ -482,7 +429,7 @@ int stop(const std::vector<Data>& args)
 bool canJump(const std::vector<Data>& args)
 {
 	entityx::Entity entity(args[0].get<entityx::Entity>());
-	if(not entity)
+	if(not TEST(entity.valid()))
 		throw ScriptError("can jump(): first argument is an invalid entity.");
 	const FallComponent::Handle fallComponent(entity.component<FallComponent>());
 	return entity.has_component<JumpComponent>() and fallComponent and not fallComponent->inAir;
@@ -494,4 +441,9 @@ int jump(const std::vector<Data>& args)
 		//Simply push a jump command on the command queue
 		Context::systemManager->system<PendingChangesSystem>()->commandQueue.emplace(args[0].get<entityx::Entity>(), Jumper());
 	return 0;
+}
+
+bool isValid(const std::vector<Data>& args)
+{
+	return args[0].get<entityx::Entity>().valid();
 }

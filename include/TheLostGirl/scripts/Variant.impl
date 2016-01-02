@@ -101,11 +101,6 @@ std::ostream& operator<<(std::ostream& ostream, const Variant<Types...>& value)
 
 namespace variantDetails
 {
-
-//	AbstractHolder::~AbstractHolder()
-//	{
-//	}
-
 	template <typename T, typename... Types>
 	ConcreteHolder<T, Types...>::ConcreteHolder(const T& value):
 		m_value(value)

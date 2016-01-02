@@ -49,7 +49,8 @@ Interpreter::Interpreter():
 				{"move", {2, move}},
 				{"stop", {1, stop}},
 				{"can jump", {1, canJump}},
-				{"jump", {1, jump}}},
+				{"jump", {1, jump}},
+				{"isValid", {1, isValid}}},
 	m_initialVars{{"left", static_cast<int>(Direction::Left)},
 				{"right", static_cast<int>(Direction::Right)},
 				{"top", static_cast<int>(Direction::Up)},
@@ -112,8 +113,7 @@ void Interpreter::interpretBlock(entityx::Entity entity, std::list<Expression::P
 			if(getStr(from) == "if" or getStr(from) == "else if")
 			{
 				//An if statement has only one child, the boolean expression to evaluate.
-				Data conditionData = evaluateExpression((*from)->getChild(0));
-				cast<bool>(conditionData);
+				const Data conditionData = evaluateExpression((*from)->getChild(0));
 				bool condition{conditionData.get<bool>()}, skip{false};
 				std::list<Expression::Ptr>::iterator beginIf(std::next(from));
 				short int depth{0};

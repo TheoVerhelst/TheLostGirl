@@ -183,7 +183,7 @@ class NearestFoeQueryCallback : public b2QueryCallback
 /// Checks if the entity can move.
 /// The fist argument must be a valid entity.
 /// \param args Entities that want to move.
-/// \return True if the entity can move, false otherwise.
+/// \return true if the entity can move, false otherwise.
 bool canMove(const std::vector<Data>& args);
 
 /// Make that the entity move to the given direction.
@@ -203,8 +203,13 @@ int stop(const std::vector<Data>& args);
 bool canJump(const std::vector<Data>& args);
 
 /// Make that the entity performs a jump.
-/// \param args Entities that wantto jump.
+/// \param args Entities that want to jump.
 /// \return 0 as integer.
 int jump(const std::vector<Data>& args);
+
+/// Checks if an entity is valid.
+/// \param args The entity to check.
+/// \return true if the entity is valid, false otherwise.
+bool isValid(const std::vector<Data>& args);
 
 #endif//SCRIPTSFUNCTIONS_H

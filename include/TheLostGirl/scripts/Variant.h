@@ -68,7 +68,7 @@ namespace variantDetails
 	class AbstractHolder
 	{
 		public:
-			virtual ~AbstractHolder(){}
+			virtual ~AbstractHolder();
 
 			virtual const std::type_info& getTypeId() const = 0;
 
