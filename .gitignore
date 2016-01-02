@@ -5,7 +5,7 @@ TheLostGirl.layout
 doxygen/
 bin/TheLostGirl
 bin/TheLostGirl-d
-bin/TheLostGirl-tests
+tests/TheLostGirl-tests
 bin/gmon.out
 bin/sc.py
 bin/CMakeCache.txt
@@ -13,4 +13,3 @@ bin/CMakeFiles/
 bin/Makefile
 bin/cmake_install.cmake
 bin/settings.json
-
