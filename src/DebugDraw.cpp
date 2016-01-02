@@ -13,7 +13,8 @@
 DebugDraw::DebugDraw():
 	m_debugMode{true},
 	m_coutStreambuf{std::cout.rdbuf(m_outStringStream.rdbuf())},
-	m_cerrStreambuf{std::cerr.rdbuf(m_errStringStream.rdbuf())}
+	m_cerrStreambuf{std::cerr.rdbuf(m_errStringStream.rdbuf())},
+	m_errorColor{255, 100, 100}
 {
 }
 
@@ -21,6 +22,11 @@ DebugDraw::~DebugDraw()
 {
 	std::cout.rdbuf(m_coutStreambuf);
 	std::cerr.rdbuf(m_cerrStreambuf);
+	for(std::size_t i{0}; i < m_console->getLineAmount(); ++i)
+		if(m_console->getLineColor(i) == m_errorColor)
+			std::cerr << m_console->getLine(i).toAnsiString() << "\n";
+		else
+			std::cout << m_console->getLine(i).toAnsiString() << "\n";
 }
 
 void DebugDraw::initWidgets()
@@ -53,11 +59,11 @@ void DebugDraw::DrawPolygon(const b2Vec2* vertices, int32 vertexCount, const b2C
 	sf::ConvexShape polygon(static_cast<unsigned int>(vertexCount));
 	for(int32 i{0}; i < vertexCount; ++i)
 		polygon.setPoint(static_cast<unsigned int>(i),
-						sf::Vector2f(vertices[i].x, vertices[i].y)*Context::parameters->pixelByMeter);
+			sf::Vector2f(vertices[i].x, vertices[i].y)*Context::parameters->pixelByMeter);
 	polygon.setOutlineColor(sf::Color(static_cast<sf::Uint8>(color.r*255.f),
-										static_cast<sf::Uint8>(color.g*255.f),
-										static_cast<sf::Uint8>(color.b*255.f),
-										static_cast<sf::Uint8>(color.a*127.f)));
+			static_cast<sf::Uint8>(color.g*255.f),
+			static_cast<sf::Uint8>(color.b*255.f),
+			static_cast<sf::Uint8>(color.a*127.f)));
 	polygon.setOutlineThickness(-1.f);
 	polygon.setFillColor(sf::Color::Transparent);
 	if(Context::parameters->bloomEnabled)
@@ -228,27 +234,17 @@ void DebugDraw::drawDebugAth()
 	m_FPSLabel->setText("FPS: " + roundOutput(m_framesPerSecond));
 
 	//Console
-
-	m_console->moveToFront();
 	const std::string outString(m_outStringStream.str());
 	if(not outString.empty())
 	{
 		m_console->addLine(outString);
 		m_outStringStream.str("");
-		//Print too to stdout
-		std::cout.rdbuf(m_coutStreambuf);
-		std::cout << outString;
-		std::cout.rdbuf(m_outStringStream.rdbuf());
 	}
 	const std::string errString(m_errStringStream.str());
 	if(not errString.empty())
 	{
-		m_console->addLine(errString, sf::Color(255, 100, 100));
+		m_console->addLine(errString, m_errorColor);
 		m_errStringStream.str("");
-		//Print too to stderr
-		std::cerr.rdbuf(m_cerrStreambuf);
-		std::cerr << errString;
-		std::cerr.rdbuf(m_errStringStream.rdbuf());
 	}
 }
 
