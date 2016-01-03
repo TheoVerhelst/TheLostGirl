@@ -3,9 +3,10 @@
 Parameters* Context::parameters{nullptr};
 sf::RenderWindow* Context::window{nullptr};
 sf::RenderTexture* Context::postEffectsTexture{nullptr};
-TextureManager* Context::textureManager{nullptr};
-FontManager* Context::fontManager{nullptr};
-ScriptManager* Context::scriptManager{nullptr};
+ResourceManager<sf::Texture, std::string>* Context::textureManager{nullptr};
+ResourceManager<sf::Font, std::string>* Context::fontManager{nullptr};
+ResourceManager<sf::SoundBuffer, std::string>* Context::soundManager{nullptr};
+ResourceManager<Interpreter, std::string>* Context::scriptManager{nullptr};
 LangManager* Context::langManager{nullptr};
 tgui::Gui* Context::gui{nullptr};
 entityx::EventManager* Context::eventManager{nullptr};

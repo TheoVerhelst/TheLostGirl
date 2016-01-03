@@ -4,20 +4,7 @@
 #include <map>
 #include <string>
 #include <memory>
-#include <stdexcept>
-#include <cassert>
 #include <mutex>
-#include <TheLostGirl/scripts/Interpreter.h>
-
-//Forward declarations
-namespace sf
-{
-	class Texture;
-	class Font;
-	class Shader;
-}
-enum class Textures;
-enum class Fonts;
 
 /// Simple resource manager.
 /// It loads and holds many type of resources (SFML textures, sounds, ...) and restitues them
@@ -60,15 +47,6 @@ class ResourceManager
 		std::map<Identifier, std::unique_ptr<Resource>> m_resourceMap;///< Resources mapped with their identifiers.
 		std::mutex m_mutex;                                           ///< Mutex for multithreaded ressource management.
 };
-
-/// Typedef of RessourceManager.
-typedef ResourceManager<sf::Texture, std::string> TextureManager;
-/// Typedef of RessourceManager.
-typedef ResourceManager<sf::Font, std::string> FontManager;
-/// Typedef of RessourceManager.
-typedef ResourceManager<sf::Shader, std::string> ShaderManager;
-/// Typedef of RessourceManager.
-typedef ResourceManager<Interpreter, std::string> ScriptManager;
 
 #include <TheLostGirl/ResourceManager.inl>
 

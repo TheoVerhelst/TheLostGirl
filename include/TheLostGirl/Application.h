@@ -2,6 +2,7 @@
 #define APPLICATION_H
 
 #include <TGUI/TGUI.hpp>
+#include <SFML/Audio.hpp>
 #include <entityx/entityx.h>
 #include <Box2D/Box2D.h>
 #include <TheLostGirl/ResourceManager.h>
@@ -10,6 +11,7 @@
 #include <TheLostGirl/StateStack.h>
 #include <TheLostGirl/Player.h>
 #include <TheLostGirl/Parameters.h>
+#include <TheLostGirl/scripts/Interpreter.h>
 #include <TheLostGirl/DebugDraw.h>
 #include <TheLostGirl/LangManager.h>
 #include <TheLostGirl/DestructionListener.h>
@@ -75,10 +77,11 @@ class Application : public entityx::Receiver<Application>
 		sf::RenderTexture m_postEffectsTexture;   ///< Texture for rendering post effects.
 		BloomEffect m_bloomEffect;                ///< The shader to apply on m_postEffectsTexture.
 		tgui::Gui m_gui;                          ///< All the gui.
-		TextureManager m_textureManager;          ///< The texture manager.
-		FontManager m_fontManager;                ///< The fonts manager.
-		ScriptManager m_scriptManager;            ///< The scripts manager.
-		LangManager m_langManager;                ///< The lang manager.
+		ResourceManager<sf::Texture, std::string> m_textureManager;///< The texture manager.
+		ResourceManager<sf::Font, std::string> m_fontManager;///< The fonts manager.
+		ResourceManager<Interpreter, std::string> m_scriptManager;///< The scripts manager.
+		ResourceManager<sf::SoundBuffer, std::string> m_soundManager;///< The sounds manager.
+		LangManager m_langManager;                ///< The langs manager.
 		entityx::EventManager m_eventManager;     ///< The entity events manager.
 		entityx::EntityManager m_entityManager;   ///< The entity manager.
 		entityx::SystemManager m_systemManager;   ///< The entity systems manager.

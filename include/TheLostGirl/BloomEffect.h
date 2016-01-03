@@ -2,8 +2,7 @@
 #define BLOOMEFFECT_H
 
 #include <array>
-#include <SFML/Graphics/RenderTexture.hpp>
-#include <SFML/Graphics/Shader.hpp>
+#include <SFML/Graphics.hpp>
 #include <TheLostGirl/PostEffect.h>
 #include <TheLostGirl/ResourceManager.h>
 
@@ -61,10 +60,10 @@ class BloomEffect : public PostEffect
 		/// \param states Various render states to add to the drawing.
 		void add(const sf::RenderTexture& source, const sf::RenderTexture& bloom, sf::RenderTarget& target, const sf::RenderStates& states = sf::RenderStates::Default);
 
-		ShaderManager m_shaders;                ///< The shader manager that store the source of the effects.
-		sf::RenderTexture m_brightnessTexture;  ///< First temp texture.
-		RenderTextureArray m_firstPassTextures; ///< Second temp texture.
-		RenderTextureArray m_secondPassTextures;///< Third temp texture.
+		ResourceManager<sf::Shader, std::string> m_shaders;///< The shader manager that store the source of the effects.
+		sf::RenderTexture m_brightnessTexture;             ///< First temp texture.
+		RenderTextureArray m_firstPassTextures;            ///< Second temp texture.
+		RenderTextureArray m_secondPassTextures;           ///< Third temp texture.
 };
 
 #endif // BLOOMEFFECT_H

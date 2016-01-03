@@ -1,3 +1,4 @@
+#include <fstream>
 #include <SFML/Graphics.hpp>
 #include <Box2D/Box2D.h>
 #include <TheLostGirl/states/IntroState.h>
@@ -175,6 +176,7 @@ void Application::initContext()
 	Context::postEffectsTexture = &m_postEffectsTexture;
 	Context::textureManager = &m_textureManager;
 	Context::fontManager = &m_fontManager;
+	Context::soundManager = &m_soundManager;
 	Context::scriptManager = &m_scriptManager;
 	Context::langManager = &m_langManager;
 	Context::gui = &m_gui;

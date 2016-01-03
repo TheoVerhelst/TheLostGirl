@@ -1,3 +1,6 @@
+#include <stdexcept>
+#include <cassert>
+
 template <typename Resource, typename Identifier>
 template <typename... Args>
 void ResourceManager<Resource, Identifier>::load(Identifier id, const std::string& filename, Args&&... args)

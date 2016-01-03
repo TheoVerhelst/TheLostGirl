@@ -6,31 +6,29 @@
 //Forward declarations
 namespace sf
 {
-       class RenderWindow;
-       class RenderTexture;
-       class Font;
-       class Texture;
+   class RenderWindow;
+   class RenderTexture;
+   class Font;
+   class Texture;
+   class SoundBuffer;
 }
 
 namespace tgui
 {
-       class Gui;
+   class Gui;
 }
 
 namespace entityx
 {
-       class EventManager;
-       class EntityManager;
-       class SystemManager;
+   class EventManager;
+   class EntityManager;
+   class SystemManager;
 }
 
 struct Parameters;
 template <typename Resource, typename Identifier>
 class ResourceManager;
 class Interpreter;
-typedef ResourceManager<sf::Texture, std::string> TextureManager;
-typedef ResourceManager<sf::Font, std::string> FontManager;
-typedef ResourceManager<Interpreter, std::string> ScriptManager;
 class b2World;
 class Player;
 class LangManager;
@@ -44,10 +42,11 @@ struct Context
 	static Parameters* parameters;               ///< Structure containing all the game parameters.
 	static sf::RenderWindow* window;             ///< The main window.
 	static sf::RenderTexture* postEffectsTexture;///< Texture for rendering posteffects.
-	static TextureManager* textureManager;       ///< The textures manager.
-	static FontManager* fontManager;             ///< The fonts manager.
-	static ScriptManager* scriptManager;         ///< The scripts manager.
-	static LangManager* langManager;             ///< The lang manager.
+	static ResourceManager<sf::Texture, std::string>* textureManager;       ///< The textures manager.
+	static ResourceManager<sf::Font, std::string>* fontManager;             ///< The fonts manager.
+	static ResourceManager<sf::SoundBuffer, std::string>* soundManager;           ///< The sounds manager.
+	static ResourceManager<Interpreter, std::string>* scriptManager;         ///< The scripts manager.
+	static LangManager* langManager;             ///< The langs manager.
 	static tgui::Gui* gui;                       ///< The main GUI manager.
 	static entityx::EventManager* eventManager;  ///< The event manager of the entity system.
 	static entityx::EntityManager* entityManager;///< The entity manager of the entity system

@@ -7,6 +7,7 @@
 #include <TheLostGirl/FixtureRoles.h>
 #include <TheLostGirl/functions.h>
 #include <TheLostGirl/serialization.h>
+#include <TheLostGirl/scripts/Interpreter.h>
 
   //////////             ///////////
  ////////// Serializing ///////////
