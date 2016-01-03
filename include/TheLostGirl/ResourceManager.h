@@ -33,15 +33,9 @@ class ResourceManager
 		/// the function will do nothing.
         /// \param id Identifier of the resource.
         /// \param filename String of the path to the resource.
-		void load(Identifier id, const std::string& filename);
-
-        /// Overloaded function that pass a custom argument to the loading function.
-        /// It is useful to load only a certain part of a texture, a type of shader, ...
-        /// \param id Identifier of the resource.
-        /// \param filename String of the path to the resource.
-        /// \param secondParam Additional parameter, it can be every type you want, and is passed to the loading function.
-		template <typename Parameter>
-		void load(Identifier id, const std::string& filename, const Parameter& secondParam);
+        /// \param args Additional parameters passed to the loading function.
+		template <typename... Args>
+		void load(Identifier id, const std::string& filename, Args&&... args);
 
         /// Get the resource identified by id.
         /// This function can be called only if the resource was loaded before by the load function.

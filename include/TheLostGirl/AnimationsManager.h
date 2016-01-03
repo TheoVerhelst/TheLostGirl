@@ -137,9 +137,9 @@ class AnimationsManager
 		/// Serialize the animations manager.
 		/// That copy all data in value and construct them in this instance of animations manager.
 		/// \param value A Json value containing all the data.
-		/// \param object The object to pass to animations constructors.
-		template <typename T>
-		void deserialize(const Json::Value& value, T& object);
+		/// \param args Arguments forwarded to the animations constructor.
+		template <typename... Args>
+		void deserialize(const Json::Value& value, Args&&... args);
 
 	private:
 		/// An animation and its properties.

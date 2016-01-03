@@ -331,7 +331,7 @@ void GameState::initWorld(const std::string& file)
 					//Load the texture
 					//Identifier of the texture, in format "level_plan_texture"
 					const std::string textureIdentifier{fileTexture + "_" + std::to_string(i)};
-					Context::textureManager->load<sf::IntRect>(textureIdentifier, path, originRect);
+					Context::textureManager->load(textureIdentifier, path, originRect);
 					//Replaces
 					const Json::Value replaces{image["replaces"]};
 					//For each replacing of the image

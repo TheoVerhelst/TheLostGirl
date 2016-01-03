@@ -167,15 +167,15 @@ Json::Value AnimationsManager<Animation>::serialize() const
 }
 
 template<typename Animation>
-template<typename T>
-void AnimationsManager<Animation>::deserialize(const Json::Value& value, T& object)
+template<typename... Args>
+void AnimationsManager<Animation>::deserialize(const Json::Value& value, Args&&... args)
 {
 	m_animations.clear();
 	//For each animation name in the value
 	for(std::string& animationIdentifier : value.getMemberNames())
 	{
 		Json::Value animationObj = value[animationIdentifier];
-		Animation animation(object);
+		Animation animation(std::forward<Args>(args)...);
 		//Copy the data inside the animation
 		animation.deserialize(animationObj["data"]);
 		TimeAnimation timeAnim{animationIdentifier, animation};

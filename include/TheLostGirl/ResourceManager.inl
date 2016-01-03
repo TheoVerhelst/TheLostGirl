@@ -1,5 +1,6 @@
 template <typename Resource, typename Identifier>
-void ResourceManager<Resource, Identifier>::load(Identifier id, const std::string& filename)
+template <typename... Args>
+void ResourceManager<Resource, Identifier>::load(Identifier id, const std::string& filename, Args&&... args)
 {
 	std::lock_guard<std::mutex> lock(m_mutex);//Lock the mutex for thread-safety
 	//If the resource is not already loaded
@@ -8,26 +9,7 @@ void ResourceManager<Resource, Identifier>::load(Identifier id, const std::strin
 		//Create and load resource
 		std::unique_ptr<Resource> resource(new Resource());
 
-		if(!resource->loadFromFile(filename))
-			throw std::runtime_error("The resource manager failed to load \"" + filename + "\"");
-
-		//If loading successful, insert resource to map
-		m_resourceMap.insert(std::make_pair(id, std::move(resource)));
-	}
-}
-
-template <typename Resource, typename Identifier>
-template <typename Parameter>
-void ResourceManager<Resource, Identifier>::load(Identifier id, const std::string& filename, const Parameter& secondParam)
-{
-	std::lock_guard<std::mutex> lock(m_mutex);//Lock the mutex for thread-safety
-	//If the resource is not already loaded
-	if(m_resourceMap.find(id) == m_resourceMap.end())
-	{
-		//Create and load resource
-		std::unique_ptr<Resource> resource(new Resource());
-
-		if(!resource->loadFromFile(filename, secondParam))
+		if(!resource->loadFromFile(filename, std::forward<Args>(args)...))
 			throw std::runtime_error("The resource manager failed to load resource \"" + filename + "\"");
 
 		//If loading successful, insert resource to map
