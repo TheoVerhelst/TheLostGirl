@@ -44,8 +44,6 @@ int Application::init(bool debugMode)
 		deserializeSettings();
 		m_eventManager.subscribe<ParametersChange>(*this);
 		m_gui.setWindow(m_window);
-		m_debugDraw.initWidgets();
-		m_bloomEffect.init();
 		handleResize();
 		registerSystems();
 		m_window.setKeyRepeatEnabled(false);//Desactive the key repeating

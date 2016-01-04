@@ -16,21 +16,6 @@ DebugDraw::DebugDraw():
 	m_cerrStreambuf{std::cerr.rdbuf(m_errStringStream.rdbuf())},
 	m_errorColor{255, 100, 100}
 {
-}
-
-DebugDraw::~DebugDraw()
-{
-	std::cout.rdbuf(m_coutStreambuf);
-	std::cerr.rdbuf(m_cerrStreambuf);
-	for(std::size_t i{0}; i < m_console->getLineAmount(); ++i)
-		if(m_console->getLineColor(i) == m_errorColor)
-			std::cerr << m_console->getLine(i).toAnsiString() << "\n";
-		else
-			std::cout << m_console->getLine(i).toAnsiString() << "\n";
-}
-
-void DebugDraw::initWidgets()
-{
 	m_positionLabel = Context::parameters->guiTheme->load("Label");
 	m_mousePositionLabel = Context::parameters->guiTheme->load("Label");
 	m_FPSLabel = Context::parameters->guiTheme->load("Label");
@@ -52,6 +37,17 @@ void DebugDraw::initWidgets()
 	m_console->setSize(tgui::bindWidth(gui) * 0.5f - 10.f, tgui::bindHeight(gui) * 0.3f - 10.f);
 	m_console->setTextSize(10);
 	gui.add(m_console);
+}
+
+DebugDraw::~DebugDraw()
+{
+	std::cout.rdbuf(m_coutStreambuf);
+	std::cerr.rdbuf(m_cerrStreambuf);
+	for(std::size_t i{0}; i < m_console->getLineAmount(); ++i)
+		if(m_console->getLineColor(i) == m_errorColor)
+			std::cerr << m_console->getLine(i).toAnsiString() << "\n";
+		else
+			std::cout << m_console->getLine(i).toAnsiString() << "\n";
 }
 
 void DebugDraw::DrawPolygon(const b2Vec2* vertices, int32 vertexCount, const b2Color& color)
