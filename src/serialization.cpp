@@ -716,7 +716,7 @@ void Serializer::implDeserialize(const Json::Value& value, entityx::ComponentHan
 
 void Serializer::implDeserialize(const Json::Value& value, entityx::ComponentHandle<SpriteComponent> component, entityx::Entity)
 {
-	const std::string identifier{value["identifier"].asString()};
+	const std::string& identifier{value["identifier"].asString()};
 	Context::textureManager->load(identifier, Context::parameters->resourcesPath + "images//" + identifier);
 	component->sprite.setTexture(Context::textureManager->get(identifier));
 	if(value.isMember("origin"))
@@ -1095,7 +1095,7 @@ std::string typeToStr(Json::ValueType type)
 	}
 }
 
-Json::ValueType strToType(std::string str)
+Json::ValueType strToType(const std::string& str)
 {
 	if(str == "string")
 		return Json::stringValue;
@@ -1115,7 +1115,7 @@ Json::ValueType strToType(std::string str)
 		return Json::nullValue;
 }
 
-void parseObject(const Json::Value& object, const std::string name, std::map<std::string, Json::ValueType> valuesTypes)
+void parseObject(const Json::Value& object, const std::string& name, std::map<std::string, Json::ValueType> valuesTypes)
 {
 	if(object.type() != Json::objectValue)
 		throw std::runtime_error("\"" + name + "\" must be an object.");
@@ -1131,7 +1131,7 @@ void parseObject(const Json::Value& object, const std::string name, std::map<std
 	}
 }
 
-void requireValues(const Json::Value& object, const std::string name, std::map<std::string, Json::ValueType> valuesTypes)
+void requireValues(const Json::Value& object, const std::string& name, std::map<std::string, Json::ValueType> valuesTypes)
 {
 	if(object.type() != Json::objectValue)
 		throw std::runtime_error("\"" + name + "\" must be an object.");
@@ -1147,7 +1147,7 @@ void requireValues(const Json::Value& object, const std::string name, std::map<s
 	}
 }
 
-void parseObject(const Json::Value& object, const std::string name, Json::ValueType type)
+void parseObject(const Json::Value& object, const std::string& name, Json::ValueType type)
 {
 	if(object.type() != Json::objectValue)
 		throw std::runtime_error("\"" + name + "\" must be an object.");
@@ -1161,7 +1161,7 @@ void parseObject(const Json::Value& object, const std::string name, Json::ValueT
 	}
 }
 
-void parseArray(const Json::Value& array, const std::string name, std::vector<Json::Value> values)
+void parseArray(const Json::Value& array, const std::string& name, std::vector<Json::Value> values)
 {
 	if(array.type() != Json::arrayValue)
 		throw std::runtime_error("\"" + name + "\" must be an array.");
@@ -1175,19 +1175,19 @@ void parseArray(const Json::Value& array, const std::string name, std::vector<Js
 	}
 }
 
-void parseValue(const Json::Value& value, const std::string name, std::vector<Json::Value> values)
+void parseValue(const Json::Value& value, const std::string& name, std::vector<Json::Value> values)
 {
 	if(std::find(values.begin(), values.end(), value) == values.end())//If the value is not in the vector
 		throw std::runtime_error("\"" + name + "\" value (" + value.asString() + ") is not recognized.");
 }
 
-void parseValue(const Json::Value& value, const std::string name, Json::ValueType type)
+void parseValue(const Json::Value& value, const std::string& name, Json::ValueType type)
 {
 	if(not value.isConvertibleTo(type))
 		throw std::runtime_error("\"" + name + "\" must be a" + typeToStr(type) + ".");
 }
 
-void parseArray(const Json::Value& array, const std::string name, Json::ValueType type)
+void parseArray(const Json::Value& array, const std::string& name, Json::ValueType type)
 {
 	if(array.type() != Json::arrayValue)
 		throw std::runtime_error("\"" + name + "\" must be an array.");
@@ -1243,7 +1243,7 @@ void parse(Json::Value& value, const Json::Value& model, const std::string& valu
 				//A not-free-name child must have these three members defined
 				//Require name before, and if the name is defined we can require the others member with a fancier exception than ".children.i"
 				requireValues(modelChild, modelName + ".children." + std::to_string(i), {{"name", Json::stringValue}});
-				const std::string childName{modelChild["name"].asString()};
+				const std::string& childName{modelChild["name"].asString()};
 				requireValues(modelChild, modelName + "." + childName, {{"required", Json::booleanValue},
 																		{"type", Json::stringValue}});
 				//If the current child is required
