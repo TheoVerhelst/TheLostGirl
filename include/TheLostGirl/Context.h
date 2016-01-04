@@ -25,6 +25,7 @@ namespace entityx
    class SystemManager;
 }
 
+class Application;
 struct Parameters;
 template <typename Resource, typename Identifier>
 class ResourceManager;
@@ -39,6 +40,11 @@ class StateStack;
 /// they can then use these various resources managers.
 struct Context
 {
+	/// Constructor.
+	/// Initialize the global variable according to the given Application instance.
+	/// \param application The main Application instance.
+	Context(Application& application);
+
 	static Parameters* parameters;               ///< Structure containing all the game parameters.
 	static sf::RenderWindow* window;             ///< The main window.
 	static sf::RenderTexture* postEffectsTexture;///< Texture for rendering posteffects.

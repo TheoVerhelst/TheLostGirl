@@ -13,6 +13,7 @@ Application::Application():
 	m_entityManager{m_eventManager},
 	m_systemManager{m_entityManager, m_eventManager},
 	m_world{m_parameters.gravity},
+	m_context{*this},
 	m_FPSRefreshRate{sf::seconds(1.f/20.f)},
 	m_frameTime{sf::seconds(1.f/60.f)}
 {
@@ -40,7 +41,6 @@ int Application::init(bool debugMode)
 	try
 	{
 		m_parameters.debugMode = debugMode;
-		initContext();
 		deserializeSettings();
 		m_eventManager.subscribe<ParametersChange>(*this);
 		m_gui.setWindow(m_window);
@@ -167,25 +167,6 @@ void Application::registerSystems()
 	m_systemManager.add<TimeSystem>();
 	m_systemManager.add<StatsSystem>();
 	m_systemManager.add<ScriptsSystem>();
-}
-
-void Application::initContext()
-{
-	Context::parameters = &m_parameters;
-	Context::window = &m_window;
-	Context::postEffectsTexture = &m_postEffectsTexture;
-	Context::textureManager = &m_textureManager;
-	Context::fontManager = &m_fontManager;
-	Context::soundManager = &m_soundManager;
-	Context::scriptManager = &m_scriptManager;
-	Context::langManager = &m_langManager;
-	Context::gui = &m_gui;
-	Context::eventManager = &m_eventManager;
-	Context::entityManager = &m_entityManager;
-	Context::systemManager = &m_systemManager;
-	Context::world = &m_world;
-	Context::player = &m_player;
-	Context::stateStack = &m_stateStack;
 }
 
 void Application::deserializeSettings()
