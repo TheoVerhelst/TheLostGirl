@@ -9,7 +9,11 @@
 #include <TheLostGirl/serialization.h>
 #include <TheLostGirl/Application.h>
 
-Application::Application():
+Application::Application(bool debugMode):
+	m_window{{static_cast<unsigned int>(m_parameters.defaultViewSize.x),
+			static_cast<unsigned int>(m_parameters.defaultViewSize.y)},
+			"The Lost Girl"},
+	m_gui{m_window},
 	m_entityManager{m_eventManager},
 	m_systemManager{m_entityManager, m_eventManager},
 	m_world{m_parameters.gravity},
@@ -17,6 +21,21 @@ Application::Application():
 	m_FPSRefreshRate{sf::seconds(1.f/20.f)},
 	m_frameTime{sf::seconds(1.f/60.f)}
 {
+	m_parameters.debugMode = debugMode;
+	deserializeSettings();
+	m_eventManager.subscribe<ParametersChange>(*this);
+	handleResize();
+	registerSystems();
+	m_window.setKeyRepeatEnabled(false);//Desactive the key repeating
+	m_fontManager.load("menu", Context::parameters->resourcesPath + "fonts/euphorigenic.ttf");
+	m_fontManager.load("debug", Context::parameters->resourcesPath + "fonts/FreeMonoBold.ttf");
+	m_gui.setFont(std::make_shared<sf::Font>(m_fontManager.get("menu")));
+	m_world.SetDebugDraw(&m_debugDraw);
+	m_world.SetDestructionListener(&m_destructionListener);
+	m_debugDraw.setFont(std::make_shared<sf::Font>(m_fontManager.get("debug")));
+	m_debugDraw.SetFlags(b2Draw::e_shapeBit|b2Draw::e_jointBit);//Debug drawing flags
+	m_systemManager.configure();
+	m_stateStack.pushState<IntroState>();//Add the intro state
 }
 
 Application::~Application()
@@ -36,76 +55,33 @@ Application::~Application()
 	settingsFileStream.close();
 }
 
-int Application::init(bool debugMode)
+void Application::run()
 {
-	try
+	sf::Clock clock;
+	sf::Time timeSinceLastUpdate{sf::Time::Zero};
+	while(m_window.isOpen())
 	{
-		m_parameters.debugMode = debugMode;
-		deserializeSettings();
-		m_eventManager.subscribe<ParametersChange>(*this);
-		m_gui.setWindow(m_window);
-		handleResize();
-		registerSystems();
-		m_window.setKeyRepeatEnabled(false);//Desactive the key repeating
-		m_fontManager.load("menu", Context::parameters->resourcesPath + "fonts/euphorigenic.ttf");
-		m_fontManager.load("debug", Context::parameters->resourcesPath + "fonts/FreeMonoBold.ttf");
-		m_gui.setFont(std::make_shared<sf::Font>(m_fontManager.get("menu")));
-		m_world.SetDebugDraw(&m_debugDraw);
-		m_world.SetDestructionListener(&m_destructionListener);
-		m_debugDraw.setFont(std::make_shared<sf::Font>(m_fontManager.get("debug")));
-		m_debugDraw.SetFlags(b2Draw::e_shapeBit|b2Draw::e_jointBit);//Debug drawing flags
-		m_systemManager.configure();
-		m_stateStack.pushState<IntroState>();//Add the intro state
-	}
-	catch(std::runtime_error& e)
-	{
-		std::cerr << "Runtime error: " << e.what() << "\n";
-		return 1;
-	}
-	return 0;
-}
-
-int Application::run()
-{
-	try
-	{
-		sf::Clock clock;
-		sf::Time timeSinceLastUpdate{sf::Time::Zero};
-		while(m_window.isOpen())
+		const sf::Time dt = clock.restart();
+		if(m_parameters.debugMode)
 		{
-			const sf::Time dt = clock.restart();
-			if(m_parameters.debugMode)
+			m_FPSTimer += dt;
+			if(m_FPSTimer > m_FPSRefreshRate)
 			{
-				m_FPSTimer += dt;
-				if(m_FPSTimer > m_FPSRefreshRate)
-				{
-					m_debugDraw.setFPS(1.f/dt.asSeconds());
-					m_FPSTimer %= m_FPSRefreshRate;
-				}
+				m_debugDraw.setFPS(1.f/dt.asSeconds());
+				m_FPSTimer %= m_FPSRefreshRate;
 			}
-			timeSinceLastUpdate += dt;
-			while(timeSinceLastUpdate > m_frameTime)
-			{
-				timeSinceLastUpdate -= m_frameTime;
-				update(m_frameTime);
-				if(m_stateStack.isEmpty())
-					m_window.close();
-				processInput();
-			}
-			render();
 		}
+		timeSinceLastUpdate += dt;
+		while(timeSinceLastUpdate > m_frameTime)
+		{
+			timeSinceLastUpdate -= m_frameTime;
+			update(m_frameTime);
+			if(m_stateStack.isEmpty())
+				m_window.close();
+			processInput();
+		}
+		render();
 	}
-	catch(std::runtime_error& e)
-	{
-		std::cerr << "Runtime error: " << e.what() << "\n";
-		return 1;
-	}
-	catch(std::out_of_range& e)
-	{
-		std::cerr << "Out of range error: " << e.what() << "\n";
-		return 2;
-	}
-	return 0;
 }
 
 void Application::receive(const ParametersChange&)
@@ -185,7 +161,7 @@ void Application::deserializeSettings()
 	{
 		//Load default settings
 		const sf::Vector2u windowSize{static_cast<sf::Vector2u>(m_parameters.defaultViewSize)};
-		m_window.create({windowSize.x, windowSize.y}, "The Lost Girl");
+//		m_window.create({windowSize.x, windowSize.y}, "The Lost Girl");
 		m_postEffectsTexture.create(windowSize.x, windowSize.y);
 		m_parameters.fullscreen = false;
 		m_parameters.bloomEnabled = false;

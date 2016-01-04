@@ -32,21 +32,15 @@ class Application : public entityx::Receiver<Application>
 {
 	public:
 		/// Constructor.
-		Application();
+		/// \param debugMode Indicate if the appliaction starts in debug mode.
+		Application(bool debugMode = false);
 
 		/// Destructor.
 		~Application();
 
-        /// Initialize the game.
-        /// This does all that need to be done at the beginning of the game.
-		/// \param debugMode Indicate if the appliaction should start in debug mode.
-        /// \return 0 on succes, 1 on failure.
-		int init(bool debugMode = false);
-
         /// Run the game.
         /// This function contains the main game loop.
-        /// \return 0 on succes, 1 on undefined program failure or 2 on level loading failure.
-		int run();
+		void run();
 
 		/// Receive an event about a change in the parameters.
 		/// \param parametersChange The data about the change.

@@ -6,10 +6,17 @@
 int main()
 {
 	XInitThreads();//For multithreadings on linux, must be called before the initialisation of the StateStack
-	Application application;
+	try
+	{
 #ifdef NDEBUG
-	return application.init(false) or application.run();
+		Application(false).run();
 #else
-	return application.init(true) or application.run();
+		Application(true).run();
 #endif
+	}
+	catch(const std::exception& e)
+	{
+		std::cerr << "Exception: " << e.what() << std::endl;
+		return EXIT_FAILURE;
+	}
 }
