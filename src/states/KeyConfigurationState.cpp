@@ -1,8 +1,8 @@
 #include <SFML/Window.hpp>
 #include <TGUI/TGUI.hpp>
-#include <TheLostGirl/Parameters.h>
-#include <TheLostGirl/LangManager.h>
-#include <TheLostGirl/states/KeyConfigurationState.h>
+#include <TheLostGirl/Parameters.hpp>
+#include <TheLostGirl/LangManager.hpp>
+#include <TheLostGirl/states/KeyConfigurationState.hpp>
 
 KeyConfigurationState::KeyConfigurationState() :
 	m_actionStrings{{Player::Action::Bend, Context::langManager->tr("Bend")},

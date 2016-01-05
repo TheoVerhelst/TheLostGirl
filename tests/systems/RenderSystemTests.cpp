@@ -1,5 +1,5 @@
 #include <boost/test/unit_test.hpp>
-#include <TheLostGirl/systems/RenderSystem.h>
+#include <TheLostGirl/systems/RenderSystem.hpp>
 
 struct RenderSystemTestsFixture
 {

@@ -1,5 +1,5 @@
 #include <boost/test/unit_test.hpp>
-#include <TheLostGirl/MusicPlayer.h>
+#include <TheLostGirl/MusicPlayer.hpp>
 
 struct MusicPlayerTestsFixture
 {

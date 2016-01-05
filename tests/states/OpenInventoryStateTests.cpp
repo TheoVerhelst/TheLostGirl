@@ -1,5 +1,5 @@
 #include <boost/test/unit_test.hpp>
-#include <TheLostGirl/states/OpenInventoryState.h>
+#include <TheLostGirl/states/OpenInventoryState.hpp>
 
 struct OpenInventoryStateTestsFixture
 {

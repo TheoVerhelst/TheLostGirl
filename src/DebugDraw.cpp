@@ -3,12 +3,12 @@
 #include <TGUI/TGUI.hpp>
 #include <entityx/entityx.h>
 #include <Box2D/Box2D.h>
-#include <TheLostGirl/Parameters.h>
-#include <TheLostGirl/components.h>
-#include <TheLostGirl/Context.h>
-#include <TheLostGirl/ResourceManager.h>
-#include <TheLostGirl/functions.h>
-#include <TheLostGirl/DebugDraw.h>
+#include <TheLostGirl/Parameters.hpp>
+#include <TheLostGirl/components.hpp>
+#include <TheLostGirl/Context.hpp>
+#include <TheLostGirl/ResourceManager.hpp>
+#include <TheLostGirl/functions.hpp>
+#include <TheLostGirl/DebugDraw.hpp>
 
 DebugDraw::DebugDraw():
 	m_debugMode{true},

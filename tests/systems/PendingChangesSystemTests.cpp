@@ -1,5 +1,5 @@
 #include <boost/test/unit_test.hpp>
-#include <TheLostGirl/systems/PendingChangesSystem.h>
+#include <TheLostGirl/systems/PendingChangesSystem.hpp>
 
 struct PendingChangesSystemTestsFixture
 {

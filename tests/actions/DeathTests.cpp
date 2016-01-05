@@ -1,5 +1,5 @@
 #include <boost/test/unit_test.hpp>
-#include <TheLostGirl/actions/Death.h>
+#include <TheLostGirl/actions/Death.hpp>
 
 struct DeathTestsFixture
 {

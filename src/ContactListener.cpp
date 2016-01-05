@@ -1,8 +1,8 @@
 #include <Box2D/Box2D.h>
 #include <entityx/entityx.h>
-#include <TheLostGirl/components.h>
-#include <TheLostGirl/functions.h>
-#include <TheLostGirl/ContactListener.h>
+#include <TheLostGirl/components.hpp>
+#include <TheLostGirl/functions.hpp>
+#include <TheLostGirl/ContactListener.hpp>
 
 
 void ContactListener::PreSolve(b2Contact* contact, const b2Manifold* oldManifold)

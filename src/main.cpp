@@ -1,7 +1,7 @@
 #include <X11/Xlib.h>//Thread init
 #undef None//The X11 library define None as 0 so undef it in order to don't conflict with some None in enums
 #undef Status
-#include <TheLostGirl/Application.h>
+#include <TheLostGirl/Application.hpp>
 
 int main()
 {

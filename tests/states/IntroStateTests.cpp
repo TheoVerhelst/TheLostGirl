@@ -1,5 +1,5 @@
 #include <boost/test/unit_test.hpp>
-#include <TheLostGirl/states/IntroState.h>
+#include <TheLostGirl/states/IntroState.hpp>
 
 struct IntroStateTestsFixture
 {

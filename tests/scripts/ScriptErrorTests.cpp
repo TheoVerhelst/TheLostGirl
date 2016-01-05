@@ -1,5 +1,5 @@
 #include <boost/test/unit_test.hpp>
-#include <TheLostGirl/scripts/ScriptError.h>
+#include <TheLostGirl/scripts/ScriptError.hpp>
 
 struct ScriptErrorTestsFixture
 {

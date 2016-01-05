@@ -1,9 +1,9 @@
 #include <entityx/entityx.h>
-#include <TheLostGirl/components.h>
-#include <TheLostGirl/functions.h>
-#include <TheLostGirl/SpriteSheetAnimation.h>
-#include <TheLostGirl/scripts/scriptsFunctions.h>
-#include <TheLostGirl/actions/Death.h>
+#include <TheLostGirl/components.hpp>
+#include <TheLostGirl/functions.hpp>
+#include <TheLostGirl/SpriteSheetAnimation.hpp>
+#include <TheLostGirl/scripts/scriptsFunctions.hpp>
+#include <TheLostGirl/actions/Death.hpp>
 
 void Death::operator()(entityx::Entity entity) const
 {

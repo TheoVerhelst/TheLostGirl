@@ -1,8 +1,8 @@
 #include <entityx/entityx.h>
 #include <Box2D/Box2D.h>
-#include <TheLostGirl/components.h>
-#include <TheLostGirl/functions.h>
-#include <TheLostGirl/actions/ArrowShooter.h>
+#include <TheLostGirl/components.hpp>
+#include <TheLostGirl/functions.hpp>
+#include <TheLostGirl/actions/ArrowShooter.hpp>
 
 void ArrowShooter::operator()(entityx::Entity entity) const
 {

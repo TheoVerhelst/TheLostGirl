@@ -1,5 +1,5 @@
 #include <boost/test/unit_test.hpp>
-#include <TheLostGirl/states/KeyConfigurationState.h>
+#include <TheLostGirl/states/KeyConfigurationState.hpp>
 
 struct KeyConfigurationStateTestsFixture
 {

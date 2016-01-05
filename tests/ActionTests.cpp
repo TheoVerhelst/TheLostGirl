@@ -1,5 +1,5 @@
 #include <boost/test/unit_test.hpp>
-#include <TheLostGirl/Action.h>
+#include <TheLostGirl/Action.hpp>
 
 struct ActionTestsFixture
 {

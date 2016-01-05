@@ -1,5 +1,5 @@
 #include <boost/test/unit_test.hpp>
-#include <TheLostGirl/scripts/Interpreter.h>
+#include <TheLostGirl/scripts/Interpreter.hpp>
 
 struct InterpreterTestsFixture
 {

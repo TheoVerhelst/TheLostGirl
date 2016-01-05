@@ -4,9 +4,9 @@
 //Avoid use of deprecated function in boost/filesystem.hpp
 #define BOOST_FILESYSTEM_NO_DEPRECATED
 #include <boost/filesystem.hpp>
-#include <TheLostGirl/Context.h>
-#include <TheLostGirl/Parameters.h>
-#include <TheLostGirl/LangManager.h>
+#include <TheLostGirl/Context.hpp>
+#include <TheLostGirl/Parameters.hpp>
+#include <TheLostGirl/LangManager.hpp>
 
 void LangManager::setLang(std::string newLang)
 {

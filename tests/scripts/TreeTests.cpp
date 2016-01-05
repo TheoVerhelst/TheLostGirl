@@ -1,5 +1,5 @@
 #include <boost/test/unit_test.hpp>
-#include <TheLostGirl/scripts/Tree.h>
+#include <TheLostGirl/scripts/Tree.hpp>
 
 struct TreeTestsFixture
 {

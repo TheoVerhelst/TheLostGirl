@@ -1,5 +1,5 @@
 #include <boost/test/unit_test.hpp>
-#include <TheLostGirl/systems/ScrollingSystem.h>
+#include <TheLostGirl/systems/ScrollingSystem.hpp>
 
 struct ScrollingSystemTestsFixture
 {

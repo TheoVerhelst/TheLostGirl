@@ -2,14 +2,14 @@
 #include <SFML/Window.hpp>
 #include <TGUI/TGUI.hpp>
 #include <entityx/entityx.h>
-#include <TheLostGirl/LangManager.h>
-#include <TheLostGirl/events.h>
-#include <TheLostGirl/Parameters.h>
-#include <TheLostGirl/ResourceManager.h>
-#include <TheLostGirl/functions.h>
-#include <TheLostGirl/components.h>
-#include <TheLostGirl/systems/TimeSystem.h>
-#include <TheLostGirl/states/HUDState.h>
+#include <TheLostGirl/LangManager.hpp>
+#include <TheLostGirl/events.hpp>
+#include <TheLostGirl/Parameters.hpp>
+#include <TheLostGirl/ResourceManager.hpp>
+#include <TheLostGirl/functions.hpp>
+#include <TheLostGirl/components.hpp>
+#include <TheLostGirl/systems/TimeSystem.hpp>
+#include <TheLostGirl/states/HUDState.hpp>
 
 HUDState::HUDState():
 	m_windIsFading{true}

@@ -2,12 +2,12 @@
 #include <entityx/entityx.h>
 #include <Box2D/Box2D.h>
 #include <SFML/Graphics.hpp>
-#include <TheLostGirl/components.h>
-#include <TheLostGirl/ResourceManager.h>
-#include <TheLostGirl/FixtureRoles.h>
-#include <TheLostGirl/functions.h>
-#include <TheLostGirl/serialization.h>
-#include <TheLostGirl/scripts/Interpreter.h>
+#include <TheLostGirl/components.hpp>
+#include <TheLostGirl/ResourceManager.hpp>
+#include <TheLostGirl/FixtureRoles.hpp>
+#include <TheLostGirl/functions.hpp>
+#include <TheLostGirl/serialization.hpp>
+#include <TheLostGirl/scripts/Interpreter.hpp>
 
   //////////             ///////////
  ////////// Serializing ///////////

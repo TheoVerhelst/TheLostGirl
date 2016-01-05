@@ -1,6 +1,6 @@
-#include <TheLostGirl/Context.h>
-#include <TheLostGirl/Parameters.h>
-#include <TheLostGirl/BloomEffect.h>
+#include <TheLostGirl/Context.hpp>
+#include <TheLostGirl/Parameters.hpp>
+#include <TheLostGirl/BloomEffect.hpp>
 
 BloomEffect::BloomEffect()
 {

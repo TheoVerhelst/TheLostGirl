@@ -1,8 +1,8 @@
 #include <fstream>
 #include <boost/test/unit_test.hpp>
-#include <TheLostGirl/Parameters.h>
-#include <TheLostGirl/Context.h>
-#include <TheLostGirl/LangManager.h>
+#include <TheLostGirl/Parameters.hpp>
+#include <TheLostGirl/Context.hpp>
+#include <TheLostGirl/LangManager.hpp>
 
 struct LangManagerTestsFixture
 {

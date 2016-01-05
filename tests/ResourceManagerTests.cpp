@@ -1,5 +1,5 @@
 #include <boost/test/unit_test.hpp>
-#include <TheLostGirl/ResourceManager.h>
+#include <TheLostGirl/ResourceManager.hpp>
 
 struct ResourceManagerTestsFixture
 {

@@ -1,10 +1,10 @@
 #include <entityx/entityx.h>
 #include <Box2D/Box2D.h>
-#include <TheLostGirl/components.h>
-#include <TheLostGirl/functions.h>
-#include <TheLostGirl/Context.h>
-#include <TheLostGirl/Parameters.h>
-#include <TheLostGirl/actions/ArrowPicker.h>
+#include <TheLostGirl/components.hpp>
+#include <TheLostGirl/functions.hpp>
+#include <TheLostGirl/Context.hpp>
+#include <TheLostGirl/Parameters.hpp>
+#include <TheLostGirl/actions/ArrowPicker.hpp>
 
 void ArrowPicker::operator()(entityx::Entity entity) const
 {

@@ -1,6 +1,6 @@
 #include <entityx/entityx.h>
-#include <TheLostGirl/Category.h>
-#include <TheLostGirl/Command.h>
+#include <TheLostGirl/Category.hpp>
+#include <TheLostGirl/Command.hpp>
 
 Command::Command(const FlagSet<Category>& category, std::function<void(entityx::Entity)> action):
 	m_action{action},

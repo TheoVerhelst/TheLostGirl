@@ -1,5 +1,5 @@
 #include <boost/test/unit_test.hpp>
-#include <TheLostGirl/contactListeners/FallingListener.h>
+#include <TheLostGirl/contactListeners/FallingListener.hpp>
 
 struct FallingListenerTestsFixture
 {

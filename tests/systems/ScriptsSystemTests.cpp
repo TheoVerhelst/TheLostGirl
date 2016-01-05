@@ -1,5 +1,5 @@
 #include <boost/test/unit_test.hpp>
-#include <TheLostGirl/systems/ScriptsSystem.h>
+#include <TheLostGirl/systems/ScriptsSystem.hpp>
 
 struct ScriptsSystemTestsFixture
 {

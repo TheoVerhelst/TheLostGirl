@@ -1,14 +1,14 @@
 #include <TGUI/TGUI.hpp>
 #include <entityx/entityx.h>
-#include <TheLostGirl/states/MainMenuState.h>
-#include <TheLostGirl/StateStack.h>
-#include <TheLostGirl/LangManager.h>
-#include <TheLostGirl/Player.h>
-#include <TheLostGirl/states/ParametersState.h>
-#include <TheLostGirl/systems/PendingChangesSystem.h>
-#include <TheLostGirl/events.h>
-#include <TheLostGirl/Parameters.h>
-#include <TheLostGirl/states/PauseState.h>
+#include <TheLostGirl/states/MainMenuState.hpp>
+#include <TheLostGirl/StateStack.hpp>
+#include <TheLostGirl/LangManager.hpp>
+#include <TheLostGirl/Player.hpp>
+#include <TheLostGirl/states/ParametersState.hpp>
+#include <TheLostGirl/systems/PendingChangesSystem.hpp>
+#include <TheLostGirl/events.hpp>
+#include <TheLostGirl/Parameters.hpp>
+#include <TheLostGirl/states/PauseState.hpp>
 
 PauseState::PauseState()
 {

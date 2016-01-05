@@ -1,12 +1,12 @@
 #include <SFML/Window.hpp>
 #include <TGUI/TGUI.hpp>
-#include <TheLostGirl/LangManager.h>
-#include <TheLostGirl/states/PauseState.h>
-#include <TheLostGirl/Parameters.h>
-#include <TheLostGirl/functions.h>
-#include <TheLostGirl/events.h>
-#include <TheLostGirl/states/KeyConfigurationState.h>
-#include <TheLostGirl/states/ParametersState.h>
+#include <TheLostGirl/LangManager.hpp>
+#include <TheLostGirl/states/PauseState.hpp>
+#include <TheLostGirl/Parameters.hpp>
+#include <TheLostGirl/functions.hpp>
+#include <TheLostGirl/events.hpp>
+#include <TheLostGirl/states/KeyConfigurationState.hpp>
+#include <TheLostGirl/states/ParametersState.hpp>
 
 ParametersState::ParametersState()
 {

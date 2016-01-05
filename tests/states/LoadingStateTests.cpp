@@ -1,5 +1,5 @@
 #include <boost/test/unit_test.hpp>
-#include <TheLostGirl/states/LoadingState.h>
+#include <TheLostGirl/states/LoadingState.hpp>
 
 struct LoadingStateTestsFixture
 {

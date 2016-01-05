@@ -3,10 +3,10 @@
 #include <SFML/System.hpp>
 #include <SFML/Window.hpp>
 #include <TGUI/TGUI.hpp>
-#include <TheLostGirl/LangManager.h>
-#include <TheLostGirl/events.h>
-#include <TheLostGirl/Parameters.h>
-#include <TheLostGirl/states/LoadingState.h>
+#include <TheLostGirl/LangManager.hpp>
+#include <TheLostGirl/events.hpp>
+#include <TheLostGirl/Parameters.hpp>
+#include <TheLostGirl/states/LoadingState.hpp>
 
 LoadingState::LoadingState()
 {

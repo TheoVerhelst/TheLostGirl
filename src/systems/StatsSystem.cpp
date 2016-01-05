@@ -1,13 +1,13 @@
 #include <entityx/entityx.h>
 #include <Box2D/Box2D.h>
-#include <TheLostGirl/components.h>
-#include <TheLostGirl/functions.h>
-#include <TheLostGirl/events.h>
-#include <TheLostGirl/Command.h>
-#include <TheLostGirl/actions.h>
-#include <TheLostGirl/Context.h>
-#include <TheLostGirl/systems/PendingChangesSystem.h>
-#include <TheLostGirl/systems/StatsSystem.h>
+#include <TheLostGirl/components.hpp>
+#include <TheLostGirl/functions.hpp>
+#include <TheLostGirl/events.hpp>
+#include <TheLostGirl/Command.hpp>
+#include <TheLostGirl/actions.hpp>
+#include <TheLostGirl/Context.hpp>
+#include <TheLostGirl/systems/PendingChangesSystem.hpp>
+#include <TheLostGirl/systems/StatsSystem.hpp>
 
 void StatsSystem::update(entityx::EntityManager& entityManager, entityx::EventManager& eventManager, double dt)
 {

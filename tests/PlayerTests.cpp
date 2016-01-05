@@ -1,6 +1,6 @@
 #include <boost/test/unit_test.hpp>
-#include <TheLostGirl/Player.h>
-#include <TheLostGirl/systems.h>
+#include <TheLostGirl/Player.hpp>
+#include <TheLostGirl/systems.hpp>
 
 struct PlayerTestsFixture
 {

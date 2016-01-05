@@ -1,10 +1,10 @@
 #include <entityx/entityx.h>
 #include <Box2D/Box2D.h>
-#include <TheLostGirl/components.h>
-#include <TheLostGirl/SpriteSheetAnimation.h>
-#include <TheLostGirl/functions.h>
-#include <TheLostGirl/FixtureRoles.h>
-#include <TheLostGirl/actions/BowBender.h>
+#include <TheLostGirl/components.hpp>
+#include <TheLostGirl/SpriteSheetAnimation.hpp>
+#include <TheLostGirl/functions.hpp>
+#include <TheLostGirl/FixtureRoles.hpp>
+#include <TheLostGirl/actions/BowBender.hpp>
 
 BowBender::BowBender(float _angle, float _power):
 	angle{_angle},

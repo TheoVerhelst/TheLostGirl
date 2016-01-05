@@ -1,5 +1,5 @@
 #include <boost/test/unit_test.hpp>
-#include <TheLostGirl/actions/Mover.h>
+#include <TheLostGirl/actions/Mover.hpp>
 
 struct MoverTestsFixture
 {

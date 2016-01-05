@@ -6,10 +6,10 @@
 #include <TGUI/TGUI.hpp>
 #include <Box2D/Box2D.h>
 #include <entityx/entityx.h>
-#include <TheLostGirl/components.h>
-#include <TheLostGirl/Parameters.h>
-#include <TheLostGirl/Context.h>
-#include <TheLostGirl/functions.h>
+#include <TheLostGirl/components.hpp>
+#include <TheLostGirl/Parameters.hpp>
+#include <TheLostGirl/Context.hpp>
+#include <TheLostGirl/functions.hpp>
 
 
 void handleResize()

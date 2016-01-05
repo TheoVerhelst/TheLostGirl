@@ -1,5 +1,5 @@
 #include <boost/test/unit_test.hpp>
-#include <TheLostGirl/SpriteSheetAnimation.h>
+#include <TheLostGirl/SpriteSheetAnimation.hpp>
 
 struct SpriteSheetAnimationTestsFixture
 {

@@ -1,5 +1,5 @@
 #include <boost/test/unit_test.hpp>
-#include <TheLostGirl/SkyAnimation.h>
+#include <TheLostGirl/SkyAnimation.hpp>
 
 struct SkyAnimationTestsFixture
 {

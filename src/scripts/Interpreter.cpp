@@ -1,10 +1,10 @@
 #include <algorithm>
 #include <stack>
-#include <TheLostGirl/scripts/Interpreter.h>
-#include <TheLostGirl/scripts/scriptsFunctions.h>
-#include <TheLostGirl/scripts/ScriptError.h>
-#include <TheLostGirl/components.h>
-#include <TheLostGirl/functions.h>
+#include <TheLostGirl/scripts/Interpreter.hpp>
+#include <TheLostGirl/scripts/scriptsFunctions.hpp>
+#include <TheLostGirl/scripts/ScriptError.hpp>
+#include <TheLostGirl/components.hpp>
+#include <TheLostGirl/functions.hpp>
 
 Interpreter::Interpreter():
 	m_precedence{{"or", 1},

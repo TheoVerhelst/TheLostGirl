@@ -1,8 +1,8 @@
 #include <cassert>
 #include <SFML/System.hpp>
 #include <SFML/Window.hpp>
-#include <TheLostGirl/State.h>
-#include <TheLostGirl/StateStack.h>
+#include <TheLostGirl/State.hpp>
+#include <TheLostGirl/StateStack.hpp>
 
 void StateStack::update(sf::Time dt)
 {

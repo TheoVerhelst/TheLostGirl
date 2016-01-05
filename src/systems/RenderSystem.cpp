@@ -1,12 +1,12 @@
 #include <deque>
 #include <SFML/Graphics.hpp>
 #include <entityx/entityx.h>
-#include <TheLostGirl/components.h>
-#include <TheLostGirl/Category.h>
-#include <TheLostGirl/Parameters.h>
-#include <TheLostGirl/Context.h>
-#include <TheLostGirl/PostEffect.h>
-#include <TheLostGirl/systems/RenderSystem.h>
+#include <TheLostGirl/components.hpp>
+#include <TheLostGirl/Category.hpp>
+#include <TheLostGirl/Parameters.hpp>
+#include <TheLostGirl/Context.hpp>
+#include <TheLostGirl/PostEffect.hpp>
+#include <TheLostGirl/systems/RenderSystem.hpp>
 
 RenderSystem::RenderSystem():
 	m_postEffectSupported{PostEffect::isSupported()}

@@ -1,5 +1,5 @@
 #include <boost/test/unit_test.hpp>
-#include <TheLostGirl/actions/CorpseSearcher.h>
+#include <TheLostGirl/actions/CorpseSearcher.hpp>
 
 struct CorpseSearcherTestsFixture
 {

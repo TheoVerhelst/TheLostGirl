@@ -1,15 +1,15 @@
 #include <utility> //std::swap
 #include <Box2D/Box2D.h>
 #include <entityx/entityx.h>
-#include <TheLostGirl/components.h>
-#include <TheLostGirl/AnimationsManager.h>
-#include <TheLostGirl/events.h>
-#include <TheLostGirl/Context.h>
-#include <TheLostGirl/Parameters.h>
-#include <TheLostGirl/functions.h>
-#include <TheLostGirl/FixtureRoles.h>
-#include <TheLostGirl/systems/PendingChangesSystem.h>
-#include <TheLostGirl/contactListeners/ArrowHitListener.h>
+#include <TheLostGirl/components.hpp>
+#include <TheLostGirl/AnimationsManager.hpp>
+#include <TheLostGirl/events.hpp>
+#include <TheLostGirl/Context.hpp>
+#include <TheLostGirl/Parameters.hpp>
+#include <TheLostGirl/functions.hpp>
+#include <TheLostGirl/FixtureRoles.hpp>
+#include <TheLostGirl/systems/PendingChangesSystem.hpp>
+#include <TheLostGirl/contactListeners/ArrowHitListener.hpp>
 
 void ArrowHitListener::PreSolve(b2Contact *, const b2Manifold*)
 {

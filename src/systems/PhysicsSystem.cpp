@@ -2,13 +2,13 @@
 #include <SFML/Graphics.hpp>
 #include <entityx/entityx.h>
 #include <Box2D/Box2D.h>
-#include <TheLostGirl/components.h>
-#include <TheLostGirl/Category.h>
-#include <TheLostGirl/Parameters.h>
-#include <TheLostGirl/functions.h>
-#include <TheLostGirl/Context.h>
-#include <TheLostGirl/systems/TimeSystem.h>
-#include <TheLostGirl/systems/PhysicsSystem.h>
+#include <TheLostGirl/components.hpp>
+#include <TheLostGirl/Category.hpp>
+#include <TheLostGirl/Parameters.hpp>
+#include <TheLostGirl/functions.hpp>
+#include <TheLostGirl/Context.hpp>
+#include <TheLostGirl/systems/TimeSystem.hpp>
+#include <TheLostGirl/systems/PhysicsSystem.hpp>
 
 void PhysicsSystem::update(entityx::EntityManager& entityManager, entityx::EventManager&, double dt)
 {

@@ -1,11 +1,11 @@
 #include <TGUI/TGUI.hpp>
-#include <TheLostGirl/states/GameState.h>
-#include <TheLostGirl/states/LoadingState.h>
-#include <TheLostGirl/LangManager.h>
-#include <TheLostGirl/functions.h>
-#include <TheLostGirl/Parameters.h>
-#include <TheLostGirl/events.h>
-#include <TheLostGirl/states/MainMenuState.h>
+#include <TheLostGirl/states/GameState.hpp>
+#include <TheLostGirl/states/LoadingState.hpp>
+#include <TheLostGirl/LangManager.hpp>
+#include <TheLostGirl/functions.hpp>
+#include <TheLostGirl/Parameters.hpp>
+#include <TheLostGirl/events.hpp>
+#include <TheLostGirl/states/MainMenuState.hpp>
 
 MainMenuState::MainMenuState()
 {

@@ -1,8 +1,8 @@
 #include <cmath>
 #include <SFML/System.hpp>
-#include <TheLostGirl/LangManager.h>
-#include <TheLostGirl/systems/TimeSystem.h>
-#include <TheLostGirl/Context.h>
+#include <TheLostGirl/LangManager.hpp>
+#include <TheLostGirl/systems/TimeSystem.hpp>
+#include <TheLostGirl/Context.hpp>
 
 TimeSystem::TimeSystem():
 	m_totalTime{0.f},

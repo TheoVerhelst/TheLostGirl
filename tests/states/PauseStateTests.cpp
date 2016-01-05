@@ -1,5 +1,5 @@
 #include <boost/test/unit_test.hpp>
-#include <TheLostGirl/states/PauseState.h>
+#include <TheLostGirl/states/PauseState.hpp>
 
 struct PauseStateTestsFixture
 {

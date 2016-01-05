@@ -1,15 +1,15 @@
 #include <algorithm>
 #include <Box2D/Box2D.h>
 #include <entityx/entityx.h>
-#include <TheLostGirl/components.h>
-#include <TheLostGirl/Command.h>
-#include <TheLostGirl/actions.h>
-#include <TheLostGirl/Context.h>
-#include <TheLostGirl/Parameters.h>
-#include <TheLostGirl/FixtureRoles.h>
-#include <TheLostGirl/scripts/scriptsFunctions.h>
-#include <TheLostGirl/scripts/ScriptError.h>
-#include <TheLostGirl/systems/PendingChangesSystem.h>
+#include <TheLostGirl/components.hpp>
+#include <TheLostGirl/Command.hpp>
+#include <TheLostGirl/actions.hpp>
+#include <TheLostGirl/Context.hpp>
+#include <TheLostGirl/Parameters.hpp>
+#include <TheLostGirl/FixtureRoles.hpp>
+#include <TheLostGirl/scripts/scriptsFunctions.hpp>
+#include <TheLostGirl/scripts/ScriptError.hpp>
+#include <TheLostGirl/systems/PendingChangesSystem.hpp>
 
 Data print(const std::vector<Data>& args)
 {

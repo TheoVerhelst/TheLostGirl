@@ -1,5 +1,5 @@
 #include <boost/test/unit_test.hpp>
-#include <TheLostGirl/systems/DragAndDropSystem.h>
+#include <TheLostGirl/systems/DragAndDropSystem.hpp>
 
 struct DragAndDropSystemTestsFixture
 {

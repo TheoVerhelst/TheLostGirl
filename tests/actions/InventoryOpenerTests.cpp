@@ -1,5 +1,5 @@
 #include <boost/test/unit_test.hpp>
-#include <TheLostGirl/actions/InventoryOpener.h>
+#include <TheLostGirl/actions/InventoryOpener.hpp>
 
 struct InventoryOpenerTestsFixture
 {

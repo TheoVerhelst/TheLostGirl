@@ -1,5 +1,5 @@
 #include <stdexcept>
-#include <TheLostGirl/MusicPlayer.h>
+#include <TheLostGirl/MusicPlayer.hpp>
 
 MusicPlayer::MusicPlayer():
 	m_volume{100.f},

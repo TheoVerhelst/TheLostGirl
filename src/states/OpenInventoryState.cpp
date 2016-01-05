@@ -2,13 +2,13 @@
 #include <SFML/Window.hpp>
 #include <entityx/entityx.h>
 #include <TGUI/TGUI.hpp>
-#include <TheLostGirl/events.h>
-#include <TheLostGirl/Parameters.h>
-#include <TheLostGirl/Player.h>
-#include <TheLostGirl/components.h>
-#include <TheLostGirl/events.h>
-#include <TheLostGirl/functions.h>
-#include <TheLostGirl/states/OpenInventoryState.h>
+#include <TheLostGirl/events.hpp>
+#include <TheLostGirl/Parameters.hpp>
+#include <TheLostGirl/Player.hpp>
+#include <TheLostGirl/components.hpp>
+#include <TheLostGirl/events.hpp>
+#include <TheLostGirl/functions.hpp>
+#include <TheLostGirl/states/OpenInventoryState.hpp>
 
 OpenInventoryState::OpenInventoryState(entityx::Entity entity) :
 	m_entity(entity)

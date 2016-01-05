@@ -1,5 +1,5 @@
 #include <boost/test/unit_test.hpp>
-#include <TheLostGirl/actions/BowBender.h>
+#include <TheLostGirl/actions/BowBender.hpp>
 
 struct BowBenderTestsFixture
 {

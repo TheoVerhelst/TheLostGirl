@@ -2,12 +2,12 @@
 
 #include <Box2D/Box2D.h>
 #include <entityx/entityx.h>
-#include <TheLostGirl/components.h>
-#include <TheLostGirl/AnimationsManager.h>
-#include <TheLostGirl/SpriteSheetAnimation.h>
-#include <TheLostGirl/events.h>
-#include <TheLostGirl/FixtureRoles.h>
-#include <TheLostGirl/contactListeners/FallingListener.h>
+#include <TheLostGirl/components.hpp>
+#include <TheLostGirl/AnimationsManager.hpp>
+#include <TheLostGirl/SpriteSheetAnimation.hpp>
+#include <TheLostGirl/events.hpp>
+#include <TheLostGirl/FixtureRoles.hpp>
+#include <TheLostGirl/contactListeners/FallingListener.hpp>
 
 void FallingListener::PreSolve(b2Contact *, const b2Manifold*)
 {

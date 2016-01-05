@@ -1,10 +1,10 @@
 #include <SFML/Graphics.hpp>
 #include <entityx/entityx.h>
-#include <TheLostGirl/Command.h>
-#include <TheLostGirl/components.h>
-#include <TheLostGirl/actions.h>
-#include <TheLostGirl/systems/PendingChangesSystem.h>
-#include <TheLostGirl/Player.h>
+#include <TheLostGirl/Command.hpp>
+#include <TheLostGirl/components.hpp>
+#include <TheLostGirl/actions.hpp>
+#include <TheLostGirl/systems/PendingChangesSystem.hpp>
+#include <TheLostGirl/Player.hpp>
 
 Player::Player()
 {

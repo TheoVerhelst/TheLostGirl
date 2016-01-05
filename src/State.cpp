@@ -1,4 +1,4 @@
-#include <TheLostGirl/State.h>
+#include <TheLostGirl/State.hpp>
 
 void State::requestStackPop()
 {

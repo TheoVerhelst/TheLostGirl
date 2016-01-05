@@ -1,5 +1,5 @@
 #include <boost/test/unit_test.hpp>
-#include <TheLostGirl/actions/Jumper.h>
+#include <TheLostGirl/actions/Jumper.hpp>
 
 struct JumperTestsFixture
 {

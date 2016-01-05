@@ -1,5 +1,5 @@
 #include <SFML/Graphics.hpp>
-#include <TheLostGirl/PostEffect.h>
+#include <TheLostGirl/PostEffect.hpp>
 
 void PostEffect::applyShader(const sf::Shader& shader, sf::RenderTarget& output, const sf::RenderStates& states)
 {

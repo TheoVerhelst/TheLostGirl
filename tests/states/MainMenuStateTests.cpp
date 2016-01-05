@@ -1,5 +1,5 @@
 #include <boost/test/unit_test.hpp>
-#include <TheLostGirl/states/MainMenuState.h>
+#include <TheLostGirl/states/MainMenuState.hpp>
 
 struct MainMenuStateTestsFixture
 {

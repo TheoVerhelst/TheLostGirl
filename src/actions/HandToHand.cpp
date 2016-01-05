@@ -1,11 +1,11 @@
 #include <algorithm>
 #include <entityx/entityx.h>
 #include <Box2D/Box2D.h>
-#include <TheLostGirl/components.h>
-#include <TheLostGirl/functions.h>
-#include <TheLostGirl/SpriteSheetAnimation.h>
-#include <TheLostGirl/FixtureRoles.h>
-#include <TheLostGirl/actions/HandToHand.h>
+#include <TheLostGirl/components.hpp>
+#include <TheLostGirl/functions.hpp>
+#include <TheLostGirl/SpriteSheetAnimation.hpp>
+#include <TheLostGirl/FixtureRoles.hpp>
+#include <TheLostGirl/actions/HandToHand.hpp>
 
 void HandToHand::operator()(entityx::Entity entity) const
 {

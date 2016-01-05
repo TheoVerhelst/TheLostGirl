@@ -1,11 +1,11 @@
 #include <SFML/System.hpp>
 #include <SFML/Window.hpp>
 #include <TGUI/TGUI.hpp>
-#include <TheLostGirl/states/MainMenuState.h>
-#include <TheLostGirl/StateStack.h>
-#include <TheLostGirl/Parameters.h>
-#include <TheLostGirl/events.h>
-#include <TheLostGirl/states/IntroState.h>
+#include <TheLostGirl/states/MainMenuState.hpp>
+#include <TheLostGirl/StateStack.hpp>
+#include <TheLostGirl/Parameters.hpp>
+#include <TheLostGirl/events.hpp>
+#include <TheLostGirl/states/IntroState.hpp>
 
 IntroState::IntroState()
 {

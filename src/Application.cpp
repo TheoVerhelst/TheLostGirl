@@ -1,13 +1,13 @@
 #include <fstream>
 #include <SFML/Graphics.hpp>
 #include <Box2D/Box2D.h>
-#include <TheLostGirl/states/IntroState.h>
-#include <TheLostGirl/systems.h>
-#include <TheLostGirl/functions.h>
-#include <TheLostGirl/LangManager.h>
-#include <TheLostGirl/events.h>
-#include <TheLostGirl/serialization.h>
-#include <TheLostGirl/Application.h>
+#include <TheLostGirl/states/IntroState.hpp>
+#include <TheLostGirl/systems.hpp>
+#include <TheLostGirl/functions.hpp>
+#include <TheLostGirl/LangManager.hpp>
+#include <TheLostGirl/events.hpp>
+#include <TheLostGirl/serialization.hpp>
+#include <TheLostGirl/Application.hpp>
 
 Application::Application(bool debugMode):
 	m_window{{static_cast<unsigned int>(m_parameters.defaultViewSize.x),

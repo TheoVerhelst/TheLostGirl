@@ -1,5 +1,5 @@
 #include <boost/test/unit_test.hpp>
-#include <TheLostGirl/systems/TimeSystem.h>
+#include <TheLostGirl/systems/TimeSystem.hpp>
 
 struct TimeSystemTestsFixture
 {

@@ -1,8 +1,8 @@
 #include <entityx/entityx.h>
-#include <TheLostGirl/Context.h>
-#include <TheLostGirl/states/OpenInventoryState.h>
+#include <TheLostGirl/Context.hpp>
+#include <TheLostGirl/states/OpenInventoryState.hpp>
 
-#include <TheLostGirl/actions/InventoryOpener.h>
+#include <TheLostGirl/actions/InventoryOpener.hpp>
 
 InventoryOpener::InventoryOpener()
 {

@@ -1,5 +1,5 @@
-#include <TheLostGirl/Application.h>
-#include <TheLostGirl/Context.h>
+#include <TheLostGirl/Application.hpp>
+#include <TheLostGirl/Context.hpp>
 
 Parameters* Context::parameters{nullptr};
 sf::RenderWindow* Context::window{nullptr};

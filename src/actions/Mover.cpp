@@ -1,9 +1,9 @@
 #include <entityx/entityx.h>
 #include <Box2D/Box2D.h>
-#include <TheLostGirl/components.h>
-#include <TheLostGirl/SpriteSheetAnimation.h>
-#include <TheLostGirl/FixtureRoles.h>
-#include <TheLostGirl/actions/Mover.h>
+#include <TheLostGirl/components.hpp>
+#include <TheLostGirl/SpriteSheetAnimation.hpp>
+#include <TheLostGirl/FixtureRoles.hpp>
+#include <TheLostGirl/actions/Mover.hpp>
 
 Mover::Mover(Direction _direction, bool _start):
 	direction{_direction},

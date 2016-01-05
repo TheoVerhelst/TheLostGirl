@@ -1,5 +1,5 @@
 #include <boost/test/unit_test.hpp>
-#include <TheLostGirl/AnimationsManager.h>
+#include <TheLostGirl/AnimationsManager.hpp>
 
 class MockAnimation
 {

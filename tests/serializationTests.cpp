@@ -1,5 +1,5 @@
 #include <boost/test/unit_test.hpp>
-#include <TheLostGirl/serialization.h>
+#include <TheLostGirl/serialization.hpp>
 
 struct serializationTestsFixture
 {

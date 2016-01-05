@@ -1,11 +1,11 @@
 #include <SFML/System.hpp>
 #include <entityx/entityx.h>
 #include <Box2D/Box2D.h>
-#include <TheLostGirl/components.h>
-#include <TheLostGirl/AnimationsManager.h>
-#include <TheLostGirl/SpriteSheetAnimation.h>
-#include <TheLostGirl/SkyAnimation.h>
-#include <TheLostGirl/systems/AnimationsSystem.h>
+#include <TheLostGirl/components.hpp>
+#include <TheLostGirl/AnimationsManager.hpp>
+#include <TheLostGirl/SpriteSheetAnimation.hpp>
+#include <TheLostGirl/SkyAnimation.hpp>
+#include <TheLostGirl/systems/AnimationsSystem.hpp>
 
 void AnimationsSystem::update(entityx::EntityManager& entityManager, entityx::EventManager&, double dt)
 {

@@ -1,4 +1,4 @@
-#include <TheLostGirl/scripts/Variant.h>
+#include <TheLostGirl/scripts/Variant.hpp>
 
 namespace variantDetails
 {

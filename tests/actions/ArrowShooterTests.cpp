@@ -1,5 +1,5 @@
 #include <boost/test/unit_test.hpp>
-#include <TheLostGirl/actions/ArrowShooter.h>
+#include <TheLostGirl/actions/ArrowShooter.hpp>
 
 struct ArrowShooterTestsFixture
 {

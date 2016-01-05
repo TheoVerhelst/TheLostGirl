@@ -1,5 +1,5 @@
 #include <boost/test/unit_test.hpp>
-#include <TheLostGirl/State.h>
+#include <TheLostGirl/State.hpp>
 
 struct StateTestsFixture
 {

@@ -2,14 +2,14 @@
 #include <SFML/Graphics.hpp>
 #include <SFML/Window.hpp>
 #include <Box2D/Box2D.h>
-#include <TheLostGirl/components.h>
-#include <TheLostGirl/Context.h>
-#include <TheLostGirl/Command.h>
-#include <TheLostGirl/actions.h>
-#include <TheLostGirl/Category.h>
-#include <TheLostGirl/Parameters.h>
-#include <TheLostGirl/systems/PendingChangesSystem.h>
-#include <TheLostGirl/systems/DragAndDropSystem.h>
+#include <TheLostGirl/components.hpp>
+#include <TheLostGirl/Context.hpp>
+#include <TheLostGirl/Command.hpp>
+#include <TheLostGirl/actions.hpp>
+#include <TheLostGirl/Category.hpp>
+#include <TheLostGirl/Parameters.hpp>
+#include <TheLostGirl/systems/PendingChangesSystem.hpp>
+#include <TheLostGirl/systems/DragAndDropSystem.hpp>
 
 
 DragAndDropSystem::DragAndDropSystem():

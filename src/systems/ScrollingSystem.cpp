@@ -1,12 +1,12 @@
 #include <SFML/Graphics.hpp>
 #include <entityx/entityx.h>
 #include <Box2D/Box2D.h>
-#include <TheLostGirl/components.h>
-#include <TheLostGirl/Category.h>
-#include <TheLostGirl/Parameters.h>
-#include <TheLostGirl/functions.h>
-#include <TheLostGirl/systems/ScrollingSystem.h>
-#include <TheLostGirl/Player.h>
+#include <TheLostGirl/components.hpp>
+#include <TheLostGirl/Category.hpp>
+#include <TheLostGirl/Parameters.hpp>
+#include <TheLostGirl/functions.hpp>
+#include <TheLostGirl/systems/ScrollingSystem.hpp>
+#include <TheLostGirl/Player.hpp>
 
 ScrollingSystem::ScrollingSystem():
 	m_levelRect{0.f, 0.f, 0.f, 0.f}

@@ -1,8 +1,8 @@
 #include <SFML/Graphics.hpp>
 #include <entityx/entityx.h>
-#include <TheLostGirl/components.h>
-#include <TheLostGirl/functions.h>
-#include <TheLostGirl/SkyAnimation.h>
+#include <TheLostGirl/components.hpp>
+#include <TheLostGirl/functions.hpp>
+#include <TheLostGirl/SkyAnimation.hpp>
 
 SkyAnimation::SkyAnimation(entityx::Entity entity):
 	m_entity(entity)

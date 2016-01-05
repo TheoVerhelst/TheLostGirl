@@ -1,5 +1,5 @@
 #include <boost/test/unit_test.hpp>
-#include <TheLostGirl/systems/AnimationsSystem.h>
+#include <TheLostGirl/systems/AnimationsSystem.hpp>
 
 struct AnimationsSystemTestsFixture
 {

@@ -1,8 +1,8 @@
 #include <SFML/Graphics.hpp>
 #include <entityx/entityx.h>
-#include <TheLostGirl/components.h>
-#include <TheLostGirl/functions.h>
-#include <TheLostGirl/SpriteSheetAnimation.h>
+#include <TheLostGirl/components.hpp>
+#include <TheLostGirl/functions.hpp>
+#include <TheLostGirl/SpriteSheetAnimation.hpp>
 
 SpriteSheetAnimation::SpriteSheetAnimation(sf::Sprite& sprite):
 	m_sprite(&sprite)

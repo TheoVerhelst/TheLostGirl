@@ -1,6 +1,6 @@
 #include <boost/test/unit_test.hpp>
 #include <entityx/entityx.h>
-#include <TheLostGirl/Command.h>
+#include <TheLostGirl/Command.hpp>
 
 struct CommandTestsFixture
 {

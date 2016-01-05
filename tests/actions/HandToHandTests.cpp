@@ -1,5 +1,5 @@
 #include <boost/test/unit_test.hpp>
-#include <TheLostGirl/actions/HandToHand.h>
+#include <TheLostGirl/actions/HandToHand.hpp>
 
 struct HandToHandTestsFixture
 {

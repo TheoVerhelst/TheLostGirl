@@ -1,5 +1,5 @@
 #include <boost/test/unit_test.hpp>
-#include <TheLostGirl/systems/PhysicsSystem.h>
+#include <TheLostGirl/systems/PhysicsSystem.hpp>
 
 struct PhysicsSystemTestsFixture
 {

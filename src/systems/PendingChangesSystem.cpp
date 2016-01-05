@@ -2,11 +2,11 @@
 #include <cmath>
 #include <entityx/entityx.h>
 #include <Box2D/Box2D.h>
-#include <TheLostGirl/Category.h>
-#include <TheLostGirl/Context.h>
-#include <TheLostGirl/components.h>
-#include <TheLostGirl/Command.h>
-#include <TheLostGirl/systems/PendingChangesSystem.h>
+#include <TheLostGirl/Category.hpp>
+#include <TheLostGirl/Context.hpp>
+#include <TheLostGirl/components.hpp>
+#include <TheLostGirl/Command.hpp>
+#include <TheLostGirl/systems/PendingChangesSystem.hpp>
 
 void PendingChangesSystem::update(entityx::EntityManager& entityManager, entityx::EventManager&, double)
 {

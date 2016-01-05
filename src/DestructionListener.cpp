@@ -1,6 +1,6 @@
-#include <TheLostGirl/FlagSet.h>
-#include <TheLostGirl/FixtureRoles.h>
-#include <TheLostGirl/DestructionListener.h>
+#include <TheLostGirl/FlagSet.hpp>
+#include <TheLostGirl/FixtureRoles.hpp>
+#include <TheLostGirl/DestructionListener.hpp>
 
 DestructionListener::~DestructionListener()
 {

@@ -1,7 +1,7 @@
 #include <cassert>
 #include <algorithm>
 #include <functional>
-#include <TheLostGirl/functions.h>
+#include <TheLostGirl/functions.hpp>
 
 template <typename Animation>
 const std::function<bool(const typename AnimationsManager<Animation>::TimeAnimation&, const typename AnimationsManager<Animation>::TimeAnimation&)> AnimationsManager<Animation>::m_animationsComparator{

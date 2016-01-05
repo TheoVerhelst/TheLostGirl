@@ -1,9 +1,9 @@
 #include <entityx/entityx.h>
 #include <Box2D/Box2D.h>
-#include <TheLostGirl/components.h>
-#include <TheLostGirl/functions.h>
-#include <TheLostGirl/states/OpenInventoryState.h>
-#include <TheLostGirl/actions/CorpseSearcher.h>
+#include <TheLostGirl/components.hpp>
+#include <TheLostGirl/functions.hpp>
+#include <TheLostGirl/states/OpenInventoryState.hpp>
+#include <TheLostGirl/actions/CorpseSearcher.hpp>
 
 void CorpseSearcher::operator()(entityx::Entity entity) const
 {

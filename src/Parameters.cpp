@@ -1,4 +1,4 @@
-#include <TheLostGirl/Parameters.h>
+#include <TheLostGirl/Parameters.hpp>
 
 Parameters::Parameters():
 	debugMode{false},

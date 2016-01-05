@@ -1,7 +1,7 @@
 #include <boost/test/unit_test.hpp>
 #include <entityx/entityx.h>
-#include <TheLostGirl/components.h>
-#include <TheLostGirl/HashEntity.h>
+#include <TheLostGirl/components.hpp>
+#include <TheLostGirl/HashEntity.hpp>
 
 struct HashEntityTestsFixture
 {
