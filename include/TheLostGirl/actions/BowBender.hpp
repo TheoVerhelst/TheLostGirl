@@ -1,5 +1,5 @@
-#ifndef BOWBENDER_H
-#define BOWBENDER_H
+#ifndef BOWBENDER_HPP
+#define BOWBENDER_HPP
 
 #include <TheLostGirl/Action.hpp>
 
@@ -31,5 +31,5 @@ class BowBender : public Action
 		float power;///< The power of the bending.
 };
 
-#endif//BOWBENDER_H
+#endif//BOWBENDER_HPP
 

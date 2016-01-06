@@ -1,5 +1,5 @@
-#ifndef COMPONENTS_H
-#define COMPONENTS_H
+#ifndef COMPONENTS_HPP
+#define COMPONENTS_HPP
 
 #include <string>
 #include <unordered_map>
@@ -306,4 +306,4 @@ struct QuiverComponent : public entityx::Component<QuiverComponent>
 	std::unordered_map<entityx::Entity, b2WeldJoint*, HashEntity> arrows;///< List of all stocked arrows and corresponding joints.
 };
 
-#endif //COMPONENTS_H
+#endif//COMPONENTS_HPP

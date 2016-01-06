@@ -1,5 +1,5 @@
-#ifndef DEATH_H
-#define DEATH_H
+#ifndef DEATH_HPP
+#define DEATH_HPP
 
 #include <TheLostGirl/Action.hpp>
 
@@ -20,5 +20,5 @@ class Death : public Action
 		virtual void operator()(entityx::Entity entity) const override;
 };
 
-#endif//DEATH_H
+#endif//DEATH_HPP
 

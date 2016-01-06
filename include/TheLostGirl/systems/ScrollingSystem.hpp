@@ -1,5 +1,5 @@
-#ifndef SCROLLINGSYSTEM_H
-#define SCROLLINGSYSTEM_H
+#ifndef SCROLLINGSYSTEM_HPP
+#define SCROLLINGSYSTEM_HPP
 
 #include <entityx/entityx.h>
 #include <SFML/Graphics.hpp>
@@ -32,4 +32,4 @@ class ScrollingSystem : public entityx::System<ScrollingSystem>
 		float m_referencePlan;    ///< Number of the plan where actors evolute.
 };
 
-#endif//SCROLLINGSYSTEM_H
+#endif//SCROLLINGSYSTEM_HPP

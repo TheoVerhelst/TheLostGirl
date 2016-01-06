@@ -1,5 +1,5 @@
-#ifndef DRAGANDDROPSYSTEM_H
-#define DRAGANDDROPSYSTEM_H
+#ifndef DRAGANDDROPSYSTEM_HPP
+#define DRAGANDDROPSYSTEM_HPP
 
 #include <queue>
 #include <entityx/entityx.h>
@@ -31,4 +31,4 @@ class DragAndDropSystem : public entityx::System<DragAndDropSystem>
 		bool m_isActive;                    ///< True when the drag and drop is actived.
 };
 
-#endif//DRAGANDDROPSYSTEM_H
+#endif//DRAGANDDROPSYSTEM_HPP

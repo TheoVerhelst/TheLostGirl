@@ -1,5 +1,5 @@
-#ifndef MUSICPLAYER_H
-#define MUSICPLAYER_H
+#ifndef MUSICPLAYER_HPP
+#define MUSICPLAYER_HPP
 
 #include <SFML/System.hpp>
 #include <SFML/Audio.hpp>
@@ -52,4 +52,4 @@ class MusicPlayer : private sf::NonCopyable
 		bool m_paused;    ///< Pausing state of the music.
 };
 
-#endif//MUSICPLAYER_H
+#endif//MUSICPLAYER_HPP

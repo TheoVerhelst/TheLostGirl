@@ -1,5 +1,5 @@
-#ifndef ACTIONS_H
-#define ACTIONS_H
+#ifndef ACTIONS_HPP
+#define ACTIONS_HPP
 
 #include <TheLostGirl/actions/ArrowPicker.hpp>
 #include <TheLostGirl/actions/InventoryOpener.hpp>
@@ -11,4 +11,4 @@
 #include <TheLostGirl/actions/Mover.hpp>
 #include <TheLostGirl/actions/HandToHand.hpp>
 
-#endif//ACTIONS_H
+#endif//ACTIONS_HPP

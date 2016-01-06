@@ -1,5 +1,5 @@
-#ifndef SCRIPTSFUNCTIONS_H
-#define SCRIPTSFUNCTIONS_H
+#ifndef SCRIPTSFUNCTIONS_HPP
+#define SCRIPTSFUNCTIONS_HPP
 
 #include <vector>
 #include <Box2D/Box2D.h>
@@ -168,4 +168,4 @@ int jump(const std::vector<Data>& args);
 /// \return true if the entity is valid, false otherwise.
 bool isValid(const std::vector<Data>& args);
 
-#endif//SCRIPTSFUNCTIONS_H
+#endif//SCRIPTSFUNCTIONS_HPP

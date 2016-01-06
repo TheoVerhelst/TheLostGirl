@@ -1,5 +1,5 @@
-#ifndef STATESTACK_H
-#define STATESTACK_H
+#ifndef STATESTACK_HPP
+#define STATESTACK_HPP
 
 #include <vector>
 #include <memory>
@@ -69,4 +69,4 @@ void StateStack::pushState(Args&& ... args)
 	});
 }
 
-#endif//STATESTACK_H
+#endif//STATESTACK_HPP

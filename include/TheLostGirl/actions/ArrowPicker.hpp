@@ -1,5 +1,5 @@
-#ifndef ARROWPICKER_H
-#define ARROWPICKER_H
+#ifndef ARROWPICKER_HPP
+#define ARROWPICKER_HPP
 
 #include <Box2D/Box2D.h>
 #include <entityx/entityx.h>
@@ -32,5 +32,5 @@ class StickedArrowQueryCallback : public b2QueryCallback
 		entityx::Entity foundEntity;///< If no arrow is found, then this entity won't be valid.
 };
 
-#endif//ARROWPICKER_H
+#endif//ARROWPICKER_HPP
 

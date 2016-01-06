@@ -1,5 +1,5 @@
-#ifndef LANGMANAGER_H
-#define LANGMANAGER_H
+#ifndef LANGMANAGER_HPP
+#define LANGMANAGER_HPP
 
 #include <string>
 #include <map>
@@ -48,4 +48,4 @@ class LangManager
 		std::map<std::string, std::wstring> m_entries;///< Translations related to the current lang.
 };
 
-#endif//LANGMANAGER_H
+#endif//LANGMANAGER_HPP

@@ -1,5 +1,5 @@
-#ifndef FALLINGLISTENER_H
-#define FALLINGLISTENER_H
+#ifndef FALLINGLISTENER_HPP
+#define FALLINGLISTENER_HPP
 
 #include <Box2D/Box2D.h>
 
@@ -33,4 +33,4 @@ class FallingListener : public b2ContactListener
 		virtual void PostSolve(b2Contact* contact, const b2ContactImpulse* impulse) override;
 };
 
-#endif//FALLINGLISTENER_H
+#endif//FALLINGLISTENER_HPP

@@ -1,5 +1,5 @@
-#ifndef INTERPRETER_H
-#define INTERPRETER_H
+#ifndef INTERPRETER_HPP
+#define INTERPRETER_HPP
 
 #include <map>
 #include <fstream>
@@ -154,4 +154,4 @@ class Interpreter
 		std::string strip(const std::string& str) const;
 };
 
-#endif// INTERPRETER_H
+#endif//INTERPRETER_HPP

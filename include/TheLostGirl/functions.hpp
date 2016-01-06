@@ -1,5 +1,5 @@
-#ifndef FUNCTIONS_H
-#define FUNCTIONS_H
+#ifndef FUNCTIONS_HPP
+#define FUNCTIONS_HPP
 
 #include <string>
 #include <map>
@@ -175,4 +175,4 @@ bool printError(const std::string& expression, const std::string& filename, unsi
  #define TEST(expression) ((expression) ? true : printError(#expression, __FILE__, __LINE__))
 #endif // NDEBUG
 
-#endif//FUNCTIONS_H
+#endif//FUNCTIONS_HPP

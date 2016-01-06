@@ -1,5 +1,5 @@
-#ifndef DEBUGDRAW_H
-#define DEBUGDRAW_H
+#ifndef DEBUGDRAW_HPP
+#define DEBUGDRAW_HPP
 
 #include <Box2D/Box2D.h>
 #include <TGUI/TGUI.hpp>
@@ -90,4 +90,4 @@ class DebugDraw : public b2Draw
 		const sf::Color m_errorColor;         ///< The color of an error line in the console.
 };
 
-#endif//DEBUGDRAW_H
+#endif//DEBUGDRAW_HPP

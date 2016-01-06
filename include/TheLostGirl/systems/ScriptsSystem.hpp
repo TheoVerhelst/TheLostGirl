@@ -1,5 +1,5 @@
-#ifndef SCRIPTSSYSTEM_H
-#define SCRIPTSSYSTEM_H
+#ifndef SCRIPTSSYSTEM_HPP
+#define SCRIPTSSYSTEM_HPP
 
 #include <entityx/entityx.h>
 
@@ -15,4 +15,4 @@ class ScriptsSystem : public entityx::System<ScriptsSystem>
 		void update(entityx::EntityManager &es, entityx::EventManager &events, double dt) override;
 };
 
-#endif//SCRIPTSSYSTEM_H
+#endif//SCRIPTSSYSTEM_HPP

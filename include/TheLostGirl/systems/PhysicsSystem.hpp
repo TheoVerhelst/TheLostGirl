@@ -1,5 +1,5 @@
-#ifndef PHYSICSSYSTEM_H
-#define PHYSICSSYSTEM_H
+#ifndef PHYSICSSYSTEM_HPP
+#define PHYSICSSYSTEM_HPP
 
 #include <entityx/entityx.h>
 
@@ -14,4 +14,4 @@ class PhysicsSystem : public entityx::System<PhysicsSystem>
 		void update(entityx::EntityManager &es, entityx::EventManager &events, double dt) override;
 };
 
-#endif//PHYSICSSYSTEM_H
+#endif//PHYSICSSYSTEM_HPP

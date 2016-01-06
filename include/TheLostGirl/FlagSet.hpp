@@ -1,5 +1,5 @@
-#ifndef FLAGSET_H
-#define FLAGSET_H
+#ifndef FLAGSET_HPP
+#define FLAGSET_HPP
 
 #include <set>
 #include <vector>
@@ -136,4 +136,4 @@ inline FlagSet<Enum> operator^(FlagSet<Enum> lhs, const FlagSet<Enum>& rhs);
 
 #include <TheLostGirl/FlagSet.inl>
 
-#endif//FLAGSET_H
+#endif//FLAGSET_HPP

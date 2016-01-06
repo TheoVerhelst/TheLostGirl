@@ -1,5 +1,5 @@
-#ifndef INVENTORYOPENER_H
-#define INVENTORYOPENER_H
+#ifndef INVENTORYOPENER_HPP
+#define INVENTORYOPENER_HPP
 
 #include <TheLostGirl/Action.hpp>
 
@@ -23,5 +23,5 @@ class InventoryOpener : public Action
 		virtual void operator()(entityx::Entity entity) const override;
 };
 
-#endif//INVENTORYOPENER_H
+#endif//INVENTORYOPENER_HPP
 

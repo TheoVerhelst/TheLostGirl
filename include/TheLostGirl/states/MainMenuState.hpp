@@ -1,5 +1,5 @@
-#ifndef MAINMENUSTATE_H
-#define MAINMENUSTATE_H
+#ifndef MAINMENUSTATE_HPP
+#define MAINMENUSTATE_HPP
 
 #include <memory>
 #include <TGUI/TGUI.hpp>
@@ -64,4 +64,4 @@ class MainMenuState : public State
 		tgui::Button::Ptr m_exitButton;        ///< The Exit button.
 };
 
-#endif//MAINMENUSTATE_H
+#endif//MAINMENUSTATE_HPP

@@ -1,5 +1,5 @@
-#ifndef STATE_H
-#define STATE_H
+#ifndef STATE_HPP
+#define STATE_HPP
 
 #include <memory>
 #include <entityx/entityx.h>
@@ -64,4 +64,4 @@ void State::requestStackPush(Args&&... args)
 	Context::stateStack->pushState<T>(std::forward<Args>(args)...);
 }
 
-#endif//STATE_H
+#endif//STATE_HPP

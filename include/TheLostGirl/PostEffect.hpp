@@ -1,5 +1,5 @@
-#ifndef POSTEFFECT_H
-#define POSTEFFECT_H
+#ifndef POSTEFFECT_HPP
+#define POSTEFFECT_HPP
 
 #include <SFML/System.hpp>
 #include <SFML/Graphics.hpp>
@@ -37,4 +37,4 @@ class PostEffect : private sf::NonCopyable
 		static void applyShader(const sf::Shader& shader, sf::RenderTarget& output, const sf::RenderStates& states = sf::RenderStates::Default);
 };
 
-#endif//POSTEFFECT_HP
+#endif//POSTEFFECT_HPPP

@@ -1,5 +1,5 @@
-#ifndef PARAMETERSSTATE_H
-#define PARAMETERSSTATE_H
+#ifndef PARAMETERSSTATE_HPP
+#define PARAMETERSSTATE_HPP
 
 #include <TGUI/TGUI.hpp>
 #include <TheLostGirl/State.hpp>
@@ -83,5 +83,5 @@ class ParametersState : public State
 		tgui::Button::Ptr m_okButton;            ///< The ok button, at the bottom.
 };
 
-#endif//PARAMETERSSTATE_H
+#endif//PARAMETERSSTATE_HPP
 

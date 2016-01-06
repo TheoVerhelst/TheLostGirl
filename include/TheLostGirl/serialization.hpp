@@ -1,5 +1,5 @@
-#ifndef SERIALIZATION_H
-#define SERIALIZATION_H
+#ifndef SERIALIZATION_HPP
+#define SERIALIZATION_HPP
 
 #include <entityx/entityx.h>
 #include <TheLostGirl/components.hpp>
@@ -411,4 +411,4 @@ void parseArray(const Json::Value& array, const std::string& name, Json::ValueTy
 /// \param modelName The name of the model value.
 void parse(Json::Value& value, const Json::Value& model, const std::string& valueName, const std::string& modelName);
 
-#endif//SERIALIZATION_H
+#endif//SERIALIZATION_HPP

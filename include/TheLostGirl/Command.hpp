@@ -1,5 +1,5 @@
-#ifndef COMMAND_H
-#define COMMAND_H
+#ifndef COMMAND_HPP
+#define COMMAND_HPP
 
 #include <functional>
 #include <entityx/entityx.h>
@@ -92,4 +92,4 @@ class Command
 		};
 };
 
-#endif//COMMAND_H
+#endif//COMMAND_HPP

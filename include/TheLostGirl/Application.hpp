@@ -1,5 +1,5 @@
-#ifndef APPLICATION_H
-#define APPLICATION_H
+#ifndef APPLICATION_HPP
+#define APPLICATION_HPP
 
 #include <TGUI/TGUI.hpp>
 #include <SFML/Audio.hpp>
@@ -95,4 +95,4 @@ class Application : public entityx::Receiver<Application>
 		sf::Time m_frameTime;                     ///< The target frame time (1/FPS).
 };
 
-#endif//APPLICATION_H
+#endif//APPLICATION_HPP

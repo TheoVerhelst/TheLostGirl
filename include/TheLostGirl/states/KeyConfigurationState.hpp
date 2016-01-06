@@ -1,5 +1,5 @@
-#ifndef KEYCONFIGURATIONSTATE_H
-#define KEYCONFIGURATIONSTATE_H
+#ifndef KEYCONFIGURATIONSTATE_HPP
+#define KEYCONFIGURATIONSTATE_HPP
 
 #include <TGUI/TGUI.hpp>
 #include <TheLostGirl/State.hpp>
@@ -79,5 +79,5 @@ class KeyConfigurationState : public State
 		tgui::Button::Ptr m_okButton;                                 ///< The ok button.
 };
 
-#endif//KEYCONFIGURATIONSTATE_H
+#endif//KEYCONFIGURATIONSTATE_HPP
 

@@ -1,5 +1,5 @@
-#ifndef ANIMATIONSSYSTEM_H
-#define ANIMATIONSSYSTEM_H
+#ifndef ANIMATIONSSYSTEM_HPP
+#define ANIMATIONSSYSTEM_HPP
 
 #include <entityx/entityx.h>
 #include <SFML/Graphics.hpp>
@@ -23,4 +23,4 @@ class AnimationsSystem : public entityx::System<AnimationsSystem>
 		float m_timeSpeed;///< Current speed of the time.
 };
 
-#endif//ANIMATIONSSYSTEM_H
+#endif//ANIMATIONSSYSTEM_HPP

@@ -1,5 +1,5 @@
-#ifndef STATSSYSTEM_H
-#define STATSSYSTEM_H
+#ifndef STATSSYSTEM_HPP
+#define STATSSYSTEM_HPP
 
 #include <entityx/entityx.h>
 
@@ -14,4 +14,4 @@ class StatsSystem : public entityx::System<StatsSystem>
 		void update(entityx::EntityManager &es, entityx::EventManager &events, double dt) override;
 };
 
-#endif//STATSSYSTEM_H
+#endif//STATSSYSTEM_HPP

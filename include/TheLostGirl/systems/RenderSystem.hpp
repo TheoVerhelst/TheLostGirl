@@ -1,5 +1,5 @@
-#ifndef RENDERSYSTEM_H
-#define RENDERSYSTEM_H
+#ifndef RENDERSYSTEM_HPP
+#define RENDERSYSTEM_HPP
 
 #include <entityx/entityx.h>
 
@@ -20,4 +20,4 @@ class RenderSystem : public entityx::System<RenderSystem>
 		const bool m_postEffectSupported;  ///< Indicates if post effects are supported (avoid useless calls of PostEffect::isSupported())
 };
 
-#endif//RENDERSYSTEM_H
+#endif//RENDERSYSTEM_HPP

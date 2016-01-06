@@ -1,5 +1,5 @@
-#ifndef PARAMETERS_H
-#define PARAMETERS_H
+#ifndef PARAMETERS_HPP
+#define PARAMETERS_HPP
 
 #include <string>
 #include <Box2D/Box2D.h>
@@ -21,4 +21,4 @@ struct Parameters
 	tgui::Theme::Ptr guiTheme;   ///< Path to the configuration file of the GUI.
 };
 
-#endif//PARAMETERS_H
+#endif//PARAMETERS_HPP

@@ -2701,7 +2701,7 @@ bool Value::isInt64() const {
   default:
     break;
   }
-#endif//JSON_HAS_INT64
+#endif//JSON_HPPAS_INT64
   return false;
 }
 
@@ -2721,7 +2721,7 @@ bool Value::isUInt64() const {
   default:
     break;
   }
-#endif//JSON_HAS_INT64
+#endif//JSON_HPPAS_INT64
   return false;
 }
 

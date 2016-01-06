@@ -1,5 +1,5 @@
-#ifndef FIXTUREROLES_H
-#define FIXTUREROLES_H
+#ifndef FIXTUREROLES_HPP
+#define FIXTUREROLES_HPP
 
 #include <Box2D/Box2D.h>
 
@@ -22,4 +22,4 @@ inline bool fixtureHasRole(b2Fixture* fixture, FixtureRole role)
 	return static_cast<FlagSet<FixtureRole>*>(fixture->GetUserData())->test(role);
 }
 
-#endif//FIXTUREROLES_H
+#endif//FIXTUREROLES_HPP

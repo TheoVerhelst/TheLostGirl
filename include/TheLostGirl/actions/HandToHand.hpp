@@ -1,5 +1,5 @@
-#ifndef HANDTOHAND_H
-#define HANDTOHAND_H
+#ifndef HANDTOHAND_HPP
+#define HANDTOHAND_HPP
 
 #include <unordered_set>
 
@@ -43,5 +43,5 @@ class HandToHandQueryCallback : public b2QueryCallback
 		std::unordered_set<entityx::Entity, HashEntity> foundEntities;///< Set of all entities that overlaps the AABB.
 };
 
-#endif//HANDTOHAND_H
+#endif//HANDTOHAND_HPP
 

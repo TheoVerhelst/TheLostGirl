@@ -1,5 +1,5 @@
-#ifndef HUDSTATE_H
-#define HUDSTATE_H
+#ifndef HUDSTATE_HPP
+#define HUDSTATE_HPP
 
 #include <unordered_map>
 #include <TGUI/TGUI.hpp>
@@ -79,4 +79,4 @@ class HUDState : public State
 		sf::Time m_windFadingTimer;        ///< Timer of the wind arrow fading animation.
 };
 
-#endif//HUDSTATE_H
+#endif//HUDSTATE_HPP

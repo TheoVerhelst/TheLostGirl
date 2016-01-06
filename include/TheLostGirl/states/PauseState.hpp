@@ -1,5 +1,5 @@
-#ifndef PAUSESTATE_H
-#define PAUSESTATE_H
+#ifndef PAUSESTATE_HPP
+#define PAUSESTATE_HPP
 
 #include <TGUI/TGUI.hpp>
 #include <TheLostGirl/State.hpp>
@@ -62,4 +62,4 @@ class PauseState : public State
 		tgui::Button::Ptr m_backToMainMenuButton;///< The Back to main menu button.
 };
 
-#endif//PAUSESTATE_H
+#endif//PAUSESTATE_HPP

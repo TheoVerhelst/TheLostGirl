@@ -1,5 +1,5 @@
-#ifndef CONTACTLISTENER_H
-#define CONTACTLISTENER_H
+#ifndef CONTACTLISTENER_HPP
+#define CONTACTLISTENER_HPP
 
 #include <Box2D/Box2D.h>
 #include <entityx/entityx.h>
@@ -53,4 +53,4 @@ class ContactListener : public b2ContactListener
 		bool checkCollide(entityx::Entity entityA, entityx::Entity entityB) const;
 };
 
-#endif//CONTACTLISTENER_H
+#endif//CONTACTLISTENER_HPP

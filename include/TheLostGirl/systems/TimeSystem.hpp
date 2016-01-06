@@ -1,5 +1,5 @@
-#ifndef TIMESYSTEM_H
-#define TIMESYSTEM_H
+#ifndef TIMESYSTEM_HPP
+#define TIMESYSTEM_HPP
 
 #include <random>
 #include <entityx/entityx.h>
@@ -90,4 +90,4 @@ class TimeSystem : public entityx::System<TimeSystem>
 		std::uniform_real_distribution<float> m_strengthDis;///< Same as above.
 };
 
-#endif//TIMESYSTEM_H
+#endif//TIMESYSTEM_HPP

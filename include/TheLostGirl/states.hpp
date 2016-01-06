@@ -1,5 +1,5 @@
-#ifndef STATES_H
-#define STATES_H
+#ifndef STATES_HPP
+#define STATES_HPP
 
 #include <TheLostGirl/states/MainMenuState.hpp>
 #include <TheLostGirl/states/KeyConfigurationState.hpp>
@@ -11,4 +11,4 @@
 #include <TheLostGirl/states/PauseState.hpp>
 #include <TheLostGirl/states/OpenInventoryState.hpp>
 
-#endif//STATES_H
+#endif//STATES_HPP

@@ -1,5 +1,5 @@
-#ifndef JUMPER_H
-#define JUMPER_H
+#ifndef JUMPER_HPP
+#define JUMPER_HPP
 
 #include <TheLostGirl/Action.hpp>
 
@@ -23,5 +23,5 @@ class Jumper : public Action
 		virtual void operator()(entityx::Entity entity) const override;
 };
 
-#endif//JUMPER_H
+#endif//JUMPER_HPP
 

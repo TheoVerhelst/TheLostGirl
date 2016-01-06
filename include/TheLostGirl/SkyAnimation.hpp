@@ -1,5 +1,5 @@
-#ifndef SKYANIMATION_H
-#define SKYANIMATION_H
+#ifndef SKYANIMATION_HPP
+#define SKYANIMATION_HPP
 
 #include <entityx/entityx.h>
 
@@ -21,4 +21,4 @@ class SkyAnimation
 		entityx::Entity m_entity;///< The entity to animate.
 };
 
-#endif//SKYANIMATION_H
+#endif//SKYANIMATION_HPP

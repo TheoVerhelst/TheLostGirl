@@ -1,5 +1,5 @@
-#ifndef ARROWHITLISTENER_H
-#define ARROWHITLISTENER_H
+#ifndef ARROWHITLISTENER_HPP
+#define ARROWHITLISTENER_HPP
 
 #include <Box2D/Box2D.h>
 
@@ -33,4 +33,4 @@ class ArrowHitListener : public b2ContactListener
 		virtual void PostSolve(b2Contact* contact, const b2ContactImpulse* impulse) override;
 };
 
-#endif//ARROWHITLISTENER_H
+#endif//ARROWHITLISTENER_HPP

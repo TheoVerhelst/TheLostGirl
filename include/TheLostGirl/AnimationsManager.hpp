@@ -1,5 +1,5 @@
-#ifndef ANIMATIONS_H
-#define ANIMATIONS_H
+#ifndef ANIMATIONS_HPP
+#define ANIMATIONS_HPP
 
 #include <string>
 #include <map>
@@ -169,4 +169,4 @@ class AnimationsManager
 
 #include <TheLostGirl/AnimationsManager.inl>
 
-#endif//ANIMATIONS_H
+#endif//ANIMATIONS_HPP

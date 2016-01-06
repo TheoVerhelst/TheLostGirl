@@ -1,5 +1,5 @@
-#ifndef CONTEXT_H
-#define CONTEXT_H
+#ifndef CONTEXT_HPP
+#define CONTEXT_HPP
 
 #include <string>
 
@@ -62,4 +62,4 @@ struct Context
 	static StateStack* stateStack;               ///< The state stack.
 };
 
-#endif//CONTEXT_H
+#endif//CONTEXT_HPP

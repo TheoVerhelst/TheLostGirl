@@ -1,5 +1,5 @@
-#ifndef ACTION_H
-#define ACTION_H
+#ifndef ACTION_HPP
+#define ACTION_HPP
 
 //Forward declarations
 namespace entityx
@@ -19,4 +19,4 @@ class Action
 		virtual void operator()(entityx::Entity entity) const = 0;
 };
 
-#endif//ACTION_H
+#endif//ACTION_HPP

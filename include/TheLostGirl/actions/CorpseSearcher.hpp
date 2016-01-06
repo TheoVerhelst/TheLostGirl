@@ -1,5 +1,5 @@
-#ifndef CORPSESEARCHER_H
-#define CORPSESEARCHER_H
+#ifndef CORPSESEARCHER_HPP
+#define CORPSESEARCHER_HPP
 
 #include <Box2D/Box2D.h>
 #include <entityx/entityx.h>
@@ -30,5 +30,5 @@ class CorpseQueryCallback : public b2QueryCallback
 		entityx::Entity foundEntity;///< If no corpse is found, then this entity won't be valid.
 };
 
-#endif//CORPSESEARCHER_H
+#endif//CORPSESEARCHER_HPP
 

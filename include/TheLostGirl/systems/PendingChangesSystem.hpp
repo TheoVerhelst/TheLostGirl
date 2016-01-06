@@ -1,5 +1,5 @@
-#ifndef PENDINGCHANGESSYSTEM_H
-#define PENDINGCHANGESSYSTEM_H
+#ifndef PENDINGCHANGESSYSTEM_HPP
+#define PENDINGCHANGESSYSTEM_HPP
 
 #include <queue>
 #include <entityx/entityx.h>
@@ -28,4 +28,4 @@ class PendingChangesSystem : public entityx::System<PendingChangesSystem>
 		std::queue<b2Joint*> jointsToDestroy;  ///< List of all joints that need to be destroyed.
 };
 
-#endif//PENDINGCHANGESSYSTEM_H
+#endif//PENDINGCHANGESSYSTEM_HPP

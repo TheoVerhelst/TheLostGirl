@@ -1,5 +1,5 @@
-#ifndef LOADINGSTATE_H
-#define LOADINGSTATE_H
+#ifndef LOADINGSTATE_HPP
+#define LOADINGSTATE_HPP
 
 #include <TGUI/TGUI.hpp>
 #include <TheLostGirl/State.hpp>
@@ -60,4 +60,4 @@ class LoadingState : public State
 		float m_sentenceTimer;           ///< Timer in seconds of a little animation on the sentence.
 };
 
-#endif//LOADINGSTATE_H
+#endif//LOADINGSTATE_HPP

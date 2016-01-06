@@ -1,5 +1,5 @@
-#ifndef OPENINVENTORYSTATE_H
-#define OPENINVENTORYSTATE_H
+#ifndef OPENINVENTORYSTATE_HPP
+#define OPENINVENTORYSTATE_HPP
 
 #include <TGUI/TGUI.hpp>
 #include <TheLostGirl/State.hpp>
@@ -121,4 +121,4 @@ class OpenInventoryState : public State
 
 };
 
-#endif//OPENINVENTORYSTATE_H
+#endif//OPENINVENTORYSTATE_HPP

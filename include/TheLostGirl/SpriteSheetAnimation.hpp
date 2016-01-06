@@ -1,5 +1,5 @@
-#ifndef SPRITESHEETANIMATION_H
-#define SPRITESHEETANIMATION_H
+#ifndef SPRITESHEETANIMATION_HPP
+#define SPRITESHEETANIMATION_HPP
 
 #include <TheLostGirl/StateStack.hpp>
 #include <TheLostGirl/Parameters.hpp>
@@ -85,4 +85,4 @@ class SpriteSheetAnimation
 		sf::Sprite* m_sprite;         ///< Sprite to animate.
 };
 
-#endif//SPRITESHEETANIMATION_H
+#endif//SPRITESHEETANIMATION_HPP

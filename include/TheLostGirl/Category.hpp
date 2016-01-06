@@ -1,5 +1,5 @@
-#ifndef CATEGORY_H
-#define CATEGORY_H
+#ifndef CATEGORY_HPP
+#define CATEGORY_HPP
 
 /// \file Category.h
 
@@ -14,4 +14,4 @@ enum class Category : std::size_t
 	Aggressive///< Category of aggressive actor.
 };
 
-#endif//SCATEGORY_H
+#endif//SCATEGORY_HPP

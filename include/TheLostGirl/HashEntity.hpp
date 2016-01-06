@@ -1,5 +1,5 @@
-#ifndef HASHENTITY_H
-#define HASHENTITY_H
+#ifndef HASHENTITY_HPP
+#define HASHENTITY_HPP
 
 #include <cstddef>
 
@@ -22,4 +22,4 @@ class HashEntity
 		std::size_t operator()(entityx::Entity entity) const;
 };
 
-#endif//HASHENTITY_H
+#endif//HASHENTITY_HPP

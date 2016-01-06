@@ -1,5 +1,5 @@
-#ifndef GAMESTATE_H
-#define GAMESTATE_H
+#ifndef GAMESTATE_HPP
+#define GAMESTATE_HPP
 
 #include <thread>
 #include <SFML/Graphics.hpp>
@@ -90,4 +90,4 @@ class GameState : public State
 		sf::FloatRect m_levelRect;        ///< The dimensions of the level, in pixels.
 };
 
-#endif//GAMESTATE_H
+#endif//GAMESTATE_HPP

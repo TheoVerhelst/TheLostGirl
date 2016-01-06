@@ -1,5 +1,5 @@
-#ifndef MOVER_H
-#define MOVER_H
+#ifndef MOVER_HPP
+#define MOVER_HPP
 
 #include <Box2D/Box2D.h>
 #include <TheLostGirl/Action.hpp>
@@ -58,5 +58,5 @@ class Mover : public Action
 		inline void flipPoint(b2Vec2& vec, float32 mid) const;
 };
 
-#endif//MOVER_H
+#endif//MOVER_HPP
 

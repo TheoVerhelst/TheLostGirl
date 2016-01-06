@@ -1,5 +1,5 @@
-#ifndef TREE_HPP
-#define TREE_HPP
+#ifndef TREE_HPPPP
+#define TREE_HPPPP
 
 #include <string>
 #include <vector>
@@ -101,4 +101,4 @@ class Tree
 
 #include <TheLostGirl/scripts/Tree.inl>
 
-#endif//TREE_H
+#endif//TREE_HPP

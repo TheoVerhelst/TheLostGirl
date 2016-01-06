@@ -1,5 +1,5 @@
-#ifndef BLOOMEFFECT_H
-#define BLOOMEFFECT_H
+#ifndef BLOOMEFFECT_HPP
+#define BLOOMEFFECT_HPP
 
 #include <array>
 #include <SFML/Graphics.hpp>
@@ -63,4 +63,4 @@ class BloomEffect : public PostEffect
 		RenderTextureArray m_secondPassTextures;           ///< Third temp texture.
 };
 
-#endif // BLOOMEFFECT_H
+#endif//BLOOMEFFECT_HPP

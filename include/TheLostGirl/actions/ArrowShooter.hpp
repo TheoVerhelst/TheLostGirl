@@ -1,5 +1,5 @@
-#ifndef ARROWSHOOTER_H
-#define ARROWSHOOTER_H
+#ifndef ARROWSHOOTER_HPP
+#define ARROWSHOOTER_HPP
 
 #include <TheLostGirl/Action.hpp>
 
@@ -23,5 +23,5 @@ class ArrowShooter : public Action
 		virtual void operator()(entityx::Entity entity) const override;
 };
 
-#endif//ARROWSHOOTER_H
+#endif//ARROWSHOOTER_HPP
 

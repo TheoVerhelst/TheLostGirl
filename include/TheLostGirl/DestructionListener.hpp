@@ -1,5 +1,5 @@
-#ifndef DESTRUCTIONLISTENER_H
-#define DESTRUCTIONLISTENER_H
+#ifndef DESTRUCTIONLISTENER_HPP
+#define DESTRUCTIONLISTENER_HPP
 
 #include <Box2D/Box2D.h>
 
@@ -19,4 +19,4 @@ class DestructionListener : public b2DestructionListener
 		virtual void SayGoodbye(b2Fixture* fixture) override;
 };
 
-#endif//DESTRUCTIONLISTENER_H
+#endif//DESTRUCTIONLISTENER_HPP

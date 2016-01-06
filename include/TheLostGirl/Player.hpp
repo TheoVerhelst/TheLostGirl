@@ -1,5 +1,5 @@
-#ifndef PLAYER_H
-#define PLAYER_H
+#ifndef PLAYER_HPP
+#define PLAYER_HPP
 
 #include <map>
 #include <queue>
@@ -131,4 +131,4 @@ class Player
 		std::map<Action, Command> m_immediateActionBinding;        ///< Binding between theoric immediate actions and concrete functions.
 };
 
-#endif//PLAYER_H
+#endif//PLAYER_HPP

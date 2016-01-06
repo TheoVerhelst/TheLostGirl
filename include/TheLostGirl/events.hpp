@@ -1,5 +1,5 @@
-#ifndef EVENTS_H
-#define EVENTS_H
+#ifndef EVENTS_HPP
+#define EVENTS_HPP
 
 #include <string>
 #include <entityx/entityx.h>
@@ -109,4 +109,4 @@ struct ParametersChange : public entityx::Event<ParametersChange>
 	std::size_t videoModeIndex;///< The index of the video mode, intented to be used with sf::VideoMode::getFullscreenModes().
 };
 
-#endif//EVENTS_H
+#endif//EVENTS_HPP

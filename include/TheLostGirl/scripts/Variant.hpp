@@ -1,5 +1,5 @@
-#ifndef VARIANT_H
-#define VARIANT_H
+#ifndef VARIANT_HPP
+#define VARIANT_HPP
 
 #include <iostream>
 #include <type_traits>
@@ -145,4 +145,4 @@ namespace variantDetails
 
 #include <TheLostGirl/scripts/Variant.inl>
 
-#endif//VARIANT_H
+#endif//VARIANT_HPP

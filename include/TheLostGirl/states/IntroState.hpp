@@ -1,5 +1,5 @@
-#ifndef INTROSTATE_H
-#define INTROSTATE_H
+#ifndef INTROSTATE_HPP
+#define INTROSTATE_HPP
 
 #include <TGUI/TGUI.hpp>
 #include <TheLostGirl/State.hpp>
@@ -54,4 +54,4 @@ class IntroState : public State
 		tgui::Label::Ptr m_sentence;   ///< The sentence under the logo.
 };
 
-#endif//INTROSTATE_H
+#endif//INTROSTATE_HPP
