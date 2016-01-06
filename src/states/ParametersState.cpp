@@ -3,7 +3,6 @@
 #include <TheLostGirl/LangManager.hpp>
 #include <TheLostGirl/states/PauseState.hpp>
 #include <TheLostGirl/Parameters.hpp>
-#include <TheLostGirl/functions.hpp>
 #include <TheLostGirl/events.hpp>
 #include <TheLostGirl/states/KeyConfigurationState.hpp>
 #include <TheLostGirl/states/ParametersState.hpp>
@@ -213,50 +212,29 @@ bool ParametersState::handleEvent(const sf::Event& event)
 	return false;
 }
 
-void ParametersState::receive(const ParametersChange& parametersChange)
+void ParametersState::receive(const ParametersChange& changes)
 {
-	if(parametersChange.langChanged)
+	if(changes.langChanged)
 		resetTexts();
 }
 
 void ParametersState::applyChanges()
 {
-	bool langChanged{Context::langManager->getLang() != m_langComboBox->getSelectedItem()};
-	bool bloomEnabledChanged{Context::parameters->bloomEnabled != m_bloomCheckBox->isChecked()};
-	bool fullscreenChanged{Context::parameters->fullscreen != m_fullscreenCheckBox->isChecked()};
-	if(langChanged)
-		Context::langManager->setLang(m_langComboBox->getSelectedItem());
-	if(bloomEnabledChanged)
+	ParametersChange changes;
+	changes.langChanged = Context::langManager->getLang() != m_langComboBox->getSelectedItem();
+	changes.bloomEnabledChanged = Context::parameters->bloomEnabled != m_bloomCheckBox->isChecked();
+	changes.fullscreenChanged = Context::parameters->fullscreen != m_fullscreenCheckBox->isChecked();
+	if(changes.langChanged)
+		changes.newLang = m_langComboBox->getSelectedItem();
+	if(changes.bloomEnabledChanged)
+		changes.newBloomEnabledState = m_bloomCheckBox->isChecked();
+	if(changes.fullscreenChanged)
 	{
-		if(m_bloomCheckBox->isChecked())
-		{
-			Context::postEffectsTexture->setView(Context::window->getView());
-			Context::window->setView(Context::window->getDefaultView());
-		}
-		else
-		{
-			Context::window->setView(Context::postEffectsTexture->getView());
-			Context::postEffectsTexture->setView(Context::postEffectsTexture->getDefaultView());
-		}
-		Context::parameters->bloomEnabled = m_bloomCheckBox->isChecked();
+		changes.newFullScreenState = m_fullscreenCheckBox->isChecked();
+		changes.videoModeIndex = std::stoul(m_fullscreenComboBox->getSelectedItemId().toAnsiString());
 	}
-	if(fullscreenChanged)
-	{
-		sf::VideoMode videoMode;
-		uint32 style{sf::Style::Default};
-		if(m_fullscreenCheckBox->isChecked())
-		{
-			style = sf::Style::Fullscreen;
-			videoMode = sf::VideoMode::getFullscreenModes()[std::stoul(m_fullscreenComboBox->getSelectedItemId().toAnsiString())];
-		}
-		else
-			videoMode = {960, 540};
-		Context::window->create(videoMode, "The Lost Girl", style);
-		Context::parameters->fullscreen = m_fullscreenCheckBox->isChecked();
-		handleResize();
-	}
-	if(langChanged or bloomEnabledChanged)
-		Context::eventManager->emit<ParametersChange>(langChanged, bloomEnabledChanged, fullscreenChanged);
+	if(changes.langChanged or changes.bloomEnabledChanged or changes.fullscreenChanged)
+		Context::eventManager->emit<ParametersChange>(changes);
 }
 
 void ParametersState::resetTexts()

@@ -43,8 +43,8 @@ class Application : public entityx::Receiver<Application>
 		void run();
 
 		/// Receive an event about a change in the parameters.
-		/// \param parametersChange The data about the change.
-		void receive(const ParametersChange& parametersChange);
+		/// \param changes The data about the change.
+		void receive(const ParametersChange& changes);
 
 	private:
 		/// Various input handling.
@@ -62,6 +62,12 @@ class Application : public entityx::Receiver<Application>
 
 		/// Load the settings in the settings file and apply them.
 		void deserializeSettings();
+
+		/// Calculate a new view for the new size of the window.
+		/// Then apply this view to the window or the bloom texture,
+		/// depending of whether the bloom is enabled, and to the gui.
+		/// The goal is keeping a 16:9 display ratio for the window view.
+		void handleResize();
 
 		friend Context;
 

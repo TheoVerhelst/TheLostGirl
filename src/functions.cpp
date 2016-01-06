@@ -11,28 +11,6 @@
 #include <TheLostGirl/Context.hpp>
 #include <TheLostGirl/functions.hpp>
 
-
-void handleResize()
-{
-	const float iw{float(Context::window->getSize().x)};
-	const float ih{float(Context::window->getSize().y)};
-	float fh(ih), fw(iw);//If size is in a 16:9 ratio, it won't change.
-	if(iw / 16.f < ih / 9.f) //Taller than a 16:9 ratio
-		fh = iw * (9.0f / 16.0f);
-	else if(iw / 16.f > ih / 9.f) //Larger than a 16:9 ratio
-		fw = ih * (16.0f / 9.0f);
-	const float scalex{fw / iw}, scaley{fh / ih};
-	sf::View view{Context::window->getView()};
-	view.setViewport({(1 - scalex) / 2.0f, (1 - scaley) / 2.0f, scalex, scaley});
-	view.setSize(Context::parameters->defaultViewSize);
-	if(Context::parameters->bloomEnabled)
-		Context::postEffectsTexture->setView(view);
-	else
-		Context::window->setView(view);
-	view.setCenter(Context::parameters->defaultViewSize/2.f);
-	Context::gui->setView(view);
-}
-
 sf::Color fadingColor(sf::Time dt, sf::Time fadingLength, bool in)
 {
 	float alpha{cap((dt / fadingLength) * 255.f, 0.f, 255.f)};

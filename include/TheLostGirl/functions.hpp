@@ -25,12 +25,6 @@ enum class Direction;
 
 /// \file functions.h
 
-/// Calculate a new view for the new size of the window.
-/// Then apply this view to the window or the bloom texture,
-/// depending of whether the bloom is enabled, and to the gui.
-/// That allows the game to keep a 16:9 display ratio.
-void handleResize();
-
 /// Return \a value capped between \a min and \a max.
 /// That function is useful to keep a number between bounds, e.g. the life of a character between 0 and 100.
 /// \param value Value to cap.

@@ -84,8 +84,39 @@ void Application::run()
 	}
 }
 
-void Application::receive(const ParametersChange&)
+void Application::receive(const ParametersChange& changes)
 {
+	if(changes.langChanged)
+		m_langManager.setLang(changes.newLang);
+	if(changes.bloomEnabledChanged)
+	{
+		if(changes.newBloomEnabledState)
+		{
+			m_postEffectsTexture.setView(m_window.getView());
+			m_window.setView(m_window.getDefaultView());
+		}
+		else
+		{
+			m_window.setView(m_postEffectsTexture.getView());
+			m_postEffectsTexture.setView(m_postEffectsTexture.getDefaultView());
+		}
+		m_parameters.bloomEnabled = changes.newBloomEnabledState;
+	}
+	if(changes.fullscreenChanged)
+	{
+		sf::VideoMode videoMode;
+		uint32 style{sf::Style::Default};
+		if(changes.newFullScreenState)
+		{
+			style = sf::Style::Fullscreen;
+			videoMode = sf::VideoMode::getFullscreenModes()[changes.videoModeIndex];
+		}
+		else
+			videoMode = {960, 540};
+		m_window.create(videoMode, "The Lost Girl", style);
+		m_parameters.fullscreen = changes.newFullScreenState;
+		handleResize();
+	}
 }
 
 void Application::processInput()
@@ -178,4 +209,25 @@ void Application::deserializeSettings()
 		m_window.create(mode, "The Lost Girl", style);
 		m_postEffectsTexture.create(mode.width, mode.height);
 	}
+}
+
+void Application::handleResize()
+{
+	const float iw{float(m_window.getSize().x)};
+	const float ih{float(m_window.getSize().y)};
+	float fh(ih), fw(iw);//If size is in a 16:9 ratio, it won't change.
+	if(iw / 16.f < ih / 9.f) //Taller than a 16:9 ratio
+		fh = iw * (9.0f / 16.0f);
+	else if(iw / 16.f > ih / 9.f) //Larger than a 16:9 ratio
+		fw = ih * (16.0f / 9.0f);
+	const float scalex{fw / iw}, scaley{fh / ih};
+	sf::View view{m_window.getView()};
+	view.setViewport({(1 - scalex) / 2.0f, (1 - scaley) / 2.0f, scalex, scaley});
+	view.setSize(m_parameters.defaultViewSize);
+	if(m_parameters.bloomEnabled)
+		m_postEffectsTexture.setView(view);
+	else
+		m_window.setView(view);
+	view.setCenter(m_parameters.defaultViewSize/2.f);
+	m_gui.setView(view);
 }
