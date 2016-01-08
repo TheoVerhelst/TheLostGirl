@@ -33,7 +33,7 @@ class HandToHandQueryCallback : public b2QueryCallback
 	public:
 		/// Constructor.
 		/// \param attacker The entity that does the attack.
-		HandToHandQueryCallback(entityx::Entity attacker);
+		explicit HandToHandQueryCallback(entityx::Entity attacker);
 
 		/// Handle the world querying.
 		/// \param fixture A fixture that overlap the AABB.

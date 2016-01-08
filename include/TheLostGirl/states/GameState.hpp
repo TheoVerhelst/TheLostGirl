@@ -4,34 +4,24 @@
 #include <thread>
 #include <SFML/Graphics.hpp>
 #include <entityx/entityx.h>
-#include <TheLostGirl/Parameters.hpp>
-#include <TheLostGirl/Context.hpp>
-#include <TheLostGirl/AnimationsManager.hpp>
-#include <TheLostGirl/ContactListener.hpp>
 #include <TheLostGirl/State.hpp>
+#include <TheLostGirl/ContactListener.hpp>
 
 //Forward declarations
-namespace sf
-{
-	class Event;
-	class Time;
-}
-class Context;
-class StateStack;
-struct Transform;
 struct ParametersChange;
+struct Transform;
 
 /// State that effectively play the game.
-/// The game become really interesting here.
+/// The game becomes really interesting here.
 class GameState : public State
 {
 	public:
         /// Constructor.
         /// \param file Path name of the save file to load.
-		GameState(std::string file = Context::parameters->resourcesPath + "levels/save.json");
+		explicit GameState(std::string file);
 
 		/// Destructor.
-		/// Remove all bodies, sprites and others from the memory.
+		/// Removes all bodies, sprites and others from the memory.
 		~GameState();
 
         /// The drawing function.
@@ -51,7 +41,7 @@ class GameState : public State
         /// \note The closing window and resinzing window events are already handled by the Application class.
 		virtual bool handleEvent(const sf::Event& event) override;
 
-		/// Receive an event about a change in the parameters.
+		/// Receives an event about a change in the parameters.
 		/// \param parametersChange The data about the change.
 		void receive(const ParametersChange& parametersChange);
 
@@ -64,15 +54,15 @@ class GameState : public State
 			std::vector<Transform> replaces;///< List of places where the texture should be displayed.
 		};
 
-		/// Initialize the physic world.
+		/// Initialize sthe physic world.
 		/// \param file Path of the save file to load.
 		void initWorld(const std::string& file);
 
-		/// Save the physic world.
+		/// Saves the physic world.
 		/// \param file Path of the save file to override.
 		void saveWorld(const std::string& file);
 
-		/// Clear all entities.
+		/// Clears all entities.
 		void clear();
 
 		std::map<std::string, entityx::Entity> m_entities;                    ///< All game entities.

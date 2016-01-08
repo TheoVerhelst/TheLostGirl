@@ -43,7 +43,7 @@ struct Context
 	/// Constructor.
 	/// Initialize the global variable according to the given Application instance.
 	/// \param application The main Application instance.
-	Context(Application& application);
+	explicit Context(Application& application);
 
 	static Parameters* parameters;               ///< Structure containing all the game parameters.
 	static sf::RenderWindow* window;             ///< The main window.

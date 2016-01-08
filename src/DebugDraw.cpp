@@ -12,6 +12,7 @@
 
 DebugDraw::DebugDraw():
 	m_debugMode{true},
+	m_framesPerSecond{0.f},
 	m_coutStreambuf{std::cout.rdbuf(m_outStringStream.rdbuf())},
 	m_cerrStreambuf{std::cerr.rdbuf(m_errStringStream.rdbuf())},
 	m_errorColor{255, 100, 100}

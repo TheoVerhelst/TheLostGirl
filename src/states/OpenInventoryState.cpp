@@ -28,7 +28,7 @@ OpenInventoryState::OpenInventoryState(entityx::Entity entity) :
 
 	m_entityName = Context::parameters->guiTheme->load("Label");
 	m_entityName->setTextSize(17);
-	m_entityName->setPosition(bindWidth(m_background) * 0.5f - bindWidth(m_entityName) * 0.5f, bindHeight(m_background) * 0.125f);
+	m_entityName->setPosition((bindWidth(m_background) - bindWidth(m_entityName)) * 0.5f, bindHeight(m_background) * 0.125f);
 	m_background->add(m_entityName);
 
 	m_displayStrings = {"List", "Grid"};

@@ -55,7 +55,7 @@ sf::Color fadingColor(sf::Time dt = sf::seconds(0), sf::Time fadingLength = sf::
 /// Check if the given string contains at least one whitespace.
 /// \param str String to check.
 /// \return True if the given string contains at least one whitespace, false otherwise.
-bool hasWhiteSpace(const std::string str);
+bool hasWhiteSpace(const std::string& str);
 
 /// Convert a Box2D vector to a SFML vector.
 /// \param vec A Box2D vector.

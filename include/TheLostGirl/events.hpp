@@ -15,7 +15,7 @@ struct LoadingStateChange : public entityx::Event<LoadingStateChange>
 
 	/// Constructor.
 	/// \param _sentence A short sentence describing the loading state.
-	LoadingStateChange(const std::string& _sentence):
+	explicit LoadingStateChange(const std::string& _sentence):
 		sentence{_sentence}
 	{
 	}

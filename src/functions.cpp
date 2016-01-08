@@ -18,7 +18,7 @@ sf::Color fadingColor(sf::Time dt, sf::Time fadingLength, bool in)
 	return sf::Color(255, 255, 255, static_cast<sf::Uint8>(alpha));
 }
 
-bool hasWhiteSpace(const std::string str)
+bool hasWhiteSpace(const std::string& str)
 {
 	return std::any_of(str.cbegin(), str.cend(), [](const char& chr)
 	{

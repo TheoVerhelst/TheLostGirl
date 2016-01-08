@@ -20,7 +20,7 @@ class AnimationsSystem : public entityx::System<AnimationsSystem>
 		void setTimeSpeed(float timeSpeed);
 
 	private:
-		float m_timeSpeed;///< Current speed of the time.
+		float m_timeSpeed = 1.f;///< Current speed of the time.
 };
 
 #endif//ANIMATIONSSYSTEM_HPP

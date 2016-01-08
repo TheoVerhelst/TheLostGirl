@@ -8,7 +8,8 @@
 #include <TheLostGirl/Parameters.hpp>
 #include <TheLostGirl/states/LoadingState.hpp>
 
-LoadingState::LoadingState()
+LoadingState::LoadingState():
+	m_sentenceTimer{0.f}
 {
 	Context::eventManager->subscribe<LoadingStateChange>(*this);
 	Context::eventManager->subscribe<ParametersChange>(*this);

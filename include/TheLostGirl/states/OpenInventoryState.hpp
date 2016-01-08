@@ -25,7 +25,7 @@ class OpenInventoryState : public State
 	public:
         /// Constructor.
         /// \param entity Entity of which open the inventory.
-		OpenInventoryState(entityx::Entity entity);
+		explicit OpenInventoryState(entityx::Entity entity);
 
 		/// Destructor.
 		~OpenInventoryState();

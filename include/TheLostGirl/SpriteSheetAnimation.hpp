@@ -33,7 +33,7 @@ class SpriteSheetAnimation
 	public:
 		/// Constructor.
 		/// \param sprite Sprite to animate.
-		SpriteSheetAnimation(sf::Sprite& sprite);
+		explicit SpriteSheetAnimation(sf::Sprite& sprite);
 
 		/// Registers a new frame.
 		/// \param frame Frame of texture to display on the sprite of the entity.

@@ -9,8 +9,10 @@
 #include <TheLostGirl/Player.hpp>
 
 ScrollingSystem::ScrollingSystem():
-	m_levelRect{0.f, 0.f, 0.f, 0.f}
-{}
+	m_levelRect{0.f, 0.f, 0.f, 0.f},
+	m_referencePlan{0.f}
+{
+}
 
 void ScrollingSystem::update(entityx::EntityManager& entityManager, entityx::EventManager&, double)
 {
