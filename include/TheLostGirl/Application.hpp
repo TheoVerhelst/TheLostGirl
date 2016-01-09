@@ -7,6 +7,7 @@
 #include <Box2D/Box2D.h>
 #include <TheLostGirl/ResourceManager.hpp>
 #include <TheLostGirl/Context.hpp>
+#include <TheLostGirl/ContactListener.hpp>
 #include <TheLostGirl/BloomEffect.hpp>
 #include <TheLostGirl/StateStack.hpp>
 #include <TheLostGirl/Player.hpp>
@@ -89,6 +90,7 @@ class Application : public entityx::Receiver<Application>
 		Context m_context;                        ///< This member initializes the global variables of the context.
 		DebugDraw m_debugDraw;                    ///< The debugging drawer.
 		DestructionListener m_destructionListener;///< The fixture/joint destruction handler.
+		ContactListener m_contactListener;        ///< The contact listener.
 		BloomEffect m_bloomEffect;                ///< The shader to apply on m_postEffectsTexture.
 		sf::Time m_FPSTimer;                      ///< Count time since last FPS ath update.
 		sf::Time m_FPSRefreshRate;                ///< Refresh rate of the FPS ath.

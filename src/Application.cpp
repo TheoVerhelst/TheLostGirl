@@ -32,6 +32,7 @@ Application::Application(bool debugMode):
 	m_gui.setFont(std::make_shared<sf::Font>(m_fontManager.get("menu")));
 	m_world.SetDebugDraw(&m_debugDraw);
 	m_world.SetDestructionListener(&m_destructionListener);
+	m_world.SetContactListener(&m_contactListener);
 	m_debugDraw.setFont(std::make_shared<sf::Font>(m_fontManager.get("debug")));
 	m_debugDraw.SetFlags(b2Draw::e_shapeBit|b2Draw::e_jointBit);//Debug drawing flags
 	m_systemManager.configure();

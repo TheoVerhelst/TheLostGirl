@@ -5,7 +5,6 @@
 #include <SFML/Graphics.hpp>
 #include <entityx/entityx.h>
 #include <TheLostGirl/State.hpp>
-#include <TheLostGirl/ContactListener.hpp>
 
 //Forward declarations
 struct ParametersChange;
@@ -68,7 +67,6 @@ class GameState : public State
 		std::map<std::string, entityx::Entity> m_entities;                    ///< All game entities.
 		std::map<std::string, entityx::Entity> m_sceneEntities;               ///< All scene entities.
 		std::map<std::string, std::vector<SceneReplaces>> m_sceneEntitiesData;///< A map containing data about scene entities.
-		ContactListener m_contactListener;///< The contact listener.
 		float m_timeSpeed;                ///< The speed of the time (usually 1.f). This influes only on the TimeSystem, not on physics!
 		std::thread m_threadLoad;         ///< Thread launched when loading the level.
 		bool m_loading;                   ///< Indicates wether the loading is finished or not.

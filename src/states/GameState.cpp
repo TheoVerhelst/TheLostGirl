@@ -23,7 +23,6 @@
 #include <TheLostGirl/states/GameState.hpp>
 
 GameState::GameState(std::string file):
-	m_contactListener(),
 	m_timeSpeed{1.f},
 	m_loading{true},
 	m_levelIdentifier{""},
@@ -433,7 +432,6 @@ void GameState::initWorld(const std::string& file)
 		Context::systemManager->update<ScrollingSystem>(0.f);
 		Context::systemManager->update<AnimationsSystem>(0.f);
 		Context::player->handleInitialInputState();
-		Context::world->SetContactListener(&m_contactListener);
 		requestStackPop();
 		Context::eventManager->emit<LoadingStateChange>("Loading HUD");
 		requestStackPush<HUDState>();
