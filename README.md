@@ -18,7 +18,8 @@ Json-cpp is already included.
 
 Once you have installed the librairies, run the following commands in a terminal in the main directory:<br/>
 
-    cd bin
+	mkdir build
+    cd build
     cmake ..
     make
 
