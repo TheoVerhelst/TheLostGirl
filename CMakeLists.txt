@@ -92,7 +92,8 @@ set(TLG_SOURCES
 
 #Create the main executable
 add_executable(TheLostGirl ${TLG_SOURCES})
-file(COPY ${TheLostGirl_SOURCE_DIR}/bin/resources DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
+#Copy the resources directory next to the executable
+file(COPY ${TheLostGirl_SOURCE_DIR}/resources DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
 
 #Link external librairies
 target_link_libraries(TheLostGirl
