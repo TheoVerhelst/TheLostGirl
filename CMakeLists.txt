@@ -8,7 +8,7 @@ set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake/Modules/")
 set(CMAKE_CXX_FLAGS "-Wall -Wextra -std=c++14")
 
 #Dependencies finding
-find_package(Boost 1.57 REQUIRED)
+find_package(Boost 1.57 COMPONENTS system filesystem REQUIRED)
 find_package(SFML 2.3 COMPONENTS system window graphics audio REQUIRED)
 find_package(TGUI 0.7 REQUIRED)
 find_package(Box2D REQUIRED)
@@ -31,8 +31,8 @@ include_directories(
 #Set the path to the src directory
 set(TLG_SOURCES_DIR src)
 #List of all files of the project
-set(TLG_SOURCES 
-	${TLG_SOURCES_DIR}/Action.cpp 
+set(TLG_SOURCES
+	${TLG_SOURCES_DIR}/Action.cpp
 	${TLG_SOURCES_DIR}/actions/ArrowPicker.cpp
 	${TLG_SOURCES_DIR}/actions/ArrowShooter.cpp
 	${TLG_SOURCES_DIR}/actions/BowBender.cpp
@@ -50,14 +50,15 @@ set(TLG_SOURCES
 	${TLG_SOURCES_DIR}/contactListeners/FallingListener.cpp
 	${TLG_SOURCES_DIR}/Context.cpp
 	${TLG_SOURCES_DIR}/DebugDraw.cpp
+	${TLG_SOURCES_DIR}/DestructionListener.cpp
 	${TLG_SOURCES_DIR}/functions.cpp
 	${TLG_SOURCES_DIR}/HashEntity.cpp
 	${TLG_SOURCES_DIR}/LangManager.cpp
 	${TLG_SOURCES_DIR}/main.cpp
 	${TLG_SOURCES_DIR}/MusicPlayer.cpp
 	${TLG_SOURCES_DIR}/Parameters.cpp
-	${TLG_SOURCES_DIR}/Player.cpp 
-	${TLG_SOURCES_DIR}/PostEffect.cpp 
+	${TLG_SOURCES_DIR}/Player.cpp
+	${TLG_SOURCES_DIR}/PostEffect.cpp
 	${TLG_SOURCES_DIR}/scripts/Interpreter.cpp
 	${TLG_SOURCES_DIR}/scripts/scriptsFunctions.cpp
 	${TLG_SOURCES_DIR}/scripts/Variant.cpp
@@ -98,5 +99,6 @@ target_link_libraries(TheLostGirl
 	${ENTITYX_LIBRARY}
 	${CMAKE_THREAD_LIBS_INIT}
 	${X11_LIBRARIES}
+	${Boost_LIBRARIES}
 	)
 
