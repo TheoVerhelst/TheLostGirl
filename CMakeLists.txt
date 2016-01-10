@@ -31,7 +31,7 @@ include_directories(
 	)
 
 #Set the path to the src directory
-set(TLG_SOURCES_DIR src)
+set(TLG_SOURCES_DIR ${TheLostGirl_SOURCE_DIR}/src)
 #List of all files of the project
 set(TLG_SOURCES
 	${TLG_SOURCES_DIR}/Action.cpp
@@ -92,6 +92,7 @@ set(TLG_SOURCES
 
 #Create the main executable
 add_executable(TheLostGirl ${TLG_SOURCES})
+file(COPY ${TheLostGirl_SOURCE_DIR}/bin/resources DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
 
 #Link external librairies
 target_link_libraries(TheLostGirl

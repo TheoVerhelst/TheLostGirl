@@ -1,12 +1,3 @@
-obj
 TheLostGirl.*
 doxygen/
-bin/TheLostGirl
-bin/TheLostGirl-d
-tests/TheLostGirl-tests
-bin/gmon.out
-bin/CMakeCache.txt
-bin/CMakeFiles/
-bin/Makefile
-bin/cmake_install.cmake
-bin/settings.json
+build/

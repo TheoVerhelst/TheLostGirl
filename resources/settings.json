@@ -1,0 +1,10 @@
+{
+	"enable bloom" : false,
+	"fullscreen" : true,
+	"lang" : "EN",
+	"window size" : 
+	{
+		"h" : 768,
+		"w" : 1366
+	}
+}

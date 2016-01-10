@@ -43,7 +43,7 @@ Application::~Application()
 {
 	Json::Value settings;//Will contains the root value after serializing.
 	Json::StyledWriter writer;
-	std::string file("settings.json");
+	std::string file(m_parameters.resourcesPath + "settings.json");
 	std::ofstream settingsFileStream(file, std::ofstream::binary);
 
 	settings["lang"] = m_langManager.getLang();
@@ -177,18 +177,18 @@ void Application::registerSystems()
 
 void Application::deserializeSettings()
 {
-	std::string file("settings.json");
+	std::string file(m_parameters.resourcesPath + "settings.json");
 	Json::Value settings;//Will contains the root value after parsing
 	Json::Value model;
 	Json::Reader reader;
 	std::ifstream settingsFile(file, std::ifstream::binary);
-	std::ifstream modelFile("settingsModel.json", std::ifstream::binary);
+	std::ifstream modelFile(m_parameters.resourcesPath + "settingsModel.json", std::ifstream::binary);
 	bool settingsOk{true}, modelOk{true};
 	if(not (settingsOk = reader.parse(settingsFile, settings)))
 		//report to the user the failure and its location in the document
 		std::cerr << "\"" + file + "\": " + reader.getFormattedErrorMessages() << "\nLoaded default settings.\n";
 	else if(not (modelOk = reader.parse(modelFile, model)))
-		std::cerr << "\"settingsModel.json\": " + reader.getFormattedErrorMessages() << "\nLoaded default settings.\n";
+		std::cerr << "\"" + m_parameters.resourcesPath + "settingsModel.json\": " + reader.getFormattedErrorMessages() << "\nLoaded default settings.\n";
 	if(not settingsOk or not modelOk)
 	{
 		//Load default settings
