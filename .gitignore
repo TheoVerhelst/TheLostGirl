@@ -1,13 +1,10 @@
 obj
-TheLostGirl.cbp
-TheLostGirl.depend
-TheLostGirl.layout
+TheLostGirl.*
 doxygen/
 bin/TheLostGirl
 bin/TheLostGirl-d
 tests/TheLostGirl-tests
 bin/gmon.out
-bin/sc.py
 bin/CMakeCache.txt
 bin/CMakeFiles/
 bin/Makefile
