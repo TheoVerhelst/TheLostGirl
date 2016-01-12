@@ -57,17 +57,6 @@ add_library(TLG
 	)
 #Create the main executable
 add_executable(TheLostGirl main.cpp)
-#Copy the resources directory next to the executable
-file(COPY ${TheLostGirl_SOURCE_DIR}/resources DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
 
 #Link external librairies
-target_link_libraries(TheLostGirl
-	TLG
-	${SFML_LIBRARIES}
-	${TGUI_LIBRARY}
-	${BOX2D_LIBRARY}
-	${ENTITYX_LIBRARY}
-	${CMAKE_THREAD_LIBS_INIT}
-	${X11_LIBRARIES}
-	${Boost_LIBRARIES}
-	)
+target_link_libraries(TheLostGirl TLG ${TLG_EXTERNAL_LIBRARIES})

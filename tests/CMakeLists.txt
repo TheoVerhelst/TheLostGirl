@@ -1,3 +1,9 @@
+#Find the unit test framework library
+find_package(Boost 1.57 COMPONENTS unit_test_framework REQUIRED)
+
+#Add the library name to the project linking dependencies
+set(TLG_EXTERNAL_LIBRARIES ${TLG_EXTERNAL_LIBRARIES} ${Boost_UNIT_TEST_FRAMEWORK_LIBRARY})
+
 #The define neede by the Boost unit test framework
 add_definitions(-DBOOST_TEST_DYN_LINK)
 
@@ -58,13 +64,8 @@ set(TLG_TEST_SOURCES
 add_executable(TheLostGirlTests ${TLG_TEST_SOURCES})
 
 #Link the executable with the game binaries and other libraries
-target_link_libraries(TheLostGirlTests
-	TLG
-	${SFML_LIBRARIES}
-	${TGUI_LIBRARY}
-	${BOX2D_LIBRARY}
-	${ENTITYX_LIBRARY}
-	${CMAKE_THREAD_LIBS_INIT}
-	${X11_LIBRARIES}
-	${Boost_LIBRARIES}
-	)
+target_link_libraries(TheLostGirlTests TLG ${TLG_EXTERNAL_LIBRARIES})
+
+#Enable ctest
+enable_testing()
+add_test(NAME Tests COMMAND TheLostGirlTests)
