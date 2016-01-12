@@ -4,7 +4,7 @@
 class MockAnimation
 {
 	public:
-		void setProgress(float)
+		void animate(float)
 		{
 		}
 };

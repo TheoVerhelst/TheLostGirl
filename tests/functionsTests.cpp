@@ -113,7 +113,7 @@ BOOST_AUTO_TEST_CASE(isPlayerTests)
 {
 	entityx::EventManager events;
 	entityx::EntityManager entities(events);
-	entityx::Entity entity;
+	entityx::Entity entity = entities.create();
 	BOOST_CHECK(not isPlayer(entity));
 	entity = entities.create();
 	CategoryComponent::Handle catComponent = entity.assign<CategoryComponent>();
