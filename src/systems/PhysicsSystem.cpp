@@ -12,9 +12,6 @@
 
 void PhysicsSystem::update(entityx::EntityManager& entityManager, entityx::EventManager&, double dt)
 {
-	int32 velocityIterations{8};
-	int32 positionIterations{8};
-	Context::world->Step(float32(dt), velocityIterations, positionIterations);
 	//Get the force of the wind
 	const float windStrength{Context::systemManager->system<TimeSystem>()->getWindStrength()};
 	BodyComponent::Handle bodyComponent;
@@ -89,7 +86,12 @@ void PhysicsSystem::update(entityx::EntityManager& entityManager, entityx::Event
 
 		}
 
-		//Update the transformations according to the one of the b2Body.
+		//Update the physic engine
+		int32 velocityIterations{8};
+		int32 positionIterations{8};
+		Context::world->Step(float32(dt), velocityIterations, positionIterations);
+
+		//Update the transformations (mainly for sprites) according to the one of b2Bodies.
 		TransformComponent::Handle transformComponent(entity.component<TransformComponent>());
 		if(transformComponent)
 		{
