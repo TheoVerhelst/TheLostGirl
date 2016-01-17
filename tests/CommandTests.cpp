@@ -27,6 +27,26 @@ struct CommandTestsFixture
 
 BOOST_FIXTURE_TEST_SUITE(CommandTests, CommandTestsFixture)
 
+	BOOST_AUTO_TEST_CASE(getters)
+	{
+		BOOST_REQUIRE(targetSpecific.isTargetSpecific());
+		BOOST_CHECK_EQUAL(targetSpecific.getEntity(), entity);
+
+		BOOST_REQUIRE(not targetNotSpecific.isTargetSpecific());
+		BOOST_CHECK(targetNotSpecific.getCategory() == category);
+	}
+
+	BOOST_AUTO_TEST_CASE(setters)
+	{
+		targetSpecific.setTarget(category);
+		BOOST_CHECK(not targetSpecific.isTargetSpecific());
+		BOOST_CHECK(targetSpecific.getCategory() == category);
+
+		targetNotSpecific.setTarget(entity);
+		BOOST_CHECK(targetNotSpecific.isTargetSpecific());
+		BOOST_CHECK_EQUAL(targetNotSpecific.getEntity(), entity);
+	}
+
 	BOOST_AUTO_TEST_CASE(copyConstructor)
 	{
 		Command command(targetSpecific);

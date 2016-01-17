@@ -76,7 +76,7 @@ void Command::setTarget(const FlagSet<Category>& category)
 		allocate(category);
 	else
 		m_category = category;
-
+	m_targetIsSpecific = false;
 }
 
 void Command::setTarget(entityx::Entity entity)
@@ -85,6 +85,7 @@ void Command::setTarget(entityx::Entity entity)
 		allocate(entity);
 	else
 		m_entity = entity;
+	m_targetIsSpecific = true;
 }
 
 const FlagSet<Category>& Command::getCategory() const throw(std::logic_error)
