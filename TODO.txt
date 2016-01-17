@@ -1,11 +1,13 @@
-Mettre ArrowComponent::local(Friction|Stick)Point en pixels dans la sauvegarde +TheLostGirl
-Finir la fonction flip(). +TheLostGirl
-Sauvegarde en fonction des includes. +TheLostGirl
-Retirer la fleche pendant le CAC. +TheLostGirl
-Faire un système multi texture pour une même entité (soit chunker une grande image, soit faire plusieurs images). +TheLostGirl
-CAC: statique : deux coups; en avancant: ??? ; en tombant: un puissant; en sautant : un faible; roulade : ???; en reculant : ???; en sneak : prise (egorgement/ippo sonage) +TheLostGirl
-Éviter les fonctions globales, mettre ce qui est possible dans une classe en statique et le reste dans un namespace. +TheLostGirl
-Factorize in a way or another code in Serializer::implDeserialize<BodyComponen>(). +TheLostGirl
-Script prompt in in-game log ChatBox. +TheLostGirl
-Reduce interdependencies between headers, modularize more +TheLostGirl
-Make Debug/Release/Tests make targets +TheLostGirl
+(E) Put ArrowComponent::local(Friction|Stick)Point in pixels in the save file +TheLostGirl
+(D) Finish flip() function. +TheLostGirl
+(C) Do save according to include saves. +TheLostGirl
+(D) Hide arrow when hand to hand. +TheLostGirl
+(D) HbH: static: two hits; moving forward: ?; falling: a powerful hit; jumping: a weak hit; roulade: ?; moving backward: ?; sneak: special (etranglement, ippon sonage) +TheLostGirl
+(B) Get rid of global functions, put them as private members or impl namespace. +TheLostGirl
+(C) Factorize in a way or another code in Serializer::implDeserialize<BodyComponen>(). +TheLostGirl
+(D) Script prompt in in-game log ChatBox. +TheLostGirl
+(B) Reduce interdependencies between headers, modularize more +TheLostGirl
+(C) Add a doc option to CMake build scripts +TheLostGirl
+(B) Ask the user which save to load @MainMenuState +TheLostGirl
+(A) Finish unit @tests +TheLostGirl
+(C) Separate static level definition from dynamic save info +TheLostGirl
