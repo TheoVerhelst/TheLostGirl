@@ -4,24 +4,10 @@
 #include <TheLostGirl/LangManager.hpp>
 #include <TheLostGirl/states/KeyConfigurationState.hpp>
 
-KeyConfigurationState::KeyConfigurationState() :
-	m_actionStrings{{Player::Action::Bend, Context::langManager->tr("Bend")},
-			{Player::Action::ChangeArrow, Context::langManager->tr("Change arrow")},
-			{Player::Action::Concentrate, Context::langManager->tr("Concentrate")},
-			{Player::Action::FurtherView, Context::langManager->tr("Look further")},
-			{Player::Action::GenericAction, Context::langManager->tr("Action")},
-			{Player::Action::HandToHand, Context::langManager->tr("Hand to hand")},
-			{Player::Action::Inventory, Context::langManager->tr("Inventory")},
-			{Player::Action::Jump, Context::langManager->tr("Jump")},
-			{Player::Action::MoveDown, Context::langManager->tr("Move down")},
-			{Player::Action::MoveLeft, Context::langManager->tr("Move left")},
-			{Player::Action::MoveRight, Context::langManager->tr("Move right")},
-			{Player::Action::MoveUp, Context::langManager->tr("Move up")},
-			{Player::Action::PickUp, Context::langManager->tr("Pick up arrow")},
-			{Player::Action::Roulade, Context::langManager->tr("Roulade")},
-			{Player::Action::SearchCorpse, Context::langManager->tr("Search in corpse")},
-			{Player::Action::Sneak, Context::langManager->tr("Sneak")}}
+KeyConfigurationState::KeyConfigurationState()
 {
+	resetTexts();
+
 	using tgui::bindWidth;
 	using tgui::bindHeight;
 	tgui::Gui& gui(*Context::gui);
@@ -151,6 +137,22 @@ bool KeyConfigurationState::handleEvent(const sf::Event& event)
 
 void KeyConfigurationState::resetTexts()
 {
+	m_actionStrings[Player::Action::Bend] = Context::langManager->tr("Bend");
+	m_actionStrings[Player::Action::Bend] = Context::langManager->tr("Change arrow");
+	m_actionStrings[Player::Action::Bend] = Context::langManager->tr("Concentrate");
+	m_actionStrings[Player::Action::FurtherView] = Context::langManager->tr("Look further");
+	m_actionStrings[Player::Action::GenericAction] = Context::langManager->tr("Action");
+	m_actionStrings[Player::Action::HandToHand] = Context::langManager->tr("Hand to hand");
+	m_actionStrings[Player::Action::Inventory] = Context::langManager->tr("Inventory");
+	m_actionStrings[Player::Action::Jump] = Context::langManager->tr("Jump");
+	m_actionStrings[Player::Action::MoveDown] = Context::langManager->tr("Move down");
+	m_actionStrings[Player::Action::MoveLeft] = Context::langManager->tr("Move left");
+	m_actionStrings[Player::Action::MoveRight] = Context::langManager->tr("Move right");
+	m_actionStrings[Player::Action::MoveUp] = Context::langManager->tr("Move up");
+	m_actionStrings[Player::Action::PickUp] = Context::langManager->tr("Pick up arrow");
+	m_actionStrings[Player::Action::Roulade] = Context::langManager->tr("Roulade");
+	m_actionStrings[Player::Action::SearchCorpse] = Context::langManager->tr("Search in corpse");
+	m_actionStrings[Player::Action::Sneak] = Context::langManager->tr("Sneak");
 }
 
 void KeyConfigurationState::scrollArea(int newScrollValue)
