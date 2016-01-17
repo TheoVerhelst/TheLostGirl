@@ -6,7 +6,6 @@
 #include <cmath>
 #include <SFML/System.hpp>
 #include <dist/json/json.h>
-#include <TheLostGirl/StateStack.hpp>
 
 //Forward declarations
 namespace entityx
@@ -18,6 +17,18 @@ namespace entityx
 /// To use this class, you must add some animations
 /// and play one of them with the play() member.
 /// Then a simple update call in the animations system do all that need to be done.
+///
+/// Each animations has some attributes:
+/// <ul>
+///     <li>active: indicates if the animation has to be considered when searching the top animation</li>
+///     <li>paused: if false, the animation won't be updated at the next call of update()</li>
+///     <li>duration: obviously, the duration of the animation</li>
+///     <li>loops: if true, when the duration is elapsed, the progress is reset to 0 and the animation restart</li>
+///     <li>stopAtEnd: if true, the animation is stoped when the duration is elapsed, alowing another animation to take place</li>
+///     <li>importance: determines the place of the animation in the animations scheduling</li>
+///     <li>progress: the current state of the animation, normalized in [0, 1]</li>
+/// </ul>
+/// This manager only updates the animation that has the highest importance and that is active.
 ///
 /// Usage exemple:
 /// \code
@@ -32,6 +43,12 @@ namespace entityx
 /// animationsComponent->animations.addAnimation("run", anim, 1, sf::seconds(3.f), true);
 /// animationsComponent->animations.play("run");
 /// \endcode
+///
+/// The animation is given as template parameter instead of runtime polymorphism for a specific reason:
+/// an animation of a type should not stop the animation of another type.
+/// If, say, an entity has a SpriteSheetAnimation and a SkyAnimation, the sky animation should not
+/// stop the sprite animations altough the sky animations has higher priority, because these two
+/// are completely unrelated.
 /// \see AnimationsSystem
 ///
 /// This animation system is inspired by the Animator system from the Jan Haller's Thor C++ library.
