@@ -17,8 +17,6 @@ class b2Body;
 class b2RevoluteJoint;
 class b2WeldJoint;
 class b2PrismaticJoint;
-template<typename T>
-class AnimationsManager;
 
 /// \file components.h
 
