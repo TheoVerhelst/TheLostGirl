@@ -85,20 +85,20 @@ void PhysicsSystem::update(entityx::EntityManager& entityManager, entityx::Event
 			}
 
 		}
+	}
 
-		//Update the physic engine
-		int32 velocityIterations{8};
-		int32 positionIterations{8};
-		Context::world->Step(float32(dt), velocityIterations, positionIterations);
+	//Update the physic engine
+	int32 velocityIterations{8};
+	int32 positionIterations{8};
+	Context::world->Step(float32(dt), velocityIterations, positionIterations);
 
-		//Update the transformations (mainly for sprites) according to the one of b2Bodies.
-		TransformComponent::Handle transformComponent(entity.component<TransformComponent>());
-		if(transformComponent)
-		{
-			const b2Vec2 pos{body->GetPosition()};
-			transformComponent->transform.x = pos.x * Context::parameters->pixelByMeter;
-			transformComponent->transform.y = pos.y * Context::parameters->pixelByMeter;
-			transformComponent->transform.angle = body->GetAngle()*180/b2_pi;
-		}
+	//Update the transformations (mainly for sprites) according to the one of the bodies
+	TransformComponent::Handle transformComponent;
+	for(auto entity : entityManager.entities_with_components(bodyComponent, transformComponent))
+	{
+		const b2Vec2 pos{bodyComponent->body->GetPosition()};
+		transformComponent->transform.x = pos.x * Context::parameters->pixelByMeter;
+		transformComponent->transform.y = pos.y * Context::parameters->pixelByMeter;
+		transformComponent->transform.angle = bodyComponent->body->GetAngle()*180/b2_pi;
 	}
 }
