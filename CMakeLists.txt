@@ -68,10 +68,10 @@ endif()
 #Add profile flag to compiler if requested
 if(TLG_PROFILE)
     if (NOT ${CMAKE_BUILD_TYPE} STREQUAL "Release")
-        message(WARNING "TLG_PROfilE should only be enabled when CMAKE_BUILD_TYPE is Release")
+        message(WARNING "TLG_PROFILE should only be enabled when CMAKE_BUILD_TYPE is Release")
     endif()
 	set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -pg")
 endif()
 
 #Copy the resources directory next to the executable
-file(COPY ${TheLostGirl_SOURCE_DIR}/resources DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
+file(COPY ${TheLostGirl_SOURCE_DIR}/resources DESTINATION ${CMAKE_RUNTIME_OUTPUT_DIRECTORY})

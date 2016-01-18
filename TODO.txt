@@ -11,3 +11,6 @@
 (B) Ask the user which save to load @MainMenuState +TheLostGirl
 (A) Finish unit @tests +TheLostGirl
 (C) Separate static level definition from dynamic save info +TheLostGirl
+(E) Shot precision factor, improved by standing and squatting +TheLostGirl
+(E) Entering indoor by moving along z-axis, no loading, bluring outdoor or similar +TheLostGirl
+(C) Make a directory by language instead of a unique file @LangManager +TheLostGirl

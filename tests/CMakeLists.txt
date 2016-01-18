@@ -66,6 +66,9 @@ add_executable(TheLostGirlTests ${TLG_TEST_SOURCES})
 #Link the executable with the game binaries and other libraries
 target_link_libraries(TheLostGirlTests TLG ${TLG_EXTERNAL_LIBRARIES})
 
+#Copy the test resources directory next to the executable
+file(COPY ${TheLostGirl_SOURCE_DIR}/testsResources DESTINATION ${CMAKE_RUNTIME_OUTPUT_DIRECTORY})
+
 #Enable ctest
 enable_testing()
 add_test(NAME Tests COMMAND TheLostGirlTests)

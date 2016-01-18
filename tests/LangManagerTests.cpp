@@ -10,6 +10,7 @@ struct LangManagerTestsFixture
 	Parameters parameters;
 	LangManagerTestsFixture()
 	{
+		parameters.resourcesPath = "testsResources/";
 		Context::parameters = &parameters;
 	}
 
@@ -81,7 +82,5 @@ BOOST_AUTO_TEST_CASE(setLangTests)
 	}
 	BOOST_WARN_MESSAGE(availableLangs.size() > 1, "No second lang was found for testing LangManager::setLang");
 }
-
-//TODO more tests case can be written here
 
 BOOST_AUTO_TEST_SUITE_END()
