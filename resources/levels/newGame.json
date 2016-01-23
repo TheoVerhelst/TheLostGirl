@@ -1,0 +1,220 @@
+{
+	"import" : ["items.json", "archer.json"],
+	"entities" : 
+	{
+		"player bow" :
+		{
+			"base" : "bow",
+			"dependencies" : ["arrow 3"],
+			"bow" :
+			{
+				"notched arrow" : "arrow 3",
+				"upper translation" : 0,
+				"lower translation" : 1,
+				"current translation" : 0,
+				"target translation" : 0,
+				"notched arrow anchor" : 
+				{
+					"x" : 2,
+					"y" : 28
+				}
+			},
+			"transform" : 
+			{
+				"angle" : -4.631782531738281,
+				"x" : 235,
+				"y" : 355,
+				"z" : 1
+			}
+		},
+		"player left arm" :
+		{
+			"base" : "archer left arm",
+			"dependencies" : ["player bow"],
+			"hold item" :
+			{
+				"item" : "player bow",
+				"item anchor" :
+				{
+					"x" : 63,
+					"y" : 3
+				},
+				"body anchor":
+				{
+					"x" : 12,
+					"y" : 4
+				}
+			},
+			"transform" : 
+			{
+				"angle" : -4.631768226623535,
+				"x" : 235,
+				"y" : 355,
+				"z" : 1
+			}
+		},
+		"player quiver" : 
+		{
+			"base" : "quiver",
+			"dependencies" : ["arrow 1", "arrow 2", "arrow 3"],
+			"quiver" : 
+			{
+				"capacity" : 20,
+				"arrow anchor" :
+				{
+					"x" : 0,
+					"y" : 0
+				},
+				"body anchor":
+				{
+					"x" : 2,
+					"y" : 0
+				},
+				"arrows" : [ "arrow 1", "arrow 2", "arrow 4" ]
+			},
+			"transform" : 
+			{
+				"angle" : 0,
+				"x" : 236,
+				"y" : 300,
+				"z" : 1
+			}
+		},
+		"player" : 
+		{
+			"dependencies" : ["player left arm", "player quiver"],
+			"base" : "archer",
+			"archer" : 
+			{
+				"quiver" : "player quiver",
+				"quiver anchor" :
+				{
+					"x" : 16,
+					"y" : 20
+				},
+				"damages" : 180,
+				"initial speed" : 60
+			},
+			"articuled arms" :
+			{
+				"arms" : "player left arm",
+				"upper angle" : 180,
+				"lower angle" : -90,
+				"current angle" : 0,
+				"target angle" : 0,
+				"arms anchor" : 
+				{
+					"x" : 18,
+					"y" : 20
+				}
+			},
+			"death" : 
+			{
+				"dead" : false,
+				"drops" : []
+			},
+			"direction" : 
+			{
+				"direction" : "right",
+				"move to left" : false,
+				"move to right" : false
+			},
+			"fall" : 
+			{
+				"falling resistance" : 10
+			},
+			"hand to hand" : 
+			{
+				"damages" : 400,
+				"delay" : 0.1000000014901161,
+				"last shoot" : 0.1000000014901161
+			},
+			"hardness" : 0.1000000089406967,
+			"health" : 
+			{
+				"current" : 100,
+				"maximum" : 100,
+				"regeneration" : 10
+			},
+			"inventory" : 
+			{
+				"items" : ["player bow", "player quiver"],
+				"maximum weight" : 100
+			},
+			"jump" : 
+			{
+				"strength" : 600
+			},
+			"name" : "archer",
+			"stamina" : 
+			{
+				"current" : 100,
+				"maximum" : 100,
+				"regeneration" : 2
+			},
+			"transform" : 
+			{
+				"angle" : 0,
+				"x" : 236,
+				"y" : 300,
+				"z" : 1
+			},
+			"walk" : 
+			{
+				"effective movement" : "none",
+				"speed" : 350
+			}
+		},
+		"arrow 1" : 
+		{
+			"base" : "arrow",
+			"transform" : 
+			{
+				"angle" : 0,
+				"x" : 379.6326293945312,
+				"y" : 360,
+				"z" : 1
+			}
+
+		},
+		"arrow 2" : 
+		{
+			"base" : "arrow",
+			"transform" : 
+			{
+				"angle" : 0,
+				"x" : 379.6326293945312,
+				"y" : 360,
+				"z" : 1
+			}
+		},
+		"arrow 3" : 
+		{
+			"base" : "arrow",
+			"transform" : 
+			{
+				"angle" : 0,
+				"x" : 379.6326293945312,
+				"y" : 360,
+				"z" : 1
+			}
+		},
+		"arrow 4" : 
+		{
+			"base" : "arrow",
+			"transform" : 
+			{
+				"angle" : 0,
+				"x" : 379.6326293945312,
+				"y" : 360,
+				"z" : 1
+			}
+		}
+	},
+	"level" : "1.json",
+	"time" : 
+	{
+		"date" : 0,
+		"speed" : 1
+	}
+}

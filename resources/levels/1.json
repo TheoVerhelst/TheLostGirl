@@ -1,0 +1,162 @@
+{
+	"import" : ["items.json", "mobs.json"],
+	"entities" : 
+	{
+		"ground" : 
+		{
+			"body" : 
+			{
+				"active" : true,
+				"allow sleep" : true,
+				"angular damping" : 0,
+				"angular velocity" : 0,
+				"awake" : true,
+				"bullet" : false,
+				"chain fixtures" : 
+				[
+					{
+						"density" : 0,
+						"friction" : 0.5,
+						"is sensor" : false,
+						"restitution" : 0,
+						"vertices" : 
+						[
+							{
+								"x" : 0,
+								"y" : 0
+							},
+							{
+								"x" : 25,
+								"y" : 450
+							},
+							{
+								"x" : 9600,
+								"y" : 450
+							},
+							{
+								"x" : 9600,
+								"y" : 0
+							}
+						]
+					}
+				],
+				"fixed rotation" : false,
+				"gravity scale" : 1,
+				"linear damping" : 0,
+				"linear velocity" : 
+				{
+					"x" : 0,
+					"y" : 0
+				},
+				"type" : "static"
+			},
+			"hardness" : 0.5,
+			"transform" : 
+			{
+				"angle" : 0,
+				"x" : 0,
+				"y" : 0,
+				"z" : 1
+			}
+		},
+		"wolf 1" : 
+		{
+			"base" : "wood wolf",
+			"transform" : 
+			{
+				"angle" : 0,
+				"x" : 1600,
+				"y" : 345,
+				"z" : 1
+			}
+		},
+		"wolf 2" : 
+		{
+			"base" : "wood wolf",
+			"transform" : 
+			{
+				"angle" : 0,
+				"x" : 1800,
+				"y" : 345,
+				"z" : 1
+			}
+		},
+		"wolf 3" : 
+		{
+			"base" : "wood wolf",
+			"transform" : 
+			{
+				"angle" : 0,
+				"x" : 1400,
+				"y" : 345,
+				"z" : 1
+			}
+		},
+		"wolf 4" : 
+		{
+			"base" : "wood wolf",
+			"transform" : 
+			{
+				"angle" : 0,
+				"x" : 2000,
+				"y" : 345,
+				"z" : 1
+			}
+		},
+		"day sky" : 
+		{
+			"name" : "day sky",
+			"sprite" :
+			{
+				"identifier" : "day.png",
+				"origin" :
+				{
+					"x" : 1000,
+					"y" : 1000
+				}
+			},
+			"transform" :
+			{
+				"x" : 480,
+				"y" : 540,
+				"z" : infinity,
+				"angle" : 0
+			},
+			"categories" : ["scene"]
+		},
+		"night sky" : 
+		{
+			"name" : "night sky",
+			"sprite" :
+			{
+				"identifier" : "night.png",
+				"origin" :
+				{
+					"x" : 1000,
+					"y" : 1000
+				}
+			},
+			"transform" :
+			{
+				"x" : 480,
+				"y" : 540,
+				"z" : infinity,
+				"angle" : 0
+			},
+			"categories" : ["scene"]
+		}
+	},
+	"level data" : 
+	{
+		"box" : 
+		{
+			"h" : 540,
+			"w" : 3000,
+			"x" : 0,
+			"y" : 0
+		},
+		"identifier" : "1",
+		"number of plans" : 4,
+		"reference plan" : 1
+	}
+}

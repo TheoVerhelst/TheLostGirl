@@ -5,6 +5,7 @@
 #include <SFML/Graphics.hpp>
 #include <entityx/entityx.h>
 #include <TheLostGirl/State.hpp>
+#include <dist/json/json-forwards.h>
 
 //Forward declarations
 struct ParametersChange;
@@ -53,13 +54,24 @@ class GameState : public State
 			std::vector<Transform> replaces;///< List of places where the texture should be displayed.
 		};
 
-		/// Initialize sthe physic world.
-		/// \param file Path of the save file to load.
-		void initWorld(const std::string& file);
-
 		/// Saves the physic world.
-		/// \param file Path of the save file to override.
-		void saveWorld(const std::string& file);
+		/// \param filePath Path of the save file to override.
+		void saveWorld(const std::string& filePath);
+
+		/// Create a json value from a save file.
+		/// \param filePath Path of the save file to convert
+		/// \result The resulting json value representing the save file.
+		static Json::Value getJsonValue(const std::string& filePath);
+
+		/// Merge two Json value in one.
+		/// Every member of the right value will be copied into the left value.
+		/// \param left A json value.
+		/// \param right Another json value
+		static void mergeJsonValues(Json::Value& left, const Json::Value& right);
+
+		/// Initialize sthe physic world.
+		/// \param filePath Path of the save file to load.
+		void initWorld(const std::string& filePath);
 
 		/// Clears all entities.
 		void clear();
@@ -72,6 +84,7 @@ class GameState : public State
 		bool m_loading;                   ///< Indicates wether the loading is finished or not.
 
 		//Level informations
+		std::string m_savesDirectoryPath; ///< Path to the save files directory.
 		std::string m_levelIdentifier;    ///< Identifer of the level, must be a non-spaced name.
 		unsigned int m_numberOfPlans;     ///< Number of plans in the background.
 		float m_referencePlan;            ///< Number of the plan where actors evolute.

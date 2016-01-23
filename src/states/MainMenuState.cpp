@@ -77,7 +77,7 @@ void MainMenuState::resetTexts()
 void MainMenuState::playGame()
 {
 	requestStackPop();//The main mainu
-	requestStackPush<GameState>(Context::parameters->resourcesPath + "levels/S.json");
+	requestStackPush<GameState>(Context::parameters->resourcesPath + "levels/newGame.json");
 	requestStackPush<LoadingState>();
 }
 

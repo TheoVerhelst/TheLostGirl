@@ -25,7 +25,7 @@
 GameState::GameState(std::string file):
 	m_timeSpeed{1.f},
 	m_loading{true},
-	m_levelIdentifier{""},
+	m_savesDirectoryPath{"saves/"},
 	m_numberOfPlans{1},
 	m_referencePlan{0.f},
 	m_levelRect{{0.f, 0.f}, Context::parameters->defaultViewSize}
@@ -36,7 +36,7 @@ GameState::GameState(std::string file):
 
 GameState::~GameState()
 {
-	saveWorld(Context::parameters->resourcesPath + "levels/check.json");
+	saveWorld(m_savesDirectoryPath + "1.json");
 	clear();
 	if(m_threadLoad.joinable())
 		m_threadLoad.join();
@@ -81,11 +81,11 @@ void GameState::receive(const ParametersChange&)
 {
 }
 
-void GameState::saveWorld(const std::string& file)
+void GameState::saveWorld(const std::string& filePath)
 {
 		Json::Value root;//Will contains the root value after serializing.
 		Json::StyledWriter writer;
-		std::ofstream saveFileStream(file, std::ofstream::binary);
+		std::ofstream saveFileStream(filePath, std::ofstream::binary);
 		root["entities"] = Json::ValueType::objectValue;
 		Serializer s(m_entities, root["entities"]);
 		for(auto& entity : m_entities)
@@ -155,33 +155,56 @@ void GameState::saveWorld(const std::string& file)
 		saveFileStream.close();
 }
 
-void GameState::initWorld(const std::string& file)
+Json::Value GameState::getJsonValue(const std::string& filePath)
+{
+	Json::Value root;
+	Json::Reader reader;
+
+	std::ifstream fileStream(filePath);
+	if(not reader.parse(fileStream, root))//report to the user the failure and their locations in the document.
+		throw std::runtime_error("save file \"" + filePath + "\" : " + reader.getFormattedErrorMessages());
+	fileStream.close();
+
+	return root;
+}
+
+void GameState::mergeJsonValues(Json::Value& left, const Json::Value& right)
+{
+	if(left.type() != right.type() and not left.isNull())
+		throw std::invalid_argument("mergeJsonValues: left and right has different types.");
+	if(right.isArray())
+		for(const Json::Value& rightChild : right)
+			left.append(rightChild);
+	else if(right.isObject())
+		for(const std::string& childName : right.getMemberNames())
+			mergeJsonValues(left[childName], right[childName]);
+	else
+		left = right;
+}
+
+void GameState::initWorld(const std::string& filePath)
 {
 	Context::eventManager->emit<LoadingStateChange>("Loading save file");
 	try
 	{
-		//Parse the level data
-		Json::Value root;//Will contains the root value after parsing.
-		Json::Value model;
-		Json::Reader reader;
-		std::ifstream saveFile(file, std::ifstream::binary);
-		std::ifstream modelSaveFile(Context::parameters->resourcesPath + "levels/model.json", std::ifstream::binary);
-		if(not reader.parse(saveFile, root))//report to the user the failure and their locations in the document.
-			throw std::runtime_error("save file \"" + file + "\" : " + reader.getFormattedErrorMessages());
-		saveFile.close();
-		if(not reader.parse(modelSaveFile, model))
-			throw std::runtime_error("model file \"" + Context::parameters->resourcesPath + "levels/model.json\": " + reader.getFormattedErrorMessages());
-		modelSaveFile.close();
+		Json::Value root{getJsonValue(filePath)};
+		const Json::Value model{getJsonValue(Context::parameters->resourcesPath + "levels/model.json")};
 
-		//SuperMegaMagic parsing of the save file from the model file
+		//Parse the save file from the model file
 		parse(root, model, "root", "root");
+
+		if(root.isMember("level"))
+		{
+			const Json::Value levelToLoad{getJsonValue(Context::parameters->resourcesPath + "levels/" + root["level"].asString())};
+			mergeJsonValues(root, levelToLoad);
+		}
 
 		const Json::Value time{root["time"]};
 		Context::systemManager->system<TimeSystem>()->setTotalTime(sf::seconds(time["date"].asFloat()));
 		m_timeSpeed = time["speed"].asFloat();
 		Context::systemManager->system<AnimationsSystem>()->setTimeSpeed(m_timeSpeed);
 
-		const Json::Value level{root["level"]};
+		const Json::Value level{root["level data"]};
 		//number of plans
 		//must load it now in order to know how much plans can be defined
 		m_numberOfPlans = level["number of plans"].asUInt();
@@ -206,14 +229,11 @@ void GameState::initWorld(const std::string& file)
 			for(Json::ArrayIndex i{0}; i < includes.size(); ++i)
 			{
 				//Parse the level data
-				Json::Value includeRoot;//Will contains the root value after parsing.
-				std::ifstream includeFile(Context::parameters->resourcesPath + "levels/" + includes[i].asString(), std::ifstream::binary);
-				if(not reader.parse(includeFile, includeRoot))//report to the user the failure and their locations in the document.
-					throw std::runtime_error("included file \"" + Context::parameters->resourcesPath + "levels/" + includes[i].asString() + "\" : " + reader.getFormattedErrorMessages());
-				includeFile.close();
+				Json::Value includeRoot{getJsonValue(Context::parameters->resourcesPath + "levels/" + includes[i].asString())};
 
 				//Parsing of the included file from the model file
 				parse(includeRoot, model, "root", "root");
+
 				//Add generic entities to others
 				Json::Value currentGenericEntities{includeRoot["entities"]};
 				for(const std::string& genericEntityName : currentGenericEntities.getMemberNames())
@@ -439,12 +459,12 @@ void GameState::initWorld(const std::string& file)
 	catch(std::runtime_error& e)
 	{
 		std::cerr << e.what() << "\n";
-		std::cerr << "Failed to load save file \"" << file << "\".\n";
+		std::cerr << "Failed to load save file \"" << filePath << "\".\n";
 		requestStackPop();
 		requestStackPop();
 		requestStackPush<MainMenuState>();
 	}
-		m_loading = false;
+	m_loading = false;
 }
 
 void GameState::clear()

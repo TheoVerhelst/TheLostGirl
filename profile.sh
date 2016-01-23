@@ -15,11 +15,27 @@
 # very long template names are used.
 #
 
-echo -n "truncate ? "
-read truncate
+print_usage()
+{
+	echo "Usage: $0 [-t] PATH"
+	exit 1
+}
+
+truncate=`false`
+path=$1
+
+if [[ $# -gt 2 || $# -eq 0 || ( $# -eq 2 && $1 != "-t" ) ]]
+then
+	print_usage
+elif [[ $# -eq 2 ]]
+then
+	truncate=`true`
+	path=$2
+fi
+
 tmp=`mktemp`
-gprof ./TheLostGirl gmon.out > $tmp
-if [ $truncate = "y" ]
+gprof "$path/TheLostGirl" "$path/gmon.out" > "$tmp"
+if $truncate
 then
 	python3 -c "
 lines = []

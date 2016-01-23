@@ -6,6 +6,11 @@
     "children":
     [
 		{
+			"name" : "level",
+			"type" : "string",
+			"required" : false
+		},
+		{
 			"name" : "import",
 			"type" : "array",
 			"required" : false,
@@ -36,7 +41,7 @@
             ]
         },
         {
-            "name" : "level",
+            "name" : "level data",
             "type" : "object",
             "required" : false,
             "free children names" : false,
@@ -93,7 +98,7 @@
                 {
                     "name" : "replaces",
                     "type" : "object",
-                    "required" : true,
+                    "required" : false,
                     "free children names" : true,
                     "children" :
                     {
