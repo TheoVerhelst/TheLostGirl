@@ -1,4 +1,5 @@
 #include <fstream>
+#include <functional>
 #include <SFML/Graphics.hpp>
 #include <SFML/System.hpp>
 #include <SFML/Window.hpp>
@@ -31,7 +32,7 @@ GameState::GameState(std::string file):
 	m_levelRect{{0.f, 0.f}, Context::parameters->defaultViewSize}
 {
 	Context::eventManager->subscribe<ParametersChange>(*this);
-	m_threadLoad = std::thread(&GameState::initWorld, this, file);
+	m_threadLoad = std::thread(&GameState::initWorld, this, "saves/1.json");
 }
 
 GameState::~GameState()
@@ -81,78 +82,83 @@ void GameState::receive(const ParametersChange&)
 {
 }
 
-void GameState::saveWorld(const std::string& filePath)
+Json::Value GameState::getJsonValueFromGame()
 {
-		Json::Value root;//Will contains the root value after serializing.
-		Json::StyledWriter writer;
-		std::ofstream saveFileStream(filePath, std::ofstream::binary);
-		root["entities"] = Json::ValueType::objectValue;
-		Serializer s(m_entities, root["entities"]);
-		for(auto& entity : m_entities)
+	Json::Value root;
+	root["entities"] = Json::ValueType::objectValue;
+	Serializer s(m_entities, root["entities"]);
+	for(auto& entity : m_entities)
+	{
+		s.serialize<BodyComponent>(entity.first, "body");
+		s.serialize<SpriteComponent>(entity.first, "sprite");
+		s.serialize<TransformComponent>(entity.first, "transform");
+		s.serialize<InventoryComponent>(entity.first, "inventory");
+		s.serialize<ArcherComponent>(entity.first, "archer");
+		s.serialize<AnimationsComponent<SpriteSheetAnimation>>(entity.first, "spritesheed animations");
+		s.serialize<DirectionComponent>(entity.first, "direction");
+		s.serialize<CategoryComponent>(entity.first, "categories");
+		s.serialize<FallComponent>(entity.first, "fall");
+		s.serialize<WalkComponent>(entity.first, "walk");
+		s.serialize<JumpComponent>(entity.first, "jump");
+		s.serialize<HealthComponent>(entity.first, "healt");
+		s.serialize<StaminaComponent>(entity.first, "stamina");
+		s.serialize<ArrowComponent>(entity.first, "arrow");
+		s.serialize<HardnessComponent>(entity.first, "hardness");
+		s.serialize<ScriptsComponent>(entity.first, "scripts");
+		s.serialize<DetectionRangeComponent>(entity.first, "detection range");
+		s.serialize<DeathComponent>(entity.first, "death");
+		s.serialize<NameComponent>(entity.first, "name");
+		s.serialize<HandToHandComponent>(entity.first, "hand to hand");
+		s.serialize<ActorComponent>(entity.first, "actor");
+		s.serialize<ItemComponent>(entity.first, "item");
+		s.serialize<HoldItemComponent>(entity.first, "hold item");
+		s.serialize<ArticuledArmsComponent>(entity.first, "articuled arms");
+		s.serialize<BowComponent>(entity.first, "bow");
+		s.serialize<QuiverComponent>(entity.first, "quiver");
+		//End serialize
+	}
+
+	//time
+	root["time"]["speed"] = m_timeSpeed;
+	root["time"]["date"] = Context::systemManager->system<TimeSystem>()->getRealTime().asSeconds();
+
+	//level data
+	root["level data"]["identifier"] = m_levelIdentifier;
+	root["level data"]["box"]["x"] = m_levelRect.left;
+	root["level data"]["box"]["y"] = m_levelRect.top;
+	root["level data"]["box"]["w"] = m_levelRect.width;
+	root["level data"]["box"]["h"] = m_levelRect.height;
+	root["level data"]["number of plans"] = m_numberOfPlans;
+	root["level data"]["reference plan"] = m_referencePlan;
+
+	//replaces
+	for(auto& planData : m_sceneEntitiesData)
+	{
+		for(unsigned int i{0}; i < planData.second.size(); ++i)
 		{
-			s.serialize<BodyComponent>(entity.first, "body");
-			s.serialize<SpriteComponent>(entity.first, "sprite");
-			s.serialize<TransformComponent>(entity.first, "transform");
-			s.serialize<InventoryComponent>(entity.first, "inventory");
-			s.serialize<ArcherComponent>(entity.first, "archer");
-			s.serialize<AnimationsComponent<SpriteSheetAnimation>>(entity.first, "spritesheed animations");
-			s.serialize<DirectionComponent>(entity.first, "direction");
-			s.serialize<CategoryComponent>(entity.first, "categories");
-			s.serialize<FallComponent>(entity.first, "fall");
-			s.serialize<WalkComponent>(entity.first, "walk");
-			s.serialize<JumpComponent>(entity.first, "jump");
-			s.serialize<HealthComponent>(entity.first, "healt");
-			s.serialize<StaminaComponent>(entity.first, "stamina");
-			s.serialize<ArrowComponent>(entity.first, "arrow");
-			s.serialize<HardnessComponent>(entity.first, "hardness");
-			s.serialize<ScriptsComponent>(entity.first, "scripts");
-			s.serialize<DetectionRangeComponent>(entity.first, "detection range");
-			s.serialize<DeathComponent>(entity.first, "death");
-			s.serialize<NameComponent>(entity.first, "name");
-			s.serialize<HandToHandComponent>(entity.first, "hand to hand");
-			s.serialize<ActorComponent>(entity.first, "actor");
-			s.serialize<ItemComponent>(entity.first, "item");
-			s.serialize<HoldItemComponent>(entity.first, "hold item");
-			s.serialize<ArticuledArmsComponent>(entity.first, "articuled arms");
-			s.serialize<BowComponent>(entity.first, "bow");
-			s.serialize<QuiverComponent>(entity.first, "quiver");
-			//End serialize
-		}
-
-		//time
-		root["time"]["speed"] = m_timeSpeed;
-		root["time"]["date"] = Context::systemManager->system<TimeSystem>()->getRealTime().asSeconds();
-
-		//level data
-		root["level"]["identifier"] = m_levelIdentifier;
-		root["level"]["box"]["x"] = m_levelRect.left;
-		root["level"]["box"]["y"] = m_levelRect.top;
-		root["level"]["box"]["w"] = m_levelRect.width;
-		root["level"]["box"]["h"] = m_levelRect.height;
-		root["level"]["number of plans"] = m_numberOfPlans;
-		root["level"]["reference plan"] = m_referencePlan;
-
-		//replaces
-		for(auto& planData : m_sceneEntitiesData)
-		{
-			for(unsigned int i{0}; i < planData.second.size(); ++i)
+			root["level data"]["replaces"][planData.first][i]["origin"]["x"] = planData.second[i].origin.left;
+			root["level data"]["replaces"][planData.first][i]["origin"]["y"] = planData.second[i].origin.top;
+			root["level data"]["replaces"][planData.first][i]["origin"]["w"] = planData.second[i].origin.width;
+			root["level data"]["replaces"][planData.first][i]["origin"]["h"] = planData.second[i].origin.height;
+			for(Json::ArrayIndex j{0}; j < planData.second[i].replaces.size(); ++j)
 			{
-				root["level"]["replaces"][planData.first][i]["origin"]["x"] = planData.second[i].origin.left;
-				root["level"]["replaces"][planData.first][i]["origin"]["y"] = planData.second[i].origin.top;
-				root["level"]["replaces"][planData.first][i]["origin"]["w"] = planData.second[i].origin.width;
-				root["level"]["replaces"][planData.first][i]["origin"]["h"] = planData.second[i].origin.height;
-				for(Json::ArrayIndex j{0}; j < planData.second[i].replaces.size(); ++j)
-				{
-					root["level"]["replaces"][planData.first][i]["replaces"][j]["x"] = planData.second[i].replaces[j].x;
-					root["level"]["replaces"][planData.first][i]["replaces"][j]["y"] = planData.second[i].replaces[j].y;
-					root["level"]["replaces"][planData.first][i]["replaces"][j]["z"] = planData.second[i].replaces[j].z;
-					root["level"]["replaces"][planData.first][i]["replaces"][j]["angle"] = planData.second[i].replaces[j].angle;
-				}
+				root["level data"]["replaces"][planData.first][i]["replaces"][j]["x"] = planData.second[i].replaces[j].x;
+				root["level data"]["replaces"][planData.first][i]["replaces"][j]["y"] = planData.second[i].replaces[j].y;
+				root["level data"]["replaces"][planData.first][i]["replaces"][j]["z"] = planData.second[i].replaces[j].z;
+				root["level data"]["replaces"][planData.first][i]["replaces"][j]["angle"] = planData.second[i].replaces[j].angle;
 			}
 		}
+	}
+	return root;
+}
 
-		saveFileStream << writer.write(root);
-		saveFileStream.close();
+void GameState::saveWorld(const std::string& filePath)
+{
+	Json::Value root{getJsonValueFromGame()};
+	Json::StyledWriter writer;
+	std::ofstream saveFileStream(filePath, std::ofstream::binary);
+	saveFileStream << writer.write(root);
+	saveFileStream.close();
 }
 
 Json::Value GameState::getJsonValue(const std::string& filePath)
@@ -172,7 +178,7 @@ void GameState::mergeJsonValues(Json::Value& left, const Json::Value& right)
 {
 	if(left.type() != right.type() and not left.isNull())
 		throw std::invalid_argument("mergeJsonValues: left and right has different types.");
-	if(right.isArray())
+	else if(right.isArray())
 		for(const Json::Value& rightChild : right)
 			left.append(rightChild);
 	else if(right.isObject())
@@ -180,6 +186,73 @@ void GameState::mergeJsonValues(Json::Value& left, const Json::Value& right)
 			mergeJsonValues(left[childName], right[childName]);
 	else
 		left = right;
+}
+
+bool GameState::isSubsetJsonValue(const Json::Value& left, const Json::Value& right)
+{
+	if(left.isObject() and right.isObject())
+		for(const std::string& childName : left.getMemberNames())
+			if(not isSubsetJsonValue(left[childName], right[childName]))
+				return false;
+	else
+		return isEqualJsonValue(left, right);
+	return true;
+}
+
+bool GameState::isEqualJsonValue(const Json::Value& left, const Json::Value& right)
+{
+	if(left.type() != right.type())
+		return false;
+	else if(left.isArray())
+	{
+		if(left.size() != right.size())
+			return false;
+		for(const Json::Value& child : left)
+			if(std::find_if(right.begin(), right.end(), std::bind(GameState::isEqualJsonValue, child, std::placeholders::_1)) == right.end())
+				return false;
+	}
+	else if(left.isObject())
+	{
+		if(left.size() != right.size())
+			return false;
+		for(const std::string& childName : left.getMemberNames())
+			if(not isEqualJsonValue(left[childName], right[childName]))
+				return false;
+	}
+	else
+		return left == right;
+	return true;
+}
+
+void GameState::substractJsonValues(Json::Value& left, const Json::Value& right)
+{
+	if(left.type() != right.type())
+		throw std::invalid_argument("substractJsonValues: left and right has different types.");
+	else if(left.isArray())
+	{
+		Json::Value oldLeft(Json::arrayValue);
+		left.swap(oldLeft);
+		for(Json::Value child : oldLeft)
+			if(std::find_if(right.begin(), right.end(), std::bind(GameState::isEqualJsonValue, child, std::placeholders::_1)) == right.end())
+				left.append(child);
+	}
+	else if(left.isObject())
+	{
+		Json::Value oldLeft(Json::objectValue);
+		left.swap(oldLeft);
+		for(const std::string& childName : oldLeft.getMemberNames())
+		{
+			if(not right.isMember(childName))
+				left[childName] = oldLeft[childName];
+			else if(oldLeft[childName].isObject() or oldLeft[childName].isArray())
+			{
+				substractJsonValues(oldLeft[childName], right[childName]);
+				left[childName] = oldLeft[childName];
+			}
+		}
+	}
+	else
+		throw std::invalid_argument("substractJsonValues: left and right are not array or object.");
 }
 
 void GameState::initWorld(const std::string& filePath)

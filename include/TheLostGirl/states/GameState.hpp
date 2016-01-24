@@ -54,22 +54,49 @@ class GameState : public State
 			std::vector<Transform> replaces;///< List of places where the texture should be displayed.
 		};
 
+		/// Creates a json value from the data in the current game.
+		/// This value contains entities, level information and time information.
+		/// \return The resulting json value.
+		Json::Value getJsonValueFromGame();
+
 		/// Saves the physic world.
 		/// \param filePath Path of the save file to override.
+		/// \TODO add const qualifier.
 		void saveWorld(const std::string& filePath);
 
-		/// Create a json value from a save file.
+		/// Creates a json value from a save file.
 		/// \param filePath Path of the save file to convert
 		/// \result The resulting json value representing the save file.
 		static Json::Value getJsonValue(const std::string& filePath);
 
-		/// Merge two Json value in one.
+		/// Merges two Json value in one.
 		/// Every member of the right value will be copied into the left value.
 		/// \param left A json value.
 		/// \param right Another json value
 		static void mergeJsonValues(Json::Value& left, const Json::Value& right);
 
-		/// Initialize sthe physic world.
+		/// Checks if the data inside the left value is too in the right value.
+		/// If this method returns true, then merging left and right will result in right.
+		/// \param left A json value.
+		/// \param right Another json value.
+		/// \return true if left is a subset of right, false otherwise.
+		static bool isSubsetJsonValue(const Json::Value& left, const Json::Value& right);
+
+		/// Recursively checks if two values are strictly equal.
+		/// \param left A json value.
+		/// \param right Another json value.
+		/// \return true if left is strictly equal to the right, false otherwise.
+		static bool isEqualJsonValue(const Json::Value& left, const Json::Value& right);
+
+		/// Strip the data in left that is also present in right.
+		/// This can be viewed as a set substraction.
+		/// \pre isSubsetJsonValue(right, left).
+		/// \post isEqualJsonValue(mergeJsonValue(*left after call*, right), *left before call*).
+		/// \param left A json value.
+		/// \param right Another json value.
+		static void substractJsonValues(Json::Value& left, const Json::Value& right);
+
+		/// Initializes the physic world.
 		/// \param filePath Path of the save file to load.
 		void initWorld(const std::string& filePath);
 
