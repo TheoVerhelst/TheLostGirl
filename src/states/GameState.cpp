@@ -32,12 +32,12 @@ GameState::GameState(std::string file):
 	m_levelRect{{0.f, 0.f}, Context::parameters->defaultViewSize}
 {
 	Context::eventManager->subscribe<ParametersChange>(*this);
-	m_threadLoad = std::thread(&GameState::initWorld, this, "saves/1.json");
+	m_threadLoad = std::thread(&GameState::initWorld, this, file);
 }
 
 GameState::~GameState()
 {
-	saveWorld(m_savesDirectoryPath + "1.json");
+	saveWorld(m_savesDirectoryPath + "player.json");
 	clear();
 	if(m_threadLoad.joinable())
 		m_threadLoad.join();
@@ -94,13 +94,13 @@ Json::Value GameState::getJsonValueFromGame()
 		s.serialize<TransformComponent>(entity.first, "transform");
 		s.serialize<InventoryComponent>(entity.first, "inventory");
 		s.serialize<ArcherComponent>(entity.first, "archer");
-		s.serialize<AnimationsComponent<SpriteSheetAnimation>>(entity.first, "spritesheed animations");
+		s.serialize<AnimationsComponent<SpriteSheetAnimation>>(entity.first, "spritesheet animations");
 		s.serialize<DirectionComponent>(entity.first, "direction");
 		s.serialize<CategoryComponent>(entity.first, "categories");
 		s.serialize<FallComponent>(entity.first, "fall");
 		s.serialize<WalkComponent>(entity.first, "walk");
 		s.serialize<JumpComponent>(entity.first, "jump");
-		s.serialize<HealthComponent>(entity.first, "healt");
+		s.serialize<HealthComponent>(entity.first, "health");
 		s.serialize<StaminaComponent>(entity.first, "stamina");
 		s.serialize<ArrowComponent>(entity.first, "arrow");
 		s.serialize<HardnessComponent>(entity.first, "hardness");

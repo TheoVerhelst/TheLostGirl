@@ -38,7 +38,7 @@ class Serializer
 		{
 			entityx::Entity entity{m_entities[entityName]};
 			if(entity.has_component<T>())
-				m_jsonEntities[entityName][componentName] = implSerialize(entity.component<T>());
+				m_jsonEntities[entityName][componentName] = implSerialize(entityName, entity.component<T>());
 		}
 		/// Deserialize a component of type T.
 		/// \param entityName The name of the entity to deserialize.
@@ -52,135 +52,137 @@ class Serializer
 		}
 
 	private:
-		/// Serialize the given component.
-		/// \param component Component to serialize.
-		/// \return A Json value.
-		Json::Value implSerialize(entityx::ComponentHandle<BodyComponent> component);
+		void addEntityDependecy(const std::string& dependentEntityName, const std::string& dependencyEntityName);
 
 		/// Serialize the given component.
 		/// \param component Component to serialize.
 		/// \return A Json value.
-		Json::Value implSerialize(entityx::ComponentHandle<SpriteComponent> component);
+		Json::Value implSerialize(const std::string& entityName, entityx::ComponentHandle<BodyComponent> component);
 
 		/// Serialize the given component.
 		/// \param component Component to serialize.
 		/// \return A Json value.
-		Json::Value implSerialize(entityx::ComponentHandle<TransformComponent> component);
+		Json::Value implSerialize(const std::string& entityName, entityx::ComponentHandle<SpriteComponent> component);
 
 		/// Serialize the given component.
 		/// \param component Component to serialize.
 		/// \return A Json value.
-		Json::Value implSerialize(entityx::ComponentHandle<InventoryComponent> component);
+		Json::Value implSerialize(const std::string& entityName, entityx::ComponentHandle<TransformComponent> component);
 
 		/// Serialize the given component.
 		/// \param component Component to serialize.
 		/// \return A Json value.
-		Json::Value implSerialize(entityx::ComponentHandle<AnimationsComponent<SpriteSheetAnimation>> component);
+		Json::Value implSerialize(const std::string& entityName, entityx::ComponentHandle<InventoryComponent> component);
 
 		/// Serialize the given component.
 		/// \param component Component to serialize.
 		/// \return A Json value.
-		Json::Value implSerialize(entityx::ComponentHandle<DirectionComponent> component);
+		Json::Value implSerialize(const std::string& entityName, entityx::ComponentHandle<AnimationsComponent<SpriteSheetAnimation>> component);
 
 		/// Serialize the given component.
 		/// \param component Component to serialize.
 		/// \return A Json value.
-		Json::Value implSerialize(entityx::ComponentHandle<CategoryComponent> component);
+		Json::Value implSerialize(const std::string& entityName, entityx::ComponentHandle<DirectionComponent> component);
 
 		/// Serialize the given component.
 		/// \param component Component to serialize.
 		/// \return A Json value.
-		Json::Value implSerialize(entityx::ComponentHandle<FallComponent> component);
+		Json::Value implSerialize(const std::string& entityName, entityx::ComponentHandle<CategoryComponent> component);
 
 		/// Serialize the given component.
 		/// \param component Component to serialize.
 		/// \return A Json value.
-		Json::Value implSerialize(entityx::ComponentHandle<WalkComponent> component);
+		Json::Value implSerialize(const std::string& entityName, entityx::ComponentHandle<FallComponent> component);
 
 		/// Serialize the given component.
 		/// \param component Component to serialize.
 		/// \return A Json value.
-		Json::Value implSerialize(entityx::ComponentHandle<JumpComponent> component);
+		Json::Value implSerialize(const std::string& entityName, entityx::ComponentHandle<WalkComponent> component);
 
 		/// Serialize the given component.
 		/// \param component Component to serialize.
 		/// \return A Json value.
-		Json::Value implSerialize(entityx::ComponentHandle<ArcherComponent> component);
+		Json::Value implSerialize(const std::string& entityName, entityx::ComponentHandle<JumpComponent> component);
 
 		/// Serialize the given component.
 		/// \param component Component to serialize.
 		/// \return A Json value.
-		Json::Value implSerialize(entityx::ComponentHandle<HealthComponent> component);
+		Json::Value implSerialize(const std::string& entityName, entityx::ComponentHandle<ArcherComponent> component);
 
 		/// Serialize the given component.
 		/// \param component Component to serialize.
 		/// \return A Json value.
-		Json::Value implSerialize(entityx::ComponentHandle<StaminaComponent> component);
+		Json::Value implSerialize(const std::string& entityName, entityx::ComponentHandle<HealthComponent> component);
 
 		/// Serialize the given component.
 		/// \param component Component to serialize.
 		/// \return A Json value.
-		Json::Value implSerialize(entityx::ComponentHandle<ArrowComponent> component);
+		Json::Value implSerialize(const std::string& entityName, entityx::ComponentHandle<StaminaComponent> component);
 
 		/// Serialize the given component.
 		/// \param component Component to serialize.
 		/// \return A Json value.
-		Json::Value implSerialize(entityx::ComponentHandle<HardnessComponent> component);
+		Json::Value implSerialize(const std::string& entityName, entityx::ComponentHandle<ArrowComponent> component);
 
 		/// Serialize the given component.
 		/// \param component Component to serialize.
 		/// \return A Json value.
-		Json::Value implSerialize(entityx::ComponentHandle<ScriptsComponent> component);
+		Json::Value implSerialize(const std::string& entityName, entityx::ComponentHandle<HardnessComponent> component);
 
 		/// Serialize the given component.
 		/// \param component Component to serialize.
 		/// \return A Json value.
-		Json::Value implSerialize(entityx::ComponentHandle<DetectionRangeComponent> component);
+		Json::Value implSerialize(const std::string& entityName, entityx::ComponentHandle<ScriptsComponent> component);
 
 		/// Serialize the given component.
 		/// \param component Component to serialize.
 		/// \return A Json value.
-		Json::Value implSerialize(entityx::ComponentHandle<DeathComponent> component);
+		Json::Value implSerialize(const std::string& entityName, entityx::ComponentHandle<DetectionRangeComponent> component);
 
 		/// Serialize the given component.
 		/// \param component Component to serialize.
 		/// \return A Json value.
-		Json::Value implSerialize(entityx::ComponentHandle<NameComponent> component);
+		Json::Value implSerialize(const std::string& entityName, entityx::ComponentHandle<DeathComponent> component);
 
 		/// Serialize the given component.
 		/// \param component Component to serialize.
 		/// \return A Json value.
-		Json::Value implSerialize(entityx::ComponentHandle<HandToHandComponent> component);
+		Json::Value implSerialize(const std::string& entityName, entityx::ComponentHandle<NameComponent> component);
 
 		/// Serialize the given component.
 		/// \param component Component to serialize.
 		/// \return A Json value.
-		Json::Value implSerialize(entityx::ComponentHandle<ActorComponent> component);
+		Json::Value implSerialize(const std::string& entityName, entityx::ComponentHandle<HandToHandComponent> component);
 
 		/// Serialize the given component.
 		/// \param component Component to serialize.
 		/// \return A Json value.
-		Json::Value implSerialize(entityx::ComponentHandle<ItemComponent> component);
+		Json::Value implSerialize(const std::string& entityName, entityx::ComponentHandle<ActorComponent> component);
 
 		/// Serialize the given component.
 		/// \param component Component to serialize.
 		/// \return A Json value.
-		Json::Value implSerialize(entityx::ComponentHandle<HoldItemComponent> component);
+		Json::Value implSerialize(const std::string& entityName, entityx::ComponentHandle<ItemComponent> component);
 
 		/// Serialize the given component.
 		/// \param component Component to serialize.
 		/// \return A Json value.
-		Json::Value implSerialize(entityx::ComponentHandle<ArticuledArmsComponent> component);
+		Json::Value implSerialize(const std::string& entityName, entityx::ComponentHandle<HoldItemComponent> component);
 
 		/// Serialize the given component.
 		/// \param component Component to serialize.
 		/// \return A Json value.
-		Json::Value implSerialize(entityx::ComponentHandle<BowComponent> component);
+		Json::Value implSerialize(const std::string& entityName, entityx::ComponentHandle<ArticuledArmsComponent> component);
 
 		/// Serialize the given component.
 		/// \param component Component to serialize.
 		/// \return A Json value.
-		Json::Value implSerialize(entityx::ComponentHandle<QuiverComponent> component);
+		Json::Value implSerialize(const std::string& entityName, entityx::ComponentHandle<BowComponent> component);
+
+		/// Serialize the given component.
+		/// \param component Component to serialize.
+		/// \return A Json value.
+		Json::Value implSerialize(const std::string& entityName, entityx::ComponentHandle<QuiverComponent> component);
 
 		//End serialize
 

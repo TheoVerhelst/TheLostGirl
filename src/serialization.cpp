@@ -19,7 +19,16 @@ Serializer::Serializer(std::map<std::string, entityx::Entity>& entities, Json::V
 {
 }
 
-Json::Value Serializer::implSerialize(entityx::ComponentHandle<BodyComponent> component)
+void Serializer::addEntityDependecy(const std::string& dependentEntityName, const std::string& dependencyEntityName)
+{
+	Json::Value& dependencies{m_jsonEntities[dependentEntityName]["dependencies"]};
+	if(not dependencies.isArray())
+		dependencies = Json::Value(Json::arrayValue);
+	if(std::find(dependencies.begin(), dependencies.end(), dependencyEntityName) == dependencies.end())
+		dependencies.append(dependencyEntityName);
+}
+
+Json::Value Serializer::implSerialize(const std::string&, entityx::ComponentHandle<BodyComponent> component)
 {
 	const float pixelByMeter{Context::parameters->pixelByMeter};
 	Json::Value ret;
@@ -155,7 +164,7 @@ Json::Value Serializer::implSerialize(entityx::ComponentHandle<BodyComponent> co
 	return ret;
 }
 
-Json::Value Serializer::implSerialize(entityx::ComponentHandle<SpriteComponent> component)
+Json::Value Serializer::implSerialize(const std::string&, entityx::ComponentHandle<SpriteComponent> component)
 {
 	Json::Value ret;
 	const sf::Texture* tex{component->sprite.getTexture()};//Get the associated texture
@@ -168,7 +177,7 @@ Json::Value Serializer::implSerialize(entityx::ComponentHandle<SpriteComponent> 
 	return ret;
 }
 
-Json::Value Serializer::implSerialize(entityx::ComponentHandle<TransformComponent> component)
+Json::Value Serializer::implSerialize(const std::string&, entityx::ComponentHandle<TransformComponent> component)
 {
 	Json::Value ret;
 	ret["x"] = component->transform.x;
@@ -178,7 +187,7 @@ Json::Value Serializer::implSerialize(entityx::ComponentHandle<TransformComponen
 	return ret;
 }
 
-Json::Value Serializer::implSerialize(entityx::ComponentHandle<InventoryComponent> component)
+Json::Value Serializer::implSerialize(const std::string& entityName, entityx::ComponentHandle<InventoryComponent> component)
 {
 	Json::Value ret;
 	ret["maximum weight"] = component->maxWeight;
@@ -186,16 +195,20 @@ Json::Value Serializer::implSerialize(entityx::ComponentHandle<InventoryComponen
 	//For each item of the inventory
 	for(entityx::Entity item : component->items)
 		if(TEST(isMember(m_entities, item) and item.valid()))
-			ret["items"].append(getKey(m_entities, item));
+		{
+			const std::string itemName{getKey(m_entities, item)};
+			ret["items"].append(itemName);
+			addEntityDependecy(entityName, itemName);
+		}
 	return ret;
 }
 
-Json::Value Serializer::implSerialize(entityx::ComponentHandle<AnimationsComponent<SpriteSheetAnimation>> component)
+Json::Value Serializer::implSerialize(const std::string&, entityx::ComponentHandle<AnimationsComponent<SpriteSheetAnimation>> component)
 {
 	return component->animationsManager.serialize();
 }
 
-Json::Value Serializer::implSerialize(entityx::ComponentHandle<DirectionComponent> component)
+Json::Value Serializer::implSerialize(const std::string&, entityx::ComponentHandle<DirectionComponent> component)
 {
 	Json::Value ret;
 	switch(component->direction)
@@ -223,7 +236,7 @@ Json::Value Serializer::implSerialize(entityx::ComponentHandle<DirectionComponen
 	return ret;
 }
 
-Json::Value Serializer::implSerialize(entityx::ComponentHandle<CategoryComponent> component)
+Json::Value Serializer::implSerialize(const std::string&, entityx::ComponentHandle<CategoryComponent> component)
 {
 	Json::Value ret;
 	if(component->category.test(Category::Player))
@@ -237,14 +250,14 @@ Json::Value Serializer::implSerialize(entityx::ComponentHandle<CategoryComponent
 	return ret;
 }
 
-Json::Value Serializer::implSerialize(entityx::ComponentHandle<FallComponent> component)
+Json::Value Serializer::implSerialize(const std::string&, entityx::ComponentHandle<FallComponent> component)
 {
 	Json::Value ret;
 	ret["falling resistance"] = component->fallingResistance;
 	return ret;
 }
 
-Json::Value Serializer::implSerialize(entityx::ComponentHandle<WalkComponent> component)
+Json::Value Serializer::implSerialize(const std::string&, entityx::ComponentHandle<WalkComponent> component)
 {
 	Json::Value ret;
 	switch(component->effectiveMovement)
@@ -270,25 +283,29 @@ Json::Value Serializer::implSerialize(entityx::ComponentHandle<WalkComponent> co
 	return ret;
 }
 
-Json::Value Serializer::implSerialize(entityx::ComponentHandle<JumpComponent> component)
+Json::Value Serializer::implSerialize(const std::string&, entityx::ComponentHandle<JumpComponent> component)
 {
 	Json::Value ret;
 	ret["strength"] = component->jumpStrength;
 	return ret;
 }
 
-Json::Value Serializer::implSerialize(entityx::ComponentHandle<ArcherComponent> component)
+Json::Value Serializer::implSerialize(const std::string& entityName, entityx::ComponentHandle<ArcherComponent> component)
 {
 	Json::Value ret;
 	ret["damages"] = component->damages;
 	ret["initial speed"] = component->initialSpeed;
-	ret["quiver"] = getKey(m_entities, component->quiver);
+	if(not TEST(isMember(m_entities, component->quiver)))
+		return Json::Value();
+	const std::string quiverName{getKey(m_entities, component->quiver)};
+	ret["quiver"] = quiverName;
+	addEntityDependecy(entityName, quiverName);
 	ret["quiver anchor"]["x"] = component->quiverAnchor.x*Context::parameters->pixelByMeter;
 	ret["quiver anchor"]["y"] = component->quiverAnchor.y*Context::parameters->pixelByMeter;
 	return ret;
 }
 
-Json::Value Serializer::implSerialize(entityx::ComponentHandle<HealthComponent> component)
+Json::Value Serializer::implSerialize(const std::string&, entityx::ComponentHandle<HealthComponent> component)
 {
 	Json::Value ret;
 	ret["current"] = component->current;
@@ -297,7 +314,7 @@ Json::Value Serializer::implSerialize(entityx::ComponentHandle<HealthComponent> 
 	return ret;
 }
 
-Json::Value Serializer::implSerialize(entityx::ComponentHandle<StaminaComponent> component)
+Json::Value Serializer::implSerialize(const std::string&, entityx::ComponentHandle<StaminaComponent> component)
 {
 	Json::Value ret;
 	ret["current"] = component->current;
@@ -306,7 +323,7 @@ Json::Value Serializer::implSerialize(entityx::ComponentHandle<StaminaComponent>
 	return ret;
 }
 
-Json::Value Serializer::implSerialize(entityx::ComponentHandle<ArrowComponent> component)
+Json::Value Serializer::implSerialize(const std::string& entityName, entityx::ComponentHandle<ArrowComponent> component)
 {
 	Json::Value ret;
 	ret["friction"] = component->friction;
@@ -320,7 +337,9 @@ Json::Value Serializer::implSerialize(entityx::ComponentHandle<ArrowComponent> c
 	{
 		if(not TEST(isMember(m_entities, component->shooter)))
 			return Json::Value();
-		ret["shooter"] = getKey(m_entities, component->shooter);
+		const std::string shooterName{getKey(m_entities, component->shooter)};
+		ret["shooter"] = shooterName;
+		addEntityDependecy(entityName, shooterName);
 	}
 	switch(component->state)
 	{
@@ -344,12 +363,12 @@ Json::Value Serializer::implSerialize(entityx::ComponentHandle<ArrowComponent> c
 	return ret;
 }
 
-Json::Value Serializer::implSerialize(entityx::ComponentHandle<HardnessComponent> component)
+Json::Value Serializer::implSerialize(const std::string&, entityx::ComponentHandle<HardnessComponent> component)
 {
 	return component->hardness;
 }
 
-Json::Value Serializer::implSerialize(entityx::ComponentHandle<ScriptsComponent> component)
+Json::Value Serializer::implSerialize(const std::string&, entityx::ComponentHandle<ScriptsComponent> component)
 {
 	Json::Value ret;
 	ret["scripts"] = Json::Value(Json::arrayValue);
@@ -358,12 +377,12 @@ Json::Value Serializer::implSerialize(entityx::ComponentHandle<ScriptsComponent>
     return ret;
 }
 
-Json::Value Serializer::implSerialize(entityx::ComponentHandle<DetectionRangeComponent> component)
+Json::Value Serializer::implSerialize(const std::string&, entityx::ComponentHandle<DetectionRangeComponent> component)
 {
 	return component->detectionRange;
 }
 
-Json::Value Serializer::implSerialize(entityx::ComponentHandle<DeathComponent> component)
+Json::Value Serializer::implSerialize(const std::string&, entityx::ComponentHandle<DeathComponent> component)
 {
 	Json::Value ret;
 	ret["dead"] = component->dead;
@@ -382,12 +401,12 @@ Json::Value Serializer::implSerialize(entityx::ComponentHandle<DeathComponent> c
 	return ret;
 }
 
-Json::Value Serializer::implSerialize(entityx::ComponentHandle<NameComponent> component)
+Json::Value Serializer::implSerialize(const std::string&, entityx::ComponentHandle<NameComponent> component)
 {
 	return component->name;
 }
 
-Json::Value Serializer::implSerialize(entityx::ComponentHandle<HandToHandComponent> component)
+Json::Value Serializer::implSerialize(const std::string&, entityx::ComponentHandle<HandToHandComponent> component)
 {
 	Json::Value ret;
 	ret["damages"] = component->damages;
@@ -396,7 +415,7 @@ Json::Value Serializer::implSerialize(entityx::ComponentHandle<HandToHandCompone
 	return ret;
 }
 
-Json::Value Serializer::implSerialize(entityx::ComponentHandle<ActorComponent> component)
+Json::Value Serializer::implSerialize(const std::string&, entityx::ComponentHandle<ActorComponent> component)
 {
 	Json::Value ret;
 	ret["hand to hand resistance"] = component->handToHandResistance;
@@ -408,7 +427,7 @@ Json::Value Serializer::implSerialize(entityx::ComponentHandle<ActorComponent> c
 	return ret;
 }
 
-Json::Value Serializer::implSerialize(entityx::ComponentHandle<ItemComponent> component)
+Json::Value Serializer::implSerialize(const std::string&, entityx::ComponentHandle<ItemComponent> component)
 {
 	Json::Value ret;
 	ret["type"] = component->type;
@@ -420,20 +439,22 @@ Json::Value Serializer::implSerialize(entityx::ComponentHandle<ItemComponent> co
 	return ret;
 }
 
-Json::Value Serializer::implSerialize(entityx::ComponentHandle<HoldItemComponent> component)
+Json::Value Serializer::implSerialize(const std::string& entityName, entityx::ComponentHandle<HoldItemComponent> component)
 {
 	Json::Value ret;
 	ret["body anchor"]["x"] = Context::parameters->pixelByMeter * component->bodyAnchor.x;
 	ret["body anchor"]["y"] = Context::parameters->pixelByMeter * component->bodyAnchor.y;
 	if(not TEST(isMember(m_entities, component->item)))
 		return Json::Value();
-	ret["item"] = getKey(m_entities, component->item);
+	const std::string itemName{getKey(m_entities, component->item)};
+	ret["item"] = itemName;
+	addEntityDependecy(entityName, itemName);
 	ret["item anchor"]["x"] = Context::parameters->pixelByMeter * component->itemAnchor.x;
 	ret["item anchor"]["y"] = Context::parameters->pixelByMeter * component->itemAnchor.y;
 	return ret;
 }
 
-Json::Value Serializer::implSerialize(entityx::ComponentHandle<ArticuledArmsComponent> component)
+Json::Value Serializer::implSerialize(const std::string& entityName, entityx::ComponentHandle<ArticuledArmsComponent> component)
 {
 	Json::Value ret;
 	ret["target angle"] = component->targetAngle * 180.f / b2_pi;
@@ -442,13 +463,15 @@ Json::Value Serializer::implSerialize(entityx::ComponentHandle<ArticuledArmsComp
 	ret["current angle"] = component->armsJoint->GetJointAngle() * 180.f / b2_pi;
 	if(not TEST(isMember(m_entities, component->arms)))
 		return Json::Value();
-	ret["arms"] = getKey(m_entities, component->arms);
+	const std::string armsName{getKey(m_entities, component->arms)};
+	ret["arms"] = armsName;
+	addEntityDependecy(entityName, armsName);
 	ret["arms anchor"]["x"] = component->armsAnchor.x * Context::parameters->pixelByMeter;
 	ret["arms anchor"]["y"] = component->armsAnchor.y * Context::parameters->pixelByMeter;
 	return ret;
 }
 
-Json::Value Serializer::implSerialize(entityx::ComponentHandle<BowComponent> component)
+Json::Value Serializer::implSerialize(const std::string& entityName, entityx::ComponentHandle<BowComponent> component)
 {
 	Json::Value ret;
 	ret["upper translation"] = component->upperTranslation * Context::parameters->pixelByMeter;
@@ -459,14 +482,16 @@ Json::Value Serializer::implSerialize(entityx::ComponentHandle<BowComponent> com
 	{
 		if(not TEST(isMember(m_entities, component->notchedArrow)))
 			return Json::Value();
-		ret["notched arrow"] = getKey(m_entities, component->notchedArrow);
+		const std::string notchedArrowName{getKey(m_entities, component->notchedArrow)};
+		ret["notched arrow"] = notchedArrowName;
+		addEntityDependecy(entityName, notchedArrowName);
 	}
 	ret["notched arrow anchor"]["x"] = component->notchedArrowAnchor.x * Context::parameters->pixelByMeter;
 	ret["notched arrow anchor"]["y"] = component->notchedArrowAnchor.y * Context::parameters->pixelByMeter;
 	return ret;
 }
 
-Json::Value Serializer::implSerialize(entityx::ComponentHandle<QuiverComponent> component)
+Json::Value Serializer::implSerialize(const std::string& entityName, entityx::ComponentHandle<QuiverComponent> component)
 {
 	Json::Value ret;
 	ret["capacity"] = component->capacity;
@@ -476,8 +501,10 @@ Json::Value Serializer::implSerialize(entityx::ComponentHandle<QuiverComponent> 
 	{
 		if(not TEST(pair.first.valid() and isMember(m_entities, pair.first)))
 			return Json::Value();
+		const std::string arrowName{getKey(m_entities, pair.first)};
 		//Add it to the value
-		ret["arrows"].append(getKey(m_entities, pair.first));
+		ret["arrows"].append(arrowName);
+		addEntityDependecy(entityName, arrowName);
 	}
 	ret["arrow anchor"]["x"] = component->arrowAnchor.x * Context::parameters->pixelByMeter;
 	ret["arrow anchor"]["y"] = component->arrowAnchor.y * Context::parameters->pixelByMeter;
