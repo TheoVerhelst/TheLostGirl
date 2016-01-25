@@ -52,297 +52,87 @@ class Serializer
 		}
 
 	private:
+		/// Serializes the dependency between two entities,
+		/// if this dependency was not already serialized.
+		/// More precisely, adds \a dependencyEntityName to
+		/// the *"dependency"* part of the dependent entity json value.
+		/// \param dependentEntityName The name of the dependent entity.
+		/// \param dependencyEntityName The name of the entity that is a dependecy.
 		void addEntityDependecy(const std::string& dependentEntityName, const std::string& dependencyEntityName);
 
-		/// Serialize the given component.
+		/// Serializes the given component.
+		/// \param entityName The name of the entity currently being serialized.
 		/// \param component Component to serialize.
 		/// \return A Json value.
-		Json::Value implSerialize(const std::string& entityName, entityx::ComponentHandle<BodyComponent> component);
+#define IMPL_SERIALIZE_DECLARATION(ComponentType)                      \
+		Json::Value implSerialize(const std::string& entityName, entityx::ComponentHandle<ComponentType> component)
 
-		/// Serialize the given component.
-		/// \param component Component to serialize.
-		/// \return A Json value.
-		Json::Value implSerialize(const std::string& entityName, entityx::ComponentHandle<SpriteComponent> component);
-
-		/// Serialize the given component.
-		/// \param component Component to serialize.
-		/// \return A Json value.
-		Json::Value implSerialize(const std::string& entityName, entityx::ComponentHandle<TransformComponent> component);
-
-		/// Serialize the given component.
-		/// \param component Component to serialize.
-		/// \return A Json value.
-		Json::Value implSerialize(const std::string& entityName, entityx::ComponentHandle<InventoryComponent> component);
-
-		/// Serialize the given component.
-		/// \param component Component to serialize.
-		/// \return A Json value.
-		Json::Value implSerialize(const std::string& entityName, entityx::ComponentHandle<AnimationsComponent<SpriteSheetAnimation>> component);
-
-		/// Serialize the given component.
-		/// \param component Component to serialize.
-		/// \return A Json value.
-		Json::Value implSerialize(const std::string& entityName, entityx::ComponentHandle<DirectionComponent> component);
-
-		/// Serialize the given component.
-		/// \param component Component to serialize.
-		/// \return A Json value.
-		Json::Value implSerialize(const std::string& entityName, entityx::ComponentHandle<CategoryComponent> component);
-
-		/// Serialize the given component.
-		/// \param component Component to serialize.
-		/// \return A Json value.
-		Json::Value implSerialize(const std::string& entityName, entityx::ComponentHandle<FallComponent> component);
-
-		/// Serialize the given component.
-		/// \param component Component to serialize.
-		/// \return A Json value.
-		Json::Value implSerialize(const std::string& entityName, entityx::ComponentHandle<WalkComponent> component);
-
-		/// Serialize the given component.
-		/// \param component Component to serialize.
-		/// \return A Json value.
-		Json::Value implSerialize(const std::string& entityName, entityx::ComponentHandle<JumpComponent> component);
-
-		/// Serialize the given component.
-		/// \param component Component to serialize.
-		/// \return A Json value.
-		Json::Value implSerialize(const std::string& entityName, entityx::ComponentHandle<ArcherComponent> component);
-
-		/// Serialize the given component.
-		/// \param component Component to serialize.
-		/// \return A Json value.
-		Json::Value implSerialize(const std::string& entityName, entityx::ComponentHandle<HealthComponent> component);
-
-		/// Serialize the given component.
-		/// \param component Component to serialize.
-		/// \return A Json value.
-		Json::Value implSerialize(const std::string& entityName, entityx::ComponentHandle<StaminaComponent> component);
-
-		/// Serialize the given component.
-		/// \param component Component to serialize.
-		/// \return A Json value.
-		Json::Value implSerialize(const std::string& entityName, entityx::ComponentHandle<ArrowComponent> component);
-
-		/// Serialize the given component.
-		/// \param component Component to serialize.
-		/// \return A Json value.
-		Json::Value implSerialize(const std::string& entityName, entityx::ComponentHandle<HardnessComponent> component);
-
-		/// Serialize the given component.
-		/// \param component Component to serialize.
-		/// \return A Json value.
-		Json::Value implSerialize(const std::string& entityName, entityx::ComponentHandle<ScriptsComponent> component);
-
-		/// Serialize the given component.
-		/// \param component Component to serialize.
-		/// \return A Json value.
-		Json::Value implSerialize(const std::string& entityName, entityx::ComponentHandle<DetectionRangeComponent> component);
-
-		/// Serialize the given component.
-		/// \param component Component to serialize.
-		/// \return A Json value.
-		Json::Value implSerialize(const std::string& entityName, entityx::ComponentHandle<DeathComponent> component);
-
-		/// Serialize the given component.
-		/// \param component Component to serialize.
-		/// \return A Json value.
-		Json::Value implSerialize(const std::string& entityName, entityx::ComponentHandle<NameComponent> component);
-
-		/// Serialize the given component.
-		/// \param component Component to serialize.
-		/// \return A Json value.
-		Json::Value implSerialize(const std::string& entityName, entityx::ComponentHandle<HandToHandComponent> component);
-
-		/// Serialize the given component.
-		/// \param component Component to serialize.
-		/// \return A Json value.
-		Json::Value implSerialize(const std::string& entityName, entityx::ComponentHandle<ActorComponent> component);
-
-		/// Serialize the given component.
-		/// \param component Component to serialize.
-		/// \return A Json value.
-		Json::Value implSerialize(const std::string& entityName, entityx::ComponentHandle<ItemComponent> component);
-
-		/// Serialize the given component.
-		/// \param component Component to serialize.
-		/// \return A Json value.
-		Json::Value implSerialize(const std::string& entityName, entityx::ComponentHandle<HoldItemComponent> component);
-
-		/// Serialize the given component.
-		/// \param component Component to serialize.
-		/// \return A Json value.
-		Json::Value implSerialize(const std::string& entityName, entityx::ComponentHandle<ArticuledArmsComponent> component);
-
-		/// Serialize the given component.
-		/// \param component Component to serialize.
-		/// \return A Json value.
-		Json::Value implSerialize(const std::string& entityName, entityx::ComponentHandle<BowComponent> component);
-
-		/// Serialize the given component.
-		/// \param component Component to serialize.
-		/// \return A Json value.
-		Json::Value implSerialize(const std::string& entityName, entityx::ComponentHandle<QuiverComponent> component);
-
+		IMPL_SERIALIZE_DECLARATION(BodyComponent);
+		IMPL_SERIALIZE_DECLARATION(SpriteComponent);
+		IMPL_SERIALIZE_DECLARATION(TransformComponent);
+		IMPL_SERIALIZE_DECLARATION(InventoryComponent);
+		IMPL_SERIALIZE_DECLARATION(AnimationsComponent<SpriteSheetAnimation>);
+		IMPL_SERIALIZE_DECLARATION(DirectionComponent);
+		IMPL_SERIALIZE_DECLARATION(CategoryComponent);
+		IMPL_SERIALIZE_DECLARATION(FallComponent);
+		IMPL_SERIALIZE_DECLARATION(WalkComponent);
+		IMPL_SERIALIZE_DECLARATION(JumpComponent);
+		IMPL_SERIALIZE_DECLARATION(ArcherComponent);
+		IMPL_SERIALIZE_DECLARATION(HealthComponent);
+		IMPL_SERIALIZE_DECLARATION(StaminaComponent);
+		IMPL_SERIALIZE_DECLARATION(ArrowComponent);
+		IMPL_SERIALIZE_DECLARATION(HardnessComponent);
+		IMPL_SERIALIZE_DECLARATION(ScriptsComponent);
+		IMPL_SERIALIZE_DECLARATION(DetectionRangeComponent);
+		IMPL_SERIALIZE_DECLARATION(DeathComponent);
+		IMPL_SERIALIZE_DECLARATION(NameComponent);
+		IMPL_SERIALIZE_DECLARATION(HandToHandComponent);
+		IMPL_SERIALIZE_DECLARATION(ActorComponent);
+		IMPL_SERIALIZE_DECLARATION(ItemComponent);
+		IMPL_SERIALIZE_DECLARATION(HoldItemComponent);
+		IMPL_SERIALIZE_DECLARATION(ArticuledArmsComponent);
+		IMPL_SERIALIZE_DECLARATION(BowComponent);
+		IMPL_SERIALIZE_DECLARATION(QuiverComponent);
 		//End serialize
 
-		/// Deserialize the given \a value in the given \a component.
-		/// \param value The Json value containing the data.
-		/// \param component Component in wich deserialize the data.
-		/// \param entity The entity that is being deserialized.
-		void implDeserialize(const Json::Value& value, entityx::ComponentHandle<BodyComponent> component, entityx::Entity entity);
+#undef IMPL_SERIALIZE_DECLARATION
 
 		/// Deserialize the given \a value in the given \a component.
 		/// \param value The Json value containing the data.
 		/// \param component Component in wich deserialize the data.
 		/// \param entity The entity that is being deserialized.
-		void implDeserialize(const Json::Value& value, entityx::ComponentHandle<SpriteComponent> component, entityx::Entity entity);
+#define IMPL_DESERIALIZE_DECLARATION(ComponentType)                    \
+		void implDeserialize(const Json::Value& value, entityx::ComponentHandle<ComponentType> component, entityx::Entity entity)
 
-		/// Deserialize the given \a value in the given \a component.
-		/// \param value The Json value containing the data.
-		/// \param component Component in wich deserialize the data.
-		/// \param entity The entity that is being deserialized.
-		void implDeserialize(const Json::Value& value, entityx::ComponentHandle<TransformComponent> component, entityx::Entity entity);
-
-		/// Deserialize the given \a value in the given \a component.
-		/// \param value The Json value containing the data.
-		/// \param component Component in wich deserialize the data.
-		/// \param entity The entity that is being deserialized.
-		void implDeserialize(const Json::Value& value, entityx::ComponentHandle<InventoryComponent> component, entityx::Entity entity);
-
-		/// Deserialize the given \a value in the given \a component.
-		/// \param value The Json value containing the data.
-		/// \param component Component in wich deserialize the data.
-		/// \param entity The entity that is being deserialized.
-		void implDeserialize(const Json::Value& value, entityx::ComponentHandle<AnimationsComponent<SpriteSheetAnimation>> component, entityx::Entity entity);
-
-		/// Deserialize the given \a value in the given \a component.
-		/// \param value The Json value containing the data.
-		/// \param component Component in wich deserialize the data.
-		/// \param entity The entity that is being deserialized.
-		void implDeserialize(const Json::Value& value, entityx::ComponentHandle<DirectionComponent> component, entityx::Entity entity);
-
-		/// Deserialize the given \a value in the given \a component.
-		/// \param value The Json value containing the data.
-		/// \param component Component in wich deserialize the data.
-		/// \param entity The entity that is being deserialized.
-		void implDeserialize(const Json::Value& value, entityx::ComponentHandle<CategoryComponent> component, entityx::Entity entity);
-
-		/// Deserialize the given \a value in the given \a component.
-		/// \param value The Json value containing the data.
-		/// \param component Component in wich deserialize the data.
-		/// \param entity The entity that is being deserialized.
-		void implDeserialize(const Json::Value& value, entityx::ComponentHandle<FallComponent> component, entityx::Entity entity);
-
-		/// Deserialize the given \a value in the given \a component.
-		/// \param value The Json value containing the data.
-		/// \param component Component in wich deserialize the data.
-		/// \param entity The entity that is being deserialized.
-		void implDeserialize(const Json::Value& value, entityx::ComponentHandle<WalkComponent> component, entityx::Entity entity);
-
-		/// Deserialize the given \a value in the given \a component.
-		/// \param value The Json value containing the data.
-		/// \param component Component in wich deserialize the data.
-		/// \param entity The entity that is being deserialized.
-		void implDeserialize(const Json::Value& value, entityx::ComponentHandle<JumpComponent> component, entityx::Entity entity);
-
-		/// Deserialize the given \a value in the given \a component.
-		/// \param value The Json value containing the data.
-		/// \param component Component in wich deserialize the data.
-		/// \param entity The entity that is being deserialized.
-		void implDeserialize(const Json::Value& value, entityx::ComponentHandle<ArcherComponent> component, entityx::Entity entity);
-
-		/// Deserialize the given \a value in the given \a component.
-		/// \param value The Json value containing the data.
-		/// \param component Component in wich deserialize the data.
-		/// \param entity The entity that is being deserialized.
-		void implDeserialize(const Json::Value& value, entityx::ComponentHandle<HealthComponent> component, entityx::Entity entity);
-
-		/// Deserialize the given \a value in the given \a component.
-		/// \param value The Json value containing the data.
-		/// \param component Component in wich deserialize the data.
-		/// \param entity The entity that is being deserialized.
-		void implDeserialize(const Json::Value& value, entityx::ComponentHandle<StaminaComponent> component, entityx::Entity entity);
-
-		/// Deserialize the given \a value in the given \a component.
-		/// \param value The Json value containing the data.
-		/// \param component Component in wich deserialize the data.
-		/// \param entity The entity that is being deserialized.
-		void implDeserialize(const Json::Value& value, entityx::ComponentHandle<ArrowComponent> component, entityx::Entity entity);
-
-		/// Deserialize the given \a value in the given \a component.
-		/// \param value The Json value containing the data.
-		/// \param component Component in wich deserialize the data.
-		/// \param entity The entity that is being deserialized.
-		void implDeserialize(const Json::Value& value, entityx::ComponentHandle<HardnessComponent> component, entityx::Entity entity);
-
-		/// Deserialize the given \a value in the given \a component.
-		/// \param value The Json value containing the data.
-		/// \param component Component in wich deserialize the data.
-		/// \param entity The entity that is being deserialized.
-		void implDeserialize(const Json::Value& value, entityx::ComponentHandle<ScriptsComponent> component, entityx::Entity entity);
-
-		/// Deserialize the given \a value in the given \a component.
-		/// \param value The Json value containing the data.
-		/// \param component Component in wich deserialize the data.
-		/// \param entity The entity that is being deserialized.
-		void implDeserialize(const Json::Value& value, entityx::ComponentHandle<DetectionRangeComponent> component, entityx::Entity entity);
-
-		/// Deserialize the given \a value in the given \a component.
-		/// \param value The Json value containing the data.
-		/// \param component Component in wich deserialize the data.
-		/// \param entity The entity that is being deserialized.
-		void implDeserialize(const Json::Value& value, entityx::ComponentHandle<DeathComponent> component, entityx::Entity entity);
-
-		/// Deserialize the given \a value in the given \a component.
-		/// \param value The Json value containing the data.
-		/// \param component Component in wich deserialize the data.
-		/// \param entity The entity that is being deserialized.
-		void implDeserialize(const Json::Value& value, entityx::ComponentHandle<NameComponent> component, entityx::Entity entity);
-
-		/// Deserialize the given \a value in the given \a component.
-		/// \param value The Json value containing the data.
-		/// \param component Component in wich deserialize the data.
-		/// \param entity The entity that is being deserialized.
-		void implDeserialize(const Json::Value& value, entityx::ComponentHandle<HandToHandComponent> component, entityx::Entity entity);
-
-		/// Deserialize the given \a value in the given \a component.
-		/// \param value The Json value containing the data.
-		/// \param component Component in wich deserialize the data.
-		/// \param entity The entity that is being deserialized.
-		void implDeserialize(const Json::Value& value, entityx::ComponentHandle<ActorComponent> component, entityx::Entity entity);
-
-		/// Deserialize the given \a value in the given \a component.
-		/// \param value The Json value containing the data.
-		/// \param component Component in wich deserialize the data.
-		/// \param entity The entity that is being deserialized.
-		void implDeserialize(const Json::Value& value, entityx::ComponentHandle<ItemComponent> component, entityx::Entity entity);
-
-		/// Deserialize the given \a value in the given \a component.
-		/// \param value The Json value containing the data.
-		/// \param component Component in wich deserialize the data.
-		/// \param entity The entity that is being deserialized.
-		void implDeserialize(const Json::Value& value, entityx::ComponentHandle<HoldItemComponent> component, entityx::Entity entity);
-
-		/// Deserialize the given \a value in the given \a component.
-		/// \param value The Json value containing the data.
-		/// \param component Component in wich deserialize the data.
-		/// \param entity The entity that is being deserialized.
-		void implDeserialize(const Json::Value& value, entityx::ComponentHandle<ArticuledArmsComponent> component, entityx::Entity entity);
-
-		/// Deserialize the given \a value in the given \a component.
-		/// \param value The Json value containing the data.
-		/// \param component Component in wich deserialize the data.
-		/// \param entity The entity that is being deserialized.
-		void implDeserialize(const Json::Value& value, entityx::ComponentHandle<BowComponent> component, entityx::Entity entity);
-
-		/// Deserialize the given \a value in the given \a component.
-		/// \param value The Json value containing the data.
-		/// \param component Component in wich deserialize the data.
-		/// \param entity The entity that is being deserialized.
-		void implDeserialize(const Json::Value& value, entityx::ComponentHandle<QuiverComponent> component, entityx::Entity entity);
-
+		IMPL_DESERIALIZE_DECLARATION(BodyComponent);
+		IMPL_DESERIALIZE_DECLARATION(SpriteComponent);
+		IMPL_DESERIALIZE_DECLARATION(TransformComponent);
+		IMPL_DESERIALIZE_DECLARATION(InventoryComponent);
+		IMPL_DESERIALIZE_DECLARATION(AnimationsComponent<SpriteSheetAnimation>);
+		IMPL_DESERIALIZE_DECLARATION(DirectionComponent);
+		IMPL_DESERIALIZE_DECLARATION(CategoryComponent);
+		IMPL_DESERIALIZE_DECLARATION(FallComponent);
+		IMPL_DESERIALIZE_DECLARATION(WalkComponent);
+		IMPL_DESERIALIZE_DECLARATION(JumpComponent);
+		IMPL_DESERIALIZE_DECLARATION(ArcherComponent);
+		IMPL_DESERIALIZE_DECLARATION(HealthComponent);
+		IMPL_DESERIALIZE_DECLARATION(StaminaComponent);
+		IMPL_DESERIALIZE_DECLARATION(ArrowComponent);
+		IMPL_DESERIALIZE_DECLARATION(HardnessComponent);
+		IMPL_DESERIALIZE_DECLARATION(ScriptsComponent);
+		IMPL_DESERIALIZE_DECLARATION(DetectionRangeComponent);
+		IMPL_DESERIALIZE_DECLARATION(DeathComponent);
+		IMPL_DESERIALIZE_DECLARATION(NameComponent);
+		IMPL_DESERIALIZE_DECLARATION(HandToHandComponent);
+		IMPL_DESERIALIZE_DECLARATION(ActorComponent);
+		IMPL_DESERIALIZE_DECLARATION(ItemComponent);
+		IMPL_DESERIALIZE_DECLARATION(HoldItemComponent);
+		IMPL_DESERIALIZE_DECLARATION(ArticuledArmsComponent);
+		IMPL_DESERIALIZE_DECLARATION(BowComponent);
+		IMPL_DESERIALIZE_DECLARATION(QuiverComponent);
 		//End deserialize
+
+#undef IMPL_DESERIALIZE_DECLARATION
 
 		std::map<std::string, entityx::Entity>& m_entities;///< All the entities of the application.
 		Json::Value& m_jsonEntities;                       ///< The json values of the entities.
