@@ -1,5 +1,5 @@
-#ifndef SERIALIZATION_HPP
-#define SERIALIZATION_HPP
+#ifndef SERIALIZER_HPP
+#define SERIALIZER_HPP
 
 #include <entityx/entityx.h>
 #include <TheLostGirl/components.hpp>
@@ -138,4 +138,4 @@ class Serializer
 		Json::Value& m_jsonEntities;                       ///< The json values of the entities.
 };
 
-#endif//SERIALIZATION_HPP
+#endif//SERIALIZER_HPP

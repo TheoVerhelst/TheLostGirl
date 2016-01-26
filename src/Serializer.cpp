@@ -6,7 +6,7 @@
 #include <TheLostGirl/ResourceManager.hpp>
 #include <TheLostGirl/FixtureRoles.hpp>
 #include <TheLostGirl/functions.hpp>
-#include <TheLostGirl/serialization.hpp>
+#include <TheLostGirl/Serializer.hpp>
 #include <TheLostGirl/scripts/Interpreter.hpp>
 
   //////////             ///////////

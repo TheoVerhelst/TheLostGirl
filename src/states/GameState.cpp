@@ -18,7 +18,7 @@
 #include <TheLostGirl/functions.hpp>
 #include <TheLostGirl/events.hpp>
 #include <TheLostGirl/FixtureRoles.hpp>
-#include <TheLostGirl/serialization.hpp>
+#include <TheLostGirl/Serializer.hpp>
 #include <TheLostGirl/JsonHelper.hpp>
 #include <TheLostGirl/states/GameState.hpp>
 

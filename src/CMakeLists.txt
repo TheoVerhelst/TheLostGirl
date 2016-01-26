@@ -30,7 +30,7 @@ add_library(TLG
 	scripts/Interpreter.cpp
 	scripts/scriptsFunctions.cpp
 	scripts/Variant.cpp
-	serialization.cpp
+	Serializer.cpp
 	SkyAnimation.cpp
 	SpriteSheetAnimation.cpp
 	State.cpp

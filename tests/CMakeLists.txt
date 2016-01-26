@@ -26,6 +26,7 @@ set(TLG_TEST_SOURCES
 	ContactListenerTests.cpp
 	functionsTests.cpp
 	HashEntityTests.cpp
+	JsonHelperTests.cpp
 	LangManagerTests.cpp
 	main.cpp
 	MusicPlayerTests.cpp
