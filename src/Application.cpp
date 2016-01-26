@@ -1,4 +1,3 @@
-#include <fstream>
 #include <SFML/Graphics.hpp>
 #include <Box2D/Box2D.h>
 #include <TheLostGirl/states/IntroState.hpp>
@@ -6,7 +5,7 @@
 #include <TheLostGirl/functions.hpp>
 #include <TheLostGirl/LangManager.hpp>
 #include <TheLostGirl/events.hpp>
-#include <TheLostGirl/serialization.hpp>
+#include <TheLostGirl/JsonHelper.hpp>
 #include <TheLostGirl/Application.hpp>
 
 Application::Application(bool debugMode):
@@ -41,19 +40,13 @@ Application::Application(bool debugMode):
 
 Application::~Application()
 {
-	Json::Value settings;//Will contains the root value after serializing.
-	Json::StyledWriter writer;
-	std::string file(m_parameters.resourcesPath + "settings.json");
-	std::ofstream settingsFileStream(file, std::ofstream::binary);
-
+	Json::Value settings(Json::objectValue);
 	settings["lang"] = m_langManager.getLang();
 	settings["window size"]["w"] = m_window.getSize().x;
 	settings["window size"]["h"] = m_window.getSize().y;
 	settings["enable bloom"] = m_parameters.bloomEnabled;
 	settings["fullscreen"] = m_parameters.fullscreen;
-
-	settingsFileStream << writer.write(settings);
-	settingsFileStream.close();
+	JsonHelper::saveToFile(settings, m_parameters.resourcesPath + "settings.json");
 }
 
 void Application::run()
@@ -177,39 +170,29 @@ void Application::registerSystems()
 
 void Application::deserializeSettings()
 {
-	std::string file(m_parameters.resourcesPath + "settings.json");
-	Json::Value settings;//Will contains the root value after parsing
-	Json::Value model;
-	Json::Reader reader;
-	std::ifstream settingsFile(file, std::ifstream::binary);
-	std::ifstream modelFile(m_parameters.resourcesPath + "settingsModel.json", std::ifstream::binary);
-	bool settingsOk{true}, modelOk{true};
-	if(not (settingsOk = reader.parse(settingsFile, settings)))
-		//report to the user the failure and its location in the document
-		std::cerr << "\"" + file + "\": " + reader.getFormattedErrorMessages() << "\nLoaded default settings.\n";
-	else if(not (modelOk = reader.parse(modelFile, model)))
-		std::cerr << "\"" + m_parameters.resourcesPath + "settingsModel.json\": " + reader.getFormattedErrorMessages() << "\nLoaded default settings.\n";
-	if(not settingsOk or not modelOk)
+	try
 	{
-		//Load default settings
-		const sf::Vector2u windowSize{static_cast<sf::Vector2u>(m_parameters.defaultViewSize)};
-//		m_window.create({windowSize.x, windowSize.y}, "The Lost Girl");
-		m_postEffectsTexture.create(windowSize.x, windowSize.y);
-		m_parameters.fullscreen = false;
-		m_parameters.bloomEnabled = false;
-	}
-	else
-	{
+		Json::Value settings{JsonHelper::loadFromFile(m_parameters.resourcesPath + "settings.json")};
+		const Json::Value model{JsonHelper::loadFromFile(m_parameters.resourcesPath + "settingsModel.json")};
 		//Parsing of the settings file from the model file
-		parse(settings, model, "root", "root");
-		sf::VideoMode mode{settings["window size"]["w"].asUInt(), settings["window size"]["h"].asUInt()};
+		JsonHelper::parse(settings, model);
+
 		m_langManager.setLang(settings["lang"].asString());
 		m_parameters.fullscreen = settings["fullscreen"].asBool();
 		m_parameters.bloomEnabled = settings["enable bloom"].asBool();
+
+		const sf::VideoMode mode{settings["window size"]["w"].asUInt(), settings["window size"]["h"].asUInt()};
 		uint32 style{m_parameters.fullscreen ? sf::Style::Fullscreen : sf::Style::Default};
 		m_window.create(mode, "The Lost Girl", style);
-		m_postEffectsTexture.create(mode.width, mode.height);
 	}
+	catch(const std::runtime_error& e)
+	{
+		//Load default settings
+		m_langManager.setLang("EN");
+		m_parameters.fullscreen = false;
+		m_parameters.bloomEnabled = false;
+	}
+	m_postEffectsTexture.create(m_window.getSize().x, m_window.getSize().y);
 }
 
 void Application::handleResize()

@@ -1,5 +1,3 @@
-#include <fstream>
-#include <functional>
 #include <SFML/Graphics.hpp>
 #include <SFML/System.hpp>
 #include <SFML/Window.hpp>
@@ -21,6 +19,7 @@
 #include <TheLostGirl/events.hpp>
 #include <TheLostGirl/FixtureRoles.hpp>
 #include <TheLostGirl/serialization.hpp>
+#include <TheLostGirl/JsonHelper.hpp>
 #include <TheLostGirl/states/GameState.hpp>
 
 GameState::GameState(std::string file):
@@ -154,105 +153,7 @@ Json::Value GameState::getJsonValueFromGame()
 
 void GameState::saveWorld(const std::string& filePath)
 {
-	Json::Value root{getJsonValueFromGame()};
-	Json::StyledWriter writer;
-	std::ofstream saveFileStream(filePath, std::ofstream::binary);
-	saveFileStream << writer.write(root);
-	saveFileStream.close();
-}
-
-Json::Value GameState::getJsonValue(const std::string& filePath)
-{
-	Json::Value root;
-	Json::Reader reader;
-
-	std::ifstream fileStream(filePath);
-	if(not reader.parse(fileStream, root))//report to the user the failure and their locations in the document.
-		throw std::runtime_error("save file \"" + filePath + "\" : " + reader.getFormattedErrorMessages());
-	fileStream.close();
-
-	return root;
-}
-
-void GameState::mergeJsonValues(Json::Value& left, const Json::Value& right)
-{
-	if(left.type() != right.type() and not left.isNull())
-		throw std::invalid_argument("mergeJsonValues: left and right has different types.");
-	else if(right.isArray())
-		for(const Json::Value& rightChild : right)
-			left.append(rightChild);
-	else if(right.isObject())
-		for(const std::string& childName : right.getMemberNames())
-			mergeJsonValues(left[childName], right[childName]);
-	else
-		left = right;
-}
-
-bool GameState::isSubsetJsonValue(const Json::Value& left, const Json::Value& right)
-{
-	if(left.isObject() and right.isObject())
-		for(const std::string& childName : left.getMemberNames())
-			if(not isSubsetJsonValue(left[childName], right[childName]))
-				return false;
-	else
-		return isEqualJsonValue(left, right);
-	return true;
-}
-
-bool GameState::isEqualJsonValue(const Json::Value& left, const Json::Value& right)
-{
-	if(left.type() != right.type())
-		return false;
-	else if(left.isArray())
-	{
-		if(left.size() != right.size())
-			return false;
-		for(const Json::Value& child : left)
-			if(std::find_if(right.begin(), right.end(), std::bind(GameState::isEqualJsonValue, child, std::placeholders::_1)) == right.end())
-				return false;
-	}
-	else if(left.isObject())
-	{
-		if(left.size() != right.size())
-			return false;
-		for(const std::string& childName : left.getMemberNames())
-			if(not isEqualJsonValue(left[childName], right[childName]))
-				return false;
-	}
-	else
-		return left == right;
-	return true;
-}
-
-void GameState::substractJsonValues(Json::Value& left, const Json::Value& right)
-{
-	if(left.type() != right.type())
-		throw std::invalid_argument("substractJsonValues: left and right has different types.");
-	else if(left.isArray())
-	{
-		Json::Value oldLeft(Json::arrayValue);
-		left.swap(oldLeft);
-		for(Json::Value child : oldLeft)
-			if(std::find_if(right.begin(), right.end(), std::bind(GameState::isEqualJsonValue, child, std::placeholders::_1)) == right.end())
-				left.append(child);
-	}
-	else if(left.isObject())
-	{
-		Json::Value oldLeft(Json::objectValue);
-		left.swap(oldLeft);
-		for(const std::string& childName : oldLeft.getMemberNames())
-		{
-			if(not right.isMember(childName))
-				left[childName] = oldLeft[childName];
-			else if(oldLeft[childName].isObject() or oldLeft[childName].isArray())
-			{
-				substractJsonValues(oldLeft[childName], right[childName]);
-				left[childName] = oldLeft[childName];
-			}
-		}
-	}
-	else
-		throw std::invalid_argument("substractJsonValues: left and right are not array or object.");
+	JsonHelper::saveToFile(getJsonValueFromGame(), filePath);
 }
 
 void GameState::initWorld(const std::string& filePath)
@@ -260,18 +161,18 @@ void GameState::initWorld(const std::string& filePath)
 	Context::eventManager->emit<LoadingStateChange>("Loading save file");
 	try
 	{
-		Json::Value root{getJsonValue(filePath)};
-		const Json::Value model{getJsonValue(Context::parameters->resourcesPath + "levels/model.json")};
+		Json::Value root{JsonHelper::loadFromFile(filePath)};
+		const Json::Value model{JsonHelper::loadFromFile(Context::parameters->resourcesPath + "levels/model.json")};
 
 		//Parse the save file from the model file
-		parse(root, model, "root", "root");
+		JsonHelper::parse(root, model);
 
 		if(root.isMember("level"))
 		{
-			Json::Value levelToLoad{getJsonValue(Context::parameters->resourcesPath + "levels/" + root["level"].asString())};
+			Json::Value levelToLoad{JsonHelper::loadFromFile(Context::parameters->resourcesPath + "levels/" + root["level"].asString())};
 			//Parsing of the included file from the model file
-			parse(levelToLoad, model, "root", "root");
-			mergeJsonValues(root, levelToLoad);
+			JsonHelper::parse(levelToLoad, model);
+			JsonHelper::merge(root, levelToLoad);
 		}
 
 		const Json::Value time{root["time"]};
@@ -304,10 +205,10 @@ void GameState::initWorld(const std::string& filePath)
 			for(Json::ArrayIndex i{0}; i < includes.size(); ++i)
 			{
 				//Parse the imported data
-				Json::Value includeRoot{getJsonValue(Context::parameters->resourcesPath + "levels/entities/" + includes[i].asString())};
+				Json::Value includeRoot{JsonHelper::loadFromFile(Context::parameters->resourcesPath + "levels/entities/" + includes[i].asString())};
 
 				//Parsing of the included file from the model file
-				parse(includeRoot, model, "root", "root");
+				JsonHelper::parse(includeRoot, model);
 
 				//Add generic entities to others
 				Json::Value currentGenericEntities{includeRoot["entities"]};
@@ -340,7 +241,7 @@ void GameState::initWorld(const std::string& filePath)
 					const std::string baseName{jsonEntity["base"].asString()};
 					if(not TEST(genericEntities.isMember(baseName)))
 						throw std::runtime_error("\"" + baseName + "\" is not a valid base.");
-					mergeJsonValues(jsonEntity, genericEntities[baseName]);
+					JsonHelper::merge(jsonEntity, genericEntities[baseName]);
 				}
 
 				//Deserialize first all dependecies of this entity
@@ -542,13 +443,13 @@ void GameState::initWorld(const std::string& filePath)
 
 void GameState::clear()
 {
-    for(auto& entity : m_entities)
-    {
-        if(entity.second.has_component<BodyComponent>())
-                Context::world->DestroyBody(entity.second.component<BodyComponent>()->body);
+	for(auto& entity : m_entities)
+	{
+		if(entity.second.has_component<BodyComponent>())
+			Context::world->DestroyBody(entity.second.component<BodyComponent>()->body);
 
-        entity.second.destroy();
-    }
-    for(auto& sceneEntity : m_sceneEntities)
-        sceneEntity.second.destroy();
+		entity.second.destroy();
+	}
+	for(auto& sceneEntity : m_sceneEntities)
+		sceneEntity.second.destroy();
 }

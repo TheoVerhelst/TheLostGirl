@@ -34,6 +34,7 @@ add_library(TLG
 	SkyAnimation.cpp
 	SpriteSheetAnimation.cpp
 	State.cpp
+	JsonHelper.cpp
 	states/GameState.cpp
 	states/HUDState.cpp
 	states/IntroState.cpp
