@@ -75,3 +75,6 @@ endif()
 
 #Copy the resources directory next to the executable
 file(COPY ${TheLostGirl_SOURCE_DIR}/resources DESTINATION ${CMAKE_RUNTIME_OUTPUT_DIRECTORY})
+
+#Create the saves directory next to the executable (subject to change)
+file(MAKE_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/saves)

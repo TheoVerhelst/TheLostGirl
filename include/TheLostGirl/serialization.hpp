@@ -197,6 +197,8 @@ void parseArray(const Json::Value& array, const std::string& name, Json::ValueTy
 
 /// Check if the \a value is conformant to \a model.
 /// If not, raise an exception.
+/// The value is not const because some of its childs can have default value,
+/// so this function set missing values to default (effectively modifying the value).
 /// \param value Value to check.
 /// \param model Description model.
 /// \param valueName The name of the value.

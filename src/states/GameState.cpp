@@ -268,7 +268,9 @@ void GameState::initWorld(const std::string& filePath)
 
 		if(root.isMember("level"))
 		{
-			const Json::Value levelToLoad{getJsonValue(Context::parameters->resourcesPath + "levels/" + root["level"].asString())};
+			Json::Value levelToLoad{getJsonValue(Context::parameters->resourcesPath + "levels/" + root["level"].asString())};
+			//Parsing of the included file from the model file
+			parse(levelToLoad, model, "root", "root");
 			mergeJsonValues(root, levelToLoad);
 		}
 
@@ -301,8 +303,8 @@ void GameState::initWorld(const std::string& filePath)
 			const Json::Value includes{root["import"]};
 			for(Json::ArrayIndex i{0}; i < includes.size(); ++i)
 			{
-				//Parse the level data
-				Json::Value includeRoot{getJsonValue(Context::parameters->resourcesPath + "levels/" + includes[i].asString())};
+				//Parse the imported data
+				Json::Value includeRoot{getJsonValue(Context::parameters->resourcesPath + "levels/entities/" + includes[i].asString())};
 
 				//Parsing of the included file from the model file
 				parse(includeRoot, model, "root", "root");
@@ -338,9 +340,7 @@ void GameState::initWorld(const std::string& filePath)
 					const std::string baseName{jsonEntity["base"].asString()};
 					if(not TEST(genericEntities.isMember(baseName)))
 						throw std::runtime_error("\"" + baseName + "\" is not a valid base.");
-					const Json::Value base{genericEntities[baseName]};
-					for(const std::string& componentName : base.getMemberNames())
-						jsonEntity[componentName] = base[componentName];
+					mergeJsonValues(jsonEntity, genericEntities[baseName]);
 				}
 
 				//Deserialize first all dependecies of this entity

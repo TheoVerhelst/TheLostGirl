@@ -1179,13 +1179,9 @@ void parseObject(const Json::Value& object, const std::string& name, Json::Value
 	if(object.type() != Json::objectValue)
 		throw std::runtime_error("\"" + name + "\" must be an object.");
 	else
-	{
 		for(std::string& elementName : object.getMemberNames())
-		{
 			if(not object[elementName].isConvertibleTo(type))
 				throw std::runtime_error("\"" + name + "." + elementName + "\" must be a" + typeToStr(type) + ".");
-		}
-	}
 }
 
 void parseArray(const Json::Value& array, const std::string& name, std::vector<Json::Value> values)
@@ -1193,13 +1189,9 @@ void parseArray(const Json::Value& array, const std::string& name, std::vector<J
 	if(array.type() != Json::arrayValue)
 		throw std::runtime_error("\"" + name + "\" must be an array.");
 	else
-	{
 		for(Json::ArrayIndex i{0}; i < array.size(); ++i)
-		{
 			if(std::find(values.begin(), values.end(), array[i]) == values.end())//If the value in the array is not in the vector
 				throw std::runtime_error("\"" + name + "." + std::to_string(i) + "\" identifier (" + array[i].asString() + ") is not recognized.");
-		}
-	}
 }
 
 void parseValue(const Json::Value& value, const std::string& name, std::vector<Json::Value> values)
@@ -1219,13 +1211,9 @@ void parseArray(const Json::Value& array, const std::string& name, Json::ValueTy
 	if(array.type() != Json::arrayValue)
 		throw std::runtime_error("\"" + name + "\" must be an array.");
 	else
-	{
 		for(Json::ArrayIndex i{0}; i < array.size(); ++i)
-		{
 			if(not array[i].isConvertibleTo(type))
 				throw std::runtime_error("\"" + name + "." +std::to_string(i) + "\" must be a" + typeToStr(type) + ".");
-		}
-	}
 }
 
 void parse(Json::Value& value, const Json::Value& model, const std::string& valueName, const std::string& modelName)
@@ -1248,7 +1236,7 @@ void parse(Json::Value& value, const Json::Value& model, const std::string& valu
 			requireValues(model, modelName, {{"children", Json::objectValue}});
 			requireValues(model["children"], modelName + ".children", {{"type", Json::stringValue}});
 			//For every child of value
-			for(std::string valueChildName : value.getMemberNames())
+			for(const std::string& valueChildName : value.getMemberNames())
 				//Parse the child according to the model child
 				parse(value[valueChildName], model["children"], valueName + "." + valueChildName, modelName + ".children");
 		}
