@@ -1,17 +1,18 @@
 #include <iostream>
 #include <fstream>
 #include <exception>
-//Avoid use of deprecated function in boost/filesystem.hpp
-#define BOOST_FILESYSTEM_NO_DEPRECATED
 #include <boost/filesystem.hpp>
 #include <TheLostGirl/Context.hpp>
 #include <TheLostGirl/Parameters.hpp>
 #include <TheLostGirl/LangManager.hpp>
 
-void LangManager::setLang(std::string newLang)
+void LangManager::setLang(const std::string& newLang)
 {
-	m_lang = newLang;
-	loadLang(m_lang);
+	if(newLang != m_lang)
+	{
+		m_lang = newLang;
+		loadLang(m_lang);
+	}
 }
 
 std::string LangManager::getLang() const
@@ -43,7 +44,7 @@ std::wstring LangManager::tr(const std::string& entryName) const
 	}
 }
 
-void LangManager::loadLang(std::string langToLoad)
+void LangManager::loadLang(const std::string& langToLoad)
 {
 	std::string sourceFilePath{Context::parameters->resourcesPath + "lang/" + m_defaultLang};
 	std::string translationFilePath{Context::parameters->resourcesPath + "lang/" + langToLoad};

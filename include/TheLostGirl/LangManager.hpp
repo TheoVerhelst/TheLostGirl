@@ -15,7 +15,7 @@ class LangManager
         /// The lang file is automaticaly loaded by the manager.
         /// \param newLang Lang to load
         /// \return void
-		void setLang(std::string newLang);
+		void setLang(const std::string& newLang);
 
         /// Return the current lang.
         /// \return Lang
@@ -41,7 +41,7 @@ class LangManager
 	private:
 		/// Load the data related to the given lang.
 		/// \param langToLoad Lang to load.
-		void loadLang(std::string langToLoad);
+		void loadLang(const std::string& langToLoad);
 
 		std::string m_lang;                           ///< The current lang.
 		const std::string m_defaultLang = "EN";       ///< The default lang used in the source code.
