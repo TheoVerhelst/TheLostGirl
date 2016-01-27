@@ -159,7 +159,7 @@ void GameState::saveWorld(const std::string& filePath)
 	//Load all generic entities
 	Json::Value genericEntities;
 	for(auto& directory_entry : boost::filesystem::directory_iterator(Context::parameters->resourcesPath + "levels/entities"))
-		JsonHelper::merge(genericEntities, JsonHelper::loadFromFile(directory_entry.path().filename().generic_string()));
+		JsonHelper::merge(genericEntities, JsonHelper::loadFromFile(directory_entry.path().generic_string()));
 
 	for(const std::string& entityName : gameValue["entities"].getMemberNames())
 	{
