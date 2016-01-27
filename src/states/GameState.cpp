@@ -4,6 +4,7 @@
 #include <Box2D/Box2D.h>
 #include <entityx/entityx.h>
 #include <dist/json/json.h>
+#include <boost/filesystem.hpp>
 #include <TheLostGirl/states/PauseState.hpp>
 #include <TheLostGirl/states/HUDState.hpp>
 #include <TheLostGirl/states/MainMenuState.hpp>
@@ -153,7 +154,29 @@ Json::Value GameState::getJsonValueFromGame()
 
 void GameState::saveWorld(const std::string& filePath)
 {
-	JsonHelper::saveToFile(getJsonValueFromGame(), filePath);
+	Json::Value gameValue{getJsonValueFromGame()};
+
+	//Load all generic entities
+	Json::Value genericEntities;
+	for(auto& directory_entry : boost::filesystem::directory_iterator(Context::parameters->resourcesPath + "levels/entities"))
+		JsonHelper::merge(genericEntities, JsonHelper::loadFromFile(directory_entry.path().filename().generic_string()));
+
+	for(const std::string& entityName : gameValue["entities"].getMemberNames())
+	{
+		Json::Value& entityValue{gameValue["entities"][entityName]};
+		for(const std::string& genericEntityName : genericEntities["entities"].getMemberNames())
+		{
+			const Json::Value& genericEntityValue{genericEntities["entities"][genericEntityName]};
+			if(JsonHelper::isSubset(genericEntityValue, entityValue))
+			{
+				JsonHelper::substract(entityValue, genericEntityValue);
+				entityValue["base"] = genericEntityName;
+				break;
+			}
+		}
+	}
+
+	JsonHelper::saveToFile(gameValue, filePath);
 }
 
 void GameState::initWorld(const std::string& filePath)

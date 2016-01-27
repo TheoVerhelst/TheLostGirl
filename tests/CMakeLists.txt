@@ -36,7 +36,7 @@ set(TLG_TEST_SOURCES
 	scripts/ScriptErrorTests.cpp
 	scripts/scriptsFunctionsTests.cpp
 	scripts/TreeTests.cpp
-	serializationTests.cpp
+	SerializerTests.cpp
 	SkyAnimationTests.cpp
 	SpriteSheetAnimationTests.cpp
 	states/GameStateTests.cpp
