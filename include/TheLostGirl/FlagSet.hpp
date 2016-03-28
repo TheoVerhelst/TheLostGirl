@@ -8,19 +8,6 @@
 /// Set of flags defined by the template parameter enumeration.
 /// This is a type-safe replacing for the usual couple unsigned int/enum.
 /// Another advandage is the possibility to use a strong-typed enum as flag identifiers.
-/// Some assertions are done on the structure of the enum class:
-/// <ul>
-/// 	<li>any value of the enum must be convertible to an unsigned type,
-/// more precisely to `std::size_t`.</li>
-/// 	<li>the enum used as template parameter must have its last element named
-/// MaxValue and its first element explicitely assigned to 0,
-/// or if this is not possible, the highest value in the enum + 1 must
-/// be given as second template parameter;</li>
-/// </ul>
-/// The value of an element `Enum::e` in the enum means the value obtained by
-/// the expression `static_cast<std::size_t>(Enum::e);`.
-/// If the template parameter N is not consistent, the resulting object
-/// may not be consistent, and it is undefined behavior to use it.
 template <class Enum>
 class FlagSet
 {
@@ -99,7 +86,7 @@ class FlagSet
 
 	private:
 		/// Apply an algorithm between *this and other.
-		/// \param other An other FlagSet.
+		/// \param other Another FlagSet.
 		template <std::back_insert_iterator<std::vector<Enum>>(*Algorithm)
 				(typename std::set<Enum>::const_iterator,
 				 typename std::set<Enum>::const_iterator,
