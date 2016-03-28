@@ -64,7 +64,7 @@ void StateStack::pushState(Args&& ... args)
 	m_pendingList.push_back([this, args...]
 	{
 		//No perfect forwarding is done here because the arguments
-		//needs to be copied in order to be stored in the lambda
+		//need to be copied in order to be stored in the lambda
 		m_stack.push_back(std::unique_ptr<State>(new T(args...)));
 	});
 }
