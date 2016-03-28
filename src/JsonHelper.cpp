@@ -1,10 +1,13 @@
 #include <fstream>
+#include <iostream>
 #include <algorithm>
 #include <stdexcept>
 #include <vector>
 #include <functional>
 #include <dist/json/json.h>
 #include <TheLostGirl/JsonHelper.hpp>
+
+using namespace std::placeholders;
 
 Json::Value JsonHelper::loadFromFile(const std::string& filePath)
 {
@@ -42,26 +45,38 @@ void JsonHelper::merge(Json::Value& left, const Json::Value& right)
 
 bool JsonHelper::isSubset(const Json::Value& left, const Json::Value& right)
 {
-	if(left.isObject() and right.isObject())
+	if(not left.isConvertibleTo(right.type()))
+		return false;
+	else if(left.isArray())
+	{
+		for(const Json::Value& child : left)
+			if(std::find_if(right.begin(), right.end(), std::bind(isEqual, child, _1)) == right.end())
+				return false;
+		return true;
+	}
+	else if(left.isObject())
+	{
 		for(const std::string& childName : left.getMemberNames())
 			if(not isSubset(left[childName], right[childName]))
 				return false;
+		return true;
+	}
 	else
 		return isEqual(left, right);
-	return true;
 }
 
 bool JsonHelper::isEqual(const Json::Value& left, const Json::Value& right)
 {
-	if(left.type() != right.type())
+	if(not left.isConvertibleTo(right.type()))
 		return false;
 	else if(left.isArray())
 	{
 		if(left.size() != right.size())
 			return false;
 		for(const Json::Value& child : left)
-			if(std::find_if(right.begin(), right.end(), std::bind(JsonHelper::isEqual, child, std::placeholders::_1)) == right.end())
+			if(std::find_if(right.begin(), right.end(), std::bind(isEqual, child, _1)) == right.end())
 				return false;
+		return true;
 	}
 	else if(left.isObject())
 	{
@@ -70,10 +85,12 @@ bool JsonHelper::isEqual(const Json::Value& left, const Json::Value& right)
 		for(const std::string& childName : left.getMemberNames())
 			if(not isEqual(left[childName], right[childName]))
 				return false;
+		return true;
 	}
+	else if(left.isDouble())
+		return std::abs(left.asDouble() - right.asDouble()) < 0.0001;
 	else
 		return left == right;
-	return true;
 }
 
 void JsonHelper::substract(Json::Value& left, const Json::Value& right)
@@ -85,7 +102,7 @@ void JsonHelper::substract(Json::Value& left, const Json::Value& right)
 		Json::Value oldLeft(Json::arrayValue);
 		left.swap(oldLeft);
 		for(Json::Value child : oldLeft)
-			if(std::find_if(right.begin(), right.end(), std::bind(JsonHelper::isEqual, child, std::placeholders::_1)) == right.end())
+			if(std::find_if(right.begin(), right.end(), std::bind(isEqual, child, _1)) == right.end())
 				left.append(child);
 	}
 	else if(left.isObject())
