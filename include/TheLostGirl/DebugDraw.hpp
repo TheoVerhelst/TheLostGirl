@@ -71,6 +71,10 @@ class DebugDraw : public b2Draw
 		void setFont(std::shared_ptr<sf::Font> font);
 
 	private:
+
+		/// Flush the output on std::cout and std::cerr to the console
+		void flush();
+
 		/// Return a string containing x with 2 decimals.
 		/// \param x Number to convert.
 		/// \param decimals Number of decimals to show

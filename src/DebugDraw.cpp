@@ -42,6 +42,7 @@ DebugDraw::DebugDraw():
 
 DebugDraw::~DebugDraw()
 {
+	flush();
 	std::cout.rdbuf(m_coutStreambuf);
 	std::cerr.rdbuf(m_cerrStreambuf);
 	for(std::size_t i{0}; i < m_console->getLineAmount(); ++i)
@@ -231,18 +232,7 @@ void DebugDraw::drawDebugAth()
 	m_FPSLabel->setText("FPS: " + roundOutput(m_framesPerSecond));
 
 	//Console
-	const std::string outString(m_outStringStream.str());
-	if(not outString.empty())
-	{
-		m_console->addLine(outString);
-		m_outStringStream.str("");
-	}
-	const std::string errString(m_errStringStream.str());
-	if(not errString.empty())
-	{
-		m_console->addLine(errString, m_errorColor);
-		m_errStringStream.str("");
-	}
+	flush();
 }
 
 void DebugDraw::setFPS(float framesPerSecond)
@@ -256,6 +246,22 @@ void DebugDraw::setFont(std::shared_ptr<sf::Font> font)
 	m_mousePositionLabel->setFont(font);
 	m_FPSLabel->setFont(font);
 	m_console->setFont(font);
+}
+
+void DebugDraw::flush()
+{
+	const std::string outString(m_outStringStream.str());
+	if(not outString.empty())
+	{
+		m_console->addLine(outString);
+		m_outStringStream.str("");
+	}
+	const std::string errString(m_errStringStream.str());
+	if(not errString.empty())
+	{
+		m_console->addLine(errString, m_errorColor);
+		m_errStringStream.str("");
+	}
 }
 
 std::string DebugDraw::roundOutput(float x, std::size_t decimals)
