@@ -5,21 +5,13 @@
 		{
 			"body" :
 			{
-				"active" : true,
 				"allow sleep" : true,
 				"angular damping" : 10,
-				"angular velocity" : 0,
-				"awake" : true,
 				"bullet" : false,
 				"fixed rotation" : false,
 				"gravity scale" : 1,
 				"linear damping" : 0,
-				"linear velocity" : 
-				{
-					"x" : 0,
-					"y" : 0
-				},
-				"polygon fixtures" : 
+				"polygon fixtures" :
 				[
 					{
 						"density" : 0.7,
@@ -27,7 +19,7 @@
 						"is sensor" : false,
 						"restitution" : 0.2,
 						"roles" : ["main"],
-						"vertices" : 
+						"vertices" :
 						[
 							{
 								"x" : 0,
@@ -67,21 +59,13 @@
 		{
 			"body" :
 			{
-				"active" : true,
 				"allow sleep" : true,
 				"angular damping" : 0,
-				"angular velocity" : 0,
-				"awake" : true,
 				"bullet" : false,
 				"fixed rotation" : false,
 				"gravity scale" : 1,
 				"linear damping" : 0,
-				"linear velocity" : 
-				{
-					"x" : 0,
-					"y" : 0
-				},
-				"polygon fixtures" : 
+				"polygon fixtures" :
 				[
 					{
 						"density" : 0.01,
@@ -89,7 +73,7 @@
 						"is sensor" : true,
 						"restitution" : 0,
 						"roles" : ["main"],
-						"vertices" : 
+						"vertices" :
 						[
 							{
 								"x" : 0,
@@ -124,11 +108,11 @@
 					"y" : 27
 				}
 			},
-			"sprite" : 
+			"sprite" :
 			{
 				"identifier" : "wood bow.png"
 			},
-			"spritesheet animations" : 
+			"spritesheet animations" :
 			{
 				"hand to hand right" :
 				{
@@ -170,9 +154,9 @@
 					"progress" : 0,
 					"stop at end" : true
 				},
-				"bend left" : 
+				"bend left" :
 				{
-					"data" : 
+					"data" :
 					[
 						{
 							"h" : 56,
@@ -217,9 +201,9 @@
 					"loops" : false,
 					"progress" : 0
 				},
-				"bend right" : 
+				"bend right" :
 				{
-					"data" : 
+					"data" :
 					[
 						{
 							"h" : 56,
@@ -264,9 +248,9 @@
 					"loops" : false,
 					"progress" : 0
 				},
-				"death" : 
+				"death" :
 				{
-					"data" : 
+					"data" :
 					[
 						{
 							"h" : 0,
@@ -287,16 +271,16 @@
 		},
 		"arrow" :
 		{
-			"arrow" : 
+			"arrow" :
 			{
 				"damage" : 70,
 				"friction" : 1,
-				"local friction point" : 
+				"local friction point" :
 				{
 					"x" : 5,
 					"y" : 2
 				},
-				"local stick point" : 
+				"local stick point" :
 				{
 					"x" : 42,
 					"y" : 2
@@ -304,23 +288,15 @@
 				"penetrance" : 100,
 				"state" : "stored"
 			},
-			"body" : 
+			"body" :
 			{
-				"active" : true,
 				"allow sleep" : true,
 				"angular damping" : 10,
-				"angular velocity" : 0,
-				"awake" : true,
 				"bullet" : true,
 				"fixed rotation" : false,
 				"gravity scale" : 1,
 				"linear damping" : 0,
-				"linear velocity" : 
-				{
-					"x" : 0,
-					"y" : 0
-				},
-				"polygon fixtures" : 
+				"polygon fixtures" :
 				[
 					{
 						"density" : 0.1,
@@ -328,7 +304,7 @@
 						"is sensor" : false,
 						"restitution" : 0.2,
 						"roles" : ["main"],
-						"vertices" : 
+						"vertices" :
 						[
 							{
 								"x" : 0,
@@ -363,7 +339,7 @@
 					"y" : 0
 				}
 			},
-			"sprite" : 
+			"sprite" :
 			{
 				"identifier" : "wood arrow.png"
 			}

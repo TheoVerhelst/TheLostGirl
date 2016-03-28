@@ -1,10 +1,10 @@
 {
 	"import" : ["items.json", "mobs.json"],
-	"entities" : 
+	"entities" :
 	{
-		"ground" : 
+		"ground" :
 		{
-			"body" : 
+			"body" :
 			{
 				"active" : true,
 				"allow sleep" : true,
@@ -12,14 +12,14 @@
 				"angular velocity" : 0,
 				"awake" : true,
 				"bullet" : false,
-				"chain fixtures" : 
+				"chain fixtures" :
 				[
 					{
 						"density" : 0,
 						"friction" : 0.5,
 						"is sensor" : false,
 						"restitution" : 0,
-						"vertices" : 
+						"vertices" :
 						[
 							{
 								"x" : 0,
@@ -43,7 +43,7 @@
 				"fixed rotation" : false,
 				"gravity scale" : 1,
 				"linear damping" : 0,
-				"linear velocity" : 
+				"linear velocity" :
 				{
 					"x" : 0,
 					"y" : 0
@@ -51,7 +51,7 @@
 				"type" : "static"
 			},
 			"hardness" : 0.5,
-			"transform" : 
+			"transform" :
 			{
 				"angle" : 0,
 				"x" : 0,
@@ -59,10 +59,21 @@
 				"z" : 1
 			}
 		},
-		"wolf 1" : 
+		"wolf 1" :
 		{
 			"base" : "wood wolf",
-			"transform" : 
+			"body" :
+			{
+				"active" : true,
+				"awake" : true,
+				"angular velocity" : 0,
+				"linear velocity" :
+				{
+					"x" : 0,
+					"y" : 0
+				}
+			},
+			"transform" :
 			{
 				"angle" : 0,
 				"x" : 1600,
@@ -70,10 +81,21 @@
 				"z" : 1
 			}
 		},
-		"wolf 2" : 
+		"wolf 2" :
 		{
 			"base" : "wood wolf",
-			"transform" : 
+			"body" :
+			{
+				"active" : true,
+				"awake" : true,
+				"angular velocity" : 0,
+				"linear velocity" :
+				{
+					"x" : 0,
+					"y" : 0
+				}
+			},
+			"transform" :
 			{
 				"angle" : 0,
 				"x" : 1800,
@@ -81,10 +103,21 @@
 				"z" : 1
 			}
 		},
-		"wolf 3" : 
+		"wolf 3" :
 		{
 			"base" : "wood wolf",
-			"transform" : 
+			"body" :
+			{
+				"active" : true,
+				"awake" : true,
+				"angular velocity" : 0,
+				"linear velocity" :
+				{
+					"x" : 0,
+					"y" : 0
+				}
+			},
+			"transform" :
 			{
 				"angle" : 0,
 				"x" : 1400,
@@ -92,10 +125,21 @@
 				"z" : 1
 			}
 		},
-		"wolf 4" : 
+		"wolf 4" :
 		{
 			"base" : "wood wolf",
-			"transform" : 
+			"body" :
+			{
+				"active" : true,
+				"awake" : true,
+				"angular velocity" : 0,
+				"linear velocity" :
+				{
+					"x" : 0,
+					"y" : 0
+				}
+			},
+			"transform" :
 			{
 				"angle" : 0,
 				"x" : 2000,
@@ -103,7 +147,7 @@
 				"z" : 1
 			}
 		},
-		"day sky" : 
+		"day sky" :
 		{
 			"name" : "day sky",
 			"sprite" :
@@ -124,7 +168,7 @@
 			},
 			"categories" : ["scene"]
 		},
-		"night sky" : 
+		"night sky" :
 		{
 			"name" : "night sky",
 			"sprite" :
@@ -146,9 +190,9 @@
 			"categories" : ["scene"]
 		}
 	},
-	"level data" : 
+	"level data" :
 	{
-		"box" : 
+		"box" :
 		{
 			"h" : 540,
 			"w" : 3000,

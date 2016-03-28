@@ -1,25 +1,18 @@
 {
 	"entities" :
 	{
-		"wood wolf" : 
+		"wood wolf" :
 		{
-			"body" : 
+			"body" :
 			{
-				"active" : true,
 				"allow sleep" : true,
 				"angular damping" : 0,
-				"angular velocity" : 0,
 				"awake" : true,
 				"bullet" : false,
 				"fixed rotation" : true,
 				"gravity scale" : 1,
 				"linear damping" : 0,
-				"linear velocity" : 
-				{
-					"x" : 0,
-					"y" : 0
-				},
-				"polygon fixtures" : 
+				"polygon fixtures" :
 				[
 					{
 						"density" : 0.4,
@@ -27,7 +20,7 @@
 						"is sensor" : true,
 						"restitution" : 0,
 						"roles" : [ "foot sensor" ],
-						"vertices" : 
+						"vertices" :
 						[
 							{
 								"x" : 160,
@@ -53,7 +46,7 @@
 						"is sensor" : false,
 						"restitution" : 0,
 						"roles" : [ "main" ],
-						"vertices" : 
+						"vertices" :
 						[
 							{
 								"x" : 170,
@@ -77,10 +70,10 @@
 				"type" : "dynamic"
 			},
 			"categories" : [ "aggressive" ],
-			"death" : 
+			"death" :
 			{
 				"dead" : false,
-				"drops" : 
+				"drops" :
 				[
 					{
 						"category" : "Skins",
@@ -93,35 +86,35 @@
 				]
 			},
 			"detection range" : 500,
-			"direction" : 
+			"direction" :
 			{
 				"direction" : "left",
 				"move to left" : false,
 				"move to right" : false
 			},
-			"fall" : 
+			"fall" :
 			{
 				"falling resistance" : 10
 			},
-			"hand to hand" : 
+			"hand to hand" :
 			{
 				"damages" : 30,
 				"delay" : 1,
 				"last shoot" : 1
 			},
 			"hardness" : 0.1,
-			"health" : 
+			"health" :
 			{
 				"current" : 100,
 				"maximum" : 100,
 				"regeneration" : 5
 			},
-			"inventory" : 
+			"inventory" :
 			{
 				"items" : [],
 				"maximum weight" : 100
 			},
-			"actor" : 
+			"actor" :
 			{
 				"hand to hand resistance" : 30,
 				"magic resistance" : 0,
@@ -130,24 +123,24 @@
 				"frost resistance" : 0,
 				"poison resistance" : 0
 			},
-			"jump" : 
+			"jump" :
 			{
 				"strength" : 100
 			},
 			"name" : "Wood wolf",
-			"scripts" : 
+			"scripts" :
 			{
 				"scripts" : [ "test.tlg" ]
 			},
-			"sprite" : 
+			"sprite" :
 			{
 				"identifier" : "wolf.png"
 			},
-			"spritesheet animations" : 
+			"spritesheet animations" :
 			{
-				"death" : 
+				"death" :
 				{
-					"data" : 
+					"data" :
 					[
 						{
 							"h" : 120,
@@ -213,9 +206,9 @@
 					"loops" : false,
 					"progress" : 0
 				},
-				"hand to hand left" : 
+				"hand to hand left" :
 				{
-					"data" : 
+					"data" :
 					[
 						{
 							"h" : 120,
@@ -240,9 +233,9 @@
 					"progress" : 0,
 					"stop at end" : true
 				},
-				"hand to hand right" : 
+				"hand to hand right" :
 				{
-					"data" : 
+					"data" :
 					[
 						{
 							"h" : 120,
@@ -267,9 +260,9 @@
 					"progress" : 0,
 					"stop at end" : true
 				},
-				"move left" : 
+				"move left" :
 				{
-					"data" : 
+					"data" :
 					[
 						{
 							"h" : 120,
@@ -307,9 +300,9 @@
 					"loops" : true,
 					"progress" : 0
 				},
-				"move right" : 
+				"move right" :
 				{
-					"data" : 
+					"data" :
 					[
 						{
 							"h" : 120,
@@ -347,9 +340,9 @@
 					"loops" : true,
 					"progress" : 0
 				},
-				"stay left" : 
+				"stay left" :
 				{
-					"data" : 
+					"data" :
 					[
 						{
 							"h" : 120,
@@ -366,9 +359,9 @@
 					"loops" : true,
 					"progress" : 0
 				},
-				"stay right" : 
+				"stay right" :
 				{
-					"data" : 
+					"data" :
 					[
 						{
 							"h" : 120,
@@ -386,13 +379,13 @@
 					"progress" : 0.3224029541015625
 				}
 			},
-			"stamina" : 
+			"stamina" :
 			{
 				"current" : 100,
 				"maximum" : 100,
 				"regeneration" : 5
 			},
-			"walk" : 
+			"walk" :
 			{
 				"effective movement" : "none",
 				"speed" : 350

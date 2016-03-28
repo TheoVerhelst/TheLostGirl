@@ -1,6 +1,6 @@
 {
 	"import" : ["items.json", "archer.json"],
-	"entities" : 
+	"entities" :
 	{
 		"player bow" :
 		{
@@ -13,13 +13,24 @@
 				"lower translation" : 1,
 				"current translation" : 0,
 				"target translation" : 0,
-				"notched arrow anchor" : 
+				"notched arrow anchor" :
 				{
 					"x" : 2,
 					"y" : 28
 				}
 			},
-			"transform" : 
+			"body" :
+			{
+				"active" : true,
+				"awake" : true,
+				"angular velocity" : 0,
+				"linear velocity" :
+				{
+					"x" : 0,
+					"y" : 0
+				}
+			},
+			"transform" :
 			{
 				"angle" : -4.631782531738281,
 				"x" : 235,
@@ -45,7 +56,18 @@
 					"y" : 4
 				}
 			},
-			"transform" : 
+			"body" :
+			{
+				"active" : true,
+				"awake" : true,
+				"angular velocity" : 0,
+				"linear velocity" :
+				{
+					"x" : 0,
+					"y" : 0
+				}
+			},
+			"transform" :
 			{
 				"angle" : -4.631768226623535,
 				"x" : 235,
@@ -53,11 +75,11 @@
 				"z" : 1
 			}
 		},
-		"player quiver" : 
+		"player quiver" :
 		{
 			"base" : "quiver",
 			"dependencies" : ["arrow 1", "arrow 2", "arrow 3"],
-			"quiver" : 
+			"quiver" :
 			{
 				"capacity" : 20,
 				"arrow anchor" :
@@ -72,7 +94,18 @@
 				},
 				"arrows" : [ "arrow 1", "arrow 2", "arrow 4" ]
 			},
-			"transform" : 
+			"body" :
+			{
+				"active" : true,
+				"awake" : true,
+				"angular velocity" : 0,
+				"linear velocity" :
+				{
+					"x" : 0,
+					"y" : 0
+				}
+			},
+			"transform" :
 			{
 				"angle" : 0,
 				"x" : 236,
@@ -80,11 +113,22 @@
 				"z" : 1
 			}
 		},
-		"player" : 
+		"player" :
 		{
 			"dependencies" : ["player left arm", "player quiver"],
 			"base" : "archer",
-			"archer" : 
+			"body" :
+			{
+				"active" : true,
+				"awake" : true,
+				"angular velocity" : 0,
+				"linear velocity" :
+				{
+					"x" : 0,
+					"y" : 0
+				}
+			},
+			"archer" :
 			{
 				"quiver" : "player quiver",
 				"quiver anchor" :
@@ -102,73 +146,73 @@
 				"lower angle" : -90,
 				"current angle" : 0,
 				"target angle" : 0,
-				"arms anchor" : 
+				"arms anchor" :
 				{
 					"x" : 18,
 					"y" : 20
 				}
 			},
-			"death" : 
+			"death" :
 			{
 				"dead" : false,
 				"drops" : []
 			},
-			"direction" : 
+			"direction" :
 			{
 				"direction" : "right",
 				"move to left" : false,
 				"move to right" : false
 			},
-			"fall" : 
+			"fall" :
 			{
 				"falling resistance" : 10
 			},
-			"hand to hand" : 
+			"hand to hand" :
 			{
 				"damages" : 400,
 				"delay" : 0.1000000014901161,
 				"last shoot" : 0.1000000014901161
 			},
 			"hardness" : 0.1000000089406967,
-			"health" : 
+			"health" :
 			{
 				"current" : 100,
 				"maximum" : 100,
 				"regeneration" : 10
 			},
-			"inventory" : 
+			"inventory" :
 			{
 				"items" : ["player bow", "player quiver"],
 				"maximum weight" : 100
 			},
-			"jump" : 
+			"jump" :
 			{
 				"strength" : 600
 			},
 			"name" : "archer",
-			"stamina" : 
+			"stamina" :
 			{
 				"current" : 100,
 				"maximum" : 100,
 				"regeneration" : 2
 			},
-			"transform" : 
+			"transform" :
 			{
 				"angle" : 0,
 				"x" : 236,
 				"y" : 300,
 				"z" : 1
 			},
-			"walk" : 
+			"walk" :
 			{
 				"effective movement" : "none",
 				"speed" : 350
 			}
 		},
-		"arrow 1" : 
+		"arrow 1" :
 		{
 			"base" : "arrow",
-			"transform" : 
+			"transform" :
 			{
 				"angle" : 0,
 				"x" : 379.6326293945312,
@@ -177,10 +221,21 @@
 			}
 
 		},
-		"arrow 2" : 
+		"arrow 2" :
 		{
 			"base" : "arrow",
-			"transform" : 
+			"body" :
+			{
+				"active" : true,
+				"awake" : true,
+				"angular velocity" : 0,
+				"linear velocity" :
+				{
+					"x" : 0,
+					"y" : 0
+				}
+			},
+			"transform" :
 			{
 				"angle" : 0,
 				"x" : 379.6326293945312,
@@ -188,10 +243,21 @@
 				"z" : 1
 			}
 		},
-		"arrow 3" : 
+		"arrow 3" :
 		{
 			"base" : "arrow",
-			"transform" : 
+			"body" :
+			{
+				"active" : true,
+				"awake" : true,
+				"angular velocity" : 0,
+				"linear velocity" :
+				{
+					"x" : 0,
+					"y" : 0
+				}
+			},
+			"transform" :
 			{
 				"angle" : 0,
 				"x" : 379.6326293945312,
@@ -199,10 +265,21 @@
 				"z" : 1
 			}
 		},
-		"arrow 4" : 
+		"arrow 4" :
 		{
 			"base" : "arrow",
-			"transform" : 
+			"body" :
+			{
+				"active" : true,
+				"awake" : true,
+				"angular velocity" : 0,
+				"linear velocity" :
+				{
+					"x" : 0,
+					"y" : 0
+				}
+			},
+			"transform" :
 			{
 				"angle" : 0,
 				"x" : 379.6326293945312,
@@ -212,7 +289,7 @@
 		}
 	},
 	"level" : "1.json",
-	"time" : 
+	"time" :
 	{
 		"date" : 0,
 		"speed" : 1
