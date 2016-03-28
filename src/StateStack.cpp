@@ -7,8 +7,8 @@
 void StateStack::update(sf::Time dt)
 {
 	// Iterate from top to bottom, stop as soon as update() returns false
-	for(auto itr = m_stack.rbegin(); itr != m_stack.rend(); ++itr)
-		if(!(*itr)->update(dt))
+	for(auto it(m_stack.rbegin()); it != m_stack.rend(); ++it)
+		if(not (*it)->update(dt))
 			break;
 	applyPendingChanges();
 }
@@ -16,7 +16,7 @@ void StateStack::update(sf::Time dt)
 void StateStack::draw()
 {
 	// Draw all active states from bottom to top
-	for(State::Ptr& state : m_stack)
+	for(auto& state : m_stack)
 		state->draw();
 }
 
