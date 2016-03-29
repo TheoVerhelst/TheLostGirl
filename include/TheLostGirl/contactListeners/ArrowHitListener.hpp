@@ -2,11 +2,12 @@
 #define ARROWHITLISTENER_HPP
 
 #include <Box2D/Box2D.h>
+#include <TheLostGirl/Context.hpp>
 
 /// Collision listener.
 /// - Handle collisions of arrows to decide if the arrow should be sticked
 /// on the other fixture.
-class ArrowHitListener : public b2ContactListener
+class ArrowHitListener : public b2ContactListener, private ContextAccessor<ContextElement::Parameter, ContextElement::SystemManager>
 {
 	public:
 		/// This is called after a contact is updated.

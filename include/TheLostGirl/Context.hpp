@@ -2,6 +2,7 @@
 #define CONTEXT_HPP
 
 #include <string>
+#include <TheLostGirl/TypeTraits.hpp>
 
 //Forward declarations
 namespace sf
@@ -35,31 +36,55 @@ class Player;
 class LangManager;
 class StateStack;
 
-/// Various managers and instances references.
-/// It is useful to pass the context to the states,
-/// they can then use these various resources managers.
-struct Context
+/// Enumeration of all elements in the contexts. This enumeration will help in
+/// the assertion when a class wants to access an element of the context.
+enum class ContextElement
 {
-	/// Constructor.
-	/// Initialize the global variable according to the given Application instance.
-	/// \param application The main Application instance.
-	explicit Context(Application& application);
-
-	static Parameters* parameters;               ///< Structure containing all the game parameters.
-	static sf::RenderWindow* window;             ///< The main window.
-	static sf::RenderTexture* postEffectsTexture;///< Texture for rendering posteffects.
-	static ResourceManager<sf::Texture, std::string>* textureManager;       ///< The textures manager.
-	static ResourceManager<sf::Font, std::string>* fontManager;             ///< The fonts manager.
-	static ResourceManager<sf::SoundBuffer, std::string>* soundManager;           ///< The sounds manager.
-	static ResourceManager<Interpreter, std::string>* scriptManager;         ///< The scripts manager.
-	static LangManager* langManager;             ///< The langs manager.
-	static tgui::Gui* gui;                       ///< The main GUI manager.
-	static entityx::EventManager* eventManager;  ///< The event manager of the entity system.
-	static entityx::EntityManager* entityManager;///< The entity manager of the entity system
-	static entityx::SystemManager* systemManager;///< The system manager of the entity system
-	static b2World* world;                       ///< The Box2D physic world.
-	static Player* player;                       ///< The input manager.
-	static StateStack* stateStack;               ///< The state stack.
+#define MACRO_CONTEXT_ELEMENT(Type, Name, attribute) Name,
+#include <TheLostGirl/ContextElements.inl>
+#undef MACRO_CONTEXT_ELEMENT
 };
+
+/// Class that has to be inherited in order to gain access to some members of
+/// the global context. The context elements that need to be accessed are
+/// specified with the template parameter list.
+template <ContextElement... Elements>
+class ContextAccessor
+{
+	protected:
+#define MACRO_CONTEXT_ELEMENT(Type, Name, m_attribute) static inline Type& get##Name();
+#include <TheLostGirl/ContextElements.inl>
+#undef MACRO_CONTEXT_ELEMENT
+};
+
+/// Class that statically holds pointers to context elements. An unique instance
+/// of this class has to be instanciated with a reference to the Application
+/// main object.
+class Context
+{
+	public:
+		/// Constructor.
+		/// Initialize the global variable according to the given Application instance.
+		/// \param application The main Application instance.
+		Context(Application& application);
+
+	private:
+		friend ContextAccessor;
+#define MACRO_CONTEXT_ELEMENT(Type, Name, m_attribute) static Type* m_attribute;
+#include <TheLostGirl/ContextElements.inl>
+#undef MACRO_CONTEXT_ELEMENT
+
+};
+
+#define MACRO_CONTEXT_ELEMENT(Type, Name, m_attribute)                         \
+template <ContextElement... Elements>                                          \
+inline Type& ContextAccessor<Elements...>::get##Name()                         \
+{                                                                              \
+	static_assert(ContainsValue<ContextElement, Name, Elements...>::value,     \
+			"You have not access to this context element");                    \
+	return *Context::m_attribute;                                              \
+}
+#include <TheLostGirl/ContextElements.inl>
+#undef MACRO_CONTEXT_ELEMENT
 
 #endif//CONTEXT_HPP

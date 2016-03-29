@@ -15,7 +15,7 @@ struct Parameters;
 /// Class that draw all the Box2D entities.
 /// Set it as default debug drawer to the b2World,
 /// and it will draw fixtures, bodies and so on at each call of b2World::drawDebugData.
-class DebugDraw : public b2Draw
+class DebugDraw : public b2Draw, private ContextAccessor<ContextElement::Parameter, ContextElement::Gui, ContextElement::PostEffectTexture, ContextElement::Window>
 {
 	public:
 		/// Default constructor.
