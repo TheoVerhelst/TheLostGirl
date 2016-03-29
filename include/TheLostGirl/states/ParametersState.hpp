@@ -4,6 +4,7 @@
 #include <TGUI/TGUI.hpp>
 #include <TheLostGirl/State.hpp>
 #include <TheLostGirl/LangManager.hpp>
+#include <TheLostGirl/Context.hpp>
 
 //Forward declarations
 namespace sf
@@ -16,7 +17,10 @@ class StateStack;
 struct ParametersChange;
 
 /// State that allow the user to change settings of the game.
-class ParametersState : public State
+class ParametersState : public State, private ContextAccessor<ContextElement::EventManager,
+                                                              ContextElement::Parameters,
+                                                              ContextElement::LangManager,
+                                                              ContextElement::Gui>
 {
 	public:
         /// Constructor.
@@ -84,4 +88,3 @@ class ParametersState : public State
 };
 
 #endif//PARAMETERSSTATE_HPP
-

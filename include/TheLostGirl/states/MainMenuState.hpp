@@ -4,6 +4,7 @@
 #include <memory>
 #include <TGUI/TGUI.hpp>
 #include <TheLostGirl/State.hpp>
+#include <TheLostGirl/Context.hpp>
 
 //Forward declarations
 namespace sf
@@ -16,7 +17,10 @@ class StateStack;
 struct ParametersChange;
 
 /// Cannot be more explicit.
-class MainMenuState : public State
+class MainMenuState : public State, private ContextAccessor<ContextElement::EventManager,
+                                                            ContextElement::Parameters,
+                                                            ContextElement::LangManager,
+                                                            ContextElement::Gui>
 {
 	public:
         /// Default constructor.

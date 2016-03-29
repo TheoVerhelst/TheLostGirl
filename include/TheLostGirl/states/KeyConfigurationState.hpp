@@ -4,6 +4,7 @@
 #include <TGUI/TGUI.hpp>
 #include <TheLostGirl/State.hpp>
 #include <TheLostGirl/Player.hpp>
+#include <TheLostGirl/Context.hpp>
 
 //Forward declarations
 namespace sf
@@ -16,7 +17,10 @@ class StateStack;
 
 /// State that effectively play the game.
 /// The game become really interesting here.
-class KeyConfigurationState : public State
+class KeyConfigurationState : public State, private ContextAccessor<ContextElement::Parameters,
+                                                                    ContextElement::Gui,
+                                                                    ContextElement::LangManager,
+                                                                    ContextElement::Player>
 {
 	public:
         /// Default constructor.
@@ -80,4 +84,3 @@ class KeyConfigurationState : public State
 };
 
 #endif//KEYCONFIGURATIONSTATE_HPP
-

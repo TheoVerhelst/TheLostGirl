@@ -14,5 +14,5 @@ InventoryOpener::~InventoryOpener()
 
 void InventoryOpener::operator()(entityx::Entity entity) const
 {
-	Context::stateStack->pushState<OpenInventoryState>(entity);
+	getStateStack().pushState<OpenInventoryState>(entity);
 }

@@ -3,6 +3,7 @@
 
 #include <TGUI/TGUI.hpp>
 #include <TheLostGirl/State.hpp>
+#include <TheLostGirl/Context.hpp>
 
 //Forward declarations
 namespace sf
@@ -16,7 +17,10 @@ class LoadingStateChange;
 struct ParametersChange;
 
 /// State that display the current state of the loading.
-class LoadingState : public State
+class LoadingState : public State, private ContextAccessor<ContextElement::EventManager,
+                                                           ContextElement::Parameters,
+                                                           ContextElement::LangManager,
+                                                           ContextElement::Gui>
 {
 	public:
         /// Constructor.

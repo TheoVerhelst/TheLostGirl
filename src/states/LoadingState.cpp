@@ -11,11 +11,11 @@
 LoadingState::LoadingState():
 	m_sentenceTimer{0.f}
 {
-	Context::eventManager->subscribe<LoadingStateChange>(*this);
-	Context::eventManager->subscribe<ParametersChange>(*this);
-	std::ifstream fileStream(Context::parameters->resourcesPath + "hints");
+	getEventManager().subscribe<LoadingStateChange>(*this);
+	getEventManager().subscribe<ParametersChange>(*this);
+	std::ifstream fileStream(getParameters().resourcesPath + "hints");
 	if(not fileStream.is_open())//If failed to open the file
-		throw std::runtime_error("Unable to open hints file: \"" + Context::parameters->resourcesPath + "hints\"");
+		throw std::runtime_error("Unable to open hints file: \"" + getParameters().resourcesPath + "hints\"");
 	else
 	{
 		std::string line;
@@ -27,7 +27,7 @@ LoadingState::LoadingState():
 		}
 		catch(std::invalid_argument& e)
 		{
-			std::cerr << "Unable to convert content of line 0 to number in file \"" + Context::parameters->resourcesPath + "lang/hints\"\n";
+			std::cerr << "Unable to convert content of line 0 to number in file \"" + getParameters().resourcesPath + "lang/hints\"\n";
 			throw;//Rethrow the exception
 		}
 
@@ -42,7 +42,7 @@ LoadingState::LoadingState():
 
 		using tgui::bindWidth;
 		using tgui::bindHeight;
-		tgui::Gui& gui(*Context::gui);
+		tgui::Gui& gui(getGui());
 
 		m_background = std::make_shared<tgui::Panel>();
 		m_background->setPosition(bindWidth(gui) * 0.f, bindHeight(gui) * 0.3f);
@@ -50,13 +50,13 @@ LoadingState::LoadingState():
 		m_background->setBackgroundColor(sf::Color(255, 255, 255, 100));
 		gui.add(m_background);
 
-		m_sentenceLabel = Context::parameters->guiTheme->load("Label");
+		m_sentenceLabel = getParameters().guiTheme->load("Label");
 		m_sentenceLabel->setText(m_sentence);
 		m_sentenceLabel->setTextSize(15);
 		gui.add(m_sentenceLabel);
 
-		m_hintLabel = Context::parameters->guiTheme->load("Label");
-		m_hintLabel->setText(Context::langManager->tr(line));
+		m_hintLabel = getParameters().guiTheme->load("Label");
+		m_hintLabel->setText(getLangManager().tr(line));
 		m_hintLabel->setTextSize(20);
 		//Center the label
 		m_hintLabel->setPosition((bindWidth(gui) - bindWidth(m_hintLabel))/2.f, bindHeight(gui) * 0.38f);
@@ -66,9 +66,9 @@ LoadingState::LoadingState():
 
 LoadingState::~LoadingState()
 {
-	Context::gui->remove(m_background);
-	Context::gui->remove(m_sentenceLabel);
-	Context::gui->remove(m_hintLabel);
+	getGui().remove(m_background);
+	getGui().remove(m_sentenceLabel);
+	getGui().remove(m_hintLabel);
 }
 
 void LoadingState::draw()
@@ -96,9 +96,9 @@ void LoadingState::receive(const LoadingStateChange &loadingStateChange)
 
 void LoadingState::resetTexts()
 {
-	m_sentenceLabel->setText(Context::langManager->tr(m_sentence) + L"...");
+	m_sentenceLabel->setText(getLangManager().tr(m_sentence) + L"...");
 	//Center the label
-	m_sentenceLabel->setPosition((tgui::bindWidth(*Context::gui) - tgui::bindWidth(m_sentenceLabel))/2, tgui::bindHeight(*Context::gui) * 0.5f);
+	m_sentenceLabel->setPosition((tgui::bindWidth(getGui()) - tgui::bindWidth(m_sentenceLabel))/2, tgui::bindHeight(getGui()) * 0.5f);
 }
 
 

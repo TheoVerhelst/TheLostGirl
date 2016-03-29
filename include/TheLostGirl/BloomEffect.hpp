@@ -5,9 +5,10 @@
 #include <SFML/Graphics.hpp>
 #include <TheLostGirl/PostEffect.hpp>
 #include <TheLostGirl/ResourceManager.hpp>
+#include <TheLostGirl/Context.hpp>
 
 /// Shader that apply a bloom effect on the world display.
-class BloomEffect : public PostEffect
+class BloomEffect : public PostEffect, private ContextAccessor<ContextElement::Parameters>
 {
 	public:
 		/// Constructor.

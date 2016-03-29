@@ -4,6 +4,7 @@
 #include <Box2D/Box2D.h>
 #include <TheLostGirl/Action.hpp>
 #include <TheLostGirl/functions.hpp>
+#include <TheLostGirl/Context.hpp>
 
 namespace entityx
 {
@@ -14,7 +15,7 @@ class b2WeldJointDef;
 class b2WeldJoint;
 
 /// Structure that move an entity to a given side.
-class Mover : public Action
+class Mover : public Action, private ContextAccessor<ContextElement::Parameters>
 {
 	public:
 		/// Constructor.
@@ -59,4 +60,3 @@ class Mover : public Action
 };
 
 #endif//MOVER_HPP
-

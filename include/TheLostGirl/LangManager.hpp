@@ -4,11 +4,12 @@
 #include <string>
 #include <map>
 #include <set>
+#include <TheLostGirl/Context.hpp>
 
 /// Language manager that translates strings.
 /// It translate a std::string in english to a std::wtring in the langage defined by setLang.
 /// If an error occurs, such as when no language is set or when no translation in found, the original string is returned.
-class LangManager
+class LangManager : private ContextAccessor<ContextElement::Parameters>
 {
 	public:
         /// Set the current lang.

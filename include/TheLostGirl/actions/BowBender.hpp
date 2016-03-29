@@ -2,6 +2,7 @@
 #define BOWBENDER_HPP
 
 #include <TheLostGirl/Action.hpp>
+#include <TheLostGirl/Context.hpp>
 
 namespace entityx
 {
@@ -12,7 +13,7 @@ namespace entityx
 /// This action does not have a boolean parameter indicating if the action start or stops,
 /// but must be called at every frame when the bending is active,
 /// since the angle or the power can change.
-class BowBender : public Action
+class BowBender : public Action, private ContextAccessor<ContextElement::Parameters>
 {
 	public:
 		/// Constructor.
@@ -32,4 +33,3 @@ class BowBender : public Action
 };
 
 #endif//BOWBENDER_HPP
-

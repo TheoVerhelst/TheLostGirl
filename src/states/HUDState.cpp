@@ -14,21 +14,21 @@
 HUDState::HUDState():
 	m_windIsFading{true}
 {
-	Context::eventManager->subscribe<EntityHealthChange>(*this);
-	Context::eventManager->subscribe<EntityStaminaChange>(*this);
+	getEventManager().subscribe<EntityHealthChange>(*this);
+	getEventManager().subscribe<EntityStaminaChange>(*this);
 
 	using tgui::bindWidth;
 	using tgui::bindHeight;
-	tgui::Gui& gui(*Context::gui);
+	tgui::Gui& gui(getGui());
 
 	//Load textures
-	Context::textureManager->load("wind arrow ath", Context::parameters->resourcesPath + "images/windArrowAth.png");
-	Context::textureManager->load("wind bar ath", Context::parameters->resourcesPath + "images/windBarAth.png");
+	getTextureManager().load("wind arrow ath", getParameters().resourcesPath + "images/windArrowAth.png");
+	getTextureManager().load("wind bar ath", getParameters().resourcesPath + "images/windBarAth.png");
 
 	//Create the wind bar
-	m_windStrengthSpr.setTexture(Context::textureManager->get("wind arrow ath"));
+	m_windStrengthSpr.setTexture(getTextureManager().get("wind arrow ath"));
 	m_windStrengthSpr.setPosition(120.f, 0);
-	m_windStrengthBarSpr.setTexture(Context::textureManager->get("wind bar ath"));
+	m_windStrengthBarSpr.setTexture(getTextureManager().get("wind bar ath"));
 	m_windBar = std::make_shared<tgui::Canvas>(tgui::Layout2d(sf::Vector2f(std::ceil(240.f), std::ceil(20.f))));
 	m_windBar->setPosition(bindWidth(gui) * 0.99f - bindWidth(m_windBar), bindHeight(gui) * 0.95f - bindHeight(m_windBar));
 	gui.add(m_windBar);
@@ -37,10 +37,10 @@ HUDState::HUDState():
 HUDState::~HUDState()
 {
 	for(auto& barPair : m_healthBars)
-		Context::gui->remove(barPair.second.panel);
+		getGui().remove(barPair.second.panel);
 	for(auto& barPair : m_staminaBars)
-		Context::gui->remove(barPair.second.panel);
-	Context::gui->remove(m_windBar);
+		getGui().remove(barPair.second.panel);
+	getGui().remove(m_windBar);
 }
 
 void HUDState::draw()
@@ -51,7 +51,7 @@ void HUDState::draw()
 		const auto deathComponent(barPair.first.component<DeathComponent>());
 		if(deathComponent and deathComponent->dead)
 		{
-			Context::gui->remove(barPair.second.panel);
+			getGui().remove(barPair.second.panel);
 			entitiesToRemove.push_back(barPair.first);
 		}
 	}
@@ -64,7 +64,7 @@ void HUDState::draw()
 		const auto deathComponent(barPair.first.component<DeathComponent>());
 		if(deathComponent and deathComponent->dead)
 		{
-			Context::gui->remove(barPair.second.panel);
+			getGui().remove(barPair.second.panel);
 			entitiesToRemove.push_back(barPair.first);
 		}
 	}
@@ -80,12 +80,12 @@ void HUDState::draw()
 bool HUDState::update(sf::Time dt)
 {
 	//Get the wind strength and compute the wind ath
-	const float windStrength{cap(Context::systemManager->system<TimeSystem>()->getWindStrength()/5.f, -1.f, 1.f)};
+	const float windStrength{cap(getSystemManager().system<TimeSystem>()->getWindStrength()/5.f, -1.f, 1.f)};
 	sf::Vector2f viewPos;
-	if(Context::parameters->bloomEnabled)
-		viewPos = Context::postEffectsTexture->getView().getCenter() - Context::postEffectsTexture->getDefaultView().getCenter();
+	if(getParameters().bloomEnabled)
+		viewPos = getPostEffectsTexture().getView().getCenter() - getPostEffectsTexture().getDefaultView().getCenter();
 	else
-		viewPos = Context::window->getView().getCenter() - Context::window->getDefaultView().getCenter();
+		viewPos = getWindow().getView().getCenter() - getWindow().getDefaultView().getCenter();
 
 	for(auto& barPair : m_healthBars)
 		barPair.second.timer += dt;
@@ -164,7 +164,7 @@ void HUDState::receive(const EntityHealthChange& entityHealthChange)
 {
 	using tgui::bindWidth;
 	using tgui::bindHeight;
-	tgui::Gui& gui(*Context::gui);
+	tgui::Gui& gui(getGui());
 	entityx::Entity entity{entityHealthChange.entity};
 
 	if(not m_healthBars.count(entity))
@@ -172,15 +172,15 @@ void HUDState::receive(const EntityHealthChange& entityHealthChange)
 		Bar bar;
 		if(isPlayer(entity))
 		{
-			bar.bar = std::make_shared<tgui::Picture>(Context::parameters->resourcesPath + "images/healthAth.png");
-			bar.borders = std::make_shared<tgui::Picture>(Context::parameters->resourcesPath + "images/healthBorderAth.png");
+			bar.bar = std::make_shared<tgui::Picture>(getParameters().resourcesPath + "images/healthAth.png");
+			bar.borders = std::make_shared<tgui::Picture>(getParameters().resourcesPath + "images/healthBorderAth.png");
 			bar.panel = std::make_shared<tgui::Panel>(tgui::Layout2d(sf::Vector2f(240+1, 20+1)));
 			bar.panel->setPosition(bindWidth(gui) * 0.01f, bindHeight(gui) * 0.99f - bindHeight(bar.panel));
 		}
 		else
 		{
-			bar.bar = std::make_shared<tgui::Picture>(Context::parameters->resourcesPath + "images/entityHealthBar.png");
-			bar.borders = std::make_shared<tgui::Picture>(Context::parameters->resourcesPath + "images/entityHealthBarBorders.png");
+			bar.bar = std::make_shared<tgui::Picture>(getParameters().resourcesPath + "images/entityHealthBar.png");
+			bar.borders = std::make_shared<tgui::Picture>(getParameters().resourcesPath + "images/entityHealthBarBorders.png");
 			bar.panel = std::make_shared<tgui::Panel>(tgui::Layout2d(sf::Vector2f(100+1, 10+1)));
 		}
 		bar.panel->setBackgroundColor(sf::Color::Transparent);
@@ -206,7 +206,7 @@ void HUDState::receive(const EntityStaminaChange& entityStaminaChange)
 {
 	using tgui::bindWidth;
 	using tgui::bindHeight;
-	tgui::Gui& gui(*Context::gui);
+	tgui::Gui& gui(getGui());
 	entityx::Entity entity{entityStaminaChange.entity};
 
 	if(isPlayer(entity))
@@ -214,8 +214,8 @@ void HUDState::receive(const EntityStaminaChange& entityStaminaChange)
 		if(not m_staminaBars.count(entity))
 		{
 			Bar bar;
-			bar.bar = std::make_shared<tgui::Picture>(Context::parameters->resourcesPath + "images/staminaAth.png");
-			bar.borders = std::make_shared<tgui::Picture>(Context::parameters->resourcesPath + "images/staminaBorderAth.png");
+			bar.bar = std::make_shared<tgui::Picture>(getParameters().resourcesPath + "images/staminaAth.png");
+			bar.borders = std::make_shared<tgui::Picture>(getParameters().resourcesPath + "images/staminaBorderAth.png");
 			bar.panel = std::make_shared<tgui::Panel>(tgui::Layout2d(sf::Vector2f(240, 20+1)));
 			bar.panel->setPosition(bindWidth(gui) * 0.99f - bindWidth(bar.panel), bindHeight(gui) * 0.99f - bindHeight(bar.panel));
 			bar.panel->setBackgroundColor(sf::Color::Transparent);

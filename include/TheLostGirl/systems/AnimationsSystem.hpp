@@ -3,10 +3,14 @@
 
 #include <entityx/entityx.h>
 #include <SFML/Graphics.hpp>
+#include <TheLostGirl/Context.hpp>
 
 /// System that plays animations on entities.
 /// \see AnimationsManager
-class AnimationsSystem : public entityx::System<AnimationsSystem>
+class AnimationsSystem : public entityx::System<AnimationsSystem>, private ContextAccessor<ContextElement::Window,
+                                                                                           ContextElement::Parameters,
+                                                                                           ContextElement::PostEffectTexture,
+                                                                                           ContextElement::SystemManager>
 {
 	public:
 		/// System's update function.

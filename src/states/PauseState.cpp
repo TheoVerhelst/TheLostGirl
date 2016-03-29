@@ -12,10 +12,10 @@
 
 PauseState::PauseState()
 {
-	Context::eventManager->subscribe<ParametersChange>(*this);
+	getEventManager().subscribe<ParametersChange>(*this);
 	using tgui::bindWidth;
 	using tgui::bindHeight;
-	tgui::Gui& gui(*Context::gui);
+	tgui::Gui& gui(getGui());
 
 	m_background = std::make_shared<tgui::VerticalLayout>();
 	m_background->setPosition(bindWidth(gui) * 0.25f, bindHeight(gui) * 0.f);
@@ -28,23 +28,23 @@ PauseState::PauseState()
 	tgui::Panel::Ptr titlePanel = std::make_shared<tgui::Panel>();
 	titlePanel->setBackgroundColor(sf::Color::Transparent);
 	m_background->add(titlePanel);
-	m_pauseLabel = Context::parameters->guiTheme->load("Label");
+	m_pauseLabel = getParameters().guiTheme->load("Label");
 	titlePanel->add(m_pauseLabel);
 	m_pauseLabel->setTextSize(50);
 
 	m_background->addSpace();
 
-	m_backToGameButton = Context::parameters->guiTheme->load("Button");
+	m_backToGameButton = getParameters().guiTheme->load("Button");
 	m_backToGameButton->setTextSize(25);
 	m_backToGameButton->connect("pressed", &PauseState::backToGame, this);
 	m_background->add(m_backToGameButton);
 
-	m_goToOptionsButton = Context::parameters->guiTheme->load("Button");
+	m_goToOptionsButton = getParameters().guiTheme->load("Button");
 	m_goToOptionsButton->setTextSize(25);
 	m_goToOptionsButton->connect("pressed", [this]{m_background->hide(); requestStackPush<ParametersState>();});
 	m_background->add(m_goToOptionsButton);
 
-	m_backToMainMenuButton = Context::parameters->guiTheme->load("Button");
+	m_backToMainMenuButton = getParameters().guiTheme->load("Button");
 	m_backToMainMenuButton->setTextSize(25);
 	m_backToMainMenuButton->connect("pressed", &PauseState::backToMainMenu, this);
 	m_background->add(m_backToMainMenuButton);
@@ -56,7 +56,7 @@ PauseState::PauseState()
 
 PauseState::~PauseState()
 {
-	Context::gui->remove(m_background);
+	getGui().remove(m_background);
 }
 
 void PauseState::draw()
@@ -87,20 +87,20 @@ void PauseState::receive(const ParametersChange& parametersChange)
 void PauseState::resetTexts()
 {
 	if(m_pauseLabel)
-		m_pauseLabel->setText(Context::langManager->tr("Pause"));
+		m_pauseLabel->setText(getLangManager().tr("Pause"));
 	if(m_backToGameButton)
-		m_backToGameButton->setText(Context::langManager->tr("Back to game"));
+		m_backToGameButton->setText(getLangManager().tr("Back to game"));
 	if(m_goToOptionsButton)
-		m_goToOptionsButton->setText(Context::langManager->tr("Parameters"));
+		m_goToOptionsButton->setText(getLangManager().tr("Parameters"));
 	if(m_backToMainMenuButton)
-		m_backToMainMenuButton->setText(Context::langManager->tr("Back to main menu"));
+		m_backToMainMenuButton->setText(getLangManager().tr("Back to main menu"));
 }
 
 
 inline void PauseState::backToGame()
 {
 	requestStackPop();
-	Context::player->handleInitialInputState();
+	getPlayer().handleInitialInputState();
 }
 
 inline void PauseState::backToMainMenu()

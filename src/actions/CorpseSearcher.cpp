@@ -19,7 +19,7 @@ void CorpseSearcher::operator()(entityx::Entity entity) const
 	CorpseQueryCallback callback;
 	bodyComponent->body->GetWorld()->QueryAABB(&callback, searchBox);
 	if(callback.foundEntity.valid())
-		Context::stateStack->pushState<OpenInventoryState>(callback.foundEntity);
+		getStateStack().pushState<OpenInventoryState>(callback.foundEntity);
 }
 
 bool CorpseQueryCallback::ReportFixture(b2Fixture* fixture)

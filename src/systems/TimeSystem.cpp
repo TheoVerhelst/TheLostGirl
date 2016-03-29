@@ -2,7 +2,6 @@
 #include <SFML/System.hpp>
 #include <TheLostGirl/LangManager.hpp>
 #include <TheLostGirl/systems/TimeSystem.hpp>
-#include <TheLostGirl/Context.hpp>
 
 TimeSystem::TimeSystem():
 	m_totalTime{0.f},
@@ -81,19 +80,19 @@ std::wstring TimeSystem::seasonName() const
 	switch(months() / 4)
 	{
 		case 0:
-			return Context::langManager->tr("Snow season");
+			return getLangManager().tr("Snow season");
 			break;
 		case 1:
-			return Context::langManager->tr("Flowers season");
+			return getLangManager().tr("Flowers season");
 			break;
 		case 2:
-			return Context::langManager->tr("Fruit season");
+			return getLangManager().tr("Fruit season");
 			break;
 		case 3:
-			return Context::langManager->tr("Wind season");
+			return getLangManager().tr("Wind season");
 			break;
 		default:
-			return Context::langManager->tr("Snow season");
+			return getLangManager().tr("Snow season");
 	}
 }
 
@@ -102,31 +101,31 @@ std::wstring TimeSystem::monthName() const
 	switch(months())
 	{
 		case 0:
-			return Context::langManager->tr("snow month");
+			return getLangManager().tr("snow month");
 			break;
 		case 1:
-			return Context::langManager->tr("winds month");
+			return getLangManager().tr("winds month");
 			break;
 		case 2:
-			return Context::langManager->tr("buds month");
+			return getLangManager().tr("buds month");
 			break;
 		case 3:
-			return Context::langManager->tr("flowers month");
+			return getLangManager().tr("flowers month");
 			break;
 		case 4:
-			return Context::langManager->tr("harvests month");
+			return getLangManager().tr("harvests month");
 			break;
 		case 5:
-			return Context::langManager->tr("fruits month");
+			return getLangManager().tr("fruits month");
 			break;
 		case 6:
-			return Context::langManager->tr("mists month");
+			return getLangManager().tr("mists month");
 			break;
 		case 7:
-			return Context::langManager->tr("month of frost");
+			return getLangManager().tr("month of frost");
 			break;
 		default:
-			return Context::langManager->tr("snow month");
+			return getLangManager().tr("snow month");
 	}
 }
 
@@ -138,19 +137,19 @@ std::wstring TimeSystem::getFormatedDate() const
 	//Year name
 	output += std::to_wstring(years() + 1);
 	if(years() + 1 == 1)
-		output += Context::langManager->tr("st year, ");
+		output += getLangManager().tr("st year, ");
 	else if(years() + 1 == 2)
-		output += Context::langManager->tr("nd year, ");
+		output += getLangManager().tr("nd year, ");
 	else
-		output += Context::langManager->tr("th year, ");
+		output += getLangManager().tr("th year, ");
 	//Day name
 	output += std::to_wstring(days() + 1);
 	if(days() + 1 == 1)
-		output += Context::langManager->tr("st day of the ");
+		output += getLangManager().tr("st day of the ");
 	else if(days() + 1 == 2)
-		output += Context::langManager->tr("nd day of the ");
+		output += getLangManager().tr("nd day of the ");
 	else
-		output += Context::langManager->tr("th day of the ");
+		output += getLangManager().tr("th day of the ");
 	//Month name
 	output += monthName();
 	return output;

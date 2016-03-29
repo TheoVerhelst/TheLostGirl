@@ -3,6 +3,7 @@
 
 #include <random>
 #include <entityx/entityx.h>
+#include <TheLostGirl/Context.hpp>
 
 //Forward declarations
 namespace sf
@@ -11,7 +12,7 @@ namespace sf
 }
 
 /// System that manages the in-game date and time.
-class TimeSystem : public entityx::System<TimeSystem>
+class TimeSystem : public entityx::System<TimeSystem>, private ContextAccessor<ContextElement::LangManager>
 {
 	public:
 		/// Constructor.

@@ -4,6 +4,7 @@
 #include <queue>
 #include <entityx/entityx.h>
 #include <TheLostGirl/Command.hpp>
+#include <TheLostGirl/Context.hpp>
 
 //Forward declarations
 struct b2BodyDef;
@@ -12,7 +13,7 @@ struct b2JointDef;
 class b2Joint;
 
 /// System that do things in the pending list (create bodies, destroy joints, apply actions, ...).
-class PendingChangesSystem : public entityx::System<PendingChangesSystem>
+class PendingChangesSystem : public entityx::System<PendingChangesSystem>, private ContextAccessor<ContextElement::World>
 {
 	public:
 		/// System's update function.

@@ -2,9 +2,12 @@
 #define RENDERSYSTEM_HPP
 
 #include <entityx/entityx.h>
+#include <TheLostGirl/Context.hpp>
 
 /// System that draws all drawables entities on the screen.
-class RenderSystem : public entityx::System<RenderSystem>
+class RenderSystem : public entityx::System<RenderSystem>, private ContextAccessor<ContextElement::Window,
+                                                                                   ContextElement::Parameters,
+                                                                                   ContextElement::PostEffectTexture>
 {
 	public:
 		/// Constructor.

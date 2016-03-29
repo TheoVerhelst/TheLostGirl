@@ -13,26 +13,26 @@
 OpenInventoryState::OpenInventoryState(entityx::Entity entity) :
 	m_entity(entity)
 {
-	Context::eventManager->subscribe<ParametersChange>(*this);
+	getEventManager().subscribe<ParametersChange>(*this);
 	using tgui::bindWidth;
 	using tgui::bindHeight;
 	using tgui::bindLeft;
 	using tgui::bindTop;
-	tgui::Gui& gui(*Context::gui);
+	tgui::Gui& gui(getGui());
 
-	m_background = Context::parameters->guiTheme->load("ChildWindow");
+	m_background = getParameters().guiTheme->load("ChildWindow");
 	m_background->setPosition(bindWidth(gui) * 0.25f, bindHeight(gui) * 0.125f);
 	m_background->setSize(bindWidth(gui) * (0.5f/0.98f), bindHeight(gui) * 0.75f);//Larger background for scrolling bar
-	m_background->connect("closed", [this]{requestStackPop(); Context::player->handleInitialInputState();});
+	m_background->connect("closed", [this]{requestStackPop(); getPlayer().handleInitialInputState();});
 	gui.add(m_background);
 
-	m_entityName = Context::parameters->guiTheme->load("Label");
+	m_entityName = getParameters().guiTheme->load("Label");
 	m_entityName->setTextSize(17);
 	m_entityName->setPosition((bindWidth(m_background) - bindWidth(m_entityName)) * 0.5f, bindHeight(m_background) * 0.125f);
 	m_background->add(m_entityName);
 
 	m_displayStrings = {"List", "Grid"};
-	m_displayTab = Context::parameters->guiTheme->load("Tab");
+	m_displayTab = getParameters().guiTheme->load("Tab");
 	for(const sf::String& displayName : m_displayStrings)
 		m_displayTab->add(displayName);
 	m_displayTab->setPosition(bindWidth(m_background) - bindWidth(m_displayTab), bindHeight(m_background) * 0.23f);
@@ -42,7 +42,7 @@ OpenInventoryState::OpenInventoryState(entityx::Entity entity) :
 	m_background->add(m_displayTab);
 
 	m_categoryStrings = {"All", "Ammo", "Resources"};
-	m_categoryTab = Context::parameters->guiTheme->load("Tab");
+	m_categoryTab = getParameters().guiTheme->load("Tab");
 	for(const sf::String& categoryName : m_categoryStrings)
 		m_categoryTab->add(categoryName);
 	m_categoryTab->setPosition(0.f, bindHeight(m_background) * 0.23f);
@@ -77,7 +77,7 @@ OpenInventoryState::OpenInventoryState(entityx::Entity entity) :
 	m_listPanel->add(m_listColumnTitles.layout);
 	for(const sf::String& columnName : m_columnStrings)
 	{
-		tgui::Label::Ptr label = Context::parameters->guiTheme->load("Label");
+		tgui::Label::Ptr label = getParameters().guiTheme->load("Label");
 		label->setText(columnName);
 		label->setTextSize(20);
 		m_listColumnTitles.layout->add(label);
@@ -90,7 +90,7 @@ OpenInventoryState::OpenInventoryState(entityx::Entity entity) :
     m_listPanel->add(m_listContentLayout);
 
 	//Set scrollbars
-	m_listScrollbar = Context::parameters->guiTheme->load("Scrollbar");
+	m_listScrollbar = getParameters().guiTheme->load("Scrollbar");
 	m_listScrollbar->setPosition(bindWidth(m_listPanel) * 0.98f, 0.f);
 	m_listScrollbar->setSize(bindWidth(m_listPanel) * 0.02f, bindHeight(m_listPanel));
     m_listScrollbar->setArrowScrollAmount(30);
@@ -100,7 +100,7 @@ OpenInventoryState::OpenInventoryState(entityx::Entity entity) :
     m_listPanel->add(m_listScrollbar);
 	m_listPanel->hide();
 
-	m_gridScrollbar = Context::parameters->guiTheme->load("Scrollbar");
+	m_gridScrollbar = getParameters().guiTheme->load("Scrollbar");
 	m_gridScrollbar->setPosition(bindWidth(m_gridPanel) * 0.98f, 0.f);
 	m_gridScrollbar->setSize(bindWidth(m_gridPanel) * 0.02f, bindHeight(m_gridPanel));
     m_gridScrollbar->setArrowScrollAmount(30);
@@ -113,7 +113,7 @@ OpenInventoryState::OpenInventoryState(entityx::Entity entity) :
 
 OpenInventoryState::~OpenInventoryState()
 {
-	tgui::Gui& gui(*Context::gui);
+	tgui::Gui& gui(getGui());
 	gui.remove(m_background);
 }
 
@@ -130,7 +130,7 @@ bool OpenInventoryState::handleEvent(const sf::Event& event)
 	if(event.type == sf::Event::KeyPressed and event.key.code == sf::Keyboard::Escape)
 	{
 		requestStackPop();
-		Context::player->handleInitialInputState();
+		getPlayer().handleInitialInputState();
 	}
 	return false;
 }
@@ -147,23 +147,23 @@ void OpenInventoryState::resetTexts()
 	{
 		const auto nameComponent(m_entity.component<NameComponent>());
 		if(nameComponent)
-			m_entityName->setText(Context::langManager->tr(nameComponent->name));
+			m_entityName->setText(getLangManager().tr(nameComponent->name));
 		else
 			m_entityName->setText("");
 	}
 
 	for(std::size_t i{0}; i < m_displayTab->getTabsCount(); ++i)
-		m_displayTab->changeText(i, Context::langManager->tr(m_displayStrings[i]));
+		m_displayTab->changeText(i, getLangManager().tr(m_displayStrings[i]));
 
 	for(std::size_t i{0}; i < m_categoryTab->getTabsCount(); ++i)
-		m_categoryTab->changeText(i, Context::langManager->tr(m_categoryStrings[i]));
+		m_categoryTab->changeText(i, getLangManager().tr(m_categoryStrings[i]));
 
 	for(ItemGridWidget& itemWidget : m_gridContent)
 		if(itemWidget.caption)
-			itemWidget.caption->setText(Context::langManager->tr(itemWidget.item.component<ItemComponent>()->type));
+			itemWidget.caption->setText(getLangManager().tr(itemWidget.item.component<ItemComponent>()->type));
 
 	for(auto& labelPair : m_listColumnTitles.labels)
-		labelPair.second->setText(Context::langManager->tr(labelPair.first));
+		labelPair.second->setText(getLangManager().tr(labelPair.first));
 
 	for(ItemListWidget& itemWidget : m_listContent)
 	{
@@ -173,10 +173,10 @@ void OpenInventoryState::resetTexts()
 			it->second->setText(std::to_wstring(itemWidget.items.size()));
 		it = itemWidget.labels.find("Category");
 		if(it != itemWidget.labels.end())
-			it->second->setText(Context::langManager->tr(itemComponent->category));
+			it->second->setText(getLangManager().tr(itemComponent->category));
 		it = itemWidget.labels.find("Name");
 		if(it != itemWidget.labels.end())
-			it->second->setText(Context::langManager->tr(itemComponent->type));
+			it->second->setText(getLangManager().tr(itemComponent->type));
 		it = itemWidget.labels.find("Weight");
 		if(it != itemWidget.labels.end())
 			it->second->setText(std::to_wstring(itemComponent->weight));
@@ -240,7 +240,7 @@ void OpenInventoryState::fillContentDisplay()
 			itemWidget.layout->addSpace(0.1f);
 			for(auto& columnStr : m_columnStrings)
 			{
-				tgui::Label::Ptr label = Context::parameters->guiTheme->load("Label");
+				tgui::Label::Ptr label = getParameters().guiTheme->load("Label");
 				label->setTextSize(8);
 				itemWidget.layout->add(label);
 				itemWidget.labels.emplace(columnStr, label);
@@ -256,11 +256,11 @@ void OpenInventoryState::fillContentDisplay()
 		itemWidget.background->setSize(itemSize, itemSize);
 		itemWidget.background->setPosition(itemSize*columnCounter, itemSize*rowCounter);
 
-		itemWidget.picture = std::make_shared<tgui::Picture>(Context::parameters->resourcesPath + "images/items/" + category + "/" + type + ".png");
+		itemWidget.picture = std::make_shared<tgui::Picture>(getParameters().resourcesPath + "images/items/" + category + "/" + type + ".png");
 		itemWidget.picture->setPosition(itemSize/6.f, 0.f);
 		itemWidget.background->add(itemWidget.picture);
 
-		itemWidget.caption = Context::parameters->guiTheme->load("Label");
+		itemWidget.caption = getParameters().guiTheme->load("Label");
 		itemWidget.caption->setPosition((bindWidth(itemWidget.background) * 0.5f) - (bindWidth(itemWidget.caption) * 0.5f), itemSize/1.2f);
 		itemWidget.caption->setTextSize(8);
 		itemWidget.background->add(itemWidget.caption);

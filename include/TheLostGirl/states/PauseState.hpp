@@ -3,6 +3,7 @@
 
 #include <TGUI/TGUI.hpp>
 #include <TheLostGirl/State.hpp>
+#include <TheLostGirl/Context.hpp>
 
 //Forward declarations
 namespace sf
@@ -15,7 +16,10 @@ class StateStack;
 struct ParametersChange;
 
 /// Introduction at the launching of the game.
-class PauseState : public State
+class PauseState : public State, private ContextAccessor<ContextElement::EventManager,
+                                                         ContextElement::Parameters,
+                                                         ContextElement::LangManager,
+                                                         ContextElement::Gui>
 {
 	public:
         /// Constructor.

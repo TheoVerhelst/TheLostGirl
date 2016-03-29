@@ -4,6 +4,7 @@
 #include <Box2D/Box2D.h>
 #include <TGUI/TGUI.hpp>
 #include <TheLostGirl/StateStack.hpp>
+#include <TheLostGirl/Context.hpp>
 
 //Forward declarations
 namespace sf

@@ -2,9 +2,12 @@
 #define PHYSICSSYSTEM_HPP
 
 #include <entityx/entityx.h>
+#include <TheLostGirl/Context.hpp>
 
 /// System that updates the Box2D's world and the drawables entities.
-class PhysicsSystem : public entityx::System<PhysicsSystem>
+class PhysicsSystem : public entityx::System<PhysicsSystem>, private ContextAccessor<ContextElement::SystemManager,
+                                                                                     ContextElement::Parameters,
+                                                                                     ContextElement::World>
 {
 	public:
 		/// System's update function.

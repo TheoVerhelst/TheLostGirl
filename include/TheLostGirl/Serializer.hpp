@@ -4,6 +4,7 @@
 #include <entityx/entityx.h>
 #include <TheLostGirl/components.hpp>
 #include <TheLostGirl/SpriteSheetAnimation.hpp>
+#include <TheLostGirl/Context.hpp>
 
 //Forward declarations
 namespace Json
@@ -22,7 +23,7 @@ namespace entityx
 /// and a Json::Value. When serializing, the components of the entities
 /// in the entities map are copied to the Json::Value, and when deserializing
 /// the content of the Json::Value are created in the entities map.
-class Serializer
+class Serializer : private ContextAccessor<ContextElement::Parameters, ContextElement::TextureManager, ContextElement::World, ContextElement::ScriptsManager>
 {
 	public:
 		/// Constructor.

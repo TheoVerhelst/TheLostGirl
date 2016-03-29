@@ -2,6 +2,7 @@
 #define INVENTORYOPENER_HPP
 
 #include <TheLostGirl/Action.hpp>
+#include <TheLostGirl/Context.hpp>
 
 namespace entityx
 {
@@ -9,7 +10,7 @@ namespace entityx
 }
 
 /// Display a GUI menu that allow to open the inventory of the player.
-class InventoryOpener : public Action
+class InventoryOpener : public Action, private ContextAccessor<ContextElement::StateStack>
 {
 	public:
 		/// Default constructor.
@@ -24,4 +25,3 @@ class InventoryOpener : public Action
 };
 
 #endif//INVENTORYOPENER_HPP
-

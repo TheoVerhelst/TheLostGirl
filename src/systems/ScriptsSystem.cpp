@@ -2,7 +2,6 @@
 #include <TheLostGirl/components.hpp>
 #include <TheLostGirl/scripts/Interpreter.hpp>
 #include <TheLostGirl/ResourceManager.hpp>
-#include <TheLostGirl/Context.hpp>
 #include <TheLostGirl/systems/ScriptsSystem.hpp>
 
 void ScriptsSystem::update(entityx::EntityManager& entityManager, entityx::EventManager&, double)
@@ -12,5 +11,5 @@ void ScriptsSystem::update(entityx::EntityManager& entityManager, entityx::Event
 	for(entityx::Entity entity : entityManager.entities_with_components(scriptsComponent, deadComponent))
 		if(not deadComponent->dead)
 			for(auto& scriptName : scriptsComponent->scriptsNames)
-				Context::scriptManager->get(scriptName).interpret(entity);
+				getScriptManager().get(scriptName).interpret(entity);
 }

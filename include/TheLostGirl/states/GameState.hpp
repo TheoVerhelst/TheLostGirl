@@ -6,6 +6,7 @@
 #include <entityx/entityx.h>
 #include <TheLostGirl/State.hpp>
 #include <dist/json/json-forwards.h>
+#include <TheLostGirl/Context.hpp>
 
 //Forward declarations
 struct ParametersChange;
@@ -13,7 +14,13 @@ struct Transform;
 
 /// State that effectively play the game.
 /// The game becomes really interesting here.
-class GameState : public State
+class GameState : public State, private ContextAccessor<ContextElement::Parameters,
+                                                        ContextElement::EventManager,
+                                                        ContextElement::SystemManager,
+                                                        ContextElement::Player,
+                                                        ContextElement::EntityManager,
+                                                        ContextElement::TextureManager,
+                                                        ContextElement::World>
 {
 	public:
         /// Constructor.

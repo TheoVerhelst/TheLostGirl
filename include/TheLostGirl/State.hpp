@@ -18,7 +18,7 @@ namespace sf
 /// The State class inherits from entityx::Receiver, allowing all states to receive events from entityx.
 /// All states should at least implement a receiver function of the ParametersChange event,
 /// because if the lang change then all texts must be updated in the state.
-class State: public entityx::Receiver<State>
+class State: public entityx::Receiver<State>, private ContextAccessor<ContextElement::StateStack>
 {
 	public:
         /// Pointer typedef.
@@ -61,7 +61,7 @@ class State: public entityx::Receiver<State>
 template<typename T, typename ... Args>
 void State::requestStackPush(Args&&... args)
 {
-	Context::stateStack->pushState<T>(std::forward<Args>(args)...);
+	getStateStack().pushState<T>(std::forward<Args>(args)...);
 }
 
 #endif//STATE_HPP

@@ -5,7 +5,6 @@
 #include <TheLostGirl/events.hpp>
 #include <TheLostGirl/Command.hpp>
 #include <TheLostGirl/actions.hpp>
-#include <TheLostGirl/Context.hpp>
 #include <TheLostGirl/systems/PendingChangesSystem.hpp>
 #include <TheLostGirl/systems/StatsSystem.hpp>
 
@@ -26,7 +25,7 @@ void StatsSystem::update(entityx::EntityManager& entityManager, entityx::EventMa
 		const DeathComponent::Handle deathComponent(entity.component<DeathComponent>());
 		bool isDead{deathComponent and deathComponent->dead};
 		if(not isPlayer(entity) and healthComponent->current <= 0.f and not isDead)
-			Context::systemManager->system<PendingChangesSystem>()->commandQueue.emplace(entity, Death());
+			getSystemManager().system<PendingChangesSystem>()->commandQueue.emplace(entity, Death());
 
 		//Regen health
 		if(not isDead and healthComponent->current < healthComponent->maximum)

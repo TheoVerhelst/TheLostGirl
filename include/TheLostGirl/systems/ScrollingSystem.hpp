@@ -3,9 +3,14 @@
 
 #include <entityx/entityx.h>
 #include <SFML/Graphics.hpp>
+#include <TheLostGirl/Context.hpp>
 
 /// System that set the correct view according to the player position.
-class ScrollingSystem : public entityx::System<ScrollingSystem>
+class ScrollingSystem : public entityx::System<ScrollingSystem>, private ContextAccessor<ContextElement::Window,
+                                                                                         ContextElement::Parameters,
+                                                                                         ContextElement::PostEffectTexture,
+                                                                                         ContextElement::EntityManager,
+                                                                                         ContextElement::SystemManager>
 {
 	public:
 		/// Constructor.

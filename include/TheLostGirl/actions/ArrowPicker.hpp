@@ -4,9 +4,10 @@
 #include <Box2D/Box2D.h>
 #include <entityx/entityx.h>
 #include <TheLostGirl/Action.hpp>
+#include <TheLostGirl/Context.hpp>
 
 /// Structure that pick a sticked arrow nearby the entity.
-class ArrowPicker : public Action
+class ArrowPicker : public Action,  private ContextAccessor<ContextElement::Parameters>
 {
 	public:
 		/// Constructor.
@@ -33,4 +34,3 @@ class StickedArrowQueryCallback : public b2QueryCallback
 };
 
 #endif//ARROWPICKER_HPP
-

@@ -5,9 +5,10 @@
 #include <entityx/entityx.h>
 #include <TheLostGirl/Action.hpp>
 #include <TheLostGirl/StateStack.hpp>
+#include <TheLostGirl/Context.hpp>
 
 /// Structure that search on a corpse around the entity.
-class CorpseSearcher : public Action
+class CorpseSearcher : public Action, private ContextAccessor<ContextElement::StateStack>
 {
 	public:
 		/// Destructor.
@@ -31,4 +32,3 @@ class CorpseQueryCallback : public b2QueryCallback
 };
 
 #endif//CORPSESEARCHER_HPP
-

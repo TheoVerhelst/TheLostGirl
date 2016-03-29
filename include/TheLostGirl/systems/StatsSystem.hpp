@@ -2,9 +2,10 @@
 #define STATSSYSTEM_HPP
 
 #include <entityx/entityx.h>
+#include <TheLostGirl/Context.hpp>
 
 /// System that set the correct view according to the player position.
-class StatsSystem : public entityx::System<StatsSystem>
+class StatsSystem : public entityx::System<StatsSystem>, private ContextAccessor<ContextElement::SystemManager>
 {
 	public:
 		/// System's update function.

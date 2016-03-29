@@ -4,7 +4,6 @@
 #include <TheLostGirl/components.hpp>
 #include <TheLostGirl/Category.hpp>
 #include <TheLostGirl/Parameters.hpp>
-#include <TheLostGirl/Context.hpp>
 #include <TheLostGirl/PostEffect.hpp>
 #include <TheLostGirl/systems/RenderSystem.hpp>
 
@@ -34,9 +33,9 @@ void RenderSystem::update(entityx::EntityManager& entityManager, entityx::EventM
 	for(auto it(orderedEntities.crbegin()); it != orderedEntities.crend(); it++)
 		//Draw the entities of this plan
 		for(auto sprite : it->second)
-			if(m_postEffectSupported and Context::parameters->bloomEnabled)
-				Context::postEffectsTexture->draw(*sprite);
+			if(m_postEffectSupported and getParameters().bloomEnabled)
+				getPostEffectsTexture().draw(*sprite);
 			else
-				Context::window->draw(*sprite);
+				getWindow().draw(*sprite);
 
 }

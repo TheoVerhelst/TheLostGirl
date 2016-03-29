@@ -2,7 +2,6 @@
 #include <fstream>
 #include <exception>
 #include <boost/filesystem.hpp>
-#include <TheLostGirl/Context.hpp>
 #include <TheLostGirl/Parameters.hpp>
 #include <TheLostGirl/LangManager.hpp>
 
@@ -28,7 +27,7 @@ std::string LangManager::getDefaultLang() const
 std::set<std::string> LangManager::getAvailableLangs()
 {
 	std::set<std::string> res;
-	for(auto& directory_entry : boost::filesystem::directory_iterator(Context::parameters->resourcesPath + "lang/"))
+	for(auto& directory_entry : boost::filesystem::directory_iterator(getParameters().resourcesPath + "lang/"))
 		res.insert(directory_entry.path().filename().generic_string());
 	return res;
 }
@@ -46,8 +45,8 @@ std::wstring LangManager::tr(const std::string& entryName) const
 
 void LangManager::loadLang(const std::string& langToLoad)
 {
-	std::string sourceFilePath{Context::parameters->resourcesPath + "lang/" + m_defaultLang};
-	std::string translationFilePath{Context::parameters->resourcesPath + "lang/" + langToLoad};
+	std::string sourceFilePath{getParameters().resourcesPath + "lang/" + m_defaultLang};
+	std::string translationFilePath{getParameters().resourcesPath + "lang/" + langToLoad};
 	std::ifstream sourceFileStream;
 	std::wifstream translationFileStream;
 	m_entries.clear();

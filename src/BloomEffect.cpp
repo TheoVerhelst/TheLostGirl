@@ -1,13 +1,12 @@
-#include <TheLostGirl/Context.hpp>
 #include <TheLostGirl/Parameters.hpp>
 #include <TheLostGirl/BloomEffect.hpp>
 
 BloomEffect::BloomEffect()
 {
-	m_shaders.load("brightness pass", Context::parameters->resourcesPath + "shaders/Fullpass.vert", Context::parameters->resourcesPath + "shaders/Brightness.frag");
-	m_shaders.load("down sample pass", Context::parameters->resourcesPath + "shaders/Fullpass.vert", Context::parameters->resourcesPath + "shaders/DownSample.frag");
-	m_shaders.load("gaussian blur pass", Context::parameters->resourcesPath + "shaders/Fullpass.vert", Context::parameters->resourcesPath + "shaders/GuassianBlur.frag");
-	m_shaders.load("add pass", Context::parameters->resourcesPath + "shaders/Fullpass.vert", Context::parameters->resourcesPath + "shaders/Add.frag");
+	m_shaders.load("brightness pass", getParameters().resourcesPath + "shaders/Fullpass.vert", getParameters().resourcesPath + "shaders/Brightness.frag");
+	m_shaders.load("down sample pass", getParameters().resourcesPath + "shaders/Fullpass.vert", getParameters().resourcesPath + "shaders/DownSample.frag");
+	m_shaders.load("gaussian blur pass", getParameters().resourcesPath + "shaders/Fullpass.vert", getParameters().resourcesPath + "shaders/GuassianBlur.frag");
+	m_shaders.load("add pass", getParameters().resourcesPath + "shaders/Fullpass.vert", getParameters().resourcesPath + "shaders/Add.frag");
 }
 
 BloomEffect::~BloomEffect()

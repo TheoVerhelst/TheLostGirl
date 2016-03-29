@@ -4,6 +4,7 @@
 #include <TGUI/TGUI.hpp>
 #include <TheLostGirl/State.hpp>
 #include <TheLostGirl/components.hpp>
+#include <TheLostGirl/Context.hpp>
 
 //Forward declarations
 namespace sf
@@ -20,7 +21,11 @@ struct ParametersChange;
 
 /// State that effectively play the game.
 /// The game become really interesting here.
-class OpenInventoryState : public State
+class OpenInventoryState : public State, private ContextAccessor<ContextElement::EventManager,
+                                                                 ContextElement::Parameters,
+                                                                 ContextElement::LangManager,
+                                                                 ContextElement::Player,
+                                                                 ContextElement::Gui>
 {
 	public:
         /// Constructor.

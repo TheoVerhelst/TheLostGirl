@@ -6,6 +6,7 @@
 #include <entityx/entityx.h>
 #include <TheLostGirl/State.hpp>
 #include <TheLostGirl/HashEntity.hpp>
+#include <TheLostGirl/Context.hpp>
 
 //Forward declarations
 namespace sf
@@ -19,7 +20,13 @@ struct EntityHealthChange;
 struct EntityStaminaChange;
 
 /// State that display data about the player.
-class HUDState : public State
+class HUDState : public State, private ContextAccessor<ContextElement::Parameters,
+                                                        ContextElement::EventManager,
+                                                        ContextElement::SystemManager,
+                                                        ContextElement::TextureManager,
+                                                        ContextElement::Window,
+                                                        ContextElement::PostEffectTexture,
+                                                        ContextElement::Gui>
 {
 	public:
         /// Constructor.
