@@ -14,8 +14,8 @@ struct ContainsValue<T, Searched, FirstValue, Rest...> :
 {
 };
 
-template <typename T>
-struct ContainsValue<T, T Searched> :
+template <typename T, T Searched>
+struct ContainsValue<T, Searched> :
 	public std::false_type
 {
 };

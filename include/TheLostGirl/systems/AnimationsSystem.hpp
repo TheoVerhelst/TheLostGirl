@@ -9,7 +9,7 @@
 /// \see AnimationsManager
 class AnimationsSystem : public entityx::System<AnimationsSystem>, private ContextAccessor<ContextElement::Window,
                                                                                            ContextElement::Parameters,
-                                                                                           ContextElement::PostEffectTexture,
+                                                                                           ContextElement::PostEffectsTexture,
                                                                                            ContextElement::SystemManager>
 {
 	public:

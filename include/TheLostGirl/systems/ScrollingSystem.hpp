@@ -8,7 +8,7 @@
 /// System that set the correct view according to the player position.
 class ScrollingSystem : public entityx::System<ScrollingSystem>, private ContextAccessor<ContextElement::Window,
                                                                                          ContextElement::Parameters,
-                                                                                         ContextElement::PostEffectTexture,
+                                                                                         ContextElement::PostEffectsTexture,
                                                                                          ContextElement::EntityManager,
                                                                                          ContextElement::SystemManager>
 {

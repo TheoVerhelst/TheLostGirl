@@ -55,7 +55,7 @@ template <typename T>
 void Variant<Types...>::set(const T& value)
 {
 	//Use static_assert instead of std::enable_if because it makes clearer error message
-	static_assert(variantDetails::ContainsType<T, Types...>::value, "Invalid template parameter.");
+	static_assert(ContainsType<T, Types...>::value, "Invalid template parameter.");
 	m_holder.reset(new variantDetails::ConcreteHolder<T, Types...>(value));
 }
 
@@ -63,7 +63,7 @@ template <typename... Types>
 template <typename T>
 void Variant<Types...>::set(T&& value)
 {
-	static_assert(variantDetails::ContainsType<T, Types...>::value, "Invalid template parameter.");
+	static_assert(ContainsType<T, Types...>::value, "Invalid template parameter.");
 	m_holder.reset(new variantDetails::ConcreteHolder<T, Types...>(std::forward<T>(value)));
 }
 
@@ -78,7 +78,7 @@ template <typename... Types>
 template <typename T>
 T Variant<Types...>::get() const
 {
-	static_assert(variantDetails::ContainsType<T, Types...>::value, "Invalid template parameter.");
+	static_assert(ContainsType<T, Types...>::value, "Invalid template parameter.");
 	//Runtime error if T is not the current type, altough it is in Types...
 	if(typeid(T) != m_holder->getTypeId())
 		throw std::runtime_error(std::string("Variant<Types...>::get: bad template parameter for get: expected ")
@@ -143,4 +143,3 @@ namespace variantDetails
 		return m_value;
 	}
 }
-

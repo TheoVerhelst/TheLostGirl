@@ -12,7 +12,8 @@ struct Command;
 
 /// Player class that interact with the real player.
 /// The Player class receive all the keyboards and mouse events in the gameplay and assign every input to a specific action in the game.
-class Player : private ContextAccessor<ContextElement::SystemManager, ContextElement::Window>
+class Player : private ContextAccessor<ContextElement::SystemManager,
+                                       ContextElement::Window>
 {
 	public:
         /// Players's action.

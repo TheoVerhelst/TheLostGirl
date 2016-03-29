@@ -11,7 +11,7 @@
 #include <TheLostGirl/scripts/ScriptError.hpp>
 #include <TheLostGirl/systems/PendingChangesSystem.hpp>
 
-Data print(const std::vector<Data>& args)
+Data ScriptFunctions::print(const std::vector<Data>& args)
 {
 	std::cout << std::boolalpha;
 	for(size_t i(0); i < args.size(); ++i)
@@ -20,7 +20,7 @@ Data print(const std::vector<Data>& args)
 	return 0;
 }
 
-Data lowerThanOp(const std::vector<Data>& args)
+Data ScriptFunctions::lowerThanOp(const std::vector<Data>& args)
 {
 	const Data& lhs(args[0]), rhs(args[1]);
 	if(lhs.getTypeIndex() != rhs.getTypeIndex())
@@ -36,22 +36,22 @@ Data lowerThanOp(const std::vector<Data>& args)
 	}
 }
 
-Data greaterThanOp(const std::vector<Data>& args)
+Data ScriptFunctions::greaterThanOp(const std::vector<Data>& args)
 {
 	return lowerThanOp({args[1], args[0]});
 }
 
-Data lowerEqualOp(const std::vector<Data>& args)
+Data ScriptFunctions::lowerEqualOp(const std::vector<Data>& args)
 {
 	return notOp({greaterThanOp(args)});
 }
 
-Data greaterEqualOp(const std::vector<Data>& args)
+Data ScriptFunctions::greaterEqualOp(const std::vector<Data>& args)
 {
 	return notOp({lowerThanOp(args)});
 }
 
-Data equalOp(const std::vector<Data>& args)
+Data ScriptFunctions::equalOp(const std::vector<Data>& args)
 {
 	const Data& lhs(args[0]), rhs(args[1]);
 	if(lhs.getTypeIndex() != rhs.getTypeIndex())
@@ -74,24 +74,24 @@ Data equalOp(const std::vector<Data>& args)
 	}
 }
 
-Data notEqualOp(const std::vector<Data>& args)
+Data ScriptFunctions::notEqualOp(const std::vector<Data>& args)
 {
 	return notOp({equalOp(args)});
 }
 
-Data andOp(const std::vector<Data>& args)
+Data ScriptFunctions::andOp(const std::vector<Data>& args)
 {
 	const Data& lhs(args[0]), rhs(args[1]);
 	return lhs.get<bool>() and rhs.get<bool>();
 }
 
-Data orOp(const std::vector<Data>& args)
+Data ScriptFunctions::orOp(const std::vector<Data>& args)
 {
 	const Data& lhs(args[0]), rhs(args[1]);
 	return lhs.get<bool>() or rhs.get<bool>();
 }
 
-Data addOp(const std::vector<Data>& args)
+Data ScriptFunctions::addOp(const std::vector<Data>& args)
 {
 	const Data& lhs(args[0]), rhs(args[1]);
 	if(lhs.getTypeIndex() != rhs.getTypeIndex())
@@ -109,7 +109,7 @@ Data addOp(const std::vector<Data>& args)
 	}
 }
 
-Data substractOp(const std::vector<Data>& args)
+Data ScriptFunctions::substractOp(const std::vector<Data>& args)
 {
 	const Data& lhs(args[0]), rhs(args[1]);
 	if(lhs.getTypeIndex() != rhs.getTypeIndex())
@@ -125,7 +125,7 @@ Data substractOp(const std::vector<Data>& args)
 	}
 }
 
-Data multiplyOp(const std::vector<Data>& args)
+Data ScriptFunctions::multiplyOp(const std::vector<Data>& args)
 {
 	const Data& lhs(args[0]), rhs(args[1]);
 	if(lhs.getTypeIndex() != rhs.getTypeIndex())
@@ -141,7 +141,7 @@ Data multiplyOp(const std::vector<Data>& args)
 	}
 }
 
-Data divideOp(const std::vector<Data>& args)
+Data ScriptFunctions::divideOp(const std::vector<Data>& args)
 {
 	const Data& lhs(args[0]), rhs(args[1]);
 	if(lhs.getTypeIndex() != rhs.getTypeIndex())
@@ -159,7 +159,7 @@ Data divideOp(const std::vector<Data>& args)
 	}
 }
 
-Data moduloOp(const std::vector<Data>& args)
+Data ScriptFunctions::moduloOp(const std::vector<Data>& args)
 {
 	const Data& lhs(args[0]), rhs(args[1]);
 	if(lhs.getTypeIndex() != rhs.getTypeIndex())
@@ -179,13 +179,13 @@ Data moduloOp(const std::vector<Data>& args)
 	}
 }
 
-Data notOp(const std::vector<Data>& args)
+Data ScriptFunctions::notOp(const std::vector<Data>& args)
 {
 	Data lhs(args[0]);
 	return not lhs.get<bool>();
 }
 
-entityx::Entity nearestFoe(const std::vector<Data>& args)
+entityx::Entity ScriptFunctions::nearestFoe(const std::vector<Data>& args)
 {
 	entityx::Entity entity(args[0].get<entityx::Entity>());
 	if(not TEST(entity.valid()))
@@ -207,7 +207,7 @@ entityx::Entity nearestFoe(const std::vector<Data>& args)
 	return entityx::Entity();
 }
 
-float distanceFrom(const std::vector<Data>& args)
+float ScriptFunctions::distanceFrom(const std::vector<Data>& args)
 {
 	entityx::Entity entity(args[0].get<entityx::Entity>());
 	entityx::Entity target(args[1].get<entityx::Entity>());
@@ -260,7 +260,7 @@ float distanceFrom(const std::vector<Data>& args)
 	return 0.f;
 }
 
-Direction directionTo(const std::vector<Data>& args)
+Direction ScriptFunctions::directionTo(const std::vector<Data>& args)
 {
 	entityx::Entity entity(args[0].get<entityx::Entity>());
 	entityx::Entity target(args[1].get<entityx::Entity>());
@@ -280,7 +280,7 @@ Direction directionTo(const std::vector<Data>& args)
 	return Direction::None;
 }
 
-Direction directionOf(const std::vector<Data>& args)
+Direction ScriptFunctions::directionOf(const std::vector<Data>& args)
 {
 	entityx::Entity entity(args[0].get<entityx::Entity>());
 	if(not TEST(entity.valid()))
@@ -291,7 +291,7 @@ Direction directionOf(const std::vector<Data>& args)
 	return Direction::None;
 }
 
-int attack(const std::vector<Data>& args)
+int ScriptFunctions::attack(const std::vector<Data>& args)
 {
 	entityx::Entity entity(args[0].get<entityx::Entity>());
 	if(not TEST(entity.valid()))
@@ -300,13 +300,13 @@ int attack(const std::vector<Data>& args)
 	return 0;
 }
 
-NearestFoeQueryCallback::NearestFoeQueryCallback(entityx::Entity self):
+ScriptFunctions::NearestFoeQueryCallback::NearestFoeQueryCallback(entityx::Entity self):
 	entity(),
 	m_self(self),
 	m_distance(std::numeric_limits<float>::infinity())
 {}
 
-bool NearestFoeQueryCallback::ReportFixture(b2Fixture* fixture)
+bool ScriptFunctions::NearestFoeQueryCallback::ReportFixture(b2Fixture* fixture)
 {
 	entityx::Entity currentEntity{*static_cast<entityx::Entity*>(fixture->GetBody()->GetUserData())};
 	if(not TEST(currentEntity.valid()))
@@ -327,7 +327,7 @@ bool NearestFoeQueryCallback::ReportFixture(b2Fixture* fixture)
 	return true;
 }
 
-bool canMove(const std::vector<Data>& args)
+bool ScriptFunctions::canMove(const std::vector<Data>& args)
 {
 	const entityx::Entity entity(args[0].get<entityx::Entity>());
 	if(not TEST(entity.valid()))
@@ -335,7 +335,7 @@ bool canMove(const std::vector<Data>& args)
 	return entity.has_component<WalkComponent>();
 }
 
-int move(const std::vector<Data>& args)
+int ScriptFunctions::move(const std::vector<Data>& args)
 {
 	entityx::Entity entity(args[0].get<entityx::Entity>());
 	if(not TEST(entity.valid()))
@@ -344,7 +344,7 @@ int move(const std::vector<Data>& args)
 	return 0;
 }
 
-int stop(const std::vector<Data>& args)
+int ScriptFunctions::stop(const std::vector<Data>& args)
 {
 	entityx::Entity entity(args[0].get<entityx::Entity>());
 	if(not TEST(entity.valid()))
@@ -364,7 +364,7 @@ int stop(const std::vector<Data>& args)
 	return 0;
 }
 
-bool canJump(const std::vector<Data>& args)
+bool ScriptFunctions::canJump(const std::vector<Data>& args)
 {
 	entityx::Entity entity(args[0].get<entityx::Entity>());
 	if(not TEST(entity.valid()))
@@ -373,7 +373,7 @@ bool canJump(const std::vector<Data>& args)
 	return entity.has_component<JumpComponent>() and fallComponent and not fallComponent->inAir;
 }
 
-int jump(const std::vector<Data>& args)
+int ScriptFunctions::jump(const std::vector<Data>& args)
 {
 	if(canJump(args))
 		//Simply push a jump command on the command queue
@@ -381,7 +381,7 @@ int jump(const std::vector<Data>& args)
 	return 0;
 }
 
-bool isValid(const std::vector<Data>& args)
+bool ScriptFunctions::isValid(const std::vector<Data>& args)
 {
 	return args[0].get<entityx::Entity>().valid();
 }

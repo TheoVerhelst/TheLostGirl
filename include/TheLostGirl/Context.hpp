@@ -64,12 +64,14 @@ class Context
 {
 	public:
 		/// Constructor.
-		/// Initialize the global variable according to the given Application instance.
+		/// Initializes the global variable according to the given Application
+		/// instance.
 		/// \param application The main Application instance.
 		Context(Application& application);
 
 	private:
-		friend ContextAccessor;
+		template <ContextElement... Elements>
+		friend class ContextAccessor;
 #define MACRO_CONTEXT_ELEMENT(Type, Name, m_attribute) static Type* m_attribute;
 #include <TheLostGirl/ContextElements.inl>
 #undef MACRO_CONTEXT_ELEMENT
@@ -80,7 +82,7 @@ class Context
 template <ContextElement... Elements>                                          \
 inline Type& ContextAccessor<Elements...>::get##Name()                         \
 {                                                                              \
-	static_assert(ContainsValue<ContextElement, Name, Elements...>::value,     \
+	static_assert(ContainsValue<ContextElement, ContextElement::Name, Elements...>::value,\
 			"You have not access to this context element");                    \
 	return *Context::m_attribute;                                              \
 }

@@ -7,7 +7,8 @@
 /// Collision listener.
 /// - Handle collisions of arrows to decide if the arrow should be sticked
 /// on the other fixture.
-class ArrowHitListener : public b2ContactListener, private ContextAccessor<ContextElement::Parameter, ContextElement::SystemManager>
+class ArrowHitListener : public b2ContactListener, private ContextAccessor<ContextElement::Parameters,
+                                                                           ContextElement::SystemManager>
 {
 	public:
 		/// This is called after a contact is updated.

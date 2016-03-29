@@ -26,8 +26,8 @@ Application::Application(bool debugMode):
 	handleResize();
 	registerSystems();
 	m_window.setKeyRepeatEnabled(false);//Desactive the key repeating
-	m_fontManager.load("menu", getParameters().resourcesPath + "fonts/euphorigenic.ttf");
-	m_fontManager.load("debug", getParameters().resourcesPath + "fonts/FreeMonoBold.ttf");
+	m_fontManager.load("menu", m_parameters.resourcesPath + "fonts/euphorigenic.ttf");
+	m_fontManager.load("debug", m_parameters.resourcesPath + "fonts/FreeMonoBold.ttf");
 	m_gui.setFont(std::make_shared<sf::Font>(m_fontManager.get("menu")));
 	m_world.SetDebugDraw(&m_debugDraw);
 	m_world.SetDestructionListener(&m_destructionListener);
