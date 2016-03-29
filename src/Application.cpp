@@ -9,6 +9,7 @@
 #include <TheLostGirl/Application.hpp>
 
 Application::Application(bool debugMode):
+	m_context{*this},
 	m_window{{static_cast<unsigned int>(m_parameters.defaultViewSize.x),
 			static_cast<unsigned int>(m_parameters.defaultViewSize.y)},
 			"The Lost Girl"},
@@ -16,7 +17,6 @@ Application::Application(bool debugMode):
 	m_entityManager{m_eventManager},
 	m_systemManager{m_entityManager, m_eventManager},
 	m_world{m_parameters.gravity},
-	m_context{*this},
 	m_FPSRefreshRate{sf::seconds(1.f/20.f)},
 	m_frameTime{sf::seconds(1.f/60.f)}
 {

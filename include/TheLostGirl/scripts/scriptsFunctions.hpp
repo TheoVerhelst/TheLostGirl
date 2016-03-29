@@ -5,10 +5,11 @@
 #include <Box2D/Box2D.h>
 #include <entityx/entityx.h>
 #include <TheLostGirl/scripts/Interpreter.hpp>
+#include <TheLostGirl/Context.hpp>
 
-/// Class that contai
-class ScriptFunctions : public ContextAccessor<ContextElement::Parameters,
-                                               ContextElement::SystemManager>
+/// Class that contains all functions that are available in scripts, as static
+/// methods.
+class ScriptFunctions
 {
 	public:
 		/// Implements the < operator in scripts between two variables.
@@ -90,8 +91,8 @@ class ScriptFunctions : public ContextAccessor<ContextElement::Parameters,
 
 		//Foe handling
 
-		/// Find the entity that is a foe and that is the nearest of the first argument, usually self.
-		/// First argument must be a valid entity.
+		/// Find the entity that is a foe and that is the nearest of the first
+		/// argument, usually self. First argument must be a valid entity.
 		/// \param args Entity that is searching for ennemies.
 		/// \return The nearest entity if found, Entity() otherwise.
 		static entityx::Entity nearestFoe(const std::vector<Data>& args);
@@ -102,14 +103,17 @@ class ScriptFunctions : public ContextAccessor<ContextElement::Parameters,
 		/// \return The distance.
 		static float distanceFrom(const std::vector<Data>& args);
 
-		/// Compute the direction that the first entity must have to look directly to the second entity.
-		/// Both argument must be valid entities, and must have a body component and transform component.
+		/// Compute the direction that the first entity must have to look
+		/// directly to the second entity. Both argument must be valid entities,
+		/// and must have a body component and transform component.
 		/// \param args The two entities.
-		/// \return The integer value of the variable "left" or "right" available in scripts.
+		/// \return The integer value of the variable "left" or "right"
+		/// available in scripts.
 		static Direction directionTo(const std::vector<Data>& args);
 
 		/// Return the direction that has an entity.
-		/// First argument must be a valid entity, and have a direction component.
+		/// First argument must be a valid entity, and have a direction
+		/// component.
 		/// \param args The entity.
 		/// \return The direction of the entity.
 		static Direction directionOf(const std::vector<Data>& args);
@@ -154,6 +158,10 @@ class ScriptFunctions : public ContextAccessor<ContextElement::Parameters,
 		static bool isValid(const std::vector<Data>& args);
 
 	private:
+		/// Context type of this class.
+		typedef ContextAccessor<ContextElement::Parameters,
+                                ContextElement::SystemManager> Context;
+
 		/// Callback to find the nearest ennemy of an entity.
 		class NearestFoeQueryCallback : public b2QueryCallback
 		{
@@ -170,8 +178,8 @@ class ScriptFunctions : public ContextAccessor<ContextElement::Parameters,
 				entityx::Entity entity;///< The nearest entity.
 
 			private:
-				entityx::Entity m_self;       ///< Entity that is searching for ennemies.
-				float m_distance;             ///< The shortest distance found.
+				entityx::Entity m_self;///< Entity that is searching for ennemies.
+				float m_distance;      ///< The shortest distance found.
 		};
 };
 

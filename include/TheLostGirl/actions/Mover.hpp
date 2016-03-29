@@ -15,7 +15,7 @@ class b2WeldJointDef;
 class b2WeldJoint;
 
 /// Structure that move an entity to a given side.
-class Mover : public Action, private ContextAccessor<ContextElement::Parameters>
+class Mover : public Action
 {
 	public:
 		/// Constructor.
@@ -34,6 +34,9 @@ class Mover : public Action, private ContextAccessor<ContextElement::Parameters>
 		bool start;         ///< True if the movement starts, false if it stops.
 
 	private:
+		/// Context type of this class.
+		typedef ContextAccessor<ContextElement::Parameters> Context;
+
 		/// Flip an entity.
 		/// \param entity The entity to flip.
 		void flip(entityx::Entity entity) const;

@@ -16,10 +16,7 @@ class StateStack;
 struct ParametersChange;
 
 /// Introduction at the launching of the game.
-class PauseState : public State, private ContextAccessor<ContextElement::EventManager,
-                                                         ContextElement::Parameters,
-                                                         ContextElement::LangManager,
-                                                         ContextElement::Gui>
+class PauseState : public State
 {
 	public:
         /// Constructor.
@@ -50,6 +47,12 @@ class PauseState : public State, private ContextAccessor<ContextElement::EventMa
 		void receive(const ParametersChange& parametersChange);
 
 	private:
+		/// Context type of this class.
+		typedef ContextAccessor<ContextElement::EventManager,
+                                ContextElement::Parameters,
+                                ContextElement::LangManager,
+                                ContextElement::Gui> Context;
+
 		/// Return to the GameState state and delete this one.
 		inline void backToGame();
 

@@ -7,7 +7,7 @@
 #include <TheLostGirl/Context.hpp>
 
 /// Structure that pick a sticked arrow nearby the entity.
-class ArrowPicker : public Action,  private ContextAccessor<ContextElement::Parameters>
+class ArrowPicker : public Action
 {
 	public:
 		/// Constructor.
@@ -19,6 +19,10 @@ class ArrowPicker : public Action,  private ContextAccessor<ContextElement::Para
 		/// Overload of the () operator.
 		/// \param entity Entity that pick up an arrow.
 		virtual void operator()(entityx::Entity entity) const override;
+
+	private:
+		/// Context type of this class.
+		typedef ContextAccessor<ContextElement::Parameters> Context;
 };
 
 /// AABB query callback that indicate if a sticked arrow is found into the AABB.

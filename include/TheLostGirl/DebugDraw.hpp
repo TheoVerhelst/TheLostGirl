@@ -16,11 +16,7 @@ struct Parameters;
 /// Class that draw all the Box2D entities.
 /// Set it as default debug drawer to the b2World,
 /// and it will draw fixtures, bodies and so on at each call of b2World::drawDebugData.
-class DebugDraw : public b2Draw, private ContextAccessor<ContextElement::Parameters,
-                                                         ContextElement::Gui,
-                                                         ContextElement::PostEffectsTexture,
-                                                         ContextElement::EntityManager,
-                                                         ContextElement::Window>
+class DebugDraw : public b2Draw
 {
 	public:
 		/// Default constructor.
@@ -76,6 +72,12 @@ class DebugDraw : public b2Draw, private ContextAccessor<ContextElement::Paramet
 		void setFont(std::shared_ptr<sf::Font> font);
 
 	private:
+		/// Context type of this class.
+		typedef ContextAccessor<ContextElement::Parameters,
+                                ContextElement::Gui,
+                                ContextElement::PostEffectsTexture,
+                                ContextElement::EntityManager,
+                                ContextElement::Window> Context;
 
 		/// Flush the output on std::cout and std::cerr to the console
 		void flush();

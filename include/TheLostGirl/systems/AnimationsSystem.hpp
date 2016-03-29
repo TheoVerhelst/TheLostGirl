@@ -7,10 +7,7 @@
 
 /// System that plays animations on entities.
 /// \see AnimationsManager
-class AnimationsSystem : public entityx::System<AnimationsSystem>, private ContextAccessor<ContextElement::Window,
-                                                                                           ContextElement::Parameters,
-                                                                                           ContextElement::PostEffectsTexture,
-                                                                                           ContextElement::SystemManager>
+class AnimationsSystem : public entityx::System<AnimationsSystem>
 {
 	public:
 		/// System's update function.
@@ -24,6 +21,12 @@ class AnimationsSystem : public entityx::System<AnimationsSystem>, private Conte
 		void setTimeSpeed(float timeSpeed);
 
 	private:
+		/// Context type of this class.
+		typedef ContextAccessor<ContextElement::Window,
+                                ContextElement::Parameters,
+                                ContextElement::PostEffectsTexture,
+                                ContextElement::SystemManager> Context;
+
 		float m_timeSpeed = 1.f;///< Current speed of the time.
 };
 

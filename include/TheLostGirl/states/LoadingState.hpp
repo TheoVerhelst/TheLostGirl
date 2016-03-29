@@ -17,10 +17,7 @@ class LoadingStateChange;
 struct ParametersChange;
 
 /// State that display the current state of the loading.
-class LoadingState : public State, private ContextAccessor<ContextElement::EventManager,
-                                                           ContextElement::Parameters,
-                                                           ContextElement::LangManager,
-                                                           ContextElement::Gui>
+class LoadingState : public State
 {
 	public:
         /// Constructor.
@@ -54,6 +51,12 @@ class LoadingState : public State, private ContextAccessor<ContextElement::Event
 		void receive(const ParametersChange& parametersChange);
 
 	private:
+		/// Context type of this class.
+		typedef ContextAccessor<ContextElement::EventManager,
+                                ContextElement::Parameters,
+                                ContextElement::LangManager,
+                                ContextElement::Gui> Context;
+
 		/// Reset all texts in the buttons and other widgets.
 		void resetTexts();
 

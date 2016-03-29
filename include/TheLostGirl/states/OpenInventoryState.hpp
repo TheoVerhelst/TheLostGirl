@@ -21,11 +21,7 @@ struct ParametersChange;
 
 /// State that effectively play the game.
 /// The game become really interesting here.
-class OpenInventoryState : public State, private ContextAccessor<ContextElement::EventManager,
-                                                                 ContextElement::Parameters,
-                                                                 ContextElement::LangManager,
-                                                                 ContextElement::Player,
-                                                                 ContextElement::Gui>
+class OpenInventoryState : public State
 {
 	public:
         /// Constructor.
@@ -57,6 +53,13 @@ class OpenInventoryState : public State, private ContextAccessor<ContextElement:
 		void receive(const ParametersChange& parametersChange);
 
 	private:
+		/// Context type of this class.
+		typedef ContextAccessor<ContextElement::EventManager,
+                                ContextElement::Parameters,
+                                ContextElement::LangManager,
+                                ContextElement::Player,
+                                ContextElement::Gui> Context;
+
 		/// Reset all texts in the buttons and other widgets.
 		void resetTexts();
 

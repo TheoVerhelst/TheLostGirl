@@ -13,7 +13,7 @@ namespace entityx
 /// This action does not have a boolean parameter indicating if the action start or stops,
 /// but must be called at every frame when the bending is active,
 /// since the angle or the power can change.
-class BowBender : public Action, private ContextAccessor<ContextElement::Parameters>
+class BowBender : public Action
 {
 	public:
 		/// Constructor.
@@ -30,6 +30,10 @@ class BowBender : public Action, private ContextAccessor<ContextElement::Paramet
 
 		float angle;///< The angle of the bending.
 		float power;///< The power of the bending.
+
+	private:
+		/// Context type of this class.
+		typedef ContextAccessor<ContextElement::Parameters> Context;
 };
 
 #endif//BOWBENDER_HPP

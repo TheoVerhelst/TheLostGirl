@@ -5,9 +5,7 @@
 #include <TheLostGirl/Context.hpp>
 
 /// System that draws all drawables entities on the screen.
-class RenderSystem : public entityx::System<RenderSystem>, private ContextAccessor<ContextElement::Window,
-                                                                                   ContextElement::Parameters,
-                                                                                   ContextElement::PostEffectsTexture>
+class RenderSystem : public entityx::System<RenderSystem>
 {
 	public:
 		/// Constructor.
@@ -20,6 +18,11 @@ class RenderSystem : public entityx::System<RenderSystem>, private ContextAccess
 		void update(entityx::EntityManager &es, entityx::EventManager &events, double dt) override;
 
 	private:
+		/// Context type of this class.
+		typedef ContextAccessor<ContextElement::Window,
+		                        ContextElement::Parameters,
+		                        ContextElement::PostEffectsTexture> Context;
+
 		const bool m_postEffectSupported;  ///< Indicates if post effects are supported (avoid useless calls of PostEffect::isSupported())
 };
 

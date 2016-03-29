@@ -8,7 +8,7 @@
 #include <TheLostGirl/Context.hpp>
 
 /// Structure that search on a corpse around the entity.
-class CorpseSearcher : public Action, private ContextAccessor<ContextElement::StateStack>
+class CorpseSearcher : public Action
 {
 	public:
 		/// Destructor.
@@ -17,6 +17,10 @@ class CorpseSearcher : public Action, private ContextAccessor<ContextElement::St
 		/// Overload of the () operator.
 		/// \param entity Entity that search in corpses.
 		virtual void operator()(entityx::Entity entity) const override;
+
+	private:
+		/// Context type of this class.
+		typedef ContextAccessor<ContextElement::StateStack> Context;
 };
 
 /// AABB query callback that indicate if a corpse is found into the AABB.

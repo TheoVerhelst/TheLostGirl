@@ -13,7 +13,7 @@ struct b2JointDef;
 class b2Joint;
 
 /// System that do things in the pending list (create bodies, destroy joints, apply actions, ...).
-class PendingChangesSystem : public entityx::System<PendingChangesSystem>, private ContextAccessor<ContextElement::World>
+class PendingChangesSystem : public entityx::System<PendingChangesSystem>
 {
 	public:
 		/// System's update function.
@@ -27,6 +27,10 @@ class PendingChangesSystem : public entityx::System<PendingChangesSystem>, priva
 		std::queue<b2Body*> bodiesToDestroy;   ///< List of all bodies that need to be destroyed.
 		std::queue<b2JointDef*> jointsToCreate;///< List of all joints that need to be created.
 		std::queue<b2Joint*> jointsToDestroy;  ///< List of all joints that need to be destroyed.
+
+	private:
+		/// Context type of this class.
+		typedef ContextAccessor<ContextElement::World> Context;
 };
 
 #endif//PENDINGCHANGESSYSTEM_HPP

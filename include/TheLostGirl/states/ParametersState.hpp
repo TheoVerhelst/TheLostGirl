@@ -17,10 +17,7 @@ class StateStack;
 struct ParametersChange;
 
 /// State that allow the user to change settings of the game.
-class ParametersState : public State, private ContextAccessor<ContextElement::EventManager,
-                                                              ContextElement::Parameters,
-                                                              ContextElement::LangManager,
-                                                              ContextElement::Gui>
+class ParametersState : public State
 {
 	public:
         /// Constructor.
@@ -53,6 +50,12 @@ class ParametersState : public State, private ContextAccessor<ContextElement::Ev
 		void receive(const ParametersChange& parametersChange);
 
 	private:
+		/// Context type of this class.
+		typedef ContextAccessor<ContextElement::EventManager,
+                                ContextElement::Parameters,
+                                ContextElement::LangManager,
+                                ContextElement::Gui> Context;
+
 		/// Apply the new settings.
 		void applyChanges();
 

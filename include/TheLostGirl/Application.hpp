@@ -48,6 +48,8 @@ class Application : public entityx::Receiver<Application>
 		void receive(const ParametersChange& changes);
 
 	private:
+		friend ContextImpl;
+
 		/// Various input handling.
 		void processInput();
 
@@ -70,8 +72,7 @@ class Application : public entityx::Receiver<Application>
 		/// The goal is keeping a 16:9 display ratio for the window view.
 		void handleResize();
 
-		friend Context;
-
+		ContextImpl m_context;                    ///< This member initializes the global variables of the context.
 		Parameters m_parameters;                  ///< Structure containing all the game parameters.
 		sf::RenderWindow m_window;                ///< The main window.
 		sf::RenderTexture m_postEffectsTexture;   ///< Texture for rendering post effects.
@@ -87,7 +88,6 @@ class Application : public entityx::Receiver<Application>
 		b2World m_world;                          ///< The Box2D world.
 		Player m_player;                          ///< The input manager.
 		StateStack m_stateStack;                  ///< The game state manager.
-		Context m_context;                        ///< This member initializes the global variables of the context.
 		DebugDraw m_debugDraw;                    ///< The debugging drawer.
 		DestructionListener m_destructionListener;///< The fixture/joint destruction handler.
 		ContactListener m_contactListener;        ///< The contact listener.

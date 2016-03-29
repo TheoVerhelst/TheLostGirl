@@ -20,13 +20,7 @@ struct EntityHealthChange;
 struct EntityStaminaChange;
 
 /// State that display data about the player.
-class HUDState : public State, private ContextAccessor<ContextElement::Parameters,
-                                                        ContextElement::EventManager,
-                                                        ContextElement::SystemManager,
-                                                        ContextElement::TextureManager,
-                                                        ContextElement::Window,
-                                                        ContextElement::PostEffectTexture,
-                                                        ContextElement::Gui>
+class HUDState : public State
 {
 	public:
         /// Constructor.
@@ -62,6 +56,15 @@ class HUDState : public State, private ContextAccessor<ContextElement::Parameter
 		void receive(const EntityStaminaChange& entityStaminaChange);
 
 	private:
+		/// Context type of this class.
+		typedef ContextAccessor<ContextElement::Parameters,
+                                ContextElement::EventManager,
+                                ContextElement::SystemManager,
+                                ContextElement::TextureManager,
+                                ContextElement::Window,
+                                ContextElement::PostEffectsTexture,
+                                ContextElement::Gui> Context;
+
 		/// Holds graphical data to represent a bar for each entity with a given stat.
 		/// This can be health, stamina, mana, and so on.
 		/// A fading to transparent is done when the entity's stat is full.

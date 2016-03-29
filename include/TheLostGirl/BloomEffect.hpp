@@ -8,7 +8,7 @@
 #include <TheLostGirl/Context.hpp>
 
 /// Shader that apply a bloom effect on the world display.
-class BloomEffect : public PostEffect, private ContextAccessor<ContextElement::Parameters>
+class BloomEffect : public PostEffect
 {
 	public:
 		/// Constructor.
@@ -24,6 +24,9 @@ class BloomEffect : public PostEffect, private ContextAccessor<ContextElement::P
 		virtual void apply(const sf::RenderTexture& input, sf::RenderTarget& output, const sf::RenderStates& states = sf::RenderStates::Default);
 
 	private:
+		/// Context type of this class.
+		typedef ContextAccessor<ContextElement::Parameters> Context;
+
 		/// Array that will store temporary textures.
 		typedef std::array<sf::RenderTexture, 2> RenderTextureArray;
 
@@ -58,10 +61,10 @@ class BloomEffect : public PostEffect, private ContextAccessor<ContextElement::P
 		/// \param states Various render states to add to the drawing.
 		void add(const sf::RenderTexture& source, const sf::RenderTexture& bloom, sf::RenderTarget& target, const sf::RenderStates& states = sf::RenderStates::Default);
 
-		ResourceManager<sf::Shader, std::string> m_shaders;///< The shader manager that store the source of the effects.
-		sf::RenderTexture m_brightnessTexture;             ///< First temp texture.
-		RenderTextureArray m_firstPassTextures;            ///< Second temp texture.
-		RenderTextureArray m_secondPassTextures;           ///< Third temp texture.
+		ResourceManager<sf::Shader, std::string> m_shaders;   ///< The shader manager that store the source of the effects.
+		sf::RenderTexture m_brightnessTexture;                ///< First temp texture.
+		RenderTextureArray m_firstPassTextures;               ///< Second temp texture.
+		RenderTextureArray m_secondPassTextures;              ///< Third temp texture.
 };
 
 #endif//BLOOMEFFECT_HPP

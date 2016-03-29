@@ -23,10 +23,7 @@ namespace entityx
 /// and a Json::Value. When serializing, the components of the entities
 /// in the entities map are copied to the Json::Value, and when deserializing
 /// the content of the Json::Value are created in the entities map.
-class Serializer : private ContextAccessor<ContextElement::Parameters,
-                                           ContextElement::TextureManager,
-                                           ContextElement::World,
-                                           ContextElement::ScriptsManager>
+class Serializer
 {
 	public:
 		/// Constructor.
@@ -56,6 +53,12 @@ class Serializer : private ContextAccessor<ContextElement::Parameters,
 		}
 
 	private:
+		/// Context type of this class.
+		typedef ContextAccessor<ContextElement::Parameters,
+                                ContextElement::TextureManager,
+                                ContextElement::World,
+                                ContextElement::ScriptManager> Context;
+
 		/// Serializes the dependency between two entities,
 		/// if this dependency was not already serialized.
 		/// More precisely, adds \a dependencyEntityName to

@@ -51,7 +51,7 @@ enum class ContextElement
 template <ContextElement... Elements>
 class ContextAccessor
 {
-	protected:
+	public:
 #define MACRO_CONTEXT_ELEMENT(Type, Name, m_attribute) static inline Type& get##Name();
 #include <TheLostGirl/ContextElements.inl>
 #undef MACRO_CONTEXT_ELEMENT
@@ -60,18 +60,20 @@ class ContextAccessor
 /// Class that statically holds pointers to context elements. An unique instance
 /// of this class has to be instanciated with a reference to the Application
 /// main object.
-class Context
+class ContextImpl
 {
-	public:
+	private:
+		template <ContextElement... Elements>
+		friend class ContextAccessor;
+
+		friend class Application;
+
 		/// Constructor.
 		/// Initializes the global variable according to the given Application
 		/// instance.
 		/// \param application The main Application instance.
-		Context(Application& application);
+		ContextImpl(Application& application);
 
-	private:
-		template <ContextElement... Elements>
-		friend class ContextAccessor;
 #define MACRO_CONTEXT_ELEMENT(Type, Name, m_attribute) static Type* m_attribute;
 #include <TheLostGirl/ContextElements.inl>
 #undef MACRO_CONTEXT_ELEMENT
@@ -84,7 +86,7 @@ inline Type& ContextAccessor<Elements...>::get##Name()                         \
 {                                                                              \
 	static_assert(ContainsValue<ContextElement, ContextElement::Name, Elements...>::value,\
 			"You have not access to this context element");                    \
-	return *Context::m_attribute;                                              \
+	return *ContextImpl::m_attribute;                                          \
 }
 #include <TheLostGirl/ContextElements.inl>
 #undef MACRO_CONTEXT_ELEMENT

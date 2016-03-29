@@ -14,13 +14,7 @@ struct Transform;
 
 /// State that effectively play the game.
 /// The game becomes really interesting here.
-class GameState : public State, private ContextAccessor<ContextElement::Parameters,
-                                                        ContextElement::EventManager,
-                                                        ContextElement::SystemManager,
-                                                        ContextElement::Player,
-                                                        ContextElement::EntityManager,
-                                                        ContextElement::TextureManager,
-                                                        ContextElement::World>
+class GameState : public State
 {
 	public:
         /// Constructor.
@@ -53,6 +47,15 @@ class GameState : public State, private ContextAccessor<ContextElement::Paramete
 		void receive(const ParametersChange& parametersChange);
 
 	private:
+		/// Context type of this class.
+		typedef ContextAccessor<ContextElement::Parameters,
+                                ContextElement::EventManager,
+                                ContextElement::SystemManager,
+                                ContextElement::Player,
+                                ContextElement::EntityManager,
+                                ContextElement::TextureManager,
+                                ContextElement::World> Context;
+
 		/// Structure that hold data about scene entities.
 		/// The role of this texture is to hold data that cannot easily be retrieved in the EntityManager instance.
 		struct SceneReplaces

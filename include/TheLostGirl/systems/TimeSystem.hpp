@@ -12,7 +12,7 @@ namespace sf
 }
 
 /// System that manages the in-game date and time.
-class TimeSystem : public entityx::System<TimeSystem>, private ContextAccessor<ContextElement::LangManager>
+class TimeSystem : public entityx::System<TimeSystem>
 {
 	public:
 		/// Constructor.
@@ -73,6 +73,9 @@ class TimeSystem : public entityx::System<TimeSystem>, private ContextAccessor<C
 		float getWindStrength() const;
 
 	private:
+		/// Context type of this class.
+		typedef ContextAccessor<ContextElement::LangManager> Context;
+
 		float m_totalTime;                ///< Real time spended in game, in seconds.
 		float m_windStrength;             ///< Strength of the wind, can be positive (from left to right) or negative (from right to left).
 		float m_initialWindStrength;      ///< The initial speed of the wind.

@@ -9,7 +9,7 @@
 /// Language manager that translates strings.
 /// It translate a std::string in english to a std::wtring in the langage defined by setLang.
 /// If an error occurs, such as when no language is set or when no translation in found, the original string is returned.
-class LangManager : private ContextAccessor<ContextElement::Parameters>
+class LangManager
 {
 	public:
         /// Set the current lang.
@@ -40,6 +40,9 @@ class LangManager : private ContextAccessor<ContextElement::Parameters>
 		std::wstring tr(const std::string& entryName) const;
 
 	private:
+		/// Context type of this class.
+		typedef ContextAccessor<ContextElement::Parameters> Context;
+
 		/// Load the data related to the given lang.
 		/// \param langToLoad Lang to load.
 		void loadLang(const std::string& langToLoad);

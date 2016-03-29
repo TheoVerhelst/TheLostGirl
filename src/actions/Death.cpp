@@ -46,5 +46,5 @@ void Death::operator()(entityx::Entity entity) const
 	else
 		std::cerr << "An entity dead but has not inventory." << std::endl;
 	//Send a stop command
-	stop({entity});
+	ScriptFunctions::stop({entity});
 }

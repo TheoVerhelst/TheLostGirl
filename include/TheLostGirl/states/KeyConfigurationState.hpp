@@ -17,10 +17,7 @@ class StateStack;
 
 /// State that effectively play the game.
 /// The game become really interesting here.
-class KeyConfigurationState : public State, private ContextAccessor<ContextElement::Parameters,
-                                                                    ContextElement::Gui,
-                                                                    ContextElement::LangManager,
-                                                                    ContextElement::Player>
+class KeyConfigurationState : public State
 {
 	public:
         /// Default constructor.
@@ -47,6 +44,12 @@ class KeyConfigurationState : public State, private ContextAccessor<ContextEleme
 		virtual bool handleEvent(const sf::Event& event) override;
 
 	private:
+		/// Context type of this class.
+		typedef ContextAccessor<ContextElement::EventManager,
+                                ContextElement::Parameters,
+                                ContextElement::LangManager,
+                                ContextElement::Gui> Context;
+
 		/// Reset all texts in the buttons and other widgets.
 		void resetTexts();
 

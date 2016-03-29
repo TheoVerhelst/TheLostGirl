@@ -18,7 +18,7 @@ namespace sf
 /// The State class inherits from entityx::Receiver, allowing all states to receive events from entityx.
 /// All states should at least implement a receiver function of the ParametersChange event,
 /// because if the lang change then all texts must be updated in the state.
-class State: public entityx::Receiver<State>, private ContextAccessor<ContextElement::StateStack>
+class State: public entityx::Receiver<State>
 {
 	public:
         /// Pointer typedef.
@@ -56,6 +56,10 @@ class State: public entityx::Receiver<State>, private ContextAccessor<ContextEle
 
 		/// Delete all the states as soon as possible.
 		void requestStateClear();
+
+	private:
+		/// Context type of this class.
+		typedef ContextAccessor<ContextElement::StateStack> Context;
 };
 
 template<typename T, typename ... Args>

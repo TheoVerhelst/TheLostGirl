@@ -17,10 +17,7 @@ class StateStack;
 struct ParametersChange;
 
 /// Cannot be more explicit.
-class MainMenuState : public State, private ContextAccessor<ContextElement::EventManager,
-                                                            ContextElement::Parameters,
-                                                            ContextElement::LangManager,
-                                                            ContextElement::Gui>
+class MainMenuState : public State
 {
 	public:
         /// Default constructor.
@@ -52,6 +49,12 @@ class MainMenuState : public State, private ContextAccessor<ContextElement::Even
 		void receive(const ParametersChange& parametersChange);
 
 	private:
+		/// Context type of this class.
+		typedef ContextAccessor<ContextElement::EventManager,
+                                ContextElement::Parameters,
+                                ContextElement::LangManager,
+                                ContextElement::Gui> Context;
+
 		/// Play the game (usually on press of the play button).
 		void playGame();
 

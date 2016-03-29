@@ -7,8 +7,7 @@
 /// Collision listener.
 /// - Handle collisions of arrows to decide if the arrow should be sticked
 /// on the other fixture.
-class ArrowHitListener : public b2ContactListener, private ContextAccessor<ContextElement::Parameters,
-                                                                           ContextElement::SystemManager>
+class ArrowHitListener : public b2ContactListener
 {
 	public:
 		/// This is called after a contact is updated.
@@ -33,6 +32,10 @@ class ArrowHitListener : public b2ContactListener, private ContextAccessor<Conte
 		/// \param contact Structure containing data about the contact.
 		/// \param impulse Resulting impulse.
 		virtual void PostSolve(b2Contact* contact, const b2ContactImpulse* impulse) override;
+
+	private:
+		/// Context type of this class.
+		typedef ContextAccessor<ContextElement::Parameters, ContextElement::SystemManager> Context;
 };
 
 #endif//ARROWHITLISTENER_HPP

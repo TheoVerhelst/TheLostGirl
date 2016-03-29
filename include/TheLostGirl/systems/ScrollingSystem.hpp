@@ -6,11 +6,7 @@
 #include <TheLostGirl/Context.hpp>
 
 /// System that set the correct view according to the player position.
-class ScrollingSystem : public entityx::System<ScrollingSystem>, private ContextAccessor<ContextElement::Window,
-                                                                                         ContextElement::Parameters,
-                                                                                         ContextElement::PostEffectsTexture,
-                                                                                         ContextElement::EntityManager,
-                                                                                         ContextElement::SystemManager>
+class ScrollingSystem : public entityx::System<ScrollingSystem>
 {
 	public:
 		/// Constructor.
@@ -32,6 +28,13 @@ class ScrollingSystem : public entityx::System<ScrollingSystem>, private Context
 		void update(entityx::EntityManager &es, entityx::EventManager &events, double dt) override;
 
 	private:
+		/// Context type of this class.
+		typedef ContextAccessor<ContextElement::Window,
+                                ContextElement::Parameters,
+                                ContextElement::PostEffectsTexture,
+                                ContextElement::EntityManager,
+                                ContextElement::SystemManager> Context;
+
 		entityx::Entity m_player; ///< The player entity, it is fulfilled with searchPlayer().
 		sf::FloatRect m_levelRect;///< Rectangle defining the level bounds.
 		float m_referencePlan;    ///< Number of the plan where actors evolute.
