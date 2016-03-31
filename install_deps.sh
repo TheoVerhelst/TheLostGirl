@@ -7,7 +7,7 @@ function install_github()
 	install_box2d=$3
 
 	wget https://github.com/$username/$repo_name/archive/master.zip
-	unzip master.zip
+	unzip -qq master.zip
 	rm master.zip
 	if [ $install_box2d = "true" ]
 	then
@@ -28,8 +28,7 @@ install_github erincatto Box2D "true"
 
 # Install Boost from sources
 wget http://downloads.sourceforge.net/project/boost/boost/1.60.0/boost_1_60_0.zip
-unzip boost_1_60_0.zip
+unzip -qq boost_1_60_0.zip
 cd boost_1_60_0
 ./bootstrap.sh --with-libraries=filesystem,system,test
 sudo ./b2 install
-
