@@ -12,6 +12,9 @@ addons:
             - g++-5
             - gcc-5
             - libboost-dev
+            - libboost-system-dev
+            - libboost-filesystem-dev
+            - libboost-test-dev
             - libfreetype6-dev
             - libjpeg-dev
             - libx11-dev
