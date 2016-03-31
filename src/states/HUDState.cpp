@@ -48,7 +48,7 @@ void HUDState::draw()
 	std::list<entityx::Entity> entitiesToRemove;
 	for(auto& barPair : m_healthBars)
 	{
-		const auto deathComponent(barPair.first.component<DeathComponent>());
+		const auto deathComponent(barPair.first.component<const DeathComponent>());
 		if(deathComponent and deathComponent->dead)
 		{
 			Context::getGui().remove(barPair.second.panel);
@@ -61,7 +61,7 @@ void HUDState::draw()
 	entitiesToRemove.clear();
 	for(auto& barPair : m_staminaBars)
 	{
-		const auto deathComponent(barPair.first.component<DeathComponent>());
+		const auto deathComponent(barPair.first.component<const DeathComponent>());
 		if(deathComponent and deathComponent->dead)
 		{
 			Context::getGui().remove(barPair.second.panel);
@@ -134,7 +134,7 @@ bool HUDState::update(sf::Time dt)
 			const unsigned char alpha{(unsigned char)(765.f - time*255.f)};
 			barPair.second.panel->setOpacity(alpha);
 		}
-		const auto transformComponent(barPair.first.component<TransformComponent>());
+		const auto transformComponent(barPair.first.component<const TransformComponent>());
 		if(transformComponent and not isPlayer(barPair.first))
 		{
 			sf::Vector2f position(transformComponent->transform.x, transformComponent->transform.y);
