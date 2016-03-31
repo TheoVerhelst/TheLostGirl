@@ -37,5 +37,12 @@ before_install:
 before_script:
     - ./install_deps.sh
 
+script:
+    - mkdir build
+    - cd build
+    - cmake ..
+    - make
+    - ./TheLostGirlTests
+
 after_success:
     - codecov
