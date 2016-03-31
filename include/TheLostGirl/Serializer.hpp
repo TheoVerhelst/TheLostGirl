@@ -14,7 +14,7 @@ namespace Json
 
 namespace entityx
 {
-	template <typename C>
+	template <typename C, typename EM>
 	class ComponentHandle;
 }
 
