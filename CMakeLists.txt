@@ -13,7 +13,7 @@ endmacro()
 set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake/Modules/")
 
 #Dependencies finding
-find_package(Boost 1.57 COMPONENTS system filesystem REQUIRED)
+find_package(Boost 1.46 COMPONENTS system filesystem REQUIRED)
 find_package(SFML 2.3 COMPONENTS system window graphics audio REQUIRED)
 find_package(TGUI 0.7 REQUIRED)
 find_package(Box2D REQUIRED)
