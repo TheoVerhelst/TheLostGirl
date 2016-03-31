@@ -29,9 +29,9 @@ GameState::GameState(std::string file):
 	m_savesDirectoryPath{"saves/"},
 	m_numberOfPlans{1},
 	m_referencePlan{0.f},
-	m_levelRect{{0.f, 0.f}, ContextAccessor<ContextElement::Parameters, ContextElement::EventManager, ContextElement::SystemManager, ContextElement::Player, ContextElement::EntityManager, ContextElement::TextureManager, ContextElement::World>::getParameters().defaultViewSize}
+	m_levelRect{{0.f, 0.f}, Context::getParameters().defaultViewSize}
 {
-	ContextAccessor<ContextElement::Parameters, ContextElement::EventManager, ContextElement::SystemManager, ContextElement::Player, ContextElement::EntityManager, ContextElement::TextureManager, ContextElement::World>::getEventManager().subscribe<ParametersChange>(*this);
+	Context::getEventManager().subscribe<ParametersChange>(*this);
 	m_threadLoad = std::thread(&GameState::initWorld, this, file);
 }
 
@@ -47,21 +47,21 @@ void GameState::draw()
 {
 	if(not m_loading)
 	{
-		ContextAccessor<ContextElement::Parameters, ContextElement::EventManager, ContextElement::SystemManager, ContextElement::Player, ContextElement::EntityManager, ContextElement::TextureManager, ContextElement::World>::getSystemManager().update<RenderSystem>(0.f);
+		Context::getSystemManager().update<RenderSystem>(0.f);
 		//The drag and drop system draw a line on the screen, so we have to update it here
-		ContextAccessor<ContextElement::Parameters, ContextElement::EventManager, ContextElement::SystemManager, ContextElement::Player, ContextElement::EntityManager, ContextElement::TextureManager, ContextElement::World>::getSystemManager().update<DragAndDropSystem>(0.f);
+		Context::getSystemManager().update<DragAndDropSystem>(0.f);
 	}
 }
 
 bool GameState::update(sf::Time elapsedTime)
 {
-	ContextAccessor<ContextElement::Parameters, ContextElement::EventManager, ContextElement::SystemManager, ContextElement::Player, ContextElement::EntityManager, ContextElement::TextureManager, ContextElement::World>::getSystemManager().update<ScriptsSystem>(elapsedTime.asSeconds());
-	ContextAccessor<ContextElement::Parameters, ContextElement::EventManager, ContextElement::SystemManager, ContextElement::Player, ContextElement::EntityManager, ContextElement::TextureManager, ContextElement::World>::getSystemManager().update<PendingChangesSystem>(elapsedTime.asSeconds());
-	ContextAccessor<ContextElement::Parameters, ContextElement::EventManager, ContextElement::SystemManager, ContextElement::Player, ContextElement::EntityManager, ContextElement::TextureManager, ContextElement::World>::getSystemManager().update<AnimationsSystem>(elapsedTime.asSeconds());
-	ContextAccessor<ContextElement::Parameters, ContextElement::EventManager, ContextElement::SystemManager, ContextElement::Player, ContextElement::EntityManager, ContextElement::TextureManager, ContextElement::World>::getSystemManager().update<PhysicsSystem>(elapsedTime.asSeconds());
-	ContextAccessor<ContextElement::Parameters, ContextElement::EventManager, ContextElement::SystemManager, ContextElement::Player, ContextElement::EntityManager, ContextElement::TextureManager, ContextElement::World>::getSystemManager().update<ScrollingSystem>(elapsedTime.asSeconds());
-	ContextAccessor<ContextElement::Parameters, ContextElement::EventManager, ContextElement::SystemManager, ContextElement::Player, ContextElement::EntityManager, ContextElement::TextureManager, ContextElement::World>::getSystemManager().update<StatsSystem>(elapsedTime.asSeconds());
-	ContextAccessor<ContextElement::Parameters, ContextElement::EventManager, ContextElement::SystemManager, ContextElement::Player, ContextElement::EntityManager, ContextElement::TextureManager, ContextElement::World>::getSystemManager().update<TimeSystem>(elapsedTime.asSeconds()*m_timeSpeed);//Scale the time
+	Context::getSystemManager().update<ScriptsSystem>(elapsedTime.asSeconds());
+	Context::getSystemManager().update<PendingChangesSystem>(elapsedTime.asSeconds());
+	Context::getSystemManager().update<AnimationsSystem>(elapsedTime.asSeconds());
+	Context::getSystemManager().update<PhysicsSystem>(elapsedTime.asSeconds());
+	Context::getSystemManager().update<ScrollingSystem>(elapsedTime.asSeconds());
+	Context::getSystemManager().update<StatsSystem>(elapsedTime.asSeconds());
+	Context::getSystemManager().update<TimeSystem>(elapsedTime.asSeconds()*m_timeSpeed);//Scale the time
 	return false;
 }
 
@@ -71,10 +71,10 @@ bool GameState::handleEvent(const sf::Event& event)
 		or event.type == sf::Event::LostFocus)
 		requestStackPush<PauseState>();
 
-	ContextAccessor<ContextElement::Parameters, ContextElement::EventManager, ContextElement::SystemManager, ContextElement::Player, ContextElement::EntityManager, ContextElement::TextureManager, ContextElement::World>::getPlayer().handleEvent(event);
+	Context::getPlayer().handleEvent(event);
 	//Update the drag and drop state
-	const bool isDragAndDropActive{getPlayer().isActived(Player::Action::Bend)};
-	getSystemManager().system<DragAndDropSystem>()->setDragAndDropActivation(isDragAndDropActive);
+	const bool isDragAndDropActive{Context::getPlayer().isActived(Player::Action::Bend)};
+	Context::getSystemManager().system<DragAndDropSystem>()->setDragAndDropActivation(isDragAndDropActive);
 	return false;
 }
 
@@ -82,7 +82,7 @@ void GameState::receive(const ParametersChange&)
 {
 }
 
-Json::Value ContextAccessor<ContextElement::Parameters, ContextElement::EventManager, ContextElement::SystemManager, ContextElement::Player, ContextElement::EntityManager, ContextElement::TextureManager, ContextElement::World>::getJsonValueFromGame()
+Json::Value GameState::getJsonValueFromGame()
 {
 	Json::Value root;
 	root["entities"] = Json::ValueType::objectValue;
@@ -120,7 +120,7 @@ Json::Value ContextAccessor<ContextElement::Parameters, ContextElement::EventMan
 
 	//time
 	root["time"]["speed"] = m_timeSpeed;
-	root["time"]["date"] = ContextAccessor<ContextElement::Parameters, ContextElement::EventManager, ContextElement::SystemManager, ContextElement::Player, ContextElement::EntityManager, ContextElement::TextureManager, ContextElement::World>::getSystemManager().system<TimeSystem>()->getRealTime().asSeconds();
+	root["time"]["date"] = Context::getSystemManager().system<TimeSystem>()->getRealTime().asSeconds();
 
 	//level data
 	root["level data"]["identifier"] = m_levelIdentifier;
@@ -158,7 +158,7 @@ void GameState::saveWorld(const std::string& filePath)
 
 	//Load all generic entities
 	Json::Value genericEntities;
-	for(auto& directory_entry : boost::filesystem::directory_iterator(ContextAccessor<ContextElement::Parameters, ContextElement::EventManager, ContextElement::SystemManager, ContextElement::Player, ContextElement::EntityManager, ContextElement::TextureManager, ContextElement::World>::getParameters().resourcesPath + "levels/entities"))
+	for(auto& directory_entry : boost::filesystem::directory_iterator(Context::getParameters().resourcesPath + "levels/entities"))
 		JsonHelper::merge(genericEntities, JsonHelper::loadFromFile(directory_entry.path().generic_string()));
 
 	for(const std::string& entityName : gameValue["entities"].getMemberNames())
@@ -181,27 +181,27 @@ void GameState::saveWorld(const std::string& filePath)
 
 void GameState::initWorld(const std::string& filePath)
 {
-	ContextAccessor<ContextElement::Parameters, ContextElement::EventManager, ContextElement::SystemManager, ContextElement::Player, ContextElement::EntityManager, ContextElement::TextureManager, ContextElement::World>::getEventManager().emit<LoadingStateChange>("Loading save file");
+	Context::getEventManager().emit<LoadingStateChange>("Loading save file");
 	try
 	{
 		Json::Value root{JsonHelper::loadFromFile(filePath)};
-		const Json::Value model{JsonHelper::loadFromFile(ContextAccessor<ContextElement::Parameters, ContextElement::EventManager, ContextElement::SystemManager, ContextElement::Player, ContextElement::EntityManager, ContextElement::TextureManager, ContextElement::World>::getParameters().resourcesPath + "levels/model.json")};
+		const Json::Value model{JsonHelper::loadFromFile(Context::getParameters().resourcesPath + "levels/model.json")};
 
 		//Parse the save file from the model file
 		JsonHelper::parse(root, model);
 
 		if(root.isMember("level"))
 		{
-			Json::Value levelToLoad{JsonHelper::loadFromFile(ContextAccessor<ContextElement::Parameters, ContextElement::EventManager, ContextElement::SystemManager, ContextElement::Player, ContextElement::EntityManager, ContextElement::TextureManager, ContextElement::World>::getParameters().resourcesPath + "levels/" + root["level"].asString())};
+			Json::Value levelToLoad{JsonHelper::loadFromFile(Context::getParameters().resourcesPath + "levels/" + root["level"].asString())};
 			//Parsing of the included file from the model file
 			JsonHelper::parse(levelToLoad, model);
 			JsonHelper::merge(root, levelToLoad);
 		}
 
 		const Json::Value time{root["time"]};
-		ContextAccessor<ContextElement::Parameters, ContextElement::EventManager, ContextElement::SystemManager, ContextElement::Player, ContextElement::EntityManager, ContextElement::TextureManager, ContextElement::World>::getSystemManager().system<TimeSystem>()->setTotalTime(sf::seconds(time["date"].asFloat()));
+		Context::getSystemManager().system<TimeSystem>()->setTotalTime(sf::seconds(time["date"].asFloat()));
 		m_timeSpeed = time["speed"].asFloat();
-		ContextAccessor<ContextElement::Parameters, ContextElement::EventManager, ContextElement::SystemManager, ContextElement::Player, ContextElement::EntityManager, ContextElement::TextureManager, ContextElement::World>::getSystemManager().system<AnimationsSystem>()->setTimeSpeed(m_timeSpeed);
+		Context::getSystemManager().system<AnimationsSystem>()->setTimeSpeed(m_timeSpeed);
 
 		const Json::Value level{root["level data"]};
 		//number of plans
@@ -220,7 +220,7 @@ void GameState::initWorld(const std::string& filePath)
 		m_levelRect.top = levelBox["x"].asFloat();
 		m_levelRect.left = levelBox["y"].asFloat();
 
-		ContextAccessor<ContextElement::Parameters, ContextElement::EventManager, ContextElement::SystemManager, ContextElement::Player, ContextElement::EntityManager, ContextElement::TextureManager, ContextElement::World>::getSystemManager().system<ScrollingSystem>()->setLevelData(m_levelRect, m_referencePlan);
+		Context::getSystemManager().system<ScrollingSystem>()->setLevelData(m_levelRect, m_referencePlan);
 		Json::Value genericEntities;
 		if(root.isMember("import"))
 		{
@@ -228,7 +228,7 @@ void GameState::initWorld(const std::string& filePath)
 			for(Json::ArrayIndex i{0}; i < includes.size(); ++i)
 			{
 				//Parse the imported data
-				Json::Value includeRoot{JsonHelper::loadFromFile(ContextAccessor<ContextElement::Parameters, ContextElement::EventManager, ContextElement::SystemManager, ContextElement::Player, ContextElement::EntityManager, ContextElement::TextureManager, ContextElement::World>::getParameters().resourcesPath + "levels/entities/" + includes[i].asString())};
+				Json::Value includeRoot{JsonHelper::loadFromFile(Context::getParameters().resourcesPath + "levels/entities/" + includes[i].asString())};
 
 				//Parsing of the included file from the model file
 				JsonHelper::parse(includeRoot, model);
@@ -246,7 +246,7 @@ void GameState::initWorld(const std::string& filePath)
 		//and the scrolling system replace sprite according to the player position.
 		if(root.isMember("entities"))
 		{
-			ContextAccessor<ContextElement::Parameters, ContextElement::EventManager, ContextElement::SystemManager, ContextElement::Player, ContextElement::EntityManager, ContextElement::TextureManager, ContextElement::World>::getEventManager().emit<LoadingStateChange>("Loading entities");
+			Context::getEventManager().emit<LoadingStateChange>("Loading entities");
 			Json::Value jsonEntities{root["entities"]};
 			Serializer s(m_entities, jsonEntities);
 			std::set<std::string> alreadyDeserialized;
@@ -255,7 +255,7 @@ void GameState::initWorld(const std::string& filePath)
 				if(alreadyDeserialized.count(entityName) > 0)
 					return;
 
-				entityx::Entity& entity{m_entities.emplace(entityName, ContextAccessor<ContextElement::Parameters, ContextElement::EventManager, ContextElement::SystemManager, ContextElement::Player, ContextElement::EntityManager, ContextElement::TextureManager, ContextElement::World>::getEntityManager().create()).first->second};
+				entityx::Entity& entity{m_entities.emplace(entityName, Context::getEntityManager().create()).first->second};
 				Json::Value& jsonEntity{jsonEntities[entityName]};
 
 				//If the entity is derivated from a base entities, add json values of the base to the json entity
@@ -313,9 +313,9 @@ void GameState::initWorld(const std::string& filePath)
 				deserializerLambda(name);
 		}
 
-		if(not ContextAccessor<ContextElement::Parameters, ContextElement::EventManager, ContextElement::SystemManager, ContextElement::Player, ContextElement::EntityManager, ContextElement::TextureManager, ContextElement::World>::getParameters().debugMode)
+		if(not Context::getParameters().debugMode)
 		{
-			getEventManager().emit<LoadingStateChange>("Loading background");
+			Context::getEventManager().emit<LoadingStateChange>("Loading background");
 			//level
 			//for each group of replaces
 			for(const std::string groupOfReplacesName : level["replaces"].getMemberNames())
@@ -323,7 +323,7 @@ void GameState::initWorld(const std::string& filePath)
 				//Filename of the image to load
 				const std::string fileTexture{m_levelIdentifier + "_" + groupOfReplacesName};
 				//Path of the image to load
-				const std::string path{ContextAccessor<ContextElement::Parameters, ContextElement::EventManager, ContextElement::SystemManager, ContextElement::Player, ContextElement::EntityManager, ContextElement::TextureManager, ContextElement::World>::getParameters()().resourcesPath + "images/levels/" + m_levelIdentifier + "/" + fileTexture + ".png"};
+				const std::string path{Context::getParameters().resourcesPath + "images/levels/" + m_levelIdentifier + "/" + fileTexture + ".png"};
 
 				const Json::Value groupOfReplaces{level["replaces"][groupOfReplacesName]};
 				//Vector that will be added to m_sceneEntitiesData
@@ -347,7 +347,7 @@ void GameState::initWorld(const std::string& filePath)
 					//Load the texture
 					//Identifier of the texture, in format "level_plan_texture"
 					const std::string textureIdentifier{fileTexture + "_" + std::to_string(i)};
-					getTextureManager().load(textureIdentifier, path, originRect);
+					Context::getTextureManager().load(textureIdentifier, path, originRect);
 					//Replaces
 					const Json::Value replaces{image["replaces"]};
 					//For each replacing of the image
@@ -366,10 +366,10 @@ void GameState::initWorld(const std::string& filePath)
 						replacesData.replaces.push_back({replace["x"].asFloat(), replace["y"].asFloat(), replace["z"].asFloat(), replace["angle"].asFloat()});
 
 						//Create an entity
-						m_sceneEntities.emplace(replaceIdentifier, getEntityManager().create());
+						m_sceneEntities.emplace(replaceIdentifier, Context::getEntityManager().create());
 						//Create a sprite with the loaded texture
 						//Assign the sprite to the entity
-						sf::Sprite replaceSpr(getTextureManager().get(textureIdentifier));
+						sf::Sprite replaceSpr(Context::getTextureManager().get(textureIdentifier));
 						replaceSpr.setPosition(replaceTransform.x, replaceTransform.y);
 						replaceSpr.setRotation(replaceTransform.angle);
 						SpriteComponent::Handle sprComp{m_sceneEntities[replaceIdentifier].assign<SpriteComponent>()};
@@ -386,12 +386,12 @@ void GameState::initWorld(const std::string& filePath)
 
 			//Load all images in multiples chunks
 			const float chunkSize{static_cast<float>(sf::Texture::getMaximumSize())};
-			const float viewWidth{ContextAccessor<ContextElement::Parameters, ContextElement::EventManager, ContextElement::SystemManager, ContextElement::Player, ContextElement::EntityManager, ContextElement::TextureManager, ContextElement::World>::getParameters().defaultViewSize.x};
+			const float viewWidth{Context::getParameters().defaultViewSize.x};
 			const float scalableLevelWidth{m_levelRect.width - viewWidth};
 			for(unsigned int i{0}; i < m_numberOfPlans; ++i)
 			{
 				const std::string fileTexture{m_levelIdentifier + "_" + std::to_string(i)};
-				const std::string path{ContextAccessor<ContextElement::Parameters, ContextElement::EventManager, ContextElement::SystemManager, ContextElement::Player, ContextElement::EntityManager, ContextElement::TextureManager, ContextElement::World>::getParameters().resourcesPath + "images/levels/" + m_levelIdentifier + "/" + fileTexture + ".png"};
+				const std::string path{Context::getParameters().resourcesPath + "images/levels/" + m_levelIdentifier + "/" + fileTexture + ".png"};
 				//The length of the plan, relatively to the reference
 				const float planLength{scalableLevelWidth * std::pow(1.5f, m_referencePlan - static_cast<float>(i)) + viewWidth};
 				//Number of chunks to load in this plan
@@ -405,13 +405,13 @@ void GameState::initWorld(const std::string& filePath)
 					float currentChunkSize{chunkSize};
 					if(j == numberOfChunks - 1)
 						currentChunkSize = planLength - chunkSize * static_cast<float>(j);
-					ContextAccessor<ContextElement::Parameters, ContextElement::EventManager, ContextElement::SystemManager, ContextElement::Player, ContextElement::EntityManager, ContextElement::TextureManager, ContextElement::World>::getTextureManager().load<sf::IntRect>(textureIdentifier, path,
+					Context::getTextureManager().load<sf::IntRect>(textureIdentifier, path,
 							sf::IntRect(j * static_cast<int>(chunkSize), 0, static_cast<int>(currentChunkSize), static_cast<int>(m_levelRect.height)));
 					//Create an entity
-					m_sceneEntities.emplace(textureIdentifier, getEntityManager().create());
+					m_sceneEntities.emplace(textureIdentifier, Context::getEntityManager().create());
 					//Create a sprite with the loaded texture
 					//Assign the sprite to the entity
-					sf::Sprite chunkSpr(getTextureManager().get(textureIdentifier));
+					sf::Sprite chunkSpr(Context::getTextureManager().get(textureIdentifier));
 					chunkSpr.setPosition(static_cast<float>(j*chunkSize), 0.f);
 					SpriteComponent::Handle sprComp{m_sceneEntities[textureIdentifier].assign<SpriteComponent>()};
 					sprComp->sprite = chunkSpr;
@@ -424,7 +424,7 @@ void GameState::initWorld(const std::string& filePath)
 			}
 		}
 
-		const float daySeconds{std::remainder(getSystemManager().system<TimeSystem>()->getRealTime().asSeconds(), 600.f)};
+		const float daySeconds{std::remainder(Context::getSystemManager().system<TimeSystem>()->getRealTime().asSeconds(), 600.f)};
 		//Add sky animations.
 		if(m_entities.find("day sky") != m_entities.end() and m_entities["day sky"].valid())
 		{
@@ -445,12 +445,12 @@ void GameState::initWorld(const std::string& filePath)
 			skyAnimationsComp->animationsManager.play("day/night cycle");
 		}
 
-		ContextAccessor<ContextElement::Parameters, ContextElement::EventManager, ContextElement::SystemManager, ContextElement::Player, ContextElement::EntityManager, ContextElement::TextureManager, ContextElement::World>::getSystemManager().system<ScrollingSystem>()->searchPlayer();
-		ContextAccessor<ContextElement::Parameters, ContextElement::EventManager, ContextElement::SystemManager, ContextElement::Player, ContextElement::EntityManager, ContextElement::TextureManager, ContextElement::World>::getSystemManager().update<ScrollingSystem>(0.f);
-		ContextAccessor<ContextElement::Parameters, ContextElement::EventManager, ContextElement::SystemManager, ContextElement::Player, ContextElement::EntityManager, ContextElement::TextureManager, ContextElement::World>::getSystemManager().update<AnimationsSystem>(0.f);
-		ContextAccessor<ContextElement::Parameters, ContextElement::EventManager, ContextElement::SystemManager, ContextElement::Player, ContextElement::EntityManager, ContextElement::TextureManager, ContextElement::World>::getPlayer().handleInitialInputState();
+		Context::getSystemManager().system<ScrollingSystem>()->searchPlayer();
+		Context::getSystemManager().update<ScrollingSystem>(0.f);
+		Context::getSystemManager().update<AnimationsSystem>(0.f);
+		Context::getPlayer().handleInitialInputState();
 		requestStackPop();
-		ContextAccessor<ContextElement::Parameters, ContextElement::EventManager, ContextElement::SystemManager, ContextElement::Player, ContextElement::EntityManager, ContextElement::TextureManager, ContextElement::World>::getEventManager().emit<LoadingStateChange>("Loading HUD");
+		Context::getEventManager().emit<LoadingStateChange>("Loading HUD");
 		requestStackPush<HUDState>();
 	}
 	catch(std::runtime_error& e)
@@ -469,7 +469,7 @@ void GameState::clear()
 	for(auto& entity : m_entities)
 	{
 		if(entity.second.has_component<BodyComponent>())
-			getWorld().DestroyBody(entity.second.component<BodyComponent>()->body);
+			Context::getWorld().DestroyBody(entity.second.component<BodyComponent>()->body);
 
 		entity.second.destroy();
 	}

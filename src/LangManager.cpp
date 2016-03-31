@@ -27,7 +27,7 @@ std::string LangManager::getDefaultLang() const
 std::set<std::string> LangManager::getAvailableLangs()
 {
 	std::set<std::string> res;
-	for(auto& directory_entry : boost::filesystem::directory_iterator(getParameters().resourcesPath + "lang/"))
+	for(auto& directory_entry : boost::filesystem::directory_iterator(Context::getParameters().resourcesPath + "lang/"))
 		res.insert(directory_entry.path().filename().generic_string());
 	return res;
 }
@@ -45,8 +45,8 @@ std::wstring LangManager::tr(const std::string& entryName) const
 
 void LangManager::loadLang(const std::string& langToLoad)
 {
-	std::string sourceFilePath{getParameters().resourcesPath + "lang/" + m_defaultLang};
-	std::string translationFilePath{getParameters().resourcesPath + "lang/" + langToLoad};
+	std::string sourceFilePath{Context::getParameters().resourcesPath + "lang/" + m_defaultLang};
+	std::string translationFilePath{Context::getParameters().resourcesPath + "lang/" + langToLoad};
 	std::ifstream sourceFileStream;
 	std::wifstream translationFileStream;
 	m_entries.clear();

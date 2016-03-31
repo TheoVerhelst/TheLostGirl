@@ -46,7 +46,7 @@ Player::Player()
 
 void Player::handleEvent(const sf::Event& event)
 {
-	auto& commands(getSystemManager().system<PendingChangesSystem>()->commandQueue);
+	auto& commands(Context::getSystemManager().system<PendingChangesSystem>()->commandQueue);
 	if(event.type == sf::Event::KeyPressed)
 	{
 		// Check if pressed key appears in key binding, trigger command if so
@@ -233,8 +233,8 @@ bool Player::isActived(Action action) const
 		if(sf::Keyboard::isKeyPressed(key))
 			return true;
 
-	sf::IntRect windowRect({0, 0}, sf::Vector2i(getWindow().getSize()));
-	if(windowRect.contains(sf::Mouse::getPosition(getWindow())))
+	sf::IntRect windowRect({0, 0}, sf::Vector2i(Context::getWindow().getSize()));
+	if(windowRect.contains(sf::Mouse::getPosition(Context::getWindow())))
 		for(auto& button : mouseButtonsBindings)
 			if(sf::Mouse::isButtonPressed(button))
 				return true;
@@ -254,7 +254,7 @@ bool Player::isActived(Action action) const
 
 void Player::handleInitialInputState()
 {
-	auto& commands(getSystemManager().system<PendingChangesSystem>()->commandQueue);
+	auto& commands(Context::getSystemManager().system<PendingChangesSystem>()->commandQueue);
 	for(auto& pair : m_startActionBinding)
 		if(isActived(pair.first))
 			commands.push(pair.second);

@@ -62,17 +62,21 @@ class ContextAccessor
 /// main object.
 class ContextImpl
 {
+	public:
+		/// Constructor.
+		/// Initializes the global pointers.
+		/// The dummy pointer is here because a parameter list cannot end with
+		/// a comma, and it would be impossible to do otherwise with the include
+		/// trick.
+		ContextImpl(
+#define MACRO_CONTEXT_ELEMENT(Type, Name, m_attribute) Type& Name,
+#include <TheLostGirl/ContextElements.inl>
+#undef MACRO_CONTEXT_ELEMENT
+		std::nullptr_t dummy = nullptr);
+
 	private:
 		template <ContextElement... Elements>
 		friend class ContextAccessor;
-
-		friend class Application;
-
-		/// Constructor.
-		/// Initializes the global variable according to the given Application
-		/// instance.
-		/// \param application The main Application instance.
-		ContextImpl(Application& application);
 
 #define MACRO_CONTEXT_ELEMENT(Type, Name, m_attribute) static Type* m_attribute;
 #include <TheLostGirl/ContextElements.inl>

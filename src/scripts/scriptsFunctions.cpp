@@ -193,7 +193,7 @@ entityx::Entity ScriptFunctions::nearestFoe(const std::vector<Data>& args)
 	DetectionRangeComponent::Handle detectionRangeComponent(entity.component<DetectionRangeComponent>());
 	if(bodyComponent and detectionRangeComponent)
 	{
-		const float range{detectionRangeComponent->detectionRange/getParameters().pixelByMeter};
+		const float range{detectionRangeComponent->detectionRange/Context::getParameters().pixelByMeter};
 		b2Body* body{bodyComponent->body};
 		b2World* world{body->GetWorld()};
 		NearestFoeQueryCallback callback(entity);
@@ -295,7 +295,7 @@ int ScriptFunctions::attack(const std::vector<Data>& args)
 	entityx::Entity entity(args[0].get<entityx::Entity>());
 	if(not TEST(entity.valid()))
 		throw ScriptError("can move(): first argument is an invalid entity.");
-	getSystemManager().system<PendingChangesSystem>()->commandQueue.emplace(entity, HandToHand());
+	Context::getSystemManager().system<PendingChangesSystem>()->commandQueue.emplace(entity, HandToHand());
 	return 0;
 }
 
@@ -339,7 +339,7 @@ int ScriptFunctions::move(const std::vector<Data>& args)
 	entityx::Entity entity(args[0].get<entityx::Entity>());
 	if(not TEST(entity.valid()))
 		throw ScriptError("can move(): first argument is an invalid entity.");
-	getSystemManager().system<PendingChangesSystem>()->commandQueue.emplace(entity, Mover(args[1].get<Direction>()));
+	Context::getSystemManager().system<PendingChangesSystem>()->commandQueue.emplace(entity, Mover(args[1].get<Direction>()));
 	return 0;
 }
 
@@ -354,11 +354,11 @@ int ScriptFunctions::stop(const std::vector<Data>& args)
 	{
 		if(directionComponent->moveToLeft and directionComponent->moveToRight)
 		{
-			getSystemManager().system<PendingChangesSystem>()->commandQueue.emplace(entity, Mover(not directionComponent->direction, false));
-			getSystemManager().system<PendingChangesSystem>()->commandQueue.emplace(entity, Mover(directionComponent->direction, false));
+			Context::getSystemManager().system<PendingChangesSystem>()->commandQueue.emplace(entity, Mover(not directionComponent->direction, false));
+			Context::getSystemManager().system<PendingChangesSystem>()->commandQueue.emplace(entity, Mover(directionComponent->direction, false));
 		}
 		else
-			getSystemManager().system<PendingChangesSystem>()->commandQueue.emplace(entity, Mover(directionComponent->direction, false));
+			Context::getSystemManager().system<PendingChangesSystem>()->commandQueue.emplace(entity, Mover(directionComponent->direction, false));
 	}
 	return 0;
 }
@@ -376,7 +376,7 @@ int ScriptFunctions::jump(const std::vector<Data>& args)
 {
 	if(canJump(args))
 		//Simply push a jump command on the command queue
-		getSystemManager().system<PendingChangesSystem>()->commandQueue.emplace(args[0].get<entityx::Entity>(), Jumper());
+		Context::getSystemManager().system<PendingChangesSystem>()->commandQueue.emplace(args[0].get<entityx::Entity>(), Jumper());
 	return 0;
 }
 

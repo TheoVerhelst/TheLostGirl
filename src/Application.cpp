@@ -9,7 +9,12 @@
 #include <TheLostGirl/Application.hpp>
 
 Application::Application(bool debugMode):
-	m_context{*this},
+	m_context
+	{
+#define MACRO_CONTEXT_ELEMENT(Type, Name, m_attribute) m_attribute,
+#include <TheLostGirl/ContextElements.inl>
+#undef MACRO_CONTEXT_ELEMENT
+	},
 	m_window{{static_cast<unsigned int>(m_parameters.defaultViewSize.x),
 			static_cast<unsigned int>(m_parameters.defaultViewSize.y)},
 			"The Lost Girl"},

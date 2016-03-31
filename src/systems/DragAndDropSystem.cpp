@@ -21,19 +21,19 @@ DragAndDropSystem::DragAndDropSystem():
 void DragAndDropSystem::update(entityx::EntityManager&, entityx::EventManager&, double)
 {
 	//If the drag and drop is active and effective
-	if(m_isActive and m_origin != sf::Mouse::getPosition(getWindow()))
+	if(m_isActive and m_origin != sf::Mouse::getPosition(Context::getWindow()))
 	{
-		if(getParameters().bloomEnabled)
+		if(Context::getParameters().bloomEnabled)
 		{
-			m_line[0].position = getPostEffectsTexture().mapPixelToCoords(m_origin);
-			m_line[1].position = getPostEffectsTexture().mapPixelToCoords(sf::Mouse::getPosition(getWindow()));
-			getPostEffectsTexture().draw(m_line, 2, sf::Lines);
+			m_line[0].position = Context::getPostEffectsTexture().mapPixelToCoords(m_origin);
+			m_line[1].position = Context::getPostEffectsTexture().mapPixelToCoords(sf::Mouse::getPosition(Context::getWindow()));
+			Context::getPostEffectsTexture().draw(m_line, 2, sf::Lines);
 		}
 		else
 		{
-			m_line[0].position = getWindow().mapPixelToCoords(m_origin);
-			m_line[1].position = getWindow().mapPixelToCoords(sf::Mouse::getPosition(getWindow()));
-			getWindow().draw(m_line, 2, sf::Lines);
+			m_line[0].position = Context::getWindow().mapPixelToCoords(m_origin);
+			m_line[1].position = Context::getWindow().mapPixelToCoords(sf::Mouse::getPosition(Context::getWindow()));
+			Context::getWindow().draw(m_line, 2, sf::Lines);
 		}
 		//Compute the drag and drop data
 		sf::Vector2f delta{m_line[1].position - m_line[0].position};
@@ -41,23 +41,23 @@ void DragAndDropSystem::update(entityx::EntityManager&, entityx::EventManager&, 
 		float angle{std::atan2(delta.x, delta.y)};//Angle of the line with the horizontal axis
 		angle += b2_pi/2.f;//Turn the angle of 90 degrees to fit the gameplay requirements
 		//Send a command to player's entities to bend them bows according to the drag and drop data
-		getSystemManager().system<PendingChangesSystem>()->commandQueue.emplace(FlagSet<Category>({Category::Player}), BowBender(angle, power));
+		Context::getSystemManager().system<PendingChangesSystem>()->commandQueue.emplace(FlagSet<Category>({Category::Player}), BowBender(angle, power));
 	}
 }
 
 void DragAndDropSystem::setDragAndDropActivation(bool isActive)
 {
 	if(not m_isActive and isActive)//Activation
-		m_origin = sf::Mouse::getPosition(getWindow());
+		m_origin = sf::Mouse::getPosition(Context::getWindow());
 	if(not isActive and m_isActive)//Desactivation
 	{
 		float delta_x{m_line[1].position.x- m_line[0].position.x};
 		float delta_y{m_line[1].position.y- m_line[0].position.y};
 		float angle{std::atan2(delta_x, delta_y) + b2_pi/2.f};//Angle of the line with the horizontal axis
 		//Shoot the arrow
-		getSystemManager().system<PendingChangesSystem>()->commandQueue.emplace(FlagSet<Category>({Category::Player}), ArrowShooter());
+		Context::getSystemManager().system<PendingChangesSystem>()->commandQueue.emplace(FlagSet<Category>({Category::Player}), ArrowShooter());
 		//Reset the power of the bending
-		getSystemManager().system<PendingChangesSystem>()->commandQueue.emplace(FlagSet<Category>({Category::Player}), BowBender(float(angle), 0.f));
+		Context::getSystemManager().system<PendingChangesSystem>()->commandQueue.emplace(FlagSet<Category>({Category::Player}), BowBender(float(angle), 0.f));
 	}
 	m_isActive = isActive;
 }

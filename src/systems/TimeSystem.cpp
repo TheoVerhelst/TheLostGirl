@@ -80,19 +80,19 @@ std::wstring TimeSystem::seasonName() const
 	switch(months() / 4)
 	{
 		case 0:
-			return getLangManager().tr("Snow season");
+			return Context::getLangManager().tr("Snow season");
 			break;
 		case 1:
-			return getLangManager().tr("Flowers season");
+			return Context::getLangManager().tr("Flowers season");
 			break;
 		case 2:
-			return getLangManager().tr("Fruit season");
+			return Context::getLangManager().tr("Fruit season");
 			break;
 		case 3:
-			return getLangManager().tr("Wind season");
+			return Context::getLangManager().tr("Wind season");
 			break;
 		default:
-			return getLangManager().tr("Snow season");
+			return Context::getLangManager().tr("Snow season");
 	}
 }
 
@@ -101,31 +101,31 @@ std::wstring TimeSystem::monthName() const
 	switch(months())
 	{
 		case 0:
-			return getLangManager().tr("snow month");
+			return Context::getLangManager().tr("snow month");
 			break;
 		case 1:
-			return getLangManager().tr("winds month");
+			return Context::getLangManager().tr("winds month");
 			break;
 		case 2:
-			return getLangManager().tr("buds month");
+			return Context::getLangManager().tr("buds month");
 			break;
 		case 3:
-			return getLangManager().tr("flowers month");
+			return Context::getLangManager().tr("flowers month");
 			break;
 		case 4:
-			return getLangManager().tr("harvests month");
+			return Context::getLangManager().tr("harvests month");
 			break;
 		case 5:
-			return getLangManager().tr("fruits month");
+			return Context::getLangManager().tr("fruits month");
 			break;
 		case 6:
-			return getLangManager().tr("mists month");
+			return Context::getLangManager().tr("mists month");
 			break;
 		case 7:
-			return getLangManager().tr("month of frost");
+			return Context::getLangManager().tr("month of frost");
 			break;
 		default:
-			return getLangManager().tr("snow month");
+			return Context::getLangManager().tr("snow month");
 	}
 }
 
@@ -137,19 +137,19 @@ std::wstring TimeSystem::getFormatedDate() const
 	//Year name
 	output += std::to_wstring(years() + 1);
 	if(years() + 1 == 1)
-		output += getLangManager().tr("st year, ");
+		output += Context::getLangManager().tr("st year, ");
 	else if(years() + 1 == 2)
-		output += getLangManager().tr("nd year, ");
+		output += Context::getLangManager().tr("nd year, ");
 	else
-		output += getLangManager().tr("th year, ");
+		output += Context::getLangManager().tr("th year, ");
 	//Day name
 	output += std::to_wstring(days() + 1);
 	if(days() + 1 == 1)
-		output += getLangManager().tr("st day of the ");
+		output += Context::getLangManager().tr("st day of the ");
 	else if(days() + 1 == 2)
-		output += getLangManager().tr("nd day of the ");
+		output += Context::getLangManager().tr("nd day of the ");
 	else
-		output += getLangManager().tr("th day of the ");
+		output += Context::getLangManager().tr("th day of the ");
 	//Month name
 	output += monthName();
 	return output;

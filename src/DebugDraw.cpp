@@ -16,11 +16,11 @@ DebugDraw::DebugDraw():
 	m_cerrStreambuf{std::cerr.rdbuf(m_errStringStream.rdbuf())},
 	m_errorColor{255, 100, 100}
 {
-	m_positionLabel = getParameters().guiTheme->load("Label");
-	m_mousePositionLabel = getParameters().guiTheme->load("Label");
-	m_FPSLabel = getParameters().guiTheme->load("Label");
-	m_console = getParameters().guiTheme->load("ChatBox");
-	tgui::Gui& gui = getGui();
+	m_positionLabel = Context::getParameters().guiTheme->load("Label");
+	m_mousePositionLabel = Context::getParameters().guiTheme->load("Label");
+	m_FPSLabel = Context::getParameters().guiTheme->load("Label");
+	m_console = Context::getParameters().guiTheme->load("ChatBox");
+	tgui::Gui& gui = Context::getGui();
 
 	m_positionLabel->setPosition(tgui::bindWidth(gui) * 0.01f, tgui::bindHeight(gui) * 0.01f);
 	m_positionLabel->setTextSize(10);
@@ -56,17 +56,17 @@ void DebugDraw::DrawPolygon(const b2Vec2* vertices, int32 vertexCount, const b2C
 	sf::ConvexShape polygon(static_cast<unsigned int>(vertexCount));
 	for(int32 i{0}; i < vertexCount; ++i)
 		polygon.setPoint(static_cast<unsigned int>(i),
-			sf::Vector2f(vertices[i].x, vertices[i].y)*getParameters().pixelByMeter);
+			sf::Vector2f(vertices[i].x, vertices[i].y)*Context::getParameters().pixelByMeter);
 	polygon.setOutlineColor(sf::Color(static_cast<sf::Uint8>(color.r*255.f),
 			static_cast<sf::Uint8>(color.g*255.f),
 			static_cast<sf::Uint8>(color.b*255.f),
 			static_cast<sf::Uint8>(color.a*127.f)));
 	polygon.setOutlineThickness(-1.f);
 	polygon.setFillColor(sf::Color::Transparent);
-	if(getParameters().bloomEnabled)
-		getPostEffectsTexture().draw(polygon);
+	if(Context::getParameters().bloomEnabled)
+		Context::getPostEffectsTexture().draw(polygon);
 	else
-		getWindow().draw(polygon);
+		Context::getWindow().draw(polygon);
 }
 
 void DebugDraw::DrawSolidPolygon(const b2Vec2* vertices, int32 vertexCount, const b2Color& color)
@@ -74,78 +74,78 @@ void DebugDraw::DrawSolidPolygon(const b2Vec2* vertices, int32 vertexCount, cons
 	unsigned int count{static_cast<unsigned int>(vertexCount)};
 	sf::ConvexShape polygon(count);
 	for(unsigned int i{0}; i < count; ++i)
-		polygon.setPoint(i, sf::Vector2f(vertices[i].x, vertices[i].y)*getParameters().pixelByMeter);
+		polygon.setPoint(i, sf::Vector2f(vertices[i].x, vertices[i].y)*Context::getParameters().pixelByMeter);
 	polygon.setOutlineColor(b2ColorToSf(color));
 	polygon.setOutlineThickness(-1.f);
 	polygon.setFillColor(sf::Color::Transparent);
-	if(getParameters().bloomEnabled)
-		getPostEffectsTexture().draw(polygon);
+	if(Context::getParameters().bloomEnabled)
+		Context::getPostEffectsTexture().draw(polygon);
 	else
-		getWindow().draw(polygon);
+		Context::getWindow().draw(polygon);
 }
 
 void DebugDraw::DrawCircle(const b2Vec2& center, float32 radius, const b2Color& color)
 {
-	sf::CircleShape circle(radius * getParameters().pixelByMeter);
-	circle.setOrigin(radius * getParameters().pixelByMeter, radius * getParameters().pixelByMeter);
-	circle.setPosition(center.x* getParameters().pixelByMeter, center.y* getParameters().pixelByMeter);
+	sf::CircleShape circle(radius * Context::getParameters().pixelByMeter);
+	circle.setOrigin(radius * Context::getParameters().pixelByMeter, radius * Context::getParameters().pixelByMeter);
+	circle.setPosition(center.x* Context::getParameters().pixelByMeter, center.y* Context::getParameters().pixelByMeter);
 	circle.setOutlineColor(b2ColorToSf(color));
 	circle.setOutlineThickness(-1.f);
 	circle.setFillColor(sf::Color::Transparent);
-	if(getParameters().bloomEnabled)
-		getPostEffectsTexture().draw(circle);
+	if(Context::getParameters().bloomEnabled)
+		Context::getPostEffectsTexture().draw(circle);
 	else
-		getWindow().draw(circle);
+		Context::getWindow().draw(circle);
 }
 
 void DebugDraw::DrawSolidCircle(const b2Vec2& center, float32 radius, const b2Vec2& axis, const b2Color& color)
 {
-	sf::CircleShape circle(radius * getParameters().pixelByMeter);
-	circle.setOrigin(radius * getParameters().pixelByMeter, radius * getParameters().pixelByMeter);
-	circle.setPosition(center.x* getParameters().pixelByMeter, center.y* getParameters().pixelByMeter);
+	sf::CircleShape circle(radius * Context::getParameters().pixelByMeter);
+	circle.setOrigin(radius * Context::getParameters().pixelByMeter, radius * Context::getParameters().pixelByMeter);
+	circle.setPosition(center.x* Context::getParameters().pixelByMeter, center.y* Context::getParameters().pixelByMeter);
 	circle.setOutlineColor(b2ColorToSf(color));
 	circle.setOutlineThickness(-1.f);
 	circle.setFillColor(sf::Color::Transparent);
-	if(getParameters().bloomEnabled)
-		getPostEffectsTexture().draw(circle);
+	if(Context::getParameters().bloomEnabled)
+		Context::getPostEffectsTexture().draw(circle);
 	else
-		getWindow().draw(circle);
+		Context::getWindow().draw(circle);
 
 	sf::Vertex line[2];
 	b2Vec2 axisPoint{center + radius * axis};
-	line[0].position = sf::Vector2f(center.x, center.y)*getParameters().pixelByMeter;
-	line[1].position = sf::Vector2f(axisPoint.x, axisPoint.y)*getParameters().pixelByMeter;
+	line[0].position = sf::Vector2f(center.x, center.y)*Context::getParameters().pixelByMeter;
+	line[1].position = sf::Vector2f(axisPoint.x, axisPoint.y)*Context::getParameters().pixelByMeter;
 	line[0].color = b2ColorToSf(color);
 	line[1].color = line[0].color;
-	if(getParameters().bloomEnabled)
-		getPostEffectsTexture().draw(line, 2, sf::Lines);
+	if(Context::getParameters().bloomEnabled)
+		Context::getPostEffectsTexture().draw(line, 2, sf::Lines);
 	else
-		getWindow().draw(line, 2, sf::Lines);
+		Context::getWindow().draw(line, 2, sf::Lines);
 }
 
 void DebugDraw::DrawSegment(const b2Vec2& p1, const b2Vec2& p2, const b2Color& color)
 {
 
 	sf::Vertex line[2];
-	line[0].position = sf::Vector2f(p1.x, p1.y)*getParameters().pixelByMeter;
-	line[1].position = sf::Vector2f(p2.x, p2.y)*getParameters().pixelByMeter;
+	line[0].position = sf::Vector2f(p1.x, p1.y)*Context::getParameters().pixelByMeter;
+	line[1].position = sf::Vector2f(p2.x, p2.y)*Context::getParameters().pixelByMeter;
 	line[0].color = b2ColorToSf(color);
 	line[1].color = line[0].color;
-	if(getParameters().bloomEnabled)
-		getPostEffectsTexture().draw(line, 2, sf::Lines);
+	if(Context::getParameters().bloomEnabled)
+		Context::getPostEffectsTexture().draw(line, 2, sf::Lines);
 	else
-		getWindow().draw(line, 2, sf::Lines);
+		Context::getWindow().draw(line, 2, sf::Lines);
 }
 
 void DebugDraw::DrawTransform(const b2Transform& xf)
 {
 	const float axisScale{0.4f};
 	sf::Vector2f xAxis{xf.q.GetXAxis().x, xf.q.GetXAxis().y};
-	xAxis *= getParameters().pixelByMeter;
+	xAxis *= Context::getParameters().pixelByMeter;
 	sf::Vector2f yAxis{xf.q.GetYAxis().x, xf.q.GetYAxis().y};
-	yAxis *= getParameters().pixelByMeter;
+	yAxis *= Context::getParameters().pixelByMeter;
 	sf::Vector2f p1{xf.p.x, xf.p.y};
-	p1 *= getParameters().pixelByMeter;
+	p1 *= Context::getParameters().pixelByMeter;
 	sf::Vector2f p2;
 
 	sf::Vertex line1[2];
@@ -153,25 +153,25 @@ void DebugDraw::DrawTransform(const b2Transform& xf)
 	line1[0].color = sf::Color::Red;
 	line1[1].position = p1 + axisScale * xAxis;
 	line1[1].color = sf::Color::Red;
-	if(getParameters().bloomEnabled)
-		getPostEffectsTexture().draw(line1, 2, sf::Lines);
+	if(Context::getParameters().bloomEnabled)
+		Context::getPostEffectsTexture().draw(line1, 2, sf::Lines);
 	else
-		getWindow().draw(line1, 2, sf::Lines);
+		Context::getWindow().draw(line1, 2, sf::Lines);
 
 	sf::Vertex line2[2];
 	line2[0].position = p1;
 	line2[0].color = sf::Color::Green;
 	line2[1].position = p1 + axisScale * yAxis;
 	line2[1].color = sf::Color::Green;
-	if(getParameters().bloomEnabled)
-		getPostEffectsTexture().draw(line2, 2, sf::Lines);
+	if(Context::getParameters().bloomEnabled)
+		Context::getPostEffectsTexture().draw(line2, 2, sf::Lines);
 	else
-		getWindow().draw(line2, 2, sf::Lines);
+		Context::getWindow().draw(line2, 2, sf::Lines);
 }
 
 void DebugDraw::drawDebugAth()
 {
-	if(getParameters().debugMode != m_debugMode)
+	if(Context::getParameters().debugMode != m_debugMode)
 	{
 		if(m_debugMode)
 		{
@@ -188,7 +188,7 @@ void DebugDraw::drawDebugAth()
 			m_console->show();
 		}
 	}
-	m_debugMode = getParameters().debugMode;
+	m_debugMode = Context::getParameters().debugMode;
 	if(not m_debugMode)
 		return;
 
@@ -199,13 +199,13 @@ void DebugDraw::drawDebugAth()
 	//TODO move find player in a private static method
 	b2Vec2 position{0, 0};
 	bool found{false};
-	for(auto entity : getEntityManager().entities_with_components(categoryComponent, bodyComponent))
+	for(auto entity : Context::getEntityManager().entities_with_components(categoryComponent, bodyComponent))
 	{
 		//We found the player
 		if(categoryComponent->category.test(Category::Player))
 		{
 			position = bodyComponent->body->GetPosition();
-			const b2Vec2 positionPixels{getParameters().pixelByMeter * position};
+			const b2Vec2 positionPixels{Context::getParameters().pixelByMeter * position};
 			m_positionLabel->show();
 			m_positionLabel->setText("(" + roundOutput(position.x) + ", " + roundOutput(position.y) + ")\n" +
 					"(" + roundOutput(positionPixels.x) + ", " + roundOutput(positionPixels.y) + ")");
@@ -219,11 +219,11 @@ void DebugDraw::drawDebugAth()
 
 	//Mouse position
 	sf::Vector2f mousePositionPixels, mousePosition;
-	if(getParameters().bloomEnabled)
-		mousePositionPixels = getPostEffectsTexture().mapPixelToCoords(sf::Mouse::getPosition());
+	if(Context::getParameters().bloomEnabled)
+		mousePositionPixels = Context::getPostEffectsTexture().mapPixelToCoords(sf::Mouse::getPosition());
 	else
-		mousePositionPixels = getWindow().mapPixelToCoords(sf::Mouse::getPosition(getWindow()));
-	mousePosition = mousePositionPixels / getParameters().pixelByMeter;
+		mousePositionPixels = Context::getWindow().mapPixelToCoords(sf::Mouse::getPosition(Context::getWindow()));
+	mousePosition = mousePositionPixels / Context::getParameters().pixelByMeter;
 	m_mousePositionLabel->setText("(" + roundOutput(mousePosition.x) + ", " + roundOutput(mousePosition.y) + ")\n" +
 			"(" + roundOutput(mousePositionPixels.x) + ", " + roundOutput(mousePositionPixels.y) + ")");
 

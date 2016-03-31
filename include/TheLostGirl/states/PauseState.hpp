@@ -51,6 +51,7 @@ class PauseState : public State
 		typedef ContextAccessor<ContextElement::EventManager,
                                 ContextElement::Parameters,
                                 ContextElement::LangManager,
+                                ContextElement::Player,
                                 ContextElement::Gui> Context;
 
 		/// Return to the GameState state and delete this one.

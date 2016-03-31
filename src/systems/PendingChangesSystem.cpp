@@ -26,24 +26,24 @@ void PendingChangesSystem::update(entityx::EntityManager& entityManager, entityx
 	}
 	while(not bodiesToCreate.empty())
 	{
-		getWorld().CreateBody(bodiesToCreate.front());
+		Context::getWorld().CreateBody(bodiesToCreate.front());
 		delete bodiesToCreate.front();//Delete the definition
 		bodiesToCreate.pop();
 	}
 	while(not bodiesToDestroy.empty())
 	{
-		getWorld().DestroyBody(bodiesToDestroy.front());
+		Context::getWorld().DestroyBody(bodiesToDestroy.front());
 		bodiesToDestroy.pop();
 	}
 	while(not jointsToCreate.empty())
 	{
-		getWorld().CreateJoint(jointsToCreate.front());
+		Context::getWorld().CreateJoint(jointsToCreate.front());
 		delete jointsToCreate.front();//Delete the definition
 		jointsToCreate.pop();
 	}
 	while(not jointsToDestroy.empty())
 	{
-		getWorld().DestroyJoint(jointsToDestroy.front());
+		Context::getWorld().DestroyJoint(jointsToDestroy.front());
 		jointsToDestroy.pop();
 	}
 }

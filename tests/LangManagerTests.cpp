@@ -7,15 +7,28 @@
 struct LangManagerTestsFixture
 {
 	LangManager langs;
-	Parameters parameters;
-	LangManagerTestsFixture()
+#define MACRO_CONTEXT_ELEMENT(Type, Name, m_attribute) Type* m_attribute{nullptr};
+#include <TheLostGirl/ContextElements.inl>
+#undef MACRO_CONTEXT_ELEMENT
+	ContextImpl context;
+
+	/// Constructor.
+	LangManagerTestsFixture():
+		m_parameters{new Parameters()},
+		context
+		{
+#define MACRO_CONTEXT_ELEMENT(Type, Name, m_attribute) *m_attribute,
+#include <TheLostGirl/ContextElements.inl>
+#undef MACRO_CONTEXT_ELEMENT
+		}
 	{
-		parameters.resourcesPath = "testsResources/";
-		Context::parameters = &parameters;
+		m_parameters->resourcesPath = "testsResources/";
 	}
 
+	/// Destructor.
 	~LangManagerTestsFixture()
 	{
+		delete m_parameters;
 	}
 };
 
@@ -24,7 +37,7 @@ BOOST_FIXTURE_TEST_SUITE(LangManagerTests, LangManagerTestsFixture)
 BOOST_AUTO_TEST_CASE(langsTests)
 {
 	std::map<std::string, std::wstring> entries;
-	const std::string sourceFileName{parameters.resourcesPath + "lang/" + langs.getDefaultLang()};
+	const std::string sourceFileName{m_parameters->resourcesPath + "lang/" + langs.getDefaultLang()};
 	std::string translationFileName;
 	std::ifstream sourceFileStream;
 	std::wifstream translationFileStream;
@@ -32,7 +45,7 @@ BOOST_AUTO_TEST_CASE(langsTests)
 	//Check if all translation files are complete
 	for(auto& availableLang : LangManager::getAvailableLangs())
 	{
-		translationFileName = parameters.resourcesPath + "lang/" + availableLang;
+		translationFileName = m_parameters->resourcesPath + "lang/" + availableLang;
 		entries.clear();
 		sourceFileStream.open(sourceFileName);
 		//Things to handle wide encoding

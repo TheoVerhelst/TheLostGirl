@@ -46,6 +46,11 @@ class IntroState : public State
 		void receive(const ParametersChange& parametersChange);
 
 	private:
+		typedef ContextAccessor<ContextElement::EventManager,
+                                ContextElement::Parameters,
+                                ContextElement::LangManager,
+                                ContextElement::Gui> Context;
+
 		/// Reset all texts in the buttons and other widgets.
 		void resetTexts();
 

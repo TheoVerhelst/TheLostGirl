@@ -47,6 +47,7 @@ class KeyConfigurationState : public State
 		/// Context type of this class.
 		typedef ContextAccessor<ContextElement::EventManager,
                                 ContextElement::Parameters,
+                                ContextElement::Player,
                                 ContextElement::LangManager,
                                 ContextElement::Gui> Context;
 

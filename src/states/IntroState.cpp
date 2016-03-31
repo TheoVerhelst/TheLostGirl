@@ -9,8 +9,8 @@
 
 IntroState::IntroState()
 {
-	getEventManager().subscribe<ParametersChange>(*this);
-	tgui::Gui& gui(getGui());
+	Context::getEventManager().subscribe<ParametersChange>(*this);
+	tgui::Gui& gui(Context::getGui());
 	const auto guiWidth = tgui::bindWidth(gui);
 
 	m_background = std::make_shared<tgui::Panel>();
@@ -19,11 +19,11 @@ IntroState::IntroState()
 	m_background->setBackgroundColor(sf::Color(255, 255, 255, 100));
 	gui.add(m_background);
 
-	m_logo = std::make_shared<tgui::Picture>(getParameters().resourcesPath + "images/title.png");
+	m_logo = std::make_shared<tgui::Picture>(Context::getParameters().resourcesPath + "images/title.png");
 	m_logo->setPosition((tgui::bindWidth(gui) - tgui::bindWidth(m_logo)) / 2.f, tgui::bindHeight(gui) * 0.02f);
 	gui.add(m_logo);
 
-	m_sentence = getParameters().guiTheme->load("Label");
+	m_sentence = Context::getParameters().guiTheme->load("Label");
 	m_sentence->setTextSize(20);
 	resetTexts();
 	m_sentence->setPosition(tgui::bindWidth(gui)/2.f - tgui::bindWidth(m_sentence)/2.f, tgui::bindHeight(gui) * 0.6f);
@@ -32,9 +32,9 @@ IntroState::IntroState()
 
 IntroState::~IntroState()
 {
-	getGui().remove(m_background);
-	getGui().remove(m_logo);
-	getGui().remove(m_sentence);
+	Context::getGui().remove(m_background);
+	Context::getGui().remove(m_logo);
+	Context::getGui().remove(m_sentence);
 }
 
 void IntroState::draw()
@@ -64,5 +64,5 @@ void IntroState::receive(const ParametersChange& parametersChange)
 
 void IntroState::resetTexts()
 {
-	m_sentence->setText(getLangManager().tr("Press any key to continue..."));
+	m_sentence->setText(Context::getLangManager().tr("Press any key to continue..."));
 }

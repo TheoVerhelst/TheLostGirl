@@ -225,7 +225,7 @@ inline float32 Mover::getMid(b2Body* body) const
 	{
 		SpriteComponent::Handle spriteComponent{entity.component<SpriteComponent>()};
 		if(spriteComponent)
-			return spriteComponent->sprite.getLocalBounds().width/(2.f*getParameters().pixelByMeter);
+			return spriteComponent->sprite.getLocalBounds().width/(2.f*Context::getParameters().pixelByMeter);
 	}
 	return body->GetLocalCenter().x;
 }

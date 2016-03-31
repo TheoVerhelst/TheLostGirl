@@ -2,10 +2,10 @@
 
 void State::requestStackPop()
 {
-	getStateStack().popState();
+	Context::getStateStack().popState();
 }
 
 void State::requestStateClear()
 {
-	getStateStack().clearStates();
+	Context::getStateStack().clearStates();
 }

@@ -11,5 +11,5 @@ void ScriptsSystem::update(entityx::EntityManager& entityManager, entityx::Event
 	for(entityx::Entity entity : entityManager.entities_with_components(scriptsComponent, deadComponent))
 		if(not deadComponent->dead)
 			for(auto& scriptName : scriptsComponent->scriptsNames)
-				getScriptManager().get(scriptName).interpret(entity);
+				Context::getScriptManager().get(scriptName).interpret(entity);
 }

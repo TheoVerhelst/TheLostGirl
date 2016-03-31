@@ -20,7 +20,7 @@ void ScrollingSystem::update(entityx::EntityManager& entityManager, entityx::Eve
 	{
 		TransformComponent::Handle transformComponent(m_player.component<TransformComponent>());
 		sf::Vector2f playerPosition{transformComponent->transform.x, transformComponent->transform.y};
-		sf::View view{getParameters().bloomEnabled ? getPostEffectsTexture().getView() : getWindow().getView()};
+		sf::View view{Context::getParameters().bloomEnabled ? Context::getPostEffectsTexture().getView() : Context::getWindow().getView()};
 		const sf::Vector2f halfViewSize{view.getSize()/2.f};
 		//Compute the maximum and minimum center coordinates that the view can have
 		const sf::Vector2f viewCenterMin{sf::Vector2f(m_levelRect.left, m_levelRect.top) + halfViewSize};
@@ -31,10 +31,10 @@ void ScrollingSystem::update(entityx::EntityManager& entityManager, entityx::Eve
 
 		//Assign the position to the view
 		view.setCenter(playerPosition);
-		if(getParameters().bloomEnabled)
-			getPostEffectsTexture().setView(view);
+		if(Context::getParameters().bloomEnabled)
+			Context::getPostEffectsTexture().setView(view);
 		else
-			getWindow().setView(view);
+			Context::getWindow().setView(view);
 
 		//The position of the screen in world coordinates
 		const sf::Vector2f viewPos{playerPosition - viewCenterMin};
@@ -61,7 +61,7 @@ void ScrollingSystem::searchPlayer()
 {
 	CategoryComponent::Handle categoryComponent;
 	TransformComponent::Handle transformComponent;
-	for(auto entity : getEntityManager().entities_with_components(categoryComponent, transformComponent))
+	for(auto entity : Context::getEntityManager().entities_with_components(categoryComponent, transformComponent))
 	{
 		//We found the player
 		if(categoryComponent->category.test(Category::Player))

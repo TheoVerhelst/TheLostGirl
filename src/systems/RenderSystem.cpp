@@ -33,9 +33,9 @@ void RenderSystem::update(entityx::EntityManager& entityManager, entityx::EventM
 	for(auto it(orderedEntities.crbegin()); it != orderedEntities.crend(); it++)
 		//Draw the entities of this plan
 		for(auto sprite : it->second)
-			if(m_postEffectSupported and getParameters().bloomEnabled)
-				getPostEffectsTexture().draw(*sprite);
+			if(m_postEffectSupported and Context::getParameters().bloomEnabled)
+				Context::getPostEffectsTexture().draw(*sprite);
 			else
-				getWindow().draw(*sprite);
+				Context::getWindow().draw(*sprite);
 
 }

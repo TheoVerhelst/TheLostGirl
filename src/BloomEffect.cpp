@@ -3,10 +3,10 @@
 
 BloomEffect::BloomEffect()
 {
-	m_shaders.load("brightness pass", getParameters().resourcesPath + "shaders/Fullpass.vert", getParameters().resourcesPath + "shaders/Brightness.frag");
-	m_shaders.load("down sample pass", getParameters().resourcesPath + "shaders/Fullpass.vert", getParameters().resourcesPath + "shaders/DownSample.frag");
-	m_shaders.load("gaussian blur pass", getParameters().resourcesPath + "shaders/Fullpass.vert", getParameters().resourcesPath + "shaders/GuassianBlur.frag");
-	m_shaders.load("add pass", getParameters().resourcesPath + "shaders/Fullpass.vert", getParameters().resourcesPath + "shaders/Add.frag");
+	m_shaders.load("brightness pass", Context::getParameters().resourcesPath + "shaders/Fullpass.vert", Context::getParameters().resourcesPath + "shaders/Brightness.frag");
+	m_shaders.load("down sample pass", Context::getParameters().resourcesPath + "shaders/Fullpass.vert", Context::getParameters().resourcesPath + "shaders/DownSample.frag");
+	m_shaders.load("gaussian blur pass", Context::getParameters().resourcesPath + "shaders/Fullpass.vert", Context::getParameters().resourcesPath + "shaders/GuassianBlur.frag");
+	m_shaders.load("add pass", Context::getParameters().resourcesPath + "shaders/Fullpass.vert", Context::getParameters().resourcesPath + "shaders/Add.frag");
 }
 
 BloomEffect::~BloomEffect()

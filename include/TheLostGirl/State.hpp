@@ -65,7 +65,7 @@ class State: public entityx::Receiver<State>
 template<typename T, typename ... Args>
 void State::requestStackPush(Args&&... args)
 {
-	getStateStack().pushState<T>(std::forward<Args>(args)...);
+	Context::getStateStack().pushState<T>(std::forward<Args>(args)...);
 }
 
 #endif//STATE_HPP

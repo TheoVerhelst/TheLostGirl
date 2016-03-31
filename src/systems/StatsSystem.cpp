@@ -25,7 +25,7 @@ void StatsSystem::update(entityx::EntityManager& entityManager, entityx::EventMa
 		const DeathComponent::Handle deathComponent(entity.component<DeathComponent>());
 		bool isDead{deathComponent and deathComponent->dead};
 		if(not isPlayer(entity) and healthComponent->current <= 0.f and not isDead)
-			getSystemManager().system<PendingChangesSystem>()->commandQueue.emplace(entity, Death());
+			Context::getSystemManager().system<PendingChangesSystem>()->commandQueue.emplace(entity, Death());
 
 		//Regen health
 		if(not isDead and healthComponent->current < healthComponent->maximum)

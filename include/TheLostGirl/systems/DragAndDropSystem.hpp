@@ -4,6 +4,7 @@
 #include <queue>
 #include <entityx/entityx.h>
 #include <SFML/Graphics.hpp>
+#include <TheLostGirl/Context.hpp>
 
 /// System that handle the drag and drop.
 /// It draw a line on the screen, and set the bending angle of the playr's archer.
@@ -26,6 +27,12 @@ class DragAndDropSystem : public entityx::System<DragAndDropSystem>
 		void setDragAndDropActivation(bool isActive);
 
 	private:
+		/// Context type of this class.
+		typedef ContextAccessor<ContextElement::SystemManager,
+		                        ContextElement::Window,
+		                        ContextElement::Parameters,
+		                        ContextElement::PostEffectsTexture> Context;
+
 		sf::Vector2i m_origin;              ///< Position of the mouse when the drag and drop started.
 		sf::Vertex m_line[2];               ///< The drag and drop line.
 		bool m_isActive;                    ///< True when the drag and drop is actived.

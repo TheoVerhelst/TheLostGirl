@@ -5,9 +5,13 @@
 #include <TheLostGirl/ContextElements.inl>
 #undef MACRO_CONTEXT_ELEMENT
 
-ContextImpl::ContextImpl(Application& application)
+ContextImpl::ContextImpl(
+#define MACRO_CONTEXT_ELEMENT(Type, Name, m_attribute) Type& Name,
+#include <TheLostGirl/ContextElements.inl>
+#undef MACRO_CONTEXT_ELEMENT
+		std::nullptr_t dummy)
 {
-#define MACRO_CONTEXT_ELEMENT(Type, Name, m_attribute) m_attribute = &application.m_attribute;
+#define MACRO_CONTEXT_ELEMENT(Type, Name, m_attribute) m_attribute = &Name;
 #include <TheLostGirl/ContextElements.inl>
 #undef MACRO_CONTEXT_ELEMENT
 }
