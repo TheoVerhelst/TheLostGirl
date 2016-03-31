@@ -32,7 +32,7 @@ void Death::operator()(entityx::Entity entity) const
 				if(dice <= drop.probability)
 				{
 					//Construct and place item into the entity inventory.
-					entityx::Entity item = entity.getManager()->create();
+					entityx::Entity item = Context::getEntityManager().create();
 					ItemComponent::Handle itemComponent = item.assign<ItemComponent>();
 					itemComponent->category = drop.category;
 					itemComponent->type = drop.type;

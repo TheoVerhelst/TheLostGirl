@@ -2,6 +2,7 @@
 #define DEATH_HPP
 
 #include <TheLostGirl/Action.hpp>
+#include <TheLostGirl/Context.hpp>
 
 namespace entityx
 {
@@ -18,7 +19,10 @@ class Death : public Action
 		/// Overload of the () operator.
 		/// \param entity Entity that deads.
 		virtual void operator()(entityx::Entity entity) const override;
+
+	private:
+		/// Context type of this class.
+		typedef ContextAccessor<ContextElement::EntityManager> Context;
 };
 
 #endif//DEATH_HPP
-
