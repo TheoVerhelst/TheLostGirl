@@ -17,8 +17,8 @@ function install_github()
 		cd $repo_name-master/build
 	fi
 	cmake ..
-	make -i
-	sudo make install -i
+	make -i --quiet
+	sudo make install -i --quiet
 }
 
 install_github SFML SFML
@@ -31,4 +31,4 @@ wget http://downloads.sourceforge.net/project/boost/boost/1.60.0/boost_1_60_0.zi
 unzip -qq boost_1_60_0.zip
 cd boost_1_60_0
 ./bootstrap.sh --with-libraries=filesystem,system,test
-sudo ./b2 install
+sudo ./b2 -d0 install
