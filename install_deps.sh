@@ -17,7 +17,7 @@ function install_github()
 		cd $repo_name-master/build
 	fi
 	cmake ..
-	make -j2 -i
+	make -i
 	sudo make install -i
 }
 
