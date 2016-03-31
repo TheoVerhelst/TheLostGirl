@@ -43,7 +43,7 @@ before_script:
 script:
     - mkdir build
     - cd build
-    - cmake ..
+    - cmake .. -DTLG_BUILD_TESTS=True
     - make
     - ./TheLostGirlTests
 
