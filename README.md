@@ -1,6 +1,7 @@
 # The Lost Girl {#mainpage}
 
 [![Build Status](https://travis-ci.org/TheoVerhelst/TheLostGirl.svg?branch=master)](https://travis-ci.org/TheoVerhelst/TheLostGirl)
+[![codecov.io](https://codecov.io/github/TheoVerhelst/TheLostGirl/coverage.svg?branch=master)](https://codecov.io/github/TheoVerhelst/TheLostGirl?branch=master)
 
 ## Synopsis
 The Lost Girl is an archery role-playing game represented in scrolling 2D.<br/>
