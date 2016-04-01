@@ -81,6 +81,12 @@ class GameState : public State
 		/// Clears all entities.
 		void clear();
 
+		/// Gets a reference to a system. This is only for ease of typing.
+		/// \tparam SystemType The type of system to get.
+		/// \return A reference to the system.
+		template <class SystemType>
+		static inline T& getSystem();
+
 		std::map<std::string, entityx::Entity> m_entities;                    ///< All game entities.
 		std::map<std::string, entityx::Entity> m_sceneEntities;               ///< All scene entities.
 		std::map<std::string, std::vector<SceneReplaces>> m_sceneEntitiesData;///< A map containing data about scene entities.

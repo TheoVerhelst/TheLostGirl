@@ -74,7 +74,7 @@ bool GameState::handleEvent(const sf::Event& event)
 	Context::getPlayer().handleEvent(event);
 	//Update the drag and drop state
 	const bool isDragAndDropActive{Context::getPlayer().isActived(Player::Action::Bend)};
-	Context::getSystemManager().system<DragAndDropSystem>()->setDragAndDropActivation(isDragAndDropActive);
+	getSystem<DragAndDropSystem>().setDragAndDropActivation(isDragAndDropActive);
 	return false;
 }
 
@@ -120,7 +120,7 @@ Json::Value GameState::getJsonValueFromGame()
 
 	//time
 	root["time"]["speed"] = m_timeSpeed;
-	root["time"]["date"] = Context::getSystemManager().system<TimeSystem>()->getRealTime().asSeconds();
+	root["time"]["date"] = getSystem<TimeSystem>().getRealTime().asSeconds();
 
 	//level data
 	root["level data"]["identifier"] = m_levelIdentifier;
@@ -199,9 +199,9 @@ void GameState::initWorld(const std::string& filePath)
 		}
 
 		const Json::Value time{root["time"]};
-		Context::getSystemManager().system<TimeSystem>()->setTotalTime(sf::seconds(time["date"].asFloat()));
+		getSystem<TimeSystem>().setTotalTime(sf::seconds(time["date"].asFloat()));
 		m_timeSpeed = time["speed"].asFloat();
-		Context::getSystemManager().system<AnimationsSystem>()->setTimeSpeed(m_timeSpeed);
+		getSystem<AnimationsSystem>().setTimeSpeed(m_timeSpeed);
 
 		const Json::Value level{root["level data"]};
 		//number of plans
@@ -220,7 +220,7 @@ void GameState::initWorld(const std::string& filePath)
 		m_levelRect.top = levelBox["x"].asFloat();
 		m_levelRect.left = levelBox["y"].asFloat();
 
-		Context::getSystemManager().system<ScrollingSystem>()->setLevelData(m_levelRect, m_referencePlan);
+		getSystem<ScrollingSystem>().setLevelData(m_levelRect, m_referencePlan);
 		Json::Value genericEntities;
 		if(root.isMember("import"))
 		{
@@ -424,7 +424,7 @@ void GameState::initWorld(const std::string& filePath)
 			}
 		}
 
-		const float daySeconds{std::remainder(Context::getSystemManager().system<TimeSystem>()->getRealTime().asSeconds(), 600.f)};
+		const float daySeconds{std::remainder(getSystem<TimeSystem>().getRealTime().asSeconds(), 600.f)};
 		//Add sky animations.
 		if(m_entities.find("day sky") != m_entities.end() and m_entities["day sky"].valid())
 		{
@@ -445,7 +445,7 @@ void GameState::initWorld(const std::string& filePath)
 			skyAnimationsComp->animationsManager.play("day/night cycle");
 		}
 
-		Context::getSystemManager().system<ScrollingSystem>()->searchPlayer();
+		getSystem<ScrollingSystem>().searchPlayer();
 		Context::getSystemManager().update<ScrollingSystem>(0.f);
 		Context::getSystemManager().update<AnimationsSystem>(0.f);
 		Context::getPlayer().handleInitialInputState();
@@ -475,4 +475,10 @@ void GameState::clear()
 	}
 	for(auto& sceneEntity : m_sceneEntities)
 		sceneEntity.second.destroy();
+}
+
+template <class SystemType>
+static inline T& GameState::getSystem()
+{
+	return *Context::getSystemManager().system<SystemType>();
 }
