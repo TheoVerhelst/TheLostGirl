@@ -21,7 +21,7 @@ function install_github()
 		cd $repo_name-master/build
 	fi
 
-	cmake $cmake_options ..
+	cmake $cmake_options -DCMAKE_BUILD_TYPE=Debug ..
 	make -i --quiet
 	sudo make install -i --quiet
 	cd $base_path # Don't forget to restart from the base path for the next library
