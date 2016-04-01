@@ -56,8 +56,9 @@ class GameState : public State
                                 ContextElement::TextureManager,
                                 ContextElement::World> Context;
 
-		/// Structure that hold data about scene entities.
-		/// The role of this texture is to hold data that cannot easily be retrieved in the EntityManager instance.
+		/// Structure that holds data about scene entities. The role of this
+		/// structure is to hold data that cannot easily be retrieved in the
+		/// entityx::EntityManager instance.
 		struct SceneReplaces
 		{
 			sf::IntRect origin;             ///< Coordinate of the texture to place in the world.
@@ -81,14 +82,28 @@ class GameState : public State
 		/// Clears all entities.
 		void clear();
 
+		/// Loads informations on a save such as levelData, the time, and so on.
+		/// \param root The json root value of the save.
 		void loadSaveInformations(const Json::Value& root);
 
+		/// Loads generic entities from the list of generic entities.
+		/// \param includes A json array containing the entities to load.
+		/// \param model The json model used to parse the imported entities.
+		/// \return A json value with all generic entities.
 		Json::Value loadGenericEntities(const Json::Value& includes, const Json::Value& model);
 
+		/// Effectevely deserializes the entities in jsonEntities, taking the
+		/// generic entities in account.
+		/// \param jsonEntities Json values to deserialize.
+		/// \param genericEntities The generic entities.
 		void deserializeEntities(Json::Value& jsonEntities, const Json::Value& genericEntities);
 
+		/// Loads the replaced images (such as trees in first plan) from their
+		/// serialized form in a json value.
+		/// \param replaces Data about replaced images.
 		void loadReplaces(const Json::Value& replaces);
 
+		/// Loads the background images.
 		void loadBackground();
 
 		/// Adds the sky animations to sky entities.
