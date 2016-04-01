@@ -198,253 +198,26 @@ void GameState::initWorld(const std::string& filePath)
 			JsonHelper::merge(root, levelToLoad);
 		}
 
-		const Json::Value time{root["time"]};
-		getSystem<TimeSystem>().setTotalTime(sf::seconds(time["date"].asFloat()));
-		m_timeSpeed = time["speed"].asFloat();
-		getSystem<AnimationsSystem>().setTimeSpeed(m_timeSpeed);
+		loadSaveInformations(root);
 
-		const Json::Value level{root["level data"]};
-		//number of plans
-		//must load it now in order to know how much plans can be defined
-		m_numberOfPlans = level["number of plans"].asUInt();
-		const std::string identifier{level["identifier"].asString()};
-		if(hasWhiteSpace(identifier))
-			throw std::runtime_error("\"level.identifier\" value contains whitespaces.");
-		m_levelIdentifier = identifier;
-		m_referencePlan = level["reference plan"].asFloat();
-
-		//box
-		const Json::Value levelBox{level["box"]};
-		m_levelRect.width = levelBox["w"].asFloat();
-		m_levelRect.height = levelBox["h"].asFloat();
-		m_levelRect.top = levelBox["x"].asFloat();
-		m_levelRect.left = levelBox["y"].asFloat();
-
-		getSystem<ScrollingSystem>().setLevelData(m_levelRect, m_referencePlan);
 		Json::Value genericEntities;
 		if(root.isMember("import"))
-		{
-			const Json::Value includes{root["import"]};
-			for(Json::ArrayIndex i{0}; i < includes.size(); ++i)
-			{
-				//Parse the imported data
-				Json::Value includeRoot{JsonHelper::loadFromFile(Context::getParameters().resourcesPath + "levels/entities/" + includes[i].asString())};
+			genericEntities = loadGenericEntities(root["import"], model);
 
-				//Parsing of the included file from the model file
-				JsonHelper::parse(includeRoot, model);
-
-				//Add generic entities to others
-				Json::Value currentGenericEntities{includeRoot["entities"]};
-				for(const std::string& genericEntityName : currentGenericEntities.getMemberNames())
-					genericEntities[genericEntityName] = currentGenericEntities[genericEntityName];
-			}
-		}
-
-		//entities
-		//Load entities before everything else allow to call the ScrollingSystem update after each sprite creation,
-		//and so place sprite directly at the right position when loading the level, because the player is an entity,
-		//and the scrolling system replace sprite according to the player position.
 		if(root.isMember("entities"))
 		{
 			Context::getEventManager().emit<LoadingStateChange>("Loading entities");
-			Json::Value jsonEntities{root["entities"]};
-			Serializer s(m_entities, jsonEntities);
-			std::set<std::string> alreadyDeserialized;
-			std::function<void(const std::string&)> deserializerLambda = [&](const std::string& entityName)
-			{
-				if(alreadyDeserialized.count(entityName) > 0)
-					return;
-
-				entityx::Entity& entity{m_entities.emplace(entityName, Context::getEntityManager().create()).first->second};
-				Json::Value& jsonEntity{jsonEntities[entityName]};
-
-				//If the entity is derivated from a base entities, add json values of the base to the json entity
-				if(jsonEntity.isMember("base"))
-				{
-					const std::string baseName{jsonEntity["base"].asString()};
-					if(not TEST(genericEntities.isMember(baseName)))
-						throw std::runtime_error("\"" + baseName + "\" is not a valid base.");
-					JsonHelper::merge(jsonEntity, genericEntities[baseName]);
-				}
-
-				//Deserialize first all dependecies of this entity
-				Json::Value dependencies{jsonEntity["dependencies"]};
-				for(Json::ArrayIndex i{0}; i < dependencies.size(); ++i)
-					if(TEST(jsonEntities.isMember(dependencies[i].asString())))
-						deserializerLambda(dependencies[i].asString());
-					else
-						throw std::runtime_error("\"" + dependencies[i].asString() + "\" is not a valid dependecy.");
-
-				s.deserialize<TransformComponent>(entityName, "transform");
-				s.deserialize<BodyComponent>(entityName, "body");
-				BodyComponent::Handle bodyComponent{entity.component<BodyComponent>()};
-				if(bodyComponent)
-					bodyComponent->body->SetUserData(&entity);
-				s.deserialize<SpriteComponent>(entityName, "sprite");
-				s.deserialize<AnimationsComponent<SpriteSheetAnimation>>(entityName, "spritesheet animations");
-				s.deserialize<InventoryComponent>(entityName, "inventory");
-				s.deserialize<ArcherComponent>(entityName, "archer");
-				s.deserialize<CategoryComponent>(entityName, "categories");
-				s.deserialize<WalkComponent>(entityName, "walk");
-				s.deserialize<JumpComponent>(entityName, "jump");
-				s.deserialize<HealthComponent>(entityName, "health");
-				s.deserialize<StaminaComponent>(entityName, "stamina");
-				s.deserialize<DirectionComponent>(entityName, "direction");
-				s.deserialize<FallComponent>(entityName, "fall");
-				s.deserialize<ArrowComponent>(entityName, "arrow");
-				s.deserialize<HardnessComponent>(entityName, "hardness");
-				s.deserialize<ScriptsComponent>(entityName, "scripts");
-				s.deserialize<DetectionRangeComponent>(entityName, "detection range");
-				s.deserialize<DeathComponent>(entityName, "death");
-				s.deserialize<NameComponent>(entityName, "name");
-				s.deserialize<HandToHandComponent>(entityName, "hand to hand");
-				s.deserialize<ActorComponent>(entityName, "actor");
-				s.deserialize<ItemComponent>(entityName, "item");
-				s.deserialize<HoldItemComponent>(entityName, "hold item");
-				s.deserialize<ArticuledArmsComponent>(entityName, "articuled arms");
-				s.deserialize<BowComponent>(entityName, "bow");
-				s.deserialize<QuiverComponent>(entityName, "quiver");
-				//End deserialize
-				alreadyDeserialized.insert(entityName);
-			};
-			for(const std::string& name : jsonEntities.getMemberNames())
-				//Don't check if  jsonEntities[name] has been already deserialized, because
-				//if there is only a few dependencies, there will be more useless check than useless lambda call
-				deserializerLambda(name);
+			deserializeEntities(root["entities"], genericEntities);
 		}
 
 		if(not Context::getParameters().debugMode)
 		{
 			Context::getEventManager().emit<LoadingStateChange>("Loading background");
-			//level
-			//for each group of replaces
-			for(const std::string groupOfReplacesName : level["replaces"].getMemberNames())
-			{
-				//Filename of the image to load
-				const std::string fileTexture{m_levelIdentifier + "_" + groupOfReplacesName};
-				//Path of the image to load
-				const std::string path{Context::getParameters().resourcesPath + "images/levels/" + m_levelIdentifier + "/" + fileTexture + ".png"};
-
-				const Json::Value groupOfReplaces{level["replaces"][groupOfReplacesName]};
-				//Vector that will be added to m_sceneEntitiesData
-				std::vector<SceneReplaces> planData;
-				//For each image frame in the group of replaces
-				for(Json::ArrayIndex i{0}; i < groupOfReplaces.size(); i++)
-				{
-					const Json::Value image{groupOfReplaces[i]};
-					const Json::Value origin{image["origin"]};
-
-					//Coordinates of the original image
-					sf::IntRect originRect;
-					originRect.left = origin["x"].asInt();
-					originRect.top = origin["y"].asInt();
-					originRect.width = origin["w"].asInt();
-					originRect.height = origin["h"].asInt();
-
-					SceneReplaces replacesData;
-					replacesData.origin = {origin["x"].asInt(), origin["y"].asInt(), origin["w"].asInt(), origin["h"].asInt()};
-
-					//Load the texture
-					//Identifier of the texture, in format "level_plan_texture"
-					const std::string textureIdentifier{fileTexture + "_" + std::to_string(i)};
-					Context::getTextureManager().load(textureIdentifier, path, originRect);
-					//Replaces
-					const Json::Value replaces{image["replaces"]};
-					//For each replacing of the image
-					for(Json::ArrayIndex j{0}; j < replaces.size(); j++)
-					{
-						const Json::Value replace{replaces[j]};
-						//Identifier of the entity, in format "level_plan_texture_replace"
-						const std::string replaceIdentifier{textureIdentifier + "_" + std::to_string(j)};
-						//Position where the frame should be replaced
-						Transform replaceTransform;
-						replaceTransform.x = replace["x"].asFloat();
-						replaceTransform.y = replace["y"].asFloat();
-						replaceTransform.z = replace["z"].asFloat();
-						replaceTransform.angle = replace["angle"].asFloat();
-
-						replacesData.replaces.push_back({replace["x"].asFloat(), replace["y"].asFloat(), replace["z"].asFloat(), replace["angle"].asFloat()});
-
-						//Create an entity
-						m_sceneEntities.emplace(replaceIdentifier, Context::getEntityManager().create());
-						//Create a sprite with the loaded texture
-						//Assign the sprite to the entity
-						sf::Sprite replaceSpr(Context::getTextureManager().get(textureIdentifier));
-						replaceSpr.setPosition(replaceTransform.x, replaceTransform.y);
-						replaceSpr.setRotation(replaceTransform.angle);
-						SpriteComponent::Handle sprComp{m_sceneEntities[replaceIdentifier].assign<SpriteComponent>()};
-						sprComp->sprite = replaceSpr;
-						TransformComponent::Handle trsfComp{m_sceneEntities[replaceIdentifier].assign<TransformComponent>()};
-						trsfComp->transform = replaceTransform;
-						CategoryComponent::Handle catComp{m_sceneEntities[replaceIdentifier].assign<CategoryComponent>()};
-						catComp->category = {Category::Scene};
-					}
-					planData.push_back(replacesData);
-				}
-				m_sceneEntitiesData.emplace(groupOfReplacesName, planData);
-			}
-
-			//Load all images in multiples chunks
-			const float chunkSize{static_cast<float>(sf::Texture::getMaximumSize())};
-			const float viewWidth{Context::getParameters().defaultViewSize.x};
-			const float scalableLevelWidth{m_levelRect.width - viewWidth};
-			for(unsigned int i{0}; i < m_numberOfPlans; ++i)
-			{
-				const std::string fileTexture{m_levelIdentifier + "_" + std::to_string(i)};
-				const std::string path{Context::getParameters().resourcesPath + "images/levels/" + m_levelIdentifier + "/" + fileTexture + ".png"};
-				//The length of the plan, relatively to the reference
-				const float planLength{scalableLevelWidth * std::pow(1.5f, m_referencePlan - static_cast<float>(i)) + viewWidth};
-				//Number of chunks to load in this plan
-				const int numberOfChunks{static_cast<int>(planLength / chunkSize) + 1};
-
-				for(int j{0}; j < numberOfChunks; ++j)
-				{
-					//Identifier of the entity, in format "level_plan_chunk"
-					const std::string textureIdentifier{fileTexture + "_" + std::to_string(j)};
-					//Size of the chunk to load, may be truncated if we reach the end of the image.
-					float currentChunkSize{chunkSize};
-					if(j == numberOfChunks - 1)
-						currentChunkSize = planLength - chunkSize * static_cast<float>(j);
-					Context::getTextureManager().load<sf::IntRect>(textureIdentifier, path,
-							sf::IntRect(j * static_cast<int>(chunkSize), 0, static_cast<int>(currentChunkSize), static_cast<int>(m_levelRect.height)));
-					//Create an entity
-					m_sceneEntities.emplace(textureIdentifier, Context::getEntityManager().create());
-					//Create a sprite with the loaded texture
-					//Assign the sprite to the entity
-					sf::Sprite chunkSpr(Context::getTextureManager().get(textureIdentifier));
-					chunkSpr.setPosition(static_cast<float>(j*chunkSize), 0.f);
-					SpriteComponent::Handle sprComp{m_sceneEntities[textureIdentifier].assign<SpriteComponent>()};
-					sprComp->sprite = chunkSpr;
-					TransformComponent::Handle trsfComp{m_sceneEntities[textureIdentifier].assign<TransformComponent>()};
-					trsfComp->transform = {static_cast<float>(j) * chunkSize, 0.f, static_cast<float>(i), 0.f};
-					CategoryComponent::Handle catComp{m_sceneEntities[textureIdentifier].assign<CategoryComponent>()};
-					catComp->category = {Category::Scene};
-					//Update the ScrollingSystem in order to directly display the sprite at the right position
-				}
-			}
+			loadReplaces(root["level"]["replaces"]);
+			loadBackground();
 		}
 
-		const float daySeconds{std::remainder(getSystem<TimeSystem>().getRealTime().asSeconds(), 600.f)};
-		//Add sky animations.
-		if(m_entities.find("day sky") != m_entities.end() and m_entities["day sky"].valid())
-		{
-			AnimationsComponent<SkyAnimation>::Handle skyAnimationsComp{m_entities["day sky"].assign<AnimationsComponent<SkyAnimation>>()};
-			//Add the animation, this is a sky animation, the importance is equal to zero, the duration is 600 seconds (1 day), and it loops.
-			skyAnimationsComp->animationsManager.addAnimation("day/night cycle", SkyAnimation(m_entities["day sky"]), 0, sf::seconds(600), true);
-			skyAnimationsComp->animationsManager.setProgress("day/night cycle", daySeconds/600.f);
-			skyAnimationsComp->animationsManager.play("day/night cycle");
-		}
-
-		//Add sky animations.
-		if(m_entities.find("night sky") != m_entities.end() and m_entities["night sky"].valid())
-		{
-			AnimationsComponent<SkyAnimation>::Handle skyAnimationsComp{m_entities["night sky"].assign<AnimationsComponent<SkyAnimation>>()};
-			//Add the animation, this is a sky animation, the importance is equal to zero, the duration is 600 seconds (1 day), and it loops.
-			skyAnimationsComp->animationsManager.addAnimation("day/night cycle", SkyAnimation(m_entities["night sky"]), 0, sf::seconds(600), true);
-			skyAnimationsComp->animationsManager.setProgress("day/night cycle", daySeconds/600.f);
-			skyAnimationsComp->animationsManager.play("day/night cycle");
-		}
-
+		addSkyAnimations();
 		getSystem<ScrollingSystem>().searchPlayer();
 		Context::getSystemManager().update<ScrollingSystem>(0.f);
 		Context::getSystemManager().update<AnimationsSystem>(0.f);
@@ -477,8 +250,256 @@ void GameState::clear()
 		sceneEntity.second.destroy();
 }
 
+void GameState::loadSaveInformations(const Json::Value& root)
+{
+	const Json::Value time{root["time"]};
+	getSystem<TimeSystem>().setTotalTime(sf::seconds(time["date"].asFloat()));
+	m_timeSpeed = time["speed"].asFloat();
+	getSystem<AnimationsSystem>().setTimeSpeed(m_timeSpeed);
+
+	const Json::Value level{root["level data"]};
+	//number of plans
+	//must load it now in order to know how much plans can be defined
+	m_numberOfPlans = level["number of plans"].asUInt();
+	const std::string identifier{level["identifier"].asString()};
+	if(hasWhiteSpace(identifier))
+		throw std::runtime_error("\"level.identifier\" value contains whitespaces.");
+	m_levelIdentifier = identifier;
+	m_referencePlan = level["reference plan"].asFloat();
+
+	//box
+	const Json::Value levelBox{level["box"]};
+	m_levelRect.width = levelBox["w"].asFloat();
+	m_levelRect.height = levelBox["h"].asFloat();
+	m_levelRect.top = levelBox["x"].asFloat();
+	m_levelRect.left = levelBox["y"].asFloat();
+
+	getSystem<ScrollingSystem>().setLevelData(m_levelRect, m_referencePlan);
+}
+
+Json::Value GameState::loadGenericEntities(const Json::Value& includes, const Json::Value& model)
+{
+	Json::Value genericEntities;
+	for(Json::ArrayIndex i{0}; i < includes.size(); ++i)
+	{
+		//Parse the imported data
+		Json::Value includeRoot{JsonHelper::loadFromFile(Context::getParameters().resourcesPath + "levels/entities/" + includes[i].asString())};
+
+		//Parsing of the included file from the model file
+		JsonHelper::parse(includeRoot, model);
+
+		//Add generic entities to others
+		Json::Value currentGenericEntities{includeRoot["entities"]};
+		for(const std::string& genericEntityName : currentGenericEntities.getMemberNames())
+			genericEntities[genericEntityName] = currentGenericEntities[genericEntityName];
+	}
+	return genericEntities;
+}
+
+void GameState::deserializeEntities(Json::Value& jsonEntities, const Json::Value& genericEntities)
+{
+	Serializer s(m_entities, jsonEntities);
+	std::set<std::string> alreadyDeserialized;
+	std::function<void(const std::string&)> deserializerLambda = [&](const std::string& entityName)
+	{
+		if(alreadyDeserialized.count(entityName) > 0)
+			return;
+
+		entityx::Entity& entity{m_entities.emplace(entityName, Context::getEntityManager().create()).first->second};
+		Json::Value& jsonEntity{jsonEntities[entityName]};
+
+		//If the entity is derivated from a base entities, add json values of the base to the json entity
+		if(jsonEntity.isMember("base"))
+		{
+			const std::string baseName{jsonEntity["base"].asString()};
+			if(not TEST(genericEntities.isMember(baseName)))
+				throw std::runtime_error("\"" + baseName + "\" is not a valid base.");
+			JsonHelper::merge(jsonEntity, genericEntities[baseName]);
+		}
+
+		//Deserialize first all dependecies of this entity
+		Json::Value dependencies{jsonEntity["dependencies"]};
+		for(Json::ArrayIndex i{0}; i < dependencies.size(); ++i)
+			if(TEST(jsonEntities.isMember(dependencies[i].asString())))
+				deserializerLambda(dependencies[i].asString());
+			else
+				throw std::runtime_error("\"" + dependencies[i].asString() + "\" is not a valid dependecy.");
+
+		s.deserialize<TransformComponent>(entityName, "transform");
+		s.deserialize<BodyComponent>(entityName, "body");
+		BodyComponent::Handle bodyComponent{entity.component<BodyComponent>()};
+		if(bodyComponent)
+			bodyComponent->body->SetUserData(&entity);
+		s.deserialize<SpriteComponent>(entityName, "sprite");
+		s.deserialize<AnimationsComponent<SpriteSheetAnimation>>(entityName, "spritesheet animations");
+		s.deserialize<InventoryComponent>(entityName, "inventory");
+		s.deserialize<ArcherComponent>(entityName, "archer");
+		s.deserialize<CategoryComponent>(entityName, "categories");
+		s.deserialize<WalkComponent>(entityName, "walk");
+		s.deserialize<JumpComponent>(entityName, "jump");
+		s.deserialize<HealthComponent>(entityName, "health");
+		s.deserialize<StaminaComponent>(entityName, "stamina");
+		s.deserialize<DirectionComponent>(entityName, "direction");
+		s.deserialize<FallComponent>(entityName, "fall");
+		s.deserialize<ArrowComponent>(entityName, "arrow");
+		s.deserialize<HardnessComponent>(entityName, "hardness");
+		s.deserialize<ScriptsComponent>(entityName, "scripts");
+		s.deserialize<DetectionRangeComponent>(entityName, "detection range");
+		s.deserialize<DeathComponent>(entityName, "death");
+		s.deserialize<NameComponent>(entityName, "name");
+		s.deserialize<HandToHandComponent>(entityName, "hand to hand");
+		s.deserialize<ActorComponent>(entityName, "actor");
+		s.deserialize<ItemComponent>(entityName, "item");
+		s.deserialize<HoldItemComponent>(entityName, "hold item");
+		s.deserialize<ArticuledArmsComponent>(entityName, "articuled arms");
+		s.deserialize<BowComponent>(entityName, "bow");
+		s.deserialize<QuiverComponent>(entityName, "quiver");
+		//End deserialize
+		alreadyDeserialized.insert(entityName);
+	};
+	for(const std::string& name : jsonEntities.getMemberNames())
+		//Don't check if  jsonEntities[name] has been already deserialized, because
+		//if there is only a few dependencies, there will be more useless check than useless lambda call
+		deserializerLambda(name);
+}
+
+void GameState::loadReplaces(const Json::Value& replaces)
+{
+	//for each group of replaces
+	for(const std::string groupOfReplacesName : replaces.getMemberNames())
+	{
+		//Filename of the image to load
+		const std::string fileTexture{m_levelIdentifier + "_" + groupOfReplacesName};
+		//Path of the image to load
+		const std::string path{Context::getParameters().resourcesPath + "images/levels/" + m_levelIdentifier + "/" + fileTexture + ".png"};
+
+		const Json::Value groupOfReplaces{replaces[groupOfReplacesName]};
+		//Vector that will be added to m_sceneEntitiesData
+		std::vector<SceneReplaces> planData;
+		//For each image frame in the group of replaces
+		for(Json::ArrayIndex i{0}; i < groupOfReplaces.size(); i++)
+		{
+			const Json::Value image{groupOfReplaces[i]};
+			const Json::Value origin{image["origin"]};
+
+			//Coordinates of the original image
+			sf::IntRect originRect;
+			originRect.left = origin["x"].asInt();
+			originRect.top = origin["y"].asInt();
+			originRect.width = origin["w"].asInt();
+			originRect.height = origin["h"].asInt();
+
+			SceneReplaces replacesData;
+			replacesData.origin = {origin["x"].asInt(), origin["y"].asInt(), origin["w"].asInt(), origin["h"].asInt()};
+
+			//Load the texture
+			//Identifier of the texture, in format "level_plan_texture"
+			const std::string textureIdentifier{fileTexture + "_" + std::to_string(i)};
+			Context::getTextureManager().load(textureIdentifier, path, originRect);
+			//Replaces
+			const Json::Value currentReplaces{image["replaces"]};
+			//For each replacing of the image
+			for(Json::ArrayIndex j{0}; j < currentReplaces.size(); j++)
+			{
+				const Json::Value replace{currentReplaces[j]};
+				//Identifier of the entity, in format "level_plan_texture_replace"
+				const std::string replaceIdentifier{textureIdentifier + "_" + std::to_string(j)};
+				//Position where the frame should be replaced
+				Transform replaceTransform;
+				replaceTransform.x = replace["x"].asFloat();
+				replaceTransform.y = replace["y"].asFloat();
+				replaceTransform.z = replace["z"].asFloat();
+				replaceTransform.angle = replace["angle"].asFloat();
+
+				replacesData.replaces.push_back({replace["x"].asFloat(), replace["y"].asFloat(), replace["z"].asFloat(), replace["angle"].asFloat()});
+
+				//Create an entity
+				m_sceneEntities.emplace(replaceIdentifier, Context::getEntityManager().create());
+				//Create a sprite with the loaded texture
+				//Assign the sprite to the entity
+				sf::Sprite replaceSpr(Context::getTextureManager().get(textureIdentifier));
+				replaceSpr.setPosition(replaceTransform.x, replaceTransform.y);
+				replaceSpr.setRotation(replaceTransform.angle);
+				SpriteComponent::Handle sprComp{m_sceneEntities[replaceIdentifier].assign<SpriteComponent>()};
+				sprComp->sprite = replaceSpr;
+				TransformComponent::Handle trsfComp{m_sceneEntities[replaceIdentifier].assign<TransformComponent>()};
+				trsfComp->transform = replaceTransform;
+				CategoryComponent::Handle catComp{m_sceneEntities[replaceIdentifier].assign<CategoryComponent>()};
+				catComp->category = {Category::Scene};
+			}
+			planData.push_back(replacesData);
+		}
+		m_sceneEntitiesData.emplace(groupOfReplacesName, planData);
+	}
+}
+
+void GameState::loadBackground()
+{
+	const float chunkSize{static_cast<float>(sf::Texture::getMaximumSize())};
+	const float viewWidth{Context::getParameters().defaultViewSize.x};
+	const float scalableLevelWidth{m_levelRect.width - viewWidth};
+	for(unsigned int i{0}; i < m_numberOfPlans; ++i)
+	{
+		const std::string fileTexture{m_levelIdentifier + "_" + std::to_string(i)};
+		const std::string path{Context::getParameters().resourcesPath + "images/levels/" + m_levelIdentifier + "/" + fileTexture + ".png"};
+		//The length of the plan, relatively to the reference
+		const float planLength{scalableLevelWidth * std::pow(1.5f, m_referencePlan - static_cast<float>(i)) + viewWidth};
+		//Number of chunks to load in this plan
+		const int numberOfChunks{static_cast<int>(planLength / chunkSize) + 1};
+
+		for(int j{0}; j < numberOfChunks; ++j)
+		{
+			//Identifier of the entity, in format "level_plan_chunk"
+			const std::string textureIdentifier{fileTexture + "_" + std::to_string(j)};
+			//Size of the chunk to load, may be truncated if we reach the end of the image.
+			float currentChunkSize{chunkSize};
+			if(j == numberOfChunks - 1)
+				currentChunkSize = planLength - chunkSize * static_cast<float>(j);
+			Context::getTextureManager().load<sf::IntRect>(textureIdentifier, path,
+					sf::IntRect(j * static_cast<int>(chunkSize), 0, static_cast<int>(currentChunkSize), static_cast<int>(m_levelRect.height)));
+			//Create an entity
+			m_sceneEntities.emplace(textureIdentifier, Context::getEntityManager().create());
+			//Create a sprite with the loaded texture
+			//Assign the sprite to the entity
+			sf::Sprite chunkSpr(Context::getTextureManager().get(textureIdentifier));
+			chunkSpr.setPosition(static_cast<float>(j*chunkSize), 0.f);
+			SpriteComponent::Handle sprComp{m_sceneEntities[textureIdentifier].assign<SpriteComponent>()};
+			sprComp->sprite = chunkSpr;
+			TransformComponent::Handle trsfComp{m_sceneEntities[textureIdentifier].assign<TransformComponent>()};
+			trsfComp->transform = {static_cast<float>(j) * chunkSize, 0.f, static_cast<float>(i), 0.f};
+			CategoryComponent::Handle catComp{m_sceneEntities[textureIdentifier].assign<CategoryComponent>()};
+			catComp->category = {Category::Scene};
+			//Update the ScrollingSystem in order to directly display the sprite at the right position
+		}
+	}
+}
+
+void GameState::addSkyAnimations()
+{
+	const float daySeconds{std::remainder(getSystem<TimeSystem>().getRealTime().asSeconds(), 600.f)};
+	//Add sky animations.
+	if(m_entities.find("day sky") != m_entities.end() and m_entities["day sky"].valid())
+	{
+		AnimationsComponent<SkyAnimation>::Handle skyAnimationsComp{m_entities["day sky"].assign<AnimationsComponent<SkyAnimation>>()};
+		//Add the animation, this is a sky animation, the importance is equal to zero, the duration is 600 seconds (1 day), and it loops.
+		skyAnimationsComp->animationsManager.addAnimation("day/night cycle", SkyAnimation(m_entities["day sky"]), 0, sf::seconds(600), true);
+		skyAnimationsComp->animationsManager.setProgress("day/night cycle", daySeconds/600.f);
+		skyAnimationsComp->animationsManager.play("day/night cycle");
+	}
+
+	//Add sky animations.
+	if(m_entities.find("night sky") != m_entities.end() and m_entities["night sky"].valid())
+	{
+		AnimationsComponent<SkyAnimation>::Handle skyAnimationsComp{m_entities["night sky"].assign<AnimationsComponent<SkyAnimation>>()};
+		//Add the animation, this is a sky animation, the importance is equal to zero, the duration is 600 seconds (1 day), and it loops.
+		skyAnimationsComp->animationsManager.addAnimation("day/night cycle", SkyAnimation(m_entities["night sky"]), 0, sf::seconds(600), true);
+		skyAnimationsComp->animationsManager.setProgress("day/night cycle", daySeconds/600.f);
+		skyAnimationsComp->animationsManager.play("day/night cycle");
+	}
+}
+
 template <class SystemType>
-static inline T& GameState::getSystem()
+inline SystemType& GameState::getSystem()
 {
 	return *Context::getSystemManager().system<SystemType>();
 }

@@ -81,11 +81,24 @@ class GameState : public State
 		/// Clears all entities.
 		void clear();
 
+		void loadSaveInformations(const Json::Value& root);
+
+		Json::Value loadGenericEntities(const Json::Value& includes, const Json::Value& model);
+
+		void deserializeEntities(Json::Value& jsonEntities, const Json::Value& genericEntities);
+
+		void loadReplaces(const Json::Value& replaces);
+
+		void loadBackground();
+
+		/// Adds the sky animations to sky entities.
+		void addSkyAnimations();
+
 		/// Gets a reference to a system. This is only for ease of typing.
 		/// \tparam SystemType The type of system to get.
 		/// \return A reference to the system.
 		template <class SystemType>
-		static inline T& getSystem();
+		static inline SystemType& getSystem();
 
 		std::map<std::string, entityx::Entity> m_entities;                    ///< All game entities.
 		std::map<std::string, entityx::Entity> m_sceneEntities;               ///< All scene entities.
