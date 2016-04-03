@@ -46,7 +46,7 @@ script:
     - cmake .. -DTLG_BUILD_TESTS=True -DCMAKE_BUILD_TYPE=Debug
     - make
     - ./TheLostGirlTests
-    - find -name "*.gcno" | xargs gcov > /dev/null
+    - find -name "*.gcno" | xargs gcov-5 > /dev/null
 
 after_success:
   - bash <(curl -s https://codecov.io/bash) > /dev/null
