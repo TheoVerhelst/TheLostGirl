@@ -158,19 +158,19 @@ std::ostream& operator<<(std::ostream& ostream, const Direction& direction)
 	switch(direction)
 	{
 		case Direction::Left:
-			ostream << "direction::left";
+			ostream << "Direction::Left";
 			break;
 		case Direction::Right:
-			ostream << "direction::right";
+			ostream << "Direction::Right";
 			break;
 		case Direction::Up:
-			ostream << "direction::up";
+			ostream << "Direction::Up";
 			break;
 		case Direction::Down:
-			ostream << "direction::down";
+			ostream << "Direction::Down";
 			break;
 		case Direction::None:
-			ostream << "direction::none";
+			ostream << "Direction::None";
 			break;
 	}
 	return ostream;

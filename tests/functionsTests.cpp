@@ -1,3 +1,4 @@
+#include <sstream>
 #include <boost/test/unit_test.hpp>
 #include <entityx/entityx.h>
 #include <Box2D/Box2D.h>
@@ -202,13 +203,39 @@ BOOST_AUTO_TEST_CASE(getJointDefTests)
 	//TODO Implements this test (alot of code)
 }
 
-BOOST_AUTO_TEST_CASE(operatorNotTests)
+BOOST_AUTO_TEST_CASE(operatorNotDirectionTests)
 {
 	BOOST_CHECK((not Direction::Left) == Direction::Right);
 	BOOST_CHECK((not Direction::Right) == Direction::Left);
 	BOOST_CHECK((not Direction::Up) == Direction::Down);
 	BOOST_CHECK((not Direction::Down) == Direction::Up);
 	BOOST_CHECK((not Direction::None) == Direction::None);
+}
+
+BOOST_AUTO_TEST_CASE(streamOperatorDirectionTests)
+{
+	std::stringstream stream;
+	std::vector<std::pair<Direction, std::string>> expectedMessages{
+			{Direction::Left, "Direction::Left"},
+			{Direction::Right, "Direction::Right"},
+			{Direction::Up, "Direction::Up"},
+			{Direction::Down, "Direction::Down"},
+			{Direction::None, "Direction::None"}};
+	for(const auto& expectedMessage : expectedMessages)
+	{
+		stream.str("");
+		stream << expectedMessage.first;
+		BOOST_CHECK(stream.str() == expectedMessage.second);
+	}
+}
+
+BOOST_AUTO_TEST_CASE(printErrorTests)
+{
+	const std::string filename{"test.cpp"}, expression{"erroneous_line();"};
+	const unsigned int lineNumber{42U};
+	std::cerr << "The following error line should be something like: \n";
+	std::cerr << "Test failed in " << filename << " at line " << lineNumber << " : \"" << expression << "\"" << std::endl;
+	BOOST_CHECK(not printError(expression, filename, lineNumber));
 }
 
 BOOST_AUTO_TEST_SUITE_END()
