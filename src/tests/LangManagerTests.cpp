@@ -4,7 +4,7 @@
 #include <TheLostGirl/Parameters.hpp>
 #include <TheLostGirl/Context.hpp>
 #include <TheLostGirl/LangManager.hpp>
-#include "TestsFixture.hpp"
+#include <tests/TestsFixture.hpp>
 
 struct LangManagerTestsFixture : public TestsFixture
 {

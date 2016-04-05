@@ -40,7 +40,6 @@ add_definitions("-DBOOST_FILESYSTEM_NO_DEPRECATED")
 
 #Set a variable with all needed libraries
 set(TLG_EXTERNAL_LIBRARIES
-	gcov
 	${SFML_LIBRARIES}
 	${TGUI_LIBRARY}
 	${BOX2D_LIBRARY}
@@ -62,14 +61,9 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
 
 add_subdirectory(src)
 
-#Build the tests if requested
-if(TLG_BUILD_TESTS)
-	add_subdirectory(tests)
-endif()
-
 #Add profile flag to compiler if requested
 if(TLG_PROFILE)
-    if (NOT ${CMAKE_BUILD_TYPE} STREQUAL "Release")
+    if(NOT ${CMAKE_BUILD_TYPE} STREQUAL "Release")
         message(WARNING "TLG_PROFILE should only be enabled when CMAKE_BUILD_TYPE is Release")
     endif()
 	set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -pg")

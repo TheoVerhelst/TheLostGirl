@@ -4,7 +4,7 @@
 #include <Box2D/Box2D.h>
 #include <TheLostGirl/components.hpp>
 #include <TheLostGirl/functions.hpp>
-#include "TestsFixture.hpp"
+#include <tests/TestsFixture.hpp>
 
 struct functionsTestsFixture : public TestsFixture
 {

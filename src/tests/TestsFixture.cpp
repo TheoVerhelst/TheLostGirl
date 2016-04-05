@@ -1,4 +1,4 @@
-#include "TestsFixture.hpp"
+#include <tests/TestsFixture.hpp>
 
 void TestsFixture::logStream(std::ostream& stream)
 {
