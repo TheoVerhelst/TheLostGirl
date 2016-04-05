@@ -1,10 +1,12 @@
 #include <fstream>
+#include <algorithm>
 #include <boost/test/unit_test.hpp>
 #include <TheLostGirl/Parameters.hpp>
 #include <TheLostGirl/Context.hpp>
 #include <TheLostGirl/LangManager.hpp>
+#include "TestsFixture.hpp"
 
-struct LangManagerTestsFixture
+struct LangManagerTestsFixture : public TestsFixture
 {
 	LangManager langs;
 #define MACRO_CONTEXT_ELEMENT(Type, Name, m_attribute) Type* m_attribute{nullptr};
@@ -69,9 +71,19 @@ BOOST_AUTO_TEST_CASE(langsTests)
 				"It seems that lang files are not consistent (" + sourceFileName + " and " + translationFileName + ").");
 		sourceFileStream.close();
 		translationFileStream.close();
-
 		langs.setLang(availableLang);
 
+		// Test wrong string
+		std::string unlikelyString{"*ù%$_This is very unlikely to find this string in lang file-$°)@à"};
+		std::wstring wUnlikelystring{unlikelyString.begin(), unlikelyString.end()};
+		logStream(std::cerr);
+		// Check that it returns the original string in wide encoding
+		BOOST_CHECK(langs.tr(unlikelyString) == wUnlikelystring);
+		std::string errorMessage{getStreamLog()};
+		// Check that the error message contains the original string
+		BOOST_CHECK(errorMessage.find(unlikelyString) != std::string::npos);
+
+		// Test normal strings
 		for(auto& pair : entries)
 			BOOST_CHECK(langs.tr(pair.first) == pair.second);
 	}

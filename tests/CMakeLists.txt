@@ -59,6 +59,7 @@ set(TLG_TEST_SOURCES
 	systems/ScrollingSystemTests.cpp
 	systems/StatsSystemTests.cpp
 	systems/TimeSystemTests.cpp
+	TestsFixture.cpp
 	)
 
 #Create the main test executable

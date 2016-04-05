@@ -4,8 +4,9 @@
 #include <Box2D/Box2D.h>
 #include <TheLostGirl/components.hpp>
 #include <TheLostGirl/functions.hpp>
+#include "TestsFixture.hpp"
 
-struct functionsTestsFixture
+struct functionsTestsFixture : public TestsFixture
 {
 	constexpr static float m_tolerance{0.00001f};
 	functionsTestsFixture()
@@ -366,9 +367,13 @@ BOOST_AUTO_TEST_CASE(printErrorTests)
 {
 	const std::string filename{"test.cpp"}, expression{"erroneous_line();"};
 	const unsigned int lineNumber{42U};
-	std::cerr << "The two following lines should display a similar error: \n";
-	std::cerr << "Test failed in " << filename << " at line " << lineNumber << " : \"" << expression << "\"" << std::endl;
+	logStream(std::cerr);
 	BOOST_CHECK(not printError(expression, filename, lineNumber));
+	std::string errorMessage{getStreamLog()};
+	// Check that the error message contains required information
+	BOOST_CHECK(errorMessage.find(expression) != std::string::npos);
+	BOOST_CHECK(errorMessage.find(filename) != std::string::npos);
+	BOOST_CHECK(errorMessage.find(std::to_string(lineNumber)) != std::string::npos);
 }
 
 BOOST_AUTO_TEST_SUITE_END()
