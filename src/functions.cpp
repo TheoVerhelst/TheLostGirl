@@ -96,13 +96,14 @@ b2JointDef* getJointDef(b2Joint* joint)
 			castedJointDef->localAnchorB = castedJoint->GetLocalAnchorB();
 			castedJointDef->referenceAngle = castedJoint->GetReferenceAngle();
 			castedJointDef->enableLimit = castedJoint->IsLimitEnabled();
-			castedJointDef->lowerAngle = castedJoint->GetReferenceAngle();
-			castedJointDef->upperAngle = castedJoint->GetReferenceAngle();
+			castedJointDef->lowerAngle = castedJoint->GetLowerLimit();
+			castedJointDef->upperAngle = castedJoint->GetUpperLimit();
 			castedJointDef->enableMotor = castedJoint->IsMotorEnabled();
 			castedJointDef->motorSpeed = castedJoint->GetMotorSpeed();
 			castedJointDef->maxMotorTorque = castedJoint->GetMaxMotorTorque();
             break;
 		}
+
 		case e_prismaticJoint:
 		{
 			jointDef = new b2PrismaticJointDef;
@@ -120,6 +121,7 @@ b2JointDef* getJointDef(b2Joint* joint)
 			castedJointDef->enableMotor = castedJoint->IsMotorEnabled();
             break;
 		}
+
 		case e_weldJoint:
 		{
 			jointDef = new b2WeldJointDef;
@@ -132,12 +134,13 @@ b2JointDef* getJointDef(b2Joint* joint)
 			castedJointDef->dampingRatio = castedJoint->GetDampingRatio();
             break;
 		}
+
 		default:
 			return nullptr;
 	}
 	jointDef->bodyA = joint->GetBodyA();
 	jointDef->bodyB = joint->GetBodyB();
-	jointDef->collideConnected = true;
+	jointDef->collideConnected = joint->GetCollideConnected();
 	jointDef->userData = joint->GetUserData();
 	return jointDef;
 }

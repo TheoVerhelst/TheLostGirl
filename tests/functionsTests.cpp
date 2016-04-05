@@ -7,6 +7,7 @@
 
 struct functionsTestsFixture
 {
+	constexpr static float m_tolerance{0.00001f};
 	functionsTestsFixture()
 	{
 	}
@@ -44,20 +45,20 @@ BOOST_AUTO_TEST_CASE(hasWhiteSpaceTests)
 	BOOST_CHECK(not hasWhiteSpace("stringwhithoutspaces"));
 }
 
-BOOST_AUTO_TEST_CASE(b2tosfTests)
+BOOST_AUTO_TEST_CASE(b2tosfTests, *boost::unit_test::tolerance(functionsTestsFixture::m_tolerance))
 {
 	const b2Vec2 b2vec(3.f, 2.f);
 	const sf::Vector2f sfvec(b2tosf(b2vec));
-	BOOST_CHECK_CLOSE(b2vec.x, sfvec.x, 0.001);
-	BOOST_CHECK_CLOSE(b2vec.y, sfvec.y, 0.001);
+	BOOST_CHECK_EQUAL(b2vec.x, sfvec.x);
+	BOOST_CHECK_EQUAL(b2vec.y, sfvec.y);
 }
 
-BOOST_AUTO_TEST_CASE(sftob2Tests)
+BOOST_AUTO_TEST_CASE(sftob2Tests, *boost::unit_test::tolerance(functionsTestsFixture::m_tolerance))
 {
 	const sf::Vector2f sfvec(3.f, 2.f);
 	const b2Vec2 b2vec(sftob2(sfvec));
-	BOOST_CHECK_CLOSE(b2vec.x, sfvec.x, 0.001);
-	BOOST_CHECK_CLOSE(b2vec.y, sfvec.y, 0.001);
+	BOOST_CHECK_EQUAL(b2vec.x, sfvec.x);
+	BOOST_CHECK_EQUAL(b2vec.y, sfvec.y);
 }
 
 BOOST_AUTO_TEST_CASE(b2ColorToSfTests)
@@ -124,7 +125,7 @@ BOOST_AUTO_TEST_CASE(isPlayerTests)
 	BOOST_CHECK(isPlayer(entity));
 }
 
-BOOST_AUTO_TEST_CASE(getBodyDefTests)
+BOOST_AUTO_TEST_CASE(getBodyDefTests, *boost::unit_test::tolerance(functionsTestsFixture::m_tolerance))
 {
 	b2World world({0.f, 1.f});
 
@@ -151,18 +152,18 @@ BOOST_AUTO_TEST_CASE(getBodyDefTests)
 	BOOST_CHECK_EQUAL(def.bullet, newDef.bullet);
 	BOOST_CHECK_EQUAL(def.fixedRotation, newDef.fixedRotation);
 	BOOST_CHECK_EQUAL(def.userData, newDef.userData);
-	BOOST_CHECK_CLOSE(def.angle, newDef.angle, 0.0001);
-	BOOST_CHECK_CLOSE(def.angularDamping, newDef.angularDamping, 0.0001);
-	BOOST_CHECK_CLOSE(def.angularVelocity, newDef.angularVelocity, 0.0001);
-	BOOST_CHECK_CLOSE(def.gravityScale, newDef.gravityScale, 0.0001);
-	BOOST_CHECK_CLOSE(def.linearDamping, newDef.linearDamping, 0.0001);
-	BOOST_CHECK_CLOSE(def.linearVelocity.x, newDef.linearVelocity.x, 0.0001);
-	BOOST_CHECK_CLOSE(def.linearVelocity.y, newDef.linearVelocity.y, 0.0001);
-	BOOST_CHECK_CLOSE(def.position.x, newDef.position.x, 0.0001);
-	BOOST_CHECK_CLOSE(def.position.y, newDef.position.y, 0.0001);
+	BOOST_CHECK_EQUAL(def.angle, newDef.angle);
+	BOOST_CHECK_EQUAL(def.angularDamping, newDef.angularDamping);
+	BOOST_CHECK_EQUAL(def.angularVelocity, newDef.angularVelocity);
+	BOOST_CHECK_EQUAL(def.gravityScale, newDef.gravityScale);
+	BOOST_CHECK_EQUAL(def.linearDamping, newDef.linearDamping);
+	BOOST_CHECK_EQUAL(def.linearVelocity.x, newDef.linearVelocity.x);
+	BOOST_CHECK_EQUAL(def.linearVelocity.y, newDef.linearVelocity.y);
+	BOOST_CHECK_EQUAL(def.position.x, newDef.position.x);
+	BOOST_CHECK_EQUAL(def.position.y, newDef.position.y);
 }
 
-BOOST_AUTO_TEST_CASE(getFixtureDefTests)
+BOOST_AUTO_TEST_CASE(getFixtureDefTests, *boost::unit_test::tolerance(functionsTestsFixture::m_tolerance))
 {
 	b2World world({0.f, 1.f});
 	b2BodyDef bodyDef;
@@ -192,15 +193,147 @@ BOOST_AUTO_TEST_CASE(getFixtureDefTests)
 	BOOST_CHECK_EQUAL(def.filter.groupIndex, newDef.filter.groupIndex);
 	BOOST_CHECK_EQUAL(def.filter.maskBits, newDef.filter.maskBits);
 	BOOST_CHECK_EQUAL(def.shape->m_type, newDef.shape->m_type);
-	BOOST_CHECK_CLOSE(def.shape->m_radius, newDef.shape->m_radius, 0.0001);
-	BOOST_CHECK_CLOSE(def.density, newDef.density, 0.0001);
-	BOOST_CHECK_CLOSE(def.friction, newDef.friction, 0.0001);
-	BOOST_CHECK_CLOSE(def.restitution, newDef.restitution, 0.0001);
+	BOOST_CHECK_EQUAL(def.shape->m_radius, newDef.shape->m_radius);
+	BOOST_CHECK_EQUAL(def.density, newDef.density);
+	BOOST_CHECK_EQUAL(def.friction, newDef.friction);
+	BOOST_CHECK_EQUAL(def.restitution, newDef.restitution);
 }
 
-BOOST_AUTO_TEST_CASE(getJointDefTests)
+static void testJointDefinition(b2World& world, b2JointDef* jointDefinition)
 {
-	//TODO Implements this test (alot of code)
+	b2Joint* joint{world.CreateJoint(jointDefinition)};
+	b2JointDef* result{getJointDef(joint)};
+
+	BOOST_CHECK_EQUAL(jointDefinition->type, result->type);
+	BOOST_CHECK_EQUAL(jointDefinition->bodyA, result->bodyA);
+	BOOST_CHECK_EQUAL(jointDefinition->bodyB, result->bodyB);
+	BOOST_CHECK_EQUAL(jointDefinition->collideConnected, result->collideConnected);
+	BOOST_CHECK_EQUAL(jointDefinition->userData, result->userData);
+
+	if(jointDefinition->type == result->type)
+	{
+		switch(jointDefinition->type)
+		{
+			case e_revoluteJoint:
+			{
+				auto castedJointDef = static_cast<b2RevoluteJointDef*>(jointDefinition);
+				auto castedResult = static_cast<b2RevoluteJointDef*>(result);
+				BOOST_CHECK_EQUAL((castedJointDef->localAnchorA - castedResult->localAnchorA).LengthSquared(), 0.f);
+				BOOST_CHECK_EQUAL((castedJointDef->localAnchorB - castedResult->localAnchorB).LengthSquared(), 0.f);
+				BOOST_CHECK_EQUAL(castedJointDef->referenceAngle, castedResult->referenceAngle);
+				BOOST_CHECK_EQUAL(castedJointDef->enableLimit, castedResult->enableLimit);
+				BOOST_CHECK_EQUAL(castedJointDef->lowerAngle, castedResult->lowerAngle);
+				BOOST_CHECK_EQUAL(castedJointDef->upperAngle, castedResult->upperAngle);
+				BOOST_CHECK_EQUAL(castedJointDef->enableMotor, castedResult->enableMotor);
+				BOOST_CHECK_EQUAL(castedJointDef->motorSpeed, castedResult->motorSpeed);
+				BOOST_CHECK_EQUAL(castedJointDef->maxMotorTorque, castedResult->maxMotorTorque);
+				break;
+			}
+
+			case e_prismaticJoint:
+			{
+				auto castedJointDef = static_cast<b2PrismaticJointDef*>(jointDefinition);
+				auto castedResult = static_cast<b2PrismaticJointDef*>(result);
+				BOOST_CHECK_EQUAL((castedJointDef->localAnchorA - castedResult->localAnchorA).LengthSquared(), 0.f);
+				BOOST_CHECK_EQUAL((castedJointDef->localAnchorB - castedResult->localAnchorB).LengthSquared(), 0.f);
+				BOOST_CHECK_EQUAL((castedJointDef->localAxisA - castedResult->localAxisA).LengthSquared(), 0.f);
+				BOOST_CHECK_EQUAL(castedJointDef->referenceAngle, castedResult->referenceAngle);
+				BOOST_CHECK_EQUAL(castedJointDef->lowerTranslation, castedResult->lowerTranslation);
+				BOOST_CHECK_EQUAL(castedJointDef->upperTranslation, castedResult->upperTranslation);
+				BOOST_CHECK_EQUAL(castedJointDef->enableLimit, castedResult->enableLimit);
+				BOOST_CHECK_EQUAL(castedJointDef->maxMotorForce, castedResult->maxMotorForce);
+				BOOST_CHECK_EQUAL(castedJointDef->motorSpeed, castedResult->motorSpeed);
+				BOOST_CHECK_EQUAL(castedJointDef->enableMotor, castedResult->enableMotor);
+				break;
+			}
+
+			case e_weldJoint:
+			{
+				auto castedJointDef = static_cast<b2WeldJointDef*>(jointDefinition);
+				auto castedResult = static_cast<b2WeldJointDef*>(result);
+				BOOST_CHECK_EQUAL((castedJointDef->localAnchorA - castedResult->localAnchorA).LengthSquared(), 0.f);
+				BOOST_CHECK_EQUAL((castedJointDef->localAnchorB - castedResult->localAnchorB).LengthSquared(), 0.f);
+				BOOST_CHECK_EQUAL(castedJointDef->referenceAngle, castedResult->referenceAngle);
+				BOOST_CHECK_EQUAL(castedJointDef->frequencyHz, castedResult->frequencyHz);
+				BOOST_CHECK_EQUAL(castedJointDef->dampingRatio, castedResult->dampingRatio);
+				break;
+			}
+
+			default:
+				break;
+		}
+	}
+	world.DestroyJoint(joint);
+	delete result;
+}
+
+BOOST_AUTO_TEST_CASE(getJointDefTests, *boost::unit_test::tolerance(functionsTestsFixture::m_tolerance))
+{
+	b2World world({2.f, 3.f});
+	b2BodyDef bodyDefinition;
+	b2Body* bodyA{world.CreateBody(&bodyDefinition)};
+	b2Body* bodyB{world.CreateBody(&bodyDefinition)};
+	bool collideConnected{false};
+	void* userData{0b0110101_vptr};
+
+	// Revolute joint
+	{
+		b2RevoluteJointDef* jointDefinition = new b2RevoluteJointDef;
+		jointDefinition->bodyA = bodyA;
+		jointDefinition->bodyB = bodyB;
+		jointDefinition->collideConnected = collideConnected;
+		jointDefinition->userData = userData;
+		jointDefinition->localAnchorA = {3.f, 4.f};
+		jointDefinition->localAnchorB = {5.f, 6.f};
+		jointDefinition->referenceAngle = 3.f;
+		jointDefinition->enableLimit = true;
+		jointDefinition->lowerAngle = 4.f;
+		jointDefinition->upperAngle = 5.f;
+		jointDefinition->enableMotor = false;
+		jointDefinition->motorSpeed = 6.f;
+		jointDefinition->maxMotorTorque = 7.f;
+		testJointDefinition(world, jointDefinition);
+		delete jointDefinition;
+	}
+
+	// Prismatic joint
+	{
+		b2PrismaticJointDef* jointDefinition = new b2PrismaticJointDef;
+		jointDefinition->bodyA = bodyA;
+		jointDefinition->bodyB = bodyB;
+		jointDefinition->collideConnected = collideConnected;
+		jointDefinition->userData = userData;
+		jointDefinition->localAnchorA = {3.f, 4.f};
+		jointDefinition->localAnchorB = {5.f, 6.f};
+		jointDefinition->localAxisA = {7.f, 8.f};
+		jointDefinition->localAxisA.Normalize();
+		jointDefinition->referenceAngle = 3.f;
+		jointDefinition->enableLimit = true;
+		jointDefinition->lowerTranslation = 4.f;
+		jointDefinition->upperTranslation = 5.f;
+		jointDefinition->enableMotor = false;
+		jointDefinition->motorSpeed = 6.f;
+		jointDefinition->maxMotorForce = 7.f;
+		testJointDefinition(world, jointDefinition);
+		delete jointDefinition;
+	}
+
+	// Weld joint
+	{
+		b2WeldJointDef* jointDefinition = new b2WeldJointDef;
+		jointDefinition->bodyA = bodyA;
+		jointDefinition->bodyB = bodyB;
+		jointDefinition->collideConnected = collideConnected;
+		jointDefinition->userData = userData;
+		jointDefinition->localAnchorA = {3.f, 4.f};
+		jointDefinition->localAnchorB = {5.f, 6.f};
+		jointDefinition->referenceAngle = 3.f;
+		jointDefinition->frequencyHz = 4.f;
+		jointDefinition->dampingRatio = 5.f;
+		testJointDefinition(world, jointDefinition);
+		delete jointDefinition;
+	}
+
 }
 
 BOOST_AUTO_TEST_CASE(operatorNotDirectionTests)
@@ -233,7 +366,7 @@ BOOST_AUTO_TEST_CASE(printErrorTests)
 {
 	const std::string filename{"test.cpp"}, expression{"erroneous_line();"};
 	const unsigned int lineNumber{42U};
-	std::cerr << "The following error line should be something like: \n";
+	std::cerr << "The two following lines should display a similar error: \n";
 	std::cerr << "Test failed in " << filename << " at line " << lineNumber << " : \"" << expression << "\"" << std::endl;
 	BOOST_CHECK(not printError(expression, filename, lineNumber));
 }
