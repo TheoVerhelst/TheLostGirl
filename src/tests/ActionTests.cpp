@@ -1,16 +1,13 @@
 #include <boost/test/unit_test.hpp>
-#include <TheLostGirl/Action.hpp>
+#include <tests/ActionTests.hpp>
 
-struct ActionTestsFixture
+ActionTestsFixture::ActionTestsFixture()
 {
-	ActionTestsFixture()
-	{
-	}
+}
 
-	~ActionTestsFixture()
-	{
-	}
-};
+ActionTestsFixture::~ActionTestsFixture()
+{
+}
 
 BOOST_FIXTURE_TEST_SUITE(ActionTests, ActionTestsFixture)
 

@@ -1,17 +1,13 @@
 #include <boost/test/unit_test.hpp>
-#include <TheLostGirl/Player.hpp>
-#include <TheLostGirl/systems.hpp>
+#include <tests/JsonHelperTests.hpp>
 
-struct JsonHelperTestsFixture
+JsonHelperTestsFixture::JsonHelperTestsFixture()
 {
-	JsonHelperTestsFixture()
-	{
-	}
+}
 
-	~JsonHelperTestsFixture()
-	{
-	}
-};
+JsonHelperTestsFixture::~JsonHelperTestsFixture()
+{
+}
 
 BOOST_FIXTURE_TEST_SUITE(JsonHelperTests, JsonHelperTestsFixture)
 

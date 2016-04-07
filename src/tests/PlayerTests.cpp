@@ -1,24 +1,18 @@
 #include <boost/test/unit_test.hpp>
-#include <TheLostGirl/Player.hpp>
 #include <TheLostGirl/systems.hpp>
+#include <tests/PlayerTests.hpp>
 
-struct PlayerTestsFixture
+PlayerTestsFixture::PlayerTestsFixture():
+	entities{events},
+	systems{entities, events}
 {
-	entityx::EventManager events;
-	entityx::EntityManager entities;
-	entityx::SystemManager systems;
-	PlayerTestsFixture():
-		entities{events},
-		systems{entities, events}
-	{
-		systems.add<PendingChangesSystem>();
-		systems.add<DragAndDropSystem>();
-	}
+	systems.add<PendingChangesSystem>();
+	systems.add<DragAndDropSystem>();
+}
 
-	~PlayerTestsFixture()
-	{
-	}
-};
+PlayerTestsFixture::~PlayerTestsFixture()
+{
+}
 
 BOOST_FIXTURE_TEST_SUITE(PlayerTests, PlayerTestsFixture)
 

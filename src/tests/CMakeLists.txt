@@ -24,7 +24,7 @@ set(TLG_TEST_SOURCES
 	contactListeners/ArrowHitListenerTests.cpp
 	contactListeners/FallingListenerTests.cpp
 	ContactListenerTests.cpp
-	functionsTests.cpp
+	FunctionsTests.cpp
 	HashEntityTests.cpp
 	JsonHelperTests.cpp
 	LangManagerTests.cpp
@@ -34,7 +34,7 @@ set(TLG_TEST_SOURCES
 	ResourceManagerTests.cpp
 	scripts/InterpreterTests.cpp
 	scripts/ScriptErrorTests.cpp
-	scripts/scriptsFunctionsTests.cpp
+	scripts/ScriptsFunctionsTests.cpp
 	scripts/TreeTests.cpp
 	SerializerTests.cpp
 	SkyAnimationTests.cpp

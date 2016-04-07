@@ -1,29 +1,18 @@
 #include <boost/test/unit_test.hpp>
-#include <entityx/entityx.h>
-#include <TheLostGirl/Command.hpp>
+#include <tests/CommandTests.hpp>
 
-struct CommandTestsFixture
+CommandTestsFixture::CommandTestsFixture():
+	entityManager{eventManager},
+	entity{entityManager.create()},
+	category{Category::Player},
+	targetSpecific{entity, [](entityx::Entity){}},
+	targetNotSpecific{category, [](entityx::Entity){}}
 {
-	entityx::EventManager eventManager;
-	entityx::EntityManager entityManager;
-	entityx::Entity entity;
-	FlagSet<Category> category;
-	Command targetSpecific;
-	Command targetNotSpecific;
+}
 
-	CommandTestsFixture():
-		entityManager{eventManager},
-		entity{entityManager.create()},
-		category{Category::Player},
-		targetSpecific{entity, [](entityx::Entity){}},
-		targetNotSpecific{category, [](entityx::Entity){}}
-	{
-	}
-
-	~CommandTestsFixture()
-	{
-	}
-};
+CommandTestsFixture::~CommandTestsFixture()
+{
+}
 
 BOOST_FIXTURE_TEST_SUITE(CommandTests, CommandTestsFixture)
 

@@ -1,26 +1,18 @@
 #include <boost/test/unit_test.hpp>
-#include <entityx/entityx.h>
 #include <TheLostGirl/components.hpp>
-#include <TheLostGirl/HashEntity.hpp>
+#include <tests/HashEntityTests.hpp>
 
-struct HashEntityTestsFixture
+HashEntityTestsFixture::HashEntityTestsFixture():
+	entities(events),
+	entity1(entities.create()),
+	entity2(entities.create()),
+	entity3(entity1)
 {
-	HashEntity hasher;
-	entityx::EventManager events;
-	entityx::EntityManager entities;
-	entityx::Entity entity1, entity2, entity3;
-	HashEntityTestsFixture():
-		entities(events),
-		entity1(entities.create()),
-		entity2(entities.create()),
-		entity3(entity1)
-	{
-	}
+}
 
-	~HashEntityTestsFixture()
-	{
-	}
-};
+HashEntityTestsFixture::~HashEntityTestsFixture()
+{
+}
 
 BOOST_FIXTURE_TEST_SUITE(HashEntityTests, HashEntityTestsFixture)
 

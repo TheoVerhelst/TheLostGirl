@@ -4,35 +4,25 @@
 #include <TheLostGirl/Parameters.hpp>
 #include <TheLostGirl/Context.hpp>
 #include <TheLostGirl/LangManager.hpp>
-#include <tests/TestsFixture.hpp>
+#include <tests/LangManagerTests.hpp>
 
-struct LangManagerTestsFixture : public TestsFixture
-{
-	LangManager langs;
-#define MACRO_CONTEXT_ELEMENT(Type, Name, m_attribute) Type* m_attribute{nullptr};
-#include <TheLostGirl/ContextElements.inl>
-#undef MACRO_CONTEXT_ELEMENT
-	ContextImpl context;
 
-	/// Constructor.
-	LangManagerTestsFixture():
-		m_parameters{new Parameters()},
-		context
-		{
+LangManagerTestsFixture::LangManagerTestsFixture():
+	m_parameters{new Parameters()},
+	context
+	{
 #define MACRO_CONTEXT_ELEMENT(Type, Name, m_attribute) *m_attribute,
 #include <TheLostGirl/ContextElements.inl>
 #undef MACRO_CONTEXT_ELEMENT
-		}
-	{
-		m_parameters->resourcesPath = "testsResources/";
 	}
+{
+	m_parameters->resourcesPath = "testsResources/";
+}
 
-	/// Destructor.
-	~LangManagerTestsFixture()
-	{
-		delete m_parameters;
-	}
-};
+LangManagerTestsFixture::~LangManagerTestsFixture()
+{
+	delete m_parameters;
+}
 
 BOOST_FIXTURE_TEST_SUITE(LangManagerTests, LangManagerTestsFixture)
 

@@ -4,21 +4,17 @@
 #include <Box2D/Box2D.h>
 #include <TheLostGirl/components.hpp>
 #include <TheLostGirl/functions.hpp>
-#include <tests/TestsFixture.hpp>
+#include <tests/FunctionsTests.hpp>
 
-struct functionsTestsFixture : public TestsFixture
+FunctionsTestsFixture::FunctionsTestsFixture()
 {
-	constexpr static float m_tolerance{0.00001f};
-	functionsTestsFixture()
-	{
-	}
+}
 
-	~functionsTestsFixture()
-	{
-	}
-};
+FunctionsTestsFixture::~FunctionsTestsFixture()
+{
+}
 
-BOOST_FIXTURE_TEST_SUITE(functionsTests, functionsTestsFixture)
+BOOST_FIXTURE_TEST_SUITE(FunctionsTests, FunctionsTestsFixture)
 
 BOOST_AUTO_TEST_CASE(capTests)
 {
@@ -46,7 +42,7 @@ BOOST_AUTO_TEST_CASE(hasWhiteSpaceTests)
 	BOOST_CHECK(not hasWhiteSpace("stringwhithoutspaces"));
 }
 
-BOOST_AUTO_TEST_CASE(b2tosfTests, *boost::unit_test::tolerance(functionsTestsFixture::m_tolerance))
+BOOST_AUTO_TEST_CASE(b2tosfTests, *boost::unit_test::tolerance(FunctionsTestsFixture::m_tolerance))
 {
 	const b2Vec2 b2vec(3.f, 2.f);
 	const sf::Vector2f sfvec(b2tosf(b2vec));
@@ -54,7 +50,7 @@ BOOST_AUTO_TEST_CASE(b2tosfTests, *boost::unit_test::tolerance(functionsTestsFix
 	BOOST_CHECK_EQUAL(b2vec.y, sfvec.y);
 }
 
-BOOST_AUTO_TEST_CASE(sftob2Tests, *boost::unit_test::tolerance(functionsTestsFixture::m_tolerance))
+BOOST_AUTO_TEST_CASE(sftob2Tests, *boost::unit_test::tolerance(FunctionsTestsFixture::m_tolerance))
 {
 	const sf::Vector2f sfvec(3.f, 2.f);
 	const b2Vec2 b2vec(sftob2(sfvec));
@@ -126,7 +122,7 @@ BOOST_AUTO_TEST_CASE(isPlayerTests)
 	BOOST_CHECK(isPlayer(entity));
 }
 
-BOOST_AUTO_TEST_CASE(getBodyDefTests, *boost::unit_test::tolerance(functionsTestsFixture::m_tolerance))
+BOOST_AUTO_TEST_CASE(getBodyDefTests, *boost::unit_test::tolerance(FunctionsTestsFixture::m_tolerance))
 {
 	b2World world({0.f, 1.f});
 
@@ -164,7 +160,7 @@ BOOST_AUTO_TEST_CASE(getBodyDefTests, *boost::unit_test::tolerance(functionsTest
 	BOOST_CHECK_EQUAL(def.position.y, newDef.position.y);
 }
 
-BOOST_AUTO_TEST_CASE(getFixtureDefTests, *boost::unit_test::tolerance(functionsTestsFixture::m_tolerance))
+BOOST_AUTO_TEST_CASE(getFixtureDefTests, *boost::unit_test::tolerance(FunctionsTestsFixture::m_tolerance))
 {
 	b2World world({0.f, 1.f});
 	b2BodyDef bodyDef;
@@ -268,7 +264,7 @@ static void testJointDefinition(b2World& world, b2JointDef* jointDefinition)
 	delete result;
 }
 
-BOOST_AUTO_TEST_CASE(getJointDefTests, *boost::unit_test::tolerance(functionsTestsFixture::m_tolerance))
+BOOST_AUTO_TEST_CASE(getJointDefTests, *boost::unit_test::tolerance(FunctionsTestsFixture::m_tolerance))
 {
 	b2World world({2.f, 3.f});
 	b2BodyDef bodyDefinition;

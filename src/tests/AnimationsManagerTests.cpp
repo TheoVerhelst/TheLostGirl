@@ -1,28 +1,18 @@
 #include <boost/test/unit_test.hpp>
-#include <TheLostGirl/AnimationsManager.hpp>
+#include <tests/AnimationsManagerTests.hpp>
 
-class MockAnimation
+void MockAnimation::animate(float)
 {
-	public:
-		void animate(float)
-		{
-		}
-};
+}
 
-struct AnimationsManagerTestsFixture
+AnimationsManagerTestsFixture::AnimationsManagerTestsFixture()
 {
-	AnimationsManager<MockAnimation> manager;
+	manager.addAnimation("a", MockAnimation(), 0, sf::seconds(1.f), false, false);
+}
 
-	AnimationsManagerTestsFixture()
-	{
-		manager.addAnimation("a", MockAnimation(), 0, sf::seconds(1.f), false, false);
-	}
-
-	~AnimationsManagerTestsFixture()
-	{
-	}
-
-};
+AnimationsManagerTestsFixture::~AnimationsManagerTestsFixture()
+{
+}
 
 BOOST_FIXTURE_TEST_SUITE(AnimationsManagerTests, AnimationsManagerTestsFixture)
 
