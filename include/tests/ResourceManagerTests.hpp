@@ -11,6 +11,8 @@ class ResourceManagerTestsFixture : public TestsFixture
 
 		/// Destructor.
 		~ResourceManagerTestsFixture();
+
+		const std::string imagesPath;
 };
 
 #endif//RESOURCEMANAGERTESTS_HPP
