@@ -18,9 +18,14 @@ class CommandTestsFixture : public TestsFixture
 		entityx::EntityManager entityManager;
 		entityx::Entity entity;
 		FlagSet<Category> category;
+		entityx::Entity otherEntity;
+		FlagSet<Category>otherCategory;
 		Command targetSpecific;
 		Command targetNotSpecific;
-
 };
+
+void action(entityx::Entity entity);
+
+void otherAction(entityx::Entity entity);
 
 #endif//COMMANDTESTS_HPP
