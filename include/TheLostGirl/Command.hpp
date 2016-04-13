@@ -56,11 +56,11 @@ class Command
 		/// Get the category, if the target was a category.
 		/// \return The category.
 		/// \exception std::logic_error if an entity was given as target.
-		const FlagSet<Category>& getCategory() const throw(std::logic_error);
+		const FlagSet<Category>& getCategory() const;
 
 		/// Get the entity, if the target was a entity.
 		/// \exception std::logic_error if a category was given as target.
-		entityx::Entity getEntity() const throw(std::logic_error);
+		entityx::Entity getEntity() const;
 
 	private:
 		/// Destroys the category and replaces it by the given \a entity.
