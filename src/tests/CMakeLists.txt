@@ -18,12 +18,10 @@ set(TLG_TEST_SOURCES
 	actions/InventoryOpenerTests.cpp
 	actions/JumperTests.cpp
 	actions/MoverTests.cpp
-	ActionTests.cpp
 	AnimationsManagerTests.cpp
 	CommandTests.cpp
 	contactListeners/ArrowHitListenerTests.cpp
 	contactListeners/FallingListenerTests.cpp
-	ContactListenerTests.cpp
 	FunctionsTests.cpp
 	HashEntityTests.cpp
 	JsonHelperTests.cpp

@@ -14,11 +14,13 @@ class CommandTestsFixture : public TestsFixture
 		/// Destructor.
 		~CommandTestsFixture();
 
+		static void checkAction(Command& command, void (*action)(entityx::Entity));
+
 		entityx::EventManager eventManager;
 		entityx::EntityManager entityManager;
 		entityx::Entity entity;
-		FlagSet<Category> category;
 		entityx::Entity otherEntity;
+		FlagSet<Category> category;
 		FlagSet<Category>otherCategory;
 		Command targetSpecific;
 		Command targetNotSpecific;

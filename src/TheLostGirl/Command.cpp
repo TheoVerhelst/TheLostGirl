@@ -81,21 +81,21 @@ void Command::setTarget(const FlagSet<Category>& category)
 
 void Command::setTarget(entityx::Entity entity)
 {
-	if(m_targetIsSpecific)
+	if(not m_targetIsSpecific)
 		allocate(entity);
 	else
 		m_entity = entity;
 	m_targetIsSpecific = true;
 }
 
-const FlagSet<Category>& Command::getCategory() const throw(std::logic_error)
+const FlagSet<Category>& Command::getCategory() const
 {
 	if(m_targetIsSpecific)
 		throw std::logic_error("Command::getCategory were called altough a specific entity was set.");
 	return m_category;
 }
 
-entityx::Entity Command::getEntity() const throw(std::logic_error)
+entityx::Entity Command::getEntity() const
 {
 	if(not m_targetIsSpecific)
 		throw std::logic_error("Command::getEntity were called altough a category was set.");
