@@ -14,12 +14,12 @@ class LangManager
 	public:
         /// Set the current lang.
         /// The lang file is automaticaly loaded by the manager.
-        /// \param newLang Lang to load
-        /// \return void
+        /// \param newLang The lang to load.
+        /// \throw std::runtime_error if the lang is not available.
 		void setLang(const std::string& newLang);
 
         /// Return the current lang.
-        /// \return Lang
+        /// \return The current lang.
 		std::string getLang() const;
 
 		/// Get the default lang.

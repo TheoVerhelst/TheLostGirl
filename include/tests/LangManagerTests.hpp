@@ -12,6 +12,8 @@ class LangManagerTestsFixture : public TestsFixture
 	/// Destructor.
 	~LangManagerTestsFixture();
 
+	static inline std::size_t getFileLineNumber(const std::string& filename);
+
 	LangManager langs;///< The lang manager.
 #define MACRO_CONTEXT_ELEMENT(Type, Name, m_attribute) Type* m_attribute{nullptr};
 #include <TheLostGirl/ContextElements.inl>
