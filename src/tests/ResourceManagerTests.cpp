@@ -11,12 +11,12 @@ bool MockResource::loadFromFile(const std::string filename)
 	return true;
 }
 
-bool MockResource::operator==(const MockResource& other)
+bool MockResource::operator==(const MockResource& other) const
 {
 	return m_filename == other.m_filename;
 }
 
-bool MockResource::operator!=(const MockResource& other)
+bool MockResource::operator!=(const MockResource& other) const
 {
 	return not (*this == other);
 }
@@ -42,6 +42,10 @@ BOOST_AUTO_TEST_CASE(MockResourceTests)
 	for(auto& pair : textures)
 	{
 		BOOST_CHECK(manager.get(pair.first) == pair.second);
+		// The typedef is needed because we cant write commas in BOOST_CHECK
+		typedef ResourceManager<MockResource, std::string> MockResourceManager;
+		// We need to use pointer because it complains about manager not being a reference nor a pointer
+		BOOST_CHECK(static_cast<const MockResourceManager*>(&manager)->get(pair.first) == pair.second);
 		BOOST_CHECK_EQUAL(manager.getIdentifier(manager.get(pair.first)), pair.first);
 	}
 }

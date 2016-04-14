@@ -40,6 +40,7 @@ template <typename Resource, typename Identifier>
 Identifier ResourceManager<Resource, Identifier>::getIdentifier(const Resource& resource) const
 {
 	auto found = m_resourceMap.begin();
-	for(;found != m_resourceMap.end() and found->second.get() != &resource; ++found);
+	while(found != m_resourceMap.end() and found->second.get() != &resource)
+		++found;
 	return found == m_resourceMap.end() ? Identifier() : found->first;
 }

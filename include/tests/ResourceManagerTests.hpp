@@ -9,9 +9,9 @@ class MockResource
 	public:
 		bool loadFromFile(const std::string filename);
 
-		bool operator==(const MockResource& other);
+		bool operator==(const MockResource& other) const;
 
-		bool operator!=(const MockResource& other);
+		bool operator!=(const MockResource& other) const;
 
 		static constexpr char invalidFilename[] = "Invalid filename";
 
