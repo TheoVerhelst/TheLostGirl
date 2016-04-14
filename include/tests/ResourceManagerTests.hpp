@@ -1,7 +1,23 @@
 #ifndef RESOURCEMANAGERTESTS_HPP
 #define RESOURCEMANAGERTESTS_HPP
 
+#include <TheLostGirl/ResourceManager.hpp>
 #include <tests/TestsFixture.hpp>
+
+class MockResource
+{
+	public:
+		bool loadFromFile(const std::string filename);
+
+		bool operator==(const MockResource& other);
+
+		bool operator!=(const MockResource& other);
+
+		static constexpr char invalidFilename[] = "Invalid filename";
+
+	private:
+		std::string m_filename;
+};
 
 class ResourceManagerTestsFixture : public TestsFixture
 {
@@ -9,10 +25,8 @@ class ResourceManagerTestsFixture : public TestsFixture
 		/// Constructor.
 		ResourceManagerTestsFixture();
 
-		/// Destructor.
-		~ResourceManagerTestsFixture();
-
-		const std::string imagesPath;
+		ResourceManager<MockResource, std::string> manager;
+		std::map<std::string, MockResource> textures;
 };
 
 #endif//RESOURCEMANAGERTESTS_HPP
