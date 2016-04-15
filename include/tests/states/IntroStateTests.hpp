@@ -5,12 +5,6 @@
 
 class IntroStateTestsFixture : public TestsFixture
 {
-	public:
-		/// Constructor.
-		IntroStateTestsFixture();
-
-		/// Destructor.
-		~IntroStateTestsFixture();
 };
 
 #endif//INTROSTATETESTS_HPP

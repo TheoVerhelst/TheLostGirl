@@ -5,12 +5,6 @@
 
 class PauseStateTestsFixture : public TestsFixture
 {
-	public:
-		/// Constructor.
-		PauseStateTestsFixture();
-
-		/// Destructor.
-		~PauseStateTestsFixture();
 };
 
 #endif//PAUSESTATETESTS_HPP

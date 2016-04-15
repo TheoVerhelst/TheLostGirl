@@ -5,12 +5,6 @@
 
 class ScriptErrorTestsFixture : public TestsFixture
 {
-	public:
-		/// Constructor.
-		ScriptErrorTestsFixture();
-
-		/// Destructor.
-		~ScriptErrorTestsFixture();
 };
 
 #endif//SCRIPTERRORTESTS_HPP

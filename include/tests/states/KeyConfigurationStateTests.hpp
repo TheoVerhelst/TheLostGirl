@@ -5,12 +5,6 @@
 
 class KeyConfigurationStateTestsFixture : public TestsFixture
 {
-	public:
-		/// Constructor.
-		KeyConfigurationStateTestsFixture();
-
-		/// Destructor.
-		~KeyConfigurationStateTestsFixture();
 };
 
 #endif//KEYCONFIGURATIONSTATETESTS_HPP

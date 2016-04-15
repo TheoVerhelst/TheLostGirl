@@ -5,12 +5,6 @@
 
 class StateStackTestsFixture : public TestsFixture
 {
-	public:
-		/// Constructor.
-		StateStackTestsFixture();
-
-		/// Destructor.
-		~StateStackTestsFixture();
 };
 
 #endif//STATESTACKTESTS_HPP

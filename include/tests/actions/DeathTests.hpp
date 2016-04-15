@@ -5,12 +5,6 @@
 
 class DeathTestsFixture : public TestsFixture
 {
-	public:
-		/// Constructor.
-		DeathTestsFixture();
-
-		/// Destructor.
-		~DeathTestsFixture();
 };
 
 #endif//DEATHTESTS_HPP

@@ -5,12 +5,6 @@
 
 class PendingChangesSystemTestsFixture : public TestsFixture
 {
-	public:
-		/// Constructor.
-		PendingChangesSystemTestsFixture();
-
-		/// Destructor.
-		~PendingChangesSystemTestsFixture();
 };
 
 #endif//PENDINGCHANGESSYSTEMTESTS_HPP

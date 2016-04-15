@@ -11,9 +11,6 @@ class HashEntityTestsFixture : public TestsFixture
 		/// Constructor.
 		HashEntityTestsFixture();
 
-		/// Destructor.
-		~HashEntityTestsFixture();
-
 		HashEntity hasher;
 		entityx::EventManager events;
 		entityx::EntityManager entities;

@@ -72,7 +72,8 @@ void HandToHand::operator()(entityx::Entity entity) const
 
 HandToHandQueryCallback::HandToHandQueryCallback(entityx::Entity attacker):
 	m_attacker(attacker)
-{}
+{
+}
 
 bool HandToHandQueryCallback::ReportFixture(b2Fixture* fixture)
 {

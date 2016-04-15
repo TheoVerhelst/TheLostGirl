@@ -2,10 +2,6 @@
 #include <TheLostGirl/FixtureRoles.hpp>
 #include <TheLostGirl/DestructionListener.hpp>
 
-DestructionListener::~DestructionListener()
-{
-}
-
 void DestructionListener::SayGoodbye(b2Joint*)
 {
 }

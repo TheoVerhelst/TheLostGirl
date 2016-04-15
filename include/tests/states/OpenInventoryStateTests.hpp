@@ -5,12 +5,6 @@
 
 class OpenInventoryStateTestsFixture : public TestsFixture
 {
-	public:
-		/// Constructor.
-		OpenInventoryStateTestsFixture();
-
-		/// Destructor.
-		~OpenInventoryStateTestsFixture();
 };
 
 #endif//OPENINVENTORYSTATETESTS_HPP

@@ -5,12 +5,6 @@
 
 class PhysicsSystemTestsFixture : public TestsFixture
 {
-	public:
-		/// Constructor.
-		PhysicsSystemTestsFixture();
-
-		/// Destructor.
-		~PhysicsSystemTestsFixture();
 };
 
 #endif//PHYSICSSYSTEMTESTS_HPP

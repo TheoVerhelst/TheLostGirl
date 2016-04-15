@@ -303,7 +303,8 @@ ScriptFunctions::NearestFoeQueryCallback::NearestFoeQueryCallback(entityx::Entit
 	entity(),
 	m_self(self),
 	m_distance(std::numeric_limits<float>::infinity())
-{}
+{
+}
 
 bool ScriptFunctions::NearestFoeQueryCallback::ReportFixture(b2Fixture* fixture)
 {

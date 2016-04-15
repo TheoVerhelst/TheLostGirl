@@ -7,9 +7,6 @@
 class DestructionListener : public b2DestructionListener
 {
 	public:
-		/// Destructor.
-		virtual ~DestructionListener();
-
 		/// Handle the destruction of a joint.
 		/// \param joint The joint that will be destroyed
 		virtual void SayGoodbye(b2Joint* joint) override;

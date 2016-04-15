@@ -5,12 +5,6 @@
 
 class TimeSystemTestsFixture : public TestsFixture
 {
-	public:
-		/// Constructor.
-		TimeSystemTestsFixture();
-
-		/// Destructor.
-		~TimeSystemTestsFixture();
 };
 
 #endif//TIMESYSTEMTESTS_HPP

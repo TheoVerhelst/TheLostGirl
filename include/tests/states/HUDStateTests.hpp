@@ -5,12 +5,6 @@
 
 class HUDStateTestsFixture : public TestsFixture
 {
-	public:
-		/// Constructor.
-		HUDStateTestsFixture();
-
-		/// Destructor.
-		~HUDStateTestsFixture();
 };
 
 #endif//HUDSTATETESTS_HPP

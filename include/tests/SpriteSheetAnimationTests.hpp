@@ -5,12 +5,6 @@
 
 class SpriteSheetAnimationTestsFixture : public TestsFixture
 {
-	public:
-		/// Constructor.
-		SpriteSheetAnimationTestsFixture();
-
-		/// Destructor.
-		~SpriteSheetAnimationTestsFixture();
 };
 
 #endif//SPRITESHEETANIMATIONTESTS_HPP

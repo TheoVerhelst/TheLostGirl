@@ -5,12 +5,6 @@
 
 class BowBenderTestsFixture : public TestsFixture
 {
-	public:
-		/// Constructor.
-		BowBenderTestsFixture();
-
-		/// Destructor.
-		~BowBenderTestsFixture();
 };
 
 #endif//BOWBENDERTESTS_HPP

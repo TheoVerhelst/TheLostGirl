@@ -5,12 +5,6 @@
 
 class SkyAnimationTestsFixture : public TestsFixture
 {
-	public:
-		/// Constructor.
-		SkyAnimationTestsFixture();
-
-		/// Destructor.
-		~SkyAnimationTestsFixture();
 };
 
 #endif//SKYANIMATIONTESTS_HPP

@@ -5,12 +5,6 @@
 
 class MoverTestsFixture : public TestsFixture
 {
-	public:
-		/// Constructor.
-		MoverTestsFixture();
-
-		/// Destructor.
-		~MoverTestsFixture();
 };
 
 #endif//MOVERTESTS_HPP

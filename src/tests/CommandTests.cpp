@@ -12,10 +12,6 @@ CommandTestsFixture::CommandTestsFixture():
 {
 }
 
-CommandTestsFixture::~CommandTestsFixture()
-{
-}
-
 void CommandTestsFixture::checkAction(Command& command, void (*action)(entityx::Entity))
 {
 	BOOST_CHECK_EQUAL(*command.getAction().target<void(*)(entityx::Entity)>(), action);

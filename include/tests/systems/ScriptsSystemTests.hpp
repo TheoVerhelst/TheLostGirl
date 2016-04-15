@@ -5,12 +5,6 @@
 
 class ScriptsSystemTestsFixture : public TestsFixture
 {
-	public:
-		/// Constructor.
-		ScriptsSystemTestsFixture();
-
-		/// Destructor.
-		~ScriptsSystemTestsFixture();
 };
 
 #endif//SCRIPTSSYSTEMTESTS_HPP

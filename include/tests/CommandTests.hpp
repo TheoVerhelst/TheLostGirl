@@ -11,9 +11,6 @@ class CommandTestsFixture : public TestsFixture
 		/// Constructor.
 		CommandTestsFixture();
 
-		/// Destructor.
-		~CommandTestsFixture();
-
 		static void checkAction(Command& command, void (*action)(entityx::Entity));
 
 		entityx::EventManager eventManager;

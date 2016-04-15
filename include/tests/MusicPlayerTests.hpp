@@ -5,12 +5,6 @@
 
 class MusicPlayerTestsFixture : public TestsFixture
 {
-	public:
-		/// Constructor.
-		MusicPlayerTestsFixture();
-
-		/// Destructor.
-		~MusicPlayerTestsFixture();
 };
 
 #endif//MUSICPLAYERTESTS_HPP

@@ -5,12 +5,6 @@
 
 class JsonHelperTestsFixture : public TestsFixture
 {
-	public:
-		/// Constructor.
-		JsonHelperTestsFixture();
-
-		/// Destructor.
-		~JsonHelperTestsFixture();
 };
 
 #endif//JSONHELPERTESTS_HPP

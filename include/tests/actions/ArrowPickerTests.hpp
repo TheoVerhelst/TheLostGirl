@@ -5,12 +5,6 @@
 
 class ArrowPickerTestsFixture : public TestsFixture
 {
-	public:
-		/// Constructor.
-		ArrowPickerTestsFixture();
-
-		/// Destructor.
-		~ArrowPickerTestsFixture();
 };
 
 #endif//ARROWPICKERTESTS_HPP

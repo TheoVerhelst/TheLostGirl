@@ -5,12 +5,6 @@
 
 class FallingListenerTestsFixture : public TestsFixture
 {
-	public:
-		/// Constructor.
-		FallingListenerTestsFixture();
-
-		/// Destructor.
-		~FallingListenerTestsFixture();
 };
 
 #endif//FALLINGLISTENERTESTS_HPP

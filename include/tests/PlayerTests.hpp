@@ -10,9 +10,6 @@ class PlayerTestsFixture : public TestsFixture
 		/// Constructor.
 		PlayerTestsFixture();
 
-		/// Destructor.
-		~PlayerTestsFixture();
-
 		entityx::EventManager events;
 		entityx::EntityManager entities;
 		entityx::SystemManager systems;

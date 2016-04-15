@@ -5,12 +5,6 @@
 
 class StatsSystemTestsFixture : public TestsFixture
 {
-	public:
-		/// Constructor.
-		StatsSystemTestsFixture();
-
-		/// Destructor.
-		~StatsSystemTestsFixture();
 };
 
 #endif//STATSSYSTEMTESTS_HPP

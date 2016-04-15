@@ -195,7 +195,8 @@ ParametersState::~ParametersState()
 }
 
 void ParametersState::draw()
-{}
+{
+}
 
 bool ParametersState::update(sf::Time)
 {

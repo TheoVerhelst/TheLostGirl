@@ -5,12 +5,6 @@
 
 class AnimationsSystemTestsFixture : public TestsFixture
 {
-	public:
-		/// Constructor.
-		AnimationsSystemTestsFixture();
-
-		/// Destructor.
-		~AnimationsSystemTestsFixture();
 };
 
 #endif//ANIMATIONSSYSTEMTESTS_HPP

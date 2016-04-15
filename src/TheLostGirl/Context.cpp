@@ -9,7 +9,7 @@ ContextImpl::ContextImpl(
 #define MACRO_CONTEXT_ELEMENT(Type, Name, m_attribute) Type& Name,
 #include <TheLostGirl/ContextElements.inl>
 #undef MACRO_CONTEXT_ELEMENT
-		std::nullptr_t dummy)
+		std::nullptr_t)
 {
 #define MACRO_CONTEXT_ELEMENT(Type, Name, m_attribute) m_attribute = &Name;
 #include <TheLostGirl/ContextElements.inl>

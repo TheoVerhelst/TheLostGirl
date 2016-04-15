@@ -5,12 +5,6 @@
 
 class GameStateTestsFixture : public TestsFixture
 {
-	public:
-		/// Constructor.
-		GameStateTestsFixture();
-
-		/// Destructor.
-		~GameStateTestsFixture();
 };
 
 #endif//GAMESTATETESTS_HPP

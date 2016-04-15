@@ -10,10 +10,6 @@ PlayerTestsFixture::PlayerTestsFixture():
 	systems.add<DragAndDropSystem>();
 }
 
-PlayerTestsFixture::~PlayerTestsFixture()
-{
-}
-
 BOOST_FIXTURE_TEST_SUITE(PlayerTests, PlayerTestsFixture)
 
 //TODO Need to implement the command config file, in order to test key assignement in the player class

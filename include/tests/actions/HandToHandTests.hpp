@@ -5,12 +5,6 @@
 
 class HandToHandTestsFixture : public TestsFixture
 {
-	public:
-		/// Constructor.
-		HandToHandTestsFixture();
-
-		/// Destructor.
-		~HandToHandTestsFixture();
 };
 
 #endif//HANDTOHANDTESTS_HPP

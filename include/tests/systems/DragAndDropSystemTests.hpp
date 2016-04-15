@@ -5,12 +5,6 @@
 
 class DragAndDropSystemTestsFixture : public TestsFixture
 {
-	public:
-		/// Constructor.
-		DragAndDropSystemTestsFixture();
-
-		/// Destructor.
-		~DragAndDropSystemTestsFixture();
 };
 
 #endif//DRAGANDDROPSYSTEMTESTS_HPP

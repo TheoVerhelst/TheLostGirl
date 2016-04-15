@@ -13,12 +13,6 @@ namespace entityx
 class InventoryOpener : public Action
 {
 	public:
-		/// Default constructor.
-		InventoryOpener();
-
-		/// Default destructor
-		virtual ~InventoryOpener();
-
 		/// Overload of the () operator.
 		/// \param entity Entity that open its inventory.
 		virtual void operator()(entityx::Entity entity) const override;

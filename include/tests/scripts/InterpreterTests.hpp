@@ -5,12 +5,6 @@
 
 class InterpreterTestsFixture : public TestsFixture
 {
-	public:
-		/// Constructor.
-		InterpreterTestsFixture();
-
-		/// Destructor.
-		~InterpreterTestsFixture();
 };
 
 #endif//INTERPRETERTESTS_HPP

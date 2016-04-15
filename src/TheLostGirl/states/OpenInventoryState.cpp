@@ -118,7 +118,8 @@ OpenInventoryState::~OpenInventoryState()
 }
 
 void OpenInventoryState::draw()
-{}
+{
+}
 
 bool OpenInventoryState::update(sf::Time)
 {

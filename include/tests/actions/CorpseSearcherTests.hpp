@@ -5,12 +5,6 @@
 
 class CorpseSearcherTestsFixture : public TestsFixture
 {
-	public:
-		/// Constructor.
-		CorpseSearcherTestsFixture();
-
-		/// Destructor.
-		~CorpseSearcherTestsFixture();
 };
 
 #endif//CORPSESEARCHERTESTS_HPP

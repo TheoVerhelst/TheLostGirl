@@ -5,12 +5,6 @@
 
 class ScrollingSystemTestsFixture : public TestsFixture
 {
-	public:
-		/// Constructor.
-		ScrollingSystemTestsFixture();
-
-		/// Destructor.
-		~ScrollingSystemTestsFixture();
 };
 
 #endif//SCROLLINGSYSTEMTESTS_HPP

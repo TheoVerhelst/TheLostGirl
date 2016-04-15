@@ -10,10 +10,6 @@ HashEntityTestsFixture::HashEntityTestsFixture():
 {
 }
 
-HashEntityTestsFixture::~HashEntityTestsFixture()
-{
-}
-
 BOOST_FIXTURE_TEST_SUITE(HashEntityTests, HashEntityTestsFixture)
 
 BOOST_AUTO_TEST_CASE(hash)

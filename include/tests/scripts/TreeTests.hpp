@@ -5,12 +5,6 @@
 
 class TreeTestsFixture : public TestsFixture
 {
-    public:
-        /// Constructor.
-        TreeTestsFixture();
-
-        /// Destructor.
-        ~TreeTestsFixture();
 };
 
 #endif//TREETESTS_HPP

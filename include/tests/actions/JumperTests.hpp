@@ -5,12 +5,6 @@
 
 class JumperTestsFixture : public TestsFixture
 {
-	public:
-		/// Constructor.
-		JumperTestsFixture();
-
-		/// Destructor.
-		~JumperTestsFixture();
 };
 
 #endif//JUMPERTESTS_HPP

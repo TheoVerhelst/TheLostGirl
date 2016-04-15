@@ -16,9 +16,6 @@ class AnimationsManagerTestsFixture : public TestsFixture
 		/// Constructor.
 		AnimationsManagerTestsFixture();
 
-		/// Destructor.
-		~AnimationsManagerTestsFixture();
-
 		AnimationsManager<MockAnimation> manager;
 };
 

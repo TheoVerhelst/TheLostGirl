@@ -10,10 +10,6 @@ AnimationsManagerTestsFixture::AnimationsManagerTestsFixture()
 	manager.addAnimation("a", MockAnimation(), 0, sf::seconds(1.f), false, false);
 }
 
-AnimationsManagerTestsFixture::~AnimationsManagerTestsFixture()
-{
-}
-
 BOOST_FIXTURE_TEST_SUITE(AnimationsManagerTests, AnimationsManagerTestsFixture)
 
 	BOOST_AUTO_TEST_CASE(getters)

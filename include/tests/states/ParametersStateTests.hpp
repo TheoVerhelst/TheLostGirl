@@ -5,12 +5,6 @@
 
 class ParametersStateTestsFixture : public TestsFixture
 {
-	public:
-		/// Constructor.
-		ParametersStateTestsFixture();
-
-		/// Destructor.
-		~ParametersStateTestsFixture();
 };
 
 #endif//PARAMETERSSTATETESTS_HPP

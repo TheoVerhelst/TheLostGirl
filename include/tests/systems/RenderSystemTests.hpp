@@ -5,12 +5,6 @@
 
 class RenderSystemTestsFixture : public TestsFixture
 {
-	public:
-		/// Constructor.
-		RenderSystemTestsFixture();
-
-		/// Destructor.
-		~RenderSystemTestsFixture();
 };
 
 #endif//RENDERSYSTEMTESTS_HPP

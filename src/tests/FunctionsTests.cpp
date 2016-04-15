@@ -6,14 +6,6 @@
 #include <TheLostGirl/functions.hpp>
 #include <tests/FunctionsTests.hpp>
 
-FunctionsTestsFixture::FunctionsTestsFixture()
-{
-}
-
-FunctionsTestsFixture::~FunctionsTestsFixture()
-{
-}
-
 GetJointDefFixture::GetJointDefFixture():
 	world{{2.f, 3.f}},
 	bodyDefinition{},
