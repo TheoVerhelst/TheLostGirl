@@ -184,6 +184,7 @@ BOOST_AUTO_TEST_CASE(getKeyTests)
 	BOOST_CHECK_EQUAL(getKey(test_map, 5), 3);
 	BOOST_CHECK_EQUAL(getKey(test_map, 7), 1);
 	BOOST_CHECK(getKey(test_map, 3) == 12 or getKey(test_map, 3) == 6);
+	BOOST_CHECK_THROW(getKey(test_map, 69), std::out_of_range);
 }
 
 BOOST_AUTO_TEST_CASE(isPlayerTests)
