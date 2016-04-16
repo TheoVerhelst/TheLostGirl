@@ -36,8 +36,8 @@ function install_github()
 		cd $repo_name-master/build
 	fi
 	cmake $cmake_arguments $additional_cmake_arguments  ..
-	make -i --quiet
-	make install -i --quiet
+	make --ignore-errors --quiet --jobs=4
+	make install --ignore-errors --quiet --jobs=4
 	cd $base_path # Don't forget to restart from the base path for the next library
 }
 
@@ -52,5 +52,5 @@ install_github erincatto Box2D "-DBOX2D_BUILD_EXAMPLES=False -DBOX2D_BUILD_SHARE
 wget http://downloads.sourceforge.net/project/boost/boost/1.60.0/boost_1_60_0.zip
 unzip -qq boost_1_60_0.zip
 cd boost_1_60_0
-./bootstrap.sh --with-libraries=filesystem,system,test
-sudo ./b2 -d0 install
+./bootstrap.sh --with-libraries=filesystem,system,test --prefix="$libraries_directory"
+./b2 -d0 -j4 install
