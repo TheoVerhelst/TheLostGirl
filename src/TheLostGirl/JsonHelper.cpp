@@ -17,16 +17,13 @@ Json::Value JsonHelper::loadFromFile(const std::string& filePath)
 	std::ifstream fileStream(filePath);
 	if(not reader.parse(fileStream, root))//report to the user the failure and their locations in the document.
 		throw std::runtime_error("error while parsing json file \"" + filePath + "\" : " + reader.getFormattedErrorMessages());
-	fileStream.close();
 
 	return root;
 }
 
 void JsonHelper::saveToFile(const Json::Value& value, const std::string& filePath)
 {
-	std::ofstream saveFileStream(filePath, std::ofstream::binary);
-	saveFileStream << value;
-	saveFileStream.close();
+	std::ofstream(filePath) << value;
 }
 
 void JsonHelper::merge(Json::Value& left, const Json::Value& right)

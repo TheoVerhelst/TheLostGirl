@@ -83,7 +83,4 @@ void LangManager::loadLang(const std::string& langToLoad)
 		std::cerr << "\"" << sourceFilePath << "\" source file and \"" << translationFilePath << "\" translation file have different number of lines." << std::endl;
 		std::cerr << "Translations are probably inconsistent." << std::endl;
 	}
-
-	sourceFileStream.close();
-	translationFileStream.close();
 }

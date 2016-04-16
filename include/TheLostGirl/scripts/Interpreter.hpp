@@ -38,9 +38,6 @@ class Interpreter
 		/// Constructor.
 		Interpreter();
 
-		/// Destructor.
-		~Interpreter();
-
 		/// Load the given script file in order to execute it later.
 		/// This function parse the file and may throw exceptions if the file is badly written.
 		/// If not so, it store the whole script in a list of tree internally and return true.

@@ -62,12 +62,6 @@ Interpreter::Interpreter():
 {
 }
 
-Interpreter::~Interpreter()
-{
-	if(m_file.is_open())
-		m_file.close();
-}
-
 bool Interpreter::loadFromFile(const std::string& fileName)
 {
 	std::ifstream file(fileName);
@@ -84,10 +78,8 @@ bool Interpreter::loadFromFile(const std::string& fileName)
 	catch(const std::runtime_error& e)
 	{
 		std::cerr << "Error while interpreting script \"" << fileName << "\": " << e.what() << std::endl;
-		file.close();
 		return false;
 	}
-	file.close();
 	return true;
 }
 

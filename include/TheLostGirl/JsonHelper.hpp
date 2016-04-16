@@ -36,6 +36,7 @@ class JsonHelper
 		/// Every member of the right value will be copied into the left value.
 		/// \param left A json value.
 		/// \param right Another json value
+		/// \throw std::invalid_argument if the merging is not possible
 		static void merge(Json::Value& left, const Json::Value& right);
 
 		/// Checks if the data inside the left value is too in the right value.
@@ -54,7 +55,7 @@ class JsonHelper
 		/// Strip the data in left value that is also present in right value.
 		/// This can be viewed as a set substraction.
 		/// \pre isSubset(right, left).
-		/// \post isEqual(merge(*left after call*, right), *left before call*).
+		/// \post isEqual(merge(<left after call>, right), <left before call>).
 		/// \param left A json value.
 		/// \param right Another json value.
 		static void substract(Json::Value& left, const Json::Value& right);

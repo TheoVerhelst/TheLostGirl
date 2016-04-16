@@ -65,8 +65,6 @@ BOOST_AUTO_TEST_CASE(trTests)
 
 	BOOST_CHECK_MESSAGE(defaultFileStream.eof() == translationFileStream.eof(),
 			"It seems that lang files are not consistent (" + defaultFilename + " and " + translationFilename + ").");
-	defaultFileStream.close();
-	translationFileStream.close();
 	langs.setLang(testedLang);//Set the tested lang to the lang manager
 
 	//Test normal strings
