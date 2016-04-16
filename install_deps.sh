@@ -1,10 +1,25 @@
 #!/bin/bash
 
+locally="false"
+
+if [[ $# -eq 1 &&  ($1 = "-l" || $1 = "--locally") ]]
+then
+	locally="true"
+fi
+
+libraries_directory=`pwd`"/libraries/"
+
+cmake_arguments="-DCMAKE_BUILD_TYPE=Debug"
+if [[ $locally = "true" ]]
+then
+	cmake_arguments=$cmake_arguments -DCMAKE_INSTALL_PREFIX="$libraries_directory"
+fi
+
 function install_github()
 {
 	username=$1
 	repo_name=$2
-	cmake_options=$3
+	additional_cmake_arguments=$3
 	base_path=`pwd`
 
 	# Download and extract the source
@@ -13,20 +28,21 @@ function install_github()
 	rm master.zip # Must be removed for the next library
 
 	# Box2D have different directories structure than usual libraries on GitHub
-	if [ $repo_name = "Box2D" ]
+	if [[ $repo_name = "Box2D" ]]
 	then
 		cd $repo_name-master/Box2D/Build
 	else
 		mkdir $repo_name-master/build
 		cd $repo_name-master/build
 	fi
-
-	cmake $cmake_options -DCMAKE_BUILD_TYPE=Debug ..
+	cmake $cmake_arguments $additional_cmake_arguments  ..
 	make -i --quiet
-	sudo make install -i --quiet
+	make install -i --quiet
 	cd $base_path # Don't forget to restart from the base path for the next library
 }
 
+mkdir "$libraries_directory"
+cd "$libraries_directory"
 install_github SFML SFML
 install_github texus TGUI
 install_github alecthomas entityx "-DENTITYX_BUILD_TESTING=False"

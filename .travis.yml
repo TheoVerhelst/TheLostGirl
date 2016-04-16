@@ -1,4 +1,4 @@
-sudo: required
+sudo: false
 language: cpp
 git:
     depth: 1
@@ -35,12 +35,12 @@ addons:
 before_script:
     - export CXX='g++-5'
     - export CC='gcc-5'
-    - ./install_deps.sh
+    - ./install_deps.sh --locally
 
 script:
     - mkdir build
     - cd build
-    - cmake .. -DTLG_BUILD_TESTS=True -DCMAKE_BUILD_TYPE=Debug
+    - cmake .. -DTLG_BUILD_TESTS=True -DCMAKE_BUILD_TYPE=Debug -DCMAKE_INSTALL_PREFIX="./libraries/"
     - make
     - ./TheLostGirlTests
 
