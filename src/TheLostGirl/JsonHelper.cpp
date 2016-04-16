@@ -26,6 +26,11 @@ void JsonHelper::saveToFile(const Json::Value& value, const std::string& filePat
 	std::ofstream(filePath) << value;
 }
 
+void JsonHelper::parse(Json::Value& value, const Json::Value& model)
+{
+	parseImpl(value, model, "root", "root");
+}
+
 void JsonHelper::merge(Json::Value& left, const Json::Value& right)
 {
 	if(left.type() != right.type() and not left.isNull())
@@ -121,11 +126,6 @@ void JsonHelper::substract(Json::Value& left, const Json::Value& right)
 		throw std::invalid_argument("substract: left and right are not array or object.");
 }
 
-void JsonHelper::parse(Json::Value& value, const Json::Value& model)
-{
-	parseImpl(value, model, "root", "root");
-}
-
 std::string JsonHelper::typeToStr(Json::ValueType type)
 {
 	//The "n " or " " liaise the words
@@ -213,16 +213,6 @@ void JsonHelper::parseObject(const Json::Value& object, const std::string& name,
 				throw std::runtime_error("\"" + name + "." + elementName + "\" must be a" + typeToStr(type) + ".");
 }
 
-void JsonHelper::parseArray(const Json::Value& array, const std::string& name, std::vector<Json::Value> values)
-{
-	if(array.type() != Json::arrayValue)
-		throw std::runtime_error("\"" + name + "\" must be an array.");
-	else
-		for(Json::ArrayIndex i{0}; i < array.size(); ++i)
-			if(std::find(values.begin(), values.end(), array[i]) == values.end())//If the value in the array is not in the vector
-				throw std::runtime_error("\"" + name + "." + std::to_string(i) + "\" identifier (" + array[i].asString() + ") is not recognized.");
-}
-
 void JsonHelper::parseValue(const Json::Value& value, const std::string& name, std::vector<Json::Value> values)
 {
 	if(std::find(values.begin(), values.end(), value) == values.end())//If the value is not in the vector
@@ -233,6 +223,16 @@ void JsonHelper::parseValue(const Json::Value& value, const std::string& name, J
 {
 	if(not value.isConvertibleTo(type))
 		throw std::runtime_error("\"" + name + "\" must be a" + typeToStr(type) + ".");
+}
+
+void JsonHelper::parseArray(const Json::Value& array, const std::string& name, std::vector<Json::Value> values)
+{
+	if(array.type() != Json::arrayValue)
+		throw std::runtime_error("\"" + name + "\" must be an array.");
+	else
+		for(Json::ArrayIndex i{0}; i < array.size(); ++i)
+			if(std::find(values.begin(), values.end(), array[i]) == values.end())//If the value in the array is not in the vector
+				throw std::runtime_error("\"" + name + "." + std::to_string(i) + "\" identifier (" + array[i].asString() + ") is not recognized.");
 }
 
 void JsonHelper::parseArray(const Json::Value& array, const std::string& name, Json::ValueType type)
