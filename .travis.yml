@@ -35,7 +35,8 @@ addons:
 before_script:
     - export CXX='g++-5'
     - export CC='gcc-5'
-    - export CMAKE_PREFIX_PATH="$PWD/libraries"
+    - export CMAKE_LIBRARY_PATH="$PWD/libraries/lib:$CMAKE_LIBRARY_PATH"
+    - export CMAKE_INCLUDE_PATH="$PWD/libraries/include:$CMAKE_LIBRARY_PATH"
     - ./install_deps.sh --locally
 
 script:
