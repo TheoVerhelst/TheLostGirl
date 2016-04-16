@@ -29,6 +29,59 @@ BOOST_AUTO_TEST_CASE(saveToFileTests)
 	BOOST_CHECK(JsonHelper::isEqual(JsonHelper::loadFromFile(savedFile), value));
 }
 
+BOOST_AUTO_TEST_CASE(parseTest0)
+{
+	Json::Value value{Json::objectValue}, model{Json::objectValue};
+	value["a"] = 3;
+	value["b"] = 4.f;
+	value["c"] = "s";
+	value["d"]["1"][0] = "0";
+	value["d"]["1"][1] = "1";
+	value["d"]["1"][2] = "2";
+	value["d"]["2"] = 5.f;
+
+	model["name"] = "root";
+	model["type"] = "object";
+	model["required"] = true;
+	model["free children names"] = false;
+	model["children"][0]["name"] = "a";
+	model["children"][0]["type"] = "int";
+	model["children"][0]["required"] = true;
+	model["children"][1]["name"] = "b";
+	model["children"][1]["type"] = "real";
+	model["children"][1]["required"] = true;
+	model["children"][2]["name"] = "c";
+	model["children"][2]["type"] = "string";
+	model["children"][2]["required"] = true;
+	model["children"][3]["name"] = "d";
+	model["children"][3]["type"] = "object";
+	model["children"][3]["required"] = true;
+	model["children"][3]["free children names"] = false;
+	model["children"][3]["children"][0]["name"] = "1";
+	model["children"][3]["children"][0]["type"] = "array";
+	model["children"][3]["children"][0]["children"]["type"] = "string";
+	model["children"][3]["children"][0]["required"] = true;
+	model["children"][3]["children"][1]["name"] = "2";
+	model["children"][3]["children"][1]["type"] = "real";
+	model["children"][3]["children"][1]["required"] = true;
+	BOOST_CHECK_NO_THROW(JsonHelper::parse(value, model));
+}
+
+BOOST_AUTO_TEST_CASE(parseTest1)
+{
+	Json::Value value{Json::objectValue}, model{Json::objectValue};
+	value["b"] = 3;
+
+	model["name"] = "root";
+	model["type"] = "object";
+	model["required"] = true;
+	model["free children names"] = false;
+	model["children"][0]["name"] = "a";
+	model["children"][0]["type"] = "int";
+	model["children"][0]["required"] = true;
+	BOOST_CHECK_THROW(JsonHelper::parse(value, model), std::runtime_error);
+}
+
 BOOST_AUTO_TEST_CASE(mergeTests)
 {
 	Json::Value left{Json::objectValue}, right{Json::objectValue};
