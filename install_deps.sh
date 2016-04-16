@@ -12,7 +12,7 @@ libraries_directory=`pwd`"/libraries/"
 cmake_arguments="-DCMAKE_BUILD_TYPE=Debug"
 if [[ $locally = "true" ]]
 then
-	cmake_arguments=$cmake_arguments -DCMAKE_INSTALL_PREFIX="$libraries_directory" -DCMAKE_INSTALL_PREFIX:PATH="$libraries_directory"
+	cmake_arguments="$cmake_arguments -DCMAKE_INSTALL_PREFIX='$libraries_directory'"
 fi
 
 function install_github()
