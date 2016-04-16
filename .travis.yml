@@ -37,12 +37,13 @@ before_script:
     - export CC="gcc-5"
     - export CMAKE_LIBRARY_PATH="$PWD/libraries/lib/:$CMAKE_LIBRARY_PATH"
     - export CMAKE_INCLUDE_PATH="$PWD/libraries/include/:$CMAKE_INCLUDE_PATH"
+    - export CMAKE_INSTALL_PREFIX="$PWD/libraries/:$CMAKE_INSTALL_PREFIX"
     - ./install_deps.sh --locally
 
 script:
     - mkdir build
     - cd build
-    - cmake .. -DTLG_BUILD_TESTS=True -DCMAKE_BUILD_TYPE=Debug -DCMAKE_INSTALL_PREFIX:PATH="$PWD/libraries/"
+    - cmake .. -DTLG_BUILD_TESTS=True -DCMAKE_BUILD_TYPE=Debug
     - make --jobs=4
     - ./TheLostGirlTests
 

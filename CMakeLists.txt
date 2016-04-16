@@ -22,8 +22,8 @@ find_package(Threads REQUIRED)
 find_package(X11 REQUIRED)
 
 #Set the include directory of the project
-include_directories(
-	${TheLostGirl_SOURCE_DIR}/include
+include_directories(${TheLostGirl_SOURCE_DIR}/include)
+include_directories(SYSTEM
 	${SFML_INCLUDE_DIR}
 	${TGUI_INCLUDE_DIR}
 	${Boost_INCLUDE_DIRS}

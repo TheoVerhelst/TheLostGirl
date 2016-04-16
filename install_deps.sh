@@ -7,7 +7,7 @@ then
 	locally="true"
 fi
 
-libraries_directory=`pwd`"/libraries/"
+libraries_directory="$PWD/libraries/"
 
 cmake_arguments="-DCMAKE_BUILD_TYPE=Debug"
 if [[ $locally = "true" ]]
