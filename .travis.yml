@@ -35,12 +35,13 @@ addons:
 before_script:
     - export CXX='g++-5'
     - export CC='gcc-5'
+    - export CMAKE_PREFIX_PATH="$PWD/libraries"
     - ./install_deps.sh --locally
 
 script:
     - mkdir build
     - cd build
-    - cmake .. -DTLG_BUILD_TESTS=True -DCMAKE_BUILD_TYPE=Debug -DCMAKE_INSTALL_PREFIX="./libraries/"
+    - cmake .. -DTLG_BUILD_TESTS=True -DCMAKE_BUILD_TYPE=Debug
     - make --jobs=4
     - ./TheLostGirlTests
 
