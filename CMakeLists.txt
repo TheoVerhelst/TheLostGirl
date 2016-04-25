@@ -9,6 +9,15 @@ macro(tlg_set_option var default type docstring)
     set(${var} ${${var}} CACHE ${type} ${docstring} FORCE)
 endmacro()
 
+#Add an option to build the tests
+tlg_set_option(TLG_BUILD_TESTS FALSE BOOL "TRUE to build the tests")
+
+#Add an option to profile the code
+tlg_set_option(TLG_PROFILE FALSE BOOL "TRUE to enable profiling")
+
+#Add an option to enable coverage report
+tlg_set_option(TLG_COVERAGE FALSE BOOL "TRUE to enable coverage report")
+
 #Set path to Find scripts
 set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake/Modules/")
 
@@ -34,8 +43,12 @@ include_directories(SYSTEM
 
 #Set compilator flags
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14")
-set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -coverage -O0 -Wall -Wextra -pedantic -pedantic-errors -Wnon-virtual-dtor -Wshadow -Winit-self -Wredundant-decls -Wcast-align -Wundef -Winline -Wunreachable-code -Wmissing-declarations")
+set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -O0 -Wall -Wextra -pedantic -pedantic-errors -Wnon-virtual-dtor -Wshadow -Winit-self -Wredundant-decls -Wcast-align -Wundef -Winline -Wunreachable-code -Wmissing-declarations")
 set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -Ofast -DNDEBUG")
+if(TLG_COVERAGE)
+	set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -coverage")
+endif()
+
 add_definitions("-DBOOST_FILESYSTEM_NO_DEPRECATED")
 
 #Set a variable with all needed libraries
@@ -49,12 +62,6 @@ set(TLG_EXTERNAL_LIBRARIES
 	${Boost_SYSTEM_LIBRARY}
 	${Boost_FILESYSTEM_LIBRARY}
 	)
-
-#Add an option to build the tests
-tlg_set_option(TLG_BUILD_TESTS FALSE BOOL "TRUE to build the tests")
-
-#Add an option to profile the code
-tlg_set_option(TLG_PROFILE FALSE BOOL "TRUE to enable profiling")
 
 #Place the executable files in the root directory instead of in src
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})

@@ -43,7 +43,7 @@ before_script:
 script:
     - mkdir build
     - cd build
-    - cmake .. -DTLG_BUILD_TESTS=True -DCMAKE_BUILD_TYPE=Debug
+    - cmake .. -DTLG_BUILD_TESTS=True -DCMAKE_BUILD_TYPE=Debug -DTLG_COVERAGE
     - make --jobs=4
     - ./TheLostGirlTests
 
