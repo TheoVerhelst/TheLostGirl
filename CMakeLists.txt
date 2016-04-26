@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 2.8)
 project(TheLostGirl)
 
-# Define a macro that helps defining an option
+#Define a macro that helps defining an option
 macro(tlg_set_option var default type docstring)
     if(NOT DEFINED ${var})
         set(${var} ${default})
@@ -17,6 +17,9 @@ tlg_set_option(TLG_PROFILE FALSE BOOL "TRUE to enable profiling")
 
 #Add an option to enable coverage report
 tlg_set_option(TLG_COVERAGE FALSE BOOL "TRUE to enable coverage report")
+
+#Add an option to build the documentation
+tlg_set_option(TLG_BUILD_DOC FALSE BOOL "TRUE to build the documentation")
 
 #Set path to Find scripts
 set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake/Modules/")
@@ -74,6 +77,10 @@ if(TLG_PROFILE)
         message(WARNING "TLG_PROFILE should only be enabled when CMAKE_BUILD_TYPE is Release")
     endif()
 	set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -pg")
+endif()
+
+if(TLG_BUILD_DOC)
+	add_subdirectory(doxygen)
 endif()
 
 #Copy the resources directory next to the executable
