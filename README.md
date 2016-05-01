@@ -5,7 +5,11 @@
 
 ## Synopsis
 The Lost Girl is an archery role-playing game represented in scrolling 2D.<br/>
-You took place in a huge world full of possibilities and you can play up to 4 differents characters. Alot of amazing and well constructed quests are proposed to you, but you are totally free of your actions. You want to kill the most important character of the whole country? No problem, you'll just have to assume yourself.
+You are in a huge world full of possibilities and you can play up to 4
+differents characters. Alot of amazing and well constructed quests are proposed
+to you, but you are totally free to do anything you want. You want to kill the
+most important character of the whole country? No problem, you'll just have to
+assume yourself.
 
 ## Installation
 
@@ -19,18 +23,27 @@ Run the following commands in a terminal in the main directory:<br/>
 
 And then go have a coffee.<br/>
 The executable is now available by running `./TheLostGirl`.<br/>
-For now, the compilation was tested only under Linux.<br/>
-If you have problems with steps above, send me an email.
+The CMake commands should be cross-plateform, but the depencencies script is a
+shell script that works only under Linux.
 
 ## API Reference
 
-Run the following commands in a terminal once you are in the main directory:<br/>
+In order to build the documentation, just set `TLG_BUILD_DOC` to true when
+running `cmake`:<br/>
 
-    cd doxygen
-    doxygen
+    cmake -DTLG_BUILD_DOC=True ..
+
+instead of
+
+    cmake ..
+
+Once the compilation is done (with `make`), the documentation is available with
+the following command:
+
     sensible-browser html/index.html
 
-For now this was tested only under Linux.
+You'll need Doxygen to be installed on your computer in order to build the
+documentation.
 
 ## Contributors
 
