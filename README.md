@@ -40,7 +40,7 @@ instead of
 Once the compilation is done (with `make`), the documentation is available with
 the following command:
 
-    sensible-browser html/index.html
+    sensible-browser doxygen/html/index.html
 
 You'll need Doxygen to be installed on your computer in order to build the
 documentation.
