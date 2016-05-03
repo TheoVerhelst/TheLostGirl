@@ -219,11 +219,9 @@ void GameState::initWorld(const std::string& filePath)
 
 		addSkyAnimations();
 		getSystem<ScrollingSystem>().searchPlayer();
-		Context::getSystemManager().update<ScrollingSystem>(0.f);
-		Context::getSystemManager().update<AnimationsSystem>(0.f);
 		Context::getPlayer().handleInitialInputState();
-		requestStackPop();
 		Context::getEventManager().emit<LoadingStateChange>("Loading HUD");
+		requestStackPop();
 		requestStackPush<HUDState>();
 	}
 	catch(std::runtime_error& e)

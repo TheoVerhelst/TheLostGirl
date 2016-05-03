@@ -9,11 +9,13 @@
 #include <TheLostGirl/functions.hpp>
 #include <TheLostGirl/DebugDraw.hpp>
 
+bool DebugDraw::m_guiConsole{true};
+
 DebugDraw::DebugDraw():
 	m_debugMode{true},
 	m_framesPerSecond{0.f},
-	m_coutStreambuf{std::cout.rdbuf(m_outStringStream.rdbuf())},
-	m_cerrStreambuf{std::cerr.rdbuf(m_errStringStream.rdbuf())},
+	m_coutStreambuf{m_guiConsole ? std::cout.rdbuf(m_outStringStream.rdbuf()) : nullptr},
+	m_cerrStreambuf{m_guiConsole ? std::cerr.rdbuf(m_errStringStream.rdbuf()) : nullptr},
 	m_errorColor{255, 100, 100}
 {
 	m_positionLabel = Context::getParameters().guiTheme->load("Label");
@@ -33,22 +35,29 @@ DebugDraw::DebugDraw():
 	m_FPSLabel->setPosition(tgui::bindWidth(gui) * 0.7f, tgui::bindHeight(gui) * 0.01f);
 	m_FPSLabel->setTextSize(10);
 	gui.add(m_FPSLabel);
-	m_console->setPosition(tgui::bindWidth(gui) * 0.5f, tgui::bindHeight(gui) * 0.7f);
-	m_console->setSize(tgui::bindWidth(gui) * 0.5f - 10.f, tgui::bindHeight(gui) * 0.3f - 10.f);
-	m_console->setTextSize(10);
-	gui.add(m_console);
+
+	if(m_guiConsole)
+	{
+		m_console->setPosition(tgui::bindWidth(gui) * 0.5f, tgui::bindHeight(gui) * 0.7f);
+		m_console->setSize(tgui::bindWidth(gui) * 0.5f - 10.f, tgui::bindHeight(gui) * 0.3f - 10.f);
+		m_console->setTextSize(10);
+		gui.add(m_console);
+	}
 }
 
 DebugDraw::~DebugDraw()
 {
-	flush();
-	std::cout.rdbuf(m_coutStreambuf);
-	std::cerr.rdbuf(m_cerrStreambuf);
-	for(std::size_t i{0}; i < m_console->getLineAmount(); ++i)
-		if(m_console->getLineColor(i) == m_errorColor)
-			std::cerr << m_console->getLine(i).toAnsiString() << "\n";
-		else
-			std::cout << m_console->getLine(i).toAnsiString() << "\n";
+	if(m_guiConsole)
+	{
+		flush();
+		std::cout.rdbuf(m_coutStreambuf);
+		std::cerr.rdbuf(m_cerrStreambuf);
+		for(std::size_t i{0}; i < m_console->getLineAmount(); ++i)
+			if(m_console->getLineColor(i) == m_errorColor)
+				std::cerr << m_console->getLine(i).toAnsiString() << "\n";
+			else
+				std::cout << m_console->getLine(i).toAnsiString() << "\n";
+	}
 }
 
 void DebugDraw::DrawPolygon(const b2Vec2* vertices, int32 vertexCount, const b2Color& color)
@@ -231,7 +240,8 @@ void DebugDraw::drawDebugAth()
 	m_FPSLabel->setText("FPS: " + roundOutput(m_framesPerSecond));
 
 	//Console
-	flush();
+	if(m_guiConsole)
+		flush();
 }
 
 void DebugDraw::setFPS(float framesPerSecond)

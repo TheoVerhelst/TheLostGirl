@@ -61,8 +61,10 @@ class LoadingState : public State
 		void resetTexts();
 
 		tgui::Panel::Ptr m_background;   ///< The grey background.
-		tgui::Label::Ptr m_sentenceLabel;///< Label explaining the loading state.
 		std::string m_sentence;          ///< String explaining the loading state.
+		bool m_sentenceChanged;          ///< Indicates whether the sentence has changed and need to be updated.
+		tgui::Label::Ptr m_sentenceLabel;///< Label explaining the loading state.
+		std::string m_hint;              ///< Text of the hint, not translated.
 		tgui::Label::Ptr m_hintLabel;    ///< Label indicating a random hint.
 		float m_sentenceTimer;           ///< Timer in seconds of a little animation on the sentence.
 };

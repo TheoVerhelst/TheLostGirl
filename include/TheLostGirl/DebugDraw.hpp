@@ -88,7 +88,8 @@ class DebugDraw : public b2Draw
 		/// \return A formated string.
 		static std::string roundOutput(float x, std::size_t decimals=3);
 
-		bool m_debugMode;                     ///< Indicate if the debug ath should be drawn.
+		bool m_debugMode;                     ///< Indicates if the debug ath should be drawn.
+		static const bool m_guiConsole{true}; ///< Indicates whether the chat box can be used to redirect standard streams or not.
 		float m_framesPerSecond;              ///< FPS value to display.
 		tgui::Label::Ptr m_positionLabel;     ///< The label of the player's position.
 		tgui::Label::Ptr m_mousePositionLabel;///< The label of the position of the mouse.
