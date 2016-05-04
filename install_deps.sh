@@ -49,7 +49,7 @@ function install_github()
 
 mkdir "$libraries_directory"
 cd "$libraries_directory"
-#install_github SFML SFML
+install_github SFML SFML
 install_github texus TGUI
 install_github alecthomas entityx "-DENTITYX_BUILD_TESTING=False"
 install_github erincatto Box2D "-DBOX2D_BUILD_EXAMPLES=False -DBOX2D_BUILD_SHARED=True -DBOX2D_BUILD_STATIC=False"
