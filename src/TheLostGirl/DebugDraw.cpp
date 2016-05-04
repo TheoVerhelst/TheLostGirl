@@ -9,7 +9,7 @@
 #include <TheLostGirl/functions.hpp>
 #include <TheLostGirl/DebugDraw.hpp>
 
-bool DebugDraw::m_guiConsole{true};
+const bool DebugDraw::m_guiConsole{true};
 
 DebugDraw::DebugDraw():
 	m_debugMode{true},
