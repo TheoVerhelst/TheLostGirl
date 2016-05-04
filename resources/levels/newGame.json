@@ -212,6 +212,17 @@
 		"arrow 1" :
 		{
 			"base" : "arrow",
+			"body" :
+			{
+				"active" : true,
+				"awake" : true,
+				"angular velocity" : 0,
+				"linear velocity" :
+				{
+					"x" : 0,
+					"y" : 0
+				}
+			},
 			"transform" :
 			{
 				"angle" : 0,

@@ -7,7 +7,6 @@
 			{
 				"allow sleep" : true,
 				"angular damping" : 0,
-				"awake" : true,
 				"bullet" : false,
 				"fixed rotation" : true,
 				"gravity scale" : 1,
