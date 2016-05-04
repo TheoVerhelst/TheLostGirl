@@ -187,6 +187,16 @@ void GameState::initWorld(const std::string& filePath)
 		Json::Value root{JsonHelper::loadFromFile(filePath)};
 		const Json::Value model{JsonHelper::loadFromFile(Context::getParameters().resourcesPath + "levels/model.json")};
 
+		Json::Value genericEntities;
+		if(root.isMember("import"))
+			genericEntities = loadGenericEntities(root["import"], model);
+
+		if(root.isMember("entities"))
+		{
+			Context::getEventManager().emit<LoadingStateChange>("Loading entities");
+			deserializeEntities(root["entities"], genericEntities);
+		}
+
 		//Parse the save file from the model file
 		JsonHelper::parse(root, model);
 
@@ -200,16 +210,7 @@ void GameState::initWorld(const std::string& filePath)
 
 		loadSaveInformations(root);
 
-		Json::Value genericEntities;
-		if(root.isMember("import"))
-			genericEntities = loadGenericEntities(root["import"], model);
-
-		if(root.isMember("entities"))
-		{
-			Context::getEventManager().emit<LoadingStateChange>("Loading entities");
-			deserializeEntities(root["entities"], genericEntities);
-		}
-
+		// Do not load the background if we are in debug to be faster
 		if(not Context::getParameters().debugMode)
 		{
 			Context::getEventManager().emit<LoadingStateChange>("Loading background");
