@@ -212,7 +212,7 @@ void GameState::initWorld(const std::string& filePath)
 		if(not Context::getParameters().debugMode)
 		{
 			Context::getEventManager().emit<LoadingStateChange>("Loading background");
-			loadReplaces(root["level"]["replaces"]);
+			loadReplaces(root["level data"]["replaces"]);
 			loadBackground();
 		}
 
