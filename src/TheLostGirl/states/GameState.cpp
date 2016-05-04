@@ -187,6 +187,12 @@ void GameState::initWorld(const std::string& filePath)
 		Json::Value root{JsonHelper::loadFromFile(filePath)};
 		const Json::Value model{JsonHelper::loadFromFile(Context::getParameters().resourcesPath + "levels/model.json")};
 
+		if(root.isMember("level"))
+		{
+			Json::Value levelToLoad{JsonHelper::loadFromFile(Context::getParameters().resourcesPath + "levels/" + root["level"].asString())};
+			JsonHelper::merge(root, levelToLoad);
+		}
+
 		Json::Value genericEntities;
 		if(root.isMember("import"))
 			genericEntities = loadGenericEntities(root["import"], model);
@@ -199,14 +205,6 @@ void GameState::initWorld(const std::string& filePath)
 
 		//Parse the save file from the model file
 		JsonHelper::parse(root, model);
-
-		if(root.isMember("level"))
-		{
-			Json::Value levelToLoad{JsonHelper::loadFromFile(Context::getParameters().resourcesPath + "levels/" + root["level"].asString())};
-			//Parsing of the included file from the model file
-			JsonHelper::parse(levelToLoad, model);
-			JsonHelper::merge(root, levelToLoad);
-		}
 
 		loadSaveInformations(root);
 
