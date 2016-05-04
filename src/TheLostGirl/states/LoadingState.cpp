@@ -16,26 +16,16 @@ LoadingState::LoadingState():
 	if(not fileStream.is_open())//If failed to open the file
 		throw std::runtime_error("Unable to open hints file: \"" + Context::getParameters().resourcesPath + "hints\"");
 
-	long unsigned int numberOfHints;
-	getline(fileStream, m_hint);//The first line is the number of hints
-	try
-	{
-		numberOfHints = stoul(m_hint);
-	}
-	catch(std::invalid_argument& e)
-	{
-		std::cerr << "Unable to convert content of line 0 to number in file \"" + Context::getParameters().resourcesPath + "lang/hints\"\n";
-		throw;//Rethrow the exception
-	}
+	std::vector<std::string> hints;
+	std::string line;
+	while(getline(fileStream, line))
+		hints.push_back(line);
 
 	std::random_device rd;
 	std::mt19937 gen{rd()};
-	std::uniform_int_distribution<long unsigned int> dis(0, numberOfHints-1);
-	long unsigned int hintToDisplay{dis(gen)};
+	std::uniform_int_distribution<std::size_t> dis{0, hints.size() - 1};
 
-	for(long unsigned int i{0}; i <= hintToDisplay; ++i)
-		getline(fileStream, m_hint);
-	//m_hint contains now the hint to display
+	m_hint = hints[dis(gen)];
 
 	using tgui::bindWidth;
 	using tgui::bindHeight;
