@@ -53,7 +53,8 @@
 					"x" : 0,
 					"y" : 0
 				}
-			}
+			},
+			"name": "Wood quiver"
 		},
 		"bow" :
 		{
@@ -267,7 +268,8 @@
 					"loops" : false,
 					"progress" : 0
 				}
-			}
+			},
+			"name": "Wood bow"
 		},
 		"arrow" :
 		{
@@ -342,7 +344,8 @@
 			"sprite" :
 			{
 				"identifier" : "wood arrow.png"
-			}
+			},
+			"name": "Wood arrow"
 		}
 	}
 }

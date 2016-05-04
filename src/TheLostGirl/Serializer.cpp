@@ -202,7 +202,7 @@ Json::Value Serializer::implSerialize(const std::string& entityName, entityx::Co
 		}
 	return ret;
 }
-
+!
 Json::Value Serializer::implSerialize(const std::string&, entityx::ComponentHandle<AnimationsComponent<SpriteSheetAnimation>> component)
 {
 	return component->animationsManager.serialize();
