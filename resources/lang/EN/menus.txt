@@ -1,0 +1,60 @@
+Press any key to continue...
+Loading save file
+Loading background
+Loading entities
+Loading HUD
+New game
+Load game
+Exit
+Configure
+Arcade
+Normal
+Realistic
+Main volume
+Music volume
+Effects volume
+Ambiance volume
+Fullscreen
+Controls
+Antialiasing
+Realism
+Options
+Resolution
+Apply
+OK
+Cancel
+Pause
+Back to game
+Parameters
+Bloom effect
+Lang
+Back to main menu
+Category
+Name
+Qtty
+Value
+Value/Weight
+Weight
+All
+Ammo
+Resources
+List
+Grid
+Snow season
+Flowers season
+Fruit season
+Wind season
+snow month
+winds month
+buds month
+flowers month
+harvests month
+fruits month
+mists month
+month of frost
+st year, 
+nd year, 
+th year, 
+st day of the 
+nd day of the 
+th day of the 

@@ -1,0 +1,60 @@
+Appuyez sur une touche pour continuer...
+Chargement du fichier de sauvegarde
+Chargement du décor
+Chargement des entités
+Chargement de l'ATH
+Nouvelle partie
+Charger une partie
+Quitter
+Configurer
+Arcade
+Normal
+Réaliste
+Volume principal
+Volume de la musique
+Volume des effets
+Volume de l'ambiance
+Plein écran
+Contrôles
+Anticrénelage
+Réalisme
+Options
+Résolution
+Appliquer
+OK
+Annuler
+Pause
+Retour au jeu
+Paramètres
+Effet bloom
+Langue
+Retour au menu principal
+Catégorie
+Nom
+Qtté
+Valeur
+Valeur/Poids
+Poids
+Tout
+Armures
+Ressources
+Liste
+Grille
+Saison de la neige
+Saison des fleurs
+Saison des fruits
+Saison de la bise
+mois des neiges
+mois des vents
+mois des bourgeons
+mois des fleurs
+mois des moissons
+mois des fruits
+mois des brumes
+mois des frimas
+ère année, 
+ème année, 
+ème année, 
+er jour du  
+ème jour du 
+ème jour du 
