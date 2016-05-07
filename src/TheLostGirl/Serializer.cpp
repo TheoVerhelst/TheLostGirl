@@ -28,6 +28,27 @@ void Serializer::addEntityDependecy(const std::string& dependentEntityName, cons
 		dependencies.append(dependencyEntityName);
 }
 
+void Serializer::deserializeCommonFixtureData(const Json::Value& jsonFixture, b2FixtureDef& fixtureDef, entityx::ComponentHandle<BodyComponent>& component)
+{
+	fixtureDef.density = jsonFixture["density"].asFloat();
+	fixtureDef.friction = jsonFixture["friction"].asFloat();
+	fixtureDef.restitution = jsonFixture["restitution"].asFloat();
+	fixtureDef.isSensor = jsonFixture["is sensor"].asBool();
+	FlagSet<FixtureRole>* fixtureRoles = new FlagSet<FixtureRole>();
+	fixtureDef.userData = static_cast<void*>(fixtureRoles);
+
+	//Roles
+	const Json::Value roles{jsonFixture["roles"]};
+	for(Json::ArrayIndex j{0}; j < roles.size(); ++j)
+	{
+		if(roles[j].asString() == "foot sensor")
+			fixtureRoles->set(FixtureRole::Foot);
+		else if(roles[j].asString() == "main")
+			fixtureRoles->set(FixtureRole::Main);
+	}
+	component->body->CreateFixture(&fixtureDef);
+}
+
 Json::Value Serializer::implSerialize(const std::string&, entityx::ComponentHandle<BodyComponent> component)
 {
 	const float pixelByMeter{Context::getParameters().pixelByMeter};
@@ -573,24 +594,7 @@ void Serializer::implDeserialize(const Json::Value& value, entityx::ComponentHan
 			}
 			polygonShape.Set(verticesVec.data(), static_cast<int32>(verticesVec.size()));
 			fixtureDef.shape = &polygonShape;
-
-			fixtureDef.density = fixture["density"].asFloat();
-			fixtureDef.friction = fixture["friction"].asFloat();
-			fixtureDef.restitution = fixture["restitution"].asFloat();
-			fixtureDef.isSensor = fixture["is sensor"].asBool();
-			FlagSet<FixtureRole>* fixtureRoles = new FlagSet<FixtureRole>();
-			fixtureDef.userData = static_cast<void*>(fixtureRoles);
-
-			//Roles
-			const Json::Value roles{fixture["roles"]};
-			for(Json::ArrayIndex j{0}; j < roles.size(); ++j)
-			{
-				if(roles[j].asString() == "foot sensor")
-					fixtureRoles->set(FixtureRole::Foot);
-				else if(roles[j].asString() == "main")
-					fixtureRoles->set(FixtureRole::Main);
-			}
-			component->body->CreateFixture(&fixtureDef);
+			deserializeCommonFixtureData(fixture, fixtureDef, component);
 		}
 	}
 
@@ -629,24 +633,7 @@ void Serializer::implDeserialize(const Json::Value& value, entityx::ComponentHan
 				edgeShape.m_vertex3.y = fixtures[i]["3"]["y"].asFloat()/pixelByMeter;
 			}
 			fixtureDef.shape = &edgeShape;
-			fixtureDef.density = fixture["density"].asFloat();
-			fixtureDef.friction = fixture["friction"].asFloat();
-			fixtureDef.restitution = fixture["restitution"].asFloat();
-			fixtureDef.isSensor = fixture["is sensor"].asBool();
-			FlagSet<FixtureRole>* fixtureRoles = new FlagSet<FixtureRole>();
-			fixtureDef.userData = static_cast<void*>(fixtureRoles);
-
-			//roles
-			const Json::Value roles{value["roles"]};
-			for(Json::ArrayIndex j{0}; j < roles.size(); ++j)
-			{
-				if(roles[j].asString() == "foot sensor")
-					fixtureRoles->set(FixtureRole::Foot);
-				else if(roles[j].asString() == "main")
-					fixtureRoles->set(FixtureRole::Main);
-			}
-
-			component->body->CreateFixture(&fixtureDef);
+			deserializeCommonFixtureData(fixture, fixtureDef, component);
 		}
 	}
 
@@ -685,23 +672,7 @@ void Serializer::implDeserialize(const Json::Value& value, entityx::ComponentHan
 				chainShape.m_nextVertex.y = fixtures[i]["next vertex"]["y"].asFloat()/pixelByMeter;
 			}
 			fixtureDef.shape = &chainShape;
-			fixtureDef.density = fixture["density"].asFloat();
-			fixtureDef.friction = fixture["friction"].asFloat();
-			fixtureDef.restitution = fixture["restitution"].asFloat();
-			fixtureDef.isSensor = fixture["is sensor"].asBool();
-			FlagSet<FixtureRole>* fixtureRoles = new FlagSet<FixtureRole>();
-			fixtureDef.userData = static_cast<void*>(fixtureRoles);
-
-			//Roles
-			const Json::Value roles{value["roles"]};
-			for(Json::ArrayIndex j{0}; j < roles.size(); ++j)
-			{
-				if(roles[j].asString() == "foot sensor")
-					fixtureRoles->set(FixtureRole::Foot);
-				else if(roles[j].asString() == "main")
-					fixtureRoles->set(FixtureRole::Main);
-			}
-			component->body->CreateFixture(&fixtureDef);
+			deserializeCommonFixtureData(fixture, fixtureDef, component);
 		}
 	}
 
@@ -720,23 +691,7 @@ void Serializer::implDeserialize(const Json::Value& value, entityx::ComponentHan
 			circleShape.m_p.y = fixtures[i]["position"]["y"].asFloat()/pixelByMeter;
 
 			fixtureDef.shape = &circleShape;
-			fixtureDef.density = fixture["density"].asFloat();
-			fixtureDef.friction = fixture["friction"].asFloat();
-			fixtureDef.restitution = fixture["restitution"].asFloat();
-			fixtureDef.isSensor = fixture["is sensor"].asBool();
-			FlagSet<FixtureRole>* fixtureRoles = new FlagSet<FixtureRole>();
-			fixtureDef.userData = static_cast<void*>(fixtureRoles);
-
-			//Roles
-			const Json::Value roles{value["roles"]};
-			for(Json::ArrayIndex j{0}; j < roles.size(); ++j)
-			{
-				if(roles[j].asString() == "foot sensor")
-					fixtureRoles->set(FixtureRole::Foot);
-				else if(roles[j].asString() == "main")
-					fixtureRoles->set(FixtureRole::Main);
-			}
-			component->body->CreateFixture(&fixtureDef);
+			deserializeCommonFixtureData(fixture, fixtureDef, component);
 		}
 	}
 }

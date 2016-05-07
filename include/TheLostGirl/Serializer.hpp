@@ -59,13 +59,16 @@ class Serializer
                                 ContextElement::World,
                                 ContextElement::ScriptManager> Context;
 
-		/// Serializes the dependency between two entities,
-		/// if this dependency was not already serialized.
-		/// More precisely, adds \a dependencyEntityName to
-		/// the *"dependency"* part of the dependent entity json value.
+		/// Serializes the dependency between two entities, if this dependency
+		/// was not already serialized.
+		/// More precisely, adds \a dependencyEntityName to the *"dependency"*
+		/// part of the dependent entity json value.
 		/// \param dependentEntityName The name of the dependent entity.
-		/// \param dependencyEntityName The name of the entity that is a dependecy.
+		/// \param dependencyEntityName The name of the entity that is a
+		/// dependecy.
 		void addEntityDependecy(const std::string& dependentEntityName, const std::string& dependencyEntityName);
+		
+		static void deserializeCommonFixtureData(const Json::Value& jsonFixture, b2FixtureDef& fixtureDef, entityx::ComponentHandle<BodyComponent>& component);
 
 		/// Serializes the given component.
 		/// \param entityName The name of the entity currently being serialized.
