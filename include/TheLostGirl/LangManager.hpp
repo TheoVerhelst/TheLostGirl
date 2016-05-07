@@ -4,7 +4,7 @@
 #include <string>
 #include <map>
 #include <set>
-#include <boost/filesystem.hpp>
+#include <experimental/filesystem>
 #include <TheLostGirl/Context.hpp>
 
 /// Language manager that translates strings.
@@ -51,10 +51,10 @@ class LangManager
 		/// \param langToLoad Lang to load.
 		void loadLang(const std::string& langToLoad);
 
-		std::string m_lang;                                ///< The current lang.
-		const std::string m_defaultLang;                   ///< The default lang used in the source code.
-		std::map<std::string, std::wstring> m_entries;     ///< Translations related to the current lang.
-		const boost::filesystem::path m_langsDirectoryPath;///< Path to the langs main directory.
+		std::string m_lang;                                            ///< The current lang.
+		const std::string m_defaultLang;                               ///< The default lang used in the source code.
+		std::map<std::string, std::wstring> m_entries;                 ///< Translations related to the current lang.
+		const std::experimental::filesystem::path m_langsDirectoryPath;///< Path to the langs main directory.
 };
 
 #endif//LANGMANAGER_HPP

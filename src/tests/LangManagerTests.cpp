@@ -6,6 +6,7 @@
 #include <TheLostGirl/LangManager.hpp>
 #include <tests/LangManagerTests.hpp>
 
+namespace fs = std::experimental::filesystem;
 
 LangManagerTestsFixture::LangManagerTestsFixture():
 	m_parameters{new Parameters()},
@@ -24,9 +25,9 @@ LangManagerTestsFixture::~LangManagerTestsFixture()
 	delete m_parameters;
 }
 
-inline std::size_t LangManagerTestsFixture::getFileLineNumber(const std::string& filename)
+inline std::size_t LangManagerTestsFixture::getFileLineNumber(const fs::path& filePath)
 {
-	std::ifstream fileStream{filename};
+	std::ifstream fileStream{filePath.string()};
 	const auto res(std::count(std::istreambuf_iterator<char>(fileStream), std::istreambuf_iterator<char>(), '\n'));
 	return static_cast<std::size_t>(res);
 }
@@ -40,33 +41,55 @@ BOOST_AUTO_TEST_CASE(trTests)
 	//translation as we just got.
 
 	std::map<std::string, std::wstring> entries;
-	const std::string testedLang{"FR"};
-	const std::string defaultFilename{m_parameters->resourcesPath + "lang/" + langs.getDefaultLang()};
-	const std::string translationFilename{m_parameters->resourcesPath + "lang/" + testedLang};
+	const fs::path testedLang{"FR"};
+	const fs::path resourcesPath{m_parameters->resourcesPath / fs::path{"lang/"}};
+	const fs::path sourceDirectoryPath{resourcesPath / langs.getDefaultLang()};
+	const fs::path translationDirectoryPath{resourcesPath / testedLang};
 
-	std::ifstream defaultFileStream{defaultFilename};
-	std::wifstream translationFileStream;
-	//Things to handle wide encoding
-	translationFileStream.imbue(std::locale(""));
-	translationFileStream.open(translationFilename);
-
-	//Check if the langs files are loaded
-	BOOST_REQUIRE(defaultFileStream.is_open());
-	BOOST_REQUIRE(translationFileStream.is_open());
-
-	std::string sourceLine;
-	std::wstring translatedLine;
-	while(not defaultFileStream.eof() and not translationFileStream.eof())
+	BOOST_REQUIRE(fs::is_directory(sourceDirectoryPath));
+	BOOST_REQUIRE(fs::is_directory(translationDirectoryPath));
+	
+	for(auto& directoryEntry : fs::directory_iterator(sourceDirectoryPath))
 	{
-		getline(defaultFileStream, sourceLine);
-		getline(translationFileStream, translatedLine);
-		entries.emplace(sourceLine, translatedLine);
+		//Get the path of both source and translation files
+		const fs::path sourceFilePath{directoryEntry.path()};
+		const fs::path translationFilePath{translationDirectoryPath / sourceFilePath.filename()};
+		
+		//Check that the source file and the translation file are regular files
+		if(not fs::is_regular_file(sourceFilePath) or not fs::is_regular_file(translationFilePath))
+		{
+			BOOST_WARN_MESSAGE(false, "The source file and the translation file aren't regular files "
+					"(" + sourceFilePath.string() + " and " + translationFilePath.string() + ").");
+			continue;
+		}
+		
+		std::ifstream sourceFileStream{sourceFilePath.string()};
+		std::wifstream translationFileStream;
+
+		//Things to handle wide encoding
+		translationFileStream.imbue(std::locale(""));
+		translationFileStream.open(translationFilePath.string());
+
+		//Check if the langs files are loaded
+		BOOST_REQUIRE(sourceFileStream.is_open());
+		BOOST_REQUIRE(translationFileStream.is_open());
+		
+		std::string sourceLine;
+		std::wstring translatedLine;
+		while(not sourceFileStream.eof() and not translationFileStream.eof())
+		{
+			getline(sourceFileStream, sourceLine);//fill line with the next line of filestream
+			getline(translationFileStream, translatedLine);//fill line with the next line of filestream
+			entries.emplace(sourceLine, translatedLine);
+		}
+
+		BOOST_CHECK_MESSAGE(sourceFileStream.eof() == translationFileStream.eof(),
+				"It seems that lang files are not consistent "
+				"(" + sourceFilePath.string() + " and " + translationFilePath.string() + ").");
 	}
-
-	BOOST_CHECK_MESSAGE(defaultFileStream.eof() == translationFileStream.eof(),
-			"It seems that lang files are not consistent (" + defaultFilename + " and " + translationFilename + ").");
+	
 	langs.setLang(testedLang);//Set the tested lang to the lang manager
-
+	
 	//Test normal strings
 	for(auto& pair : entries)
 		BOOST_CHECK(langs.tr(pair.first) == pair.second);
@@ -87,16 +110,22 @@ BOOST_AUTO_TEST_CASE(langsTests)
 	//Test actual languages, not testing files. We only ensure that all files
 	//have the same length as the default lang file.
 	m_parameters->resourcesPath = "resources/";
-	const std::string defaultFilename{m_parameters->resourcesPath + "lang/" + langs.getDefaultLang()};
-	std::string translationFilename;
-	const std::size_t sourceLineNumber{getFileLineNumber(defaultFilename)};
-
-	//Check that all lang files are complete
-	for(auto& availableLang : LangManager::getAvailableLangs())
+	const fs::path resourcesPath{m_parameters->resourcesPath / fs::path{"lang/"}};
+	const fs::path sourceDirectoryPath{resourcesPath / langs.getDefaultLang()};
+	
+	for(auto& directoryEntry : fs::directory_iterator(sourceDirectoryPath))
 	{
-		translationFilename = m_parameters->resourcesPath + "lang/" + availableLang;
-		BOOST_CHECK_MESSAGE(sourceLineNumber == getFileLineNumber(translationFilename),
-				"It seems that lang files are not consistent (" + defaultFilename + " and " + translationFilename + ").");
+		//Get the path of source file
+		const fs::path sourceFilePath{directoryEntry.path()};
+		const std::size_t sourceLineNumber{getFileLineNumber(sourceFilePath)};
+
+		//Check that all lang files are complete
+		for(auto& availableLang : langs.getAvailableLangs())
+		{
+			const fs::path translationFilePath{resourcesPath / availableLang / sourceFilePath.filename()};
+			BOOST_CHECK_MESSAGE(sourceLineNumber == getFileLineNumber(translationFilePath),
+					"It seems that lang files are not consistent (" + sourceFilePath.string() + " and " + translationFilePath.string() + ").");
+		}
 	}
 }
 
@@ -106,11 +135,7 @@ BOOST_AUTO_TEST_CASE(setLangTests)
 	langs.setLang(testedLang);
 	BOOST_CHECK(langs.getLang() == testedLang);
 	const std::string notExistingLang{"Not existing lang"};
-	logStream(std::cerr);
-	langs.setLang(notExistingLang);
-	const std::string errorMessage{getStreamLog()};
-	//Check that the error message contains the lang name
-	BOOST_CHECK(errorMessage.find(notExistingLang) != std::string::npos);
+	BOOST_CHECK_THROW(langs.setLang(notExistingLang), std::runtime_error);
 }
 
 BOOST_AUTO_TEST_SUITE_END()

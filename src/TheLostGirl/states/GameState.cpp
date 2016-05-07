@@ -4,7 +4,7 @@
 #include <Box2D/Box2D.h>
 #include <entityx/entityx.h>
 #include <dist/json/json.h>
-#include <boost/filesystem.hpp>
+#include <experimental/filesystem>
 #include <TheLostGirl/states/PauseState.hpp>
 #include <TheLostGirl/states/HUDState.hpp>
 #include <TheLostGirl/states/MainMenuState.hpp>
@@ -22,6 +22,8 @@
 #include <TheLostGirl/Serializer.hpp>
 #include <TheLostGirl/JsonHelper.hpp>
 #include <TheLostGirl/states/GameState.hpp>
+
+namespace fs = std::experimental::filesystem;
 
 GameState::GameState(std::string file):
 	m_timeSpeed{1.f},
@@ -158,8 +160,8 @@ void GameState::saveWorld(const std::string& filePath)
 
 	//Load all generic entities
 	Json::Value genericEntities;
-	for(auto& directory_entry : boost::filesystem::directory_iterator(Context::getParameters().resourcesPath + "levels/entities"))
-		JsonHelper::merge(genericEntities, JsonHelper::loadFromFile(directory_entry.path().generic_string()));
+	for(auto& directory_entry : fs::directory_iterator(Context::getParameters().resourcesPath + "levels/entities"))
+		JsonHelper::merge(genericEntities, JsonHelper::loadFromFile(directory_entry.path().string()));
 
 	for(const std::string& entityName : gameValue["entities"].getMemberNames())
 	{

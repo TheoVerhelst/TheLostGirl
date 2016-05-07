@@ -25,7 +25,6 @@ tlg_set_option(TLG_BUILD_DOC FALSE BOOL "TRUE to build the documentation")
 set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake/Modules/")
 
 #Dependencies finding
-find_package(Boost 1.46 COMPONENTS system filesystem REQUIRED)
 find_package(SFML 2.3 COMPONENTS system window graphics audio REQUIRED)
 find_package(TGUI 0.7 REQUIRED)
 find_package(Box2D REQUIRED)
@@ -38,7 +37,6 @@ include_directories(${TheLostGirl_SOURCE_DIR}/include)
 include_directories(SYSTEM
 	${SFML_INCLUDE_DIR}
 	${TGUI_INCLUDE_DIR}
-	${Boost_INCLUDE_DIRS}
 	${BOX2D_INCLUDE_DIR}
 	${ENTITYX_INCLUDE_DIR}
 	${X11_INCLUDE_DIR}
@@ -52,18 +50,15 @@ if(TLG_COVERAGE)
 	set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -coverage")
 endif()
 
-add_definitions("-DBOOST_FILESYSTEM_NO_DEPRECATED")
-
 #Set a variable with all needed libraries
 set(TLG_EXTERNAL_LIBRARIES
+	"stdc++fs"
 	${SFML_LIBRARIES}
 	${TGUI_LIBRARY}
 	${BOX2D_LIBRARY}
 	${ENTITYX_LIBRARY}
 	${CMAKE_THREAD_LIBS_INIT}
 	${X11_LIBRARIES}
-	${Boost_SYSTEM_LIBRARY}
-	${Boost_FILESYSTEM_LIBRARY}
 	)
 
 #Place the executable files in the root directory instead of in src

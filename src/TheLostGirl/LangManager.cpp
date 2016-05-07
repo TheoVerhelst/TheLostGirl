@@ -4,7 +4,7 @@
 #include <TheLostGirl/Parameters.hpp>
 #include <TheLostGirl/LangManager.hpp>
 
-namespace fs = boost::filesystem;
+namespace fs = std::experimental::filesystem;
 
 LangManager::LangManager():
 	m_defaultLang{"EN"},
@@ -57,8 +57,10 @@ void LangManager::loadLang(const std::string& langToLoad)
 	//Get the path of both source and translation directories
 	const fs::path sourceDirectoryPath{m_langsDirectoryPath / m_defaultLang};
 	const fs::path translationDirectoryPath{m_langsDirectoryPath / langToLoad};
-	assert(fs::is_directory(sourceDirectoryPath));
-	assert(fs::is_directory(translationDirectoryPath));
+	if(not fs::is_directory(sourceDirectoryPath))
+		throw std::runtime_error("source directory is not a valid directory (" + sourceDirectoryPath.string() + ").");
+	if(not fs::is_directory(translationDirectoryPath))
+		throw std::runtime_error("translation directory is not a valid directory (" + translationDirectoryPath.string() + ").");
 	m_entries.clear();//First, clear all known translations
 	
 	for(auto& directoryEntry : fs::directory_iterator(sourceDirectoryPath))
@@ -71,12 +73,12 @@ void LangManager::loadLang(const std::string& langToLoad)
 		if(not fs::is_regular_file(sourceFilePath) or not fs::is_regular_file(translationFilePath))
 			continue;
 		
-		fs::ifstream sourceFileStream{sourceFilePath};
-		fs::wifstream translationFileStream;
+		std::ifstream sourceFileStream{sourceFilePath.string()};
+		std::wifstream translationFileStream;
 
 		//Things to handle wide encoding
 		translationFileStream.imbue(std::locale(""));
-		translationFileStream.open(translationFilePath);
+		translationFileStream.open(translationFilePath.string());
 
 		//Check if the langs files are loaded
 		if(not sourceFileStream.is_open())
