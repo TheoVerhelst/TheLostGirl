@@ -8,7 +8,7 @@ namespace entityx
 	class Entity;
 }
 
-/// Structure that jump an entity.
+/// Structure that jumps an entity.
 class Jumper : public Action
 {
 	public:

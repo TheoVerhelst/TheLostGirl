@@ -83,27 +83,27 @@ class ScriptFunctions
 		static Data notOp(const std::vector<Data>& args);
 
 
-		/// Print all variables passed as argument, no matter how many there are.
-		/// Printed variables are separated by a space
+		/// Prints all variables passed as argument, no matter how many there
+		/// are. Printed variables are separated by spaces.
 		/// \param args Variables to print
 		/// \return 0 as integer.
 		static Data print(const std::vector<Data>& args);
 
 		//Foe handling
 
-		/// Find the entity that is a foe and that is the nearest of the first
+		/// Finds the entity that is a foe and that is the nearest of the first
 		/// argument, usually self. First argument must be a valid entity.
 		/// \param args Entity that is searching for ennemies.
 		/// \return The nearest entity if found, Entity() otherwise.
 		static entityx::Entity nearestFoe(const std::vector<Data>& args);
 
-		/// Compute the distance between two entities.
-		/// Both argument must be valid entities, and must have a body component.
+		/// Computes the distance between two entities. Both argument must be
+		/// valid entities, and must have a body component.
 		/// \param args The two entities.
 		/// \return The distance.
 		static float distanceFrom(const std::vector<Data>& args);
 
-		/// Compute the direction that the first entity must have to look
+		/// Computes the direction that the first entity must have to look
 		/// directly to the second entity. Both argument must be valid entities,
 		/// and must have a body component and transform component.
 		/// \param args The two entities.
@@ -111,14 +111,14 @@ class ScriptFunctions
 		/// available in scripts.
 		static Direction directionTo(const std::vector<Data>& args);
 
-		/// Return the direction that has an entity.
+		/// Returns the direction that has an entity.
 		/// First argument must be a valid entity, and have a direction
 		/// component.
 		/// \param args The entity.
 		/// \return The direction of the entity.
 		static Direction directionOf(const std::vector<Data>& args);
 
-		/// Make that first entity attack.
+		/// Makes that first entity attack.
 		/// \param args Entity that will attack.
 		/// \return 0 as integer.
 		static int attack(const std::vector<Data>& args);
@@ -131,24 +131,24 @@ class ScriptFunctions
 		/// \return true if the entity can move, false otherwise.
 		static bool canMove(const std::vector<Data>& args);
 
-		/// Make that the entity move to the given direction.
+		/// Makes that the entity moves to the given direction.
 		/// \param args The entity that want move and the direction.
 		/// \return 0 as integer.
 		static int move(const std::vector<Data>& args);
 
-		/// Make that the entity stop all his movements.
-		/// \param args Entities that want to stop to move.
+		/// Makes that the entity stops all his movements.
+		/// \param args Entity that want to stop to move.
 		/// \return 0 as integer.
 		static int stop(const std::vector<Data>& args);
 
 		/// Checks if the entity can jump.
-		/// The fist argument must be a valid entity.
-		/// \param args Entities that want to jump.
+		/// The first argument must be a valid entity.
+		/// \param args Entity that want to jump.
 		/// \return True if the entity can jump, false otherwise.
 		static bool canJump(const std::vector<Data>& args);
 
 		/// Make that the entity performs a jump.
-		/// \param args Entities that want to jump.
+		/// \param args Entity that want to jump.
 		/// \return 0 as integer.
 		static int jump(const std::vector<Data>& args);
 
@@ -171,7 +171,7 @@ class ScriptFunctions
 				/// \param self Entity that is searching for ennemies.
 				NearestFoeQueryCallback(entityx::Entity self);
 
-				/// Check if the given fixture belongs to the nearest foe.
+				/// Checks if the given fixture belongs to the nearest foe.
 				/// \param fixture Fixture to check.
 				/// \return True.
 				bool ReportFixture(b2Fixture* fixture);

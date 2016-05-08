@@ -6,7 +6,7 @@
 #include <TheLostGirl/Action.hpp>
 #include <TheLostGirl/Context.hpp>
 
-/// Structure that pick a sticked arrow nearby the entity.
+/// Structure that picks a sticked arrow nearby the entity.
 class ArrowPicker : public Action
 {
 	public:
@@ -17,7 +17,7 @@ class ArrowPicker : public Action
 		virtual ~ArrowPicker() = default;
 
 		/// Overload of the () operator.
-		/// \param entity Entity that pick up an arrow.
+		/// \param entity Entity that picks up an arrow.
 		virtual void operator()(entityx::Entity entity) const override;
 
 	private:
@@ -25,12 +25,12 @@ class ArrowPicker : public Action
 		typedef ContextAccessor<ContextElement::Parameters> Context;
 };
 
-/// AABB query callback that indicate if a sticked arrow is found into the AABB.
+/// AABB query callback that indicates if a sticked arrow is found into the AABB.
 class StickedArrowQueryCallback : public b2QueryCallback
 {
 	public:
-		/// Handle the world querying.
-		/// \param fixture A fixture that overlap the AABB.
+		/// Handles the world querying.
+		/// \param fixture A fixture that overlaps the AABB.
 		/// \return True if the querying should continue, false otherwise.
 		virtual bool ReportFixture(b2Fixture* fixture);
 

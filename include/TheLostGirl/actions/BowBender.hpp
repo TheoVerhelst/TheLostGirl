@@ -9,9 +9,9 @@ namespace entityx
 	class Entity;
 }
 
-/// Structure that bend the bow of the given entity.
-/// This action does not have a boolean parameter indicating if the action start or stops,
-/// but must be called at every frame when the bending is active,
+/// Structure that bends the bow of the given entity.
+/// This action does not have a boolean parameter indicating if the action start
+/// or stops, but must be called at every frame when the bending is active,
 /// since the angle or the power can change.
 class BowBender : public Action
 {

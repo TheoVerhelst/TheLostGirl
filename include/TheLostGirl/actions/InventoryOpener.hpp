@@ -9,7 +9,7 @@ namespace entityx
 	class Entity;
 }
 
-/// Display a GUI menu that allow to open the inventory of the player.
+/// Displays a GUI menu that allow to open the inventory of the player.
 class InventoryOpener : public Action
 {
 	public:

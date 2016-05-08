@@ -24,7 +24,7 @@ class HandToHand : public Action
 		virtual void operator()(entityx::Entity entity) const override;
 };
 
-/// AABB query callback that indicate if some actors are found into the AABB.
+/// AABB query callback that indicates if some actors are found into the AABB.
 class HandToHandQueryCallback : public b2QueryCallback
 {
 	private:
@@ -44,4 +44,3 @@ class HandToHandQueryCallback : public b2QueryCallback
 };
 
 #endif//HANDTOHAND_HPP
-

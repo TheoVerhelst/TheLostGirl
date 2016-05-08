@@ -14,7 +14,7 @@ enum class Direction;
 class b2WeldJointDef;
 class b2WeldJoint;
 
-/// Structure that move an entity to a given side.
+/// Structure that moves an entity according to a given direction.
 class Mover : public Action
 {
 	public:
@@ -37,7 +37,7 @@ class Mover : public Action
 		/// Context type of this class.
 		typedef ContextAccessor<ContextElement::Parameters> Context;
 
-		/// Flip an entity.
+		/// Flips an entity.
 		/// \param entity The entity to flip.
 		void flip(entityx::Entity entity) const;
 
@@ -46,19 +46,19 @@ class Mover : public Action
 		/// \return The half width of a body.
 		inline float32 getMid(b2Body* body) const;
 
-		/// Flip all fixtures of the \a body.
+		/// Flips all fixtures of the \a body.
 		/// \param body The body to flip.
-		/// \param mid Thehalf width of the \a body.
+		/// \param mid The half width of the \a body.
 		void flipFixtures(b2Body* body, float32 mid) const;
 
-		/// Flip the \a body.
+		/// Flips the \a body.
 		/// \param body The body to flip.
-		/// \param mid Thehalf width of the \a body.
+		/// \param mid The half width of the \a body.
 		inline void flipBody(b2Body* body, float32 mid) const;
 
-		/// Flip a point around x = mid.
+		/// Flips a point around x = mid.
 		/// \param vec The point to flip.
-		/// \param mid Thehalf width of the body.
+		/// \param mid The half width of the body.
 		inline void flipPoint(b2Vec2& vec, float32 mid) const;
 };
 

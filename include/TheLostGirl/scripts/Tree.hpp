@@ -5,11 +5,14 @@
 #include <vector>
 #include <memory>
 
-/// Store data in a n-tree.
-/// Each node of the tree is another tree, and each node store a value of type T.
+/// Stores data in a n-tree.
+/// Each node of the tree is another tree, and each node store a value of type
+/// T.
 /// Each node can have any number of children, that are nodes too.
-/// For a better use of the memory, this class uses smart pointers typedefed as Tree<T>::Ptr.
-/// To create a tree, use Tree<T>::create instead of the new keyword.
+/// For a better use of the memory, this class uses smart pointers typedefed as
+/// Tree<T>::Ptr. To create a tree, use Tree<T>::create instead of the new
+/// keyword.
+/// \tparam T The type to store.
 template <typename T>
 class Tree
 {
@@ -17,13 +20,13 @@ class Tree
 		/// Convenient typedef for a better memory handling.
 		typedef std::shared_ptr<Tree<T>> Ptr;
 
-		/// Allocate a new instance of a tree.
+		/// Allocates a new instance of a tree.
 		/// \param value Value to store in the tree.
 		/// \param children Children nodes of the tree.
 		/// \return A smart pointer to the created tree.
 		static Ptr create(const T& value, const std::vector<Ptr>& children=std::vector<Ptr>());
 
-		/// Allocate a new instance of a tree by copying the content of another one.
+		/// Allocates a new instance of a tree by copying the content of another one.
 		/// \param other Tree to copy.
 		/// \return A smart pointer to the created tree.
 		static Ptr copy(Ptr other);
@@ -37,19 +40,19 @@ class Tree
 		/// \param other Tree to copy.
 		Tree(Ptr other);
 
-		/// Get the value in this node.
+		/// Gets the value in this node.
 		/// \return T Value.
 		const T& getValue() const;
 
-		/// Overload, Get the value in this node.
+		/// Overload, gets the value in this node.
 		/// \return Value.
 		T& getValue();
 
-		/// Set the value in this node.
+		/// Sets the value in this node.
 		/// \param newValue Value to set.
 		void setValue(const T& newValue);
 
-		/// Get the number of direct children that have this node.
+		/// Gets the number of direct children that have this node.
 		/// \return The number of children.
 		size_t childrenNumber() const;
 
@@ -57,39 +60,41 @@ class Tree
 		/// \return True if the tree has some children, false otherwise.
 		bool noChildren() const;
 
-		/// Add a child after other childs.
+		/// Adds a child after other childs.
 		/// \param child The tree to add.
 		void pushChild(Ptr child);
 
-		/// Assign the given child to the given position.
-		/// \param n Position where to set the child. Must be lower than childrenNumber().
+		/// Assigns the given child to the given position.
+		/// \param n Position where to set the child. Must be lower than
+		/// childrenNumber().
 		/// \param newChild Tree to set.
 		void setChild(size_t n, Ptr newChild);
 
-		/// Remove the child at the given position.
+		/// Removes the child at the given position.
 		/// \param n The position where to remove the child.
 		void removeChild(size_t n);
 
-		/// Get a constant pointer to a child.
+		/// Gets a constant pointer to a child.
 		/// \param n The position of the child.
 		/// \return A Tree::Ptr to the corresponding child.
 		const Ptr getChild(size_t n) const;
 
-		/// Get a pointer to a child.
+		/// Gets a pointer to a child.
 		/// \param n The position of the child.
 		/// \return A Tree::Ptr to the corresponding child.
 		Ptr getChild(size_t n);
 
-		/// Set the pointer to parents in the childs of the given instance.
-		/// This function must be called after that a child is added, or after constructing.
+		/// Sets the pointer to parents in the childs of the given instance.
+		/// This function must be called after that a child is added, or after
+		/// constructing.
 		/// \param self Instance to resolve.
 		void resolveChildren(Ptr self);
 
-		/// Set the parent of the tree.
+		/// Sets the parent of the tree.
 		/// \param newParent New parent of the tree.
 		void setParent(Ptr newParent);
 
-		/// Get a pointer to to parent.
+		/// Gets a pointer to to parent.
 		/// \return A constant pointer to the parent.
 		const Ptr getParent() const;
 

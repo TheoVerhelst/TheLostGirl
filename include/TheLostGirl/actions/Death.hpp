@@ -9,7 +9,7 @@ namespace entityx
 	class Entity;
 }
 
-/// Structure that process the death of an entity
+/// Structure that processes the death of an entity
 class Death : public Action
 {
 	public:

@@ -8,7 +8,7 @@ namespace entityx
 	class Entity;
 }
 
-/// Structure that shoot the arrow notched by the entity.
+/// Structure that shoots the arrow notched by the entity.
 class ArrowShooter : public Action
 {
 	public:

@@ -7,7 +7,7 @@
 #include <TheLostGirl/StateStack.hpp>
 #include <TheLostGirl/Context.hpp>
 
-/// Structure that search on a corpse around the entity.
+/// Structure that searches on a corpse around the entity.
 class CorpseSearcher : public Action
 {
 	public:
@@ -23,12 +23,12 @@ class CorpseSearcher : public Action
 		typedef ContextAccessor<ContextElement::StateStack> Context;
 };
 
-/// AABB query callback that indicate if a corpse is found into the AABB.
+/// AABB query callback that indicates if a corpse is found into the AABB.
 class CorpseQueryCallback : public b2QueryCallback
 {
 	public:
-		/// Handle the world querying.
-		/// \param fixture A fixture that overlap the AABB.
+		/// Handles the world querying.
+		/// \param fixture A fixture that overlaps the AABB.
 		/// \return True if the querying should continue, false otherwise.
 		virtual bool ReportFixture(b2Fixture* fixture);
 
