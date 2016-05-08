@@ -39,8 +39,8 @@ class Application : public entityx::Receiver<Application>
 		/// Destructor.
 		~Application();
 
-        /// Run the game.
-        /// This function contains the main game loop.
+		/// Run the game.
+		/// This function contains the main game loop.
 		void run();
 
 		/// Receive an event about a change in the parameters.
@@ -54,7 +54,7 @@ class Application : public entityx::Receiver<Application>
 		void processInput();
 
 		/// Updates logics, systems, and so on.
-        /// \param dt Elapsed time in the last game frame.
+		/// \param dt Elapsed time in the last game frame.
 		void update(sf::Time dt);
 
 		/// Render all that need to be displayed on the screen.

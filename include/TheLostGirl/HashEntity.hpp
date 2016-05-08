@@ -6,7 +6,7 @@
 //Forward declarations
 namespace entityx
 {
-    class Entity;
+	class Entity;
 }
 
 /// Hash function object for entities.

@@ -5,7 +5,7 @@
 
 namespace entityx
 {
-    class Entity;
+	class Entity;
 }
 
 /// Structure that jump an entity.
@@ -24,4 +24,3 @@ class Jumper : public Action
 };
 
 #endif//JUMPER_HPP
-

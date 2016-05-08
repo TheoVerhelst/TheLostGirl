@@ -54,10 +54,11 @@ class Serializer
 
 	private:
 		/// Context type of this class.
-		typedef ContextAccessor<ContextElement::Parameters,
-                                ContextElement::TextureManager,
-                                ContextElement::World,
-                                ContextElement::ScriptManager> Context;
+		typedef ContextAccessor<
+				ContextElement::Parameters,
+				ContextElement::TextureManager,
+				ContextElement::World,
+				ContextElement::ScriptManager> Context;
 
 		/// Serializes the dependency between two entities, if this dependency
 		/// was not already serialized.

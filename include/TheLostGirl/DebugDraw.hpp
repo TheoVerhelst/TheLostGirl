@@ -73,11 +73,12 @@ class DebugDraw : public b2Draw
 
 	private:
 		/// Context type of this class.
-		typedef ContextAccessor<ContextElement::Parameters,
-                                ContextElement::Gui,
-                                ContextElement::PostEffectsTexture,
-                                ContextElement::EntityManager,
-                                ContextElement::Window> Context;
+		typedef ContextAccessor<
+				ContextElement::Parameters,
+				ContextElement::Gui,
+				ContextElement::PostEffectsTexture,
+				ContextElement::EntityManager,
+				ContextElement::Window> Context;
 
 		/// Flush the output on std::cout and std::cerr to the console
 		void flush();

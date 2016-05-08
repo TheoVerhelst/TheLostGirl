@@ -5,7 +5,7 @@
 
 namespace entityx
 {
-    class Entity;
+	class Entity;
 }
 
 /// Structure that shoot the arrow notched by the entity.
@@ -24,4 +24,3 @@ class ArrowShooter : public Action
 };
 
 #endif//ARROWSHOOTER_HPP
-

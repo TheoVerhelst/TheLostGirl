@@ -159,8 +159,9 @@ class ScriptFunctions
 
 	private:
 		/// Context type of this class.
-		typedef ContextAccessor<ContextElement::Parameters,
-                                ContextElement::SystemManager> Context;
+		typedef ContextAccessor<
+				ContextElement::Parameters,
+				ContextElement::SystemManager> Context;
 
 		/// Callback to find the nearest ennemy of an entity.
 		class NearestFoeQueryCallback : public b2QueryCallback

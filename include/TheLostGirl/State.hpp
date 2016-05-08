@@ -21,27 +21,27 @@ namespace sf
 class State: public entityx::Receiver<State>
 {
 	public:
-        /// Pointer typedef.
+		/// Pointer typedef.
 		typedef std::unique_ptr<State> Ptr;
 
 		/// Destructor.
 		virtual ~State() = default;
 
-        /// The drawing function.
-        /// It must do all things related to drawing stuff on the screen.
+		/// The drawing function.
+		/// It must do all things related to drawing stuff on the screen.
 		virtual void draw() = 0;
 
-        /// The logic update function.
-        /// This function call e.g. the physic update function, the AI function, etc...
-        /// \param dt Elapsed time in the last game frame.
-        /// \return Return true if the state under this one in the stack must be also updated.
+		/// The logic update function.
+		/// This function call e.g. the physic update function, the AI function, etc...
+		/// \param dt Elapsed time in the last game frame.
+		/// \return Return true if the state under this one in the stack must be also updated.
 		virtual bool update(sf::Time dt) = 0;
 
-        /// The event handling function.
-        /// The state must decide what to do with the event.
-        /// \note The closing window and resizing window events are already handled by the Application class.
-        /// \param event Event to handle.
-        /// \return Return true if the state under this state in the stack must be also updated.
+		/// The event handling function.
+		/// The state must decide what to do with the event.
+		/// \note The closing window and resizing window events are already handled by the Application class.
+		/// \param event Event to handle.
+		/// \return Return true if the state under this state in the stack must be also updated.
 		virtual bool handleEvent(const sf::Event& event) = 0;
 
 	protected:

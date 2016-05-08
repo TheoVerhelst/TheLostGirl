@@ -34,8 +34,8 @@ MainMenuState::MainMenuState()
 	m_exitButton->connect("pressed", &MainMenuState::exitGame, this);
 	m_background->add(m_exitButton);
 
-    m_background->insertSpace(0, 4.f);//Add a space before widgets
-    m_background->addSpace();//And another space after
+	m_background->insertSpace(0, 4.f);//Add a space before widgets
+	m_background->addSpace();//And another space after
 	resetTexts();
 }
 

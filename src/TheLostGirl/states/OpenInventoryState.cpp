@@ -61,7 +61,7 @@ OpenInventoryState::OpenInventoryState(entityx::Entity entity) :
 	m_gridPanel->setBackgroundColor(sf::Color(255, 255, 255, 100));
 	m_background->add(m_gridPanel);
 
-    //Make the list
+	//Make the list
 	m_listPanel = std::make_shared<tgui::Panel>();
 	m_listPanel->setPosition(0.f, bindHeight(m_background) * 0.3f);
 	m_listPanel->setSize(bindWidth(m_background), bindHeight(m_background) * 0.8f);
@@ -87,25 +87,25 @@ OpenInventoryState::OpenInventoryState(entityx::Entity entity) :
 	m_listContentLayout = std::make_shared<tgui::VerticalLayout>();
 	m_listContentLayout->setPosition(0.f, 30.f);
 	m_listContentLayout->setSize(bindWidth(m_listPanel) * 0.98f, 15*m_entity.component<InventoryComponent>()->items.size());
-    m_listPanel->add(m_listContentLayout);
+	m_listPanel->add(m_listContentLayout);
 
 	//Set scrollbars
 	m_listScrollbar = Context::getParameters().guiTheme->load("Scrollbar");
 	m_listScrollbar->setPosition(bindWidth(m_listPanel) * 0.98f, 0.f);
 	m_listScrollbar->setSize(bindWidth(m_listPanel) * 0.02f, bindHeight(m_listPanel));
-    m_listScrollbar->setArrowScrollAmount(30);
-    m_listScrollbar->setLowValue(int(m_gridPanel->getSize().y));
-    m_listScrollbar->setMaximum(int(m_listContentLayout->getSize().y));
-    m_listScrollbar->connect("valuechanged", &OpenInventoryState::scrollList, this);
-    m_listPanel->add(m_listScrollbar);
+	m_listScrollbar->setArrowScrollAmount(30);
+	m_listScrollbar->setLowValue(int(m_gridPanel->getSize().y));
+	m_listScrollbar->setMaximum(int(m_listContentLayout->getSize().y));
+	m_listScrollbar->connect("valuechanged", &OpenInventoryState::scrollList, this);
+	m_listPanel->add(m_listScrollbar);
 	m_listPanel->hide();
 
 	m_gridScrollbar = Context::getParameters().guiTheme->load("Scrollbar");
 	m_gridScrollbar->setPosition(bindWidth(m_gridPanel) * 0.98f, 0.f);
 	m_gridScrollbar->setSize(bindWidth(m_gridPanel) * 0.02f, bindHeight(m_gridPanel));
-    m_gridScrollbar->setArrowScrollAmount(30);
-    m_gridScrollbar->connect("valuechanged", &OpenInventoryState::scrollGrid, this);
-    m_gridPanel->add(m_gridScrollbar);
+	m_gridScrollbar->setArrowScrollAmount(30);
+	m_gridScrollbar->connect("valuechanged", &OpenInventoryState::scrollGrid, this);
+	m_gridPanel->add(m_gridScrollbar);
 
 	fillContentDisplay();
 	resetTexts();
@@ -274,9 +274,9 @@ void OpenInventoryState::fillContentDisplay()
 	}
 	//Set rowCounter to the total number of rows
 	rowCounter = ((--itemCounter) / 8)+1;
-    m_gridScrollbar->setLowValue(int(m_gridPanel->getSize().y));
-    //Set the maximum value to 120*number of rows
-    m_gridScrollbar->setMaximum(int(itemSize*float(rowCounter)));
+	m_gridScrollbar->setLowValue(int(m_gridPanel->getSize().y));
+	//Set the maximum value to 120*number of rows
+	m_gridScrollbar->setMaximum(int(itemSize*float(rowCounter)));
 }
 
 void OpenInventoryState::scrollGrid(int newScrollValue)

@@ -6,7 +6,7 @@
 
 namespace entityx
 {
-    class Entity;
+	class Entity;
 }
 
 /// Display a GUI menu that allow to open the inventory of the player.

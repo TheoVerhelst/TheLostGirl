@@ -63,11 +63,11 @@ KeyConfigurationState::KeyConfigurationState()
 	m_scrollbar = Context::getParameters().guiTheme->load("Scrollbar");
 	m_scrollbar->setPosition(bindWidth(m_actionsPanel) * 0.975f, 0.f);
 	m_scrollbar->setSize(bindWidth(m_actionsPanel) * 0.025f, bindHeight(m_actionsPanel));
-    m_scrollbar->setArrowScrollAmount(15);
-    m_scrollbar->setLowValue(int(m_actionsPanel->getSize().y));
-    m_scrollbar->setMaximum(int(m_actionsPanel->getSize().y*0.1f)*m_actionStrings.size());
-    m_scrollbar->connect("valuechanged", &KeyConfigurationState::scrollArea, this);
-    m_actionsPanel->add(m_scrollbar);
+	m_scrollbar->setArrowScrollAmount(15);
+	m_scrollbar->setLowValue(int(m_actionsPanel->getSize().y));
+	m_scrollbar->setMaximum(int(m_actionsPanel->getSize().y*0.1f)*m_actionStrings.size());
+	m_scrollbar->connect("valuechanged", &KeyConfigurationState::scrollArea, this);
+	m_actionsPanel->add(m_scrollbar);
 
 	float i{0.f};
 	for(auto& actionPair : m_actionStrings)

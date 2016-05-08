@@ -23,28 +23,28 @@ struct EntityStaminaChange;
 class HUDState : public State
 {
 	public:
-        /// Constructor.
-        /// The role of the entitiesNumber parameter is to load some tgui::Canvas
-        /// in order to do not load them on the fly during the game, when entities health change.
+		/// Constructor.
+		/// The role of the entitiesNumber parameter is to load some tgui::Canvas
+		/// in order to do not load them on the fly during the game, when entities health change.
 		HUDState();
 
 		/// Destructor.
 		virtual ~HUDState();
 
-        /// The drawing function.
-        /// \return virtual void
-        /// It must do all things related to drawing stuff on the screen.
+		/// The drawing function.
+		/// \return virtual void
+		/// It must do all things related to drawing stuff on the screen.
 		virtual void draw() override;
 
-        /// The logic update function.
-        /// \param dt Elapsed time in the last game frame.
-        /// \return Return true if the state under this one in the stack must be also updated.
+		/// The logic update function.
+		/// \param dt Elapsed time in the last game frame.
+		/// \return Return true if the state under this one in the stack must be also updated.
 		virtual bool update(sf::Time dt) override;
 
-        /// The event handling function.
-        /// \param event Event to handle.
-        /// \return Return true if the state under this state in the stack must be also updated.
-        /// \note The closing window and resinzing window events are already handled by the Application class.
+		/// The event handling function.
+		/// \param event Event to handle.
+		/// \return Return true if the state under this state in the stack must be also updated.
+		/// \note The closing window and resinzing window events are already handled by the Application class.
 		virtual bool handleEvent(const sf::Event& event) override;
 
 		/// Receive an event indicating that the health of an entity changed.
@@ -57,13 +57,14 @@ class HUDState : public State
 
 	private:
 		/// Context type of this class.
-		typedef ContextAccessor<ContextElement::Parameters,
-                                ContextElement::EventManager,
-                                ContextElement::SystemManager,
-                                ContextElement::TextureManager,
-                                ContextElement::Window,
-                                ContextElement::PostEffectsTexture,
-                                ContextElement::Gui> Context;
+		typedef ContextAccessor<
+				ContextElement::Parameters,
+				ContextElement::EventManager,
+				ContextElement::SystemManager,
+				ContextElement::TextureManager,
+				ContextElement::Window,
+				ContextElement::PostEffectsTexture,
+				ContextElement::Gui> Context;
 
 		/// Holds graphical data to represent a bar for each entity with a given stat.
 		/// This can be health, stamina, mana, and so on.

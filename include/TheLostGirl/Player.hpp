@@ -15,8 +15,8 @@ struct Command;
 class Player
 {
 	public:
-        /// Players's action.
-        /// That's all the player can do.
+		/// Players's action.
+		/// That's all the player can do.
 		enum class Action
 		{
 			MoveUp,       ///< Go in an exit on the top.
@@ -43,58 +43,58 @@ class Player
 		/// Destructor.
 		~Player() = default;
 
-        /// Handle the input.
-        /// Then assign input to Player::Action ann then assign every Action to a specific Command.
-        /// \param event Event to handle.
+		/// Handle the input.
+		/// Then assign input to Player::Action ann then assign every Action to a specific Command.
+		/// \param event Event to handle.
 		void handleEvent(const sf::Event& event);
 
-        /// Assign a key to an Action.
-        /// \param action Action to assign.
-        /// \param key Key to assign.
+		/// Assign a key to an Action.
+		/// \param action Action to assign.
+		/// \param key Key to assign.
 		void assignKey(Action action, sf::Keyboard::Key key);
 
-        /// Assign a mouse button to an Action.
-        /// \param action Action to assign.
-        /// \param button Button to assign.
+		/// Assign a mouse button to an Action.
+		/// \param action Action to assign.
+		/// \param button Button to assign.
 		void assignMouseButton(Action action, sf::Mouse::Button button);
 
-        /// Assign the mouse wheel to an Action.
-        /// \param action Action to assign.
+		/// Assign the mouse wheel to an Action.
+		/// \param action Action to assign.
 		void assignMouseWheel(Action action);
 
-        /// Assign a joystic button to an Action.
-        /// \param action Action to assign.
-        /// \param buttonIndex Index of the button to assign.
+		/// Assign a joystic button to an Action.
+		/// \param action Action to assign.
+		/// \param buttonIndex Index of the button to assign.
 		void assignJoystickButton(Action action, unsigned int buttonIndex);
 
-        /// Assign a joystick axis to an Action.
-        /// \param action Action to assign.
-        /// \param axis Axis to assign.
+		/// Assign a joystick axis to an Action.
+		/// \param action Action to assign.
+		/// \param axis Axis to assign.
 		void assignJoystickAxis(Action action, sf::Joystick::Axis axis);
 
-        /// Give the key assigned to \a action.
-        /// \param action Assigned action.
-        /// \return An array of every key mapped with \a action.
+		/// Give the key assigned to \a action.
+		/// \param action Assigned action.
+		/// \return An array of every key mapped with \a action.
 		std::vector<sf::Keyboard::Key> getAssignedKeys(Action action) const;
 
-        /// Give the mouse button assigned to \a action.
-        /// \param action Assigned action.
-        /// \return An array of every mouse button mapped with \a action.
+		/// Give the mouse button assigned to \a action.
+		/// \param action Assigned action.
+		/// \return An array of every mouse button mapped with \a action.
 		std::vector<sf::Mouse::Button> getAssignedMouseButtons(Action action) const;
 
-        /// Check if \a action is assigned to the mouse wheel.
-        /// \param action Assigned action.
-        /// \return True if \a action is assigned to the mouse wheel, false otherwise.
+		/// Check if \a action is assigned to the mouse wheel.
+		/// \param action Assigned action.
+		/// \return True if \a action is assigned to the mouse wheel, false otherwise.
 		bool isAssignedToMouseWheel(Action action) const;
 
-        /// Give the joystick button assigned to \a action.
-        /// \param action Assigned action.
-        /// \return An array of every index of the joystick button mapped with \a action.
+		/// Give the joystick button assigned to \a action.
+		/// \param action Assigned action.
+		/// \return An array of every index of the joystick button mapped with \a action.
 		std::vector<unsigned int> getAssignedJoystickButtons(Action action) const;
 
-        /// Give the joystick axis assigned to \a action.
-        /// \param action Assigned action.
-        /// \return An array of every joystick axis mapped with \a action.
+		/// Give the joystick axis assigned to \a action.
+		/// \param action Assigned action.
+		/// \return An array of every joystick axis mapped with \a action.
 		std::vector<sf::Joystick::Axis> getAssignedJoystickAxis(Action action) const;
 
 		/// Check if any of the inputs binded with action is currently actived.
@@ -110,8 +110,9 @@ class Player
 
 	private:
 		/// Context type of this class.
-		typedef ContextAccessor<ContextElement::SystemManager,
-                                ContextElement::Window> Context;
+		typedef ContextAccessor<
+				ContextElement::SystemManager,
+				ContextElement::Window> Context;
 
 		/// Initialize all the player's actions.
 		void initializeActions();

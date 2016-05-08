@@ -16,14 +16,14 @@ class LangManager
 		/// Constructor.
 		LangManager();
 		
-        /// Set the current lang.
-        /// The lang file is automaticaly loaded by the manager.
-        /// \param newLang The lang to load.
-        /// \throw std::runtime_error if the lang is not available.
+		/// Set the current lang.
+		/// The lang file is automaticaly loaded by the manager.
+		/// \param newLang The lang to load.
+		/// \throw std::runtime_error if the lang is not available.
 		void setLang(const std::string& newLang);
 
-        /// Return the current lang.
-        /// \return The current lang.
+		/// Return the current lang.
+		/// \return The current lang.
 		std::string getLang() const;
 
 		/// Get the default lang.
@@ -36,11 +36,11 @@ class LangManager
 		/// \return An array of all available langs.
 		std::set<std::string> getAvailableLangs() const;
 
-        /// Translate the given string.
-        ///	The \a entryName must be an entry in the lang file, and be in english.
-        /// Should be called for every in-game text.
-        /// \param entryName const std::string&
-        /// \return The translated wide string if the string can be translated, or entryName as std::wstring otherwise.
+		/// Translate the given string.
+		///	The \a entryName must be an entry in the lang file, and be in english.
+		/// Should be called for every in-game text.
+		/// \param entryName const std::string&
+		/// \return The translated wide string if the string can be translated, or entryName as std::wstring otherwise.
 		std::wstring tr(const std::string& entryName) const;
 
 	private:

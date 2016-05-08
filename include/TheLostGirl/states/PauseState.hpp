@@ -19,27 +19,27 @@ struct ParametersChange;
 class PauseState : public State
 {
 	public:
-        /// Constructor.
+		/// Constructor.
 		PauseState();
 
 		/// Destructor.
 		/// It clear the GUI.
 		~PauseState();
 
-        /// The drawing function.
-        /// \return virtual void
-        /// It must do all things related to drawing stuff on the screen.
+		/// The drawing function.
+		/// \return virtual void
+		/// It must do all things related to drawing stuff on the screen.
 		virtual void draw() override;
 
-        /// The logic update function.
-        /// \param dt Elapsed time in the last game frame.
-        /// \return Return true if the state under this one in the stack must be also updated.
+		/// The logic update function.
+		/// \param dt Elapsed time in the last game frame.
+		/// \return Return true if the state under this one in the stack must be also updated.
 		virtual bool update(sf::Time dt) override;
 
-        /// The event handling function.
-        /// \param event Event to handle.
-        /// \return Return true if the state under this state in the stack must be also updated.
-        /// \note The closing window and resinzing window events are already handled by the Application class.
+		/// The event handling function.
+		/// \param event Event to handle.
+		/// \return Return true if the state under this state in the stack must be also updated.
+		/// \note The closing window and resinzing window events are already handled by the Application class.
 		virtual bool handleEvent(const sf::Event& event) override;
 
 		/// Receive an event about a change in the parameters.
@@ -48,11 +48,12 @@ class PauseState : public State
 
 	private:
 		/// Context type of this class.
-		typedef ContextAccessor<ContextElement::EventManager,
-                                ContextElement::Parameters,
-                                ContextElement::LangManager,
-                                ContextElement::Player,
-                                ContextElement::Gui> Context;
+		typedef ContextAccessor<
+				ContextElement::EventManager,
+				ContextElement::Parameters,
+				ContextElement::LangManager,
+				ContextElement::Player,
+				ContextElement::Gui> Context;
 
 		/// Return to the GameState state and delete this one.
 		inline void backToGame();

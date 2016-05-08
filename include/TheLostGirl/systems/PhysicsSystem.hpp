@@ -16,9 +16,10 @@ class PhysicsSystem : public entityx::System<PhysicsSystem>
 
 	private:
 		/// Context type of this class.
-		typedef ContextAccessor<ContextElement::SystemManager,
-                                ContextElement::Parameters,
-                                ContextElement::World> Context;
+		typedef ContextAccessor<
+				ContextElement::SystemManager,
+				ContextElement::Parameters,
+				ContextElement::World> Context;
 };
 
 #endif//PHYSICSSYSTEM_HPP

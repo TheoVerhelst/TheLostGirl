@@ -22,10 +22,11 @@ class AnimationsSystem : public entityx::System<AnimationsSystem>
 
 	private:
 		/// Context type of this class.
-		typedef ContextAccessor<ContextElement::Window,
-                                ContextElement::Parameters,
-                                ContextElement::PostEffectsTexture,
-                                ContextElement::SystemManager> Context;
+		typedef ContextAccessor<
+				ContextElement::Window,
+				ContextElement::Parameters,
+				ContextElement::PostEffectsTexture,
+				ContextElement::SystemManager> Context;
 
 		float m_timeSpeed = 1.f;///< Current speed of the time.
 };

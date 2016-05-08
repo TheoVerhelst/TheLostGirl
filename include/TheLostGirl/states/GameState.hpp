@@ -17,29 +17,29 @@ struct Transform;
 class GameState : public State
 {
 	public:
-        /// Constructor.
-        /// \param file Path name of the save file to load.
+		/// Constructor.
+		/// \param file Path name of the save file to load.
 		explicit GameState(std::string file);
 
 		/// Destructor.
 		/// Removes all bodies, sprites and others from the memory.
 		~GameState();
 
-        /// The drawing function.
-        /// \return virtual void
-        /// It must do all things related to drawing stuff on the screen.
+		/// The drawing function.
+		/// \return virtual void
+		/// It must do all things related to drawing stuff on the screen.
 		virtual void draw() override;
 
-        /// The logic update function.
-        /// \param dt Elapsed time in the last game frame.
-        /// \return Return true if the state under this one in the stack must be also updated.
-        /// This function call e.g. the physic update function, the AI function, etc...
+		/// The logic update function.
+		/// \param dt Elapsed time in the last game frame.
+		/// \return Return true if the state under this one in the stack must be also updated.
+		/// This function call e.g. the physic update function, the AI function, etc...
 		virtual bool update(sf::Time dt) override;
 
-        /// The event handling function.
-        /// \param event Event to handle.
-        /// \return Return true if the state under this state in the stack must be also updated.
-        /// \note The closing window and resinzing window events are already handled by the Application class.
+		/// The event handling function.
+		/// \param event Event to handle.
+		/// \return Return true if the state under this state in the stack must be also updated.
+		/// \note The closing window and resinzing window events are already handled by the Application class.
 		virtual bool handleEvent(const sf::Event& event) override;
 
 		/// Receives an event about a change in the parameters.
@@ -49,12 +49,12 @@ class GameState : public State
 	private:
 		/// Context type of this class.
 		typedef ContextAccessor<ContextElement::Parameters,
-                                ContextElement::EventManager,
-                                ContextElement::SystemManager,
-                                ContextElement::Player,
-                                ContextElement::EntityManager,
-                                ContextElement::TextureManager,
-                                ContextElement::World> Context;
+				ContextElement::EventManager,
+				ContextElement::SystemManager,
+				ContextElement::Player,
+				ContextElement::EntityManager,
+				ContextElement::TextureManager,
+				ContextElement::World> Context;
 
 		/// Structure that holds data about scene entities. The role of this
 		/// structure is to hold data that cannot easily be retrieved in the

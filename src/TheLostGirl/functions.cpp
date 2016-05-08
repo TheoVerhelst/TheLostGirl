@@ -101,7 +101,7 @@ b2JointDef* getJointDef(b2Joint* joint)
 			castedJointDef->enableMotor = castedJoint->IsMotorEnabled();
 			castedJointDef->motorSpeed = castedJoint->GetMotorSpeed();
 			castedJointDef->maxMotorTorque = castedJoint->GetMaxMotorTorque();
-            break;
+			break;
 		}
 
 		case e_prismaticJoint:
@@ -119,7 +119,7 @@ b2JointDef* getJointDef(b2Joint* joint)
 			castedJointDef->maxMotorForce = castedJoint->GetMaxMotorForce();
 			castedJointDef->motorSpeed = castedJoint->GetMotorSpeed();
 			castedJointDef->enableMotor = castedJoint->IsMotorEnabled();
-            break;
+			break;
 		}
 
 		case e_weldJoint:
@@ -132,7 +132,7 @@ b2JointDef* getJointDef(b2Joint* joint)
 			castedJointDef->referenceAngle = castedJoint->GetReferenceAngle();
 			castedJointDef->frequencyHz = castedJoint->GetFrequency();
 			castedJointDef->dampingRatio = castedJoint->GetDampingRatio();
-            break;
+			break;
 		}
 
 		default:

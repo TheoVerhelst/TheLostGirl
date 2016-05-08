@@ -6,7 +6,7 @@
 
 namespace entityx
 {
-    class Entity;
+	class Entity;
 }
 
 /// Structure that bend the bow of the given entity.

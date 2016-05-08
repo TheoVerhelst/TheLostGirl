@@ -29,11 +29,12 @@ class ScrollingSystem : public entityx::System<ScrollingSystem>
 
 	private:
 		/// Context type of this class.
-		typedef ContextAccessor<ContextElement::Window,
-                                ContextElement::Parameters,
-                                ContextElement::PostEffectsTexture,
-                                ContextElement::EntityManager,
-                                ContextElement::SystemManager> Context;
+		typedef ContextAccessor<
+				ContextElement::Window,
+				ContextElement::Parameters,
+				ContextElement::PostEffectsTexture,
+				ContextElement::EntityManager,
+				ContextElement::SystemManager> Context;
 
 		entityx::Entity m_player; ///< The player entity, it is fulfilled with searchPlayer().
 		sf::FloatRect m_levelRect;///< Rectangle defining the level bounds.

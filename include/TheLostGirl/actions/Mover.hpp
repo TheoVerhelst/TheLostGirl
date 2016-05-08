@@ -8,7 +8,7 @@
 
 namespace entityx
 {
-    class Entity;
+	class Entity;
 }
 enum class Direction;
 class b2WeldJointDef;

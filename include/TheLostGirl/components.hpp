@@ -170,7 +170,7 @@ struct HardnessComponent : public entityx::Component<HardnessComponent>
 /// More informations about scripting is available in a separate document.
 struct ScriptsComponent : public entityx::Component<ScriptsComponent>
 {
-    std::list<std::string> scriptsNames;///< Names of scripts that the entity must execute,
+	std::list<std::string> scriptsNames;///< Names of scripts that the entity must execute,
 };
 
 /// Component that defines the behavior of aggressive entities.

@@ -394,8 +394,8 @@ Json::Value Serializer::implSerialize(const std::string&, entityx::ComponentHand
 	Json::Value ret;
 	ret["scripts"] = Json::Value(Json::arrayValue);
 	for(auto& scriptName : component->scriptsNames)
-        ret["scripts"].append(scriptName);
-    return ret;
+		ret["scripts"].append(scriptName);
+	return ret;
 }
 
 Json::Value Serializer::implSerialize(const std::string&, entityx::ComponentHandle<DetectionRangeComponent> component)
@@ -871,7 +871,7 @@ void Serializer::implDeserialize(const Json::Value& value, entityx::ComponentHan
 	{
 		std::string scriptName{value["scripts"][i].asString()};
 		Context::getScriptManager().load(scriptName, Context::getParameters().resourcesPath + "scripts/" + scriptName);
-        component->scriptsNames.push_back(scriptName);
+		component->scriptsNames.push_back(scriptName);
 	}
 }
 

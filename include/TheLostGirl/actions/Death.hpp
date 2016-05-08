@@ -6,7 +6,7 @@
 
 namespace entityx
 {
-    class Entity;
+	class Entity;
 }
 
 /// Structure that process the death of an entity
