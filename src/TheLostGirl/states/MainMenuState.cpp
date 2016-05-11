@@ -12,30 +12,35 @@ MainMenuState::MainMenuState()
 	Context::getEventManager().subscribe<ParametersChange>(*this);
 	tgui::Gui& gui(Context::getGui());
 
-	m_background = std::make_shared<tgui::VerticalLayout>();
+	m_background = std::make_shared<tgui::Panel>();
 	m_background->setPosition(tgui::bindWidth(gui) * 0.25f, tgui::bindHeight(gui) * 0.f);
 	m_background->setSize(tgui::bindWidth(gui) * 0.5f, tgui::bindHeight(gui));
 	m_background->setBackgroundColor(sf::Color(255, 255, 255, 100));
 	gui.add(m_background);
 
 	m_logo = std::make_shared<tgui::Picture>(Context::getParameters().resourcesPath + "images/title.png");
-	m_logo->setPosition((tgui::bindWidth(gui) - tgui::bindWidth(m_logo)) / 2.f, tgui::bindHeight(gui) * 0.02f);
+	m_logo->setPosition((tgui::bindWidth(gui) - tgui::bindWidth(m_logo)) / 2.f, 0.f);
+	m_logo->setSize(600, 298);
 	gui.add(m_logo);
+	
+	m_buttonsLayout = std::make_shared<tgui::VerticalLayout>();
+	m_buttonsLayout->setPosition(tgui::bindLeft(m_background), tgui::bindBottom(m_logo));
+	m_buttonsLayout->setSize(tgui::bindWidth(m_background), tgui::bindHeight(m_background) - tgui::bindHeight(m_logo));
+	gui.add(m_buttonsLayout);
 
 	m_newButton = Context::getParameters().guiTheme->load("Button");
 	m_newButton->connect("pressed", &MainMenuState::playGame, this);
-	m_background->add(m_newButton);
+	m_buttonsLayout->add(m_newButton);
 
 	m_loadButton = Context::getParameters().guiTheme->load("Button");
 	m_loadButton->connect("pressed", &MainMenuState::playGame, this);
-	m_background->add(m_loadButton);
+	m_buttonsLayout->add(m_loadButton);
 
 	m_exitButton = Context::getParameters().guiTheme->load("Button");
 	m_exitButton->connect("pressed", &MainMenuState::exitGame, this);
-	m_background->add(m_exitButton);
+	m_buttonsLayout->add(m_exitButton);
 
-	m_background->insertSpace(0, 4.f);//Add a space before widgets
-	m_background->addSpace();//And another space after
+	m_buttonsLayout->addSpace(0.5f);
 	resetTexts();
 }
 

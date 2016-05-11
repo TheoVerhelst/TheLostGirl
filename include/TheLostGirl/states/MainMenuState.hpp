@@ -65,11 +65,12 @@ class MainMenuState : public State
 		/// Reset all texts in the buttons and other widgets.
 		void resetTexts();
 
-		tgui::VerticalLayout::Ptr m_background;///< The background of the menu.
-		tgui::Picture::Ptr m_logo;             ///< The Lost Girl logo.
-		tgui::Button::Ptr m_newButton;         ///< The New game button.
-		tgui::Button::Ptr m_loadButton;        ///< The Load game button.
-		tgui::Button::Ptr m_exitButton;        ///< The Exit button.
+		tgui::Panel::Ptr m_background;            ///< The background of the menu.
+		tgui::Picture::Ptr m_logo;                ///< The Lost Girl logo.
+		tgui::VerticalLayout::Ptr m_buttonsLayout;///< The layout for the buttons.
+		tgui::Button::Ptr m_newButton;            ///< The New game button.
+		tgui::Button::Ptr m_loadButton;           ///< The Load game button.
+		tgui::Button::Ptr m_exitButton;           ///< The Exit button.
 };
 
 #endif//MAINMENUSTATE_HPP
