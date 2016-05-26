@@ -282,7 +282,7 @@
 			"categories" : [ "player",  "passive" ],
 			"sprite" :
 			{
-				"identifier" : "archer_body.png"
+				"identifier" : "archerBody.png"
 			},
 			"spritesheet animations" :
 			{
@@ -291,9 +291,9 @@
 					"data" :
 					[
 						{
-							"h" : 97,
+							"h" : 100,
 							"relative duration" : 1,
-							"w" : 44,
+							"w" : 65,
 							"x" : 0,
 							"y" : 0
 						}
@@ -311,11 +311,11 @@
 					"data" :
 					[
 						{
-							"h" : 97,
+							"h" : 100,
 							"relative duration" : 1,
-							"w" : 44,
+							"w" : 65,
 							"x" : 0,
-							"y" : 0
+							"y" : 200
 						}
 					],
 					"duration" : 0.3,
@@ -331,9 +331,9 @@
 					"data" :
 					[
 						{
-							"h" : 97,
+							"h" : 100,
 							"relative duration" : 1,
-							"w" : 44,
+							"w" : 65,
 							"x" : 0,
 							"y" : 0
 						}
@@ -350,11 +350,11 @@
 					"data" :
 					[
 						{
-							"h" : 97,
+							"h" : 100,
 							"relative duration" : 1,
-							"w" : 44,
+							"w" : 65,
 							"x" : 0,
-							"y" : 0
+							"y" : 200
 						}
 					],
 					"duration" : 1,
@@ -369,9 +369,9 @@
 					"data" :
 					[
 						{
-							"h" : 97,
+							"h" : 100,
 							"relative duration" : 1,
-							"w" : 44,
+							"w" : 65,
 							"x" : 0,
 							"y" : 0
 						}
@@ -388,11 +388,11 @@
 					"data" :
 					[
 						{
-							"h" : 97,
+							"h" : 100,
 							"relative duration" : 1,
-							"w" : 44,
+							"w" : 65,
 							"x" : 0,
-							"y" : 0
+							"y" : 200
 						}
 					],
 					"duration" : 0.6,
@@ -407,9 +407,9 @@
 					"data" :
 					[
 						{
-							"h" : 97,
+							"h" : 100,
 							"relative duration" : 1,
-							"w" : 44,
+							"w" : 65,
 							"x" : 0,
 							"y" : 0
 						}
@@ -426,14 +426,91 @@
 					"data" :
 					[
 						{
-							"h" : 97,
-							"relative duration" : 1,
-							"w" : 44,
-							"x" : 0,
-							"y" : 0
+							"h" : 100,
+							"relative duration" : 0.083333,
+							"w" : 65,
+							"x" : 65,
+							"y" : 200
+						},
+						{
+							"h" : 100,
+							"relative duration" : 0.083333,
+							"w" : 65,
+							"x" : 130,
+							"y" : 200
+						},
+						{
+							"h" : 100,
+							"relative duration" : 0.083333,
+							"w" : 65,
+							"x" : 195,
+							"y" : 200
+						},
+						{
+							"h" : 100,
+							"relative duration" : 0.083333,
+							"w" : 65,
+							"x" : 260,
+							"y" : 200
+						},
+						{
+							"h" : 100,
+							"relative duration" : 0.083333,
+							"w" : 65,
+							"x" : 325,
+							"y" : 200
+						},
+						{
+							"h" : 100,
+							"relative duration" : 0.083333,
+							"w" : 65,
+							"x" : 390,
+							"y" : 200
+						},
+						{
+							"h" : 100,
+							"relative duration" : 0.083333,
+							"w" : 65,
+							"x" : 65,
+							"y" : 300
+						},
+						{
+							"h" : 100,
+							"relative duration" : 0.083333,
+							"w" : 65,
+							"x" : 130,
+							"y" : 300
+						},
+						{
+							"h" : 100,
+							"relative duration" : 0.083333,
+							"w" : 65,
+							"x" : 195,
+							"y" : 300
+						},
+						{
+							"h" : 100,
+							"relative duration" : 0.083333,
+							"w" : 65,
+							"x" : 260,
+							"y" : 300
+						},
+						{
+							"h" : 100,
+							"relative duration" : 0.083333,
+							"w" : 65,
+							"x" : 325,
+							"y" : 300
+						},
+						{
+							"h" : 100,
+							"relative duration" : 0.083333,
+							"w" : 65,
+							"x" : 390,
+							"y" : 300
 						}
 					],
-					"duration" : 0.3,
+					"duration" : 0.7,
 					"importance" : 1,
 					"is active" : false,
 					"is paused" : true,
@@ -445,14 +522,91 @@
 					"data" :
 					[
 						{
-							"h" : 97,
-							"relative duration" : 1,
-							"w" : 44,
-							"x" : 0,
+							"h" : 100,
+							"relative duration" : 0.083333,
+							"w" : 65,
+							"x" : 65,
 							"y" : 0
+						},
+						{
+							"h" : 100,
+							"relative duration" : 0.083333,
+							"w" : 65,
+							"x" : 130,
+							"y" : 0
+						},
+						{
+							"h" : 100,
+							"relative duration" : 0.083333,
+							"w" : 65,
+							"x" : 195,
+							"y" : 0
+						},
+						{
+							"h" : 100,
+							"relative duration" : 0.083333,
+							"w" : 65,
+							"x" : 260,
+							"y" : 0
+						},
+						{
+							"h" : 100,
+							"relative duration" : 0.083333,
+							"w" : 65,
+							"x" : 325,
+							"y" : 0
+						},
+						{
+							"h" : 100,
+							"relative duration" : 0.083333,
+							"w" : 65,
+							"x" : 390,
+							"y" : 0
+						},
+						{
+							"h" : 100,
+							"relative duration" : 0.083333,
+							"w" : 65,
+							"x" : 65,
+							"y" : 100
+						},
+						{
+							"h" : 100,
+							"relative duration" : 0.083333,
+							"w" : 65,
+							"x" : 130,
+							"y" : 100
+						},
+						{
+							"h" : 100,
+							"relative duration" : 0.083333,
+							"w" : 65,
+							"x" : 195,
+							"y" : 100
+						},
+						{
+							"h" : 100,
+							"relative duration" : 0.083333,
+							"w" : 65,
+							"x" : 260,
+							"y" : 100
+						},
+						{
+							"h" : 100,
+							"relative duration" : 0.083333,
+							"w" : 65,
+							"x" : 325,
+							"y" : 100
+						},
+						{
+							"h" : 100,
+							"relative duration" : 0.083333,
+							"w" : 65,
+							"x" : 390,
+							"y" : 100
 						}
 					],
-					"duration" : 0.3,
+					"duration" : 0.7,
 					"importance" : 1,
 					"is active" : false,
 					"is paused" : true,
@@ -464,11 +618,11 @@
 					"data" :
 					[
 						{
-							"h" : 97,
+							"h" : 100,
 							"relative duration" : 1,
-							"w" : 44,
+							"w" : 65,
 							"x" : 0,
-							"y" : 0
+							"y" : 200
 						}
 					],
 					"duration" : 1,
@@ -483,9 +637,9 @@
 					"data" :
 					[
 						{
-							"h" : 97,
+							"h" : 100,
 							"relative duration" : 1,
-							"w" : 44,
+							"w" : 65,
 							"x" : 0,
 							"y" : 0
 						}
