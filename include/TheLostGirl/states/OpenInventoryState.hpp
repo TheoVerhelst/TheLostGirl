@@ -19,8 +19,7 @@ namespace entityx
 class StateStack;
 struct ParametersChange;
 
-/// State that effectively play the game.
-/// The game become really interesting here.
+/// State that open an inventory.
 class OpenInventoryState : public State
 {
 	public:
@@ -39,16 +38,16 @@ class OpenInventoryState : public State
 		/// The logic update function.
 		/// \param dt Elapsed time in the last game frame.
 		/// \return Return true if the state under this one in the stack must be also updated.
-		/// This function call e.g. the physic update function, the AI function, etc...
+		/// This function calls e.g. the physic update function, the AI function, etc...
 		virtual bool update(sf::Time dt) override;
 
 		/// The event handling function.
 		/// \param event Event to handle.
 		/// \return Return true if the state under this state in the stack must be also updated.
-		/// \note The closing window and resinzing window events are already handled by the Application class.
+		/// \note The closing window and resizing window events are already handled by the Application class.
 		virtual bool handleEvent(const sf::Event& event) override;
 
-		/// Receive an event about a change in the parameters.
+		/// Receives an event about a change in the parameters.
 		/// \param parametersChange The data about the change.
 		void receive(const ParametersChange& parametersChange);
 
