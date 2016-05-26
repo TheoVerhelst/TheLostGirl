@@ -56,7 +56,7 @@ void Mover::operator()(entityx::Entity entity) const
 		{
 			AnimationsManager<SpriteSheetAnimation>& animations(animationsComponent->animationsManager);
 			const std::list<std::string> animationsList = {"bend", "fall", "jump"};
-			for(const std::string& animation : animationsList)
+			for(const auto& animation : animationsList)
 			{
 				//If the manager has this animation
 				if(animations.isRegistred(animation + directionStr)
@@ -85,52 +85,7 @@ void Mover::operator()(entityx::Entity entity) const
 					}
 				}
 			}
-//
-//				//If the animations manager have bending animations
-//				if(animations.isRegistred("bend" + directionStr)
-//					and animations.isRegistred("bend" + oppDirectionStr))
-//				{
-//					if(start)
-//					{
-//						float progress{animations.getProgress("bend" + oppDirectionStr)};
-//						animations.stop("bend" + oppDirectionStr);
-//						animations.activate("bend" + directionStr);
-//						animations.setProgress("bend" + directionStr, progress);
-//					}
-//					else if(moveToOppDirection)
-//					{
-//						float progress{animations.getProgress("bend" + directionStr)};
-//						animations.stop("bend" + directionStr);
-//						animations.activate("bend" + oppDirectionStr);
-//						animations.setProgress("bend" + oppDirectionStr, progress);
-//					}
-//				}
-//				//If the animations manager falling animations
-//				if(animations.isRegistred("fall" + directionStr)
-//					and animations.isRegistred("fall" + oppDirectionStr))
-//				{
-//					//If falling and diriged to the opposite side
-//					if(animations.isActive("fall" + oppDirectionStr))
-//					{
-//						float progress{animations.getProgress("fall" + oppDirectionStr)};
-//						animations.stop("fall" + oppDirectionStr);
-//						animations.play("fall" + directionStr);
-//						animations.setProgress("fall" + directionStr, progress);
-//					}
-//				}
-//				//If the animations manager have jump animations
-//				if(animations.isRegistred("jump" + directionStr)
-//					and animations.isRegistred("jump" + oppDirectionStr))
-//				{
-//					//If jumping and diriged to the opposite side
-//					if(animations.isActive("jump" + oppDirectionStr))
-//					{
-//						float progress{animations.getProgress("jump" + oppDirectionStr)};
-//						animations.stop("jump" + oppDirectionStr);
-//						animations.play("jump" + directionStr);
-//						animations.setProgress("jump" + directionStr, progress);
-//					}
-//				}
+
 			//If the animations manager have walk animations
 			if(animations.isRegistred("stay" + directionStr)
 				and animations.isRegistred("stay" + oppDirectionStr)
