@@ -20,8 +20,7 @@ IntroState::IntroState()
 	gui.add(m_background);
 
 	m_logo = std::make_shared<tgui::Picture>(Context::getParameters().resourcesPath + "images/title.png");
-	m_logo->setPosition((tgui::bindWidth(gui) - tgui::bindWidth(m_logo)) / 2.f, 0.f);
-	m_logo->setSize(600, 298);
+	m_logo->setPosition((tgui::bindWidth(gui) - tgui::bindWidth(m_logo)) / 2.f, 15.f);
 	gui.add(m_logo);
 
 	m_sentence = Context::getParameters().guiTheme->load("Label");

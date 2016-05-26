@@ -19,8 +19,7 @@ MainMenuState::MainMenuState()
 	gui.add(m_background);
 
 	m_logo = std::make_shared<tgui::Picture>(Context::getParameters().resourcesPath + "images/title.png");
-	m_logo->setPosition((tgui::bindWidth(gui) - tgui::bindWidth(m_logo)) / 2.f, 0.f);
-	m_logo->setSize(600, 298);
+	m_logo->setPosition((tgui::bindWidth(gui) - tgui::bindWidth(m_logo)) / 2.f, 15.f);
 	gui.add(m_logo);
 	
 	m_buttonsLayout = std::make_shared<tgui::VerticalLayout>();
@@ -49,6 +48,7 @@ MainMenuState::~MainMenuState()
 	tgui::Gui& gui(Context::getGui());
 	gui.remove(m_background);
 	gui.remove(m_logo);
+	gui.remove(m_buttonsLayout);
 }
 
 void MainMenuState::draw()
