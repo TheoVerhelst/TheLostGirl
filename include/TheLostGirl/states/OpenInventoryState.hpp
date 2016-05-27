@@ -76,11 +76,11 @@ class OpenInventoryState : public State
 
 		/// Function called by the tab for switching the diplay mode.
 		/// \param selectedTab The name of the new selected tab.
-		void switchDisplay(sf::String selectedTab);
+		void switchDisplay(const sf::String& selectedTab);
 
 		/// Function called by the tab for switching the category mode.
 		/// \param selectedTab The name of the new selected tab.
-		void switchCategory(sf::String selectedTab);
+		void switchCategory(const sf::String& selectedTab);
 
 		/// Checks if the two entities represents the same item.
 		/// This is used to display similar items in a single line/square in the inventory display.
@@ -94,8 +94,10 @@ class OpenInventoryState : public State
 		tgui::Label::Ptr m_entityName;                    ///< Label with the name of the entity.
 		tgui::Tab::Ptr m_displayTab;                      ///< Tab used for switching the display mode.
 		std::vector<sf::String> m_displayStrings;         ///< The string used in display tabs, not translated.
+		sf::String m_selectedDisplay;                     ///< The untranslated text of the selected display tab.
 		tgui::Tab::Ptr m_categoryTab;                     ///< Tab used for switching the shown category.
 		std::vector<sf::String> m_categoryStrings;        ///< The string used in catgory tabs, not translated.
+		sf::String m_selectedCategory;                    ///< The untranslated text of the selected category tab.
 
 		//Widgets for the grid display
 		/// Hold GUI widgets to represent an item in the grid inventory.
