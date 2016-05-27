@@ -28,14 +28,12 @@ OpenInventoryState::OpenInventoryState(entityx::Entity entity) :
 
 	m_entityName = Context::getParameters().guiTheme->load("Label");
 	m_entityName->setTextSize(17);
-	m_entityName->setPosition((bindWidth(m_background) - bindWidth(m_entityName)) * 0.5f, bindHeight(m_background) * 0.125f);
 	m_background->add(m_entityName);
 
 	m_displayStrings = {"List", "Grid"};
 	m_displayTab = Context::getParameters().guiTheme->load("Tab");
 	for(const sf::String& displayName : m_displayStrings)
 		m_displayTab->add(displayName);
-	m_displayTab->setPosition(bindWidth(m_background) - bindWidth(m_displayTab), bindHeight(m_background) * 0.23f);
 	m_displayTab->setTabHeight(m_background->getSize().y * 0.07f);
 	m_displayTab->select(m_displayStrings.front());
 	m_displayTab->connect("tabselected", &OpenInventoryState::switchDisplay, this);
@@ -109,6 +107,8 @@ OpenInventoryState::OpenInventoryState(entityx::Entity entity) :
 
 	fillContentDisplay();
 	resetTexts();
+	m_entityName->setPosition((bindWidth(m_background) - bindWidth(m_entityName)) * 0.5f, bindHeight(m_background) * 0.125f);
+	m_displayTab->setPosition(bindWidth(m_background) - bindWidth(m_displayTab), bindHeight(m_background) * 0.23f);
 }
 
 OpenInventoryState::~OpenInventoryState()
@@ -215,12 +215,10 @@ void OpenInventoryState::fillContentDisplay()
 		const std::string type{entityItem.component<ItemComponent>()->type};
 		const std::string category{entityItem.component<ItemComponent>()->category};
 
-		//Test if the current item whould be displayed according to the selected tab
-		const std::string& currentTab{m_categoryTab->getSelected()};
-		auto subCategories = m_categoriesPartition.find(currentTab);
-		if(subCategories != m_categoriesPartition.end())
-			if(subCategories->second.find(itemComponent->category) == subCategories->second.end())
-				continue;
+		//Test if the current item should be displayed according to the selected tab
+		auto& subCategories(m_categoriesPartition[m_categoryTab->getSelected()]);
+		if(subCategories.find(itemComponent->category) == subCategories.end())
+			continue;
 
 		//Fill the list
 		bool foundSimilarItem{false};
@@ -233,6 +231,7 @@ void OpenInventoryState::fillContentDisplay()
 				break;
 			}
 		}
+		
 		if(not foundSimilarItem)
 		{
 			ItemListWidget itemWidget;
@@ -242,7 +241,7 @@ void OpenInventoryState::fillContentDisplay()
 			for(auto& columnStr : m_columnStrings)
 			{
 				tgui::Label::Ptr label = Context::getParameters().guiTheme->load("Label");
-				label->setTextSize(8);
+				label->setTextSize(15);
 				itemWidget.layout->add(label);
 				itemWidget.labels.emplace(columnStr, label);
 			}
@@ -263,7 +262,7 @@ void OpenInventoryState::fillContentDisplay()
 
 		itemWidget.caption = Context::getParameters().guiTheme->load("Label");
 		itemWidget.caption->setPosition((bindWidth(itemWidget.background) * 0.5f) - (bindWidth(itemWidget.caption) * 0.5f), itemSize/1.2f);
-		itemWidget.caption->setTextSize(8);
+		itemWidget.caption->setTextSize(15);
 		itemWidget.background->add(itemWidget.caption);
 
 		itemWidget.item = entityItem;
