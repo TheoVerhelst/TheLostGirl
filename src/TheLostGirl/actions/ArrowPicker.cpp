@@ -24,7 +24,7 @@ void ArrowPicker::operator()(entityx::Entity entity) const
 	pickBox.lowerBound = bodyComponent->body->GetWorldCenter() - b2Vec2(2, 2);
 	pickBox.upperBound = bodyComponent->body->GetWorldCenter() + b2Vec2(2, 2);
 	
-	std::set<entityx::Entity> foundEntities{Box2DHelper::queryEntities(pickBox, ArrowPicker::isPickableArrow)};
+	std::set<entityx::Entity> foundEntities{Box2DHelper::queryEntities(pickBox, isPickableArrow)};
 
 	if(not foundEntities.empty())
 	{

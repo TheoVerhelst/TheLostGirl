@@ -2,6 +2,7 @@
 #include <Box2D/Box2D.h>
 #include <TheLostGirl/components.hpp>
 #include <TheLostGirl/functions.hpp>
+#include <TheLostGirl/Box2DHelper.hpp>
 #include <TheLostGirl/states/OpenInventoryState.hpp>
 #include <TheLostGirl/actions/CorpseSearcher.hpp>
 
@@ -16,24 +17,14 @@ void CorpseSearcher::operator()(entityx::Entity entity) const
 	b2AABB searchBox;
 	searchBox.lowerBound = bodyComponent->body->GetWorldCenter() - b2Vec2(2, 2);
 	searchBox.upperBound = bodyComponent->body->GetWorldCenter() + b2Vec2(2, 2);
-	CorpseQueryCallback callback;
-	bodyComponent->body->GetWorld()->QueryAABB(&callback, searchBox);
-	if(callback.foundEntity.valid())
-		Context::getStateStack().pushState<OpenInventoryState>(callback.foundEntity);
+	std::set<entityx::Entity> foundEntities{Box2DHelper::queryEntities(searchBox, isCorpse)};
+	if(not foundEntities.empty())
+		Context::getStateStack().pushState<OpenInventoryState>(*foundEntities.begin());
 }
 
-bool CorpseQueryCallback::ReportFixture(b2Fixture* fixture)
+bool CorpseSearcher::isCorpse(entityx::Entity entity)
 {
-	entityx::Entity entity{*static_cast<entityx::Entity*>(fixture->GetBody()->GetUserData())};
-	if(not TEST(entity.valid()))
-		return true;
 	const DeathComponent::Handle deathComponent(entity.component<DeathComponent>());
-	//Return false (and so stop) only if this is a corpse with an inventory
-	if(entity.has_component<InventoryComponent>() and deathComponent and deathComponent->dead)
-	{
-		foundEntity = entity;
-		return false;
-	}
-	else
-		return true;
+	// Return true only if this is a corpse with an inventory
+	return entity.has_component<InventoryComponent>() and deathComponent and deathComponent->dead;
 }
