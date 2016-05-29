@@ -5,6 +5,7 @@
 #include <TheLostGirl/functions.hpp>
 #include <TheLostGirl/SpriteSheetAnimation.hpp>
 #include <TheLostGirl/FixtureRoles.hpp>
+#include <TheLostGirl/Box2DHelper.hpp>
 #include <TheLostGirl/actions/HandToHand.hpp>
 
 void HandToHand::operator()(entityx::Entity entity) const
@@ -24,7 +25,6 @@ void HandToHand::operator()(entityx::Entity entity) const
 		{
 			handToHandComponent->lastShoot = sf::Time::Zero;
 			b2Body* body{bodyComponent->body};
-			b2World* world{body->GetWorld()};
 
 			//Compute a box in front of the character; first, compute the transform of the box
 			b2Transform bodyTransform;
@@ -32,16 +32,21 @@ void HandToHand::operator()(entityx::Entity entity) const
 				bodyTransform = b2Transform(body->GetPosition() + b2Vec2(-0.5f, 0), b2Rot(body->GetAngle()));
 			else
 				bodyTransform = b2Transform(body->GetPosition() + b2Vec2(0.5f, 0), b2Rot(body->GetAngle()));
+				
 			//Then get the AABB of the main fixture and apply the transform
 			b2AABB handToHandBox;
 			for(b2Fixture* fixture{body->GetFixtureList()}; fixture; fixture = fixture->GetNext())
 				if(fixtureHasRole(fixture, FixtureRole::Main))
 					fixture->GetShape()->ComputeAABB(&handToHandBox, bodyTransform, 0);
+					
 			//Do the query
-			HandToHandQueryCallback callback(entity);
-			world->QueryAABB(&callback, handToHandBox);
+			std::set<entityx::Entity> foundEntities{Box2DHelper::queryEntities(handToHandBox,
+				[&entity](entityx::Entity otherEntity)
+				{
+					return isHittableEntity(otherEntity, entity);
+				})};
 
-			for(entityx::Entity foundEntity : callback.foundEntities)
+			for(auto foundEntity : foundEntities)
 			{
 				HealthComponent::Handle healthComponent(foundEntity.component<HealthComponent>());
 				const ActorComponent::Handle actorComponent(foundEntity.component<ActorComponent>());
@@ -70,26 +75,16 @@ void HandToHand::operator()(entityx::Entity entity) const
 	}
 }
 
-HandToHandQueryCallback::HandToHandQueryCallback(entityx::Entity attacker):
-	m_attacker(attacker)
+bool HandToHand::isHittableEntity(entityx::Entity entity, entityx::Entity attacker)
 {
-}
-
-bool HandToHandQueryCallback::ReportFixture(b2Fixture* fixture)
-{
-	entityx::Entity entity{*static_cast<entityx::Entity*>(fixture->GetBody()->GetUserData())};
-	if(not TEST(entity.valid()))
-		return true;
 	//The entity is added to the list only if:
 	// -this is not the attacker itself
 	// -this is an actor
 	// -attacker and current entity are not both aggressive
 	const ActorComponent::Handle actorComponent(entity.component<ActorComponent>());
 	const CategoryComponent::Handle entityCategoryComponent(entity.component<CategoryComponent>());
-	const auto attackerCategoryComponent(m_attacker.component<CategoryComponent>());
-	if(entity != m_attacker and actorComponent
+	const auto attackerCategoryComponent(attacker.component<CategoryComponent>());
+	return entity != attacker and actorComponent
 			and not (attackerCategoryComponent and attackerCategoryComponent->category.test(Category::Aggressive)
-				and entityCategoryComponent and entityCategoryComponent->category.test(Category::Aggressive)))
-		foundEntities.insert(entity);
-	return true;
+			and entityCategoryComponent and entityCategoryComponent->category.test(Category::Aggressive));
 }
