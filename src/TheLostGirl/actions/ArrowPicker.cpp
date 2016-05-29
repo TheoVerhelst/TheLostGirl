@@ -23,13 +23,13 @@ void ArrowPicker::operator()(entityx::Entity entity) const
 	b2AABB pickBox;
 	pickBox.lowerBound = bodyComponent->body->GetWorldCenter() - b2Vec2(2, 2);
 	pickBox.upperBound = bodyComponent->body->GetWorldCenter() + b2Vec2(2, 2);
-	StickedArrowQueryCallback callback;
-	world->QueryAABB(&callback, pickBox);
+	
+	entityx::Entity foundEntity{Box2DHelper::queryEntity(pickBox, ArrowPicker::isPickableArrow)};
 
-	if(callback.foundEntity.valid())
+	if(foundEntity.valid())
 	{
-		b2Body* arrowBody{callback.foundEntity.component<BodyComponent>()->body};
-		ArrowComponent::Handle arrowComponent{callback.foundEntity.component<ArrowComponent>()};
+		b2Body* arrowBody{foundEntity.component<BodyComponent>()->body};
+		ArrowComponent::Handle arrowComponent{foundEntity.component<ArrowComponent>()};
 
 		//Destroy all joints (e.g. the ground/arrow weld joint)
 		for(b2JointEdge* jointEdge{arrowBody->GetJointList()}; jointEdge; jointEdge = jointEdge->next)
@@ -46,22 +46,19 @@ void ArrowPicker::operator()(entityx::Entity entity) const
 		jointDef.dampingRatio = 0.f;
 
 		//Add the arrow to the quiver
-		quiverComponent->arrows.emplace(callback.foundEntity, static_cast<b2WeldJoint*>(world->CreateJoint(&jointDef)));
+		quiverComponent->arrows.emplace(foundEntity, static_cast<b2WeldJoint*>(world->CreateJoint(&jointDef)));
 		arrowComponent->state = ArrowComponent::Stored;
 		arrowComponent->shooter = entity;
 	}
 }
 
-bool StickedArrowQueryCallback::ReportFixture(b2Fixture* fixture)
+bool ArrowPicker::isPickableArrow(entityx::Entity entity)
 {
-	entityx::Entity entity{*static_cast<entityx::Entity*>(fixture->GetBody()->GetUserData())};
-	if(not TEST(entity.valid()))
-		return true;
-	//Return false (and so stop) only if this is a arrow and if it is sticked or is not moving
+	//Return true only if this is a arrow and if it is sticked or is not moving
 	const ArrowComponent::Handle arrowComponent(entity.component<ArrowComponent>());
 	const BodyComponent::Handle bodyComponent(entity.component<BodyComponent>());
-	bool found{arrowComponent and bodyComponent and (arrowComponent->state == ArrowComponent::Sticked or bodyComponent->body->GetLinearVelocity().LengthSquared() < 0.001f)};
-	if(found)
-		foundEntity = entity;
-	return not found;
+	
+	return arrowComponent and bodyComponent
+		and (arrowComponent->state == ArrowComponent::Sticked
+		or bodyComponent->body->GetLinearVelocity().LengthSquared() < m_speedThreshold);
 }

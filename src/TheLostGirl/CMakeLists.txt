@@ -13,6 +13,7 @@ add_library(TLG
 	actions/Mover.cpp
 	Application.cpp
 	BloomEffect.cpp
+	Box2DHelper.cpp
 	Command.cpp
 	ContactListener.cpp
 	contactListeners/ArrowHitListener.cpp

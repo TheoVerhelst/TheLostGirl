@@ -5,6 +5,7 @@
 #include <entityx/entityx.h>
 #include <TheLostGirl/Action.hpp>
 #include <TheLostGirl/Context.hpp>
+#include <TheLostGirl/Box2DHelper.hpp>
 
 /// Structure that picks a sticked arrow nearby the entity.
 class ArrowPicker : public Action
@@ -23,18 +24,16 @@ class ArrowPicker : public Action
 	private:
 		/// Context type of this class.
 		typedef ContextAccessor<ContextElement::Parameters> Context;
+		
+		/// Checks whether the entity is a sticked arrow or is not moving, it is
+		/// used to find the arrow to pick up.
+		/// \param entity The entity to check.
+		/// \return true if the entity is a sticked arrow or is not moving,
+		/// false otherwhise.
+		static bool isPickableArrow(entityx::Entity entity);
+		
+		static constexpr float m_speedThreshold{0.001f};///< The maximum speed at wich an arrow is considered to be not moving.
 };
 
-/// AABB query callback that indicates if a sticked arrow is found into the AABB.
-class StickedArrowQueryCallback : public b2QueryCallback
-{
-	public:
-		/// Handles the world querying.
-		/// \param fixture A fixture that overlaps the AABB.
-		/// \return True if the querying should continue, false otherwise.
-		virtual bool ReportFixture(b2Fixture* fixture);
-
-		entityx::Entity foundEntity;///< If no arrow is found, then this entity won't be valid.
-};
 
 #endif//ARROWPICKER_HPP

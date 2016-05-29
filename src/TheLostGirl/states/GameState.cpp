@@ -240,7 +240,7 @@ void GameState::clear()
 {
 	for(auto& entity : m_entities)
 	{
-		if(entity.second.has_component<BodyComponent>())
+		if(entity.second.has_component<BodyComponent>() and entity.second.component<BodyComponent>()->body)
 			Context::getWorld().DestroyBody(entity.second.component<BodyComponent>()->body);
 
 		entity.second.destroy();
