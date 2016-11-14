@@ -58,5 +58,5 @@ install_github erincatto Box2D "-DBOX2D_BUILD_EXAMPLES=False -DBOX2D_BUILD_SHARE
 wget http://downloads.sourceforge.net/project/boost/boost/1.60.0/boost_1_60_0.zip
 unzip -qq boost_1_60_0.zip
 cd boost_1_60_0
-./bootstrap.sh --with-libraries=filesystem,system,test --prefix="$libraries_directory"
+./bootstrap.sh --with-libraries=test --prefix="$libraries_directory"
 ./b2 -d0 -j4 install
