@@ -9,7 +9,7 @@ fi
 
 libraries_directory="$PWD/libraries/"
 
-cmake_arguments="-DCMAKE_BUILD_TYPE=Debug"
+cmake_arguments="-DCMAKE_BUILD_TYPE=Debug -DCMAKE_CXX_STANDARD=11"
 sudo="sudo"
 if [[ $locally = "true" ]]
 then
