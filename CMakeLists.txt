@@ -26,7 +26,7 @@ set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake/Modules/")
 
 #Dependencies finding
 find_package(SFML 2.3 COMPONENTS system window graphics audio REQUIRED)
-find_package(TGUI 0.7 REQUIRED)
+find_package(TGUI 0.7.1 REQUIRED)
 find_package(Box2D REQUIRED)
 find_package(EntityX REQUIRED)
 find_package(Threads REQUIRED)
