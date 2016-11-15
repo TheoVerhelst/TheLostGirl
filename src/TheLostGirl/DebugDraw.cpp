@@ -178,6 +178,11 @@ void DebugDraw::DrawTransform(const b2Transform& xf)
 		Context::getWindow().draw(line2, 2, sf::Lines);
 }
 
+void DebugDraw::DrawPoint(const b2Vec2& p, float32 size, const b2Color& color)
+{
+	DrawCircle(p, size, color);
+}
+
 void DebugDraw::drawDebugAth()
 {
 	if(Context::getParameters().debugMode != m_debugMode)

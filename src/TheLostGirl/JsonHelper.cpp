@@ -4,6 +4,7 @@
 #include <stdexcept>
 #include <vector>
 #include <functional>
+#include <cmath>
 #include <dist/json/json.h>
 #include <TheLostGirl/JsonHelper.hpp>
 
@@ -90,7 +91,7 @@ bool JsonHelper::isEqual(const Json::Value& left, const Json::Value& right)
 		return true;
 	}
 	else if(left.isDouble())
-		return std::abs(left.asDouble() - right.asDouble()) < 0.0001;
+		return std::fabs(left.asDouble() - right.asDouble()) < 0.0001;
 	else
 		return left == right;
 }

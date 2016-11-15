@@ -25,42 +25,48 @@ class DebugDraw : public b2Draw
 		/// Destructor.
 		virtual ~DebugDraw();
 
-		/// Draw a holow Box2D polygon.
+		/// Draws a holow Box2D polygon.
 		/// \param vertices Vertices to draw.
 		/// \param vertexCount Number of vertices.
 		/// \param color Color of the lines.
 		virtual void DrawPolygon(const b2Vec2* vertices, int32 vertexCount, const b2Color& color) override;
 
-		/// Draw a plain Box2D polygon.
+		/// Draws a plain Box2D polygon.
 		/// \param vertices Vertices to draw.
 		/// \param vertexCount Number of vertices.
 		/// \param color Color of the polygon.
 		virtual void DrawSolidPolygon(const b2Vec2* vertices, int32 vertexCount, const b2Color& color) override;
 
-		/// Draw a holow Box2D circle.
+		/// Draws a holow Box2D circle.
 		/// \param center Position of the center of the circle.
 		/// \param radius Radius of the circle.
 		/// \param color Color of the line.
 		virtual void DrawCircle(const b2Vec2& center, float32 radius, const b2Color& color) override;
 
-		/// Draw a plain Box2D circle.
+		/// Draws a plain Box2D circle.
 		/// \param center Position of the center of the circle.
 		/// \param radius Radius of the circle.
 		/// \param axis Coordinates in the range [0, 1]^2 defining the orientation of the circle.
 		/// \param color Color of the circle.
 		virtual void DrawSolidCircle(const b2Vec2& center, float32 radius, const b2Vec2& axis, const b2Color& color) override;
 
-		/// Draw a Box2D segment.
+		/// Draws a Box2D segment.
 		/// \param p1 First point.
 		/// \param p2 Second point.
 		/// \param color Color of the segment.
 		virtual void DrawSegment(const b2Vec2& p1, const b2Vec2& p2, const b2Color& color) override;
 
-		/// Draw a Box2D transform.
+		/// Draws a Box2D transform.
 		/// \param xf Transform to draw.
 		virtual void DrawTransform(const b2Transform& xf) override;
 
-		/// Draw various informations on the screen, such as player position, bending angle, ...
+		/// Draws a simple point.
+		/// \param p The position of the point.
+		/// \param size The size of the point.
+		/// \param color The color to use.
+		virtual void DrawPoint(const b2Vec2& p, float32 size, const b2Color& color) override;
+
+		/// Draws various informations on the screen, such as player position, bending angle, ...
 		void drawDebugAth();
 
 		/// Set the FPS to display.

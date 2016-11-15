@@ -1,3 +1,4 @@
+#include <random>
 #include <entityx/entityx.h>
 #include <TheLostGirl/components.hpp>
 #include <TheLostGirl/functions.hpp>
