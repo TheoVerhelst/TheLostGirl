@@ -57,7 +57,7 @@ cd "$libraries_directory"
 install_github SFML SFML
 install_github texus TGUI
 install_github alecthomas entityx "-DENTITYX_BUILD_TESTING=False"
-install_github erincatto Box2D "-DBOX2D_BUILD_EXAMPLES=False -DBOX2D_BUILD_SHARED=True -DBOX2D_BUILD_STATIC=False -DCMAKE_CXX_FLAGS='std=c++11'"
+install_github erincatto Box2D "-DBOX2D_BUILD_EXAMPLES=False -DBOX2D_BUILD_SHARED=True -DBOX2D_BUILD_STATIC=False -DCMAKE_CXX_FLAGS='-std=c++11'"
 
 # Install Boost from sources
 boost_under=${boost_major}_${boost_minor}_${boost_patch}
